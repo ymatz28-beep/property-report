@@ -1,0 +1,187 @@
+# ===========================================
+# 不動産投資分析システム 設定ファイル
+# ===========================================
+
+# Anthropic API設定
+api:
+  api_key: ""  # ここにAPIキーを入力（環境変数 ANTHROPIC_API_KEY でも可）
+  model: "claude-sonnet-4-5-20250929"
+
+# 分析期間
+analysis:
+  years: 35
+  discount_rate: 0.05  # IRR計算用割引率
+
+# 諸費用率（物件価格に対する割合）
+purchase_costs:
+  registration_tax: 0.02      # 登録免許税
+  acquisition_tax: 0.03       # 不動産取得税
+  stamp_duty: 0.001           # 印紙税
+  agent_fee: 0.03             # 仲介手数料
+  judicial_scrivener: 300000  # 司法書士費用（固定）
+  misc: 200000                # その他諸費用
+
+# 年間運営費（賃貸）
+rental_costs:
+  management_fee_rate: 0.05   # 管理費率（家賃に対して）
+  maintenance_reserve: 0.05   # 修繕積立（家賃に対して）
+  vacancy_rate: 0.05          # 空室率
+  insurance_annual: 50000     # 火災保険（年額）
+  property_tax_rate: 0.014    # 固定資産税率
+  assessed_value_ratio: 0.7   # 固定資産税評価額率
+
+# 年間運営費（民泊）
+minpaku_costs:
+  management_fee_rate: 0.20   # 運営代行費率（売上に対して）
+  cleaning_per_stay: 5000     # 清掃費/回
+  avg_stays_per_month: 15     # 月平均宿泊回数
+  occupancy_rate: 0.70        # 稼働率
+  platform_fee_rate: 0.03     # プラットフォーム手数料
+  amenity_monthly: 10000      # アメニティ費用/月
+  insurance_annual: 80000     # 火災保険（年額）
+  property_tax_rate: 0.014    # 固定資産税率
+  assessed_value_ratio: 0.7   # 固定資産税評価額率
+  license_cost: 300000        # 民泊届出・許可費用
+
+# 家賃下落率（年率）
+rent_decline:
+  year_1_10: 0.01    # 1-10年目: 年1%下落
+  year_11_20: 0.005  # 11-20年目: 年0.5%下落
+  year_21_35: 0.003  # 21-35年目: 年0.3%下落
+
+# 物件価値下落率（年率）
+property_decline:
+  wooden: 0.025          # 木造
+  light_steel: 0.02      # 軽量鉄骨
+  rc: 0.015              # RC
+  src: 0.012             # SRC
+
+# 金融機関データ
+financing:
+  mega_bank:
+    name: "メガバンク"
+    interest_rate_min: 1.5
+    interest_rate_max: 2.5
+    interest_rate_typical: 1.8
+    max_ltv: 0.70
+    max_term_years: 35
+    min_annual_income: 10000000
+    minpaku_ok: false
+    strict_review: true
+    notes: "高年収・上場企業勤務向け。民泊不可。"
+
+  regional_bank:
+    name: "地方銀行"
+    interest_rate_min: 1.8
+    interest_rate_max: 3.0
+    interest_rate_typical: 2.3
+    max_ltv: 0.80
+    max_term_years: 30
+    min_annual_income: 5000000
+    minpaku_ok: false
+    strict_review: false
+    notes: "地元物件に強い。柔軟な審査。"
+
+  shinkin:
+    name: "信用金庫"
+    interest_rate_min: 2.0
+    interest_rate_max: 3.5
+    interest_rate_typical: 2.5
+    max_ltv: 0.85
+    max_term_years: 30
+    min_annual_income: 3000000
+    minpaku_ok: false
+    strict_review: false
+    notes: "最も柔軟。小口案件OK。地域密着。"
+
+  jfc:
+    name: "日本政策金融公庫"
+    interest_rate_min: 1.0
+    interest_rate_max: 2.5
+    interest_rate_typical: 1.5
+    max_ltv: 0.80
+    max_term_years: 20
+    min_annual_income: 0
+    minpaku_ok: true
+    strict_review: false
+    notes: "事業計画書重視。民泊対応可。融資期間短め。"
+
+  non_bank:
+    name: "ノンバンク（セゾンファンデックス等）"
+    interest_rate_min: 3.0
+    interest_rate_max: 5.0
+    interest_rate_typical: 3.9
+    max_ltv: 0.90
+    max_term_years: 30
+    min_annual_income: 0
+    minpaku_ok: true
+    strict_review: false
+    notes: "審査柔軟。民泊OK。金利高め。"
+
+# 保証会社データ
+guarantee_companies:
+  saison_fundex:
+    name: "セゾンファンデックス"
+    guarantee_fee_rate_min: 0.50
+    guarantee_fee_rate_max: 1.00
+    flexibility: "高"
+    features: "柔軟審査。築古・再建築不可対応。外国人OK。"
+    recommended_for: ["築古物件", "再建築不可", "属性弱め"]
+
+  zenpo_ren:
+    name: "全保連"
+    guarantee_fee_rate_min: 0.50
+    guarantee_fee_rate_max: 0.50
+    flexibility: "中"
+    features: "業界最大手。安定した保証。"
+    recommended_for: ["標準的な賃貸", "ファミリー向け"]
+
+  nihon_safety:
+    name: "日本セーフティー"
+    guarantee_fee_rate_min: 0.50
+    guarantee_fee_rate_max: 0.80
+    flexibility: "中"
+    features: "大手。幅広い物件に対応。"
+    recommended_for: ["一般賃貸", "事務所"]
+
+  casa:
+    name: "Casa"
+    guarantee_fee_rate_min: 0.50
+    guarantee_fee_rate_max: 0.50
+    flexibility: "中"
+    features: "IT対応強い。オンライン手続き可。"
+    recommended_for: ["若年層向け", "IT活用物件"]
+
+# 税率（個人）
+tax_individual:
+  income_brackets:
+    - { upper: 1950000, rate: 0.05, deduction: 0 }
+    - { upper: 3300000, rate: 0.10, deduction: 97500 }
+    - { upper: 6950000, rate: 0.20, deduction: 427500 }
+    - { upper: 9000000, rate: 0.23, deduction: 636000 }
+    - { upper: 18000000, rate: 0.33, deduction: 1536000 }
+    - { upper: 40000000, rate: 0.40, deduction: 2796000 }
+    - { upper: 999999999, rate: 0.45, deduction: 4796000 }
+  resident_tax_rate: 0.10
+  capital_gains_short: 0.3945   # 短期（5年以下）
+  capital_gains_long: 0.2032    # 長期（5年超）
+
+# 税率（法人）
+tax_corporate:
+  effective_rate_small: 0.25    # 所得800万円以下
+  effective_rate_large: 0.35    # 所得800万円超
+  establishment_cost: 250000    # 法人設立費用
+  annual_min_tax: 70000         # 均等割（最低税額）
+  accountant_annual: 300000     # 税理士費用
+
+# 感度分析パラメータ
+sensitivity:
+  rent_change: [-0.10, -0.05, 0, 0.05, 0.10]
+  occupancy_change: [-0.10, -0.05, 0, 0.05, 0.10]
+  interest_change: [-0.005, -0.0025, 0, 0.0025, 0.005]
+
+# 出口戦略パラメータ
+exit_strategy:
+  selling_cost_rate: 0.04   # 売却時諸費用率
+  cap_rate_exit: 0.06       # 出口キャップレート
+  analysis_years: [5, 10, 15, 20, 25, 30]

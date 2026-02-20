@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大阪R不動産 物件比較レポート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #242834;
+  --border: #2e3344;
+  --text: #e4e6ed;
+  --text-muted: #8b90a0;
+  --accent: #6c8cff;
+  --accent2: #a78bfa;
+  --green: #34d399;
+  --red: #f87171;
+  --orange: #fbbf24;
+  --cyan: #22d3ee;
+  --radius: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Noto Sans JP','Inter',sans-serif; background:var(--bg); color:var(--text); line-height:1.7; }
+a { color:var(--accent); text-decoration:none; }
+.container { max-width:1200px; margin:0 auto; padding:0 20px; }
+
+/* Nav */
+nav { position:sticky; top:0; z-index:100; background:rgba(15,17,23,0.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+nav .container { display:flex; align-items:center; gap:8px; padding:12px 20px; overflow-x:auto; white-space:nowrap; }
+nav a { padding:6px 14px; border-radius:20px; font-size:13px; font-weight:500; color:var(--text-muted); transition:all .2s; }
+nav a:hover, nav a.active { background:var(--surface2); color:var(--text); }
+
+/* Hero */
+.hero { padding:60px 0 40px; text-align:center; background:linear-gradient(135deg, #1a1d27 0%, #0f1117 100%); }
+.hero h1 { font-size:clamp(24px,4vw,36px); font-weight:700; margin-bottom:8px; }
+.hero .sub { color:var(--text-muted); font-size:15px; }
+.hero .model-badge { display:inline-block; margin-top:16px; padding:8px 20px; background:linear-gradient(135deg, var(--accent), var(--accent2)); border-radius:20px; font-size:13px; font-weight:600; }
+.hero .params { display:flex; justify-content:center; gap:24px; margin-top:24px; flex-wrap:wrap; }
+.hero .param { background:var(--surface); padding:12px 20px; border-radius:var(--radius); font-size:13px; }
+.hero .param span { display:block; font-size:20px; font-weight:700; color:var(--accent); }
+
+/* Section */
+section { padding:48px 0; }
+section h2 { font-size:22px; font-weight:700; margin-bottom:24px; padding-bottom:12px; border-bottom:2px solid var(--border); }
+section h2 .num { color:var(--accent); margin-right:8px; }
+
+/* Cards Grid */
+.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; transition:transform .2s, border-color .2s; position:relative; overflow:hidden; }
+.card:hover { transform:translateY(-2px); border-color:var(--accent); }
+.card.best { border-color:var(--green); }
+.card.best::before { content:'BEST'; position:absolute; top:12px; right:12px; background:var(--green); color:#000; font-size:11px; font-weight:700; padding:2px 10px; border-radius:10px; }
+.card.over-budget { opacity:.7; }
+.card.over-budget::before { content:'予算超'; position:absolute; top:12px; right:12px; background:var(--red); color:#fff; font-size:11px; font-weight:700; padding:2px 10px; border-radius:10px; }
+.card.no-pet::before { content:'ペット不可'; position:absolute; top:12px; right:12px; background:var(--orange); color:#000; font-size:11px; font-weight:700; padding:2px 10px; border-radius:10px; }
+.card h3 { font-size:16px; margin-bottom:4px; }
+.card .addr { font-size:13px; color:var(--text-muted); margin-bottom:16px; }
+.card .price { font-size:28px; font-weight:700; color:var(--accent); }
+.card .price small { font-size:14px; color:var(--text-muted); font-weight:400; }
+.card .tags { display:flex; flex-wrap:wrap; gap:6px; margin:12px 0; }
+.card .tag { font-size:11px; padding:3px 10px; border-radius:10px; background:var(--surface2); color:var(--text-muted); }
+.card .tag.ok { background:rgba(52,211,153,.15); color:var(--green); }
+.card .tag.warn { background:rgba(251,191,36,.15); color:var(--orange); }
+.card .tag.bad { background:rgba(248,113,113,.15); color:var(--red); }
+
+/* Metric Row */
+.metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(100px,1fr)); gap:8px; margin-top:16px; }
+.metric { text-align:center; padding:10px 4px; background:var(--surface2); border-radius:8px; }
+.metric .label { font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.5px; }
+.metric .val { font-size:18px; font-weight:700; margin-top:2px; }
+.metric .val.positive { color:var(--green); }
+.metric .val.negative { color:var(--red); }
+.metric .val.neutral { color:var(--orange); }
+
+/* Table */
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th { text-align:left; padding:10px 12px; background:var(--surface2); color:var(--text-muted); font-weight:500; font-size:12px; text-transform:uppercase; letter-spacing:.5px; }
+td { padding:10px 12px; border-bottom:1px solid var(--border); }
+tr:hover td { background:var(--surface); }
+td.num { text-align:right; font-variant-numeric:tabular-nums; }
+.pos { color:var(--green); }
+.neg { color:var(--red); }
+.warn-text { color:var(--orange); }
+
+/* Chart Container */
+.chart-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:24px; }
+.chart-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; }
+.chart-box h3 { font-size:14px; font-weight:600; margin-bottom:16px; color:var(--text-muted); }
+
+/* Risk */
+.risk-item { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.risk-badge { flex-shrink:0; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700; }
+.risk-badge.high { background:rgba(248,113,113,.2); color:var(--red); }
+.risk-badge.mid { background:rgba(251,191,36,.2); color:var(--orange); }
+.risk-badge.low { background:rgba(52,211,153,.2); color:var(--green); }
+
+/* Score */
+.score-card { text-align:center; padding:32px 24px; }
+.score-ring { width:100px; height:100px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; margin-bottom:12px; }
+.score-ring.s-high { background:conic-gradient(var(--green) calc(var(--pct) * 3.6deg), var(--surface2) 0); }
+.score-ring.s-mid { background:conic-gradient(var(--orange) calc(var(--pct) * 3.6deg), var(--surface2) 0); }
+.score-ring.s-low { background:conic-gradient(var(--red) calc(var(--pct) * 3.6deg), var(--surface2) 0); }
+.score-inner { width:76px; height:76px; border-radius:50%; background:var(--surface); display:flex; align-items:center; justify-content:center; }
+.verdict { font-size:14px; font-weight:600; margin-top:4px; }
+
+/* Conclusion */
+.conclusion { background:linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%); border:1px solid var(--border); border-radius:var(--radius); padding:32px; margin-top:24px; }
+.conclusion h3 { font-size:18px; margin-bottom:16px; }
+.conclusion ul { list-style:none; padding:0; }
+.conclusion li { padding:6px 0; font-size:14px; }
+.conclusion li::before { content:'→ '; color:var(--accent); font-weight:700; }
+.action-item { background:var(--surface2); border-left:3px solid var(--accent); padding:12px 16px; margin:8px 0; border-radius:0 8px 8px 0; font-size:14px; }
+.action-item .step { color:var(--accent); font-weight:700; margin-right:8px; }
+
+/* Waterfall */
+.waterfall { display:flex; align-items:flex-end; gap:4px; height:200px; padding:20px 0; }
+.wf-bar { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; }
+.wf-bar .bar { width:100%; border-radius:4px 4px 0 0; min-height:2px; transition:height .5s; }
+.wf-bar .bar.income { background:var(--green); }
+.wf-bar .bar.expense { background:var(--red); }
+.wf-bar .bar.result { background:var(--accent); }
+.wf-bar .lbl { font-size:10px; color:var(--text-muted); margin-top:6px; text-align:center; writing-mode:vertical-rl; height:60px; }
+.wf-bar .amt { font-size:10px; font-weight:600; margin-bottom:4px; }
+
+/* Footer */
+footer { padding:24px 0; text-align:center; color:var(--text-muted); font-size:12px; border-top:1px solid var(--border); margin-top:40px; }
+
+/* Print */
+@media print {
+  nav { display:none; }
+  body { background:#fff; color:#000; }
+  .card, .chart-box, .conclusion { border:1px solid #ddd; break-inside:avoid; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+<div class="container">
+  <a href="#overview">概要</a>
+  <a href="#properties">物件</a>
+  <a href="#revenue">民泊収益</a>
+  <a href="#metrics">投資指標</a>
+  <a href="#financing">融資</a>
+  <a href="#tax">税務比較</a>
+  <a href="#exit">出口戦略</a>
+  <a href="#risk">リスク</a>
+  <a href="#score">総合評価</a>
+  <a href="#conclusion">結論</a>
+</div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+<div class="container">
+  <h1>大阪R不動産 物件比較レポート</h1>
+  <div class="sub">自宅兼民泊 × 多拠点生活モデル</div>
+  <div class="model-badge">Property Analyzer v1.0 — 2026.02.19</div>
+  <div class="params">
+    <div class="param">年収<span>¥29,982,505</span></div>
+    <div class="param">既存借入<span>¥3.08億</span></div>
+    <div class="param">保有物件<span>4棟</span></div>
+    <div class="param">自己利用<span>120日/年</span></div>
+    <div class="param">民泊稼働<span>245日 × 70%</span></div>
+  </div>
+</div>
+</div>
+
+<!-- Overview -->
+<section id="overview">
+<div class="container">
+  <h2><span class="num">01</span>分析概要</h2>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;">
+    <div style="background:var(--surface);padding:20px;border-radius:var(--radius);border:1px solid var(--border);">
+      <div style="font-size:13px;color:var(--text-muted);">分析モデル</div>
+      <div style="font-size:16px;font-weight:600;margin-top:4px;">自宅兼民泊（多拠点生活）</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">不在時にAirbnb等で民泊運用。年間120日は自己利用、245日を民泊に充当（稼働率70%＝実質172日稼働）。</div>
+    </div>
+    <div style="background:var(--surface);padding:20px;border-radius:var(--radius);border:1px solid var(--border);">
+      <div style="font-size:13px;color:var(--text-muted);">物件選定基準</div>
+      <div style="font-size:14px;margin-top:8px;line-height:2;">
+        <span class="tag ok">予算 5,000万以下</span>
+        <span class="tag ok">面積 40㎡+（理想50㎡+）</span>
+        <span class="tag ok">ペット可</span>
+        <span class="tag ok">収益性重視</span>
+        <span class="tag ok">大阪市（特区民泊可）</span>
+      </div>
+    </div>
+    <div style="background:var(--surface);padding:20px;border-radius:var(--radius);border:1px solid var(--border);">
+      <div style="font-size:13px;color:var(--text-muted);">投資家プロフィール</div>
+      <div style="font-size:12px;margin-top:8px;line-height:1.9;color:var(--text-muted);">
+        Cisco勤務 / 給与1,600万+RSU/ESPP<br>
+        不動産4棟保有 / 賃料収入1,400万/年<br>
+        借入残高3億円 / 青色申告（損益通算）<br>
+        法人: iUMAプロパティマネジメント
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Properties -->
+<section id="properties">
+<div class="container">
+  <h2><span class="num">02</span>物件概要</h2>
+  <div class="cards">
+
+    <div class="card">
+      <h3>#1 扇町公園の近くでペットと暮らす</h3>
+      <div class="addr">北区天神橋3丁目 — 天満/扇町 徒歩6分</div>
+      <div class="price">4,580<small>万円</small></div>
+      <div class="tags">
+        <span class="tag ok">予算内</span>
+        <span class="tag ok">🐾 ペット可</span>
+        <span class="tag">66.21㎡</span>
+        <span class="tag warn">1976年 旧耐震</span>
+        <span class="tag">SRC 3F/12階建</span>
+        <span class="tag">リノベ済</span>
+        <span class="tag">家具付き</span>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="label">管理+修繕</div><div class="val">¥17,000</div></div>
+        <div class="metric"><div class="label">㎡単価</div><div class="val">69.2万</div></div>
+        <div class="metric"><div class="label">築年数</div><div class="val negative">50年</div></div>
+        <div class="metric"><div class="label">観光地</div><div class="val positive">★★★★</div></div>
+      </div>
+    </div>
+
+    <div class="card no-pet">
+      <h3>#2 贅沢な二人暮らし</h3>
+      <div class="addr">中央区谷町5丁目 — 谷町六丁目 徒歩2分</div>
+      <div class="price">4,100<small>万円</small></div>
+      <div class="tags">
+        <span class="tag ok">予算内</span>
+        <span class="tag bad">🚫 ペット不可</span>
+        <span class="tag">67.15㎡</span>
+        <span class="tag warn">1980年 旧耐震</span>
+        <span class="tag">SRC 最上階10F角</span>
+        <span class="tag">リノベ済</span>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="label">管理+修繕</div><div class="val negative">¥33,786</div></div>
+        <div class="metric"><div class="label">㎡単価</div><div class="val">61.1万</div></div>
+        <div class="metric"><div class="label">築年数</div><div class="val negative">46年</div></div>
+        <div class="metric"><div class="label">観光地</div><div class="val">★★★</div></div>
+      </div>
+    </div>
+
+    <div class="card best">
+      <h3>#3 暮らしが教える、この魅力。</h3>
+      <div class="addr">北区東天満2丁目 — 大阪天満宮 徒歩5分 / 南森町 徒歩8分</div>
+      <div class="price">3,480<small>万円</small></div>
+      <div class="tags">
+        <span class="tag ok">予算内</span>
+        <span class="tag ok">🐾 ペット可</span>
+        <span class="tag">60.39㎡</span>
+        <span class="tag warn">1980年 旧耐震</span>
+        <span class="tag">SRC 13F/14階建</span>
+        <span class="tag ok">大阪城ビュー</span>
+        <span class="tag">2018年リノベ</span>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="label">管理+修繕</div><div class="val positive">¥20,530</div></div>
+        <div class="metric"><div class="label">㎡単価</div><div class="val positive">57.6万</div></div>
+        <div class="metric"><div class="label">築年数</div><div class="val negative">46年</div></div>
+        <div class="metric"><div class="label">観光地</div><div class="val positive">★★★★</div></div>
+      </div>
+    </div>
+
+    <div class="card over-budget">
+      <h3>#4 立ち止まる余白</h3>
+      <div class="addr">中央区谷町5丁目 — 谷町六丁目 徒歩3分 / 谷町四丁目 徒歩4分</div>
+      <div class="price">5,980<small>万円</small></div>
+      <div class="tags">
+        <span class="tag bad">予算超過</span>
+        <span class="tag ok">🐾 ペット可</span>
+        <span class="tag">60.46㎡</span>
+        <span class="tag ok">2005年 新耐震</span>
+        <span class="tag">SRC 6F/14階建</span>
+        <span class="tag ok">ローン控除OK</span>
+        <span class="tag">2025年リノベ</span>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="label">管理+修繕</div><div class="val">¥25,190</div></div>
+        <div class="metric"><div class="label">㎡単価</div><div class="val negative">98.9万</div></div>
+        <div class="metric"><div class="label">築年数</div><div class="val positive">21年</div></div>
+        <div class="metric"><div class="label">観光地</div><div class="val">★★★</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- Revenue -->
+<section id="revenue">
+<div class="container">
+  <h2><span class="num">03</span>民泊収益シミュレーション</h2>
+
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h3>年間収支ウォーターフォール</h3>
+      <canvas id="waterfallChart" height="280"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>税引後キャッシュフロー比較</h3>
+      <canvas id="cfChart" height="280"></canvas>
+    </div>
+  </div>
+
+  <div class="table-wrap" style="margin-top:24px;">
+    <table>
+      <thead>
+        <tr><th>#</th><th>エリア</th><th class="num">宿泊単価</th><th class="num">民泊売上</th><th class="num">経費</th><th class="num">NOI</th><th class="num">ローン返済</th><th class="num">税引前CF</th><th class="num">節税効果</th><th class="num">税引後CF</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>天神橋3</td><td class="num">¥12,500</td><td class="num">¥2,143,750</td><td class="num neg">-¥1,644,903</td><td class="num">¥498,848</td><td class="num neg">-¥2,406,885</td><td class="num neg">-¥1,908,037</td><td class="num pos">+¥1,141,029</td><td class="num neg">-¥767,008</td></tr>
+        <tr style="opacity:.5"><td>2</td><td>谷町5 <span class="warn-text">🚫</span></td><td class="num">¥11,000</td><td class="num">¥1,886,500</td><td class="num neg">-¥1,740,127</td><td class="num">¥146,373</td><td class="num neg">-¥2,154,635</td><td class="num neg">-¥2,008,262</td><td class="num pos">+¥1,150,529</td><td class="num neg">-¥857,733</td></tr>
+        <tr style="background:rgba(52,211,153,.05)"><td><strong>3</strong></td><td><strong>東天満2 ★</strong></td><td class="num"><strong>¥12,000</strong></td><td class="num"><strong>¥2,058,000</strong></td><td class="num neg"><strong>-¥1,559,740</strong></td><td class="num"><strong>¥498,260</strong></td><td class="num neg"><strong>-¥1,828,812</strong></td><td class="num neg"><strong>-¥1,330,552</strong></td><td class="num pos"><strong>+¥815,717</strong></td><td class="num neg"><strong>-¥514,835</strong></td></tr>
+        <tr style="opacity:.5"><td>4</td><td>谷町5 <span class="warn-text">予算超</span></td><td class="num">¥11,000</td><td class="num">¥1,886,500</td><td class="num neg">-¥1,821,215</td><td class="num">¥65,285</td><td class="num neg">-¥1,862,785</td><td class="num neg">-¥1,797,500</td><td class="num pos">+¥693,897</td><td class="num neg">-¥1,103,602</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:16px;font-size:13px;color:var(--text-muted);">
+    ※ 全物件フルローン想定（自己資金＝諸費用7%のみ）。損益通算による節税効果は限界税率43%（所得税33%+住民税10%）で計算。
+  </div>
+</div>
+</section>
+
+<!-- Metrics -->
+<section id="metrics">
+<div class="container">
+  <h2><span class="num">04</span>投資指標</h2>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h3>主要指標レーダー</h3>
+      <canvas id="radarChart" height="300"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>指標一覧</h3>
+      <table>
+        <thead><tr><th>#</th><th>表面利回り</th><th>NOI利回り</th><th>DSCR</th><th>CCR</th><th>BE稼働率</th><th>DTI</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td class="num">4.7%</td><td class="num">1.1%</td><td class="num neg">0.21</td><td class="num neg">-23.9%</td><td class="num neg">172%</td><td class="num neg">69.7%</td></tr>
+          <tr style="opacity:.5"><td>2</td><td class="num">4.6%</td><td class="num">0.4%</td><td class="num neg">0.07</td><td class="num neg">-29.9%</td><td class="num neg">197%</td><td class="num neg">68.9%</td></tr>
+          <tr style="background:rgba(52,211,153,.05)"><td><strong>3★</strong></td><td class="num"><strong>5.9%</strong></td><td class="num"><strong>1.4%</strong></td><td class="num neg"><strong>0.27</strong></td><td class="num neg"><strong>-21.1%</strong></td><td class="num neg"><strong>145%</strong></td><td class="num neg"><strong>67.8%</strong></td></tr>
+          <tr style="opacity:.5"><td>4</td><td class="num">3.2%</td><td class="num">0.1%</td><td class="num neg">0.04</td><td class="num neg">-26.4%</td><td class="num neg">183%</td><td class="num neg">67.9%</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;font-size:12px;color:var(--text-muted);">
+        基準: DSCR≧1.2 / CCR≧4% / BE稼働率≦70% / DTI≦45%<br>
+        ※ 自宅兼用モデルのため純投資指標は全物件で基準未達。節税+拠点価値で判断。
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Financing -->
+<section id="financing">
+<div class="container">
+  <h2><span class="num">05</span>融資判定</h2>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;">
+    <div style="font-size:14px;font-weight:600;margin-bottom:12px;">既存借入状況</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+      <div><span style="color:var(--text-muted);font-size:12px;">借入残高</span><div style="font-size:20px;font-weight:700;color:var(--red);">¥3.08億</div></div>
+      <div><span style="color:var(--text-muted);font-size:12px;">年間返済（概算）</span><div style="font-size:20px;font-weight:700;">¥1,850万</div></div>
+      <div><span style="color:var(--text-muted);font-size:12px;">年収合計</span><div style="font-size:20px;font-weight:700;">¥2,998万</div></div>
+      <div><span style="color:var(--text-muted);font-size:12px;">既存DTI</span><div style="font-size:20px;font-weight:700;color:var(--red);">61.7%</div></div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card" style="border-left:3px solid var(--red);">
+      <h3>個人名義で取得</h3>
+      <div style="font-size:13px;margin-top:8px;line-height:1.8;">
+        <strong style="color:var(--red);">❌ 融資困難</strong><br>
+        DTI 67〜70%（全物件で50%超過）<br>
+        旧耐震物件はメガバンク不可<br>
+        地銀・信金でも3億の既存債務がネック
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--green);">
+      <h3>法人（iUMA）で取得</h3>
+      <div style="font-size:13px;margin-top:8px;line-height:1.8;">
+        <strong style="color:var(--green);">✅ 融資可能性あり</strong><br>
+        個人DTIに影響しない<br>
+        法人の事業計画ベースで審査<br>
+        日本政策金融公庫・信金が候補<br>
+        ⚠️ 損益通算（個人の節税）は使えない
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--orange);">
+      <h3>現金購入</h3>
+      <div style="font-size:13px;margin-top:8px;line-height:1.8;">
+        <strong style="color:var(--orange);">△ #3なら検討可</strong><br>
+        #3 東天満: 諸費用込み約3,724万<br>
+        融資コスト0 → CF大幅改善<br>
+        RSU/ESPP売却資金の活用<br>
+        ⚠️ 流動性の低下
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Tax -->
+<section id="tax">
+<div class="container">
+  <h2><span class="num">06</span>個人 vs 法人（iUMA）税務比較</h2>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h3>税引後CF比較（個人 vs 法人）</h3>
+      <canvas id="taxChart" height="280"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>判定</h3>
+      <div style="padding:16px 0;">
+        <div style="font-size:14px;margin-bottom:16px;line-height:1.8;">
+          全物件で<strong style="color:var(--green);">個人取得が有利</strong>（年間99〜145万円差）。<br>
+          理由: 減価償却による不動産所得赤字 → 給与所得（1,600万）と損益通算 → 限界税率43%での節税。
+        </div>
+        <table>
+          <thead><tr><th>#</th><th class="num">個人CF</th><th class="num">法人CF</th><th class="num">差額</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="num neg">-¥767,008</td><td class="num neg">-¥2,208,037</td><td class="num pos">個人+¥1,441,029</td></tr>
+            <tr style="opacity:.5"><td>2</td><td class="num neg">-¥857,733</td><td class="num neg">-¥2,308,262</td><td class="num pos">個人+¥1,450,529</td></tr>
+            <tr><td><strong>3★</strong></td><td class="num neg"><strong>-¥514,835</strong></td><td class="num neg"><strong>-¥1,630,552</strong></td><td class="num pos"><strong>個人+¥1,115,717</strong></td></tr>
+            <tr style="opacity:.5"><td>4</td><td class="num neg">-¥1,103,602</td><td class="num neg">-¥2,097,500</td><td class="num pos">個人+¥993,897</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:16px;font-size:13px;color:var(--text-muted);">
+          ⚠️ ジレンマ: 個人取得が税務上有利だが、DTI制約で個人融資は困難。<br>
+          → <strong>現金購入（個人）</strong>か<strong>法人融資+税務メリット減</strong>のトレードオフ。飯塚先生に相談推奨。
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Exit -->
+<section id="exit">
+<div class="container">
+  <h2><span class="num">07</span>出口戦略</h2>
+  <div class="chart-grid">
+    <div class="chart-box" style="grid-column:1/-1;">
+      <h3>売却シミュレーション（総利益推移）</h3>
+      <canvas id="exitChart" height="250"></canvas>
+    </div>
+  </div>
+  <div class="table-wrap" style="margin-top:16px;">
+    <table>
+      <thead><tr><th>#</th><th>エリア</th><th class="num">5年後 総利益</th><th class="num">10年後 総利益</th><th class="num">15年後 総利益</th><th class="num">10年後 年率ROI</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>天神橋3</td><td class="num neg">-42万</td><td class="num pos">+462万</td><td class="num pos">+1,009万</td><td class="num pos">14.4%</td></tr>
+        <tr style="opacity:.5"><td>2</td><td>谷町5</td><td class="num neg">-124万</td><td class="num pos">+242万</td><td class="num pos">+647万</td><td class="num">8.4%</td></tr>
+        <tr style="background:rgba(52,211,153,.05)"><td><strong>3★</strong></td><td><strong>東天満2</strong></td><td class="num"><strong>+2万</strong></td><td class="num pos"><strong>+419万</strong></td><td class="num pos"><strong>+869万</strong></td><td class="num pos"><strong>17.2%</strong></td></tr>
+        <tr style="opacity:.5"><td>4</td><td>谷町5</td><td class="num neg">-754万</td><td class="num neg">-811万</td><td class="num neg">-829万</td><td class="num neg">-19.4%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:12px;font-size:13px;color:var(--text-muted);">
+    ※ SRC年間下落率1.2%、5年以下は短期譲渡税率39.45%、5年超は長期20.32%で計算。
+  </div>
+</div>
+</section>
+
+<!-- Risk -->
+<section id="risk">
+<div class="container">
+  <h2><span class="num">08</span>リスク評価</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>#1 天神橋3</h3>
+      <div class="risk-item"><span class="risk-badge high">高</span>旧耐震（築50年）→ 融資制限・資産下落</div>
+      <div class="risk-item"><span class="risk-badge high">高</span>DTI 70%超 → 個人融資困難</div>
+      <div class="risk-item"><span class="risk-badge high">高</span>DSCR 0.21 → 返済余力不足</div>
+      <div class="risk-item"><span class="risk-badge mid">中</span>築50年 → 大規模修繕一時金リスク</div>
+      <div class="risk-item"><span class="risk-badge low">低</span>特区民泊の規制変更</div>
+    </div>
+    <div class="card" style="opacity:.6;">
+      <h3>#2 谷町5 <span style="color:var(--orange)">ペット不可</span></h3>
+      <div class="risk-item"><span class="risk-badge high">高</span>ペット不可 → 選定基準外</div>
+      <div class="risk-item"><span class="risk-badge high">高</span>管理費+修繕 ¥33,786/月 → 高額</div>
+      <div class="risk-item"><span class="risk-badge high">高</span>DSCR 0.07 → 返済余力なし</div>
+    </div>
+    <div class="card best">
+      <h3>#3 東天満2 ★</h3>
+      <div class="risk-item"><span class="risk-badge high">高</span>旧耐震（築46年）→ 融資制限</div>
+      <div class="risk-item"><span class="risk-badge high">高</span>DTI 68%超 → 個人融資困難</div>
+      <div class="risk-item"><span class="risk-badge mid">中</span>築46年 → 修繕一時金リスク</div>
+      <div class="risk-item"><span class="risk-badge mid">中</span>ポートフォリオ集中（不動産5件目）</div>
+      <div class="risk-item"><span class="risk-badge low">低</span>特区民泊の規制変更</div>
+      <div style="margin-top:12px;font-size:12px;color:var(--text-muted);">高2 / 中2 / 低1 — 4物件中最もリスクが少ない</div>
+    </div>
+    <div class="card" style="opacity:.6;">
+      <h3>#4 谷町5 <span style="color:var(--red)">予算超</span></h3>
+      <div class="risk-item"><span class="risk-badge high">高</span>予算5,000万超過</div>
+      <div class="risk-item"><span class="risk-badge high">高</span>DSCR 0.04 → 返済余力なし</div>
+      <div class="risk-item"><span class="risk-badge mid">中</span>管理費+修繕 ¥25,190/月</div>
+      <div style="margin-top:8px;font-size:12px;color:var(--green);">✅ 唯一の新耐震 → 予算交渉できれば浮上</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Score -->
+<section id="score">
+<div class="container">
+  <h2><span class="num">09</span>総合スコア</h2>
+  <div class="cards">
+    <div class="card score-card">
+      <div class="score-ring s-low" style="--pct:35"><div class="score-inner">35</div></div>
+      <h3>#1 天神橋3</h3>
+      <div class="verdict" style="color:var(--red);">見送り</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">築50年がネック。修繕リスク大。</div>
+    </div>
+    <div class="card score-card" style="opacity:.5;">
+      <div class="score-ring s-low" style="--pct:10"><div class="score-inner">10</div></div>
+      <h3>#2 谷町5</h3>
+      <div class="verdict" style="color:var(--red);">対象外</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">ペット不可。</div>
+    </div>
+    <div class="card score-card best">
+      <div class="score-ring s-low" style="--pct:35"><div class="score-inner">35</div></div>
+      <h3>#3 東天満2</h3>
+      <div class="verdict" style="color:var(--orange);">条件付き推奨</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">4物件中最良。「大阪拠点の家賃月4.3万円」と考えれば合理的。</div>
+    </div>
+    <div class="card score-card" style="opacity:.6;">
+      <div class="score-ring s-low" style="--pct:25"><div class="score-inner">25</div></div>
+      <h3>#4 谷町5</h3>
+      <div class="verdict" style="color:var(--red);">予算超過</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">新耐震は魅力。500万以上の値引きが条件。</div>
+    </div>
+  </div>
+  <div style="margin-top:16px;font-size:13px;color:var(--text-muted);">
+    ※ 純投資指標では全物件が基準未達。自宅兼民泊モデルは「収益投資」ではなく「拠点コスト最小化＋節税」の文脈で評価。
+  </div>
+</div>
+</section>
+
+<!-- Conclusion -->
+<section id="conclusion">
+<div class="container">
+  <h2><span class="num">10</span>結論・推奨アクション</h2>
+
+  <div class="conclusion">
+    <h3 style="color:var(--green);">#3 東天満2丁目（3,480万円）が最有力</h3>
+    <div style="font-size:15px;margin:12px 0;color:var(--text-muted);">大阪拠点の実質家賃 <strong style="color:var(--green);font-size:20px;">月4.3万円</strong>（税引後CF -51.5万/年 ÷ 12ヶ月）</div>
+    <ul>
+      <li>最安価3,480万 → 自己資金（諸費用244万）最小</li>
+      <li>大阪城ビュー13F → Airbnbで差別化（写真映え＝高レビュー＝高稼働率）</li>
+      <li>南森町・天満宮エリア → 観光アクセス◎、天神橋筋商店街も徒歩圏</li>
+      <li>60㎡・ペット可・トランクルーム付 → 多拠点生活の荷物管理に便利</li>
+      <li>減価償却で年190万の赤字 → 給与と損益通算で年82万節税</li>
+      <li>10年後売却で総利益+419万（年率ROI 17.2%）</li>
+    </ul>
+  </div>
+
+  <div style="margin-top:24px;">
+    <h3 style="margin-bottom:16px;">推奨アクション</h3>
+    <div class="action-item"><span class="step">1</span>#3 東天満を内見 → 民泊としての運用イメージ確認（設備・導線・眺望）</div>
+    <div class="action-item"><span class="step">2</span>#1 天神橋も同日内見 → 比較材料として</div>
+    <div class="action-item"><span class="step">3</span>管理組合の民泊規約を確認（特区民泊の届出可否）</div>
+    <div class="action-item"><span class="step">4</span>#4 は仲介経由で価格交渉の余地を打診（5,000万以下なら再検討）</div>
+    <div class="action-item"><span class="step">5</span>飯塚先生に相談: 個人取得（現金）vs 法人取得（融資）の最適スキーム</div>
+    <div class="action-item"><span class="step">6</span>大阪市の特区民泊最新規制を確認（2026年時点の要件）</div>
+  </div>
+
+  <div style="margin-top:24px;padding:16px;background:var(--surface2);border-radius:var(--radius);font-size:13px;color:var(--text-muted);">
+    <strong>免責事項:</strong> 本レポートはproperty-analyzerによる自動分析です。宿泊単価・稼働率は推定値であり、実際の民泊収益は立地・物件の魅力・運営品質・市場環境により大きく変動します。投資判断は税理士・不動産コンサルタントにご相談ください。
+  </div>
+</div>
+</section>
+
+<footer>
+<div class="container">
+  Property Analyzer — Generated 2026-02-19 — Data: 大阪R不動産 4物件
+</div>
+</footer>
+
+<script>
+// Chart.js defaults
+Chart.defaults.color = '#8b90a0';
+Chart.defaults.borderColor = '#2e3344';
+Chart.defaults.font.family = "'Inter','Noto Sans JP',sans-serif";
+Chart.defaults.font.size = 12;
+
+const LABELS = ['#1 天神橋3', '#2 谷町5', '#3 東天満2★', '#4 谷町5'];
+const COLORS = ['#6c8cff', '#fbbf24', '#34d399', '#a78bfa'];
+
+// Waterfall: Revenue breakdown for each property
+new Chart(document.getElementById('waterfallChart'), {
+  type: 'bar',
+  data: {
+    labels: LABELS,
+    datasets: [
+      { label: '民泊売上', data: [214.4, 188.7, 205.8, 188.7], backgroundColor: '#34d399' },
+      { label: '経費', data: [-164.5, -174.0, -156.0, -182.1], backgroundColor: '#f87171' },
+      { label: 'ローン返済', data: [-240.7, -215.5, -182.9, -186.3], backgroundColor: '#fbbf24' },
+      { label: '節税効果', data: [114.1, 115.1, 81.6, 69.4], backgroundColor: '#6c8cff' },
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ¥' + Math.abs(ctx.raw).toFixed(1) + '万' } }
+    },
+    scales: {
+      x: { grid: { display: false } },
+      y: { ticks: { callback: v => '¥' + v + '万' } }
+    }
+  }
+});
+
+// CF comparison
+new Chart(document.getElementById('cfChart'), {
+  type: 'bar',
+  data: {
+    labels: LABELS,
+    datasets: [
+      { label: '税引後CF（個人）', data: [-76.7, -85.8, -51.5, -110.4], backgroundColor: COLORS },
+      { label: '税引後CF（法人）', data: [-220.8, -230.8, -163.1, -209.8], backgroundColor: COLORS.map(c => c + '66') },
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ¥' + ctx.raw.toFixed(1) + '万/年' } }
+    },
+    scales: {
+      x: { grid: { display: false } },
+      y: { ticks: { callback: v => '¥' + v + '万' } }
+    }
+  }
+});
+
+// Radar
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: {
+    labels: ['表面利回り', 'NOI利回り', 'DSCR', '観光立地', '面積', '価格(安さ)'],
+    datasets: [
+      { label: '#1 天神橋3', data: [4.7, 1.1, 2.1, 4, 4.4, 2.8], borderColor: COLORS[0], backgroundColor: COLORS[0]+'22' },
+      { label: '#3 東天満2', data: [5.9, 1.4, 2.7, 4, 4.0, 4.3], borderColor: COLORS[2], backgroundColor: COLORS[2]+'22' },
+      { label: '#4 谷町5', data: [3.2, 0.1, 0.4, 3, 4.0, 1.5], borderColor: COLORS[3], backgroundColor: COLORS[3]+'22' },
+    ]
+  },
+  options: {
+    responsive: true,
+    scales: { r: { min: 0, max: 6, ticks: { stepSize: 2, display: false }, grid: { color: '#2e3344' }, pointLabels: { font: { size: 11 } } } },
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
+  }
+});
+
+// Tax comparison
+new Chart(document.getElementById('taxChart'), {
+  type: 'bar',
+  data: {
+    labels: LABELS,
+    datasets: [
+      { label: '個人（損益通算あり）', data: [-76.7, -85.8, -51.5, -110.4], backgroundColor: '#34d399' },
+      { label: '法人（iUMA）', data: [-220.8, -230.8, -163.1, -209.8], backgroundColor: '#a78bfa' },
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 12 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ¥' + ctx.raw.toFixed(1) + '万/年' } }
+    },
+    scales: {
+      x: { ticks: { callback: v => '¥' + v + '万' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// Exit strategy
+new Chart(document.getElementById('exitChart'), {
+  type: 'line',
+  data: {
+    labels: ['5年後', '10年後', '15年後'],
+    datasets: [
+      { label: '#1 天神橋3', data: [-42, 462, 1009], borderColor: COLORS[0], backgroundColor: COLORS[0]+'22', tension: .3, fill: false },
+      { label: '#3 東天満2★', data: [2, 419, 869], borderColor: COLORS[2], backgroundColor: COLORS[2]+'22', tension: .3, fill: false, borderWidth: 3 },
+      { label: '#4 谷町5', data: [-754, -811, -829], borderColor: COLORS[3], backgroundColor: COLORS[3]+'22', tension: .3, fill: false, borderDash: [5,5] },
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 12 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (ctx.raw >= 0 ? '+' : '') + ctx.raw + '万円' } },
+      annotation: { annotations: { line1: { type: 'line', yMin: 0, yMax: 0, borderColor: '#8b90a0', borderWidth: 1, borderDash: [4, 4] } } }
+    },
+    scales: {
+      x: { grid: { display: false } },
+      y: { ticks: { callback: v => (v >= 0 ? '+' : '') + v + '万' } }
+    }
+  }
+});
+
+// Nav active state
+const sections = document.querySelectorAll('section');
+const navLinks = document.querySelectorAll('nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('active', a.getAttribute('href') === '#' + current); });
+});
+</script>
+</body>
+</html>

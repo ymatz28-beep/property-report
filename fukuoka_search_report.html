@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>福岡 物件検索レポート</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg:#0b0f16;
+      --bg2:#101826;
+      --card:rgba(255,255,255,0.045);
+      --line:rgba(255,255,255,0.12);
+      --muted:#a9b3c6;
+      --text:#edf3ff;
+      --accent:#ff6b6b;
+      --accent-rgb:255,107,107;
+      --success:#22c55e;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --radius:18px;
+      --shadow:0 18px 60px rgba(0,0,0,0.45);
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      color:var(--text);
+      font-family:"Inter","Noto Sans JP",sans-serif;
+      background:
+        radial-gradient(circle at 15% -10%, rgba(var(--accent-rgb),0.16), transparent 40%),
+        radial-gradient(circle at 88% 12%, rgba(110,120,255,0.10), transparent 45%),
+        linear-gradient(180deg,#070b11,#0b0f16 28%, #0d1320 100%);
+    }
+    .wrap { max-width:1280px; margin:0 auto; padding:24px 16px 44px; }
+    .hero {
+      position:relative;
+      padding:28px;
+      border-radius:24px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(12px);
+    }
+    .hero::after {
+      content:"";
+      position:absolute; inset:auto -10% -35% auto;
+      width:360px; height:360px; border-radius:50%;
+      background:radial-gradient(circle, rgba(var(--accent-rgb),0.22), transparent 70%);
+      filter:blur(8px);
+    }
+    .kicker { color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-weight:700; font-size:12px; }
+    h1 { margin:10px 0 10px; font-size:clamp(28px,4.2vw,46px); line-height:1.06; font-weight:900; font-family:"Noto Sans JP","Inter",sans-serif; }
+    .hero-sub { color:#d0d9eb; margin:0; max-width:860px; }
+    .badge-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+    .badge {
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(var(--accent-rgb),0.35);
+      background:rgba(var(--accent-rgb),0.08);
+      color:#e8fbff; font-size:12px; font-weight:600;
+    }
+    .grid-4 {
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:14px;
+    }
+    .card {
+      border:1px solid var(--line);
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:16px;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .stat .label { color:var(--muted); font-size:12px; }
+    .stat .value { font-size:28px; font-weight:800; margin-top:6px; }
+    .stat .sub { color:#cdd6e8; font-size:12px; margin-top:4px; }
+    .section {
+      margin-top:16px;
+      border:1px solid var(--line);
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px;
+      backdrop-filter: blur(10px);
+    }
+    .section h2 {
+      margin:0 0 12px; font-size:18px; font-weight:800; letter-spacing:.02em;
+      display:flex; align-items:center; gap:10px;
+    }
+    .section h2::before {
+      content:"";
+      width:10px; height:10px; border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12);
+    }
+    .cond-list {
+      margin:0; padding-left:18px; color:#d8e0f0; line-height:1.75;
+      columns:2; column-gap:24px;
+    }
+    .table-shell { overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); }
+    table { width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }
+    thead th {
+      position:sticky; top:0; z-index:1;
+      background:rgba(12,17,26,.92); color:#dbe7fa;
+      font-size:12px; text-align:left; padding:12px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      white-space:nowrap;
+    }
+    thead th button {
+      all:unset; cursor:pointer; color:inherit; font-weight:700;
+      display:inline-flex; gap:6px; align-items:center;
+    }
+    tbody td {
+      padding:12px 10px; border-bottom:1px solid rgba(255,255,255,.05);
+      font-size:13px; vertical-align:top;
+    }
+    tbody tr:nth-child(even) td { background:rgba(255,255,255,.012); }
+    tbody tr:hover td { background:rgba(var(--accent-rgb),.06); }
+    .tier-strong td { box-shadow: inset 4px 0 0 rgba(34,197,94,.7); }
+    .tier-good td { box-shadow: inset 4px 0 0 rgba(250,204,21,.7); }
+    .tier-conditional td { box-shadow: inset 4px 0 0 rgba(251,146,60,.7); }
+    .tier-pass td { box-shadow: inset 4px 0 0 rgba(239,68,68,.7); }
+    a { color:#eaf7ff; text-decoration:none; }
+    a:hover { color:var(--accent); text-decoration:underline; }
+    .name-col a { font-weight:700; }
+    .source-tag {
+      margin-top:4px; font-size:11px; color:var(--muted);
+      display:inline-block; padding:2px 8px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
+    }
+    .score-badge {
+      display:inline-grid; place-items:center;
+      min-width:38px; padding:5px 10px; border-radius:999px;
+      border:1px solid color-mix(in oklab, var(--badge) 50%, white 10%);
+      background:color-mix(in oklab, var(--badge) 16%, transparent);
+      color:#fff; font-weight:800;
+    }
+    .tier-pill {
+      display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px;
+      border:1px solid color-mix(in oklab, var(--tier) 45%, white 8%);
+      background:color-mix(in oklab, var(--tier) 14%, transparent);
+      font-weight:700; font-size:12px;
+    }
+    .focus-grid {
+      display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px;
+    }
+    .focus-card {
+      border-radius:18px; border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      padding:14px; box-shadow:var(--shadow);
+    }
+    .focus-head { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:start; }
+    .focus-rank {
+      width:36px; height:36px; border-radius:12px; display:grid; place-items:center;
+      background:rgba(var(--accent-rgb),.12); border:1px solid rgba(var(--accent-rgb),.35); font-weight:800;
+    }
+    .focus-head h3 { margin:0; font-size:17px; line-height:1.3; }
+    .focus-head p { margin:4px 0 0; color:var(--muted); font-size:12px; }
+    .focus-score {
+      min-width:68px; text-align:center; font-weight:900; font-size:24px;
+      color:#fff; border-radius:14px; padding:8px 10px;
+      border:1px solid color-mix(in oklab, var(--accent) 40%, white 8%);
+      background:color-mix(in oklab, var(--accent) 14%, transparent);
+    }
+    .focus-score span { display:block; margin-top:4px; font-size:10px; color:#dfe8f7; font-weight:700; }
+    .chip-row { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
+    .chip {
+      display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700;
+      padding:5px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.09);
+      background:rgba(255,255,255,.03); color:#e6eefc;
+    }
+    .chip-penalty { border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.10); color:#ffdada; }
+    .focus-comment { margin:10px 0 0; color:#dbe4f4; line-height:1.65; font-size:13px; }
+    .focus-meta { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:12px; }
+    .focus-meta span { padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.06); background:rgba(255,255,255,.02); }
+    .chart-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:14px; }
+    .chart-col { display:grid; gap:14px; }
+    .chart-card canvas { width:100%; max-height:360px; }
+    .notes { margin:0; padding-left:18px; line-height:1.8; color:#d9e2f3; }
+    .footer { margin-top:16px; color:var(--muted); font-size:12px; text-align:center; }
+    .footer a { color:#cfeeff; }
+    @media (max-width: 960px) {
+      .grid-4 { grid-template-columns:repeat(2, minmax(0,1fr)); }
+      .chart-grid, .focus-grid { grid-template-columns:1fr; }
+      .cond-list { columns:1; }
+      .hero { padding:18px; }
+    }
+    @media (max-width: 560px) {
+      .grid-4 { grid-template-columns:1fr; }
+      .focus-head { grid-template-columns:auto 1fr; }
+      .focus-score { grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior:auto !important; animation:none !important; transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="kicker">PROPERTY SEARCH REPORT / 福岡</div>
+      <h1>福岡 民泊向け中古マンション候補レポート</h1>
+      <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
+      <div class="badge-row">
+        <span class="badge">検索日 2026-02-22</span>
+        <span class="badge">原データ 65件</span>
+        <span class="badge">重複除外 21件</span>
+        <span class="badge">有効件数 44件</span>
+        <span class="badge">SUUMO抽出データ</span>
+      </div>
+      <div class="badge-row">
+        <span class="badge">福岡市博多区・中央区・南区中心</span><span class="badge">価格上限 5,000万円</span><span class="badge">専有面積 40-70㎡目安</span><span class="badge">ペット可/相談可重視（評価項目）</span>
+      </div>
+    </section>
+
+    <section class="grid-4">
+      <div class="card stat"><div class="label">総候補数</div><div class="value">44</div><div class="sub">重複排除後</div></div>
+      <div class="card stat"><div class="label">平均価格</div><div class="value">3,497.6万円</div><div class="sub">全候補平均</div></div>
+      <div class="card stat"><div class="label">平均面積</div><div class="value">56.25㎡</div><div class="sub">全候補平均</div></div>
+      <div class="card stat"><div class="label">最高スコア</div><div class="value">95</div><div class="sub">シティマンション平尾Ⅱ</div></div>
+    </section>
+
+    <section class="section">
+      <h2>Search Conditions</h2>
+      <ul class="cond-list">
+        <li>データ元条件: 5000万以下, 40-70㎡, ペット相談可</li>
+        <li>重複排除キー: 物件名 + 価格（先勝ち）</li>
+        <li>駅アクセスに「バス」を含む場合、徒歩分数評価は0点</li>
+        <li>築年1981年7月以降を新耐震として評価</li>
+        <li>民泊禁止は -30 点ペナルティ</li>
+        <li>天神/中洲、博多駅前/祇園を高評価エリアとして優先</li><li>ペット可否はスコアリング要素（ハードフィルタではない）</li><li>バス便物件は候補から除外せず、駅距離評価のみ減点</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Property Table</h2>
+      <div class="table-shell">
+        <table id="propertyTable">
+          <thead>
+            <tr>
+              <th><button data-sort="index" data-type="number">#</button></th>
+              <th><button data-sort="name" data-type="string">物件名</button></th>
+              <th><button data-sort="price" data-type="number">価格</button></th>
+              <th><button data-sort="area" data-type="number">面積</button></th>
+              <th><button data-sort="location" data-type="string">所在地</button></th>
+              <th><button data-sort="walk" data-type="number">最寄駅</button></th>
+              <th><button data-sort="year" data-type="number">築年</button></th>
+              <th><button data-sort="layout" data-type="string">間取り</button></th>
+              <th><button data-sort="score" data-type="number">スコア</button></th>
+              <th><button data-sort="tier" data-type="string">評価</button></th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr class="tier-strong" data-index="1" data-name="シティマンション平尾Ⅱ" data-location="福岡県福岡市中央区平尾２" data-layout="3LDK" data-tier="強く推奨" data-price="2285" data-area="58.24" data-score="95" data-year="1985" data-walk="5">
+              <td>1</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20074249/" target="_blank" rel="noopener noreferrer">シティマンション平尾Ⅱ</a><div class="source-tag">SUUMO</div></td>
+              <td>2,285万円</td>
+              <td>58.24㎡</td>
+              <td>福岡県福岡市中央区平尾２</td>
+              <td>西鉄天神大牟田線「西鉄平尾」徒歩5分</td>
+              <td>1985年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">95</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="2" data-name="シテイマンション平尾Ⅱ" data-location="福岡県福岡市中央区平尾２-2-21" data-layout="3LDK" data-tier="強く推奨" data-price="2290" data-area="58.24" data-score="95" data-year="1985" data-walk="5">
+              <td>2</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78985340/" target="_blank" rel="noopener noreferrer">シテイマンション平尾Ⅱ</a><div class="source-tag">SUUMO</div></td>
+              <td>2,290万円</td>
+              <td>58.24㎡</td>
+              <td>福岡県福岡市中央区平尾２-2-21</td>
+              <td>西鉄天神大牟田線「西鉄平尾」徒歩5分</td>
+              <td>1985年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">95</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="3" data-name="シティマンション平尾Ⅱ" data-location="福岡県福岡市中央区平尾２" data-layout="3LDK" data-tier="強く推奨" data-price="2295" data-area="58.24" data-score="95" data-year="1985" data-walk="5">
+              <td>3</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78947683/" target="_blank" rel="noopener noreferrer">シティマンション平尾Ⅱ</a><div class="source-tag">SUUMO</div></td>
+              <td>2,295万円</td>
+              <td>58.24㎡</td>
+              <td>福岡県福岡市中央区平尾２</td>
+              <td>西鉄天神大牟田線「西鉄平尾」徒歩5分</td>
+              <td>1985年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">95</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="4" data-name="クリオ新天町壱番館" data-location="福岡県福岡市中央区天神４" data-layout="2LDK" data-tier="強く推奨" data-price="2980" data-area="60.97" data-score="85" data-year="1988" data-walk="7">
+              <td>4</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78959605/" target="_blank" rel="noopener noreferrer">クリオ新天町壱番館</a><div class="source-tag">SUUMO</div></td>
+              <td>2,980万円</td>
+              <td>60.97㎡</td>
+              <td>福岡県福岡市中央区天神４</td>
+              <td>地下鉄空港線「天神」徒歩7分</td>
+              <td>1988年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">85</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="5" data-name="藤和博多駅前ハイタウン" data-location="福岡県福岡市博多区博多駅前３" data-layout="2LDK" data-tier="強く推奨" data-price="3998" data-area="55.47" data-score="84" data-year="1986" data-walk="7">
+              <td>5</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78940558/" target="_blank" rel="noopener noreferrer">藤和博多駅前ハイタウン</a><div class="source-tag">SUUMO</div></td>
+              <td>3,998万円</td>
+              <td>55.47㎡</td>
+              <td>福岡県福岡市博多区博多駅前３</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩7分</td>
+              <td>1986年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">84</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="6" data-name="アーサー博多" data-location="福岡県福岡市博多区博多駅前２" data-layout="2LDK" data-tier="強く推奨" data-price="4399" data-area="57.76" data-score="84" data-year="1993" data-walk="5">
+              <td>6</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79009854/" target="_blank" rel="noopener noreferrer">アーサー博多</a><div class="source-tag">SUUMO</div></td>
+              <td>4,399万円</td>
+              <td>57.76㎡</td>
+              <td>福岡県福岡市博多区博多駅前２</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩5分</td>
+              <td>1993年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">84</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="7" data-name="アクシオ博多" data-location="福岡県福岡市博多区博多駅前３" data-layout="2LDK" data-tier="強く推奨" data-price="4980" data-area="50.26" data-score="84" data-year="2004" data-walk="5">
+              <td>7</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79019771/" target="_blank" rel="noopener noreferrer">アクシオ博多</a><div class="source-tag">SUUMO</div></td>
+              <td>4,980万円</td>
+              <td>50.26㎡</td>
+              <td>福岡県福岡市博多区博多駅前３</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩5分</td>
+              <td>2004年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">84</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="8" data-name="ロワールマンション西公園2" data-location="福岡県福岡市中央区港３" data-layout="2LDK" data-tier="強く推奨" data-price="1950" data-area="55.04" data-score="82" data-year="1984" data-walk="15">
+              <td>8</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/" target="_blank" rel="noopener noreferrer">ロワールマンション西公園2</a><div class="source-tag">SUUMO</div></td>
+              <td>1,950万円</td>
+              <td>55.04㎡</td>
+              <td>福岡県福岡市中央区港３</td>
+              <td>地下鉄空港線「大濠公園」徒歩15分</td>
+              <td>1984年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">82</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="9" data-name="レジデンス大濠公園" data-location="福岡県福岡市中央区今川１" data-layout="2LDK" data-tier="強く推奨" data-price="4680" data-area="56.87" data-score="82" data-year="1994" data-walk="5">
+              <td>9</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78977698/" target="_blank" rel="noopener noreferrer">レジデンス大濠公園</a><div class="source-tag">SUUMO</div></td>
+              <td>4,680万円</td>
+              <td>56.87㎡</td>
+              <td>福岡県福岡市中央区今川１</td>
+              <td>地下鉄空港線「唐人町」徒歩5分</td>
+              <td>1994年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">82</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="10" data-name="リベール博多レジデンス" data-location="福岡県福岡市博多区千代４" data-layout="2LDK" data-tier="強く推奨" data-price="2690" data-area="55.35" data-score="80" data-year="2005" data-walk="6">
+              <td>10</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79176178/" target="_blank" rel="noopener noreferrer">リベール博多レジデンス</a><div class="source-tag">SUUMO</div></td>
+              <td>2,690万円</td>
+              <td>55.35㎡</td>
+              <td>福岡県福岡市博多区千代４</td>
+              <td>地下鉄箱崎線「千代県庁口」徒歩6分</td>
+              <td>2005年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">80</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="11" data-name="シティプラザ博多" data-location="福岡県福岡市博多区住吉３-1-67" data-layout="2LDK" data-tier="強く推奨" data-price="3690" data-area="54.72" data-score="80" data-year="1996" data-walk="10">
+              <td>11</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79001556/" target="_blank" rel="noopener noreferrer">シティプラザ博多</a><div class="source-tag">SUUMO</div></td>
+              <td>3,690万円</td>
+              <td>54.72㎡</td>
+              <td>福岡県福岡市博多区住吉３-1-67</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩10分</td>
+              <td>1996年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">80</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="12" data-name="ロイヤルマンション天神南" data-location="福岡県福岡市中央区渡辺通５" data-layout="3LDK" data-tier="強く推奨" data-price="4690" data-area="65.28" data-score="80" data-year="1999" data-walk="2">
+              <td>12</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79199012/" target="_blank" rel="noopener noreferrer">ロイヤルマンション天神南</a><div class="source-tag">SUUMO</div></td>
+              <td>4,690万円</td>
+              <td>65.28㎡</td>
+              <td>福岡県福岡市中央区渡辺通５</td>
+              <td>地下鉄七隈線「天神南」徒歩2分</td>
+              <td>1999年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">80</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="13" data-name="パーク・ヴァンテ南天神" data-location="福岡県福岡市中央区清川２" data-layout="2LDK" data-tier="強く推奨" data-price="4990" data-area="55.16" data-score="80" data-year="2005" data-walk="10">
+              <td>13</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79176655/" target="_blank" rel="noopener noreferrer">パーク・ヴァンテ南天神</a><div class="source-tag">SUUMO</div></td>
+              <td>4,990万円</td>
+              <td>55.16㎡</td>
+              <td>福岡県福岡市中央区清川２</td>
+              <td>西鉄天神大牟田線「西鉄平尾」徒歩10分</td>
+              <td>2005年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">80</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="14" data-name="ロワールマンション大橋南" data-location="福岡県福岡市南区鶴田１" data-layout="2LDK" data-tier="強く推奨" data-price="1580" data-area="48.72" data-score="75" data-year="1990" data-walk="999">
+              <td>14</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashiminami/nc_78939932/" target="_blank" rel="noopener noreferrer">ロワールマンション大橋南</a><div class="source-tag">SUUMO</div></td>
+              <td>1,580万円</td>
+              <td>48.72㎡</td>
+              <td>福岡県福岡市南区鶴田１</td>
+              <td>西鉄天神大牟田線「大橋」バス10分停歩3分</td>
+              <td>1990年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">75</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="15" data-name="グランピアマンショングーテンハイツ空港南" data-location="福岡県福岡市博多区金の隈３-5-11" data-layout="2LDK" data-tier="強く推奨" data-price="1980" data-area="62.37" data-score="75" data-year="1989" data-walk="30">
+              <td>15</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_76149387/" target="_blank" rel="noopener noreferrer">グランピアマンショングーテンハイツ空港南</a><div class="source-tag">SUUMO</div></td>
+              <td>1,980万円</td>
+              <td>62.37㎡</td>
+              <td>福岡県福岡市博多区金の隈３-5-11</td>
+              <td>西鉄天神大牟田線「桜並木」徒歩30分</td>
+              <td>1989年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">75</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="16" data-name="リヴィエール南福岡" data-location="福岡県福岡市博多区寿町１" data-layout="3LDK" data-tier="強く推奨" data-price="2499" data-area="66.92" data-score="75" data-year="1988" data-walk="6">
+              <td>16</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79113637/" target="_blank" rel="noopener noreferrer">リヴィエール南福岡</a><div class="source-tag">SUUMO</div></td>
+              <td>2,499万円</td>
+              <td>66.92㎡</td>
+              <td>福岡県福岡市博多区寿町１</td>
+              <td>ＪＲ鹿児島本線「南福岡」徒歩6分</td>
+              <td>1988年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">75</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="17" data-name="アンピール薬院南" data-location="福岡県福岡市中央区白金１" data-layout="2LDK" data-tier="強く推奨" data-price="3990" data-area="60.28" data-score="75" data-year="1990" data-walk="12">
+              <td>17</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79065785/" target="_blank" rel="noopener noreferrer">アンピール薬院南</a><div class="source-tag">SUUMO</div></td>
+              <td>3,990万円</td>
+              <td>60.28㎡</td>
+              <td>福岡県福岡市中央区白金１</td>
+              <td>西鉄天神大牟田線「薬院」徒歩12分</td>
+              <td>1990年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">75</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="18" data-name="コスモ博多古門戸" data-location="福岡県福岡市博多区古門戸町10-5" data-layout="1LDK+S（納戸）" data-tier="強く推奨" data-price="4599" data-area="54.49" data-score="75" data-year="2003" data-walk="8">
+              <td>18</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78954414/" target="_blank" rel="noopener noreferrer">コスモ博多古門戸</a><div class="source-tag">SUUMO</div></td>
+              <td>4,599万円</td>
+              <td>54.49㎡</td>
+              <td>福岡県福岡市博多区古門戸町10-5</td>
+              <td>地下鉄空港線「中洲川端」徒歩8分</td>
+              <td>2003年</td>
+              <td>1LDK+S（納戸）</td>
+              <td><span class="score-badge" style="--badge:#22c55e">75</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="19" data-name="モントーレ天神" data-location="福岡県福岡市中央区渡辺通５" data-layout="3LDK" data-tier="強く推奨" data-price="4880" data-area="66.34" data-score="75" data-year="2005" data-walk="8">
+              <td>19</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79107133/" target="_blank" rel="noopener noreferrer">モントーレ天神</a><div class="source-tag">SUUMO</div></td>
+              <td>4,880万円</td>
+              <td>66.34㎡</td>
+              <td>福岡県福岡市中央区渡辺通５</td>
+              <td>地下鉄空港線「天神」徒歩8分</td>
+              <td>2005年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">75</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="20" data-name="MJR博多" data-location="福岡県福岡市博多区博多駅前２" data-layout="1LDK" data-tier="推奨" data-price="4380" data-area="43.38" data-score="74" data-year="2013" data-walk="5">
+              <td>20</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79013613/" target="_blank" rel="noopener noreferrer">MJR博多</a><div class="source-tag">SUUMO</div></td>
+              <td>4,380万円</td>
+              <td>43.38㎡</td>
+              <td>福岡県福岡市博多区博多駅前２</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩5分</td>
+              <td>2013年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">74</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="21" data-name="グリーンコーポ博多駅前" data-location="福岡県福岡市博多区博多駅前３" data-layout="3LDK" data-tier="推奨" data-price="4398" data-area="63.85" data-score="74" data-year="1999" data-walk="8">
+              <td>21</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79159478/" target="_blank" rel="noopener noreferrer">グリーンコーポ博多駅前</a><div class="source-tag">SUUMO</div></td>
+              <td>4,398万円</td>
+              <td>63.85㎡</td>
+              <td>福岡県福岡市博多区博多駅前３</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩8分</td>
+              <td>1999年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">74</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="22" data-name="グランフォーレ博多駅前通り" data-location="福岡県福岡市博多区祇園町" data-layout="1LDK" data-tier="推奨" data-price="4499" data-area="40.66" data-score="74" data-year="2014" data-walk="2">
+              <td>22</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79024282/" target="_blank" rel="noopener noreferrer">グランフォーレ博多駅前通り</a><div class="source-tag">SUUMO</div></td>
+              <td>4,499万円</td>
+              <td>40.66㎡</td>
+              <td>福岡県福岡市博多区祇園町</td>
+              <td>地下鉄空港線「祇園」徒歩2分</td>
+              <td>2014年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">74</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="23" data-name="ロマネスク博多" data-location="福岡県福岡市博多区博多駅前２" data-layout="2LDK" data-tier="推奨" data-price="4499" data-area="60.21" data-score="74" data-year="1997" data-walk="7">
+              <td>23</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78842028/" target="_blank" rel="noopener noreferrer">ロマネスク博多</a><div class="source-tag">SUUMO</div></td>
+              <td>4,499万円</td>
+              <td>60.21㎡</td>
+              <td>福岡県福岡市博多区博多駅前２</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩7分</td>
+              <td>1997年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">74</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="24" data-name="ロマネスク博多" data-location="福岡県福岡市博多区博多駅前２" data-layout="2LDK" data-tier="推奨" data-price="4580" data-area="60.21" data-score="74" data-year="1997" data-walk="7">
+              <td>24</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78993771/" target="_blank" rel="noopener noreferrer">ロマネスク博多</a><div class="source-tag">SUUMO</div></td>
+              <td>4,580万円</td>
+              <td>60.21㎡</td>
+              <td>福岡県福岡市博多区博多駅前２</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩7分</td>
+              <td>1997年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">74</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="25" data-name="エバーライフ博多プレミア" data-location="福岡県福岡市博多区祇園町" data-layout="1LDK" data-tier="推奨" data-price="4680" data-area="44.98" data-score="74" data-year="2008" data-walk="3">
+              <td>25</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79128662/" target="_blank" rel="noopener noreferrer">エバーライフ博多プレミア</a><div class="source-tag">SUUMO</div></td>
+              <td>4,680万円</td>
+              <td>44.98㎡</td>
+              <td>福岡県福岡市博多区祇園町</td>
+              <td>地下鉄空港線「祇園」徒歩3分</td>
+              <td>2008年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">74</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="26" data-name="グリーンコーポ博多駅前" data-location="福岡県福岡市博多区博多駅前３" data-layout="3LDK" data-tier="推奨" data-price="4980" data-area="63.85" data-score="74" data-year="1999" data-walk="8">
+              <td>26</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79050618/" target="_blank" rel="noopener noreferrer">グリーンコーポ博多駅前</a><div class="source-tag">SUUMO</div></td>
+              <td>4,980万円</td>
+              <td>63.85㎡</td>
+              <td>福岡県福岡市博多区博多駅前３</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩8分</td>
+              <td>1999年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">74</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="27" data-name="パークテラス大濠" data-location="福岡県福岡市中央区大手門２" data-layout="1LDK" data-tier="推奨" data-price="3990" data-area="42.43" data-score="72" data-year="2008" data-walk="6">
+              <td>27</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78946236/" target="_blank" rel="noopener noreferrer">パークテラス大濠</a><div class="source-tag">SUUMO</div></td>
+              <td>3,990万円</td>
+              <td>42.43㎡</td>
+              <td>福岡県福岡市中央区大手門２</td>
+              <td>地下鉄空港線「大濠公園」徒歩6分</td>
+              <td>2008年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">72</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="28" data-name="ロワールマンション西公園東" data-location="福岡県福岡市中央区港２" data-layout="3LDK" data-tier="推奨" data-price="4499" data-area="67.80" data-score="72" data-year="1999" data-walk="6">
+              <td>28</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20003455/" target="_blank" rel="noopener noreferrer">ロワールマンション西公園東</a><div class="source-tag">SUUMO</div></td>
+              <td>4,499万円</td>
+              <td>67.80㎡</td>
+              <td>福岡県福岡市中央区港２</td>
+              <td>地下鉄空港線「大濠公園」徒歩6分</td>
+              <td>1999年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">72</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="29" data-name="プレミスト赤坂" data-location="福岡県福岡市中央区赤坂１" data-layout="1LDK" data-tier="推奨" data-price="4930" data-area="44.02" data-score="72" data-year="2008" data-walk="4">
+              <td>29</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79112261/" target="_blank" rel="noopener noreferrer">プレミスト赤坂</a><div class="source-tag">SUUMO</div></td>
+              <td>4,930万円</td>
+              <td>44.02㎡</td>
+              <td>福岡県福岡市中央区赤坂１</td>
+              <td>地下鉄空港線「赤坂」徒歩4分</td>
+              <td>2008年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">72</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="30" data-name="アンピール南福岡" data-location="福岡県福岡市博多区金の隈１" data-layout="2LDK" data-tier="推奨" data-price="1380" data-area="54.80" data-score="70" data-year="1988" data-walk="999">
+              <td>30</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79191461/" target="_blank" rel="noopener noreferrer">アンピール南福岡</a><div class="source-tag">SUUMO</div></td>
+              <td>1,380万円</td>
+              <td>54.80㎡</td>
+              <td>福岡県福岡市博多区金の隈１</td>
+              <td>ＪＲ鹿児島本線「南福岡」バス13分停歩5分</td>
+              <td>1988年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="31" data-name="ロワールマンション大橋5" data-location="福岡県福岡市南区向野２" data-layout="1LDK" data-tier="推奨" data-price="1580" data-area="40.80" data-score="70" data-year="1983" data-walk="999">
+              <td>31</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashiminami/nc_79052559/" target="_blank" rel="noopener noreferrer">ロワールマンション大橋5</a><div class="source-tag">SUUMO</div></td>
+              <td>1,580万円</td>
+              <td>40.80㎡</td>
+              <td>福岡県福岡市南区向野２</td>
+              <td>西鉄天神大牟田線「大橋」バス5分停歩4分</td>
+              <td>1983年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="32" data-name="スカイマンション南福岡" data-location="福岡県福岡市博多区新和町２" data-layout="1LDK" data-tier="推奨" data-price="1650" data-area="65.31" data-score="70" data-year="1985" data-walk="10">
+              <td>32</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79082938/" target="_blank" rel="noopener noreferrer">スカイマンション南福岡</a><div class="source-tag">SUUMO</div></td>
+              <td>1,650万円</td>
+              <td>65.31㎡</td>
+              <td>福岡県福岡市博多区新和町２</td>
+              <td>ＪＲ鹿児島本線「南福岡」徒歩10分</td>
+              <td>1985年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="33" data-name="シテイライフ井尻" data-location="福岡県福岡市博多区諸岡３" data-layout="2LDK" data-tier="推奨" data-price="1999" data-area="60.68" data-score="70" data-year="1984" data-walk="15">
+              <td>33</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79019193/" target="_blank" rel="noopener noreferrer">シテイライフ井尻</a><div class="source-tag">SUUMO</div></td>
+              <td>1,999万円</td>
+              <td>60.68㎡</td>
+              <td>福岡県福岡市博多区諸岡３</td>
+              <td>ＪＲ鹿児島本線「笹原」徒歩15分</td>
+              <td>1984年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="34" data-name="パロス・リバーコート博多弍番館" data-location="福岡県福岡市博多区美野島４-1-2" data-layout="2LDK" data-tier="推奨" data-price="3390" data-area="58.72" data-score="70" data-year="1999" data-walk="999">
+              <td>34</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78596932/" target="_blank" rel="noopener noreferrer">パロス・リバーコート博多弍番館</a><div class="source-tag">SUUMO</div></td>
+              <td>3,390万円</td>
+              <td>58.72㎡</td>
+              <td>福岡県福岡市博多区美野島４-1-2</td>
+              <td>ＪＲ鹿児島本線「博多」バス15分停歩3分</td>
+              <td>1999年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="35" data-name="パロスリバーコート博多弐番館" data-location="福岡県福岡市博多区美野島４-1-2" data-layout="2LDK" data-tier="推奨" data-price="3490" data-area="58.72" data-score="70" data-year="1999" data-walk="17">
+              <td>35</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79222524/" target="_blank" rel="noopener noreferrer">パロスリバーコート博多弐番館</a><div class="source-tag">SUUMO</div></td>
+              <td>3,490万円</td>
+              <td>58.72㎡</td>
+              <td>福岡県福岡市博多区美野島４-1-2</td>
+              <td>ＪＲ鹿児島本線「竹下」徒歩17分</td>
+              <td>1999年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="36" data-name="コスモテール吉塚" data-location="福岡県福岡市博多区吉塚２" data-layout="3LDK" data-tier="推奨" data-price="3590" data-area="69.66" data-score="70" data-year="1989" data-walk="8">
+              <td>36</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78917802/" target="_blank" rel="noopener noreferrer">コスモテール吉塚</a><div class="source-tag">SUUMO</div></td>
+              <td>3,590万円</td>
+              <td>69.66㎡</td>
+              <td>福岡県福岡市博多区吉塚２</td>
+              <td>ＪＲ鹿児島本線「吉塚」徒歩8分</td>
+              <td>1989年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="37" data-name="エバーライフ住吉" data-location="福岡県福岡市博多区住吉４" data-layout="2LDK" data-tier="推奨" data-price="3890" data-area="62.28" data-score="70" data-year="1985" data-walk="14">
+              <td>37</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79091966/" target="_blank" rel="noopener noreferrer">エバーライフ住吉</a><div class="source-tag">SUUMO</div></td>
+              <td>3,890万円</td>
+              <td>62.28㎡</td>
+              <td>福岡県福岡市博多区住吉４</td>
+              <td>地下鉄七隈線「渡辺通」徒歩14分</td>
+              <td>1985年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="38" data-name="リファレンス天神南" data-location="福岡県福岡市中央区清川２-4-9" data-layout="3LDK" data-tier="推奨" data-price="4499" data-area="65.32" data-score="70" data-year="2002" data-walk="14">
+              <td>38</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20249542/" target="_blank" rel="noopener noreferrer">リファレンス天神南</a><div class="source-tag">SUUMO</div></td>
+              <td>4,499万円</td>
+              <td>65.32㎡</td>
+              <td>福岡県福岡市中央区清川２-4-9</td>
+              <td>西鉄天神大牟田線「西鉄平尾」徒歩14分</td>
+              <td>2002年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="39" data-name="クリオラベルヴィ呉服町" data-location="福岡県福岡市博多区下呉服町3-19" data-layout="2LDK" data-tier="推奨" data-price="4599" data-area="47.00" data-score="70" data-year="2018" data-walk="6">
+              <td>39</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79056015/" target="_blank" rel="noopener noreferrer">クリオラベルヴィ呉服町</a><div class="source-tag">SUUMO</div></td>
+              <td>4,599万円</td>
+              <td>47.00㎡</td>
+              <td>福岡県福岡市博多区下呉服町3-19</td>
+              <td>地下鉄箱崎線「呉服町」徒歩6分</td>
+              <td>2018年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="40" data-name="オーヴィジョン博多V" data-location="福岡県福岡市博多区博多駅前３" data-layout="1LDK" data-tier="推奨" data-price="4790" data-area="47.93" data-score="69" data-year="2009" data-walk="6">
+              <td>40</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_77879284/" target="_blank" rel="noopener noreferrer">オーヴィジョン博多V</a><div class="source-tag">SUUMO</div></td>
+              <td>4,790万円</td>
+              <td>47.93㎡</td>
+              <td>福岡県福岡市博多区博多駅前３</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩6分</td>
+              <td>2009年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">69</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="41" data-name="カーサ大濠" data-location="福岡県福岡市中央区六本松３" data-layout="1LDK" data-tier="推奨" data-price="2299" data-area="51.66" data-score="67" data-year="1974" data-walk="7">
+              <td>41</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78356286/" target="_blank" rel="noopener noreferrer">カーサ大濠</a><div class="source-tag">SUUMO</div></td>
+              <td>2,299万円</td>
+              <td>51.66㎡</td>
+              <td>福岡県福岡市中央区六本松３</td>
+              <td>地下鉄七隈線「六本松」徒歩7分</td>
+              <td>1974年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">67</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="42" data-name="カーサ大濠" data-location="福岡県福岡市中央区六本松３" data-layout="1LDK" data-tier="推奨" data-price="2380" data-area="51.66" data-score="67" data-year="1974" data-walk="7">
+              <td>42</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78931666/" target="_blank" rel="noopener noreferrer">カーサ大濠</a><div class="source-tag">SUUMO</div></td>
+              <td>2,380万円</td>
+              <td>51.66㎡</td>
+              <td>福岡県福岡市中央区六本松３</td>
+              <td>地下鉄七隈線「六本松」徒歩7分</td>
+              <td>1974年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">67</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="43" data-name="セイワコーポ住吉" data-location="福岡県福岡市博多区美野島２-2-19" data-layout="1LDK" data-tier="条件付き" data-price="1680" data-area="47.84" data-score="50" data-year="1974" data-walk="17">
+              <td>43</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79132668/" target="_blank" rel="noopener noreferrer">セイワコーポ住吉</a><div class="source-tag">SUUMO</div></td>
+              <td>1,680万円</td>
+              <td>47.84㎡</td>
+              <td>福岡県福岡市博多区美野島２-2-19</td>
+              <td>ＪＲ鹿児島本線「博多」徒歩17分</td>
+              <td>1974年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#fb923c">50</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="44" data-name="小笹コーポ" data-location="福岡県福岡市中央区小笹１-8-29" data-layout="3LDK" data-tier="条件付き" data-price="1798" data-area="60.41" data-score="50" data-year="1980" data-walk="26">
+              <td>44</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20047606/" target="_blank" rel="noopener noreferrer">小笹コーポ</a><div class="source-tag">SUUMO</div></td>
+              <td>1,798万円</td>
+              <td>60.41㎡</td>
+              <td>福岡県福岡市中央区小笹１-8-29</td>
+              <td>地下鉄七隈線「桜坂」徒歩26分</td>
+              <td>1980年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#fb923c">50</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Top 5 Focus Cards</h2>
+      <div class="focus-grid">
+        
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#1</div>
+                <div>
+                  <h3><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20074249/" target="_blank" rel="noopener noreferrer">シティマンション平尾Ⅱ</a></h3>
+                  <p>2,285万円 / 58.24㎡ / 福岡県福岡市中央区平尾２</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">95<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +15</span><span class="chip ">間取り +10</span><span class="chip ">ペット +5</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地</p>
+              <div class="focus-meta">
+                <span>西鉄天神大牟田線「西鉄平尾」徒歩5分</span>
+                <span>1985年7月</span>
+                <span>3LDK</span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#2</div>
+                <div>
+                  <h3><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78985340/" target="_blank" rel="noopener noreferrer">シテイマンション平尾Ⅱ</a></h3>
+                  <p>2,290万円 / 58.24㎡ / 福岡県福岡市中央区平尾２-2-21</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">95<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +15</span><span class="chip ">間取り +10</span><span class="chip ">ペット +5</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地</p>
+              <div class="focus-meta">
+                <span>西鉄天神大牟田線「西鉄平尾」徒歩5分</span>
+                <span>1985年7月</span>
+                <span>3LDK</span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#3</div>
+                <div>
+                  <h3><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78947683/" target="_blank" rel="noopener noreferrer">シティマンション平尾Ⅱ</a></h3>
+                  <p>2,295万円 / 58.24㎡ / 福岡県福岡市中央区平尾２</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">95<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +15</span><span class="chip ">間取り +10</span><span class="chip ">ペット +5</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地</p>
+              <div class="focus-meta">
+                <span>西鉄天神大牟田線「西鉄平尾」徒歩5分</span>
+                <span>1985年7月</span>
+                <span>3LDK</span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#4</div>
+                <div>
+                  <h3><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78959605/" target="_blank" rel="noopener noreferrer">クリオ新天町壱番館</a></h3>
+                  <p>2,980万円 / 60.97㎡ / 福岡県福岡市中央区天神４</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">85<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +10</span><span class="chip ">立地 +15</span><span class="chip ">間取り +10</span><span class="chip ">ペット +5</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地</p>
+              <div class="focus-meta">
+                <span>地下鉄空港線「天神」徒歩7分</span>
+                <span>1988年2月</span>
+                <span>2LDK</span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#5</div>
+                <div>
+                  <h3><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78940558/" target="_blank" rel="noopener noreferrer">藤和博多駅前ハイタウン</a></h3>
+                  <p>3,998万円 / 55.47㎡ / 福岡県福岡市博多区博多駅前３</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">84<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +15</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +10</span><span class="chip ">立地 +14</span><span class="chip ">間取り +10</span><span class="chip ">ペット +5</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地</p>
+              <div class="focus-meta">
+                <span>ＪＲ鹿児島本線「博多」徒歩7分</span>
+                <span>1986年2月</span>
+                <span>2LDK</span>
+                
+              </div>
+            </article>
+            
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Charts</h2>
+      <div class="chart-grid">
+        <div class="card chart-card"><canvas id="radarChart"></canvas></div>
+        <div class="chart-col">
+          <div class="card chart-card"><canvas id="bucketChart"></canvas></div>
+          <div class="card chart-card"><canvas id="priceChart"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Investor Notes</h2>
+      <ul class="notes">
+        <li>法人（iUMAプロパティマネジメント）での購入を第一優先</li><li>福岡は既存物件あり（筑波銀行1,540万）</li><li>博多・天神エリアはインバウンド需要が高い</li><li>ペット可否はスコアリング要素として評価（ハードフィルタではない）</li><li>管理規約の民泊可否は個別確認が必要</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <div>Sources: SUUMO raw text (data/suumo_fukuoka_raw.txt) </div>
+      <div>Generated on 2026-02-22 16:20:51</div>
+    </div>
+  </div>
+
+  <script>
+    const chartAccent = 'rgba(255,107,107, 1)';
+    const chartAccentFill = 'rgba(255,107,107, 0.18)';
+    const radarLabels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "民泊規約"];
+    const radarDatasets = [{"label": "1. シティマンション平尾Ⅱ", "data": [100, 100, 100, 100, 100, 100, 100, 100], "borderWidth": 2}, {"label": "2. シテイマンション平尾Ⅱ", "data": [100, 100, 100, 100, 100, 100, 100, 100], "borderWidth": 2}, {"label": "3. シティマンション平尾Ⅱ", "data": [100, 100, 100, 100, 100, 100, 100, 100], "borderWidth": 2}, {"label": "4. クリオ新天町壱番館", "data": [100, 67, 100, 67, 100, 100, 100, 100], "borderWidth": 2}, {"label": "5. 藤和博多駅前ハイタウン", "data": [75, 100, 100, 67, 93, 100, 100, 100], "borderWidth": 2}].map((d, i) => {
+      const hueShift = [0, 18, 35, 52, 70][i] || 0;
+      const alpha = 0.14 + i * 0.03;
+      return {
+        ...d,
+        borderColor: i === 0 ? chartAccent : `hsla(${(195 + hueShift)%360}, 90%, 68%, .95)`,
+        backgroundColor: i === 0 ? chartAccentFill : `hsla(${(195 + hueShift)%360}, 90%, 68%, ${alpha})`,
+        pointRadius: 2,
+        pointHoverRadius: 4,
+      };
+    });
+    const bucketLabels = ["天神/中洲", "博多駅前/祇園", "赤坂/大濠", "Other", "住吉/渡辺通", "呉服町/古門戸"];
+    const bucketValues = [13, 11, 7, 9, 3, 1];
+    const priceLabels = ["1000-1499万円", "1500-1999万円", "2000-2499万円", "2500-2999万円", "3000-3499万円", "3500-3999万円", "4000-4499万円", "4500-4999万円"];
+    const priceValues = [1, 8, 6, 2, 2, 6, 7, 12];
+
+    const commonGrid = {
+      color: 'rgba(255,255,255,0.08)',
+      drawBorder: false,
+    };
+    const commonTicks = { color: 'rgba(220,230,245,0.8)', font: { family: 'Inter, Noto Sans JP, sans-serif' } };
+
+    new Chart(document.getElementById('radarChart'), {
+      type: 'radar',
+      data: { labels: radarLabels, datasets: radarDatasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#e8efff' } },
+          title: { display: true, text: 'Top5 スコア内訳比較（0-100正規化）', color: '#e8efff' }
+        },
+        scales: {
+          r: {
+            suggestedMin: 0,
+            suggestedMax: 100,
+            angleLines: { color: 'rgba(255,255,255,0.08)' },
+            grid: { color: 'rgba(255,255,255,0.08)' },
+            pointLabels: { color: 'rgba(230,240,255,0.88)', font: { size: 11 } },
+            ticks: { backdropColor: 'transparent', color: 'rgba(220,230,245,0.55)', stepSize: 20 }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('bucketChart'), {
+      type: 'bar',
+      data: {
+        labels: bucketLabels,
+        datasets: [{
+          label: '件数',
+          data: bucketValues,
+          borderRadius: 8,
+          borderSkipped: false,
+          backgroundColor: bucketValues.map((_, i) => `rgba(255,107,107, ${0.35 + (i % 5) * 0.1})`),
+          borderColor: bucketValues.map((_, i) => `rgba(255,107,107, ${0.7 + (i % 3) * 0.1})`),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'エリア分布（立地バケット別件数）', color: '#e8efff' }
+        },
+        scales: {
+          x: { ticks: commonTicks, grid: { display: false } },
+          y: { ticks: commonTicks, grid: commonGrid, beginAtZero: true }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('priceChart'), {
+      type: 'bar',
+      data: {
+        labels: priceLabels,
+        datasets: [{
+          label: '件数',
+          data: priceValues,
+          borderRadius: 8,
+          borderSkipped: false,
+          backgroundColor: priceValues.map((_, i) => `rgba(255,255,255, ${0.14 + (i % 4) * 0.05})`),
+          borderColor: priceValues.map(() => chartAccent),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: '価格分布（500万円刻み）', color: '#e8efff' }
+        },
+        scales: {
+          x: { ticks: commonTicks, grid: { display: false } },
+          y: { ticks: commonTicks, grid: commonGrid, beginAtZero: true }
+        }
+      }
+    });
+
+    (() => {
+      const table = document.getElementById('propertyTable');
+      const tbody = table.querySelector('tbody');
+      const headers = table.querySelectorAll('thead button[data-sort]');
+      let sortState = { key: 'score', dir: 'desc' };
+
+      const valueFor = (row, key, type) => {
+        if (key === 'name') {
+          return (row.dataset.name || '').toLowerCase();
+        }
+        const v = row.dataset[key];
+        return type === 'number' ? Number(v) : (v || '');
+      };
+
+      const applySort = (key, type) => {
+        if (sortState.key === key) {
+          sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortState = { key, dir: key === 'score' ? 'desc' : 'asc' };
+        }
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        rows.sort((a, b) => {
+          const av = valueFor(a, key, type);
+          const bv = valueFor(b, key, type);
+          let cmp = 0;
+          if (type === 'number') cmp = av - bv;
+          else cmp = String(av).localeCompare(String(bv), 'ja');
+          if (cmp === 0) cmp = Number(a.dataset.index) - Number(b.dataset.index);
+          return sortState.dir === 'asc' ? cmp : -cmp;
+        });
+        rows.forEach(r => tbody.appendChild(r));
+        headers.forEach(h => h.textContent = h.textContent.replace(/[↑↓]$/, ''));
+        const active = Array.from(headers).find(h => h.dataset.sort === key);
+        if (active) active.textContent = active.textContent + (sortState.dir === 'asc' ? '↑' : '↓');
+      };
+
+      headers.forEach(h => {
+        h.addEventListener('click', () => applySort(h.dataset.sort, h.dataset.type || 'string'));
+      });
+    })();
+  </script>
+</body>
+</html>

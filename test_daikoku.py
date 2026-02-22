@@ -10,6 +10,7 @@ from src.financing import simulate_all_banks, recommend_guarantee_companies
 from src.tax_compare import compare_tax
 from src.risk import assess_risks, calc_exit_strategies, make_investment_decision
 from src.report_generator import generate_pdf, generate_excel
+from src.tax_extractor import FinancialProfile
 
 # 登記簿から読み取った物件データ + 手動補完
 property_data = {
@@ -176,5 +177,74 @@ except Exception as e:
 with open("data/daikoku_extracted.json", "w", encoding="utf-8") as f:
     json.dump(property_data, f, ensure_ascii=False, indent=2)
 print("データ: data/daikoku_extracted.json ✓")
+
+# ============================================================
+# 投資家プロフィール付き分析テスト
+# ============================================================
+print("\n" + "=" * 60)
+print("  投資家プロフィール付き分析（確定申告連携テスト）")
+print("=" * 60)
+
+# テスト用の投資家プロフィール（年収800万、既存借入3000万）
+test_profile = FinancialProfile(
+    tax_year=2025,
+    fetch_date="2026-01-15T00:00:00",
+    salary_income=8000000,
+    salary_employer="テスト株式会社",
+    real_estate_revenue=3600000,
+    real_estate_income=2000000,
+    total_income=10000000,
+    taxable_income=7500000,
+    total_tax=1500000,
+    property_count=2,
+    properties=[
+        {"name": "既存物件A", "revenue": 2400000, "expenses": 800000, "income": 1600000},
+        {"name": "既存物件B", "revenue": 1200000, "expenses": 800000, "income": 400000},
+    ],
+    total_loan_balance=30000000,
+    loans=[
+        {"lender": "地方銀行A", "balance": 20000000, "annual_interest": 400000, "property": "既存物件A"},
+        {"lender": "信用金庫B", "balance": 10000000, "annual_interest": 250000, "property": "既存物件B"},
+    ],
+)
+
+print(f"\n投資家: 年収{test_profile.salary_income:,}円 / 不動産所得{test_profile.real_estate_income:,}円")
+print(f"既存借入: {test_profile.total_loan_balance:,}円 / 保有物件: {test_profile.property_count}件")
+
+print("\n=== 融資シミュレーション（プロフィール付き）===")
+loans_with_profile = simulate_all_banks(property_data, config, investor_profile=test_profile)
+for lr in loans_with_profile:
+    status = "○" if lr.available else f"× {lr.reason}"
+    rec = " ★推奨" if lr.recommended else ""
+    period = f" {lr.loan_years}年" if lr.available else ""
+    print(f"  {lr.bank_name}: {lr.interest_rate}% {status}{period}{rec}")
+
+print("\n=== 税務比較（プロフィール付き）===")
+tax_with_profile = compare_tax(
+    rental.annual_noi, property_data, config, loan_rate, rental.loan_amount,
+    investor_profile=test_profile
+)
+print(f"推奨: {tax_with_profile['recommendation']} ({tax_with_profile['reason']})")
+print(f"個人 税引後: ¥{tax_with_profile['individual'].net_income_after_tax:,.0f}")
+print(f"個人 実効税率: {tax_with_profile['individual'].effective_tax_rate}%")
+print(f"法人 税引後: ¥{tax_with_profile['corporate'].net_income_after_tax:,.0f}")
+
+print("\n--- 比較: プロフィールなし vs あり ---")
+print(f"  個人税引後（なし）: ¥{tax['individual'].net_income_after_tax:,.0f}")
+print(f"  個人税引後（あり）: ¥{tax_with_profile['individual'].net_income_after_tax:,.0f}")
+diff = tax['individual'].net_income_after_tax - tax_with_profile['individual'].net_income_after_tax
+print(f"  差額: ¥{diff:,.0f}（給与所得との合算で累進税率が上昇）")
+
+print("\n=== リスク分析（プロフィール付き）===")
+risks_with_profile = assess_risks(property_data, config, investor_profile=test_profile)
+for r in risks_with_profile:
+    print(f"  [{r.severity}] {r.category}: {r.description[:70]}")
+
+# 新規追加された財務リスクをハイライト
+financial_risks = [r for r in risks_with_profile if r.category == "財務"]
+if financial_risks:
+    print(f"\n  → 財務リスク {len(financial_risks)}件が追加されました")
+else:
+    print("\n  → 財務リスクなし（投資家の財務状況は健全）")
 
 print("\n完了!")

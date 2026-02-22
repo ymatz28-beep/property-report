@@ -25,8 +25,11 @@ class ExitScenario:
     capital_gains_tax: float  # 譲渡所得税
 
 
-def assess_risks(property_data: dict, config: dict) -> list[RiskItem]:
-    """リスク要因の洗い出し"""
+def assess_risks(property_data: dict, config: dict, investor_profile=None) -> list[RiskItem]:
+    """リスク要因の洗い出し
+
+    investor_profile: FinancialProfile があれば投資家の財務リスクも評価
+    """
     risks = []
     year_built = property_data.get("year_built")
     structure = property_data.get("structure", "RC")
@@ -117,6 +120,53 @@ def assess_risks(property_data: dict, config: dict) -> list[RiskItem]:
         "自然災害リスク（地震・水害・台風）。",
         "ハザードマップの確認。火災保険・地震保険の加入。"
     ))
+
+    # --- 投資家財務リスク ---
+    if investor_profile is not None:
+        price = property_data.get("price", 0) * 10000
+        annual_income = investor_profile.salary_income + investor_profile.real_estate_income
+
+        # DTI（総返済負担率）チェック
+        if annual_income > 0:
+            existing_payment = investor_profile.total_loan_balance * 0.08  # 概算年間返済額
+            # 新規物件の返済額概算（地銀ベース: LTV80%, 2.3%, 30年）
+            new_loan = price * 0.8
+            if new_loan > 0:
+                monthly_rate = 0.023 / 12
+                n_months = 30 * 12
+                new_monthly = new_loan * monthly_rate / (1 - (1 + monthly_rate) ** -n_months)
+                new_annual_payment = new_monthly * 12
+                total_payment = existing_payment + new_annual_payment
+                dti = total_payment / annual_income
+                if dti > 0.45:
+                    risks.append(RiskItem(
+                        "財務", "高",
+                        f"総返済負担率（DTI）{dti:.0%}。既存借入{investor_profile.total_loan_balance/10000:,.0f}万円含む。",
+                        "頭金の増額を検討。既存借入の借換・繰上返済。購入価格の交渉。"
+                    ))
+                elif dti > 0.35:
+                    risks.append(RiskItem(
+                        "財務", "中",
+                        f"総返済負担率（DTI）{dti:.0%}。余裕が限定的。",
+                        "予備資金の確保（6ヶ月分以上）。金利上昇時のストレステスト推奨。"
+                    ))
+
+        # ポートフォリオ集中リスク
+        if investor_profile.property_count >= 2:
+            risks.append(RiskItem(
+                "財務", "中",
+                f"既存不動産{investor_profile.property_count}件保有。ポートフォリオ集中リスク。",
+                "地域分散・用途分散の検討。不動産以外の資産配分も考慮。"
+            ))
+
+        # 年収に対する投資規模
+        if annual_income > 0 and price > annual_income * 10:
+            ratio = price / annual_income
+            risks.append(RiskItem(
+                "財務", "中",
+                f"投資額が年収の{ratio:.0f}倍。レバレッジが高い。",
+                "自己資金比率の引上げ。段階的な投資規模拡大を推奨。"
+            ))
 
     risks.sort(key=lambda r: {"高": 0, "中": 1, "低": 2}[r.severity])
     return risks

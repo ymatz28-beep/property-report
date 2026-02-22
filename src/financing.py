@@ -34,10 +34,24 @@ class GuaranteeRecommendation:
     reason: str
 
 
-def simulate_all_banks(property_data: dict, config: dict, use_minpaku: bool = False, annual_income: int = 5000000) -> list[LoanSimResult]:
-    """全金融機関での融資シミュレーション"""
+def simulate_all_banks(property_data: dict, config: dict, use_minpaku: bool = False, annual_income: int = 5000000, investor_profile=None) -> list[LoanSimResult]:
+    """全金融機関での融資シミュレーション
+
+    investor_profile: FinancialProfile（確定申告データ）があれば実年収・既存借入を考慮
+    """
     price = property_data["price"] * 10000
     results = []
+
+    # investor_profileがあれば実際の年収を使用
+    if investor_profile is not None:
+        actual_income = investor_profile.salary_income + investor_profile.real_estate_income
+        if actual_income > 0:
+            annual_income = actual_income
+
+    existing_loan_payment = 0
+    if investor_profile is not None and investor_profile.total_loan_balance > 0:
+        # 既存借入の年間返済額を概算（残高の8%と仮定）
+        existing_loan_payment = investor_profile.total_loan_balance * 0.08
 
     for bank_key, bank in config["financing"].items():
         rate = bank["interest_rate_typical"] / 100
@@ -54,7 +68,7 @@ def simulate_all_banks(property_data: dict, config: dict, use_minpaku: bool = Fa
             reason = "民泊非対応"
         elif annual_income < bank.get("min_annual_income", 0):
             available = False
-            reason = f"年収{bank['min_annual_income']:,}円以上必要"
+            reason = f"年収{bank['min_annual_income']:,}円以上必要（現年収: {annual_income:,}円）"
 
         # 築年チェック（耐用年数超え）
         year_built = property_data.get("year_built")
@@ -77,6 +91,18 @@ def simulate_all_banks(property_data: dict, config: dict, use_minpaku: bool = Fa
             total_interest = total - loan_amount
         else:
             monthly = annual = total = total_interest = 0
+
+        # DTI（返済負担率）チェック — investor_profile提供時のみ
+        if available and investor_profile is not None and annual_income > 0:
+            new_annual_payment = annual
+            total_annual_payment = new_annual_payment + existing_loan_payment
+            dti = total_annual_payment / annual_income
+            if dti > 0.50:
+                available = False
+                reason = f"総返済負担率{dti:.0%}（上限50%超過。既存借入含む）"
+            elif dti > 0.45 and bank.get("strict_review"):
+                available = False
+                reason = f"総返済負担率{dti:.0%}（審査厳格行の上限45%超過）"
 
         # 推奨判定
         recommended = False

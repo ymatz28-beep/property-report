@@ -22,26 +22,53 @@ class TaxResult:
     disadvantages: list[str]
 
 
-def calc_individual_tax(noi: float, depreciation: float, loan_interest: float, config: dict) -> TaxResult:
-    """個人での税額計算"""
+def calc_individual_tax(noi: float, depreciation: float, loan_interest: float, config: dict, investor_salary: int = 0) -> TaxResult:
+    """個人での税額計算
+
+    investor_salary: 投資家の給与所得（円）。指定時は給与+不動産の合算所得で累進税率を適用。
+    """
     tc = config["tax_individual"]
 
     # 不動産所得
-    taxable = noi - depreciation - loan_interest
-    if taxable < 0:
-        taxable = 0  # 損益通算は考慮しない（簡易版）
+    real_estate_income = noi - depreciation - loan_interest
 
-    # 所得税
+    if investor_salary > 0:
+        # 給与所得 + 不動産所得の合算（損益通算対応）
+        taxable = investor_salary + real_estate_income
+        taxable = max(0, taxable)
+    else:
+        taxable = max(0, real_estate_income)
+
+    # 所得税（合算所得に対して累進税率を適用）
     income_tax = 0
     for bracket in tc["income_brackets"]:
         if taxable <= bracket["upper"]:
             income_tax = taxable * bracket["rate"] - bracket["deduction"]
             break
 
-    income_tax = max(0, income_tax)
-    resident_tax = taxable * tc["resident_tax_rate"]
-    total_tax = income_tax + resident_tax
-    effective_rate = total_tax / noi if noi > 0 else 0
+    # 給与所得のみの場合の税額を差し引いて不動産分の追加税額を算出
+    if investor_salary > 0:
+        salary_tax = 0
+        for bracket in tc["income_brackets"]:
+            if investor_salary <= bracket["upper"]:
+                salary_tax = investor_salary * bracket["rate"] - bracket["deduction"]
+                break
+        salary_tax = max(0, salary_tax)
+        salary_resident = investor_salary * tc["resident_tax_rate"]
+
+        income_tax = max(0, income_tax)
+        resident_tax = taxable * tc["resident_tax_rate"]
+
+        # 不動産分の追加税負担
+        incremental_income_tax = income_tax - salary_tax
+        incremental_resident_tax = resident_tax - salary_resident
+        total_tax = incremental_income_tax + incremental_resident_tax
+        effective_rate = total_tax / noi if noi > 0 else 0
+    else:
+        income_tax = max(0, income_tax)
+        resident_tax = taxable * tc["resident_tax_rate"]
+        total_tax = income_tax + resident_tax
+        effective_rate = total_tax / noi if noi > 0 else 0
 
     net_after_tax = noi - total_tax
 
@@ -131,7 +158,7 @@ def calc_corporate_tax(noi: float, depreciation: float, loan_interest: float, co
     )
 
 
-def compare_tax(noi: float, property_data: dict, config: dict, loan_rate: float, loan_amount: float) -> dict:
+def compare_tax(noi: float, property_data: dict, config: dict, loan_rate: float, loan_amount: float, investor_profile=None) -> dict:
     """個人vs法人の税務比較"""
     # 減価償却計算（簡易版）
     price = property_data["price"] * 10000
@@ -152,7 +179,11 @@ def compare_tax(noi: float, property_data: dict, config: dict, loan_rate: float,
     # ローン利息（初年度概算）
     annual_interest = loan_amount * loan_rate
 
-    individual = calc_individual_tax(noi, annual_depreciation, annual_interest, config)
+    investor_salary = 0
+    if investor_profile is not None:
+        investor_salary = investor_profile.salary_income
+
+    individual = calc_individual_tax(noi, annual_depreciation, annual_interest, config, investor_salary=investor_salary)
     corporate = calc_corporate_tax(noi, annual_depreciation, annual_interest, config)
 
     # 推奨判定

@@ -26,6 +26,9 @@ from src.financing import simulate_all_banks, recommend_guarantee_companies
 from src.tax_compare import compare_tax
 from src.risk import assess_risks, calc_exit_strategies, make_investment_decision
 from src.report_generator import generate_pdf, generate_excel
+from src.tax_extractor import (
+    FinancialProfile, extract_from_tax_pdfs, save_financial_profile, load_financial_profile
+)
 
 
 BASE_DIR = Path(__file__).parent
@@ -38,6 +41,53 @@ CONFIG_PATH = BASE_DIR / "config.yaml"
 def load_config() -> dict:
     with open(CONFIG_PATH, encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+def _fetch_investor_profile(config: dict, api_key: str | None) -> FinancialProfile | None:
+    """投資家の財務プロフィールを取得（Google Drive → ローカル → キャッシュの順）"""
+    # 1. キャッシュ済みプロフィール確認
+    cache_path = DATA_DIR / "investor_profile.json"
+    cached = load_financial_profile(cache_path)
+
+    # 2. Google Driveから取得
+    gdrive_config = config.get("google_drive", {})
+    if gdrive_config.get("enabled") and gdrive_config.get("folder_id"):
+        try:
+            from src.gdrive import fetch_tax_returns, check_available
+            if check_available():
+                print("       Google Driveから確定申告書類を取得中...")
+                pdf_paths, metadata = fetch_tax_returns(config)
+                if pdf_paths:
+                    profile = extract_from_tax_pdfs(pdf_paths, config["api"]["model"], api_key)
+                    save_financial_profile(profile, cache_path)
+                    print(f"       財務プロフィール保存: {cache_path.name}")
+                    return profile
+            else:
+                print("       Google Drive: 認証情報なし（スキップ）")
+        except Exception as e:
+            print(f"       Google Drive取得エラー: {e}")
+
+    # 3. ローカルPDFから取得（input/ に確定申告PDFがある場合）
+    local_tax_pdfs = list(INPUT_DIR.glob("*確定申告*")) + list(INPUT_DIR.glob("*kakutei*"))
+    local_tax_pdfs += list(INPUT_DIR.glob("*tax_return*")) + list(INPUT_DIR.glob("*源泉徴収*"))
+    local_tax_pdfs = [p for p in local_tax_pdfs if p.suffix.lower() == ".pdf"]
+
+    if local_tax_pdfs:
+        try:
+            print(f"       ローカル確定申告PDF検出: {len(local_tax_pdfs)}ファイル")
+            profile = extract_from_tax_pdfs(local_tax_pdfs, config["api"]["model"], api_key)
+            save_financial_profile(profile, cache_path)
+            print(f"       財務プロフィール保存: {cache_path.name}")
+            return profile
+        except Exception as e:
+            print(f"       ローカルPDF抽出エラー: {e}")
+
+    # 4. キャッシュがあればそれを使用
+    if cached:
+        print(f"       キャッシュ済み財務プロフィールを使用（{cached.fetch_date[:10] if cached.fetch_date else '日付不明'}）")
+        return cached
+
+    return None
 
 
 def main():
@@ -61,10 +111,10 @@ def main():
         print("  方法2: export ANTHROPIC_API_KEY='sk-ant-...'")
         sys.exit(1)
 
-    print("[1/8] 設定ファイル読み込み完了")
+    print("[1/9] 設定ファイル読み込み完了")
 
     # ファイル検出（画像 + PDF対応）
-    print("[2/8] 入力ファイル検出中...")
+    print("[2/9] 入力ファイル検出中...")
     images = collect_input_files(INPUT_DIR)
     if not images:
         print(f"\nエラー: input/ フォルダにファイルがありません。")
@@ -74,8 +124,19 @@ def main():
 
     print(f"       処理対象: {len(images)}ページ")
 
+    # 投資家財務情報取得
+    print("[3/9] 投資家財務情報を取得中...")
+    investor_profile = _fetch_investor_profile(config, api_key)
+    if investor_profile:
+        print(f"       年収: {investor_profile.salary_income:,}円")
+        print(f"       不動産所得: {investor_profile.real_estate_income:,}円")
+        print(f"       既存借入残高: {investor_profile.total_loan_balance:,}円")
+        print(f"       保有物件数: {investor_profile.property_count}件")
+    else:
+        print("       財務情報なし（従来モードで分析）")
+
     # 画像から物件情報抽出
-    print("[3/8] 物件情報を抽出中（Claude Vision API）...")
+    print("[4/9] 物件情報を抽出中（Claude Vision API）...")
     try:
         property_data = extract_from_images(images, config["api"]["model"], api_key)
     except Exception as e:
@@ -110,30 +171,30 @@ def main():
     ltv = default_bank["max_ltv"]
 
     # 賃貸分析
-    print("[4/8] 賃貸収支分析中...")
+    print("[5/9] 賃貸収支分析中...")
     rental_result = analyze_rental(property_data, config, loan_rate, loan_years, ltv)
 
     # 民泊分析
-    print("[5/8] 民泊収支分析中...")
+    print("[6/9] 民泊収支分析中...")
     minpaku_result = analyze_minpaku(property_data, config, loan_rate, loan_years, ltv)
 
-    # 感度分析
-    print("[6/8] 感度分析・融資シミュレーション中...")
+    # 感度分析・融資シミュレーション
+    print("[7/9] 感度分析・融資シミュレーション中...")
     sens_rental = sensitivity_analysis(property_data, config, loan_rate, loan_years, ltv, mode="rental")
 
-    # 融資シミュレーション
-    loan_results = simulate_all_banks(property_data, config, use_minpaku=False)
+    # 融資シミュレーション（investor_profile反映）
+    loan_results = simulate_all_banks(property_data, config, use_minpaku=False, investor_profile=investor_profile)
     guarantee_results = recommend_guarantee_companies(property_data, config)
 
-    # 税務比較
+    # 税務比較（investor_profile反映）
     tax_comparison = compare_tax(
         rental_result.annual_noi, property_data, config,
-        loan_rate, rental_result.loan_amount
+        loan_rate, rental_result.loan_amount, investor_profile=investor_profile
     )
 
-    # リスク分析
-    print("[7/8] リスク分析・出口戦略策定中...")
-    risks = assess_risks(property_data, config)
+    # リスク分析（investor_profile反映）
+    print("[8/9] リスク分析・出口戦略策定中...")
+    risks = assess_risks(property_data, config, investor_profile=investor_profile)
     exit_scenarios = calc_exit_strategies(
         rental_result.cashflows, rental_result.equity, property_data, config, loan_rate
     )
@@ -142,7 +203,7 @@ def main():
     decision = make_investment_decision(rental_result, minpaku_result, risks, exit_scenarios)
 
     # レポート生成
-    print("[8/8] レポート生成中...")
+    print("[9/9] レポート生成中...")
 
     pdf_path = OUTPUT_DIR / f"report_{timestamp}.pdf"
     excel_path = OUTPUT_DIR / f"report_{timestamp}.xlsx"

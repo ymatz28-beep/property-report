@@ -165,16 +165,29 @@ def hydrate_parsed_fields(row: PropertyRow) -> None:
     row.walk_min = parse_walk_minutes(row.station_text)
 
 
+def _normalize_name(name: str) -> str:
+    """Normalize property name for dedup (handles katakana variants like シティ/シテイ)."""
+    s = re.sub(r"[\s　]+", "", name)
+    s = s.replace("テイ", "ティ").replace("ヴィ", "ビ")
+    s = re.sub(r"[Ⅰ-Ⅻ]", lambda m: str("ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫ".index(m.group()) + 1), s)
+    return s
+
+
 def dedupe_properties(rows: list[PropertyRow]) -> tuple[list[PropertyRow], int]:
-    seen: set[tuple[str, int]] = set()
+    seen: set[tuple] = set()
     out: list[PropertyRow] = []
     dup_count = 0
     for row in rows:
-        key = (row.name, row.price_man)
-        if key in seen:
+        # Primary key: normalized name + area_sqm (same building, same unit)
+        norm = _normalize_name(row.name)
+        key_physical = (norm, row.area_sqm)
+        # Fallback: original name + price
+        key_name_price = (row.name, row.price_man)
+        if key_physical in seen or key_name_price in seen:
             dup_count += 1
             continue
-        seen.add(key)
+        seen.add(key_physical)
+        seen.add(key_name_price)
         out.append(row)
     return out, dup_count
 

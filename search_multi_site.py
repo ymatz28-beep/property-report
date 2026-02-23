@@ -148,7 +148,7 @@ def search_rakumachi(city_key: str) -> list[dict]:
     base_url = f"https://www.rakumachi.jp/syuuekibukken/area/prefecture/dim2001/"
     params = {
         "area": area_code,
-        "pmax": str(PRICE_MAX),
+        "pmax": str(PRICE_MAX // 10000),  # 楽待は万円単位
         "areamin": str(AREA_MIN),
         "areamax": str(AREA_MAX),
     }

@@ -238,10 +238,10 @@ def _extract_rakumachi_fields(context: str, url: str, prop_id: str, city_key: st
     text = re.sub(r"&[a-z]+;", " ", text)
     text = re.sub(r"\s+", " ", text).strip()
 
-    # Price - look for 万円 pattern
-    price_match = re.search(r"(\d{1,2},?\d{3})\s*万円", text)
+    # Price - check 億 first to avoid partial match on "1億2500万円" → "2500万円"
+    price_match = re.search(r"\d+(?:\.\d+)?億\s*\d*万?\s*円?", text)
     if not price_match:
-        price_match = re.search(r"(\d+(?:\.\d+)?)\s*億", text)
+        price_match = re.search(r"(\d{1,2},?\d{3})\s*万円", text)
     price_text = ""
     price_man = 0
     if price_match:
@@ -415,8 +415,10 @@ def _parse_yahoo_html(html: str, city_key: str) -> list[dict]:
         ctx_text = re.sub(r"<[^>]+>", " ", context)
         ctx_text = re.sub(r"\s+", " ", ctx_text)
 
-        # Extract fields
-        price_m = re.search(r"(\d{1,2},?\d{3})\s*万円", ctx_text)
+        # Extract fields — check 億 first to avoid partial match
+        price_m = re.search(r"\d+(?:\.\d+)?億\s*\d*万?\s*円?", ctx_text)
+        if not price_m:
+            price_m = re.search(r"(\d{1,2},?\d{3})\s*万円", ctx_text)
         if not price_m:
             continue
         price_man = parse_price_text(price_m.group(0))
@@ -541,7 +543,10 @@ def _parse_athome_html(html: str, city_key: str) -> list[dict]:
         ctx_text = re.sub(r"<[^>]+>", " ", context)
         ctx_text = re.sub(r"\s+", " ", ctx_text)
 
-        price_m = re.search(r"(\d{1,2},?\d{3})\s*万円", ctx_text)
+        # Check 億 first to avoid partial match
+        price_m = re.search(r"\d+(?:\.\d+)?億\s*\d*万?\s*円?", ctx_text)
+        if not price_m:
+            price_m = re.search(r"(\d{1,2},?\d{3})\s*万円", ctx_text)
         if not price_m:
             continue
         price_man = parse_price_text(price_m.group(0))

@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>東京 物件検索レポート</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg:#0b0f16;
+      --bg2:#101826;
+      --card:rgba(255,255,255,0.045);
+      --line:rgba(255,255,255,0.12);
+      --muted:#a9b3c6;
+      --text:#edf3ff;
+      --accent:#a78bfa;
+      --accent-rgb:167,139,250;
+      --success:#22c55e;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --radius:18px;
+      --shadow:0 18px 60px rgba(0,0,0,0.45);
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      color:var(--text);
+      font-family:"Inter","Noto Sans JP",sans-serif;
+      background:
+        radial-gradient(circle at 15% -10%, rgba(var(--accent-rgb),0.16), transparent 40%),
+        radial-gradient(circle at 88% 12%, rgba(110,120,255,0.10), transparent 45%),
+        linear-gradient(180deg,#070b11,#0b0f16 28%, #0d1320 100%);
+    }
+    .wrap { max-width:1280px; margin:0 auto; padding:24px 16px 44px; }
+    .hero {
+      position:relative;
+      padding:28px;
+      border-radius:24px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(12px);
+    }
+    .hero::after {
+      content:"";
+      position:absolute; inset:auto -10% -35% auto;
+      width:360px; height:360px; border-radius:50%;
+      background:radial-gradient(circle, rgba(var(--accent-rgb),0.22), transparent 70%);
+      filter:blur(8px);
+    }
+    .kicker { color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-weight:700; font-size:12px; }
+    h1 { margin:10px 0 10px; font-size:clamp(28px,4.2vw,46px); line-height:1.06; font-weight:900; font-family:"Noto Sans JP","Inter",sans-serif; }
+    .hero-sub { color:#d0d9eb; margin:0; max-width:860px; }
+    .badge-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+    .badge {
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(var(--accent-rgb),0.35);
+      background:rgba(var(--accent-rgb),0.08);
+      color:#e8fbff; font-size:12px; font-weight:600;
+    }
+    .grid-4 {
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:14px;
+    }
+    .card {
+      border:1px solid var(--line);
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:16px;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .stat .label { color:var(--muted); font-size:12px; }
+    .stat .value { font-size:28px; font-weight:800; margin-top:6px; }
+    .stat .sub { color:#cdd6e8; font-size:12px; margin-top:4px; }
+    .section {
+      margin-top:16px;
+      border:1px solid var(--line);
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px;
+      backdrop-filter: blur(10px);
+    }
+    .section h2 {
+      margin:0 0 12px; font-size:18px; font-weight:800; letter-spacing:.02em;
+      display:flex; align-items:center; gap:10px;
+    }
+    .section h2::before {
+      content:"";
+      width:10px; height:10px; border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12);
+    }
+    .cond-list {
+      margin:0; padding-left:18px; color:#d8e0f0; line-height:1.75;
+      columns:2; column-gap:24px;
+    }
+    .table-shell { overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); }
+    table { width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }
+    thead th {
+      position:sticky; top:0; z-index:1;
+      background:rgba(12,17,26,.92); color:#dbe7fa;
+      font-size:12px; text-align:left; padding:12px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      white-space:nowrap;
+    }
+    thead th button {
+      all:unset; cursor:pointer; color:inherit; font-weight:700;
+      display:inline-flex; gap:6px; align-items:center;
+    }
+    tbody td {
+      padding:12px 10px; border-bottom:1px solid rgba(255,255,255,.05);
+      font-size:13px; vertical-align:top;
+    }
+    tbody tr:nth-child(even) td { background:rgba(255,255,255,.012); }
+    tbody tr:hover td { background:rgba(var(--accent-rgb),.06); }
+    .tier-strong td { box-shadow: inset 4px 0 0 rgba(34,197,94,.7); }
+    .tier-good td { box-shadow: inset 4px 0 0 rgba(250,204,21,.7); }
+    .tier-conditional td { box-shadow: inset 4px 0 0 rgba(251,146,60,.7); }
+    .tier-pass td { box-shadow: inset 4px 0 0 rgba(239,68,68,.7); }
+    a { color:#eaf7ff; text-decoration:none; }
+    a:hover { color:var(--accent); text-decoration:underline; }
+    .name-col a { font-weight:700; }
+    .source-tag {
+      margin-top:4px; font-size:11px; color:var(--muted);
+      display:inline-block; padding:2px 8px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
+    }
+    .score-badge {
+      display:inline-grid; place-items:center;
+      min-width:38px; padding:5px 10px; border-radius:999px;
+      border:1px solid color-mix(in oklab, var(--badge) 50%, white 10%);
+      background:color-mix(in oklab, var(--badge) 16%, transparent);
+      color:#fff; font-weight:800;
+    }
+    .tier-pill {
+      display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px;
+      border:1px solid color-mix(in oklab, var(--tier) 45%, white 8%);
+      background:color-mix(in oklab, var(--tier) 14%, transparent);
+      font-weight:700; font-size:12px;
+    }
+    .focus-grid {
+      display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px;
+    }
+    .focus-card {
+      border-radius:18px; border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      padding:14px; box-shadow:var(--shadow);
+    }
+    .focus-head { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:start; }
+    .focus-rank {
+      width:36px; height:36px; border-radius:12px; display:grid; place-items:center;
+      background:rgba(var(--accent-rgb),.12); border:1px solid rgba(var(--accent-rgb),.35); font-weight:800;
+    }
+    .focus-head h3 { margin:0; font-size:17px; line-height:1.3; }
+    .focus-head p { margin:4px 0 0; color:var(--muted); font-size:12px; }
+    .focus-score {
+      min-width:68px; text-align:center; font-weight:900; font-size:24px;
+      color:#fff; border-radius:14px; padding:8px 10px;
+      border:1px solid color-mix(in oklab, var(--accent) 40%, white 8%);
+      background:color-mix(in oklab, var(--accent) 14%, transparent);
+    }
+    .focus-score span { display:block; margin-top:4px; font-size:10px; color:#dfe8f7; font-weight:700; }
+    .chip-row { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
+    .chip {
+      display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700;
+      padding:5px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.09);
+      background:rgba(255,255,255,.03); color:#e6eefc;
+    }
+    .chip-penalty { border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.10); color:#ffdada; }
+    .focus-comment { margin:10px 0 0; color:#dbe4f4; line-height:1.65; font-size:13px; }
+    .focus-meta { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:12px; }
+    .focus-meta span { padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.06); background:rgba(255,255,255,.02); }
+    .chart-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:14px; }
+    .chart-col { display:grid; gap:14px; }
+    .chart-card canvas { width:100%; max-height:360px; }
+    .notes { margin:0; padding-left:18px; line-height:1.8; color:#d9e2f3; }
+    .footer { margin-top:16px; color:var(--muted); font-size:12px; text-align:center; }
+    .footer a { color:#cfeeff; }
+    @media (max-width: 960px) {
+      .grid-4 { grid-template-columns:repeat(2, minmax(0,1fr)); }
+      .chart-grid, .focus-grid { grid-template-columns:1fr; }
+      .cond-list { columns:1; }
+      .hero { padding:18px; }
+    }
+    @media (max-width: 560px) {
+      .grid-4 { grid-template-columns:1fr; }
+      .focus-head { grid-template-columns:auto 1fr; }
+      .focus-score { grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior:auto !important; animation:none !important; transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="kicker">PROPERTY SEARCH REPORT / 東京</div>
+      <h1>東京 民泊向け中古マンション候補レポート</h1>
+      <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
+      <div class="badge-row">
+        <span class="badge">検索日 2026-02-23</span>
+        <span class="badge">原データ 19件</span>
+        <span class="badge">重複除外 2件</span>
+        <span class="badge">売却済除外 0件</span>
+        <span class="badge">OC除外 1件</span>
+        <span class="badge">有効件数 16件</span>
+        <span class="badge">データソース: 楽待, restate</span>
+      </div>
+      <div class="badge-row">
+        <span class="badge">渋谷区・新宿区・目黒区・台東区・豊島区中心</span><span class="badge">価格上限 5,000万円</span><span class="badge">専有面積 40-70㎡目安</span><span class="badge">ペット可/相談可優先</span>
+      </div>
+    </section>
+
+    <section class="grid-4">
+      <div class="card stat"><div class="label">総候補数</div><div class="value">16</div><div class="sub">重複排除後</div></div>
+      <div class="card stat"><div class="label">平均価格</div><div class="value">3,366.8万円</div><div class="sub">全候補平均</div></div>
+      <div class="card stat"><div class="label">平均面積</div><div class="value">48.40㎡</div><div class="sub">全候補平均</div></div>
+      <div class="card stat"><div class="label">最高スコア</div><div class="value">83</div><div class="sub">渋谷美竹ハイム</div></div>
+    </section>
+
+    <section class="section">
+      <h2>Search Conditions</h2>
+      <ul class="cond-list">
+        <li>データ元条件: 5000万以下, 40-70㎡</li>
+        <li>重複排除キー: 物件名 + 価格（先勝ち）</li>
+        <li>駅アクセスに「バス」を含む場合、徒歩分数評価は0点</li>
+        <li>築年1981年7月以降を新耐震として評価</li>
+        <li>民泊禁止は -30 点ペナルティ</li>
+        <li>楽待 + Yahoo不動産のマルチソース</li><li>渋谷/恵比寿/新宿を最優先、浅草/池袋/上野も重点評価</li><li>ペット可は高加点（15点）、リノベ未実施は加点、仲介手数料割引も加点</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Property Table</h2>
+      <div class="table-shell">
+        <table id="propertyTable">
+          <thead>
+            <tr>
+              <th><button data-sort="index" data-type="number">#</button></th>
+              <th><button data-sort="name" data-type="string">物件名</button></th>
+              <th><button data-sort="price" data-type="number">価格</button></th>
+              <th><button data-sort="area" data-type="number">面積</button></th>
+              <th><button data-sort="location" data-type="string">所在地</button></th>
+              <th><button data-sort="walk" data-type="number">最寄駅</button></th>
+              <th><button data-sort="year" data-type="number">築年</button></th>
+              <th><button data-sort="layout" data-type="string">間取り</button></th>
+              <th><button data-sort="score" data-type="number">スコア</button></th>
+              <th><button data-sort="tier" data-type="string">評価</button></th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr class="tier-strong" data-index="1" data-name="渋谷美竹ハイム" data-location="東京都渋谷区渋谷１丁目" data-layout="1LD" data-tier="強く推奨" data-price="2500" data-area="47.10" data-score="83" data-year="2026" data-walk="4">
+              <td>1</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550913/show.html" target="_blank" rel="noopener noreferrer">渋谷美竹ハイム</a><div class="source-tag">楽待</div></td>
+              <td>2,500万円</td>
+              <td>47.10㎡</td>
+              <td>東京都渋谷区渋谷１丁目</td>
+              <td>「渋谷」駅徒歩4分</td>
+              <td>2026年</td>
+              <td>1LD</td>
+              <td><span class="score-badge" style="--badge:#22c55e">83</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="2" data-name="パークシティ高田馬場" data-location="東京都新宿区高田馬場４丁目" data-layout="" data-tier="強く推奨" data-price="3490" data-area="55.03" data-score="83" data-year="2025" data-walk="7">
+              <td>2</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550709/show.html" target="_blank" rel="noopener noreferrer">パークシティ高田馬場</a><div class="source-tag">楽待</div></td>
+              <td>3,490万円</td>
+              <td>55.03㎡</td>
+              <td>東京都新宿区高田馬場４丁目</td>
+              <td>高田馬場駅 徒歩7分</td>
+              <td>2025年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#22c55e">83</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="3" data-name="麻布台パークハウス" data-location="東京都港区麻布台２丁目" data-layout="1LDK" data-tier="推奨" data-price="1980" data-area="62.01" data-score="78" data-year="2011" data-walk="6">
+              <td>3</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550456/show.html" target="_blank" rel="noopener noreferrer">麻布台パークハウス</a><div class="source-tag">楽待</div></td>
+              <td>1,980万円</td>
+              <td>62.01㎡</td>
+              <td>東京都港区麻布台２丁目</td>
+              <td>麻布十番駅 徒歩6分</td>
+              <td>2011年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="4" data-name="デュフレベース南麻布" data-location="東京都港区南麻布２丁目" data-layout="" data-tier="推奨" data-price="2980" data-area="62.01" data-score="73" data-year="2012" data-walk="7">
+              <td>4</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550299/show.html" target="_blank" rel="noopener noreferrer">デュフレベース南麻布</a><div class="source-tag">楽待</div></td>
+              <td>2,980万円</td>
+              <td>62.01㎡</td>
+              <td>東京都港区南麻布２丁目</td>
+              <td>白金高輪駅 徒歩7分</td>
+              <td>2012年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="5" data-name="蔵前コヤマハイツ" data-location="東京都台東区寿３丁目" data-layout="" data-tier="推奨" data-price="2780" data-area="57.96" data-score="71" data-year="1971" data-walk="2">
+              <td>5</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550586/show.html" target="_blank" rel="noopener noreferrer">蔵前コヤマハイツ</a><div class="source-tag">楽待</div></td>
+              <td>2,780万円</td>
+              <td>57.96㎡</td>
+              <td>東京都台東区寿３丁目</td>
+              <td>蔵前コヤマハイツは田原町駅徒歩2分</td>
+              <td>1971年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#facc15">71</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="6" data-name="【新宿区】角部屋" data-location="東京都新宿区大京町２５" data-layout="" data-tier="条件付き" data-price="2800" data-area="40.48" data-score="63" data-year="1978" data-walk="10">
+              <td>6</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550268/show.html" target="_blank" rel="noopener noreferrer">【新宿区】角部屋</a><div class="source-tag">楽待</div></td>
+              <td>2,800万円</td>
+              <td>40.48㎡</td>
+              <td>東京都新宿区大京町２５</td>
+              <td>千駄ケ谷駅 徒歩10分</td>
+              <td>1978年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="7" data-name="アルテシモグランデリア" data-location="東京都中野区大和町２丁目" data-layout="" data-tier="条件付き" data-price="3580" data-area="40.62" data-score="63" data-year="2011" data-walk="8">
+              <td>7</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550468/show.html" target="_blank" rel="noopener noreferrer">アルテシモグランデリア</a><div class="source-tag">楽待</div></td>
+              <td>3,580万円</td>
+              <td>40.62㎡</td>
+              <td>東京都中野区大和町２丁目</td>
+              <td>野方駅 徒歩8分</td>
+              <td>2011年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="8" data-name="山手線「五反田」駅徒歩3分" data-location="東京都品川区西五反田1丁目" data-layout="" data-tier="条件付き" data-price="3330" data-area="40.00" data-score="60" data-year="1977" data-walk="3">
+              <td>8</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550993/show.html" target="_blank" rel="noopener noreferrer">山手線「五反田」駅徒歩3分</a><div class="source-tag">楽待</div></td>
+              <td>3,330万円</td>
+              <td>40.00㎡</td>
+              <td>東京都品川区西五反田1丁目</td>
+              <td>山手線「五反田」駅徒歩3分</td>
+              <td>1977年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#fb923c">60</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="9" data-name="戸越ハイツ" data-location="東京都品川区荏原２−１−８" data-layout="" data-tier="条件付き" data-price="3480" data-area="44.09" data-score="60" data-year="1973" data-walk="5">
+              <td>9</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550900/show.html" target="_blank" rel="noopener noreferrer">戸越ハイツ</a><div class="source-tag">楽待</div></td>
+              <td>3,480万円</td>
+              <td>44.09㎡</td>
+              <td>東京都品川区荏原２−１−８</td>
+              <td>戸越銀座駅 徒歩5分</td>
+              <td>1973年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#fb923c">60</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="10" data-name="Yahoo物件" data-location="" data-layout="2LDK" data-tier="条件付き" data-price="4480" data-area="0.00" data-score="60" data-year="1997" data-walk="8">
+              <td>10</td>
+              <td class="name-col"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024367040/#shopReview" target="_blank" rel="noopener noreferrer">Yahoo物件</a><div class="source-tag">Yahoo不動産</div></td>
+              <td>4,480万円</td>
+              <td>-</td>
+              <td></td>
+              <td>●住宅ローン、諸費用ローンお気軽にご相談下さい！板橋区板橋に佇むセザール板橋。都営三田線「板橋区役所前」駅徒歩8分のほか、東武東上線「下板橋」駅徒歩7分、埼京線「板橋」駅徒歩10分</td>
+              <td>1997年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#fb923c">60</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="11" data-name="リシェ広尾" data-location="東京都渋谷区恵比寿３丁目" data-layout="" data-tier="条件付き" data-price="3580" data-area="64.27" data-score="58" data-year="2024" data-walk="11">
+              <td>11</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550440/show.html" target="_blank" rel="noopener noreferrer">リシェ広尾</a><div class="source-tag">楽待</div></td>
+              <td>3,580万円</td>
+              <td>64.27㎡</td>
+              <td>東京都渋谷区恵比寿３丁目</td>
+              <td>広尾駅 徒歩11分</td>
+              <td>2024年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="12" data-name="アークステージ高田馬場" data-location="東京都新宿区高田馬場３丁目" data-layout="" data-tier="条件付き" data-price="4999" data-area="51.78" data-score="58" data-year="1996" data-walk="11">
+              <td>12</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550599/show.html" target="_blank" rel="noopener noreferrer">アークステージ高田馬場</a><div class="source-tag">楽待</div></td>
+              <td>4,999万円</td>
+              <td>51.78㎡</td>
+              <td>東京都新宿区高田馬場３丁目</td>
+              <td>高田馬場駅 徒歩11分</td>
+              <td>1996年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="13" data-name="【目黒区】人気の都立大学駅！バストイレ別【#2485】" data-location="東京都目黒区中根２" data-layout="" data-tier="条件付き" data-price="3100" data-area="45.73" data-score="53" data-year="1971" data-walk="7">
+              <td>13</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3551348/show.html" target="_blank" rel="noopener noreferrer">【目黒区】人気の都立大学駅！バストイレ別【#2485】</a><div class="source-tag">楽待</div></td>
+              <td>3,100万円</td>
+              <td>45.73㎡</td>
+              <td>東京都目黒区中根２</td>
+              <td>人気の都立大学駅徒歩7分</td>
+              <td>1971年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="14" data-name="【墨田区】築浅・安定の2LDK・複数駅利用可【#1595】" data-location="東京都墨田区立花５" data-layout="2LDK" data-tier="条件付き" data-price="4200" data-area="45.00" data-score="53" data-year="2020" data-walk="9">
+              <td>14</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550798/show.html" target="_blank" rel="noopener noreferrer">【墨田区】築浅・安定の2LDK・複数駅利用可【#1595】</a><div class="source-tag">楽待</div></td>
+              <td>4,200万円</td>
+              <td>45.00㎡</td>
+              <td>東京都墨田区立花５</td>
+              <td>小村井駅 徒歩9分</td>
+              <td>2020年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="15" data-name="グレイス両国" data-location="東京都墨田区両国４丁目" data-layout="" data-tier="条件付き" data-price="4600" data-area="57.50" data-score="53" data-year="1982" data-walk="3">
+              <td>15</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550284/show.html" target="_blank" rel="noopener noreferrer">グレイス両国</a><div class="source-tag">楽待</div></td>
+              <td>4,600万円</td>
+              <td>57.50㎡</td>
+              <td>東京都墨田区両国４丁目</td>
+              <td>両国駅徒歩3分</td>
+              <td>1982年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-pass" data-index="16" data-name="3駅利用可能！港区赤坂６丁目アドレス！" data-location="東京都港区赤坂６" data-layout="" data-tier="見送り" data-price="1990" data-area="60.77" data-score="43" data-year="1978" data-walk="5">
+              <td>16</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550113/show.html" target="_blank" rel="noopener noreferrer">3駅利用可能！港区赤坂６丁目アドレス！</a><div class="source-tag">楽待</div></td>
+              <td>1,990万円</td>
+              <td>60.77㎡</td>
+              <td>東京都港区赤坂６</td>
+              <td>赤坂駅 徒歩5分</td>
+              <td>1978年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#ef4444">43</span></td>
+              <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Top 5 Focus Cards</h2>
+      <div class="focus-grid">
+        
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#1</div>
+                <div>
+                  <h3><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550913/show.html" target="_blank" rel="noopener noreferrer">渋谷美竹ハイム</a></h3>
+                  <p>2,500万円 / 47.10㎡ / 東京都渋谷区渋谷１丁目</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">83<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +20</span><span class="chip ">間取り +0</span><span class="chip ">ペット +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地 / 新耐震。注意: ペット条件要確認</p>
+              <div class="focus-meta">
+                <span>「渋谷」駅徒歩4分</span>
+                <span>2026年1月</span>
+                <span>1LD</span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#2</div>
+                <div>
+                  <h3><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550709/show.html" target="_blank" rel="noopener noreferrer">パークシティ高田馬場</a></h3>
+                  <p>3,490万円 / 55.03㎡ / 東京都新宿区高田馬場４丁目</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">83<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +10</span><span class="chip ">立地 +20</span><span class="chip ">間取り +0</span><span class="chip ">ペット +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地 / 新耐震。注意: ペット条件要確認</p>
+              <div class="focus-meta">
+                <span>高田馬場駅 徒歩7分</span>
+                <span>2025年6月築</span>
+                <span></span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#3</div>
+                <div>
+                  <h3><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550456/show.html" target="_blank" rel="noopener noreferrer">麻布台パークハウス</a></h3>
+                  <p>1,980万円 / 62.01㎡ / 東京都港区麻布台２丁目</p>
+                </div>
+                <div class="focus-score" style="--accent:#facc15">78<span>推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +10</span><span class="chip ">立地 +15</span><span class="chip ">間取り +5</span><span class="chip ">ペット +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地 / 新耐震。注意: ペット条件要確認</p>
+              <div class="focus-meta">
+                <span>麻布十番駅 徒歩6分</span>
+                <span>2011年01月</span>
+                <span>1LDK</span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#4</div>
+                <div>
+                  <h3><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550299/show.html" target="_blank" rel="noopener noreferrer">デュフレベース南麻布</a></h3>
+                  <p>2,980万円 / 62.01㎡ / 東京都港区南麻布２丁目</p>
+                </div>
+                <div class="focus-score" style="--accent:#facc15">73<span>推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +10</span><span class="chip ">立地 +15</span><span class="chip ">間取り +0</span><span class="chip ">ペット +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地 / 新耐震。注意: ペット条件要確認</p>
+              <div class="focus-meta">
+                <span>白金高輪駅 徒歩7分</span>
+                <span>2012年築</span>
+                <span></span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#5</div>
+                <div>
+                  <h3><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3550586/show.html" target="_blank" rel="noopener noreferrer">蔵前コヤマハイツ</a></h3>
+                  <p>2,780万円 / 57.96㎡ / 東京都台東区寿３丁目</p>
+                </div>
+                <div class="focus-score" style="--accent:#facc15">71<span>推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +0</span><span class="chip ">駅 +15</span><span class="chip ">立地 +18</span><span class="chip ">間取り +0</span><span class="chip ">ペット +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地。注意: ペット条件要確認</p>
+              <div class="focus-meta">
+                <span>蔵前コヤマハイツは田原町駅徒歩2分</span>
+                <span>1971年01月</span>
+                <span></span>
+                
+              </div>
+            </article>
+            
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Charts</h2>
+      <div class="chart-grid">
+        <div class="card chart-card"><canvas id="radarChart"></canvas></div>
+        <div class="chart-col">
+          <div class="card chart-card"><canvas id="bucketChart"></canvas></div>
+          <div class="card chart-card"><canvas id="priceChart"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Investor Notes</h2>
+      <ul class="notes">
+        <li>法人（iUMAプロパティマネジメント）での購入を第一優先</li><li>セゾンファンデックス・筑波銀行の融資枠を活用</li><li>東京は住宅宿泊事業法（年間180日）or 簡易宿所許可で民泊対応</li><li>ペット可否はスコアリング要素として評価（ハードフィルタではない）</li><li>管理規約の民泊可否は個別確認が必要</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <div>Sources: 楽待, restate (data/multi_site_tokyo_raw.txt + data/restate_tokyo_raw.txt)</div>
+      <div>Generated on 2026-02-23 19:30:59</div>
+    </div>
+  </div>
+
+  <script>
+    const chartAccent = 'rgba(167,139,250, 1)';
+    const chartAccentFill = 'rgba(167,139,250, 0.18)';
+    const radarLabels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "リノベ余地", "仲介手数料", "民泊規約"];
+    const radarDatasets = [{"label": "1. 渋谷美竹ハイム", "data": [100, 67, 100, 100, 133, 0, 0, 60, 0, 100], "borderWidth": 2}, {"label": "2. パークシティ高田馬場", "data": [100, 100, 100, 67, 133, 0, 0, 60, 0, 100], "borderWidth": 2}, {"label": "3. 麻布台パークハウス", "data": [100, 67, 100, 67, 100, 50, 0, 60, 0, 100], "borderWidth": 2}, {"label": "4. デュフレベース南麻布", "data": [100, 67, 100, 67, 100, 0, 0, 60, 0, 100], "borderWidth": 2}, {"label": "5. 蔵前コヤマハイツ", "data": [100, 100, 0, 100, 120, 0, 0, 60, 0, 100], "borderWidth": 2}].map((d, i) => {
+      const hueShift = [0, 18, 35, 52, 70][i] || 0;
+      const alpha = 0.14 + i * 0.03;
+      return {
+        ...d,
+        borderColor: i === 0 ? chartAccent : `hsla(${(195 + hueShift)%360}, 90%, 68%, .95)`,
+        backgroundColor: i === 0 ? chartAccentFill : `hsla(${(195 + hueShift)%360}, 90%, 68%, ${alpha})`,
+        pointRadius: 2,
+        pointHoverRadius: 4,
+      };
+    });
+    const bucketLabels = ["渋谷/恵比寿/代官山", "新宿/神宮前", "麻布/六本木/白金", "浅草/蔵前/押上", "中野/高円寺", "三田/品川/五反田", "目黒/学芸大学", "Other"];
+    const bucketValues = [2, 3, 2, 1, 1, 3, 1, 3];
+    const priceLabels = ["1500-1999万円", "2500-2999万円", "3000-3499万円", "3500-3999万円", "4000-4499万円", "4500-4999万円"];
+    const priceValues = [2, 4, 4, 2, 2, 2];
+
+    const commonGrid = {
+      color: 'rgba(255,255,255,0.08)',
+      drawBorder: false,
+    };
+    const commonTicks = { color: 'rgba(220,230,245,0.8)', font: { family: 'Inter, Noto Sans JP, sans-serif' } };
+
+    new Chart(document.getElementById('radarChart'), {
+      type: 'radar',
+      data: { labels: radarLabels, datasets: radarDatasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#e8efff' } },
+          title: { display: true, text: 'Top5 スコア内訳比較（0-100正規化）', color: '#e8efff' }
+        },
+        scales: {
+          r: {
+            suggestedMin: 0,
+            suggestedMax: 100,
+            angleLines: { color: 'rgba(255,255,255,0.08)' },
+            grid: { color: 'rgba(255,255,255,0.08)' },
+            pointLabels: { color: 'rgba(230,240,255,0.88)', font: { size: 11 } },
+            ticks: { backdropColor: 'transparent', color: 'rgba(220,230,245,0.55)', stepSize: 20 }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('bucketChart'), {
+      type: 'bar',
+      data: {
+        labels: bucketLabels,
+        datasets: [{
+          label: '件数',
+          data: bucketValues,
+          borderRadius: 8,
+          borderSkipped: false,
+          backgroundColor: bucketValues.map((_, i) => `rgba(167,139,250, ${0.35 + (i % 5) * 0.1})`),
+          borderColor: bucketValues.map((_, i) => `rgba(167,139,250, ${0.7 + (i % 3) * 0.1})`),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'エリア分布（立地バケット別件数）', color: '#e8efff' }
+        },
+        scales: {
+          x: { ticks: commonTicks, grid: { display: false } },
+          y: { ticks: commonTicks, grid: commonGrid, beginAtZero: true }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('priceChart'), {
+      type: 'bar',
+      data: {
+        labels: priceLabels,
+        datasets: [{
+          label: '件数',
+          data: priceValues,
+          borderRadius: 8,
+          borderSkipped: false,
+          backgroundColor: priceValues.map((_, i) => `rgba(255,255,255, ${0.14 + (i % 4) * 0.05})`),
+          borderColor: priceValues.map(() => chartAccent),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: '価格分布（500万円刻み）', color: '#e8efff' }
+        },
+        scales: {
+          x: { ticks: commonTicks, grid: { display: false } },
+          y: { ticks: commonTicks, grid: commonGrid, beginAtZero: true }
+        }
+      }
+    });
+
+    (() => {
+      const table = document.getElementById('propertyTable');
+      const tbody = table.querySelector('tbody');
+      const headers = table.querySelectorAll('thead button[data-sort]');
+      let sortState = { key: 'score', dir: 'desc' };
+
+      const valueFor = (row, key, type) => {
+        if (key === 'name') {
+          return (row.dataset.name || '').toLowerCase();
+        }
+        const v = row.dataset[key];
+        return type === 'number' ? Number(v) : (v || '');
+      };
+
+      const applySort = (key, type) => {
+        if (sortState.key === key) {
+          sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortState = { key, dir: key === 'score' ? 'desc' : 'asc' };
+        }
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        rows.sort((a, b) => {
+          const av = valueFor(a, key, type);
+          const bv = valueFor(b, key, type);
+          let cmp = 0;
+          if (type === 'number') cmp = av - bv;
+          else cmp = String(av).localeCompare(String(bv), 'ja');
+          if (cmp === 0) cmp = Number(a.dataset.index) - Number(b.dataset.index);
+          return sortState.dir === 'asc' ? cmp : -cmp;
+        });
+        rows.forEach(r => tbody.appendChild(r));
+        headers.forEach(h => h.textContent = h.textContent.replace(/[↑↓]$/, ''));
+        const active = Array.from(headers).find(h => h.dataset.sort === key);
+        if (active) active.textContent = active.textContent + (sortState.dir === 'asc' ? '↑' : '↓');
+      };
+
+      headers.forEach(h => {
+        h.addEventListener('click', () => applySort(h.dataset.sort, h.dataset.type || 'string'));
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,9 +1,18 @@
 # HANDOFF
 
-## 最終更新: 2026-02-23（セッション72）
+## 最終更新: 2026-02-23（セッション73）
 
 ## 完了済み（直近セッション）
-- HANDOFF.md の確認・更新（セッション72: コード変更なし）
+- f-takkenリンク修正: `/freins/items/{ID}` 形式に変更（291件正常化）
+- R不動産スクレイパー新規作成（`search_restate.py`）: 東京・大阪・福岡対応
+- ペット判定バグ修正: 不可→可の誤判定（「ペット可否」ラベルの false positive）
+- オーナーチェンジ/賃貸中物件の除外フィルタ追加（福岡42件除外）
+- 駅距離スコア改定: 11-15分=-5、16-20分=-15、20分超=-25
+- 福岡エリアスコア改定: 博多駅/天神=20、薬院=18、Other=-5
+- 東京版レポート新規作成（`generate_tokyo_report.py`）: 楽待+Yahoo 18件
+- 東京エリアスコア: 渋谷/新宿=20、浅草/中目黒=18、池袋/麻布=15、Other=-5
+- 大阪R不動産ドメイン変更対応: realosaka.jp → realosakaestate.jp
+- 全レポートgh-pagesデプロイ済み
 
 ## 完了済み（過去セッション）
 - FinancialProfile統合コミット完了（`0a4f9c0`）— 63セッション放置の未コミット問題を解消
@@ -12,32 +21,25 @@
 - フルオートパイプライン構築（`0aa0727`）: 全ソース検索 → ステータスチェック → レポート → デプロイ → URL通知
 - 大阪・福岡物件検索レポート + 民泊スコアリング（`ded6492`）
 - SEARCH_CRITERIA.md 作成 — 物件検索条件・融資詳細をCLAUDE.mdから分離
-- property-analyzer コードベース全体の把握
-- 確定申告パターン分析（2021-2024）の読み込み・投資家プロフィール把握
 - 大阪R不動産 4物件のWebスクレイピング・基本情報取得
 - 4物件の自宅兼民泊モデル分析（compare_osaka_r.py）
 - Webレポート v1 作成・GitHub Pages公開
-- iUMA第8期決算書の全ページ読み込み・データ抽出
 - ポートフォリオ戦略ダッシュボード（`output/portfolio_dashboard.html`）作成
-- 不動産業者（大阪R不動産）からの回答取得・重要事項調査報告書分析
-- 投資家プロフィール（FinancialProfile）の分析パイプライン統合
 
 ## 進行中 / 未完了
-- `output/osaka_search_report.html` に未コミットの変更あり（96行追加・109行削除）
-- 未追跡ファイル5件: `.claude/worktrees/reverent-napier/`, `SEARCH_CRITERIA.md`, `data/ftakken_debug_*.html`（3件）, `data/ftakken_items_debug.html`
 - #1 扇町の民泊可否 — 大嶺さんへの確認待ち
+- 内見依頼文の作成（大阪・福岡の上位候補向け）— 未着手
+- 東京のデータソース拡充（現在楽待+Yahooのみ19件。SUUMO追加が望ましい）
 - Webレポート v2（公開用・プライバシー対策版）の設計・実装
 - ポートフォリオダッシュボードの数値確定（西浦和・東浦和の取得価額・融資額）
-- GitHub Pages v1レポートのプライバシー対策 or 非公開化
 
 ## 次回アクション（優先順）
-1. **未コミット・未追跡ファイルの整理とコミット** — osaka_search_report.html変更 + SEARCH_CRITERIA.md + debugファイル整理
-2. **#1 扇町の民泊可否を大嶺さんに確認**（重要事項調査報告書の「専有部分用途」欄）
-3. 扇町が民泊可 → 自宅兼民泊モデルで再分析 / 民泊不可 → 東天満（節税）or 別物件探し
+1. **内見依頼文作成** — 大阪・福岡の上位候補に対する内見依頼メール/メッセージ
+2. **東京データ拡充** — SUUMO東京の検索追加、athome URL修正
+3. **#1 扇町の民泊可否を大嶺さんに確認**（重要事項調査報告書の「専有部分用途」欄）
 4. フルオートパイプラインの定期実行設定（cron / GitHub Actions）で新着物件を自動監視
-5. 西浦和・東浦和の取得価額・融資額をGoogle Driveから取得（ダッシュボード数値確定用）
+5. `.gitignore` に `data/*_debug*.html` を追加してデバッグファイルの混入防止
 6. レポートv2のHTML設計・実装（プライバシー対策適用）
-7. **改善アイデア**: `data/ftakken_debug_*.html` のようなデバッグファイルが未追跡のまま残っている。`.gitignore` に `data/*_debug*.html` を追加してデバッグファイルの混入を防ぎ、ワーキングツリーをクリーンに保つ
 
 ## Key Decisions
 - 物件購入は法人（iUMAプロパティマネジメント）優先。個人DTI 61.7%で個人追加融資困難だが法人枠で対応
@@ -46,25 +48,30 @@
 - 物件検索条件・融資詳細はSEARCH_CRITERIA.mdで管理（CLAUDE.mdから分離）
 - フルオートパイプライン構築済み: 複数ソース（SUUMO、f-takken等）→ レポート → デプロイ → 通知
 - **レポート更新時はgh-pagesデプロイまで必須**（ローカル生成のみで終わらない。Webも必ず更新する）
+- ペット判定: 不可を先にチェック（「ペット可否」ラベルの誤判定防止）
+- OC除外: 名前+駅テキストの両方をチェック、キーワード12種で網羅的にフィルタ
+- 駅距離: 10分超はマイナス評価（民泊ゲスト目線）
+- エリアスコア: 都心繁華街=20、周辺好立地=15-18、住宅街=0〜-5
 
 ## ブロッカー / 注意事項
 - **特区民泊の新規受付は2026年5月29日で終了** → 残り約3ヶ月
 - #1 扇町の民泊可否が最重要の未確認事項
-- Google Drive MCP接続エラー（invalid_request）→ ローカルファイル or ユーザー提供で回避
-- 東浦和は土地のみ契約済、建物金消2026年8月 → 稼働は2026年後半以降
+- 東京R不動産は5000万以下40-70㎡の条件で0件（価格帯が合わない）
+- athome東京は404エラー（URL構造が変わった可能性）
 - 現在の公開レポート（v1）にはプライバシー対策が未適用
 - DTI約61.7%（閾値45%超過）→ 個人追加融資困難。法人融資で対応
 
 ## 環境構築メモ (PC交換用)
 - Python 3.13
-- `pip install -r requirements.txt`（anthropic, pyyaml, openpyxl, reportlab, Pillow, numpy, requests, beautifulsoup4）
+- `pip install -r requirements.txt`（anthropic, pyyaml, openpyxl, reportlab, Pillow, numpy, requests, beautifulsoup4, playwright）
+- `playwright install chromium`（f-takkenスクレイパー用）
 - 環境変数: ANTHROPIC_API_KEY
 - GitHub Pages: property-report リポ（gh-pagesブランチ）
 - `gh` CLI でデプロイ
-- ローカルHTMLレポート確認: `open output/portfolio_dashboard.html`
-- フルオートパイプライン: `python run.py` で全ステップ自動実行
+- レポートURL: https://ymatz28-beep.github.io/property-report/
 
 ## History
+- 2026-02-23 セッション73: リンク修正 + R不動産統合 + ペット/OC/駅距離/エリアスコア修正 + 東京版作成
 - 2026-02-23 セッション72: HANDOFF更新のみ
 - 2026-02-23 セッション71: HANDOFF更新のみ
 - 2026-02-23 セッション70: HANDOFF更新のみ。過去コミット反映・状態整理

@@ -423,10 +423,32 @@ def build_comment(row: PropertyRow) -> str:
     return msg
 
 
+def classify_location_tokyo(text: str) -> tuple[str, int]:
+    checks = [
+        ("渋谷/恵比寿/代官山", 20, ["渋谷", "恵比寿", "代官山"]),
+        ("新宿/神宮前", 20, ["新宿", "神宮前"]),
+        ("中目黒/代々木", 18, ["中目黒", "代々木"]),
+        ("浅草/蔵前/押上", 18, ["浅草", "蔵前", "押上"]),
+        ("上野/御徒町", 15, ["上野", "御徒町"]),
+        ("池袋/大塚", 15, ["池袋", "大塚"]),
+        ("麻布/六本木/白金", 15, ["麻布", "六本木", "白金"]),
+        ("三田/品川/五反田", 12, ["三田", "品川", "五反田"]),
+        ("中野/高円寺", 10, ["中野", "高円寺"]),
+        ("巣鴨/駒込/文京", 10, ["巣鴨", "駒込", "文京"]),
+        ("目黒/学芸大学", 10, ["目黒", "学芸大学"]),
+    ]
+    for label, score, kws in checks:
+        if any(kw in text for kw in kws):
+            return label, score
+    return "Other", -5
+
+
 def score_row(row: PropertyRow, config: ReportConfig) -> None:
     text_for_loc = f"{row.location} {row.station_text} {row.name}"
     if config.city_key == "osaka":
         bucket, loc_score = classify_location_osaka(text_for_loc)
+    elif config.city_key == "tokyo":
+        bucket, loc_score = classify_location_tokyo(text_for_loc)
     else:
         bucket, loc_score = classify_location_fukuoka(text_for_loc)
     row.bucket_label = bucket
@@ -1034,8 +1056,9 @@ def generate_report(config: ReportConfig) -> Path:
     meta = extract_search_meta(config.data_path)
     base_rows = parse_data_file(config.data_path)
     raw_count = len(base_rows)
-    # Load extra data sources (楽待, HOME'S, athome, etc.)
-    sources_loaded = ["SUUMO"]
+    # Detect primary source from data file
+    first_source = base_rows[0].source if base_rows else "SUUMO"
+    sources_loaded = [first_source]
     for extra_path in config.extra_data_paths:
         if extra_path.exists():
             extra_rows = parse_data_file(extra_path)

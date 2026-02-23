@@ -223,14 +223,22 @@ def collect_all_properties() -> list[dict]:
     return unique
 
 
-def send_reminder(message: str):
-    """リマインダーに通知"""
+REPORT_URLS = {
+    "fukuoka": "https://ymatz28-beep.github.io/property-report/fukuoka_search_report.html",
+    "osaka": "https://ymatz28-beep.github.io/property-report/osaka_search_report.html",
+}
+
+
+def send_reminder(message: str, notes: str = ""):
+    """リマインダーに通知（本文 + notes）"""
     escaped = message.replace('"', '\\"').replace("'", "'\\''")
+    notes_escaped = notes.replace('"', '\\"').replace("'", "'\\''")
     script = f'''
     tell application "Reminders"
         set targetList to list "リマインダー"
         set newReminder to make new reminder at end of reminders of targetList
         set name of newReminder to "{escaped}"
+        set body of newReminder to "{notes_escaped}"
         set remind me date of newReminder to (current date) + 1 * minutes
     end tell
     '''
@@ -254,14 +262,110 @@ def run_multi_site_search():
         print("  [SKIP] search_multi_site.py not found")
 
 
-def main():
-    print(f"=== 物件ステータスチェック {datetime.now().strftime('%Y-%m-%d %H:%M')} ===")
+def run_ftakken_search():
+    """ふれんず検索を実行"""
+    try:
+        from search_ftakken import search_ftakken, save_results
+        print("\n--- ふれんず検索 ---")
+        props = search_ftakken("fukuoka")
+        if props:
+            save_results(props, "fukuoka")
+            print(f"  ふれんず: {len(props)}件")
+        else:
+            print("  ふれんず: 0件")
+    except ImportError:
+        print("  [SKIP] search_ftakken.py not found")
+    except Exception as e:
+        print(f"  [ERROR] ふれんず: {e}")
 
+
+def deploy_to_gh_pages():
+    """レポートをGitHub Pagesにデプロイ"""
+    import tempfile
+    deploy_dir = Path(tempfile.mkdtemp(prefix="property-deploy-"))
+    try:
+        # Clone gh-pages branch
+        subprocess.run(
+            ["git", "clone", "--branch", "gh-pages", "--single-branch", "--depth", "1",
+             "https://github.com/ymatz28-beep/property-report.git", str(deploy_dir)],
+            capture_output=True, timeout=30,
+        )
+
+        # Copy updated reports
+        updated = False
+        for report in OUTPUT_DIR.glob("*_search_report.html"):
+            dest = deploy_dir / report.name
+            dest.write_text(report.read_text(encoding="utf-8"), encoding="utf-8")
+            updated = True
+
+        if not updated:
+            print("  デプロイ対象なし")
+            return False
+
+        # Commit and push
+        subprocess.run(["git", "add", "-A"], cwd=deploy_dir, capture_output=True)
+        result = subprocess.run(
+            ["git", "diff", "--cached", "--quiet"], cwd=deploy_dir, capture_output=True
+        )
+        if result.returncode == 0:
+            print("  変更なし（デプロイ不要）")
+            return False
+
+        now = datetime.now().strftime("%Y-%m-%d %H:%M")
+        subprocess.run(
+            ["git", "commit", "-m", f"Auto-update reports {now}"],
+            cwd=deploy_dir, capture_output=True, timeout=10,
+        )
+        push_result = subprocess.run(
+            ["git", "push", "origin", "gh-pages"],
+            cwd=deploy_dir, capture_output=True, timeout=30,
+        )
+        if push_result.returncode == 0:
+            print("  GitHub Pagesデプロイ完了")
+            return True
+        else:
+            print(f"  デプロイエラー: {push_result.stderr.decode()[:200]}")
+            return False
+    except Exception as e:
+        print(f"  デプロイエラー: {e}")
+        return False
+    finally:
+        import shutil
+        shutil.rmtree(deploy_dir, ignore_errors=True)
+
+
+def regenerate_reports() -> bool:
+    """レポート再生成"""
+    print("\n--- レポート再生成 ---")
+    try:
+        from generate_osaka_report import main as gen_osaka
+        from generate_fukuoka_report import main as gen_fukuoka
+        gen_osaka()
+        gen_fukuoka()
+        print("  レポート更新完了")
+        return True
+    except Exception as e:
+        print(f"  レポート更新エラー: {e}")
+        return False
+
+
+def main():
+    print(f"=== 物件自動パイプライン {datetime.now().strftime('%Y-%m-%d %H:%M')} ===")
+
+    # --- Step 1: 全ソースから物件データ更新 ---
+    print("\n[1/5] マルチサイト検索")
+    run_multi_site_search()
+
+    print("\n[2/5] ふれんず検索")
+    run_ftakken_search()
+
+    # --- Step 2: 物件ステータスチェック ---
+    print("\n[3/5] 物件ステータスチェック")
     status = load_status()
     prev_props = status.get("properties", {})
     properties = collect_all_properties()
 
-    print(f"チェック対象: {len(properties)}件")
+    print(f"  チェック対象: {len(properties)}件")
 
     newly_sold = []
     results = {}
@@ -287,51 +391,47 @@ def main():
         else:
             print(f"  [{i+1}/{len(properties)}] {current}: {prop['name'] or url}")
 
-        time.sleep(0.5)  # レート制限対策
+        time.sleep(0.5)
 
-    # ステータス保存
     status["last_check"] = datetime.now().isoformat()
     status["properties"] = results
     save_status(status)
 
-    # サマリー
     active = sum(1 for r in results.values() if r["status"] == "ACTIVE")
     sold = sum(1 for r in results.values() if r["status"] == "SOLD")
     errors = sum(1 for r in results.values() if r["status"].startswith("ERROR"))
 
-    print(f"\n=== 結果 ===")
-    print(f"有効: {active}件 / 売却済: {sold}件 / エラー: {errors}件")
+    print(f"\n  有効: {active}件 / 売却済: {sold}件 / エラー: {errors}件")
+    if newly_sold:
+        print(f"  新たに売却済み: {len(newly_sold)}件")
+
+    # --- Step 3: レポート再生成（毎回実行） ---
+    print("\n[4/5] レポート再生成")
+    report_ok = regenerate_reports()
+
+    # --- Step 4: GitHub Pagesデプロイ ---
+    print("\n[5/5] GitHub Pagesデプロイ")
+    deployed = deploy_to_gh_pages()
+
+    # --- Step 5: リマインダー通知（レポートURL付き） ---
+    report_links = "\n".join(f"・{k}: {v}" for k, v in REPORT_URLS.items())
 
     if newly_sold:
-        print(f"\n新たに売却済み: {len(newly_sold)}件")
-        for p in newly_sold:
-            print(f"  - {p['name'] or p['url']}")
-
-        # リマインダー通知
-        msg = f"[物件チェック] {len(newly_sold)}件が売却済み: " + ", ".join(
-            p["name"] or "不明" for p in newly_sold[:3]
-        )
+        sold_names = ", ".join(p["name"] or "不明" for p in newly_sold[:3])
         if len(newly_sold) > 3:
-            msg += f" 他{len(newly_sold)-3}件"
-        send_reminder(msg)
-    else:
-        print("\n変更なし")
+            sold_names += f" 他{len(newly_sold)-3}件"
+        msg = f"[物件更新] {len(newly_sold)}件売却済 / レポート更新済"
+        notes = f"売却済: {sold_names}\n\n最新レポート:\n{report_links}"
+        send_reminder(msg, notes)
+    elif deployed:
+        msg = f"[物件更新] レポート更新済（有効{active}件）"
+        notes = f"最新レポート:\n{report_links}"
+        send_reminder(msg, notes)
 
-    # マルチサイト検索を定期実行
-    run_multi_site_search()
-
-    # レポート再生成
-    if newly_sold:
-        print("\nレポート自動更新中...")
-        try:
-            from generate_osaka_report import main as gen_osaka
-            from generate_fukuoka_report import main as gen_fukuoka
-            gen_osaka()
-            gen_fukuoka()
-            print("レポート更新完了")
-        except Exception as e:
-            print(f"レポート更新エラー: {e}")
-            print("手動で実行: python generate_osaka_report.py && python generate_fukuoka_report.py")
+    print(f"\n=== 完了 ===")
+    print(f"レポート:")
+    for city, url in REPORT_URLS.items():
+        print(f"  {city}: {url}")
 
 
 if __name__ == "__main__":

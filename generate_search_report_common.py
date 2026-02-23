@@ -270,10 +270,10 @@ def station_score(walk_min: int | None) -> int:
     if walk_min <= 10:
         return 10
     if walk_min <= 15:
-        return 5
+        return -5
     if walk_min <= 20:
-        return -10
-    return -20  # 20分超は民泊・居住ともに非現実的
+        return -15
+    return -25  # 20分超は民泊・居住ともに非現実的
 
 
 def layout_score(layout: str) -> int:

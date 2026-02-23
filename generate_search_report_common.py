@@ -303,17 +303,20 @@ def classify_location_osaka(text: str) -> tuple[str, int]:
 
 def classify_location_fukuoka(text: str) -> tuple[str, int]:
     checks = [
-        ("天神/中洲", 15, ["天神", "中洲"]),
-        ("博多駅前/祇園", 14, ["博多駅前", "祇園"]),
-        ("薬院/平尾", 12, ["薬院", "平尾"]),
-        ("赤坂/大濠", 12, ["赤坂", "大濠", "大手門"]),
-        ("住吉/渡辺通", 10, ["住吉", "渡辺通"]),
-        ("呉服町/古門戸", 10, ["呉服町", "古門戸"]),
+        ("博多駅/祇園", 20, ["博多駅", "祇園"]),
+        ("天神/中洲/春吉", 20, ["天神", "中洲", "春吉"]),
+        ("薬院", 18, ["薬院"]),
+        ("赤坂/大濠/大手門", 15, ["赤坂", "大濠", "大手門"]),
+        ("渡辺通/住吉/上川端", 15, ["渡辺通", "住吉", "上川端"]),
+        ("呉服町/古門戸", 12, ["呉服町", "古門戸"]),
+        ("平尾/舞鶴", 10, ["平尾", "舞鶴"]),
+        ("西新/唐人町/藤崎", 5, ["西新", "唐人町", "藤崎"]),
+        ("大橋/高宮", 0, ["大橋", "高宮"]),
     ]
     for label, score, kws in checks:
         if any(kw in text for kw in kws):
             return label, score
-    return "Other", 5
+    return "Other", -5
 
 
 def pet_score_for_row(row: PropertyRow) -> int:
@@ -1054,10 +1057,19 @@ def generate_report(config: ReportConfig) -> Path:
     deduped = [r for r in deduped if r.url.rstrip("/") + "/" not in sold_urls]
     sold_count = before_filter - len(deduped)
 
-    # Filter out owner-change / tenant-occupied properties (can't move in or use for minpaku)
-    _OC_KEYWORDS = ["オーナーチェンジ", "賃貸中", "利回り"]
+    # Filter out owner-change / tenant-occupied / investment-only properties
+    _OC_KEYWORDS = [
+        "オーナーチェンジ", "賃貸中", "利回り", "投資顧問", "投資物件",
+        "家賃", "月額賃料", "年間収入", "年間賃料", "月額",
+        "表面利回", "想定利回", "収益",
+    ]
     before_oc = len(deduped)
-    deduped = [r for r in deduped if not any(kw in r.name for kw in _OC_KEYWORDS)]
+
+    def _is_oc(r: PropertyRow) -> bool:
+        text = f"{r.name} {r.station_text} {r.minpaku_status}"
+        return any(kw in text for kw in _OC_KEYWORDS)
+
+    deduped = [r for r in deduped if not _is_oc(r)]
     oc_count = before_oc - len(deduped)
 
     for row in deduped:

@@ -2,6 +2,26 @@ from pathlib import Path
 
 from generate_search_report_common import ReportConfig, generate_report
 
+DATA_DIR = Path("data")
+
+
+def find_extra_data_paths(city_key: str) -> list[Path]:
+    """Find multi-site data files for this city."""
+    paths = []
+    combined = DATA_DIR / f"multi_site_{city_key}_raw.txt"
+    if combined.exists():
+        paths.append(combined)
+    else:
+        for pattern in [f"rakumachi_{city_key}_raw.txt", f"yahoo_{city_key}_raw.txt", f"athome_{city_key}_raw.txt"]:
+            p = DATA_DIR / pattern
+            if p.exists():
+                paths.append(p)
+    # f-takken.com (ふれんず) - manual data
+    ftakken = DATA_DIR / f"ftakken_{city_key}_raw.txt"
+    if ftakken.exists():
+        paths.append(ftakken)
+    return paths
+
 
 def main() -> None:
     config = ReportConfig(
@@ -18,9 +38,10 @@ def main() -> None:
             "ペット可/相談可重視（評価項目）",
         ],
         search_condition_bullets=[
+            "SUUMO + 楽待 + Yahoo不動産 + ふれんず(f-takken.com)のマルチソース",
             "天神/中洲、博多駅前/祇園を高評価エリアとして優先",
-            "ペット可否はスコアリング要素（ハードフィルタではない）",
-            "バス便物件は候補から除外せず、駅距離評価のみ減点",
+            "ペット可は高加点（15点）、リノベ未実施は加点、仲介手数料割引も加点",
+            "ふれんず検索: <a href='https://www.f-takken.com/freins/buy/mansion/area?locate[]=40132'>博多区</a> / <a href='https://www.f-takken.com/freins/buy/mansion/area?locate[]=40133'>中央区</a>",
         ],
         investor_notes=[
             "法人（iUMAプロパティマネジメント）での購入を第一優先",
@@ -30,6 +51,7 @@ def main() -> None:
             "管理規約の民泊可否は個別確認が必要",
         ],
         include_osaka_r=False,
+        extra_data_paths=find_extra_data_paths("fukuoka"),
     )
     out = generate_report(config)
     print(f"Generated: {out}")

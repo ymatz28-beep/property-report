@@ -30,6 +30,7 @@ class ReportConfig:
     search_condition_bullets: list[str]
     investor_notes: list[str]
     include_osaka_r: bool = False
+    extra_data_paths: list[Path] = field(default_factory=list)  # Additional site data files
 
 
 @dataclass
@@ -44,6 +45,8 @@ class PropertyRow:
     layout: str
     url: str
     minpaku_status: str = ""
+    pet_status: str = ""  # "可", "相談可", "不可", ""
+    brokerage_text: str = ""  # "無料", "半額", "割引", "3%+6.6万", ""
     raw_line: str = ""
     price_man: int = 0
     area_sqm: float | None = None
@@ -108,27 +111,60 @@ def extract_search_meta(data_path: Path) -> dict[str, str]:
     return meta
 
 
-def parse_data_file(data_path: Path) -> list[PropertyRow]:
+def parse_data_file(data_path: Path, default_source: str = "SUUMO") -> list[PropertyRow]:
     rows: list[PropertyRow] = []
     for line in data_path.read_text(encoding="utf-8").splitlines():
         s = line.strip()
         if not s or s.startswith("#"):
             continue
         parts = [p.strip() for p in s.split("|")]
-        if len(parts) != 8:
+        if len(parts) == 8:
+            # Standard SUUMO format: name|price|location|area|built|station|layout|url
+            row = PropertyRow(
+                source=default_source,
+                name=parts[0],
+                price_text=parts[1],
+                location=parts[2],
+                area_text=parts[3],
+                built_text=parts[4],
+                station_text=parts[5],
+                layout=parts[6],
+                url=parts[7],
+                raw_line=s,
+            )
+        elif len(parts) == 10:
+            # Extended format: source|name|price|location|area|built|station|layout|pet|url
+            row = PropertyRow(
+                source=parts[0] or default_source,
+                name=parts[1],
+                price_text=parts[2],
+                location=parts[3],
+                area_text=parts[4],
+                built_text=parts[5],
+                station_text=parts[6],
+                layout=parts[7],
+                pet_status=parts[8],
+                url=parts[9],
+                raw_line=s,
+            )
+        elif len(parts) == 11:
+            # Full format: source|name|price|location|area|built|station|layout|pet|brokerage|url
+            row = PropertyRow(
+                source=parts[0] or default_source,
+                name=parts[1],
+                price_text=parts[2],
+                location=parts[3],
+                area_text=parts[4],
+                built_text=parts[5],
+                station_text=parts[6],
+                layout=parts[7],
+                pet_status=parts[8],
+                brokerage_text=parts[9],
+                url=parts[10],
+                raw_line=s,
+            )
+        else:
             continue
-        row = PropertyRow(
-            source="SUUMO",
-            name=parts[0],
-            price_text=parts[1],
-            location=parts[2],
-            area_text=parts[3],
-            built_text=parts[4],
-            station_text=parts[5],
-            layout=parts[6],
-            url=parts[7],
-            raw_line=s,
-        )
         hydrate_parsed_fields(row)
         rows.append(row)
     return rows
@@ -165,16 +201,29 @@ def hydrate_parsed_fields(row: PropertyRow) -> None:
     row.walk_min = parse_walk_minutes(row.station_text)
 
 
+def _normalize_name(name: str) -> str:
+    """Normalize property name for dedup (handles katakana variants like シティ/シテイ)."""
+    s = re.sub(r"[\s　]+", "", name)
+    s = s.replace("テイ", "ティ").replace("ヴィ", "ビ")
+    s = re.sub(r"[Ⅰ-Ⅻ]", lambda m: str("ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫ".index(m.group()) + 1), s)
+    return s
+
+
 def dedupe_properties(rows: list[PropertyRow]) -> tuple[list[PropertyRow], int]:
-    seen: set[tuple[str, int]] = set()
+    seen: set[tuple] = set()
     out: list[PropertyRow] = []
     dup_count = 0
     for row in rows:
-        key = (row.name, row.price_man)
-        if key in seen:
+        # Primary key: normalized name + area_sqm (same building, same unit)
+        norm = _normalize_name(row.name)
+        key_physical = (norm, row.area_sqm)
+        # Fallback: original name + price
+        key_name_price = (row.name, row.price_man)
+        if key_physical in seen or key_name_price in seen:
             dup_count += 1
             continue
-        seen.add(key)
+        seen.add(key_physical)
+        seen.add(key_name_price)
         out.append(row)
     return out, dup_count
 
@@ -266,11 +315,50 @@ def classify_location_fukuoka(text: str) -> tuple[str, int]:
 
 
 def pet_score_for_row(row: PropertyRow) -> int:
+    """Pet scoring: 可=15, 相談可=10, SUUMO(filtered for pet)=10, unknown=0, 不可=-5"""
+    text = f"{row.pet_status} {row.name} {row.minpaku_status}".lower()
+    if "ペット可" in text or row.pet_status == "可":
+        return 15
+    if "ペット相談" in text or row.pet_status == "相談可":
+        return 10
     if row.source == "SUUMO":
-        return 5
-    if "ペット" in f"{row.name} {row.minpaku_status}":
-        return 5
+        # SUUMO data was pre-filtered for ペット相談可
+        return 10
+    if "ペット不可" in text or row.pet_status == "不可":
+        return -5
     return 0
+
+
+def brokerage_score(row: PropertyRow) -> int:
+    """Brokerage fee scoring: 無料=5, 半額=3, 割引=2, normal=0"""
+    text = row.brokerage_text
+    if not text:
+        return 0
+    if "無料" in text or "0円" in text:
+        return 5
+    if "半額" in text or "50%" in text:
+        return 3
+    if "割引" in text or "値引" in text:
+        return 2
+    return 0
+
+
+def renovation_score(row: PropertyRow) -> int:
+    """Renovation scoring: unrenovated=5 (can DIY), renovated=0, unknown=3"""
+    text = f"{row.name} {row.raw_line}".lower()
+    renovated_keywords = [
+        "リノベーション済", "リノベ済", "リフォーム済", "フルリノベ",
+        "フルリフォーム", "新装", "内装済", "室内リフォーム",
+        "リノベーション済み", "リフォーム済み",
+    ]
+    if any(kw.lower() in text for kw in renovated_keywords):
+        return 0  # Already renovated - no DIY opportunity
+    unrenovated_keywords = [
+        "現況", "現状渡し", "そのまま", "古い",
+    ]
+    if any(kw in text for kw in unrenovated_keywords):
+        return 5  # Clearly unrenovated - DIY opportunity
+    return 3  # Unknown - likely unrenovated (most used condos)
 
 
 def minpaku_penalty(row: PropertyRow) -> int:
@@ -278,11 +366,11 @@ def minpaku_penalty(row: PropertyRow) -> int:
 
 
 def grade_tier(total: int) -> tuple[str, str, str]:
-    if total >= 75:
+    if total >= 80:
         return "強く推奨", "tier-strong", "#22c55e"
-    if total >= 60:
+    if total >= 65:
         return "推奨", "tier-good", "#facc15"
-    if total >= 45:
+    if total >= 50:
         return "条件付き", "tier-conditional", "#fb923c"
     return "見送り", "tier-pass", "#ef4444"
 
@@ -291,6 +379,10 @@ def build_comment(row: PropertyRow) -> str:
     strengths: list[str] = []
     cautions: list[str] = []
     b = row.score_breakdown
+    if b.get("pet", 0) >= 15:
+        strengths.append("ペット可確定")
+    elif b.get("pet", 0) >= 10:
+        strengths.append("ペット相談可")
     if b.get("budget", 0) >= 15:
         strengths.append("予算適合")
     if b.get("station", 0) >= 10:
@@ -301,7 +393,13 @@ def build_comment(row: PropertyRow) -> str:
         strengths.append("新耐震")
     if b.get("layout", 0) == 10:
         strengths.append("2-3LDKで運用幅あり")
-    if b.get("pet", 0) == 0:
+    if b.get("renovation", 0) >= 5:
+        strengths.append("リノベ余地あり")
+    if b.get("brokerage", 0) >= 3:
+        strengths.append(f"仲介手数料{row.brokerage_text}")
+    if b.get("renovation", 0) == 0:
+        cautions.append("リノベ済み（DIY余地なし）")
+    if b.get("pet", 0) <= 0:
         cautions.append("ペット条件要確認")
     if b.get("minpaku_penalty", 0) < 0:
         cautions.append("民泊規約で大幅減点")
@@ -313,7 +411,7 @@ def build_comment(row: PropertyRow) -> str:
         cautions.append("予算超過")
     if not strengths:
         strengths.append("個別要件次第で再評価余地")
-    msg = " / ".join(strengths[:3])
+    msg = " / ".join(strengths[:4])
     if cautions:
         msg += "。注意: " + "、".join(cautions[:3])
     return msg
@@ -335,6 +433,8 @@ def score_row(row: PropertyRow, config: ReportConfig) -> None:
         "location": loc_score,
         "layout": layout_score(row.layout),
         "pet": row.pet_score,
+        "renovation": renovation_score(row),
+        "brokerage": brokerage_score(row),
         "minpaku_penalty": minpaku_penalty(row),
     }
     row.score_breakdown = breakdown
@@ -372,7 +472,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     price_bin_labels = [f"{b}-{b+499}万円" for b in sorted(price_bins)]
     price_bin_values = [price_bins[b] for b in sorted(price_bins)]
 
-    radar_labels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "民泊規約"]
+    radar_labels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "リノベ余地", "仲介手数料", "民泊規約"]
     radar_datasets = []
     for i, r in enumerate(top5):
         b = r.score_breakdown
@@ -386,7 +486,9 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
                     round(b["station"] / 15 * 100),
                     round(b["location"] / 15 * 100),
                     round(b["layout"] / 10 * 100),
-                    round(b["pet"] / 5 * 100) if 5 else 0,
+                    max(0, round(b["pet"] / 15 * 100)),
+                    round(b["renovation"] / 5 * 100),
+                    round(b["brokerage"] / 5 * 100),
                     0 if b["minpaku_penalty"] < 0 else 100,
                 ],
                 "borderWidth": 2,
@@ -426,6 +528,8 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
             ("立地", b["location"]),
             ("間取り", b["layout"]),
             ("ペット", b["pet"]),
+            ("リノベ", b["renovation"]),
+            ("仲介", b["brokerage"]),
             ("民泊規約", b["minpaku_penalty"]),
         ]
         chip_html = "".join(
@@ -454,7 +558,8 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
             """
         )
 
-    city_badge = "大阪R不動産4件を追加" if config.include_osaka_r else "SUUMO抽出データ"
+    sources_str = meta.get("sources_loaded", "SUUMO")
+    city_badge = f"データソース: {sources_str}"
     html_doc = f"""<!doctype html>
 <html lang="ja">
 <head>
@@ -666,6 +771,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         <span class="badge">検索日 {html.escape(search_date)}</span>
         <span class="badge">原データ {raw_count}件</span>
         <span class="badge">重複除外 {duplicate_count}件</span>
+        <span class="badge">売却済除外 {meta.get("sold_removed", "0")}件</span>
         <span class="badge">有効件数 {len(rows_sorted)}件</span>
         <span class="badge">{html.escape(city_badge)}</span>
       </div>
@@ -744,7 +850,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     </section>
 
     <div class="footer">
-      <div>Sources: SUUMO raw text ({html.escape(str(config.data_path))}) {(" + 大阪R不動産追加入力" if config.include_osaka_r else "")}</div>
+      <div>Sources: {html.escape(sources_str)} ({html.escape(str(config.data_path))}{' + ' + ', '.join(str(p) for p in config.extra_data_paths) if config.extra_data_paths else ''})</div>
       <div>Generated on {html.escape(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))}</div>
     </div>
   </div>
@@ -901,17 +1007,56 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     return html_doc
 
 
+def load_sold_urls() -> set[str]:
+    """Load sold property URLs from status file."""
+    status_file = Path(__file__).parent / "data" / "property_status.json"
+    if not status_file.exists():
+        return set()
+    try:
+        data = json.loads(status_file.read_text(encoding="utf-8"))
+        return {
+            url.rstrip("/") + "/"
+            for url, info in data.get("properties", {}).items()
+            if info.get("status") == "SOLD"
+        }
+    except Exception:
+        return set()
+
+
 def generate_report(config: ReportConfig) -> Path:
     meta = extract_search_meta(config.data_path)
     base_rows = parse_data_file(config.data_path)
     raw_count = len(base_rows)
+    # Load extra data sources (楽待, HOME'S, athome, etc.)
+    sources_loaded = ["SUUMO"]
+    for extra_path in config.extra_data_paths:
+        if extra_path.exists():
+            extra_rows = parse_data_file(extra_path)
+            base_rows.extend(extra_rows)
+            raw_count += len(extra_rows)
+            source_name = extra_path.stem.split("_")[0]
+            if source_name not in sources_loaded:
+                sources_loaded.append(source_name)
     if config.include_osaka_r:
         base_rows.extend(parse_osaka_r_rows(OSAKA_R_ROWS))
         raw_count += 4
+        if "大阪R不動産" not in sources_loaded:
+            sources_loaded.append("大阪R不動産")
     deduped, duplicate_count = dedupe_properties(base_rows)
+
+    # Filter out sold properties
+    sold_urls = load_sold_urls()
+    before_filter = len(deduped)
+    deduped = [r for r in deduped if r.url.rstrip("/") + "/" not in sold_urls]
+    sold_count = before_filter - len(deduped)
+
     for row in deduped:
         score_row(row, config)
+    meta["sources_loaded"] = ", ".join(sources_loaded)
+    meta["sold_removed"] = str(sold_count)
     html_text = build_report_html(config, deduped, meta, raw_count=raw_count, duplicate_count=duplicate_count)
     config.output_path.parent.mkdir(parents=True, exist_ok=True)
     config.output_path.write_text(html_text, encoding="utf-8")
+    if sold_count > 0:
+        print(f"  Removed {sold_count} sold properties")
     return config.output_path

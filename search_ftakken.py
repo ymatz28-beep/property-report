@@ -195,14 +195,17 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
 
 def scrape_ward(page, items_url: str, ward_code: str, ward_name: str) -> list[dict]:
     """Scrape property listings for a specific ward."""
-    # Use the items URL with limit=100 to get max results per page
-    url = f"{items_url}?locate[]={ward_code}&limit=100"
+    # Use the items URL with limit=100 and price/area filters
+    # data_22=price upper, data_30=area min, data_31=area max, data_409=1 exclude owner-change
+    url = (f"{items_url}?locate[]={ward_code}&limit=100"
+           f"&data_22={PRICE_MAX}&data_30={AREA_MIN}&data_31={AREA_MAX}"
+           f"&data_409=1")
     print(f"  {ward_name} ({url})")
 
     try:
-        page.goto(url, timeout=30000, wait_until="domcontentloaded")
-        page.wait_for_load_state("networkidle", timeout=20000)
-        time.sleep(2)
+        page.goto(url, timeout=60000, wait_until="domcontentloaded")
+        page.wait_for_load_state("networkidle", timeout=45000)
+        time.sleep(3)
     except PlaywrightTimeout:
         print(f"    [WARN] Timeout loading {ward_name}")
         return []
@@ -217,18 +220,16 @@ def scrape_ward(page, items_url: str, ward_code: str, ward_name: str) -> list[di
         if not page_text or len(page_text) < 100:
             break
 
-        # Extract detail URLs for this page
-        detail_links = page.query_selector_all(
-            f'a[href*="/freins/search/buy/mansion/area/{ward_code}/"]'
-        )
+        # Extract detail URLs via data-id attributes on property list items
+        property_items = page.query_selector_all('li.item.list-tpl[data-id]')
         detail_urls = []
         seen = set()
-        for link in detail_links:
+        for item in property_items:
             try:
-                href = link.get_attribute("href") or ""
-                if href and href not in seen:
-                    seen.add(href)
-                    detail_urls.append(href)
+                bno = item.get_attribute("data-id") or ""
+                if bno and bno not in seen:
+                    seen.add(bno)
+                    detail_urls.append(f"https://www.f-takken.com/freins/items/{bno}")
             except Exception:
                 continue
 

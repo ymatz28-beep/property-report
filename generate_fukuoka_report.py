@@ -16,10 +16,14 @@ def find_extra_data_paths(city_key: str) -> list[Path]:
             p = DATA_DIR / pattern
             if p.exists():
                 paths.append(p)
-    # f-takken.com (ふれんず) - manual data
+    # f-takken.com (ふれんず)
     ftakken = DATA_DIR / f"ftakken_{city_key}_raw.txt"
     if ftakken.exists():
         paths.append(ftakken)
+    # R不動産
+    restate = DATA_DIR / f"restate_{city_key}_raw.txt"
+    if restate.exists():
+        paths.append(restate)
     return paths
 
 
@@ -38,10 +42,9 @@ def main() -> None:
             "ペット可/相談可重視（評価項目）",
         ],
         search_condition_bullets=[
-            "SUUMO + 楽待 + Yahoo不動産 + ふれんず(f-takken.com)のマルチソース",
+            "SUUMO + 楽待 + Yahoo不動産 + ふれんず + 福岡R不動産のマルチソース",
             "天神/中洲、博多駅前/祇園を高評価エリアとして優先",
             "ペット可は高加点（15点）、リノベ未実施は加点、仲介手数料割引も加点",
-            "ふれんず検索: <a href='https://www.f-takken.com/freins/buy/mansion/area?locate[]=40132'>博多区</a> / <a href='https://www.f-takken.com/freins/buy/mansion/area?locate[]=40133'>中央区</a>",
         ],
         investor_notes=[
             "法人（iUMAプロパティマネジメント）での購入を第一優先",

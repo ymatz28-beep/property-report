@@ -271,7 +271,9 @@ def station_score(walk_min: int | None) -> int:
         return 10
     if walk_min <= 15:
         return 5
-    return 0
+    if walk_min <= 20:
+        return -10
+    return -20  # 20分超は民泊・居住ともに非現実的
 
 
 def layout_score(layout: str) -> int:
@@ -316,7 +318,10 @@ def classify_location_fukuoka(text: str) -> tuple[str, int]:
 
 def pet_score_for_row(row: PropertyRow) -> int:
     """Pet scoring: 可=15, 相談可=10, SUUMO(filtered for pet)=10, unknown=0, 不可=-5"""
-    text = f"{row.pet_status} {row.name} {row.minpaku_status}".lower()
+    text = f"{row.pet_status} {row.name} {row.minpaku_status}"
+    # Check 不可 BEFORE 可 to avoid false positives
+    if "ペット不可" in text or row.pet_status == "不可":
+        return -5
     if "ペット可" in text or row.pet_status == "可":
         return 15
     if "ペット相談" in text or row.pet_status == "相談可":
@@ -324,8 +329,6 @@ def pet_score_for_row(row: PropertyRow) -> int:
     if row.source == "SUUMO":
         # SUUMO data was pre-filtered for ペット相談可
         return 10
-    if "ペット不可" in text or row.pet_status == "不可":
-        return -5
     return 0
 
 
@@ -772,6 +775,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         <span class="badge">原データ {raw_count}件</span>
         <span class="badge">重複除外 {duplicate_count}件</span>
         <span class="badge">売却済除外 {meta.get("sold_removed", "0")}件</span>
+        <span class="badge">OC除外 {meta.get("oc_removed", "0")}件</span>
         <span class="badge">有効件数 {len(rows_sorted)}件</span>
         <span class="badge">{html.escape(city_badge)}</span>
       </div>
@@ -1050,13 +1054,22 @@ def generate_report(config: ReportConfig) -> Path:
     deduped = [r for r in deduped if r.url.rstrip("/") + "/" not in sold_urls]
     sold_count = before_filter - len(deduped)
 
+    # Filter out owner-change / tenant-occupied properties (can't move in or use for minpaku)
+    _OC_KEYWORDS = ["オーナーチェンジ", "賃貸中", "利回り"]
+    before_oc = len(deduped)
+    deduped = [r for r in deduped if not any(kw in r.name for kw in _OC_KEYWORDS)]
+    oc_count = before_oc - len(deduped)
+
     for row in deduped:
         score_row(row, config)
     meta["sources_loaded"] = ", ".join(sources_loaded)
     meta["sold_removed"] = str(sold_count)
+    meta["oc_removed"] = str(oc_count)
     html_text = build_report_html(config, deduped, meta, raw_count=raw_count, duplicate_count=duplicate_count)
     config.output_path.parent.mkdir(parents=True, exist_ok=True)
     config.output_path.write_text(html_text, encoding="utf-8")
     if sold_count > 0:
         print(f"  Removed {sold_count} sold properties")
+    if oc_count > 0:
+        print(f"  Removed {oc_count} owner-change/tenant-occupied properties")
     return config.output_path

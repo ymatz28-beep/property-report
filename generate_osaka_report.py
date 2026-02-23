@@ -11,12 +11,16 @@ def find_extra_data_paths(city_key: str) -> list[Path]:
     combined = DATA_DIR / f"multi_site_{city_key}_raw.txt"
     if combined.exists():
         paths.append(combined)
-        return paths  # Combined file has everything
-    # Fallback: individual site files
-    for pattern in [f"rakumachi_{city_key}_raw.txt", f"yahoo_{city_key}_raw.txt", f"athome_{city_key}_raw.txt"]:
-        p = DATA_DIR / pattern
-        if p.exists():
-            paths.append(p)
+    else:
+        # Fallback: individual site files
+        for pattern in [f"rakumachi_{city_key}_raw.txt", f"yahoo_{city_key}_raw.txt", f"athome_{city_key}_raw.txt"]:
+            p = DATA_DIR / pattern
+            if p.exists():
+                paths.append(p)
+    # R不動産
+    restate = DATA_DIR / f"restate_{city_key}_raw.txt"
+    if restate.exists():
+        paths.append(restate)
     return paths
 
 
@@ -35,8 +39,7 @@ def main() -> None:
             "ペット可/相談可優先",
         ],
         search_condition_bullets=[
-            "大阪R不動産の4件を別ソースとして追加（民泊可否メモ付き）",
-            "SUUMO + 楽待 + Yahoo不動産のマルチソース",
+            "SUUMO + 楽待 + Yahoo不動産 + 大阪R不動産のマルチソース",
             "北堀江/南堀江を最優先、天満・中津・心斎橋周辺も重点評価",
             "ペット可は高加点（15点）、リノベ未実施は加点、仲介手数料割引も加点",
         ],
@@ -47,7 +50,7 @@ def main() -> None:
             "管理規約の民泊可否は個別確認が必要",
             "戸建て・メゾネットは管理規約制約なしのため並行検索推奨",
         ],
-        include_osaka_r=True,
+        include_osaka_r=False,
         extra_data_paths=find_extra_data_paths("osaka"),
     )
     out = generate_report(config)

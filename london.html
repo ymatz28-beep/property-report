@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ロンドン旅行プラン 2026年3月27日〜4月5日</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap');
+
+  :root {
+    --navy: #1B2A4A;
+    --navy-dark: #0D1B2A;
+    --red: #C8102E;
+    --red-light: #E8465A;
+    --cream: #F5F0E8;
+    --gold: #C5A55A;
+    --gold-light: #E0D5B0;
+    --white: #f5f5f5;
+    --card-bg: rgba(255,255,255,0.05);
+    --glass: rgba(255,255,255,0.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--navy-dark);
+    color: var(--white);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #0D1B2A 0%, #1B2A4A 30%, #243B5F 60%, #2D4A7A 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(200,16,46,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(197,165,90,0.05) 0%, transparent 50%);
+    animation: rotate 30s linear infinite;
+  }
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .hero-content { position: relative; z-index: 1; padding: 2rem; }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    background: linear-gradient(135deg, var(--cream), #fff, var(--cream));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+  .hero .subtitle {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+    margin-bottom: 2rem;
+  }
+  .hero .trip-info {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+  .info-chip {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(197,165,90,0.2);
+    border-radius: 50px;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+    color: var(--gold-light);
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+    color: rgba(255,255,255,0.3);
+    font-size: 1.5rem;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
+  }
+
+  /* Countdown */
+  .countdown {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  .countdown-item { text-align: center; }
+  .countdown-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--cream);
+    line-height: 1;
+  }
+  .countdown-label {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  /* Navigation */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,27,42,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(197,165,90,0.15);
+    padding: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .nav-inner {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  .nav a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    padding: 1rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    border-bottom: 2px solid transparent;
+    display: inline-block;
+  }
+  .nav a:hover, .nav a.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* Sections */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+  .section-sub {
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 2.5rem;
+    font-size: 0.95rem;
+  }
+
+  /* Flight Comparison */
+  .flight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  .flight-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .flight-card:hover {
+    border-color: rgba(197,165,90,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .flight-card.recommended {
+    border-color: rgba(200,16,46,0.4);
+    background: rgba(200,16,46,0.05);
+  }
+  .flight-card.recommended::before {
+    content: 'BEST PICK';
+    position: absolute;
+    top: 1rem;
+    right: -2rem;
+    background: var(--red);
+    color: white;
+    padding: 0.2rem 2.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    transform: rotate(45deg);
+  }
+  .flight-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    color: var(--cream);
+  }
+  .flight-price {
+    font-size: 1.1rem;
+    color: var(--red-light);
+    margin-bottom: 1rem;
+  }
+  .flight-features {
+    list-style: none;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+  }
+  .flight-features li {
+    padding: 0.3rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+  .flight-features li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+
+  /* Hotel Cards */
+  .hotel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .hotel-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .hotel-card:hover {
+    border-color: rgba(197,165,90,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .hotel-card.recommended {
+    border-color: rgba(200,16,46,0.4);
+    background: rgba(200,16,46,0.05);
+  }
+  .hotel-card.recommended::before {
+    content: 'BEST PICK';
+    position: absolute;
+    top: 1rem;
+    right: -2rem;
+    background: var(--red);
+    color: white;
+    padding: 0.2rem 2.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    transform: rotate(45deg);
+  }
+  .hotel-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    color: var(--gold-light);
+  }
+  .hotel-price {
+    font-size: 1.1rem;
+    color: var(--red-light);
+    margin-bottom: 1rem;
+  }
+  .hotel-features {
+    list-style: none;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+  }
+  .hotel-features li {
+    padding: 0.3rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+  .hotel-features li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+
+  /* Day Timeline */
+  .day-section {
+    margin-bottom: 3rem;
+    scroll-margin-top: 4rem;
+  }
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .day-badge {
+    background: linear-gradient(135deg, var(--red), #A00D24);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .day-badge .num { font-size: 1.5rem; line-height: 1; }
+  .day-badge .label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; }
+  .day-title { font-size: 1.4rem; font-weight: 700; }
+  .day-date { color: rgba(255,255,255,0.4); font-size: 0.85rem; }
+
+  .timeline {
+    position: relative;
+    padding-left: 2.5rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--red), rgba(200,16,46,0.1));
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    transition: all 0.3s;
+  }
+  .timeline-item:hover {
+    border-color: rgba(197,165,90,0.2);
+    background: rgba(255,255,255,0.06);
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 1.5rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--red);
+    border: 2px solid var(--navy-dark);
+  }
+  .time-label {
+    font-size: 0.75rem;
+    color: var(--red-light);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+  }
+  .activity-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .activity-desc {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+  }
+  .tag {
+    display: inline-block;
+    background: rgba(197,165,90,0.15);
+    color: var(--gold-light);
+    padding: 0.15rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    margin-top: 0.5rem;
+    margin-right: 0.3rem;
+  }
+  .tag.food { background: rgba(200,16,46,0.15); color: #ff8fa3; }
+  .tag.culture { background: rgba(76,175,80,0.15); color: #81c784; }
+  .tag.shopping { background: rgba(156,39,176,0.15); color: #ce93d8; }
+  .tag.transport { background: rgba(33,150,243,0.15); color: #90caf9; }
+  .tag.free { background: rgba(255,193,7,0.15); color: #ffe082; }
+
+  /* Tips */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+  .tip-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .tip-card h3 {
+    color: var(--gold);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  .tip-card p {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* Budget */
+  .budget-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .budget-table th {
+    text-align: left;
+    padding: 0.8rem 1rem;
+    color: var(--gold);
+    border-bottom: 1px solid rgba(197,165,90,0.2);
+    font-weight: 500;
+  }
+  .budget-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.7);
+  }
+  .budget-table tr:last-child td {
+    border-bottom: none;
+    font-weight: 700;
+    color: var(--cream);
+    font-size: 1.05rem;
+  }
+  .budget-table .sub td {
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+
+  /* Restaurant Cards */
+  .resto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.2rem;
+  }
+  .resto-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s;
+  }
+  .resto-card:hover {
+    border-color: rgba(200,16,46,0.3);
+    transform: translateY(-2px);
+  }
+  .resto-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 0.2rem;
+  }
+  .resto-type {
+    font-size: 0.75rem;
+    color: var(--red-light);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .resto-desc {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* Map */
+  .map-container {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 1.5rem;
+  }
+  #map { width: 100%; height: 500px; }
+  .spot-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+  .spot-item {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+  .spot-item:hover {
+    border-color: rgba(197,165,90,0.3);
+    background: rgba(255,255,255,0.06);
+  }
+  .spot-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .spot-icon.culture-icon { background: rgba(76,175,80,0.2); }
+  .spot-icon.food-icon { background: rgba(200,16,46,0.2); }
+  .spot-icon.hotel-icon { background: rgba(197,165,90,0.2); }
+  .spot-icon.transport-icon { background: rgba(33,150,243,0.2); }
+  .spot-name { font-size: 0.85rem; font-weight: 500; }
+  .spot-area { font-size: 0.7rem; color: rgba(255,255,255,0.4); }
+
+  .map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+    padding: 0.3rem 0.8rem;
+    background: rgba(197,165,90,0.1);
+    border: 1px solid rgba(197,165,90,0.25);
+    border-radius: 20px;
+    color: var(--gold-light);
+    font-size: 0.75rem;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .map-link:hover { background: rgba(197,165,90,0.25); border-color: var(--gold); }
+
+  /* Reservations */
+  .reservation-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s;
+  }
+  .reservation-card:hover { border-color: rgba(197,165,90,0.2); }
+  .res-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .res-status.pending { background: #ffd93d; }
+  .res-status.confirmed { background: #6bcb77; }
+  .res-status.not-needed { background: rgba(255,255,255,0.2); }
+  .res-info { flex: 1; }
+  .res-name { font-weight: 600; font-size: 0.95rem; }
+  .res-detail { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+  /* Checklist */
+  .checklist-category { margin-bottom: 2rem; }
+  .checklist-category h3 {
+    color: var(--gold);
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(197,165,90,0.15);
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .check-item:hover { opacity: 0.8; }
+  .check-item input[type="checkbox"] { display: none; }
+  .check-box {
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s;
+    font-size: 0.7rem;
+    color: transparent;
+  }
+  .check-item input:checked + .check-box {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+  .check-item input:checked ~ .check-text {
+    text-decoration: line-through;
+    opacity: 0.4;
+  }
+  .check-text {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+    transition: all 0.3s;
+  }
+  .checklist-progress {
+    background: rgba(255,255,255,0.05);
+    border-radius: 20px;
+    height: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .checklist-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--red-light));
+    border-radius: 20px;
+    transition: width 0.5s ease;
+  }
+  .checklist-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* Leaflet popup override */
+  .leaflet-popup-content-wrapper {
+    background: #1B2A4A;
+    color: #f5f5f5;
+    border: 1px solid rgba(197,165,90,0.3);
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+  .leaflet-popup-tip { background: #1B2A4A; }
+  .leaflet-popup-content { font-family: 'Noto Sans JP', sans-serif; font-size: 0.85rem; line-height: 1.5; }
+  .leaflet-popup-content a { color: var(--gold); text-decoration: none; }
+  .leaflet-popup-content strong { color: var(--gold-light); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem;
+    color: rgba(255,255,255,0.2);
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; color: #333; }
+    .nav, .scroll-hint, .check-box { display: none; }
+    .hero { min-height: auto; padding: 2rem; background: #1B2A4A !important; }
+    .hero::before { display: none; }
+    .section { padding: 1.5rem; }
+    .flight-card, .hotel-card, .resto-card, .tip-card, .timeline-item, .reservation-card {
+      border-color: #ddd;
+      background: #f9f9f9;
+      break-inside: avoid;
+    }
+    .section-title { color: #1B2A4A; }
+    .tag { border: 1px solid #ccc; }
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2.2rem; }
+    .section { padding: 2.5rem 1rem; }
+    .timeline { padding-left: 2rem; }
+    .nav a { padding: 0.8rem 1rem; font-size: 0.8rem; }
+    .info-chip { font-size: 0.8rem; padding: 0.4rem 1rem; }
+  }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>LONDON</h1>
+    <p class="subtitle">Trip Planner 2026</p>
+    <p style="color:rgba(255,255,255,0.5); font-size:0.95rem; margin-bottom:1rem;">
+      歴史 &#215; 文化 &#215; 美食 &#8212; 2人の特別な10日間
+    </p>
+    <div class="trip-info">
+      <span class="info-chip">3月27日〜4月5日（8泊10日）</span>
+      <span class="info-chip">2名</span>
+    </div>
+    <div class="trip-info" style="margin-top:0.8rem;">
+      <span class="info-chip" style="border-color:rgba(200,16,46,0.4); color:var(--red-light);">&#9992; 3/27 東京→ロンドン（直行便 約12h）</span>
+      <span class="info-chip" style="border-color:rgba(200,16,46,0.4); color:var(--red-light);">&#9992; 4/4 ロンドン→東京（4/5着）</span>
+    </div>
+    <div class="countdown" id="countdown">
+      <div class="countdown-item"><div class="countdown-num" id="cd-days">--</div><div class="countdown-label">Days</div></div>
+      <div class="countdown-item"><div class="countdown-num" id="cd-hours">--</div><div class="countdown-label">Hours</div></div>
+      <div class="countdown-item"><div class="countdown-num" id="cd-mins">--</div><div class="countdown-label">Min</div></div>
+      <div class="countdown-item"><div class="countdown-num" id="cd-secs">--</div><div class="countdown-label">Sec</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint">&#8595;</div>
+</section>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#flight-search" style="color:var(--red-light)!important;">航空券検索</a>
+    <a href="#flights">フライト比較</a>
+    <a href="#hotels">ホテル</a>
+    <a href="#itinerary">日程表</a>
+    <a href="#restaurants">レストラン</a>
+    <a href="#map">マップ</a>
+    <a href="#budget">予算</a>
+    <a href="#reservations">予約管理</a>
+    <a href="#checklist">持ち物</a>
+    <a href="#tips">旅のコツ</a>
+  </div>
+</nav>
+
+<!-- Live Flight Search -->
+<section class="section" id="flight-search">
+  <h2 class="section-title">Flight Search</h2>
+  <p class="section-sub">3月27日発 vs 28日発 &#8212; クリックで各サイトの検索結果へ直接ジャンプ</p>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2rem;">
+    <!-- 3/27 Column -->
+    <div style="background:rgba(200,16,46,0.06); border:1px solid rgba(200,16,46,0.25); border-radius:16px; padding:1.5rem;">
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <div style="font-size:0.75rem; color:var(--red-light); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.3rem;">Option A</div>
+        <div style="font-size:1.4rem; font-weight:700; color:var(--cream);">3月27日（金）出発</div>
+        <div style="font-size:0.85rem; color:rgba(255,255,255,0.5);">8泊10日 &#8212; 帰国 4/4発 → 4/5着</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:0.6rem;">
+        <a href="https://www.google.com/travel/flights/search?tfs=CBwQAhooEgoyMDI2LTAzLTI3agwIAxIIL20vMDdkZmtyDAgDEggvbS8wNGpwbBooEgoyMDI2LTA0LTA0agwIAxIIL20vMDRqcGxyDAgDEggvbS8wN2Rma0ABSAFwAYIBCwj___________8BmAEB&tfu=KgIIAw&hl=ja&curr=JPY" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(66,133,244,0.12); border:1px solid rgba(66,133,244,0.25); color:#a0c0f8; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Google Flights</strong><br><span style="font-size:0.75rem; opacity:0.7;">&#9888; 開いたら「経由地:1か所以内」「スターアライアンス」を手動選択</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3/28 Column -->
+    <div style="background:rgba(197,165,90,0.06); border:1px solid rgba(197,165,90,0.25); border-radius:16px; padding:1.5rem;">
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <div style="font-size:0.75rem; color:var(--gold); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.3rem;">Option B</div>
+        <div style="font-size:1.4rem; font-weight:700; color:var(--cream);">3月28日（土）出発</div>
+        <div style="font-size:0.85rem; color:rgba(255,255,255,0.5);">7泊9日 &#8212; 帰国 4/4発 → 4/5着</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:0.6rem;">
+        <a href="https://www.google.com/travel/flights/search?tfs=CBwQAhooEgoyMDI2LTAzLTI4agwIAxIIL20vMDdkZmtyDAgDEggvbS8wNGpwbBooEgoyMDI2LTA0LTA0agwIAxIIL20vMDRqcGxyDAgDEggvbS8wN2Rma0ABSAFwAYIBCwj___________8BmAEB&tfu=KgIIAw&hl=ja&curr=JPY" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(66,133,244,0.12); border:1px solid rgba(66,133,244,0.25); color:#a0c0f8; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Google Flights</strong><br><span style="font-size:0.75rem; opacity:0.7;">&#9888; 開いたら「経由地:1か所以内」「スターアライアンス」を手動選択</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:rgba(197,165,90,0.08); border:1px solid rgba(197,165,90,0.15); border-radius:12px; padding:1.5rem;">
+    <h3 style="color:var(--gold); font-size:1rem; margin-bottom:0.5rem;">検索のコツ</h3>
+    <p style="font-size:0.85rem; color:rgba(255,255,255,0.6);">
+      &#9312; <strong>Google Flights</strong> で東京↔ロンドン・日付入りの検索結果へジャンプ<br>
+      &#9313; 開いたら左上フィルタで「経由地: 1か所以内」「アライアンス: スターアライアンス」を選択<br>
+      &#9314; 気になる便が見つかったら、その航空会社の公式サイトで直接予約すると最安になることが多い
+    </p>
+  </div>
+</section>
+
+<!-- Flights -->
+<section class="section" id="flights">
+  <h2 class="section-title">Flights</h2>
+  <p class="section-sub">スターアライアンス限定 &#8212; 直行 or 乗継1回（短い待ち時間）で比較</p>
+
+  <div style="margin-bottom:2rem; background:rgba(200,16,46,0.08); border:1px solid rgba(200,16,46,0.15); border-radius:12px; padding:1.5rem;">
+    <h3 style="color:var(--red-light); font-size:1rem; margin-bottom:0.5rem;">推奨スケジュール</h3>
+    <p style="font-size:0.85rem; color:rgba(255,255,255,0.6);">
+      <strong style="color:var(--cream);">往路: 3月27日（金）</strong> &#8212; 東京を出発 → ロンドン同日夕方〜夜着。1日目の夜からロンドン。<br>
+      <strong style="color:var(--cream);">復路: 4月4日（土）</strong> &#8212; ロンドン出発 → 東京 4月5日（日）着。日曜着で翌日に備える。<br><br>
+      &#128161; <strong>3月28日出発でも可</strong>：7泊9日。航空券の価格次第で柔軟に選択。<br>
+      &#11088; <strong>全てスターアライアンス加盟</strong>：ANAマイル加算OK。ラウンジ相互利用可。
+    </p>
+  </div>
+
+  <div class="flight-grid">
+    <div class="flight-card recommended">
+      <div class="flight-name">&#9992; Turkish Airlines（イスタンブール経由）</div>
+      <div class="flight-price">往復 約15〜20万円/人（エコノミー）&#8212; 最安級</div>
+      <ul class="flight-features">
+        <li>成田（NRT）→ イスタンブール（IST）→ ヒースロー（LHR）</li>
+        <li>往路: TK53 NRT 22:25発 → IST 04:25着+1（約12h30m）</li>
+        <li>乗継: IST で約2〜3h → TK1979等でLHRへ（約4h）</li>
+        <li>総所要時間: 約18〜20h（乗継1回・待ち時間短め）</li>
+        <li>復路: LHR → IST → NRT（同様に乗継1回）</li>
+        <li>IST新空港（2018年開業）は乗継効率世界トップクラス</li>
+        <li>機内食が全航空会社中トップ評価 &#8212; 機内シェフ搭乗</li>
+        <li>預入荷物30kg込み（エコノミーでも太っ腹）</li>
+        <li>スターアライアンス &#8212; ANAマイル100%加算</li>
+        <li>&#128176; 2人往復で約30〜40万円 &#8212; ANA直行より14〜20万円安い</li>
+      </ul>
+    </div>
+
+    <div class="flight-card">
+      <div class="flight-name">&#9992; Lufthansa（フランクフルト経由）</div>
+      <div class="flight-price">往復 約18〜23万円/人（エコノミー）</div>
+      <ul class="flight-features">
+        <li>羽田（HND）→ フランクフルト（FRA）→ ヒースロー（LHR）</li>
+        <li>往路: LH717 HND 出発 → FRA着（約12h45m）</li>
+        <li>乗継: FRA で約1.5〜2.5h → LHRへ（約1h30m）</li>
+        <li>総所要時間: 約16〜17h（乗継1回・待ち時間短い）</li>
+        <li>フランクフルト乗継は効率的 &#8212; EU入国審査あり</li>
+        <li>ドイツ品質の安定したサービス</li>
+        <li>預入荷物23kg&#215;1個込み</li>
+        <li>スターアライアンス &#8212; ANAマイル加算OK</li>
+        <li>乗継時間が最も短い選択肢</li>
+      </ul>
+    </div>
+
+    <div class="flight-card">
+      <div class="flight-name">&#9992; SWISS（チューリッヒ経由）</div>
+      <div class="flight-price">往復 約18〜24万円/人（エコノミー）</div>
+      <ul class="flight-features">
+        <li>成田（NRT）→ チューリッヒ（ZRH）→ ヒースロー（LHR）</li>
+        <li>LX161 NRT 出発 → ZRH着（約13h）</li>
+        <li>乗継: ZRH で約2〜3h → LHRへ（約1h45m）</li>
+        <li>総所要時間: 約17〜18h（乗継1回）</li>
+        <li>スイスチョコレート配布 &#8212; 小さな幸せ</li>
+        <li>チューリッヒ空港はコンパクトで乗継しやすい</li>
+        <li>預入荷物23kg&#215;1個込み</li>
+        <li>スターアライアンス &#8212; ANAマイル加算OK</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem;">
+    <div class="flight-grid">
+      <div class="flight-card" style="border-color:rgba(33,150,243,0.3); background:rgba(33,150,243,0.03);">
+        <div class="flight-name">&#9992; ANA 直行便（快適重視なら）</div>
+        <div class="flight-price">往復 約27万円/人（エコノミー）&#8212; Trip.com参考価格</div>
+        <ul class="flight-features">
+          <li>羽田（HND）&#8596; ヒースロー（LHR）直行</li>
+          <li>NH211 羽田 10:05発 → LHR 15:45着（毎日運航）</li>
+          <li>NH212 LHR 19:30発 → 羽田 翌15:25着</li>
+          <li>飛行時間: 往路 約14h40m / 復路 約11h55m</li>
+          <li>乗継なし &#8212; 楽さ最優先ならこれ</li>
+          <li>ANAマイル100%加算（自社便）</li>
+          <li>預入荷物23kg&#215;2個込み</li>
+          <li>&#9888; ターキッシュ経由より1人12万円高い（2人で24万円差）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:2rem; background:rgba(197,165,90,0.08); border:1px solid rgba(197,165,90,0.15); border-radius:12px; padding:1.5rem;">
+    <h3 style="color:var(--gold); font-size:1rem; margin-bottom:0.5rem;">おすすめ &#38; 予約のコツ</h3>
+    <p style="font-size:0.85rem; color:rgba(255,255,255,0.6);">
+      &#127919; <strong>ベストバイ: ターキッシュエアラインズ</strong> &#8212; スターアライアンス最安クラス。IST新空港の乗継は効率的で、機内食は世界最高レベル。預入荷物30kgも嬉しい。2人で約14〜24万円の節約。<br>
+      &#9201; <strong>乗継時間重視なら: ルフトハンザ</strong> &#8212; FRA乗継1.5hは最速。総所要約16hでANA直行便に近い体感。<br>
+      &#128270; <strong>比較サイト</strong>: Google Flights で比較。「経由地: 1か所以内」「スターアライアンス」でフィルタ。<br>
+      &#128176; <strong>早期予約割引</strong>: 出発2ヶ月前（今〜）が最安ゾーン。日曜に予約すると6〜13%安い傾向あり。<br>
+      &#11088; <strong>マイル</strong>: どの便でもANAマイルに加算可能。ターキッシュは区間マイルの70〜100%加算。
+    </p>
+  </div>
+</section>
+
+<!-- Hotels -->
+<section class="section" id="hotels">
+  <h2 class="section-title">Hotels</h2>
+  <p class="section-sub">ロンドン中心部（Zone 1）&#8212; 観光・交通に最高の立地で選ぶ</p>
+
+  <!-- Hotel Search Links -->
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2rem;">
+    <!-- 3/27 Check-in -->
+    <div style="background:rgba(200,16,46,0.06); border:1px solid rgba(200,16,46,0.25); border-radius:16px; padding:1.5rem;">
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <div style="font-size:0.75rem; color:var(--red-light); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.3rem;">Option A</div>
+        <div style="font-size:1.3rem; font-weight:700; color:var(--cream);">3/27 チェックイン</div>
+        <div style="font-size:0.85rem; color:rgba(255,255,255,0.5);">8泊 &#8212; 3/27〜4/4 &#183; 2名</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:0.6rem;">
+        <a href="https://www.google.com/travel/hotels/London?q=London+hotels&dates=2026-03-27,2026-04-04&guests=2" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(66,133,244,0.12); border:1px solid rgba(66,133,244,0.25); color:#a0c0f8; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Google Hotels</strong><br><span style="font-size:0.75rem; opacity:0.7;">日付・人数入り &#183; 地図で比較</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+        <a href="https://www.trivago.jp/ja-JP/srl?search=200-17680&dates=2026-03-27T2026-04-04&rooms=2a" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(0,104,219,0.12); border:1px solid rgba(0,104,219,0.25); color:#6db3f8; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Trivago</strong><br><span style="font-size:0.75rem; opacity:0.7;">複数サイトの最安値を一括比較</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+        <a href="https://www.agoda.com/ja-jp/search?city=15465&checkIn=2026-03-27&checkOut=2026-04-04&rooms=1&adults=2" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(232,0,51,0.12); border:1px solid rgba(232,0,51,0.25); color:#f87171; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Agoda</strong><br><span style="font-size:0.75rem; opacity:0.7;">アジア発の格安プランが豊富</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+        <a href="https://www.booking.com/searchresults.ja.html?ss=London&checkin=2026-03-27&checkout=2026-04-04&group_adults=2&no_rooms=1" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(0,53,128,0.15); border:1px solid rgba(0,53,128,0.35); color:#4a9af5; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Booking.com</strong><br><span style="font-size:0.75rem; opacity:0.7;">キャンセル無料プランが多い</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+        <a href="https://jp.hotels.com/Hotel-Search?destination=London%2C+England&startDate=2026-03-27&endDate=2026-04-04&rooms=1&adults=2" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(216,31,42,0.12); border:1px solid rgba(216,31,42,0.25); color:#e88; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Hotels.com</strong><br><span style="font-size:0.75rem; opacity:0.7;">10泊で1泊無料の会員特典</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3/28 Check-in -->
+    <div style="background:rgba(197,165,90,0.06); border:1px solid rgba(197,165,90,0.25); border-radius:16px; padding:1.5rem;">
+      <div style="text-align:center; margin-bottom:1.2rem;">
+        <div style="font-size:0.75rem; color:var(--gold); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.3rem;">Option B</div>
+        <div style="font-size:1.3rem; font-weight:700; color:var(--cream);">3/28 チェックイン</div>
+        <div style="font-size:0.85rem; color:rgba(255,255,255,0.5);">7泊 &#8212; 3/28〜4/4 &#183; 2名</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:0.6rem;">
+        <a href="https://www.google.com/travel/hotels/London?q=London+hotels&dates=2026-03-28,2026-04-04&guests=2" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(66,133,244,0.12); border:1px solid rgba(66,133,244,0.25); color:#a0c0f8; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Google Hotels</strong><br><span style="font-size:0.75rem; opacity:0.7;">日付・人数入り &#183; 地図で比較</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+        <a href="https://www.trivago.jp/ja-JP/srl?search=200-17680&dates=2026-03-28T2026-04-04&rooms=2a" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(0,104,219,0.12); border:1px solid rgba(0,104,219,0.25); color:#6db3f8; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Trivago</strong><br><span style="font-size:0.75rem; opacity:0.7;">複数サイトの最安値を一括比較</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+        <a href="https://www.agoda.com/ja-jp/search?city=15465&checkIn=2026-03-28&checkOut=2026-04-04&rooms=1&adults=2" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(232,0,51,0.12); border:1px solid rgba(232,0,51,0.25); color:#f87171; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Agoda</strong><br><span style="font-size:0.75rem; opacity:0.7;">アジア発の格安プランが豊富</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+        <a href="https://www.booking.com/searchresults.ja.html?ss=London&checkin=2026-03-28&checkout=2026-04-04&group_adults=2&no_rooms=1" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(0,53,128,0.15); border:1px solid rgba(0,53,128,0.35); color:#4a9af5; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Booking.com</strong><br><span style="font-size:0.75rem; opacity:0.7;">キャンセル無料プランが多い</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+        <a href="https://jp.hotels.com/Hotel-Search?destination=London%2C+England&startDate=2026-03-28&endDate=2026-04-04&rooms=1&adults=2" target="_blank" style="display:flex; align-items:center; justify-content:space-between; background:rgba(216,31,42,0.12); border:1px solid rgba(216,31,42,0.25); color:#e88; padding:0.8rem 1.2rem; border-radius:10px; text-decoration:none; font-size:0.9rem; transition:all 0.3s;">
+          <span><strong>Hotels.com</strong><br><span style="font-size:0.75rem; opacity:0.7;">10泊で1泊無料の会員特典</span></span>
+          <span style="font-size:1.3rem;">&#8599;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hotel-grid">
+    <div class="hotel-card recommended">
+      <div class="hotel-name">&#127968; Strand Palace Hotel</div>
+      <div class="hotel-price">8泊 約22〜30万円（2名1室） / 1泊 約2.8〜3.8万円</div>
+      <ul class="hotel-features">
+        <li>ストランド通り沿い &#8212; コヴェントガーデン徒歩3分</li>
+        <li>テムズ川・トラファルガー広場・ウエストエンドすべて徒歩圏</li>
+        <li>Charing Cross駅 徒歩5分、地下鉄アクセス抜群</li>
+        <li>1909年創業の歴史あるホテル、2023年リノベ済み</li>
+        <li>朝食込みプランあり &#8212; English Breakfastで朝から満足</li>
+        <li>周辺レストラン無数 &#8212; 日本食からミシュランまで</li>
+        <li>コスパ最強の立地 &#215; 品質バランス</li>
+      </ul>
+      <a class="map-link" href="https://maps.google.com/?q=Strand+Palace+Hotel+London" target="_blank">&#128205; Google Map</a>
+    </div>
+
+    <div class="hotel-card">
+      <div class="hotel-name">&#127968; citizenM Tower of London</div>
+      <div class="hotel-price">8泊 約18〜25万円（2名1室） / 1泊 約2.3〜3.1万円</div>
+      <ul class="hotel-features">
+        <li>ロンドン塔すぐ横 &#8212; タワーブリッジも徒歩2分</li>
+        <li>モダンでスタイリッシュなデザインホテル</li>
+        <li>全室キングベッド・タブレットで照明/TV操作</li>
+        <li>24時間セルフチェックイン/アウト</li>
+        <li>屋上ラウンジ/バーからテムズ川の絶景</li>
+        <li>Tower Hill駅 徒歩3分</li>
+        <li>モダン好きな2人旅に最適</li>
+      </ul>
+      <a class="map-link" href="https://maps.google.com/?q=citizenM+Tower+of+London" target="_blank">&#128205; Google Map</a>
+    </div>
+
+    <div class="hotel-card">
+      <div class="hotel-name">&#127968; Park Plaza Westminster Bridge</div>
+      <div class="hotel-price">8泊 約28〜40万円（2名1室） / 1泊 約3.5〜5万円</div>
+      <ul class="hotel-features">
+        <li>ウェストミンスター橋たもと &#8212; ビッグベン目の前</li>
+        <li>ロンドンアイ徒歩3分、国会議事堂徒歩5分</li>
+        <li>4つ星ホテル・客室1,019室の大型ホテル</li>
+        <li>室内キッチネット付きスタジオルームあり</li>
+        <li>スパ&フィットネス完備</li>
+        <li>Waterloo駅 徒歩5分（ユーロスター乗り場近し）</li>
+        <li>眺望重視・ゆったり滞在向け</li>
+      </ul>
+      <a class="map-link" href="https://maps.google.com/?q=Park+Plaza+Westminster+Bridge+London" target="_blank">&#128205; Google Map</a>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem;">
+    <div class="hotel-grid">
+      <div class="hotel-card">
+        <div class="hotel-name">&#127968; The Z Hotel Soho</div>
+        <div class="hotel-price">8泊 約13〜18万円（2名1室） / 1泊 約1.6〜2.3万円</div>
+        <ul class="hotel-features">
+          <li>ソーホー中心部 &#8212; ナイトライフ・食事の聖地</li>
+          <li>レスタースクエア・ピカデリーサーカス徒歩5分</li>
+          <li>コンパクトだが清潔でモダンな客室</li>
+          <li>無料チーズ&ワインタイム（毎夕17-20時）</li>
+          <li>ウエストエンドのミュージカル劇場街に最寄り</li>
+          <li>予算重視で立地妥協なし &#8212; コスパ最強</li>
+        </ul>
+        <a class="map-link" href="https://maps.google.com/?q=The+Z+Hotel+Soho+London" target="_blank">&#128205; Google Map</a>
+      </div>
+
+      <div class="hotel-card">
+        <div class="hotel-name">&#127968; Hub by Premier Inn Westminster</div>
+        <div class="hotel-price">8泊 約12〜16万円（2名1室） / 1泊 約1.5〜2万円</div>
+        <ul class="hotel-features">
+          <li>ウェストミンスター駅至近 &#8212; ビッグベン徒歩圏</li>
+          <li>2024年オープンの新しいスマートホテル</li>
+          <li>アプリで照明・TV・チェックイン操作</li>
+          <li>コンパクトだが機能的・清潔</li>
+          <li>英国最大ホテルチェーンの安心感</li>
+          <li>最安クラスでZone 1ど真ん中 &#8212; 節約旅の味方</li>
+        </ul>
+        <a class="map-link" href="https://maps.google.com/?q=Hub+by+Premier+Inn+Westminster+Abbey+London" target="_blank">&#128205; Google Map</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:2rem; background:rgba(197,165,90,0.08); border:1px solid rgba(197,165,90,0.15); border-radius:12px; padding:1.5rem;">
+    <h3 style="color:var(--gold); font-size:1rem; margin-bottom:0.5rem;">ホテル選びのポイント</h3>
+    <p style="font-size:0.85rem; color:rgba(255,255,255,0.6);">
+      &#127919; <strong>おすすめ: Strand Palace</strong> &#8212; 立地・価格・品質のバランスが最高。コヴェントガーデンもウエストエンドも徒歩圏で、初ロンドンの拠点に最適。<br>
+      &#128176; <strong>節約なら: Z Hotel / Hub Premier Inn</strong> &#8212; ロンドンは外が楽しい街。部屋はコンパクトでも立地さえ良ければ十分。浮いた分を食事や体験に回すのが賢い。<br>
+      &#128270; <strong>予約サイト</strong>: 上の検索リンクから Trivago / Agoda / Booking.com / Hotels.com で比較。早期予約 + キャンセル無料プランを選ぶのが鉄則。
+    </p>
+  </div>
+</section>
+
+<!-- Itinerary -->
+<section class="section" id="itinerary">
+  <h2 class="section-title">Itinerary</h2>
+  <p class="section-sub">8泊10日の完全プラン &#8212; 定番からディープスポットまで網羅</p>
+
+  <!-- Day 1 -->
+  <div class="day-section" id="day1">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">1</span><span class="label">Day</span></div>
+      <div><div class="day-title">到着 &#38; ロンドン初散歩</div><div class="day-date">3月27日（金）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">10:30 東京発</div>
+        <div class="activity-title">羽田空港から出発</div>
+        <div class="activity-desc">JAL JL41 or BA便でロンドンへ。飛行約12.5時間。機内で映画を楽しみながら。</div>
+        <span class="tag transport">フライト 12.5h</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">15:30 ロンドン着（現地時間）</div>
+        <div class="activity-title">ヒースロー空港到着</div>
+        <div class="activity-desc">入国審査 → ヒースローエクスプレス（15分/&#163;25）or 地下鉄ピカデリー線（60分/&#163;5.50）でホテルへ。Oyster Cardを空港で購入。</div>
+        <span class="tag transport">空港→市内</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">17:30</div>
+        <div class="activity-title">ホテルチェックイン &#38; 周辺散策</div>
+        <div class="activity-desc">荷物を置いてコヴェントガーデンを散策。ストリートパフォーマンスを楽しむ。</div>
+        <span class="tag culture">コヴェントガーデン</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">19:00</div>
+        <div class="activity-title">初日ディナー &#8212; パブで乾杯</div>
+        <div class="activity-desc">ロンドン到着を祝ってトラディショナルパブへ。フィッシュ＆チップスとエールビールで英国気分全開。</div>
+        <span class="tag food">パブディナー</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="day-section" id="day2">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">2</span><span class="label">Day</span></div>
+      <div><div class="day-title">ウェストミンスター &#38; 王道ロンドン</div><div class="day-date">3月28日（土）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">09:00</div>
+        <div class="activity-title">ウェストミンスター寺院</div>
+        <div class="activity-desc">英国王室の戴冠式が行われる世界遺産。ダイアナ妃追悼の庭も。事前予約推奨（&#163;29）。</div>
+        <span class="tag culture">世界遺産</span><span class="tag">要予約</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">11:00</div>
+        <div class="activity-title">ビッグベン &#38; 国会議事堂</div>
+        <div class="activity-desc">ウェストミンスター橋から眺める絶景フォトスポット。外観だけでも圧巻。</div>
+        <span class="tag culture">フォトスポット</span><span class="tag free">無料</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">11:30</div>
+        <div class="activity-title">衛兵交代式（バッキンガム宮殿）</div>
+        <div class="activity-desc">11:00開始だが30分前に到着推奨。月・水・金・日に開催（3月）。赤い制服と熊の毛皮帽の近衛兵は必見。</div>
+        <span class="tag culture">ロンドン名物</span><span class="tag free">無料</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">13:00</div>
+        <div class="activity-title">セント・ジェームズ・パークでランチ</div>
+        <div class="activity-desc">宮殿近くの美しい公園。カフェでサンドイッチ or 天気が良ければピクニック気分で。ペリカンが有名。</div>
+        <span class="tag food">ランチ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">14:30</div>
+        <div class="activity-title">チャーチル戦時内閣執務室</div>
+        <div class="activity-desc">第二次世界大戦中にチャーチルが指揮を執った地下壕。歴史好きなら外せない（&#163;28）。</div>
+        <span class="tag culture">博物館</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">17:00</div>
+        <div class="activity-title">ロンドン・アイ（サンセットタイム）</div>
+        <div class="activity-desc">日没前に乗るのがベスト。テムズ川沿いのパノラマビュー。事前予約で行列回避（&#163;36）。</div>
+        <span class="tag culture">絶景</span><span class="tag">要予約</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">19:30</div>
+        <div class="activity-title">サウスバンク沿いディナー</div>
+        <div class="activity-desc">テムズ川南岸のレストランエリアで夜景を眺めながらディナー。OXO Tower Restaurant がおすすめ。</div>
+        <span class="tag food">テムズ川ディナー</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 3 -->
+  <div class="day-section" id="day3">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">3</span><span class="label">Day</span></div>
+      <div><div class="day-title">大英博物館 &#38; ブルームズベリー</div><div class="day-date">3月29日（日）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">10:00</div>
+        <div class="activity-title">大英博物館（British Museum）</div>
+        <div class="activity-desc">世界最大級の博物館。ロゼッタストーン、パルテノン神殿の彫刻、エジプトのミイラ &#8212; 最低3時間は欲しい。入場無料。</div>
+        <span class="tag culture">必見</span><span class="tag free">無料</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">13:30</div>
+        <div class="activity-title">ブルームズベリー周辺でランチ</div>
+        <div class="activity-desc">博物館周辺のカフェ＆レストラン街。Dishoom（インド料理）は行列ができる人気店。</div>
+        <span class="tag food">ランチ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">15:00</div>
+        <div class="activity-title">キングス・クロス &#38; セント・パンクラス駅</div>
+        <div class="activity-desc">ハリー・ポッターの9&#190;番線で写真撮影！隣のプラットフォーム9&#190;ショップでお土産も。駅舎の建築美も必見。</div>
+        <span class="tag culture">ハリポタ聖地</span><span class="tag shopping">お土産</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">17:00</div>
+        <div class="activity-title">リージェンツ・パーク散歩</div>
+        <div class="activity-desc">3月末は水仙（Daffodils）が満開。広大な公園でロンドンの春を感じる。</div>
+        <span class="tag culture">公園</span><span class="tag free">無料</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">19:00</div>
+        <div class="activity-title">ウエストエンド・ミュージカル</div>
+        <div class="activity-desc">世界最高峰のミュージカルを鑑賞。「レ・ミゼラブル」「オペラ座の怪人」「ウィキッド」など。当日半額チケットはTKTSブース（レスタースクエア）で。</div>
+        <span class="tag culture">ミュージカル</span><span class="tag">要予約推奨</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 4 -->
+  <div class="day-section" id="day4">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">4</span><span class="label">Day</span></div>
+      <div><div class="day-title">シティ &#38; タワーブリッジ</div><div class="day-date">3月30日（月）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">09:30</div>
+        <div class="activity-title">ロンドン塔（Tower of London）</div>
+        <div class="activity-desc">約1000年の歴史を持つ世界遺産。王冠の宝石（Crown Jewels）は必見。ビーフィーター（衛兵）ツアーがおすすめ（&#163;33.60）。</div>
+        <span class="tag culture">世界遺産</span><span class="tag">要予約</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">12:30</div>
+        <div class="activity-title">タワーブリッジ</div>
+        <div class="activity-desc">ロンドンのシンボル。ガラス床の歩行者通路（Tower Bridge Exhibition &#163;12.30）からテムズ川を見下ろす体験は格別。</div>
+        <span class="tag culture">フォトスポット</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">13:30</div>
+        <div class="activity-title">バラ・マーケット（Borough Market）</div>
+        <div class="activity-desc">ロンドン最古のフードマーケット（1000年以上の歴史！）。焼きたてのパイ、チーズ、オイスターなど食べ歩き天国。月曜も営業。</div>
+        <span class="tag food">フードマーケット</span><span class="tag">食べ歩き</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">15:30</div>
+        <div class="activity-title">セント・ポール大聖堂</div>
+        <div class="activity-desc">クリストファー・レン設計の傑作。ドームの上からロンドンの360度パノラマ（528段の階段！体力勝負）。&#163;25。</div>
+        <span class="tag culture">建築傑作</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">17:30</div>
+        <div class="activity-title">ミレニアム・ブリッジ &#38; テート・モダン</div>
+        <div class="activity-desc">セント・ポールからテムズ川を渡ってテート・モダン（現代美術館）へ。ピカソ、ウォーホルなど。入場無料。</div>
+        <span class="tag culture">美術館</span><span class="tag free">無料</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">19:30</div>
+        <div class="activity-title">サザーク周辺でディナー</div>
+        <div class="activity-desc">Flat Iron（ステーキ &#163;14で絶品）or Padella（手打ちパスタの行列店）。どちらもコスパ最強。</div>
+        <span class="tag food">ディナー</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 5 -->
+  <div class="day-section" id="day5">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">5</span><span class="label">Day</span></div>
+      <div><div class="day-title">サウスケンジントン &#38; ハイドパーク</div><div class="day-date">3月31日（火）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">10:00</div>
+        <div class="activity-title">ヴィクトリア＆アルバート博物館（V&#38;A）</div>
+        <div class="activity-desc">世界最大のデザイン＆装飾美術の博物館。ファッション、宝石、建築、写真 &#8212; 見応え抜群。入場無料。</div>
+        <span class="tag culture">博物館</span><span class="tag free">無料</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">12:30</div>
+        <div class="activity-title">自然史博物館 or 科学博物館</div>
+        <div class="activity-desc">V&#38;Aの隣。恐竜の骨格標本やダーウィン展示で有名な自然史博物館か、インタラクティブな科学博物館。どちらも無料。</div>
+        <span class="tag culture">博物館</span><span class="tag free">無料</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">14:00</div>
+        <div class="activity-title">ハロッズでランチ＆ショッピング</div>
+        <div class="activity-desc">世界で最も有名なデパート。フードホール（地下）は圧巻。お土産にハロッズのティーバッグ（&#163;10〜）がおすすめ。</div>
+        <span class="tag shopping">ハロッズ</span><span class="tag food">フードホール</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">16:00</div>
+        <div class="activity-title">ハイドパーク &#38; ケンジントン宮殿</div>
+        <div class="activity-desc">ロンドン最大の王立公園。サーペンタイン湖沿いを散歩し、ケンジントン宮殿（&#163;23）でダイアナ妃の記憶に触れる。</div>
+        <span class="tag culture">王立公園</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">18:30</div>
+        <div class="activity-title">アフタヌーンティー体験</div>
+        <div class="activity-desc">The Orangery at Kensington Palace や Sketch でクラシックなアフタヌーンティー。スコーン、フィンガーサンドイッチ、紅茶の至福（&#163;50〜/人）。</div>
+        <span class="tag food">アフタヌーンティー</span><span class="tag">要予約</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 6 -->
+  <div class="day-section" id="day6">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">6</span><span class="label">Day</span></div>
+      <div><div class="day-title">日帰りトリップ &#8212; コッツウォルズ</div><div class="day-date">4月1日（水）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">08:00</div>
+        <div class="activity-title">パディントン駅から出発</div>
+        <div class="activity-desc">GWR列車でモートン・イン・マーシュへ（約1h40m / &#163;20〜40往復）。事前にTrainline.comで予約すると安い。</div>
+        <span class="tag transport">日帰り旅</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">10:00</div>
+        <div class="activity-title">コッツウォルズ散策</div>
+        <div class="activity-desc">「イギリスで最も美しい村」バイブリー、中世の街並みバーフォード、絵本のような蜂蜜色の石造りの家々。レンタカー or 現地ツアーバスで周遊。</div>
+        <span class="tag culture">英国田舎</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">12:30</div>
+        <div class="activity-title">村のパブでランチ</div>
+        <div class="activity-desc">コッツウォルズのカントリーパブでサンデーロースト or シェパーズパイ。ローカルのリアルエールも。</div>
+        <span class="tag food">カントリーパブ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">14:00</div>
+        <div class="activity-title">ボートン・オン・ザ・ウォーター</div>
+        <div class="activity-desc">「コッツウォルズのヴェネチア」と呼ばれる美しい川沿いの村。石橋、ティーショップ、モデルヴィレッジ。</div>
+        <span class="tag culture">絶景</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">17:00</div>
+        <div class="activity-title">ロンドンへ帰着</div>
+        <div class="activity-desc">列車でロンドンへ戻る。疲れたらホテル近くで軽めのディナー。</div>
+        <span class="tag transport">帰路</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 7 -->
+  <div class="day-section" id="day7">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">7</span><span class="label">Day</span></div>
+      <div><div class="day-title">ノッティングヒル &#38; カムデン</div><div class="day-date">4月2日（木）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">10:00</div>
+        <div class="activity-title">ノッティングヒル散策</div>
+        <div class="activity-desc">パステルカラーの家並みが映えるおしゃれエリア。映画「ノッティングヒルの恋人」の舞台。</div>
+        <span class="tag culture">映画の聖地</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">11:00</div>
+        <div class="activity-title">ポートベロー・ロード・マーケット</div>
+        <div class="activity-desc">アンティーク、ヴィンテージ古着、ストリートフード。土曜が最大規模だが平日も楽しい。掘り出し物を探そう。</div>
+        <span class="tag shopping">マーケット</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">13:00</div>
+        <div class="activity-title">カムデンタウンへ移動</div>
+        <div class="activity-desc">地下鉄で北へ。カムデン・マーケットで世界各国のストリートフードを食べ歩き。パンクカルチャーの聖地。</div>
+        <span class="tag food">ストリートフード</span><span class="tag shopping">カムデン</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">15:30</div>
+        <div class="activity-title">プリムローズ・ヒル</div>
+        <div class="activity-desc">ロンドンのスカイラインが一望できる隠れた絶景スポット。地元民に愛される丘の上の公園。</div>
+        <span class="tag culture">絶景</span><span class="tag free">無料</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">17:00</div>
+        <div class="activity-title">ナショナル・ギャラリー</div>
+        <div class="activity-desc">トラファルガー広場に面した世界屈指の美術館。ゴッホ「ひまわり」、モネ、ダ・ヴィンチ。入場無料。</div>
+        <span class="tag culture">美術館</span><span class="tag free">無料</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">19:30</div>
+        <div class="activity-title">チャイナタウンでディナー</div>
+        <div class="activity-desc">レスタースクエア隣のチャイナタウン。本格中華が恋しくなったらここ。ダック料理が特に有名。</div>
+        <span class="tag food">ディナー</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 8 -->
+  <div class="day-section" id="day8">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">8</span><span class="label">Day</span></div>
+      <div><div class="day-title">グリニッジ &#38; テムズ川クルーズ</div><div class="day-date">4月3日（金）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">09:30</div>
+        <div class="activity-title">テムズ川クルーズでグリニッジへ</div>
+        <div class="activity-desc">ウェストミンスターピアからUber Boatで約60分（&#163;9〜 Oyster Card利用可）。テムズ川から見るロンドンは格別。</div>
+        <span class="tag transport">リバークルーズ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">11:00</div>
+        <div class="activity-title">グリニッジ天文台 &#38; 本初子午線</div>
+        <div class="activity-desc">世界の時間の基準点。本初子午線（経度0度）をまたいで記念撮影！丘からのロンドンの眺望も素晴らしい（&#163;18）。</div>
+        <span class="tag culture">世界遺産</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">12:30</div>
+        <div class="activity-title">カティーサーク号</div>
+        <div class="activity-desc">19世紀の高速帆船。船の下をガラス床から見上げる体験が面白い（&#163;18、天文台とのセット券あり）。</div>
+        <span class="tag culture">歴史</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">14:00</div>
+        <div class="activity-title">グリニッジ・マーケットでランチ</div>
+        <div class="activity-desc">屋根付きマーケットで世界各国のフード＆ハンドクラフト。エチオピア料理からタイ料理まで。</div>
+        <span class="tag food">マーケット</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">16:00</div>
+        <div class="activity-title">ロンドンに戻ってショッピング</div>
+        <div class="activity-desc">オックスフォード・ストリート &#38; リージェント・ストリートでお土産ショッピング。Fortnum &#38; Mason（紅茶&#183;ジャム）、Liberty（リバティプリント）が定番。</div>
+        <span class="tag shopping">お土産</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">19:00</div>
+        <div class="activity-title">ラスト・ナイト・ディナー</div>
+        <div class="activity-desc">旅の締めくくりに少し贅沢なディナー。The Ivy（英国料理）or Dishoom（インド料理）で最後の夜を堪能。</div>
+        <span class="tag food">スペシャルディナー</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 9 -->
+  <div class="day-section" id="day9">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">9</span><span class="label">Day</span></div>
+      <div><div class="day-title">最終日 &#38; 帰国</div><div class="day-date">4月4日（土）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">09:00</div>
+        <div class="activity-title">朝の散歩 &#38; 最後のイングリッシュ・ブレックファスト</div>
+        <div class="activity-desc">ホテル近くのカフェでフルイングリッシュ（卵、ベーコン、ソーセージ、ベイクドビーンズ、トースト）。これがないとロンドン旅は完成しない。</div>
+        <span class="tag food">イングリッシュ・ブレックファスト</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">11:00</div>
+        <div class="activity-title">チェックアウト &#38; 空港へ</div>
+        <div class="activity-desc">荷物をまとめてヒースローへ。免税ショッピングの時間も確保。</div>
+        <span class="tag transport">空港へ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">15:00〜19:00</div>
+        <div class="activity-title">ヒースロー出発</div>
+        <div class="activity-desc">JAL JL42 (19:00発) or 午後便でロンドンを離れる。空港のラウンジで最後の一杯。</div>
+        <span class="tag transport">帰国便</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 10 -->
+  <div class="day-section" id="day10">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">10</span><span class="label">Day</span></div>
+      <div><div class="day-title">東京到着</div><div class="day-date">4月5日（日）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">15:30</div>
+        <div class="activity-title">羽田空港到着</div>
+        <div class="activity-desc">お疲れ様でした！日曜着なので翌日の月曜に備えてゆっくり休む。素晴らしいロンドンの思い出と共に。</div>
+        <span class="tag transport">帰国</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Restaurants -->
+<section class="section" id="restaurants">
+  <h2 class="section-title">Restaurants</h2>
+  <p class="section-sub">ロンドンは世界屈指の食の街 &#8212; マストトライのレストラン＆フード</p>
+
+  <div class="resto-grid">
+    <div class="resto-card">
+      <div class="resto-name">Dishoom</div>
+      <div class="resto-type">インド料理 / &#163;15-25</div>
+      <div class="resto-desc">ボンベイスタイルのインド料理。朝食のベーコンナンロールが絶品。キングスクロス店がおすすめ。予約必須の超人気店。</div>
+    </div>
+    <div class="resto-card">
+      <div class="resto-name">Flat Iron</div>
+      <div class="resto-type">ステーキ / &#163;14</div>
+      <div class="resto-desc">&#163;14で絶品ステーキ！サラダ付き。ロンドンのコスパ最強ステーキ。複数店舗あり予約不可・並ぶ価値あり。</div>
+    </div>
+    <div class="resto-card">
+      <div class="resto-name">Padella</div>
+      <div class="resto-type">イタリアン（パスタ） / &#163;8-14</div>
+      <div class="resto-desc">手打ちパスタが&#163;8〜。バラマーケット横。行列必至だが回転早い。カチョ・エ・ペペが看板メニュー。</div>
+    </div>
+    <div class="resto-card">
+      <div class="resto-name">The Ivy</div>
+      <div class="resto-type">モダンブリティッシュ / &#163;30-50</div>
+      <div class="resto-desc">1917年創業のロンドン社交界の名店。シェパーズパイ、フィッシュケーキが定番。ウエストエンド店が便利。</div>
+    </div>
+    <div class="resto-card">
+      <div class="resto-name">Sketch</div>
+      <div class="resto-type">アフタヌーンティー / &#163;55〜</div>
+      <div class="resto-desc">ピンク一色の「Gallery」でアフタヌーンティー。卵形トイレが有名。インスタ映え最強。要予約。</div>
+    </div>
+    <div class="resto-card">
+      <div class="resto-name">Borough Market 食べ歩き</div>
+      <div class="resto-type">フードマーケット / &#163;5-15</div>
+      <div class="resto-desc">1000年の歴史を持つロンドン最古のマーケット。ラクレット、オイスター、スコッチエッグ、パエリアなど。</div>
+    </div>
+    <div class="resto-card">
+      <div class="resto-name">Ye Olde Cheshire Cheese</div>
+      <div class="resto-type">トラディショナルパブ / &#163;12-20</div>
+      <div class="resto-desc">1667年再建のロンドン最古級パブ。ディケンズが通った歴史あるパブで本格フィッシュ＆チップスとエールを。</div>
+    </div>
+    <div class="resto-card">
+      <div class="resto-name">Koya</div>
+      <div class="resto-type">日本食（うどん） / &#163;10-15</div>
+      <div class="resto-desc">ロンドンで本格讃岐うどん。日本食が恋しくなったら。ソーホーの小さな店で温かいうどんを。</div>
+    </div>
+  </div>
+</section>
+
+<!-- Map -->
+<section class="section" id="map">
+  <h2 class="section-title">Map</h2>
+  <p class="section-sub">主要スポット &#38; ホテルの位置関係</p>
+  <div class="map-container">
+    <div id="map"></div>
+  </div>
+
+  <div class="spot-list">
+    <a class="spot-item" href="https://maps.google.com/?q=Westminster+Abbey+London" target="_blank">
+      <div class="spot-icon culture-icon">&#9962;</div>
+      <div><div class="spot-name">ウェストミンスター寺院</div><div class="spot-area">Westminster</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=British+Museum+London" target="_blank">
+      <div class="spot-icon culture-icon">&#127963;</div>
+      <div><div class="spot-name">大英博物館</div><div class="spot-area">Bloomsbury</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Tower+of+London" target="_blank">
+      <div class="spot-icon culture-icon">&#127984;</div>
+      <div><div class="spot-name">ロンドン塔</div><div class="spot-area">Tower Hill</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Buckingham+Palace+London" target="_blank">
+      <div class="spot-icon culture-icon">&#128081;</div>
+      <div><div class="spot-name">バッキンガム宮殿</div><div class="spot-area">Westminster</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Borough+Market+London" target="_blank">
+      <div class="spot-icon food-icon">&#127860;</div>
+      <div><div class="spot-name">バラ・マーケット</div><div class="spot-area">Southwark</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Strand+Palace+Hotel+London" target="_blank">
+      <div class="spot-icon hotel-icon">&#127968;</div>
+      <div><div class="spot-name">Strand Palace Hotel</div><div class="spot-area">Strand</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Greenwich+Observatory+London" target="_blank">
+      <div class="spot-icon culture-icon">&#128301;</div>
+      <div><div class="spot-name">グリニッジ天文台</div><div class="spot-area">Greenwich</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Camden+Market+London" target="_blank">
+      <div class="spot-icon food-icon">&#127865;</div>
+      <div><div class="spot-name">カムデン・マーケット</div><div class="spot-area">Camden Town</div></div>
+    </a>
+  </div>
+</section>
+
+<!-- Budget -->
+<section class="section" id="budget">
+  <h2 class="section-title">Budget</h2>
+  <p class="section-sub">2人分の概算予算 &#8212; &#163;1 &#8776; &#165;195（2026年2月レート想定）</p>
+
+  <table class="budget-table">
+    <thead>
+      <tr><th>項目</th><th>詳細</th><th>金額（2人分）</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>航空券（TK経由・推奨）</td>
+        <td>ターキッシュ IST経由 往復 &#215;2</td>
+        <td>30〜40万円</td>
+      </tr>
+      <tr>
+        <td>航空券（LH/LX経由）</td>
+        <td>ルフトハンザ FRA経由 or SWISS ZRH経由 &#215;2</td>
+        <td>36〜48万円</td>
+      </tr>
+      <tr>
+        <td>航空券（ANA直行の場合）</td>
+        <td>ANA NH211/212 羽田&#8596;ヒースロー直行 &#215;2</td>
+        <td>約54万円</td>
+      </tr>
+      <tr class="sub">
+        <td colspan="3" style="padding-top:1.2rem;">&#9650; ホテル（8泊）</td>
+      </tr>
+      <tr>
+        <td>Strand Palace（推奨）</td>
+        <td>ダブルルーム 8泊</td>
+        <td>22〜30万円</td>
+      </tr>
+      <tr>
+        <td>Z Hotel / Hub（節約）</td>
+        <td>コンパクトルーム 8泊</td>
+        <td>12〜18万円</td>
+      </tr>
+      <tr class="sub">
+        <td colspan="3" style="padding-top:1.2rem;">&#9650; 現地費用</td>
+      </tr>
+      <tr>
+        <td>食事</td>
+        <td>朝&#163;10 + 昼&#163;15 + 夜&#163;30 &#215; 2人 &#215; 8日</td>
+        <td>約17万円</td>
+      </tr>
+      <tr>
+        <td>観光・入場料</td>
+        <td>主要スポット入場料（多くの博物館は無料）</td>
+        <td>約5万円</td>
+      </tr>
+      <tr>
+        <td>交通費（市内）</td>
+        <td>Oyster Card / コンタクトレス &#215; 9日</td>
+        <td>約2.5万円</td>
+      </tr>
+      <tr>
+        <td>コッツウォルズ日帰り</td>
+        <td>列車往復 + 現地バス/タクシー</td>
+        <td>約2万円</td>
+      </tr>
+      <tr>
+        <td>お土産・ショッピング</td>
+        <td>紅茶、雑貨、ファッションなど</td>
+        <td>約3〜5万円</td>
+      </tr>
+      <tr>
+        <td>ミュージカル</td>
+        <td>ウエストエンド &#215; 2枚（TKTS半額利用）</td>
+        <td>約2〜4万円</td>
+      </tr>
+      <tr class="sub">
+        <td colspan="3" style="padding-top:1.2rem;"></td>
+      </tr>
+      <tr>
+        <td><strong>合計（TK経由＋推奨ホテル）</strong></td>
+        <td>おすすめプラン</td>
+        <td><strong>約85〜110万円</strong></td>
+      </tr>
+      <tr>
+        <td><strong>合計（TK経由＋節約ホテル）</strong></td>
+        <td>節約プラン</td>
+        <td><strong>約65〜85万円</strong></td>
+      </tr>
+      <tr>
+        <td><strong>合計（ANA直行＋推奨ホテル）</strong></td>
+        <td>快適プラン</td>
+        <td><strong>約110〜130万円</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:2rem; background:rgba(200,16,46,0.08); border:1px solid rgba(200,16,46,0.15); border-radius:12px; padding:1.5rem;">
+    <h3 style="color:var(--red-light); font-size:1rem; margin-bottom:0.5rem;">節約のコツ</h3>
+    <p style="font-size:0.85rem; color:rgba(255,255,255,0.6);">
+      &#127468;&#127463; <strong>博物館は無料</strong>: 大英博物館、ナショナルギャラリー、テートモダン、V&#38;A、自然史博物館 &#8212; ロンドンの主要博物館は入場無料。これだけで数万円分の価値。<br>
+      &#128179; <strong>コンタクトレス決済</strong>: Oyster Cardの代わりにクレジットカード（VISA/Mastercard）のタッチ決済が使える。1日上限&#163;8.50（Zone 1-2）で乗り放題。<br>
+      &#127915; <strong>TKTSブース</strong>: レスタースクエアのTKTSで当日のミュージカルチケットが最大50% OFF。
+    </p>
+  </div>
+</section>
+
+<!-- Reservations -->
+<section class="section" id="reservations">
+  <h2 class="section-title">Reservations</h2>
+  <p class="section-sub">予約が必要なもの &#38; 予約状況管理</p>
+
+  <div class="reservation-card">
+    <div class="res-status pending"></div>
+    <div class="res-info">
+      <div class="res-name">航空券（往復）</div>
+      <div class="res-detail">3/27 東京→ロンドン / 4/4 ロンドン→東京 &#215;2名</div>
+    </div>
+  </div>
+  <div class="reservation-card">
+    <div class="res-status pending"></div>
+    <div class="res-info">
+      <div class="res-name">ホテル（8泊）</div>
+      <div class="res-detail">3/27〜4/4 ロンドン市内 ダブルルーム</div>
+    </div>
+  </div>
+  <div class="reservation-card">
+    <div class="res-status pending"></div>
+    <div class="res-info">
+      <div class="res-name">ウェストミンスター寺院</div>
+      <div class="res-detail">3/28（土）9:00〜 &#163;29/人 &#215;2</div>
+    </div>
+  </div>
+  <div class="reservation-card">
+    <div class="res-status pending"></div>
+    <div class="res-info">
+      <div class="res-name">ロンドン・アイ</div>
+      <div class="res-detail">3/28（土）17:00頃 &#163;36/人 &#215;2</div>
+    </div>
+  </div>
+  <div class="reservation-card">
+    <div class="res-status pending"></div>
+    <div class="res-info">
+      <div class="res-name">ロンドン塔</div>
+      <div class="res-detail">3/30（月）9:30〜 &#163;33.60/人 &#215;2</div>
+    </div>
+  </div>
+  <div class="reservation-card">
+    <div class="res-status pending"></div>
+    <div class="res-info">
+      <div class="res-name">アフタヌーンティー</div>
+      <div class="res-detail">3/31（火）18:30〜 Sketch or Orangery &#215;2名</div>
+    </div>
+  </div>
+  <div class="reservation-card">
+    <div class="res-status pending"></div>
+    <div class="res-info">
+      <div class="res-name">ウエストエンド・ミュージカル</div>
+      <div class="res-detail">3/29（日）19:00〜 演目TBD &#215;2枚</div>
+    </div>
+  </div>
+  <div class="reservation-card">
+    <div class="res-status not-needed"></div>
+    <div class="res-info">
+      <div class="res-name">大英博物館</div>
+      <div class="res-detail">予約不要 / 入場無料</div>
+    </div>
+  </div>
+  <div class="reservation-card">
+    <div class="res-status not-needed"></div>
+    <div class="res-info">
+      <div class="res-name">ナショナル・ギャラリー</div>
+      <div class="res-detail">予約不要 / 入場無料</div>
+    </div>
+  </div>
+</section>
+
+<!-- Checklist -->
+<section class="section" id="checklist">
+  <h2 class="section-title">Packing List</h2>
+  <p class="section-sub">3月末〜4月初旬のロンドン &#8212; 気温5〜14&#176;C、雨が多い</p>
+
+  <div class="checklist-stats">
+    <span id="check-count">0 / 0 完了</span>
+    <span id="check-percent">0%</span>
+  </div>
+  <div class="checklist-progress">
+    <div class="checklist-progress-bar" id="check-bar" style="width:0%"></div>
+  </div>
+
+  <div class="checklist-category">
+    <h3>必須書類</h3>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">パスポート（残存6ヶ月以上）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">航空券（Eチケット控え）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">ホテル予約確認書</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">海外旅行保険証</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">UK ETA（電子渡航認証）&#8212; 2025年から日本人も必要 &#163;10</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">クレジットカード（VISA/Mastercard &#8212; タッチ決済対応）</span></label>
+  </div>
+
+  <div class="checklist-category">
+    <h3>衣類（3月末ロンドン = 東京の2月くらいの寒さ）</h3>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">防水アウター / レインコート（必須！雨が多い）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">ニット / フリース / セーター（重ね着推奨）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">長袖シャツ &#215; 4-5枚</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">パンツ / ジーンズ &#215; 2-3本</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">歩きやすい防水スニーカー（石畳が多い）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">折りたたみ傘（コンパクトなもの）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">マフラー / ストール</span></label>
+  </div>
+
+  <div class="checklist-category">
+    <h3>電子機器</h3>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">BFタイプ変換プラグ（英国は3ピン &#8212; 日本と違う！）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">スマホ充電器 &#38; ケーブル</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">モバイルバッテリー</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">eSIM or レンタルWi-Fi（現地SIMも空港で購入可）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">カメラ（必要なら）</span></label>
+  </div>
+
+  <div class="checklist-category">
+    <h3>便利グッズ</h3>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">エコバッグ（レジ袋有料）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">ネックピロー（長時間フライト用）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">常備薬（胃薬、頭痛薬など）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">リップクリーム &#38; 保湿クリーム（乾燥対策）</span></label>
+    <label class="check-item"><input type="checkbox"><span class="check-box">&#10003;</span><span class="check-text">Google Maps オフラインマップ（ロンドン）をDL</span></label>
+  </div>
+</section>
+
+<!-- Tips -->
+<section class="section" id="tips">
+  <h2 class="section-title">Travel Tips</h2>
+  <p class="section-sub">ロンドンを最大限楽しむためのコツ</p>
+
+  <div class="tips-grid">
+    <div class="tip-card">
+      <h3>&#128179; キャッシュレス天国</h3>
+      <p>ロンドンはほぼ完全キャッシュレス。クレジットカード（タッチ決済）があればOK。現金はほとんど不要。地下鉄もタッチ決済で乗れる（1日上限&#163;8.50）。</p>
+    </div>
+    <div class="tip-card">
+      <h3>&#127782; 天気は変わりやすい</h3>
+      <p>「1日に四季がある」と言われるロンドン。3月末は平均5〜14&#176;C。晴れていても突然雨が降る。折りたたみ傘と防水アウターは常に携帯。</p>
+    </div>
+    <div class="tip-card">
+      <h3>&#128646; 地下鉄マスターになろう</h3>
+      <p>Tubeは世界最古の地下鉄。主要観光地はほぼZone 1内。ピーク時間（月〜金 6:30-9:30, 16:00-19:00）は運賃が高いので、少しずらすと節約に。</p>
+    </div>
+    <div class="tip-card">
+      <h3>&#127477;&#127463; UK ETA（電子渡航認証）</h3>
+      <p>2025年から日本人もUK ETAが必要（&#163;10）。渡航前にオンラインで申請。スマホアプリで簡単に取得可能。忘れると入国できないので要注意！</p>
+    </div>
+    <div class="tip-card">
+      <h3>&#128176; チップ文化</h3>
+      <p>レストランではサービス料（12.5%）が自動加算されることが多い。その場合追加チップは不要。タクシーは10%程度。パブのカウンター注文はチップ不要。</p>
+    </div>
+    <div class="tip-card">
+      <h3>&#9200; サマータイムに注意</h3>
+      <p>3月最終日曜日（3/29）からサマータイム開始。時計が1時間進む（UTC+0 → UTC+1）。日本との時差が9時間→8時間に変わる。スマホは自動対応。</p>
+    </div>
+    <div class="tip-card">
+      <h3>&#128694; 歩く街ロンドン</h3>
+      <p>主要観光地は意外と近い。ウェストミンスター→バッキンガム宮殿は徒歩15分、コヴェントガーデン→大英博物館は徒歩20分。歩きやすい靴が最重要。</p>
+    </div>
+    <div class="tip-card">
+      <h3>&#128274; 安全情報</h3>
+      <p>ロンドンは比較的安全だがスリに注意。地下鉄、観光地、マーケットではバッグを前に。パスポートはホテルの金庫に。夜の一人歩きは避ける。</p>
+    </div>
+    <div class="tip-card">
+      <h3>&#127381; 免税（Tax Free）</h3>
+      <p>2025年からBrexit後のVAT還付制度が復活予定。対象店舗で&#163;30以上購入すると20%のVATが還付される場合あり。空港で手続き。最新情報を要確認。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>London Trip Planner 2026 &#8212; Have a lovely trip!</p>
+</footer>
+
+<script>
+// Countdown to March 27, 2026
+function updateCountdown() {
+  const target = new Date('2026-03-27T10:30:00+09:00');
+  const now = new Date();
+  const diff = target - now;
+  if (diff <= 0) {
+    document.getElementById('cd-days').textContent = '0';
+    document.getElementById('cd-hours').textContent = '0';
+    document.getElementById('cd-mins').textContent = '0';
+    document.getElementById('cd-secs').textContent = '0';
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent = d;
+  document.getElementById('cd-hours').textContent = h;
+  document.getElementById('cd-mins').textContent = m;
+  document.getElementById('cd-secs').textContent = s;
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// Checklist
+document.querySelectorAll('.check-item input').forEach(cb => {
+  const key = 'london-check-' + cb.closest('.check-item').querySelector('.check-text').textContent.trim().substring(0, 20);
+  cb.checked = localStorage.getItem(key) === 'true';
+  cb.addEventListener('change', () => {
+    localStorage.setItem(key, cb.checked);
+    updateCheckProgress();
+  });
+});
+
+function updateCheckProgress() {
+  const all = document.querySelectorAll('.check-item input');
+  const checked = document.querySelectorAll('.check-item input:checked');
+  const pct = all.length ? Math.round(checked.length / all.length * 100) : 0;
+  document.getElementById('check-count').textContent = checked.length + ' / ' + all.length + ' 完了';
+  document.getElementById('check-percent').textContent = pct + '%';
+  document.getElementById('check-bar').style.width = pct + '%';
+}
+updateCheckProgress();
+
+// Navigation active state
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav a[href^="#"]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 200) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+});
+
+// Leaflet Map
+const map = L.map('map').setView([51.509, -0.118], 13);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap &copy; CARTO',
+  maxZoom: 19
+}).addTo(map);
+
+const spots = [
+  { name: 'Strand Palace Hotel', lat: 51.5107, lng: -0.1192, type: 'hotel', desc: '推奨ホテル' },
+  { name: 'ウェストミンスター寺院', lat: 51.4994, lng: -0.1273, type: 'culture', desc: '世界遺産' },
+  { name: 'ビッグベン', lat: 51.5007, lng: -0.1246, type: 'culture', desc: 'ロンドンのシンボル' },
+  { name: 'バッキンガム宮殿', lat: 51.5014, lng: -0.1419, type: 'culture', desc: '衛兵交代式' },
+  { name: 'ロンドン・アイ', lat: 51.5033, lng: -0.1196, type: 'culture', desc: 'テムズ川の大観覧車' },
+  { name: '大英博物館', lat: 51.5194, lng: -0.1270, type: 'culture', desc: '入場無料' },
+  { name: 'ロンドン塔', lat: 51.5081, lng: -0.0759, type: 'culture', desc: '世界遺産' },
+  { name: 'タワーブリッジ', lat: 51.5055, lng: -0.0754, type: 'culture', desc: 'フォトスポット' },
+  { name: 'バラ・マーケット', lat: 51.5055, lng: -0.0910, type: 'food', desc: '1000年の歴史' },
+  { name: 'セント・ポール大聖堂', lat: 51.5138, lng: -0.0984, type: 'culture', desc: '360度パノラマ' },
+  { name: 'テート・モダン', lat: 51.5076, lng: -0.0994, type: 'culture', desc: '現代美術館・無料' },
+  { name: 'V&A博物館', lat: 51.4966, lng: -0.1722, type: 'culture', desc: 'デザイン美術館・無料' },
+  { name: 'ハロッズ', lat: 51.4994, lng: -0.1633, type: 'shopping', desc: '世界一のデパート' },
+  { name: 'ナショナル・ギャラリー', lat: 51.5089, lng: -0.1283, type: 'culture', desc: 'ゴッホ・モネ・無料' },
+  { name: 'キングスクロス 9¾番線', lat: 51.5322, lng: -0.1240, type: 'culture', desc: 'ハリー・ポッター' },
+  { name: 'カムデン・マーケット', lat: 51.5413, lng: -0.1466, type: 'food', desc: 'ストリートフード' },
+  { name: 'グリニッジ天文台', lat: 51.4769, lng: -0.0005, type: 'culture', desc: '本初子午線' },
+  { name: 'コヴェントガーデン', lat: 51.5117, lng: -0.1233, type: 'shopping', desc: 'ストリートパフォーマンス' },
+];
+
+const iconColors = {
+  hotel: '#C5A55A',
+  culture: '#81c784',
+  food: '#C8102E',
+  shopping: '#ce93d8'
+};
+
+spots.forEach(s => {
+  const color = iconColors[s.type] || '#fff';
+  const icon = L.divIcon({
+    className: '',
+    html: `<div style="width:12px;height:12px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,0.8);box-shadow:0 0 8px ${color}80;"></div>`,
+    iconSize: [12, 12],
+    iconAnchor: [6, 6]
+  });
+  L.marker([s.lat, s.lng], { icon })
+    .addTo(map)
+    .bindPopup(`<strong>${s.name}</strong><br>${s.desc}<br><a class="map-link" href="https://maps.google.com/?q=${encodeURIComponent(s.name + ' London')}" target="_blank">&#128205; Google Map</a>`);
+});
+</script>
+
+</body>
+</html>

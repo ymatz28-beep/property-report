@@ -3,57 +3,448 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Property Report Hub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <title>iUMA Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; }
-    * { box-sizing:border-box; margin:0; }
-    body { font-family:'Inter','Noto Sans JP',sans-serif; background:radial-gradient(ellipse at 20% -10%,rgba(110,231,255,0.08),transparent 50%),radial-gradient(ellipse at 80% 10%,rgba(167,139,250,0.06),transparent 50%),linear-gradient(180deg,#070b11,#0b0f16 30%,#0d1320); color:var(--text); min-height:100vh; }
-    .wrap { max-width:800px; margin:0 auto; padding:80px 20px 60px; }
-    h1 { font-size:clamp(28px,5vw,48px); font-weight:900; text-align:center; line-height:1.1; }
-    .sub { text-align:center; color:var(--muted); margin-top:12px; font-size:14px; }
-    .grid { margin-top:48px; display:grid; gap:16px; }
-    .report-card {
-      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:16px;
-      padding:24px 28px; border-radius:18px; text-decoration:none; color:var(--text);
-      border:1px solid var(--line); background:var(--card);
-      transition:all .2s;
+    :root {
+      --bg: #08090d;
+      --surface: rgba(255,255,255,0.028);
+      --surface-hover: rgba(255,255,255,0.055);
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.15);
+      --text: #e8ecf4;
+      --muted: #6b7a90;
+      --dim: #3d4a5c;
     }
-    .report-card:hover { border-color:var(--card-accent); background:rgba(255,255,255,0.06); transform:translateY(-2px); }
-    .card-city { font-size:28px; font-weight:900; color:var(--card-accent); min-width:60px; }
-    .card-desc { font-size:14px; color:var(--muted); }
-    .card-arrow { font-size:24px; color:var(--card-accent); opacity:0.5; }
-    .report-card:hover .card-arrow { opacity:1; }
-    .footer { margin-top:60px; text-align:center; color:var(--muted); font-size:12px; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', 'Noto Sans JP', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* === Atmospheric background === */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 15% -5%, rgba(56, 189, 248, 0.06), transparent),
+        radial-gradient(ellipse 60% 50% at 85% 10%, rgba(167, 139, 250, 0.04), transparent),
+        radial-gradient(ellipse 50% 40% at 50% 90%, rgba(251, 146, 60, 0.03), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* === Grain overlay === */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      opacity: 0.3;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+    /* === Header === */
+    header {
+      padding: 56px 0 0;
+      opacity: 0; animation: fadeUp 0.6s ease forwards;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(167,139,250,0.15));
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid; place-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      font-size: 15px;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: -0.5px;
+    }
+
+    .brand-text {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    /* === Hero === */
+    .hero {
+      margin-top: 64px;
+      opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 5.5vw, 56px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #e8ecf4 30%, #6b7a90 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      margin-top: 16px;
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    /* === Section === */
+    .section {
+      margin-top: 56px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.6s ease forwards;
+    }
+
+    .section-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .section-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+      margin-left: auto;
+    }
+
+    /* === Card grid === */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+
+    /* === Card === */
+    .card {
+      position: relative;
+      display: block;
+      padding: 24px;
+      border-radius: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    .card:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: grid; place-items: center;
+      font-size: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .card-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.03em;
+    }
+
+    .status-live {
+      background: rgba(52, 211, 153, 0.1);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.15);
+    }
+
+    .status-soon {
+      background: rgba(251, 191, 36, 0.08);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.12);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .card-links {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .card-link {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-link:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .card-link .arrow {
+      font-size: 13px;
+      opacity: 0.5;
+      transition: all 0.2s;
+    }
+
+    .card-link:hover .arrow { opacity: 1; transform: translateX(2px); }
+
+    /* === Coming soon card === */
+    .card.coming-soon {
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    .card.coming-soon .card-title,
+    .card.coming-soon .card-desc {
+      opacity: 0.5;
+    }
+
+    .card.coming-soon:hover {
+      transform: none;
+      cursor: default;
+    }
+
+    .card.coming-soon::before { display: none; }
+
+    /* === Footer === */
+    footer {
+      margin-top: 80px;
+      padding-bottom: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      opacity: 0; animation: fadeUp 0.6s ease 0.5s forwards;
+    }
+
+    .footer-text {
+      font-size: 11px;
+      color: var(--dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .footer-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .footer-dots span {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--dim);
+    }
+
+    /* === Animations === */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === Responsive === */
+    @media (max-width: 640px) {
+      .card-grid { grid-template-columns: 1fr; }
+      header { padding: 36px 0 0; }
+      .hero { margin-top: 40px; }
+      .section { margin-top: 40px; }
+      footer { flex-direction: column; gap: 12px; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Property Report Hub</h1>
-    <p class="sub">iUMAプロパティマネジメント — 不動産投資分析レポート</p>
-    <div class="grid">
-        <a href="minpaku-osaka.html" class="report-card" style="--card-accent:#6ee7ff">
-          <div class="card-city">大阪</div>
-          <div class="card-desc">民泊向け中古マンション候補</div>
-          <div class="card-arrow">&rarr;</div>
-        </a>
-        <a href="minpaku-fukuoka.html" class="report-card" style="--card-accent:#ff6b6b">
-          <div class="card-city">福岡</div>
-          <div class="card-desc">民泊向け中古マンション候補</div>
-          <div class="card-arrow">&rarr;</div>
-        </a>
-        <a href="minpaku-tokyo.html" class="report-card" style="--card-accent:#a78bfa">
-          <div class="card-city">東京</div>
-          <div class="card-desc">民泊向け中古マンション候補</div>
-          <div class="card-arrow">&rarr;</div>
-        </a>
-        <a href="naiken-analysis.html" class="report-card" style="--card-accent:#fb923c">
-          <div class="card-city">内覧</div>
-          <div class="card-desc">扇町 & 天満橋 — 重要事項調査分析</div>
-          <div class="card-arrow">&rarr;</div>
-        </a>
+  <div class="page">
+
+    <header>
+      <div class="brand">
+        <div class="brand-icon">iU</div>
+        <div>
+          <div class="brand-text">iUMA Dashboard</div>
+          <div class="brand-sub">Intelligence &amp; Analytics Platform</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="hero">
+      <h1>Data-Driven<br>Decisions.</h1>
+      <p>不動産・旅行・投資の分析レポートを一元管理。<br>自動収集 → スコアリング → レポート生成。</p>
     </div>
-    <div class="footer">Last updated: 2026-02-25 19:59</div>
+
+    <!-- Real Estate -->
+    <div class="section" style="--accent: #38bdf8;">
+      <div class="section-header" style="animation-delay:0.2s">
+        <div class="section-dot"></div>
+        <div class="section-label">Real Estate</div>
+        <div class="section-count">4 reports</div>
+      </div>
+      <div class="card-grid">
+        <div class="card" style="--accent:#6ee7ff; animation-delay:0.25s">
+          <div class="card-top">
+            <div class="card-icon">🏢</div>
+            <div class="card-status status-live">LIVE</div>
+          </div>
+          <div class="card-title">民泊物件検索</div>
+          <div class="card-desc">3都市の中古マンション候補をスコアリング。毎日自動巡回・更新。</div>
+          <div class="card-links">
+            <a href="minpaku-osaka.html" class="card-link">大阪 <span class="arrow">→</span></a>
+            <a href="minpaku-fukuoka.html" class="card-link">福岡 <span class="arrow">→</span></a>
+            <a href="minpaku-tokyo.html" class="card-link">東京 <span class="arrow">→</span></a>
+          </div>
+        </div>
+        <div class="card" style="--accent:#fb923c; animation-delay:0.3s">
+          <div class="card-top">
+            <div class="card-icon">🔍</div>
+            <div class="card-status status-live">LIVE</div>
+          </div>
+          <div class="card-title">内覧分析</div>
+          <div class="card-desc">重要事項調査報告書の分析。管理規約・修繕計画・民泊可否の評価。</div>
+          <div class="card-links">
+            <a href="naiken-analysis.html" class="card-link">扇町 &amp; 天満橋 <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Travel -->
+    <div class="section" style="--accent: #34d399;">
+      <div class="section-header" style="animation-delay:0.35s">
+        <div class="section-dot"></div>
+        <div class="section-label">Travel</div>
+        <div class="section-count">2 reports</div>
+      </div>
+      <div class="card-grid">
+        <div class="card" style="--accent:#34d399; animation-delay:0.4s">
+          <div class="card-top">
+            <div class="card-icon">✈️</div>
+            <div class="card-status status-live">LIVE</div>
+          </div>
+          <div class="card-title">旅行プランナー</div>
+          <div class="card-desc">目的地別の最適プラン。フライト・宿泊・アクティビティを自動最適化。</div>
+          <div class="card-links">
+            <a href="london.html" class="card-link">London 2026 <span class="arrow">→</span></a>
+            <a href="macau.html" class="card-link">Macau 2026 <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stocks -->
+    <div class="section" style="--accent: #a78bfa;">
+      <div class="section-header" style="animation-delay:0.45s">
+        <div class="section-dot"></div>
+        <div class="section-label">Stocks</div>
+        <div class="section-count">1 report</div>
+      </div>
+      <div class="card-grid">
+        <div class="card" style="--accent:#a78bfa; animation-delay:0.5s">
+          <div class="card-top">
+            <div class="card-icon">📊</div>
+            <div class="card-status status-live">LIVE</div>
+          </div>
+          <div class="card-title">ポートフォリオ分析</div>
+          <div class="card-desc">保有銘柄のファンダメンタルズ × テクニカル分析。パフォーマンスレポート。</div>
+          <div class="card-links">
+            <a href="stock-portfolio.html" class="card-link">Portfolio <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-text">iUMA Property Management — 2026</div>
+      <div class="footer-dots"><span></span><span></span><span></span></div>
+      <div class="footer-text">Auto-updated daily</div>
+    </footer>
+
   </div>
 </body>
 </html>

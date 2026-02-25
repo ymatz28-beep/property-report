@@ -1,0 +1,4012 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ポートフォリオ分析レポート</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #242836;
+  --border: #2d3348;
+  --text: #e4e4e7;
+  --text-muted: #9ca3af;
+  --accent: #6366f1;
+  --accent2: #8b5cf6;
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #eab308;
+  --blue: #3b82f6;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+.hero {
+  background: linear-gradient(135deg, #1e1b4b, #312e81, #1e1b4b);
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 32px;
+  border: 1px solid var(--border);
+}
+.hero h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+.hero .subtitle { color: var(--text-muted); font-size: 14px; }
+.hero .stats { display: flex; gap: 32px; margin-top: 24px; flex-wrap: wrap; }
+.stat-card {
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 16px 24px;
+  backdrop-filter: blur(10px);
+}
+.stat-card .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
+.stat-card .value { font-size: 24px; font-weight: 700; margin-top: 4px; }
+.section { margin-bottom: 32px; }
+.section-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; padding-left: 12px; border-left: 3px solid var(--accent); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: transform 0.2s;
+}
+.card:hover { transform: translateY(-2px); }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.card-title { font-size: 16px; font-weight: 700; }
+.card-market { font-size: 12px; padding: 4px 8px; border-radius: 6px; background: var(--surface2); }
+.score-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 20px; font-weight: 700; padding: 6px 16px;
+  border-radius: 8px;
+}
+.score-badge.excellent { background: rgba(34,197,94,0.15); color: var(--green); }
+.score-badge.good { background: rgba(59,130,246,0.15); color: var(--blue); }
+.score-badge.fair { background: rgba(234,179,8,0.15); color: var(--yellow); }
+.score-badge.poor { background: rgba(239,68,68,0.15); color: var(--red); }
+.metric-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.metric-row:last-child { border-bottom: none; }
+.metric-label { color: var(--text-muted); font-size: 13px; }
+.metric-value { font-weight: 600; font-size: 13px; }
+.pnl-positive { color: var(--green); }
+.pnl-negative { color: var(--red); }
+.chart-container { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+canvas { max-height: 300px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
+th { background: var(--surface2); font-weight: 600; color: var(--text-muted); text-transform: uppercase; font-size: 11px; }
+tr:hover { background: var(--surface2); }
+.radar-container { width: 200px; height: 200px; margin: 0 auto; }
+.theme-badge { background: var(--accent); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; margin: 2px; }
+.footer { text-align: center; color: var(--text-muted); font-size: 12px; padding: 32px 0; }
+.axis-detail { margin-top: 12px; }
+.axis-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.axis-bar .name { width: 80px; font-size: 12px; color: var(--text-muted); text-align: right; }
+.axis-bar .bar-bg { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+.axis-bar .bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+.axis-bar .pts { width: 60px; font-size: 12px; font-weight: 600; }
+.nisa-tag { background: rgba(234,179,8,0.2); color: var(--yellow); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+@media (max-width: 768px) {
+  .chart-row { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; }
+  .hero .stats { gap: 16px; }
+  .hero { padding: 24px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Hero -->
+<div class="hero">
+  <h1>ポートフォリオ分析レポート</h1>
+  <div class="subtitle">骨太投資術 × Porter競争戦略 | 39銘柄 | 2026-02-25 21:01</div>
+  <div class="stats">
+    
+    <div class="stat-card">
+      <div class="label">総評価額</div>
+      <div class="value">¥8,306,261</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="label">銘柄数</div>
+      <div class="value">39</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="label">USD/JPY</div>
+      <div class="value">156.75</div>
+    </div>
+    
+  </div>
+</div>
+
+
+
+<!-- Charts -->
+
+<div class="section">
+  <div class="section-title">配分分析</div>
+  <div class="chart-row">
+    <div class="chart-container">
+      <canvas id="marketAllocation"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="stockAllocation"></canvas>
+    </div>
+  </div>
+</div>
+
+
+<!-- Stock Cards -->
+<div class="section">
+  <div class="section-title">銘柄分析</div>
+  <div class="grid">
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">良品計画</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 7453.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 18/25pts (72%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_0"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 72%; background: #3b82f6;"></div></div>
+          <span class="pts">18.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 37.6 (割高 (基準: 8-20)) | ROE: 16.8 (優良 (基準: 10%)) | 流動比率: 2.81 (非常に安全 (基準: 1.5)) | FCF: ['32,361M', '19,571M', '30,153M'] (全期黒字 (3/3期)) | 配当: 0.79 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥2,967</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥3,596</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥359,600</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥62,900 (+21.2%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">37.6</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">16.8%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">0.79%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">ｒｏｂｏｔ　ｈｏｍｅ</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 1435.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 16/25pts (66%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_1"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 66%; background: #3b82f6;"></div></div>
+          <span class="pts">16.5/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 32.7 (割高 (基準: 8-20)) | ROE: 19.5 (優良 (基準: 10%)) | 流動比率: 2.82 (非常に安全 (基準: 1.5)) | FCF: ['1,334M', '656M', '-342M'] (2/3期黒字 (基準: 2期)) | 配当: 1.04 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">1,000株 @ ¥203</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥204</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥204,000</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥1,000 (+0.5%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">32.7</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">19.5%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">1.04%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">ベースフード</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 2936.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge fair">
+          △ 10/25pts (40%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_2"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 40%; background: #eab308;"></div></div>
+          <span class="pts">10.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 33.4 (割高 (基準: 8-20)) | ROE: 48.1 (優良 (基準: 10%)) | 流動比率: 1.24 (やや低い (基準: 1.5)) | FCF: ['51M', '-738M', '-801M'] (1/3期のみ黒字) | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥331</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥361</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥36,100</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥3,000 (+9.1%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">33.4</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">48.1%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">三菱重</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 7011.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 9/25pts (36%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_3"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 36%; background: #ef4444;"></div></div>
+          <span class="pts">9.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 58.4 (割高 (基準: 8-20)) | ROE: N/A | 流動比率: 1.27 (やや低い (基準: 1.5)) | FCF: ['289,767M', '170,700M', '-51,017M'] (2/3期黒字 (基準: 2期)) | 配当: 0.5 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥3,940</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥4,752</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥475,200</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥81,200 (+20.6%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">58.4</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">0.50%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">パンパシフィックＨＤ</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 7532.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 16/25pts (62%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_4"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 62%; background: #3b82f6;"></div></div>
+          <span class="pts">15.5/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 31.0 (割高 (基準: 8-20)) | ROE: 16.0 (優良 (基準: 10%)) | 流動比率: 1.16 (やや低い (基準: 1.5)) | FCF: ['79,835M', '55,961M', '78,393M'] (全期黒字 (3/3期)) | 配当: 0.83 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥940</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥1,036</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥103,600</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥9,600 (+10.2%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">31.0</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">16.0%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">0.83%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">Ｉｎｅ</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 4933.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 16/25pts (66%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_5"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 66%; background: #3b82f6;"></div></div>
+          <span class="pts">16.5/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 7.3 (低PER (基準: 8-20)) | ROE: 15.5 (優良 (基準: 10%)) | 流動比率: 2.5 (非常に安全 (基準: 1.5)) | FCF: ['-395M', '903M', '-742M'] (1/3期のみ黒字) | 配当: 1.34 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥1,350</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥1,071</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥107,100</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-negative">¥-27,900 (-20.7%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">7.3</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">15.5%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">1.34%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">オープンドア</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 3926.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 7/25pts (28%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_6"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 28%; background: #ef4444;"></div></div>
+          <span class="pts">7.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 57.5 (割高 (基準: 8-20)) | ROE: -29.7 (低水準 (基準: 10%)) | 流動比率: 5.41 (非常に安全 (基準: 1.5)) | FCF: ['-24M', '-351M', '-22M'] (全期赤字) | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥285</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥351</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥35,100</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥6,600 (+23.2%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">57.5</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">-29.7%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">ＮＴＴ</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 9432.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 19/25pts (76%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_7"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 76%; background: #3b82f6;"></div></div>
+          <span class="pts">19.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 12.0 (適正レンジ (8-20)) | ROE: 10.7 (良好 (基準: 10%)) | 流動比率: 0.58 (危険水準 (基準: 1.5)) | FCF: ['231,739M', '290,155M', '409,134M'] (全期黒字 (3/3期)) | 配当: 3.51 (良好 (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">1,000株 @ ¥154</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥151</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥150,900</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-negative">¥-3,100 (-2.0%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">12.0</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">10.7%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">3.51%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">ビジョン</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 9416.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge excellent">
+          ◎ 24/25pts (96%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_8"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 96%; background: #22c55e;"></div></div>
+          <span class="pts">24.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 14.1 (適正レンジ (8-20)) | ROE: 23.1 (優良 (基準: 10%)) | 流動比率: 3.44 (非常に安全 (基準: 1.5)) | FCF: ['2,039M', '3,240M', '254M'] (全期黒字 (3/3期)) | 配当: 4.5 (良好 (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥1,285</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥1,301</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥130,100</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥1,600 (+1.2%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">14.1</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">23.1%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">4.50%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">フジオフードＧ本社</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 2752.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge fair">
+          △ 13/25pts (52%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_9"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 52%; background: #eab308;"></div></div>
+          <span class="pts">13.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 594.5 (割高 (基準: 8-20)) | ROE: 1.0 (低水準 (基準: 10%)) | 流動比率: 1.59 (安全 (基準: 1.5)) | FCF: ['1,475M', '1,375M', '225M'] (全期黒字 (3/3期)) | 配当: 0.28 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥1,070</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥1,076</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥107,600</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥600 (+0.6%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">594.5</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">1.0%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">0.28%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">ＣＭＫ</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 6958.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge fair">
+          △ 14/25pts (56%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_10"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 56%; background: #eab308;"></div></div>
+          <span class="pts">14.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 16.7 (適正レンジ (8-20)) | ROE: 3.1 (低水準 (基準: 10%)) | 流動比率: 1.64 (安全 (基準: 1.5)) | FCF: ['-9,875M', '-6,531M', '-520M'] (全期赤字) | 配当: 3.19 (良好 (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥522</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥629</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥62,900</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥10,700 (+20.5%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">16.7</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">3.1%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">3.19%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">五洋建</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 1893.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge fair">
+          △ 13/25pts (52%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_11"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 52%; background: #eab308;"></div></div>
+          <span class="pts">13.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 29.2 (やや割高 (基準: 8-20)) | ROE: 18.2 (優良 (基準: 10%)) | 流動比率: 1.18 (やや低い (基準: 1.5)) | FCF: ['-61,482M', '-1,748M', '9,575M'] (1/3期のみ黒字) | 配当: 2.14 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥1,890</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥2,065</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥206,500</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥17,500 (+9.3%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">29.2</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">18.2%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">2.14%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">名村造船</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 7014.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge excellent">
+          ◎ 21/25pts (84%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_12"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 84%; background: #22c55e;"></div></div>
+          <span class="pts">21.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 19.1 (適正レンジ (8-20)) | ROE: 16.9 (優良 (基準: 10%)) | 流動比率: 1.77 (安全 (基準: 1.5)) | FCF: ['32,186M', '25,472M', '6,922M'] (全期黒字 (3/3期)) | 配当: 0.73 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥4,750</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥5,500</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥550,000</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥75,000 (+15.8%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">19.1</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">16.9%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">0.73%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">北海電力</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 9509.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 16/25pts (62%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_13"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 62%; background: #3b82f6;"></div></div>
+          <span class="pts">15.5/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 4.3 (低PER (基準: 8-20)) | ROE: 14.0 (良好 (基準: 10%)) | 流動比率: 0.95 (危険水準 (基準: 1.5)) | FCF: ['125,588M', '176,135M', '-574M'] (2/3期黒字 (基準: 2期)) | 配当: 2.53 (良好 (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">200株 @ ¥1,116</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥1,192</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥238,500</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥15,300 (+6.9%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">4.3</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">14.0%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">2.53%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">iシェアーズ MSCI 韓国 ETF</span>
+          
+        </div>
+        <span class="card-market">🇺🇸 EWY</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 9/25pts (36%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_14"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 36%; background: #ef4444;"></div></div>
+          <span class="pts">9.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 21.5 (適正レンジ (10-25)) | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: 1.64 (良好 (基準: 1.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">6株 @ $123.11</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">$144.55</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥135,951</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">$128.64 (+17.4%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">21.5</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">1.64%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">金</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 GOLD</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_15"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">8株 @ ¥24,862</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥26,067</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥209,696</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥9,694 (+4.8%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">プラチナ</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 PLATINUM</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_16"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">17株 @ ¥11,675</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥11,879</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥203,496</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥3,495 (+1.7%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">銀</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 SILVER</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_17"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">204株 @ ¥441</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥455</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥92,920</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥2,920 (+3.2%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">ドトール・日レスＨＤ</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 3087.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 18/25pts (72%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_18"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 72%; background: #3b82f6;"></div></div>
+          <span class="pts">18.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 19.7 (適正レンジ (8-20)) | ROE: 6.6 (普通 (基準: 10%)) | 流動比率: 2.45 (非常に安全 (基準: 1.5)) | FCF: ['6,442M', '6,871M', '-221M'] (2/3期黒字 (基準: 2期)) | 配当: 1.88 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥2,440</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥3,005</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥300,500</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥56,500 (+23.2%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">19.7</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">6.6%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">1.88%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">中国塗料</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 4617.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge excellent">
+          ◎ 22/25pts (88%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_19"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 88%; background: #22c55e;"></div></div>
+          <span class="pts">22.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 20.0 (適正レンジ (8-20)) | ROE: 15.2 (優良 (基準: 10%)) | 流動比率: 2.42 (非常に安全 (基準: 1.5)) | FCF: ['14,539M', '12,388M', '29M'] (全期黒字 (3/3期)) | 配当: 2.11 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥4,085</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥4,555</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥455,500</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥47,000 (+11.5%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">20.0</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">15.2%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">2.11%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">楽天グループ</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 4755.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge fair">
+          △ 12/25pts (50%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_20"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 50%; background: #eab308;"></div></div>
+          <span class="pts">12.5/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: -107.3 (低PER (基準: 8-20)) | ROE: -9.5 (低水準 (基準: 10%)) | 流動比率: 23.22 (非常に安全 (基準: 1.5)) | FCF: ['947,645M', '373,035M', '-697,286M'] (2/3期黒字 (基準: 2期)) | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥845</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥817</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥81,690</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-negative">¥-2,810 (-3.3%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">-107.3</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">-9.5%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">三菱重工業</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 7011.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 9/25pts (36%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_21"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 36%; background: #ef4444;"></div></div>
+          <span class="pts">9.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 58.4 (割高 (基準: 8-20)) | ROE: N/A | 流動比率: 1.27 (やや低い (基準: 1.5)) | FCF: ['289,767M', '170,700M', '-51,017M'] (2/3期黒字 (基準: 2期)) | 配当: 0.5 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">6株 @ ¥2,194</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥4,752</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥28,512</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥15,345 (+116.5%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">58.4</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">0.50%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">三菱重工業</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 7011.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 9/25pts (36%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_22"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 36%; background: #ef4444;"></div></div>
+          <span class="pts">9.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 58.4 (割高 (基準: 8-20)) | ROE: N/A | 流動比率: 1.27 (やや低い (基準: 1.5)) | FCF: ['289,767M', '170,700M', '-51,017M'] (2/3期黒字 (基準: 2期)) | 配当: 0.5 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">30株 @ ¥4,150</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥4,752</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥142,560</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥18,060 (+14.5%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">58.4</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">0.50%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">ＩＨＩ</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 7013.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge fair">
+          △ 14/25pts (56%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_23"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 56%; background: #eab308;"></div></div>
+          <span class="pts">14.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 32.9 (割高 (基準: 8-20)) | ROE: 23.6 (優良 (基準: 10%)) | 流動比率: 1.17 (やや低い (基準: 1.5)) | FCF: ['117,385M', '1,124M', '-8,461M'] (2/3期黒字 (基準: 2期)) | 配当: 0.48 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">56株 @ ¥2,922</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥4,010</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥224,560</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥60,915 (+37.2%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">32.9</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">23.6%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">0.48%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">東日本旅客鉄道</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 9020.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge fair">
+          △ 12/25pts (48%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_24"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 48%; background: #eab308;"></div></div>
+          <span class="pts">12.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 18.6 (適正レンジ (8-20)) | ROE: 7.7 (普通 (基準: 10%)) | 流動比率: 0.88 (危険水準 (基準: 1.5)) | FCF: ['-38,682M', '-26,809M', '26,172M'] (1/3期のみ黒字) | 配当: 1.83 (配当あり (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥4,045</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥3,819</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥381,900</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-negative">¥-22,600 (-5.6%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">18.6</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">7.7%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">1.83%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">ＮＴＴ</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 9432.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 19/25pts (76%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_25"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 76%; background: #3b82f6;"></div></div>
+          <span class="pts">19.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 12.0 (適正レンジ (8-20)) | ROE: 10.7 (良好 (基準: 10%)) | 流動比率: 0.58 (危険水準 (基準: 1.5)) | FCF: ['231,739M', '290,155M', '409,134M'] (全期黒字 (3/3期)) | 配当: 3.51 (良好 (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">663株 @ ¥163</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥151</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥100,047</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-negative">¥-7,777 (-7.2%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">12.0</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">10.7%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">3.51%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">関西電力</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 9503.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 18/25pts (74%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_26"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 74%; background: #3b82f6;"></div></div>
+          <span class="pts">18.5/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 7.1 (低PER (基準: 8-20)) | ROE: 12.4 (良好 (基準: 10%)) | 流動比率: 1.15 (やや低い (基準: 1.5)) | FCF: ['575,299M', '1,154,990M', '128,038M'] (全期黒字 (3/3期)) | 配当: 3.27 (良好 (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥2,628</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥2,744</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥274,400</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥11,600 (+4.4%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">7.1</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">12.4%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">3.27%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">関西電力</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 9503.T</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 18/25pts (74%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_27"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 74%; background: #3b82f6;"></div></div>
+          <span class="pts">18.5/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 7.1 (低PER (基準: 8-20)) | ROE: 12.4 (良好 (基準: 10%)) | 流動比率: 1.15 (やや低い (基準: 1.5)) | FCF: ['575,299M', '1,154,990M', '128,038M'] (全期黒字 (3/3期)) | 配当: 3.27 (良好 (基準: 2.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ ¥2,500</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥2,744</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥274,400</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥24,400 (+9.8%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">7.1</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">12.4%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">3.27%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">コンパニア・デ・ミナス・ブエナベントゥラ</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇺🇸 BVN</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge good">
+          ○ 16/25pts (64%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_28"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 64%; background: #3b82f6;"></div></div>
+          <span class="pts">16.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 21.7 (適正レンジ (10-25)) | ROE: 12.3 (普通 (基準: 15%)) | 流動比率: 2.27 (非常に安全 (基準: 1.5)) | FCF: ['148M', '-12M', '-110M'] (1/3期のみ黒字) | 配当: 1.12 (配当あり (基準: 1.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">100株 @ $39.00</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">$38.89</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥609,609</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-negative">$-11.00 (-0.3%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">21.7</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">12.3%</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">1.12%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">iシェアーズ MSCI 韓国 ETF</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇺🇸 EWY</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 9/25pts (36%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_29"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 36%; background: #ef4444;"></div></div>
+          <span class="pts">9.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: 21.5 (適正レンジ (10-25)) | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: 1.64 (良好 (基準: 1.5%))</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">30株 @ $123.00</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">$144.55</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥679,755</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">$646.50 (+17.5%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">21.5</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">1.64%</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">楽天・全米株式インデックス・ファンド(楽天・VTI)</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 FUND_楽天・全米株式インデ</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_30"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">50,813株 @ ¥34,440</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥39,172</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥199,045</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥240,446,608 (+13.7%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">楽天・全米株式インデックス・ファンド(楽天・VTI)</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 FUND_楽天・全米株式インデ</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_31"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">12,435株 @ ¥40,209</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥39,172</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥48,710</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-negative">¥-12,896,214 (-2.6%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">楽天・米国高配当株式インデックス・ファンド(楽天・VYM)</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 FUND_楽天・米国高配当株式</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_32"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">70,509株 @ ¥24,820</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥29,832</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥210,342</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥353,424,247 (+20.2%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">楽天・米国高配当株式インデックス・ファンド(楽天・VYM)</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 FUND_楽天・米国高配当株式</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_33"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">16,926株 @ ¥29,540</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥29,832</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥50,494</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥4,936,468 (+1.0%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">楽天・プラス・日経225インデックス・ファンド(楽天・プラス・日経225)</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 FUND_楽天・プラス・日経2</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_34"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">129,969株 @ ¥13,465</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥17,832</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥231,761</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥567,607,115 (+32.4%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">楽天・プラス・日経225インデックス・ファンド(楽天・プラス・日経225)</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 FUND_楽天・プラス・日経2</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_35"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">30,959株 @ ¥16,150</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥17,832</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥55,206</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥52,060,964 (+10.4%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">楽天・シュワブ・高配当株式・米国ファンド(四半期決算型)(楽天・SCHD)</span>
+          <span class="nisa-tag">NISA</span>
+        </div>
+        <span class="card-market">🇯🇵 FUND_楽天・シュワブ・高配</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_36"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">27,050株 @ ¥9,406</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥12,298</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥33,266</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥78,221,026 (+30.7%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">金</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 GOLD_R</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_37"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">12株 @ ¥19,832</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥26,042</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥301,280</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥71,848 (+31.3%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <span class="card-title">プラチナ</span>
+          
+        </div>
+        <span class="card-market">🇯🇵 PLAT_R</span>
+      </div>
+
+      <!-- Score -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span class="score-badge poor">
+          × 0/25pts (0%)
+        </span>
+      </div>
+
+      <!-- Radar -->
+      <div class="radar-container">
+        <canvas id="radar_38"></canvas>
+      </div>
+
+      <!-- Axis Bars -->
+      <div class="axis-detail">
+        
+        <div class="axis-bar">
+          <span class="name">国策</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">戦略</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">財務</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #ef4444;"></div></div>
+          <span class="pts">0.0/25</span>
+        </div>
+        
+        <div class="axis-bar">
+          <span class="name">組織</span>
+          <div class="bar-bg"><div class="bar-fill" style="width: 0%; background: #374151;"></div></div>
+          <span class="pts">-/25</span>
+        </div>
+        
+      </div>
+
+      
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">PER: N/A | ROE: N/A | 流動比率: N/A | FCF: N/A | 配当: N/A</p>
+      
+
+      <!-- Holdings Info (portfolio mode) -->
+      
+      <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row">
+          <span class="metric-label">保有</span>
+          <span class="metric-value">19株 @ ¥8,237</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">現在値</span>
+          <span class="metric-value">¥11,501</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">評価額</span>
+          <span class="metric-value">¥213,462</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">損益</span>
+          <span class="metric-value pnl-positive">¥60,590 (+39.6%)</span>
+        </div>
+      </div>
+      
+
+      <!-- Financials -->
+      <div style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="metric-row"><span class="metric-label">PER</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">ROE</span><span class="metric-value">N/A</span></div>
+        <div class="metric-row"><span class="metric-label">配当利回り</span><span class="metric-value">N/A</span></div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- Ranking Table -->
+<div class="section">
+  <div class="section-title">ランキング</div>
+  <div class="card" style="padding: 0; overflow: hidden;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>銘柄</th>
+          <th>市場</th>
+          <th>軸1 国策</th>
+          <th>軸2 戦略</th>
+          <th>軸3 財務</th>
+          <th>軸4 組織</th>
+          <th>合計</th>
+          <th>評価</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td>1</td>
+          <td><strong>ビジョン</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>24</td>
+          <td>-</td>
+          <td><strong>24/25</strong></td>
+          <td><span class="score-badge excellent" style="font-size: 14px; padding: 2px 10px;">◎</span></td>
+        </tr>
+        
+        <tr>
+          <td>2</td>
+          <td><strong>中国塗料</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>22</td>
+          <td>-</td>
+          <td><strong>22/25</strong></td>
+          <td><span class="score-badge excellent" style="font-size: 14px; padding: 2px 10px;">◎</span></td>
+        </tr>
+        
+        <tr>
+          <td>3</td>
+          <td><strong>名村造船</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>21</td>
+          <td>-</td>
+          <td><strong>21/25</strong></td>
+          <td><span class="score-badge excellent" style="font-size: 14px; padding: 2px 10px;">◎</span></td>
+        </tr>
+        
+        <tr>
+          <td>4</td>
+          <td><strong>ＮＴＴ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>19</td>
+          <td>-</td>
+          <td><strong>19/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>5</td>
+          <td><strong>ＮＴＴ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>19</td>
+          <td>-</td>
+          <td><strong>19/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>6</td>
+          <td><strong>関西電力</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>18</td>
+          <td>-</td>
+          <td><strong>18/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>7</td>
+          <td><strong>関西電力</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>18</td>
+          <td>-</td>
+          <td><strong>18/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>8</td>
+          <td><strong>良品計画</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>18</td>
+          <td>-</td>
+          <td><strong>18/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>9</td>
+          <td><strong>ドトール・日レスＨＤ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>18</td>
+          <td>-</td>
+          <td><strong>18/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>10</td>
+          <td><strong>ｒｏｂｏｔ　ｈｏｍｅ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>16</td>
+          <td>-</td>
+          <td><strong>16/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>11</td>
+          <td><strong>Ｉｎｅ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>16</td>
+          <td>-</td>
+          <td><strong>16/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>12</td>
+          <td><strong>コンパニア・デ・ミナス・ブエナベントゥラ</strong></td>
+          <td>🇺🇸</td>
+          <td>-</td>
+          <td>-</td>
+          <td>16</td>
+          <td>-</td>
+          <td><strong>16/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>13</td>
+          <td><strong>パンパシフィックＨＤ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>16</td>
+          <td>-</td>
+          <td><strong>16/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>14</td>
+          <td><strong>北海電力</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>16</td>
+          <td>-</td>
+          <td><strong>16/25</strong></td>
+          <td><span class="score-badge good" style="font-size: 14px; padding: 2px 10px;">○</span></td>
+        </tr>
+        
+        <tr>
+          <td>15</td>
+          <td><strong>ＣＭＫ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>14</td>
+          <td>-</td>
+          <td><strong>14/25</strong></td>
+          <td><span class="score-badge fair" style="font-size: 14px; padding: 2px 10px;">△</span></td>
+        </tr>
+        
+        <tr>
+          <td>16</td>
+          <td><strong>ＩＨＩ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>14</td>
+          <td>-</td>
+          <td><strong>14/25</strong></td>
+          <td><span class="score-badge fair" style="font-size: 14px; padding: 2px 10px;">△</span></td>
+        </tr>
+        
+        <tr>
+          <td>17</td>
+          <td><strong>フジオフードＧ本社</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>13</td>
+          <td>-</td>
+          <td><strong>13/25</strong></td>
+          <td><span class="score-badge fair" style="font-size: 14px; padding: 2px 10px;">△</span></td>
+        </tr>
+        
+        <tr>
+          <td>18</td>
+          <td><strong>五洋建</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>13</td>
+          <td>-</td>
+          <td><strong>13/25</strong></td>
+          <td><span class="score-badge fair" style="font-size: 14px; padding: 2px 10px;">△</span></td>
+        </tr>
+        
+        <tr>
+          <td>19</td>
+          <td><strong>楽天グループ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>12</td>
+          <td>-</td>
+          <td><strong>12/25</strong></td>
+          <td><span class="score-badge fair" style="font-size: 14px; padding: 2px 10px;">△</span></td>
+        </tr>
+        
+        <tr>
+          <td>20</td>
+          <td><strong>東日本旅客鉄道</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>12</td>
+          <td>-</td>
+          <td><strong>12/25</strong></td>
+          <td><span class="score-badge fair" style="font-size: 14px; padding: 2px 10px;">△</span></td>
+        </tr>
+        
+        <tr>
+          <td>21</td>
+          <td><strong>ベースフード</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>10</td>
+          <td>-</td>
+          <td><strong>10/25</strong></td>
+          <td><span class="score-badge fair" style="font-size: 14px; padding: 2px 10px;">△</span></td>
+        </tr>
+        
+        <tr>
+          <td>22</td>
+          <td><strong>三菱重</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>9</td>
+          <td>-</td>
+          <td><strong>9/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>23</td>
+          <td><strong>iシェアーズ MSCI 韓国 ETF</strong></td>
+          <td>🇺🇸</td>
+          <td>-</td>
+          <td>-</td>
+          <td>9</td>
+          <td>-</td>
+          <td><strong>9/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>24</td>
+          <td><strong>三菱重工業</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>9</td>
+          <td>-</td>
+          <td><strong>9/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>25</td>
+          <td><strong>三菱重工業</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>9</td>
+          <td>-</td>
+          <td><strong>9/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>26</td>
+          <td><strong>iシェアーズ MSCI 韓国 ETF</strong></td>
+          <td>🇺🇸</td>
+          <td>-</td>
+          <td>-</td>
+          <td>9</td>
+          <td>-</td>
+          <td><strong>9/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>27</td>
+          <td><strong>オープンドア</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>7</td>
+          <td>-</td>
+          <td><strong>7/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>28</td>
+          <td><strong>金</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>29</td>
+          <td><strong>プラチナ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>30</td>
+          <td><strong>銀</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>31</td>
+          <td><strong>楽天・全米株式インデックス・ファンド(楽天・VTI)</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>32</td>
+          <td><strong>楽天・全米株式インデックス・ファンド(楽天・VTI)</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>33</td>
+          <td><strong>楽天・米国高配当株式インデックス・ファンド(楽天・VYM)</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>34</td>
+          <td><strong>楽天・米国高配当株式インデックス・ファンド(楽天・VYM)</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>35</td>
+          <td><strong>楽天・プラス・日経225インデックス・ファンド(楽天・プラス・日経225)</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>36</td>
+          <td><strong>楽天・プラス・日経225インデックス・ファンド(楽天・プラス・日経225)</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>37</td>
+          <td><strong>楽天・シュワブ・高配当株式・米国ファンド(四半期決算型)(楽天・SCHD)</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>38</td>
+          <td><strong>金</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+        <tr>
+          <td>39</td>
+          <td><strong>プラチナ</strong></td>
+          <td>🇯🇵</td>
+          <td>-</td>
+          <td>-</td>
+          <td>0</td>
+          <td>-</td>
+          <td><strong>0/25</strong></td>
+          <td><span class="score-badge poor" style="font-size: 14px; padding: 2px 10px;">×</span></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="footer">
+  stock-analyzer v0.1 — 骨太投資術 × Porter競争戦略 MECE 4軸分析<br>
+  Generated at 2026-02-25 21:01
+</div>
+
+</div>
+
+<script>
+// Radar charts for each stock
+const radarConfigs = {"radar_0": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 18.0, 0]}, "radar_1": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 16.5, 0]}, "radar_2": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 10.0, 0]}, "radar_3": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 9.0, 0]}, "radar_4": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 15.5, 0]}, "radar_5": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 16.5, 0]}, "radar_6": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 7.0, 0]}, "radar_7": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 19.0, 0]}, "radar_8": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 24.0, 0]}, "radar_9": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 13.0, 0]}, "radar_10": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 14.0, 0]}, "radar_11": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 13.0, 0]}, "radar_12": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 21.0, 0]}, "radar_13": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 15.5, 0]}, "radar_14": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 9.0, 0]}, "radar_15": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_16": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_17": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_18": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 18.0, 0]}, "radar_19": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 22.0, 0]}, "radar_20": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 12.5, 0]}, "radar_21": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 9.0, 0]}, "radar_22": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 9.0, 0]}, "radar_23": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 14.0, 0]}, "radar_24": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 12.0, 0]}, "radar_25": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 19.0, 0]}, "radar_26": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 18.5, 0]}, "radar_27": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 18.5, 0]}, "radar_28": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 16.0, 0]}, "radar_29": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 9.0, 0]}, "radar_30": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_31": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_32": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_33": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_34": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_35": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_36": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_37": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}, "radar_38": {"labels": ["\u56fd\u7b56", "\u6226\u7565", "\u8ca1\u52d9", "\u7d44\u7e54"], "data": [0, 0, 0.0, 0]}};
+Object.entries(radarConfigs).forEach(([id, cfg]) => {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: cfg.labels,
+      datasets: [{
+        data: cfg.data,
+        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+        borderColor: 'rgba(99, 102, 241, 0.8)',
+        borderWidth: 2,
+        pointBackgroundColor: 'rgba(99, 102, 241, 1)',
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        r: {
+          min: 0, max: 25,
+          ticks: { stepSize: 5, color: '#6b7280', font: { size: 9 } },
+          grid: { color: 'rgba(255,255,255,0.08)' },
+          pointLabels: { color: '#9ca3af', font: { size: 10 } },
+        }
+      }
+    }
+  });
+});
+
+
+// Market allocation pie
+new Chart(document.getElementById('marketAllocation'), {
+  type: 'doughnut',
+  data: {
+    labels: ["JP", "US"],
+    datasets: [{
+      data: [82.8, 17.2],
+      backgroundColor: ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd'],
+      borderColor: '#1a1d27',
+      borderWidth: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      title: { display: true, text: '市場配分', color: '#e4e4e7', font: { size: 14 } },
+      legend: { labels: { color: '#9ca3af' } }
+    }
+  }
+});
+
+// Stock allocation pie
+new Chart(document.getElementById('stockAllocation'), {
+  type: 'doughnut',
+  data: {
+    labels: ["7453", "1435", "2936", "7011", "7532", "4933", "3926", "9432", "9416", "2752", "6958", "1893", "7014", "9509", "EWY", "GOLD", "PLATINUM", "SILVER", "3087", "4617", "4755", "7013", "9020", "9503", "BVN", "FUND_\u697d\u5929\u30fb\u5168\u7c73\u682a\u5f0f\u30a4\u30f3\u30c7", "FUND_\u697d\u5929\u30fb\u7c73\u56fd\u9ad8\u914d\u5f53\u682a\u5f0f", "FUND_\u697d\u5929\u30fb\u30d7\u30e9\u30b9\u30fb\u65e5\u7d4c2", "FUND_\u697d\u5929\u30fb\u30b7\u30e5\u30ef\u30d6\u30fb\u9ad8\u914d", "GOLD_R", "PLAT_R"],
+    datasets: [{
+      data: [4.3, 2.5, 0.4, 1.7, 1.2, 1.3, 0.4, 1.2, 1.6, 1.3, 0.8, 2.5, 6.6, 2.9, 8.2, 2.5, 2.4, 1.1, 3.6, 5.5, 1.0, 2.7, 4.6, 3.3, 7.3, 0.6, 0.6, 0.7, 0.4, 3.6, 2.6],
+      backgroundColor: ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#3b82f6', '#60a5fa', '#93c5fd'],
+      borderColor: '#1a1d27',
+      borderWidth: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      title: { display: true, text: '銘柄配分', color: '#e4e4e7', font: { size: 14 } },
+      legend: { labels: { color: '#9ca3af', font: { size: 10 } } }
+    }
+  }
+});
+
+</script>
+</body>
+</html>

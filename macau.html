@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マカオ家族旅行プラン 2026年3月5日〜10日</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap');
+
+  :root {
+    --gold: #D4AF37;
+    --gold-light: #F5E6A3;
+    --dark: #1a1a2e;
+    --darker: #0f0f1a;
+    --accent: #e94560;
+    --teal: #0f3460;
+    --white: #f5f5f5;
+    --card-bg: rgba(255,255,255,0.05);
+    --glass: rgba(255,255,255,0.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--darker);
+    color: var(--white);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 30%, #16213e 60%, #0f3460 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(212,175,55,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 50%, rgba(233,69,96,0.05) 0%, transparent 50%);
+    animation: rotate 30s linear infinite;
+  }
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .hero-content { position: relative; z-index: 1; padding: 2rem; }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+  .hero .subtitle {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+    margin-bottom: 2rem;
+  }
+  .hero .trip-info {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+  .info-chip {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 50px;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+    color: var(--gold-light);
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+    color: rgba(255,255,255,0.3);
+    font-size: 1.5rem;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
+  }
+
+  /* Navigation */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15,15,26,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(212,175,55,0.15);
+    padding: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .nav-inner {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  .nav a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    padding: 1rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    border-bottom: 2px solid transparent;
+    display: inline-block;
+  }
+  .nav a:hover, .nav a.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* Sections */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .section-sub {
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 2.5rem;
+    font-size: 0.95rem;
+  }
+
+  /* Hotel Comparison */
+  .hotel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .hotel-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .hotel-card:hover {
+    border-color: rgba(212,175,55,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .hotel-card.recommended {
+    border-color: rgba(212,175,55,0.4);
+    background: rgba(212,175,55,0.05);
+  }
+  .hotel-card.recommended::before {
+    content: 'BEST PICK';
+    position: absolute;
+    top: 1rem;
+    right: -2rem;
+    background: var(--gold);
+    color: var(--darker);
+    padding: 0.2rem 2.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    transform: rotate(45deg);
+  }
+  .hotel-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    color: var(--gold-light);
+  }
+  .hotel-price {
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .hotel-features {
+    list-style: none;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+  }
+  .hotel-features li {
+    padding: 0.3rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+  .hotel-features li::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 0.7rem;
+  }
+
+  /* Day Timeline */
+  .day-section {
+    margin-bottom: 3rem;
+    scroll-margin-top: 4rem;
+  }
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .day-badge {
+    background: linear-gradient(135deg, var(--gold), #c9952a);
+    color: var(--darker);
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .day-badge .num { font-size: 1.5rem; line-height: 1; }
+  .day-badge .label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; }
+  .day-title { font-size: 1.4rem; font-weight: 700; }
+  .day-date { color: rgba(255,255,255,0.4); font-size: 0.85rem; }
+
+  .timeline {
+    position: relative;
+    padding-left: 2.5rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--gold), rgba(212,175,55,0.1));
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    transition: all 0.3s;
+  }
+  .timeline-item:hover {
+    border-color: rgba(212,175,55,0.2);
+    background: rgba(255,255,255,0.06);
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 1.5rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--darker);
+  }
+  .time-label {
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+  }
+  .activity-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .activity-desc {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+  }
+  .tag {
+    display: inline-block;
+    background: rgba(212,175,55,0.15);
+    color: var(--gold-light);
+    padding: 0.15rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    margin-top: 0.5rem;
+    margin-right: 0.3rem;
+  }
+  .tag.food { background: rgba(233,69,96,0.15); color: #ff8fa3; }
+  .tag.casino { background: rgba(15,52,96,0.4); color: #7ec8e3; }
+  .tag.culture { background: rgba(76,175,80,0.15); color: #81c784; }
+  .tag.shopping { background: rgba(156,39,176,0.15); color: #ce93d8; }
+
+  /* Tips */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+  .tip-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .tip-card h3 {
+    color: var(--gold);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  .tip-card p {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* Budget */
+  .budget-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .budget-table th {
+    text-align: left;
+    padding: 0.8rem 1rem;
+    color: var(--gold);
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+    font-weight: 500;
+  }
+  .budget-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.7);
+  }
+  .budget-table tr:last-child td {
+    border-bottom: none;
+    font-weight: 700;
+    color: var(--gold-light);
+    font-size: 1.05rem;
+  }
+
+  /* Restaurant Cards */
+  .resto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.2rem;
+  }
+  .resto-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s;
+  }
+  .resto-card:hover {
+    border-color: rgba(233,69,96,0.3);
+    transform: translateY(-2px);
+  }
+  .resto-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 0.2rem;
+  }
+  .resto-type {
+    font-size: 0.75rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .resto-desc {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.55);
+  }
+  .stars { color: var(--gold); font-size: 0.8rem; }
+
+  /* Casino Guide */
+  .casino-info {
+    background: linear-gradient(135deg, rgba(15,52,96,0.3), rgba(15,15,26,0.5));
+    border: 1px solid rgba(126,200,227,0.15);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .casino-info h3 {
+    color: #7ec8e3;
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+  }
+  .casino-info p, .casino-info li {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.8;
+  }
+  .casino-info ul { list-style: none; padding-left: 0; }
+  .casino-info li::before { content: '▸ '; color: #7ec8e3; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 3rem;
+    color: rgba(255,255,255,0.2);
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* Tab system */
+  .tab-container { margin-bottom: 2rem; }
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    background: var(--glass);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: inherit;
+    transition: all 0.3s;
+  }
+  .tab-btn:hover { border-color: rgba(212,175,55,0.3); color: var(--gold-light); }
+  .tab-btn.active {
+    background: rgba(212,175,55,0.15);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Countdown */
+  .countdown {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  .countdown-item {
+    text-align: center;
+  }
+  .countdown-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .countdown-label {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  /* Map */
+  .map-container {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 1.5rem;
+  }
+  .map-container iframe {
+    width: 100%;
+    height: 450px;
+    border: none;
+  }
+  .spot-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+  .spot-item {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+  .spot-item:hover {
+    border-color: rgba(212,175,55,0.3);
+    background: rgba(255,255,255,0.06);
+  }
+  .spot-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .spot-icon.food-icon { background: rgba(233,69,96,0.2); }
+  .spot-icon.culture-icon { background: rgba(76,175,80,0.2); }
+  .spot-icon.hotel-icon { background: rgba(212,175,55,0.2); }
+  .spot-icon.casino-icon { background: rgba(15,52,96,0.5); }
+  .spot-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .spot-area {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* Reservations */
+  .reservation-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s;
+  }
+  .reservation-card:hover { border-color: rgba(212,175,55,0.2); }
+  .res-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .res-status.pending { background: #ffd93d; }
+  .res-status.confirmed { background: #6bcb77; }
+  .res-status.not-needed { background: rgba(255,255,255,0.2); }
+  .res-info { flex: 1; }
+  .res-name { font-weight: 600; font-size: 0.95rem; }
+  .res-detail { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+  .res-action {
+    background: rgba(212,175,55,0.15);
+    border: 1px solid rgba(212,175,55,0.3);
+    color: var(--gold);
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: inherit;
+    transition: all 0.3s;
+  }
+  .res-action:hover { background: rgba(212,175,55,0.3); }
+
+  /* Checklist */
+  .checklist-category {
+    margin-bottom: 2rem;
+  }
+  .checklist-category h3 {
+    color: var(--gold);
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(212,175,55,0.15);
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .check-item:hover { opacity: 0.8; }
+  .check-item input[type="checkbox"] {
+    display: none;
+  }
+  .check-box {
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s;
+    font-size: 0.7rem;
+    color: transparent;
+  }
+  .check-item input:checked + .check-box {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--darker);
+  }
+  .check-item input:checked ~ .check-text {
+    text-decoration: line-through;
+    opacity: 0.4;
+  }
+  .check-text {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+    transition: all 0.3s;
+  }
+  .checklist-progress {
+    background: rgba(255,255,255,0.05);
+    border-radius: 20px;
+    height: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .checklist-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 20px;
+    transition: width 0.5s ease;
+  }
+  .checklist-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* Print styles */
+  @media print {
+    body { background: white; color: #333; }
+    .nav, .scroll-hint, .res-action, .check-box { display: none; }
+    .hero { min-height: auto; padding: 2rem; background: #1a1a2e !important; }
+    .hero::before { display: none; }
+    .section { padding: 1.5rem; }
+    .hotel-card, .resto-card, .tip-card, .casino-info, .timeline-item, .reservation-card {
+      border-color: #ddd;
+      background: #f9f9f9;
+      break-inside: avoid;
+    }
+    .section-title { color: #1a1a2e; }
+    .tag { border: 1px solid #ccc; }
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2.2rem; }
+    .section { padding: 2.5rem 1rem; }
+    .timeline { padding-left: 2rem; }
+    .nav a { padding: 0.8rem 1rem; font-size: 0.8rem; }
+    .info-chip { font-size: 0.8rem; padding: 0.4rem 1rem; }
+  }
+  /* Leaflet popup override */
+  .leaflet-popup-content-wrapper {
+    background: #1a1a2e;
+    color: #f5f5f5;
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+  .leaflet-popup-tip { background: #1a1a2e; }
+  .leaflet-popup-content { font-family: 'Noto Sans JP', sans-serif; font-size: 0.85rem; line-height: 1.5; }
+  .leaflet-popup-content a { color: var(--gold); text-decoration: none; }
+  .map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+    padding: 0.3rem 0.8rem;
+    background: rgba(212,175,55,0.1);
+    border: 1px solid rgba(212,175,55,0.25);
+    border-radius: 20px;
+    color: var(--gold-light);
+    font-size: 0.75rem;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .map-link:hover { background: rgba(212,175,55,0.25); border-color: var(--gold); }
+  .leaflet-popup-content strong { color: var(--gold-light); }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>MACAU</h1>
+    <p class="subtitle">Family Trip Planner 2026</p>
+    <p style="color:rgba(255,255,255,0.5); font-size:0.95rem; margin-bottom:1rem;">
+      世界遺産 × 美食 × カジノ — 4人の特別な6日間
+    </p>
+    <div class="trip-info">
+      <span class="info-chip">3月5日〜10日（5泊6日）</span>
+      <span class="info-chip">4名（母80歳・妹47歳・私50歳・姪19歳）</span>
+    </div>
+    <div class="trip-info" style="margin-top:0.8rem;">
+      <span class="info-chip" style="border-color:rgba(212,175,55,0.4);">&#127976; ベネチアン 3泊（5-8日）4名1室</span>
+      <span class="info-chip" style="border-color:rgba(156,39,176,0.4); color:#ce93d8;">&#127905; スタジオシティ 2泊（8-10日）2名1室×2</span>
+    </div>
+    <div class="trip-info" style="margin-top:0.8rem;">
+      <span class="info-chip" style="border-color:rgba(233,69,96,0.3); color:#ff8fa3;">&#9992; NX855 関空13:45→マカオ17:10</span>
+      <span class="info-chip" style="border-color:rgba(233,69,96,0.3); color:#ff8fa3;">&#9992; NX856 マカオ08:20→関空12:45</span>
+      <span class="info-chip" style="border-color:rgba(126,200,227,0.3); color:#7ec8e3;">PNR: NE60ZN</span>
+    </div>
+    <div class="countdown" id="countdown">
+      <div class="countdown-item"><div class="countdown-num" id="cd-days">--</div><div class="countdown-label">Days</div></div>
+      <div class="countdown-item"><div class="countdown-num" id="cd-hours">--</div><div class="countdown-label">Hours</div></div>
+      <div class="countdown-item"><div class="countdown-num" id="cd-mins">--</div><div class="countdown-label">Min</div></div>
+      <div class="countdown-item"><div class="countdown-num" id="cd-secs">--</div><div class="countdown-label">Sec</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint">↓</div>
+</section>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#hotels">ホテル比較</a>
+    <a href="#restaurants">レストラン</a>
+    <a href="#casino">カジノガイド</a>
+    <a href="#itinerary">日程表</a>
+    <a href="#map">マップ</a>
+    <a href="#budget">予算</a>
+    <a href="#reservations">予約管理</a>
+    <a href="#checklist">持ち物</a>
+    <a href="#tips">旅のコツ</a>
+    <a href="#" onclick="exportPDF()" style="color:var(--accent)!important;">PDF出力</a>
+  </div>
+</nav>
+
+<!-- Hotel Comparison -->
+<section class="section" id="hotels">
+  <h2 class="section-title">Hotel Plan</h2>
+  <p class="section-sub">ベネチアン3泊 + スタジオシティ2泊 — 5万円節約の賢い分泊プラン</p>
+
+  <div class="hotel-grid">
+    <div class="hotel-card recommended">
+      <div class="hotel-name">&#127976; The Venetian Macao</div>
+      <div class="hotel-price">3/5〜8 ・ 3泊 ・ 4名1室（予約済み）</div>
+      <ul class="hotel-features">
+        <li>全室70㎡以上のスイート — 80歳のお母様にもゆったり</li>
+        <li>アジア最大級カジノ併設（世界一の広さ）</li>
+        <li>300店以上のショッピングモール＆運河ゴンドラ</li>
+        <li>レストラン30以上 — 和食・中華・洋食何でも揃う</li>
+        <li>無料シャトルバス（空港・フェリーターミナル・主要スポット）</li>
+        <li>Grand Resort Deck（575m流れるプール）</li>
+        <li>コタイ中心で隣接リゾートへ徒歩アクセス</li>
+        <li>パリジャン・ロンドナーと施設共有可</li>
+      </ul>
+      <a class="map-link" href="https://maps.google.com/?q=The+Venetian+Macao" target="_blank">&#128205; Google Map で見る</a>
+    </div>
+
+    <div class="hotel-card recommended" style="border-color:rgba(156,39,176,0.4); background:rgba(156,39,176,0.05);">
+      <div class="hotel-name" style="color:#ce93d8;">&#127905; Studio City Macau</div>
+      <div class="hotel-price">3/8〜10 ・ 2泊 ・ ツイン2部屋（隣部屋指定済み）</div>
+      <ul class="hotel-features">
+        <li>世界初・最高130mの8の字観覧車「ゴールデンリール」</li>
+        <li>映画テーマのアールデコ建築 — 姪っ子さんに最高</li>
+        <li>レストラン約30店舗 — Pearl Dragon（ミシュラン1つ星）</li>
+        <li>バットマン・ダーク・フライト（世界初アトラクション）</li>
+        <li>室内ウォーターパーク（3月は屋内のみ営業）</li>
+        <li>ドン・キホーテ入居 — 日本食・日用品が買える</li>
+        <li>カジノ併設</li>
+        <li>ベネチアンから無料シャトル or タクシー3分（約600円）</li>
+        <li>コスパ最強 — ベネチアン5泊より4人で5万円節約</li>
+      </ul>
+      <a class="map-link" href="https://maps.google.com/?q=Studio+City+Macau" target="_blank">&#128205; Google Map で見る</a>
+    </div>
+  </div>
+
+  <div style="margin-top:2rem; background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.15); border-radius:12px; padding:1.5rem;">
+    <h3 style="color:var(--gold); font-size:1rem; margin-bottom:0.5rem;">分泊プランの利点</h3>
+    <p style="font-size:0.85rem; color:rgba(255,255,255,0.6);">
+      <strong>前半3泊：ベネチアン</strong>（4名1室・スイート）で豪華リゾート体験。全室70㎡以上でお母様にもゆったり。世界遺産観光の拠点に最適。<br>
+      <strong>後半2泊：スタジオシティ</strong>（ツイン2部屋・隣部屋指定）でエンタメ満喫。8の字観覧車、バットマンアトラクション、ドンキもあって姪っ子さん大喜び。<br><br>
+      &#128176; <strong>ベネチアン5泊と比べて4人合計で約5万円の節約！</strong>コタイ地区内なので移動もタクシー3分（約600円）・無料シャトルあり。
+    </p>
+  </div>
+</section>
+
+<!-- Restaurants -->
+<section class="section" id="restaurants">
+  <h2 class="section-title">Dining Guide</h2>
+  <p class="section-sub">ミシュラン星付きから地元の名店まで — マカオ美食マップ</p>
+
+  <div class="tab-container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('fine')">高級レストラン</button>
+      <button class="tab-btn" onclick="switchTab('local')">ローカルグルメ</button>
+      <button class="tab-btn" onclick="switchTab('cafe')">カフェ＆スイーツ</button>
+      <button class="tab-btn" onclick="switchTab('portuguese')">ポルトガル料理</button>
+    </div>
+
+    <div id="tab-fine" class="tab-content active">
+      <div class="resto-grid">
+        <div class="resto-card">
+          <div class="resto-name">Zi Yat Heen（紫逸軒）</div>
+          <div class="resto-type">ミシュラン1つ星 ・ 広東料理</div>
+          <div class="stars">★★★★★</div>
+          <p class="resto-desc">フォーシーズンズ内。絶品の点心と広東料理。家族の特別ディナーに最適。エビの水晶餃子は必食。上品な空間でお母様にも安心。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Zi+Yat+Heen+Four+Seasons+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">Wing Lei（永利軒）</div>
+          <div class="resto-type">ミシュラン2つ星 ・ 広東料理</div>
+          <div class="stars">★★★★★</div>
+          <p class="resto-desc">Wynn内。9万個のクリスタルで作られた龍が舞うゴージャスな空間。手作り点心が極上。特別な夜に。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Wing+Lei+Wynn+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">The Kitchen（大廚）</div>
+          <div class="resto-type">ミシュラン推薦 ・ ビュッフェ</div>
+          <div class="stars">★★★★☆</div>
+          <p class="resto-desc">Grand Hyatt内。多国籍ビュッフェで4人の異なる好みに全対応。ライブキッチンで目の前で調理。</p>
+          <a class="map-link" href="https://maps.google.com/?q=The+Kitchen+Grand+Hyatt+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">Chef Tam's Seasons</div>
+          <div class="resto-type">ミシュラン2つ星 ・ 中華創作</div>
+          <div class="stars">★★★★★</div>
+          <p class="resto-desc">Wynn Palace内。アジア50ベストレストラン9位。革新的な広東料理。予約必須。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Chef+Tam+Seasons+Wynn+Palace+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-local" class="tab-content">
+      <div class="resto-grid">
+        <div class="resto-card">
+          <div class="resto-name">Chong Shing（祥記）</div>
+          <div class="resto-type">ミシュラン掲載 ・ 点心</div>
+          <div class="stars">★★★★☆</div>
+          <p class="resto-desc">三灯区の路地裏にある30年以上の老舗。蒸籠が積み上がる光景は圧巻。焼売、馬拉糕が絶品。早朝がベスト。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Chong+Shing+dim+sum+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">Lei Ka Choi（利加祥）</div>
+          <div class="resto-type">ローカル名店 ・ 広東家庭料理</div>
+          <div class="stars">★★★★☆</div>
+          <p class="resto-desc">地元民に愛される家庭的な広東料理店。素朴で温かい雰囲気。リーズナブルで家族連れに人気。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Lei+Ka+Choi+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">Wong Chi Kei（黃枝記）</div>
+          <div class="resto-type">有名老舗 ・ 麺・ワンタン</div>
+          <div class="stars">★★★★☆</div>
+          <p class="resto-desc">セナド広場近く。エビワンタン麺が看板メニュー。観光の合間に立ち寄れる便利な立地。70年以上の歴史。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Wong+Chi+Kei+Senado+Square+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">Hawker Hawker</div>
+          <div class="resto-type">W Hotel ・ アジアンビュッフェ</div>
+          <div class="stars">★★★★☆</div>
+          <p class="resto-desc">東南アジア屋台料理をモダンに再現。ラクサ、サテー、海南チキンライスなど。カジュアルな雰囲気。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Hawker+Hawker+W+Hotel+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-cafe" class="tab-content">
+      <div class="resto-grid">
+        <div class="resto-card">
+          <div class="resto-name">Margaret's Cafe e Nata</div>
+          <div class="resto-type">マカオ名物 ・ エッグタルト</div>
+          <div class="stars">★★★★★</div>
+          <p class="resto-desc">マカオ半島の伝説的エッグタルト店。サクサクのパイ生地と濃厚カスタード。マカオに来たら絶対に外せない一品。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Margaret+Cafe+e+Nata+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">Lord Stow's Bakery</div>
+          <div class="resto-type">コロアン島 ・ エッグタルト</div>
+          <div class="stars">★★★★★</div>
+          <p class="resto-desc">1989年創業、マカオ式エッグタルト発祥の店。コロアン・ヴィレッジの可愛い広場に面する。フレッシュクリームの独自レシピ。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Lord+Stow+Bakery+Coloane+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">Origin Coffee</div>
+          <div class="resto-type">モダンカフェ ・ スペシャルティコーヒー</div>
+          <div class="stars">★★★★☆</div>
+          <p class="resto-desc">マカオで最もおしゃれなカフェの一つ。大きな窓から差し込む自然光、モダンなインテリア。コーヒーの質も最高レベル。インスタ映え。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Origin+Coffee+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">360° Cafe（マカオタワー）</div>
+          <div class="resto-type">展望カフェ ・ パノラマビュー</div>
+          <div class="stars">★★★★☆</div>
+          <p class="resto-desc">マカオタワー展望フロアの回転カフェ。360度のパノラマビューを楽しみながらアフタヌーンティー。特別な体験。</p>
+          <a class="map-link" href="https://maps.google.com/?q=360+Cafe+Macau+Tower" target="_blank">&#128205; Google Map</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-portuguese" class="tab-content">
+      <div class="resto-grid">
+        <div class="resto-card">
+          <div class="resto-name">Antonio</div>
+          <div class="resto-type">タイパ村 ・ 本格ポルトガル料理</div>
+          <div class="stars">★★★★★</div>
+          <p class="resto-desc">シェフ・オーナーAntonio Coelho氏の本格ポルトガル料理。温かみのある雰囲気と親切なサービス。バカリャウ（干し鱈）料理が絶品。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Antonio+Restaurant+Taipa+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">Restaurante Litoral（海灣餐廳）</div>
+          <div class="resto-type">マカオ半島 ・ マカニーズ料理</div>
+          <div class="stars">★★★★★</div>
+          <p class="resto-desc">マカオ最高のマカニーズ（澳門）料理と評される名店。アフリカンチキン、カレーシュリンプが看板メニュー。東西融合の味を体験。</p>
+          <a class="map-link" href="https://maps.google.com/?q=Restaurante+Litoral+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+        <div class="resto-card">
+          <div class="resto-name">A Petisqueira</div>
+          <div class="resto-type">タイパ村 ・ ポルトガル料理</div>
+          <div class="stars">★★★★☆</div>
+          <p class="resto-desc">タイパ村の人気ポルトガルレストラン。シーフードリゾットやポルトガル風ステーキが人気。リーズナブルで家族向け。</p>
+          <a class="map-link" href="https://maps.google.com/?q=A+Petisqueira+Taipa+Macau" target="_blank">&#128205; Google Map</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Casino Guide -->
+<section class="section" id="casino">
+  <h2 class="section-title">Casino Guide</h2>
+  <p class="section-sub">初心者でも安心 — マカオカジノ完全ガイド</p>
+
+  <div class="casino-info">
+    <h3>基本ルール</h3>
+    <ul>
+      <li><strong>年齢制限：21歳以上</strong>（パスポート必携）→ 姪っ子さん(19歳)は入場不可</li>
+      <li><strong>入場料：無料</strong> — ドレスコードはカジュアルでOK</li>
+      <li><strong>通貨：香港ドル（HKD）</strong>が標準。事前に両替しておくと便利</li>
+      <li><strong>写真撮影：</strong>カジノフロア内は基本的に禁止</li>
+      <li><strong>大きな荷物：</strong>持ち込み不可（クロークに預ける）</li>
+    </ul>
+  </div>
+
+  <div class="casino-info">
+    <h3>初心者おすすめゲーム</h3>
+    <ul>
+      <li><strong>バカラ（百家樂）：</strong>マカオで最も人気。バンカーかプレイヤーどちらが9に近いか賭けるだけ。最もシンプル</li>
+      <li><strong>大小（シックボー）：</strong>サイコロ3つの合計が「大(11-17)」か「小(4-10)」かを当てる。直感で楽しめる</li>
+      <li><strong>スロットマシン：</strong>最も気軽。5,000円程度から楽しめる。言葉の壁なし</li>
+      <li><strong>ルーレット：</strong>数字や色に賭けるだけ。見ているだけでも楽しい</li>
+    </ul>
+  </div>
+
+  <div class="casino-info">
+    <h3>予算の目安（1人あたり）</h3>
+    <ul>
+      <li><strong>お試し体験：</strong>5,000〜10,000円 — スロット中心で2〜3時間楽しめる</li>
+      <li><strong>しっかり遊ぶ：</strong>20,000〜50,000円 — テーブルゲームも含めて</li>
+      <li><strong>コタイ地区（ベネチアン等）：</strong>最低ベット額が高め（ルーレット100HKD〜）</li>
+      <li><strong>マカオ半島のカジノ：</strong>最低ベット額が安い（10HKD〜）。ローカルな雰囲気</li>
+    </ul>
+  </div>
+
+  <div class="casino-info">
+    <h3>おすすめカジノ</h3>
+    <ul>
+      <li><strong>ベネチアン・マカオ：</strong>世界最大級のフロア。豪華絢爛。ホテル直結で便利 <a class="map-link" href="https://maps.google.com/?q=The+Venetian+Macao+Casino" target="_blank" style="margin-top:0;">&#128205; Map</a></li>
+      <li><strong>Wynn Palace：</strong>噴水ショーが見事。やや高級な客層 <a class="map-link" href="https://maps.google.com/?q=Wynn+Palace+Macau" target="_blank" style="margin-top:0;">&#128205; Map</a></li>
+      <li><strong>グランド・リスボア：</strong>マカオ半島のランドマーク。ベット額低めで初心者向き <a class="map-link" href="https://maps.google.com/?q=Grand+Lisboa+Macau" target="_blank" style="margin-top:0;">&#128205; Map</a></li>
+      <li><strong>サンズ・マカオ：</strong>コンパクトで回りやすい。フレンドリーな雰囲気 <a class="map-link" href="https://maps.google.com/?q=Sands+Macao" target="_blank" style="margin-top:0;">&#128205; Map</a></li>
+    </ul>
+  </div>
+
+  <div style="background:rgba(233,69,96,0.1); border:1px solid rgba(233,69,96,0.2); border-radius:12px; padding:1.5rem; margin-top:1rem;">
+    <h3 style="color:#ff8fa3; font-size:1rem; margin-bottom:0.5rem;">姪っ子さん（19歳）のプラン</h3>
+    <p style="font-size:0.85rem; color:rgba(255,255,255,0.6);">
+      カジノは21歳未満入場不可のため、カジノタイム中は以下がおすすめ：<br>
+      ▸ ベネチアン内のショッピングモール＆ゴンドラ体験<br>
+      ▸ パリジャンのエッフェル塔展望台（夜景が素晴らしい）<br>
+      ▸ ホテル内のスパ＆プール<br>
+      ▸ シティ・オブ・ドリームズのショー「House of Dancing Water」<br>
+      ▸ コタイ・ストリップのブランドショッピング
+    </p>
+  </div>
+</section>
+
+<!-- Itinerary -->
+<section class="section" id="itinerary">
+  <h2 class="section-title">Day-by-Day Itinerary</h2>
+  <p class="section-sub">80歳のお母様のペースに合わせた、無理のない6日間プラン</p>
+
+  <!-- Day 1 -->
+  <div class="day-section" id="day1">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">1</span><span class="label">Day</span></div>
+      <div><div class="day-title">到着 & コタイ満喫</div><div class="day-date">3月5日（木）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">13:45 &#9992;</div>
+        <div class="activity-title">関西国際空港T1 出発（NX855 マカオ航空）</div>
+        <div class="activity-desc">PNR: NE60ZN。11:45頃には空港到着を。関空T1からマカオ航空直行便。フライト時間 約4時間25分。機内で軽食あり。</div>
+        <span class="tag">フライト</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">17:10</div>
+        <div class="activity-title">マカオ国際空港 到着</div>
+        <div class="activity-desc">入国審査後、到着ロビーへ。ベネチアンの無料シャトルバス乗り場は空港出口すぐ。約10分でホテル到着。</div>
+        <span class="tag">移動</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">18:00</div>
+        <div class="activity-title">ベネチアンにチェックイン & 休憩</div>
+        <div class="activity-desc">広いスイートで旅の疲れを癒す。お母様は特にゆっくり休憩を。荷解きしてリフレッシュ。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">19:00</div>
+        <div class="activity-title">夕食：The Kitchen（Grand Hyatt）ビュッフェ</div>
+        <div class="activity-desc">初日は多国籍ビュッフェで全員の好みに対応。ライブキッチンで目の前調理。到着日の疲れを考慮し、ホテル内で完結。</div>
+        <span class="tag food">ディナー</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">21:00</div>
+        <div class="activity-title">ベネチアン館内散策 & 初カジノ体験</div>
+        <div class="activity-desc">運河沿いのショッピングモールをライトアップの中で散策。ゴンドラ体験も夜が幻想的。カジノフロアを歩いて雰囲気を楽しむ。姪っ子さんはショッピングモールへ。体力と相談して早めに切り上げてもOK。</div>
+        <span class="tag casino">カジノ</span><span class="tag shopping">ショッピング</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="day-section" id="day2">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">2</span><span class="label">Day</span></div>
+      <div><div class="day-title">世界遺産めぐり（マカオ半島）</div><div class="day-date">3月6日（金）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">09:00</div>
+        <div class="activity-title">ホテルで朝食後、マカオ半島へ</div>
+        <div class="activity-desc">無料シャトルまたはタクシーでマカオ半島へ（約15分）。タクシーは初乗り約250円と安いので便利。</div>
+        <span class="tag">移動</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">10:00</div>
+        <div class="activity-title">セナド広場 → 聖ポール天主堂跡</div>
+        <div class="activity-desc">ポルトガル風の波模様の石畳を歩き、パステルカラーの建物が並ぶセナド広場へ。世界遺産の聖ポール天主堂跡は圧巻のファサード。お母様のペースで休憩しながら。</div>
+        <span class="tag culture">世界遺産</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">11:30</div>
+        <div class="activity-title">Margaret's Cafe e Nata でエッグタルト</div>
+        <div class="activity-desc">マカオ名物エッグタルトの名店で焼きたてを。サクサクパイ生地と濃厚カスタードの至福の一品。お母様も絶対喜ぶ。</div>
+        <span class="tag food">スイーツ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">12:30</div>
+        <div class="activity-title">昼食：Wong Chi Kei（黃枝記）</div>
+        <div class="activity-desc">セナド広場近くの70年以上続く老舗麺店。名物のエビワンタン麺は必食。お手頃価格で本場の味を堪能。</div>
+        <span class="tag food">ランチ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">14:00</div>
+        <div class="activity-title">モンテの砦 → ナーチャ廟 → 旧市街散策</div>
+        <div class="activity-desc">聖ポール天主堂跡の裏手にあるモンテの砦から市街を一望。体力に合わせて世界遺産エリアを散策。疲れたらカフェで休憩。</div>
+        <span class="tag culture">世界遺産</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">16:00</div>
+        <div class="activity-title">ホテルに戻って休憩</div>
+        <div class="activity-desc">お母様の体力を考慮して、一度ホテルに戻って休憩。部屋でゆっくりしたり、スパを利用したり。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">18:30</div>
+        <div class="activity-title">夕食：Restaurante Litoral</div>
+        <div class="activity-desc">マカオ最高峰のマカニーズ料理店。東西融合の「アフリカンチキン」は必食。マカオでしか味わえない独特の美食体験。</div>
+        <span class="tag food">ディナー</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">21:00</div>
+        <div class="activity-title">グランド・リスボアのカジノ</div>
+        <div class="activity-desc">マカオ半島のランドマーク。コタイより最低ベット額が安く、初心者に優しい。独特のレトロな雰囲気も魅力。お母様は先にホテルへ送ることも可能。</div>
+        <span class="tag casino">カジノ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 3 -->
+  <div class="day-section" id="day3">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">3</span><span class="label">Day</span></div>
+      <div><div class="day-title">コロアン島 & のんびりデー</div><div class="day-date">3月7日（土）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">09:30</div>
+        <div class="activity-title">タクシーでコロアン・ヴィレッジへ</div>
+        <div class="activity-desc">ベネチアンからタクシーで約10分。マカオの原風景が残る静かな漁村。パステルカラーの建物と石畳の路地が素敵。</div>
+        <span class="tag culture">観光</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">10:00</div>
+        <div class="activity-title">Lord Stow's Bakery で元祖エッグタルト</div>
+        <div class="activity-desc">1989年創業、マカオ式エッグタルトの発祥地。焼きたてのタルトをかわいい広場のベンチで。Margaret'sとの食べ比べを楽しんで。</div>
+        <span class="tag food">スイーツ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">11:00</div>
+        <div class="activity-title">コロアン散策 & 聖フランシスコ・ザビエル教会</div>
+        <div class="activity-desc">カラフルな教会と静かな路地を散策。観光客が少なく、ゆったりした時間が流れる。フォトジェニックなスポット多数。</div>
+        <span class="tag culture">観光</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">12:30</div>
+        <div class="activity-title">昼食：A Petisqueira（タイパ村）</div>
+        <div class="activity-desc">コロアンからタイパ村へ移動（タクシー約5分）。人気のポルトガル料理レストラン。シーフードリゾットが絶品でリーズナブル。</div>
+        <span class="tag food">ランチ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">14:00</div>
+        <div class="activity-title">タイパ村（官也街）散策</div>
+        <div class="activity-desc">お土産ストリートとしても有名な官也街（クンヤーガイ）。杏仁餅、肉乾（ジャーキー）など試食しながらショッピング。</div>
+        <span class="tag shopping">ショッピング</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">15:30</div>
+        <div class="activity-title">ホテルで午後の休憩 & スパタイム</div>
+        <div class="activity-desc">お母様はスパまたはお部屋で休憩。姪っ子さんはプール（3月は温水あり）。リゾートを満喫する時間。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">18:00</div>
+        <div class="activity-title">夕食：Zi Yat Heen（紫逸軒）</div>
+        <div class="activity-desc">ミシュラン1つ星の広東料理。繊細な点心とシーフード料理。家族の特別ディナーにふさわしい上品な空間。要予約。</div>
+        <span class="tag food">ディナー</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">20:30</div>
+        <div class="activity-title">パリジャンのエッフェル塔夜景 & カジノ</div>
+        <div class="activity-desc">ライトアップされたエッフェル塔の展望台へ（全員）。その後カジノ組とショッピング組に分かれる。</div>
+        <span class="tag casino">カジノ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 4 -->
+  <div class="day-section" id="day4">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">4</span><span class="label">Day</span></div>
+      <div><div class="day-title">ホテル移動 & スタジオシティ満喫</div><div class="day-date">3月8日（日）</div></div>
+    </div>
+    <div style="background:rgba(156,39,176,0.1); border:1px solid rgba(156,39,176,0.2); border-radius:10px; padding:1rem; margin-bottom:1.2rem; font-size:0.85rem; color:#ce93d8;">
+      &#127905; 本日ベネチアン → スタジオシティへ移動日。チェックアウト11:00 → タクシー3分（約600円）or 無料シャトル
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">09:00</div>
+        <div class="activity-title">朝食 & パッキング</div>
+        <div class="activity-desc">ベネチアン最後の朝食をゆっくり楽しむ。荷造りをしてチェックアウト準備。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">10:30</div>
+        <div class="activity-title">ベネチアン チェックアウト → マカオタワーへ</div>
+        <div class="activity-desc">荷物はベネチアンのベルデスクに一時預け（or スタジオシティに先に送る）。身軽にマカオタワーへタクシーで出発。</div>
+        <span class="tag">移動</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">11:00</div>
+        <div class="activity-title">マカオタワー & 360° Cafe</div>
+        <div class="activity-desc">高さ338mのタワーから絶景。姪っ子さんはスカイウォークやバンジーにも挑戦可。展望フロアの回転カフェでティータイム。</div>
+        <span class="tag culture">観光</span><span class="tag food">カフェ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">13:00</div>
+        <div class="activity-title">昼食：点心ランチ（Chong Shing）</div>
+        <div class="activity-desc">三灯区のミシュラン掲載点心店。ローカルな雰囲気の中で本場の蒸し点心を。安くて美味しい。</div>
+        <span class="tag food">ランチ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">14:30</div>
+        <div class="activity-title">媽閣廟（マーコミュウ）& 周辺散策</div>
+        <div class="activity-desc">マカオの地名の由来となった世界遺産の古い中国寺院。海辺に位置し、風情ある景色。お母様のお参りにも。</div>
+        <span class="tag culture">世界遺産</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">16:00</div>
+        <div class="activity-title">&#127905; スタジオシティにチェックイン</div>
+        <div class="activity-desc">タクシーでスタジオシティへ（マカオ半島から約15分）。ツイン2部屋（隣部屋指定済み）にチェックイン。お母様は部屋で休憩。館内を探検。</div>
+        <span class="tag">移動</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">17:30</div>
+        <div class="activity-title">ゴールデンリール（8の字観覧車）</div>
+        <div class="activity-desc">世界初・高さ130mの8の字型観覧車。17のスチームパンク風ゴンドラから夕暮れのコタイ地区を一望。全員で搭乗可能（1ゴンドラ最大10名）。</div>
+        <span class="tag culture">アトラクション</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">19:00</div>
+        <div class="activity-title">夕食：Antonio（タイパ村）</div>
+        <div class="activity-desc">マカオ最高のポルトガル料理。シェフ自らもてなす温かい空間。バカリャウやシーフードカタプラーナが絶品。旅のハイライトディナー。スタジオシティからタクシー5分。</div>
+        <span class="tag food">ディナー</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">21:00</div>
+        <div class="activity-title">Wynn Palace 噴水ショー & カジノ</div>
+        <div class="activity-desc">壮大な噴水ショー（無料・15分毎）を全員で鑑賞。その後カジノへ。Wynnは雰囲気が格別。姪っ子さんはスタジオシティのドンキでお買い物も。</div>
+        <span class="tag casino">カジノ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 5 -->
+  <div class="day-section" id="day5">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">5</span><span class="label">Day</span></div>
+      <div><div class="day-title">&#127905; スタジオシティ満喫 & 最後の夜</div><div class="day-date">3月9日（月）</div></div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">10:00</div>
+        <div class="activity-title">のんびり朝 → スタジオシティ室内ウォーターパーク</div>
+        <div class="activity-desc">最終日前日はゆっくり起床。スタジオシティの室内ウォーターパーク（3月は屋内のみ営業）で遊ぶか、スパでリラックス。お母様はお部屋でゆっくりも。</div>
+        <span class="tag culture">アトラクション</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">12:00</div>
+        <div class="activity-title">昼食：Wing Lei（永利軒）で点心ランチ</div>
+        <div class="activity-desc">ミシュラン2つ星のランチは比較的リーズナブル。クリスタルの龍を眺めながら極上の点心を。Wynn Macauまでタクシーですぐ。</div>
+        <span class="tag food">ランチ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">14:00</div>
+        <div class="activity-title">バットマン・ダーク・フライト & ショッピング</div>
+        <div class="activity-desc">スタジオシティの世界初バットマン4Dアトラクション。その後、館内ショッピングモール＆ドン・キホーテでお土産購入。日本のお菓子や食品も充実。</div>
+        <span class="tag shopping">ショッピング</span><span class="tag culture">アトラクション</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">16:00</div>
+        <div class="activity-title">シティ・オブ・ドリームズ見学</div>
+        <div class="activity-desc">スタジオシティからすぐ隣。「House of Dancing Water」水上ショーや館内アート鑑賞。世界レベルのエンターテインメント。</div>
+        <span class="tag culture">エンタメ</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">19:00</div>
+        <div class="activity-title">最後の夕食：Chef Tam's Seasons</div>
+        <div class="activity-desc">アジア50ベスト9位、ミシュラン2つ星の特別ディナー。旅の締めくくりにふさわしい最高の一夜。Wynn Palaceまでタクシーで5分。要予約。</div>
+        <span class="tag food">ディナー</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">21:00</div>
+        <div class="activity-title">ラストナイト・カジノ & パッキング</div>
+        <div class="activity-desc">スタジオシティのカジノで旅の最後のカジノタイム。ただし翌朝05:30起床のため、早めに切り上げて23時までには就寝を。お母様は先に部屋へ。パッキングは今夜のうちに完了させること。</div>
+        <span class="tag casino">カジノ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 6 -->
+  <div class="day-section" id="day6">
+    <div class="day-header">
+      <div class="day-badge"><span class="num">6</span><span class="label">Day</span></div>
+      <div><div class="day-title">帰国日 &#9992; 早朝出発</div><div class="day-date">3月10日（火）</div></div>
+    </div>
+    <div style="background:rgba(233,69,96,0.1); border:1px solid rgba(233,69,96,0.2); border-radius:10px; padding:1rem; margin-bottom:1.2rem; font-size:0.85rem; color:#ff8fa3;">
+      &#9888; NX856は朝08:20発です。前日夜にパッキングを済ませ、早めに就寝しましょう。
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-label">05:30</div>
+        <div class="activity-title">起床 & 最終パッキング</div>
+        <div class="activity-desc">前夜のうちにパッキングはほぼ完了させておく。朝は身支度と忘れ物チェックのみ。お母様は余裕をもって準備を。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">06:00</div>
+        <div class="activity-title">チェックアウト → 空港へ</div>
+        <div class="activity-desc">スタジオシティからタクシーで空港へ（約10分）。早朝シャトルの有無を前日にコンシェルジュに確認。タクシーなら確実。エクスプレスチェックアウト利用で時短。</div>
+        <span class="tag">移動</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">06:30</div>
+        <div class="activity-title">マカオ国際空港到着 → チェックイン</div>
+        <div class="activity-desc">出発の約2時間前に到着。マカオ空港はコンパクトなので手続きはスムーズ。免税店で最後のお土産購入も可能。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">08:20 &#9992;</div>
+        <div class="activity-title">マカオ出発（NX856 マカオ航空）</div>
+        <div class="activity-desc">マカオ国際空港 → 関西国際空港。フライト時間 約3時間25分。機内で朝食あり。</div>
+        <span class="tag">フライト</span>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">12:45</div>
+        <div class="activity-title">関西国際空港 到着</div>
+        <div class="activity-desc">お疲れ様でした！入国審査・荷物受取後、各自帰路へ。素敵なマカオ旅行の思い出を。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Budget -->
+<section class="section" id="budget">
+  <h2 class="section-title">Budget Estimate</h2>
+  <p class="section-sub">4人合計の概算予算（5泊6日）</p>
+
+  <table class="budget-table">
+    <thead>
+      <tr><th>項目</th><th>概算（4人合計）</th><th>備考</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ホテル（ベネチアン3泊+スタジオシティ2泊）</td>
+        <td>¥130,000〜250,000</td>
+        <td>ベネチアン4名1室3泊 + スタジオシティ2名1室×2部屋2泊。5泊ベネチアンより約5万円節約</td>
+      </tr>
+      <tr>
+        <td>食事（朝昼夕）</td>
+        <td>¥150,000〜250,000</td>
+        <td>高級2回・中級3回・カジュアル多数</td>
+      </tr>
+      <tr>
+        <td>カジノ（3人分）</td>
+        <td>¥30,000〜150,000</td>
+        <td>お試し〜しっかりまで幅あり</td>
+      </tr>
+      <tr>
+        <td>観光・入場料</td>
+        <td>¥15,000〜25,000</td>
+        <td>マカオタワー、ゴンドラ、ショー等</td>
+      </tr>
+      <tr>
+        <td>交通（タクシー等）</td>
+        <td>¥10,000〜20,000</td>
+        <td>タクシー初乗り約250円と激安</td>
+      </tr>
+      <tr>
+        <td>ショッピング・お土産</td>
+        <td>¥30,000〜100,000</td>
+        <td>個人差あり</td>
+      </tr>
+      <tr>
+        <td><strong>合計目安</strong></td>
+        <td><strong>¥365,000〜795,000</strong></td>
+        <td>航空券別。1人あたり約9〜20万円（5万円節約済み）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:2rem; background:rgba(76,175,80,0.08); border:1px solid rgba(76,175,80,0.15); border-radius:12px; padding:1.5rem;">
+    <h3 style="color:#81c784; font-size:1rem; margin-bottom:0.5rem;">コスパを上げるコツ</h3>
+    <p style="font-size:0.85rem; color:rgba(255,255,255,0.6);">
+      ▸ ホテルは公式サイトの早期予約が最安になることが多い<br>
+      ▸ ランチタイムに高級レストランを利用するとディナーの半額程度<br>
+      ▸ 無料シャトルバスを活用してタクシー代節約<br>
+      ▸ カジノの無料ドリンクを活用（プレイ中は飲み物無料）<br>
+      ▸ ホテル共用施設（プール・ジム）は宿泊者無料<br>
+      ▸ Wynn Palaceの噴水ショーなど無料エンタメも充実
+    </p>
+  </div>
+</section>
+
+<!-- Tips -->
+<section class="section" id="tips">
+  <h2 class="section-title">Travel Tips</h2>
+  <p class="section-sub">知っておくと便利な旅のポイント</p>
+
+  <div class="tips-grid">
+    <div class="tip-card">
+      <h3>80歳のお母様への配慮</h3>
+      <p>午後は必ず休憩タイムを設定。歩く観光は午前中に。タクシーは安いので無理せず利用。ベネチアンは館内が広いので車椅子レンタルも検討を。</p>
+    </div>
+    <div class="tip-card">
+      <h3>通貨・両替</h3>
+      <p>香港ドル(HKD)が広く使える。マカオパタカ(MOP)はほぼ等価(1HKD≒1.03MOP)。香港ドルだけ持っていればOK。カジノ内のATMでも引き出し可能。</p>
+    </div>
+    <div class="tip-card">
+      <h3>言語</h3>
+      <p>ホテル・カジノでは英語がほぼ通じる。ローカル店では広東語が中心だが、指差しとジェスチャーでOK。翻訳アプリがあると安心。</p>
+    </div>
+    <div class="tip-card">
+      <h3>気候（3月）</h3>
+      <p>平均気温18〜22℃。薄手のジャケットがあれば十分。湿度がやや高い。室内は冷房が効いているので羽織るものを持参。</p>
+    </div>
+    <div class="tip-card">
+      <h3>移動手段</h3>
+      <p>各大型リゾートが無料シャトルバスを運行（空港・フェリー・主要スポット間）。タクシーは初乗り19MOP(約350円)と安い。Uberは使えないが配車アプリ「aaMacau」あり。</p>
+    </div>
+    <div class="tip-card">
+      <h3>Wi-Fi・SIM</h3>
+      <p>ホテル・カジノ・ショッピングモール内は無料Wi-Fi完備。空港でプリペイドSIMも購入可能。日本からレンタルWi-Fiを持参するのも安心。</p>
+    </div>
+    <div class="tip-card">
+      <h3>レストラン予約</h3>
+      <p>ミシュラン星付きレストランは必ず事前予約を。ホテルのコンシェルジュに依頼するのが確実。OpenTableでオンライン予約できる店も多い。</p>
+    </div>
+    <div class="tip-card">
+      <h3>お土産おすすめ</h3>
+      <p>杏仁餅（アーモンドクッキー）、肉乾（ジャーキー）、エッグロール、ポルトガルワイン。官也街（タイパ村）が試食しながら買えて便利。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Map Section -->
+<section class="section" id="map">
+  <h2 class="section-title">Spot Map</h2>
+  <p class="section-sub">全スポットをGoogleマップで確認 — タップで詳細・ナビ起動</p>
+
+  <div class="map-container" id="map-canvas" style="height:450px; border-radius:16px; border:1px solid rgba(255,255,255,0.1); position:relative; overflow:hidden; background:#1a1a2e;">
+    <!-- Interactive Map powered by OpenStreetMap / Leaflet (no API key needed) -->
+  </div>
+
+  <h3 style="color:var(--gold-light); font-size:1rem; margin-bottom:1rem;">スポット一覧（タップでGoogleマップを開く）</h3>
+  <div class="spot-list">
+    <a class="spot-item" href="https://maps.google.com/?q=The+Venetian+Macao" target="_blank">
+      <div class="spot-icon hotel-icon">H</div>
+      <div><div class="spot-name">The Venetian Macao</div><div class="spot-area">コタイ地区</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=The+Parisian+Macao" target="_blank">
+      <div class="spot-icon hotel-icon">H</div>
+      <div><div class="spot-name">The Parisian Macao</div><div class="spot-area">コタイ地区</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Ruins+of+St+Paul+Macau" target="_blank">
+      <div class="spot-icon culture-icon">W</div>
+      <div><div class="spot-name">聖ポール天主堂跡</div><div class="spot-area">マカオ半島</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Senado+Square+Macau" target="_blank">
+      <div class="spot-icon culture-icon">W</div>
+      <div><div class="spot-name">セナド広場</div><div class="spot-area">マカオ半島</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=A-Ma+Temple+Macau" target="_blank">
+      <div class="spot-icon culture-icon">W</div>
+      <div><div class="spot-name">媽閣廟（マーコミュウ）</div><div class="spot-area">マカオ半島</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Monte+Fort+Macau" target="_blank">
+      <div class="spot-icon culture-icon">W</div>
+      <div><div class="spot-name">モンテの砦</div><div class="spot-area">マカオ半島</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Macau+Tower" target="_blank">
+      <div class="spot-icon culture-icon">T</div>
+      <div><div class="spot-name">マカオタワー</div><div class="spot-area">マカオ半島南端</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Coloane+Village+Macau" target="_blank">
+      <div class="spot-icon culture-icon">V</div>
+      <div><div class="spot-name">コロアン・ヴィレッジ</div><div class="spot-area">コロアン島</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Lord+Stow+Bakery+Coloane" target="_blank">
+      <div class="spot-icon food-icon">E</div>
+      <div><div class="spot-name">Lord Stow's Bakery</div><div class="spot-area">コロアン島</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Margaret+Cafe+e+Nata+Macau" target="_blank">
+      <div class="spot-icon food-icon">E</div>
+      <div><div class="spot-name">Margaret's Cafe e Nata</div><div class="spot-area">マカオ半島</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Antonio+Restaurant+Taipa+Macau" target="_blank">
+      <div class="spot-icon food-icon">P</div>
+      <div><div class="spot-name">Antonio</div><div class="spot-area">タイパ村</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Restaurante+Litoral+Macau" target="_blank">
+      <div class="spot-icon food-icon">M</div>
+      <div><div class="spot-name">Restaurante Litoral</div><div class="spot-area">マカオ半島</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Wynn+Palace+Macau" target="_blank">
+      <div class="spot-icon casino-icon">C</div>
+      <div><div class="spot-name">Wynn Palace</div><div class="spot-area">コタイ地区</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Grand+Lisboa+Macau" target="_blank">
+      <div class="spot-icon casino-icon">C</div>
+      <div><div class="spot-name">Grand Lisboa</div><div class="spot-area">マカオ半島</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Rua+do+Cunha+Taipa+Macau" target="_blank">
+      <div class="spot-icon culture-icon">S</div>
+      <div><div class="spot-name">官也街（タイパ村）</div><div class="spot-area">タイパ</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=City+of+Dreams+Macau" target="_blank">
+      <div class="spot-icon casino-icon">D</div>
+      <div><div class="spot-name">City of Dreams</div><div class="spot-area">コタイ地区</div></div>
+    </a>
+    <a class="spot-item" href="https://maps.google.com/?q=Studio+City+Macau" target="_blank">
+      <div class="spot-icon hotel-icon">S</div>
+      <div><div class="spot-name">Studio City Macau</div><div class="spot-area">コタイ地区・後半2泊</div></div>
+    </a>
+  </div>
+</section>
+
+<!-- Reservations -->
+<section class="section" id="reservations">
+  <h2 class="section-title">Reservation Tracker</h2>
+  <p class="section-sub">予約状況を一元管理 — ステータスをクリックで切り替え</p>
+
+  <div style="display:flex; gap:1.5rem; margin-bottom:1.5rem; flex-wrap:wrap; font-size:0.8rem; color:rgba(255,255,255,0.5);">
+    <span><span class="res-status confirmed" style="display:inline-block;vertical-align:middle;"></span> 予約済み</span>
+    <span><span class="res-status pending" style="display:inline-block;vertical-align:middle;"></span> 要予約</span>
+    <span><span class="res-status not-needed" style="display:inline-block;vertical-align:middle;"></span> 予約不要</span>
+  </div>
+
+  <div id="reservations-list">
+    <div class="reservation-card" data-status="confirmed">
+      <div class="res-status confirmed" onclick="toggleResStatus(this)"></div>
+      <div class="res-info">
+        <div class="res-name">&#127976; The Venetian Macao（4名1室 × 3泊）</div>
+        <div class="res-detail">3/5〜3/8 ・ チェックイン15:00 ・ 予約済み</div>
+      </div>
+      <button class="res-action" onclick="window.open('https://jp.venetianmacao.com/hotel.html','_blank')">公式サイト</button>
+    </div>
+    <div class="reservation-card" data-status="pending">
+      <div class="res-status pending" onclick="toggleResStatus(this)"></div>
+      <div class="res-info">
+        <div class="res-name">&#127905; Studio City Macau（ツイン2部屋 × 2泊・隣部屋指定）</div>
+        <div class="res-detail">3/8〜3/10 ・ 2名1室 × 2部屋 ・ 検討中→予約へ</div>
+      </div>
+      <button class="res-action" onclick="window.open('https://www.studiocity-macau.com/en/hotel','_blank')">公式サイト</button>
+    </div>
+    <div class="reservation-card" data-status="pending">
+      <div class="res-status pending" onclick="toggleResStatus(this)"></div>
+      <div class="res-info">
+        <div class="res-name">Zi Yat Heen（紫逸軒）ディナー</div>
+        <div class="res-detail">3/7（土）18:00 ・ ミシュラン1つ星 ・ 4名</div>
+      </div>
+      <button class="res-action" onclick="window.open('https://www.opentable.com/r/zi-yat-heen-macau','_blank')">予約する</button>
+    </div>
+    <div class="reservation-card" data-status="pending">
+      <div class="res-status pending" onclick="toggleResStatus(this)"></div>
+      <div class="res-info">
+        <div class="res-name">Wing Lei（永利軒）ランチ</div>
+        <div class="res-detail">3/9（月）12:00 ・ ミシュラン2つ星 ・ 4名</div>
+      </div>
+      <button class="res-action" onclick="window.open('https://www.wynnmacau.com/en/restaurants-n-bars/fine-dining/wing-lei','_blank')">予約する</button>
+    </div>
+    <div class="reservation-card" data-status="pending">
+      <div class="res-status pending" onclick="toggleResStatus(this)"></div>
+      <div class="res-info">
+        <div class="res-name">Chef Tam's Seasons ディナー</div>
+        <div class="res-detail">3/9（月）19:00 ・ ミシュラン2つ星 ・ 4名 ・ 最終夜</div>
+      </div>
+      <button class="res-action" onclick="window.open('https://www.wynnpalace.com/en/restaurants-n-bars/fine-dining/chef-tam-seasons','_blank')">予約する</button>
+    </div>
+    <div class="reservation-card" data-status="pending">
+      <div class="res-status pending" onclick="toggleResStatus(this)"></div>
+      <div class="res-info">
+        <div class="res-name">Antonio ディナー</div>
+        <div class="res-detail">3/8（日）19:00 ・ ポルトガル料理 ・ 4名</div>
+      </div>
+      <button class="res-action" onclick="window.open('https://maps.google.com/?q=Antonio+Restaurant+Taipa+Macau','_blank')">場所を確認</button>
+    </div>
+    <div class="reservation-card" data-status="pending">
+      <div class="res-status pending" onclick="toggleResStatus(this)"></div>
+      <div class="res-info">
+        <div class="res-name">House of Dancing Water（水上ショー）</div>
+        <div class="res-detail">3/9（月）16:00 or 20:00 ・ City of Dreams</div>
+      </div>
+      <button class="res-action" onclick="window.open('https://www.cityofdreamsmacau.com/en/entertainment/house-of-dancing-water','_blank')">チケット</button>
+    </div>
+    <div class="reservation-card" data-status="not-needed">
+      <div class="res-status not-needed" onclick="toggleResStatus(this)"></div>
+      <div class="res-info">
+        <div class="res-name">Restaurante Litoral</div>
+        <div class="res-detail">3/6（金）18:30 ・ 予約推奨だが当日可の場合も</div>
+      </div>
+      <button class="res-action" onclick="window.open('https://maps.google.com/?q=Restaurante+Litoral+Macau','_blank')">場所を確認</button>
+    </div>
+    <div class="reservation-card" data-status="confirmed">
+      <div class="res-status confirmed" onclick="toggleResStatus(this)"></div>
+      <div class="res-info">
+        <div class="res-name">&#9992; 航空券（マカオ航空 NX855/NX856）</div>
+        <div class="res-detail">PNR: NE60ZN ・ 往路 3/5 関空13:45→マカオ17:10 ・ 復路 3/10 マカオ08:20→関空12:45 ・ 4名</div>
+      </div>
+      <button class="res-action" onclick="window.open('https://www.airmacau.com.mo/','_blank')">マカオ航空</button>
+    </div>
+    <div class="reservation-card" data-status="not-needed">
+      <div class="res-status not-needed" onclick="toggleResStatus(this)"></div>
+      <div class="res-info">
+        <div class="res-name">海外旅行保険</div>
+        <div class="res-detail">80歳のお母様分は特に重要 ・ クレカ付帯も確認</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Checklist -->
+<section class="section" id="checklist">
+  <h2 class="section-title">Packing Checklist</h2>
+  <p class="section-sub">マカオ旅行の持ち物リスト — チェックするとローカル保存されます</p>
+
+  <div class="checklist-stats">
+    <span id="cl-progress-text">0 / 0 完了</span>
+    <span id="cl-percent">0%</span>
+  </div>
+  <div class="checklist-progress">
+    <div class="checklist-progress-bar" id="cl-bar" style="width:0%"></div>
+  </div>
+
+  <div class="checklist-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:2rem;">
+    <div class="checklist-category">
+      <h3>必需品</h3>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">パスポート（全員分・有効期限確認）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">航空券（eチケット控え）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">ホテル予約確認書</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">海外旅行保険証書</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">クレジットカード（複数枚）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">香港ドル現金（両替済み）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">スマホ＆充電器</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">レンタルWi-Fi or SIM</span></label>
+    </div>
+
+    <div class="checklist-category">
+      <h3>衣類・身だしなみ</h3>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">薄手のジャケット / カーディガン</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">着替え（5日分）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">歩きやすい靴（世界遺産巡り用）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">ディナー用の少しきれいめな服</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">水着（プール用）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">日焼け止め</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">折りたたみ傘</span></label>
+    </div>
+
+    <div class="checklist-category">
+      <h3>お母様用</h3>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">常備薬（普段飲んでいるお薬）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">お薬手帳のコピー</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">歩行補助（必要であれば杖など）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">座れるクッション（長時間移動用）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">保険の緊急連絡先メモ</span></label>
+    </div>
+
+    <div class="checklist-category">
+      <h3>便利グッズ</h3>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">変換プラグ（BF/Gタイプ or マルチ）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">モバイルバッテリー</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">エコバッグ（お土産用）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">ウェットティッシュ</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">翻訳アプリ（インストール済み確認）</span></label>
+      <label class="check-item"><input type="checkbox" onchange="saveChecklist()"><span class="check-box">&#10003;</span><span class="check-text">カメラ / 自撮り棒</span></label>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Macau Family Trip Planner 2026 — Generated by AI Travel Planner</p>
+  <p style="margin-top:0.5rem;">旅行前に最新情報をご確認ください。レストランの営業時間・価格は変動する場合があります。</p>
+</footer>
+
+<script>
+// === Countdown Timer ===
+function updateCountdown() {
+  const tripDate = new Date('2026-03-05T00:00:00+08:00');
+  const now = new Date();
+  const diff = tripDate - now;
+  if (diff <= 0) {
+    document.getElementById('cd-days').textContent = '0';
+    document.getElementById('cd-hours').textContent = '0';
+    document.getElementById('cd-mins').textContent = '0';
+    document.getElementById('cd-secs').textContent = '0';
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent = d;
+  document.getElementById('cd-hours').textContent = h;
+  document.getElementById('cd-mins').textContent = m;
+  document.getElementById('cd-secs').textContent = String(s).padStart(2, '0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// === Tab switching ===
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// === Smooth scroll for nav ===
+document.querySelectorAll('.nav a').forEach(a => {
+  if (a.getAttribute('href') === '#') return;
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// === Active nav on scroll ===
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) current = section.getAttribute('id');
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+  });
+});
+
+// === Animate timeline items on scroll ===
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateX(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.timeline-item').forEach(item => {
+  item.style.opacity = '0';
+  item.style.transform = 'translateX(-20px)';
+  item.style.transition = 'all 0.5s ease';
+  observer.observe(item);
+});
+
+// === Reservation Status Toggle ===
+function toggleResStatus(el) {
+  const states = ['not-needed', 'pending', 'confirmed'];
+  const current = states.indexOf([...el.classList].find(c => states.includes(c)));
+  const next = states[(current + 1) % 3];
+  el.classList.remove(...states);
+  el.classList.add(next);
+  el.closest('.reservation-card').dataset.status = next;
+  saveReservations();
+}
+
+function saveReservations() {
+  const data = [];
+  document.querySelectorAll('.reservation-card').forEach(card => {
+    data.push(card.dataset.status);
+  });
+  localStorage.setItem('macau_reservations', JSON.stringify(data));
+}
+
+function loadReservations() {
+  const data = JSON.parse(localStorage.getItem('macau_reservations') || '[]');
+  const cards = document.querySelectorAll('.reservation-card');
+  data.forEach((status, i) => {
+    if (cards[i]) {
+      const dot = cards[i].querySelector('.res-status');
+      dot.classList.remove('not-needed', 'pending', 'confirmed');
+      dot.classList.add(status);
+      cards[i].dataset.status = status;
+    }
+  });
+}
+loadReservations();
+
+// === Checklist with LocalStorage ===
+function saveChecklist() {
+  const checks = [];
+  document.querySelectorAll('#checklist input[type="checkbox"]').forEach(cb => {
+    checks.push(cb.checked);
+  });
+  localStorage.setItem('macau_checklist', JSON.stringify(checks));
+  updateChecklistProgress();
+}
+
+function loadChecklist() {
+  const data = JSON.parse(localStorage.getItem('macau_checklist') || '[]');
+  const boxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+  data.forEach((checked, i) => {
+    if (boxes[i]) boxes[i].checked = checked;
+  });
+  updateChecklistProgress();
+}
+
+function updateChecklistProgress() {
+  const boxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+  const total = boxes.length;
+  const checked = [...boxes].filter(b => b.checked).length;
+  const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
+  document.getElementById('cl-progress-text').textContent = `${checked} / ${total} 完了`;
+  document.getElementById('cl-percent').textContent = `${pct}%`;
+  document.getElementById('cl-bar').style.width = `${pct}%`;
+}
+loadChecklist();
+
+// === PDF Export ===
+function exportPDF() {
+  window.print();
+}
+
+// === Leaflet Map ===
+const map = L.map('map-canvas', {
+  center: [22.155, 113.555],
+  zoom: 13,
+  zoomControl: true,
+  scrollWheelZoom: true
+});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+  maxZoom: 19
+}).addTo(map);
+
+const spots = [
+  { lat:22.1492, lng:113.5624, name:'The Venetian Macao', type:'hotel', desc:'宿泊ホテル・世界最大カジノ' },
+  { lat:22.1475, lng:113.5597, name:'The Parisian Macao', type:'hotel', desc:'姉妹ホテル・エッフェル塔レプリカ' },
+  { lat:22.1474, lng:113.5652, name:'Wynn Palace', type:'casino', desc:'噴水ショー・ミシュラン2つ星レストラン' },
+  { lat:22.1484, lng:113.5639, name:'City of Dreams', type:'casino', desc:'House of Dancing Water 水上ショー' },
+  { lat:22.1478, lng:113.5529, name:'Galaxy Macau', type:'hotel', desc:'Grand Resort Deck・比較ホテル' },
+  { lat:22.1444, lng:113.5578, name:'Studio City Macau', type:'hotel', desc:'後半2泊・8の字観覧車・ドンキ' },
+  { lat:22.1936, lng:113.5409, name:'聖ポール天主堂跡', type:'culture', desc:'世界遺産・マカオのシンボル' },
+  { lat:22.1932, lng:113.5391, name:'セナド広場', type:'culture', desc:'世界遺産・波模様の石畳' },
+  { lat:22.1933, lng:113.5416, name:'モンテの砦', type:'culture', desc:'世界遺産・市街を一望' },
+  { lat:22.1866, lng:113.5314, name:'媽閣廟', type:'culture', desc:'世界遺産・マカオ地名の由来' },
+  { lat:22.1866, lng:113.5387, name:'マカオタワー', type:'culture', desc:'338m展望台・360° Cafe' },
+  { lat:22.1230, lng:113.5654, name:'コロアン・ヴィレッジ', type:'culture', desc:'静かな漁村・Lord Stow\'s Bakery' },
+  { lat:22.1921, lng:113.5415, name:'Margaret\'s Cafe e Nata', type:'food', desc:'伝説のエッグタルト' },
+  { lat:22.1232, lng:113.5657, name:'Lord Stow\'s Bakery', type:'food', desc:'元祖マカオ式エッグタルト' },
+  { lat:22.1564, lng:113.5572, name:'Antonio', type:'food', desc:'タイパ村・本格ポルトガル料理' },
+  { lat:22.1887, lng:113.5347, name:'Restaurante Litoral', type:'food', desc:'最高のマカニーズ料理' },
+  { lat:22.1567, lng:113.5577, name:'官也街（タイパ村）', type:'culture', desc:'お土産ストリート' },
+  { lat:22.1937, lng:113.5439, name:'グランド・リスボア', type:'casino', desc:'マカオ半島ランドマーク・初心者向き' },
+  { lat:22.1490, lng:113.5606, name:'Zi Yat Heen（紫逸軒）', type:'food', desc:'ミシュラン1つ星・広東料理' },
+  { lat:22.1940, lng:113.5378, name:'Wong Chi Kei（黃枝記）', type:'food', desc:'70年老舗・エビワンタン麺' },
+];
+
+const colors = { hotel:'#D4AF37', food:'#e94560', culture:'#81c784', casino:'#7ec8e3' };
+const icons = { hotel:'H', food:'F', culture:'W', casino:'C' };
+
+spots.forEach(s => {
+  const icon = L.divIcon({
+    className: '',
+    html: '<div style="width:28px;height:28px;border-radius:50%;background:'+colors[s.type]+';display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:11px;color:#0f0f1a;border:2px solid rgba(255,255,255,0.3);box-shadow:0 2px 8px rgba(0,0,0,0.5);">'+icons[s.type]+'</div>',
+    iconSize: [28, 28],
+    iconAnchor: [14, 14]
+  });
+  L.marker([s.lat, s.lng], { icon })
+    .addTo(map)
+    .bindPopup('<strong>'+s.name+'</strong><br>'+s.desc+'<br><a href="https://maps.google.com/?q='+encodeURIComponent(s.name+' Macau')+'" target="_blank">Google Maps で開く &rarr;</a>');
+});
+
+// Legend
+const legend = L.control({position: 'bottomright'});
+legend.onAdd = function() {
+  const div = L.DomUtil.create('div');
+  div.style.cssText = 'background:rgba(15,15,26,0.9);padding:8px 12px;border-radius:8px;font-size:11px;line-height:1.8;border:1px solid rgba(255,255,255,0.1);';
+  div.innerHTML = '<span style="color:#D4AF37">&#9679;</span> ホテル &nbsp;<span style="color:#e94560">&#9679;</span> グルメ &nbsp;<span style="color:#81c784">&#9679;</span> 観光 &nbsp;<span style="color:#7ec8e3">&#9679;</span> カジノ';
+  return div;
+};
+legend.addTo(map);
+</script>
+
+</body>
+</html>

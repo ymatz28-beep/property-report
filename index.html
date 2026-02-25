@@ -76,13 +76,13 @@
     .nav-back:hover { color: var(--text); }
 
     .hero {
-      margin-top: 72px;
+      margin-top: 80px;
       display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end;
       opacity: 0; animation: reveal 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
     }
     .hero h1 {
       font-family: 'DM Serif Display', serif;
-      font-size: clamp(44px, 6vw, 72px);
+      font-size: clamp(52px, 7vw, 80px);
       font-weight: 400; line-height: 0.95; letter-spacing: -0.02em; color: var(--text);
     }
     .hero-accent { font-style: italic; color: var(--accent); }
@@ -91,7 +91,7 @@
     .hero-line { width: 40px; height: 1px; background: var(--accent); margin-bottom: 16px; }
 
     .divider {
-      margin: 56px 0 0; height: 1px;
+      margin: 64px 0 0; height: 1px;
       background: linear-gradient(90deg, transparent, var(--border), transparent);
       opacity: 0; animation: reveal 0.8s ease 0.3s forwards;
     }
@@ -100,7 +100,7 @@
 
     .report-item {
       display: block; text-decoration: none; color: var(--text);
-      position: relative; padding: 36px 0;
+      position: relative; padding: 40px 0;
       border-bottom: 1px solid var(--border);
       transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
     }
@@ -113,16 +113,16 @@
     .report-item:hover::after { width: 100%; }
 
     .report-row {
-      display: grid; grid-template-columns: 48px 1fr auto; gap: 20px; align-items: start;
+      display: grid; grid-template-columns: 60px 1fr auto; gap: 24px; align-items: start;
     }
     .report-ordinal {
       font-family: 'DM Serif Display', serif;
-      font-size: 32px; line-height: 1; color: var(--dim);
+      font-size: 36px; line-height: 1; color: var(--dim);
       transition: color 0.35s; padding-top: 2px;
     }
     .report-item:hover .report-ordinal { color: var(--accent); }
 
-    .report-body { display: flex; flex-direction: column; gap: 8px; }
+    .report-body { display: flex; flex-direction: column; gap: 10px; }
     .report-label {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
@@ -130,7 +130,7 @@
     }
     .report-title {
       font-family: 'DM Serif Display', serif;
-      font-size: 24px; font-weight: 400; line-height: 1.2;
+      font-size: 28px; font-weight: 400; line-height: 1.2;
       transition: color 0.3s;
     }
     .report-item:hover .report-title { color: var(--accent); }
@@ -179,12 +179,18 @@
 
     @media (max-width: 768px) {
       .page { padding: 0 20px; }
-      .hero { grid-template-columns: 1fr; gap: 24px; margin-top: 48px; }
-      .report-row { grid-template-columns: 36px 1fr; gap: 14px; }
+      .hero { grid-template-columns: 1fr; gap: 24px; margin-top: 56px; }
+      .report-row { grid-template-columns: 40px 1fr; gap: 16px; }
       .report-arrow { display: none; }
-      .report-ordinal { font-size: 24px; }
-      .report-title { font-size: 20px; }
+      .report-ordinal { font-size: 28px; }
+      .report-title { font-size: 22px; }
+      .report-item { padding: 28px 0; }
       footer { flex-direction: column; gap: 16px; align-items: flex-start; }
+    }
+
+    @media (max-width: 480px) {
+      .report-row { grid-template-columns: 1fr; }
+      .report-ordinal { font-size: 20px; }
     }
   </style>
 </head>
@@ -283,7 +289,7 @@
       requestAnimationFrame(function() {
         requestAnimationFrame(function() {
           items.forEach(function(el, i) {
-            setTimeout(function() { el.classList.add("v"); }, 400 + i * 100);
+            setTimeout(function() { el.classList.add("v"); }, 400 + i * 120);
           });
         });
       });

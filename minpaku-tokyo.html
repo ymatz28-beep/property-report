@@ -127,13 +127,14 @@
     a { color:#eaf7ff; text-decoration:none; }
     a:hover { color:var(--accent); text-decoration:underline; }
     .name-col a { font-weight:700; }
-    .sc-pos { color:#34d399; font-weight:700; font-size:11px; }
-    .sc-neg { color:#f87171; font-weight:700; font-size:11px; }
-    .sc-zero { color:#6b7280; font-size:11px; }
+    .sc-pos { color:#34d399; font-weight:700; font-size:11px; cursor:help; }
+    .sc-neg { color:#f87171; font-weight:700; font-size:11px; cursor:help; }
+    .sc-zero { color:#6b7280; font-size:11px; cursor:help; }
     .breakdown-col { white-space:nowrap; font-family:'Inter',monospace; letter-spacing:-0.5px; }
-    .breakdown-th { min-width:180px; }
-    .breakdown-legend { font-size:9px; color:var(--muted); letter-spacing:1.5px; margin-top:2px; font-weight:400; }
+    .breakdown-th { min-width:200px; }
+    .breakdown-legend { font-size:9px; color:var(--muted); letter-spacing:0.5px; margin-top:2px; font-weight:400; }
     .maint-col { white-space:nowrap; font-size:12px; }
+    td:nth-child(5) { max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; }
     .source-tag {
       margin-top:4px; font-size:11px; color:var(--muted);
       display:inline-block; padding:2px 8px; border-radius:999px;
@@ -262,7 +263,7 @@
               <th><button data-sort="year" data-type="number">築年</button></th>
               <th><button data-sort="layout" data-type="string">間取り</button></th>
               <th>管理費修繕</th>
-              <th class="breakdown-th">内訳<div class="breakdown-legend">予 面 震 駅 地 間 ペ 管 リ 仲 民</div></th>
+              <th class="breakdown-th">スコア内訳<div class="breakdown-legend">予算 面積 耐震 駅 立地 間取 ペット 管理費 リノベ 仲介 民泊</div></th>
               <th><button data-sort="score" data-type="number">スコア</button></th>
               <th><button data-sort="tier" data-type="string">評価</button></th>
             </tr>
@@ -279,7 +280,7 @@
               <td>1971年</td>
               <td></td>
               <td class="maint-col">10,560円</td>
-              <td class="breakdown-col"><span class="sc-pos">+20</span> <span class="sc-pos">+15</span> <span class="sc-zero">0</span> <span class="sc-pos">+15</span> <span class="sc-pos">+18</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span> <span class="sc-pos">+7</span> <span class="sc-pos">+3</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span></td>
+              <td class="breakdown-col"><span class="sc-pos" title="予算">+20</span> <span class="sc-pos" title="面積">+15</span> <span class="sc-zero" title="耐震">0</span> <span class="sc-pos" title="駅距離">+15</span> <span class="sc-pos" title="立地">+18</span> <span class="sc-zero" title="間取り">0</span> <span class="sc-zero" title="ペット">0</span> <span class="sc-pos" title="管理費">+7</span> <span class="sc-pos" title="リノベ">+3</span> <span class="sc-zero" title="仲介">0</span> <span class="sc-zero" title="民泊">0</span></td>
               <td><span class="score-badge" style="--badge:#facc15">78</span></td>
               <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
             </tr>
@@ -294,7 +295,7 @@
               <td>2011年</td>
               <td></td>
               <td class="maint-col">23,770円</td>
-              <td class="breakdown-col"><span class="sc-pos">+15</span> <span class="sc-pos">+10</span> <span class="sc-pos">+15</span> <span class="sc-pos">+10</span> <span class="sc-pos">+10</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span> <span class="sc-pos">+3</span> <span class="sc-pos">+3</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span></td>
+              <td class="breakdown-col"><span class="sc-pos" title="予算">+15</span> <span class="sc-pos" title="面積">+10</span> <span class="sc-pos" title="耐震">+15</span> <span class="sc-pos" title="駅距離">+10</span> <span class="sc-pos" title="立地">+10</span> <span class="sc-zero" title="間取り">0</span> <span class="sc-zero" title="ペット">0</span> <span class="sc-pos" title="管理費">+3</span> <span class="sc-pos" title="リノベ">+3</span> <span class="sc-zero" title="仲介">0</span> <span class="sc-zero" title="民泊">0</span></td>
               <td><span class="score-badge" style="--badge:#facc15">66</span></td>
               <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
             </tr>
@@ -309,7 +310,7 @@
               <td>1977年</td>
               <td></td>
               <td class="maint-col">22,300円</td>
-              <td class="breakdown-col"><span class="sc-pos">+20</span> <span class="sc-pos">+10</span> <span class="sc-zero">0</span> <span class="sc-pos">+15</span> <span class="sc-pos">+12</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span> <span class="sc-pos">+3</span> <span class="sc-pos">+3</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span></td>
+              <td class="breakdown-col"><span class="sc-pos" title="予算">+20</span> <span class="sc-pos" title="面積">+10</span> <span class="sc-zero" title="耐震">0</span> <span class="sc-pos" title="駅距離">+15</span> <span class="sc-pos" title="立地">+12</span> <span class="sc-zero" title="間取り">0</span> <span class="sc-zero" title="ペット">0</span> <span class="sc-pos" title="管理費">+3</span> <span class="sc-pos" title="リノベ">+3</span> <span class="sc-zero" title="仲介">0</span> <span class="sc-zero" title="民泊">0</span></td>
               <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
               <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
             </tr>
@@ -324,7 +325,7 @@
               <td>1973年</td>
               <td></td>
               <td class="maint-col">26,230円</td>
-              <td class="breakdown-col"><span class="sc-pos">+20</span> <span class="sc-pos">+10</span> <span class="sc-zero">0</span> <span class="sc-pos">+15</span> <span class="sc-pos">+12</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span> <span class="sc-pos">+3</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span></td>
+              <td class="breakdown-col"><span class="sc-pos" title="予算">+20</span> <span class="sc-pos" title="面積">+10</span> <span class="sc-zero" title="耐震">0</span> <span class="sc-pos" title="駅距離">+15</span> <span class="sc-pos" title="立地">+12</span> <span class="sc-zero" title="間取り">0</span> <span class="sc-zero" title="ペット">0</span> <span class="sc-zero" title="管理費">0</span> <span class="sc-pos" title="リノベ">+3</span> <span class="sc-zero" title="仲介">0</span> <span class="sc-zero" title="民泊">0</span></td>
               <td><span class="score-badge" style="--badge:#fb923c">60</span></td>
               <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
             </tr>
@@ -339,7 +340,7 @@
               <td>2020年</td>
               <td>2LDK</td>
               <td class="maint-col">14,260円</td>
-              <td class="breakdown-col"><span class="sc-pos">+10</span> <span class="sc-pos">+10</span> <span class="sc-pos">+15</span> <span class="sc-pos">+10</span> <span class="sc-neg">-5</span> <span class="sc-pos">+10</span> <span class="sc-zero">0</span> <span class="sc-pos">+7</span> <span class="sc-pos">+3</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span></td>
+              <td class="breakdown-col"><span class="sc-pos" title="予算">+10</span> <span class="sc-pos" title="面積">+10</span> <span class="sc-pos" title="耐震">+15</span> <span class="sc-pos" title="駅距離">+10</span> <span class="sc-neg" title="立地">-5</span> <span class="sc-pos" title="間取り">+10</span> <span class="sc-zero" title="ペット">0</span> <span class="sc-pos" title="管理費">+7</span> <span class="sc-pos" title="リノベ">+3</span> <span class="sc-zero" title="仲介">0</span> <span class="sc-zero" title="民泊">0</span></td>
               <td><span class="score-badge" style="--badge:#fb923c">60</span></td>
               <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
             </tr>
@@ -354,7 +355,7 @@
               <td>1971年</td>
               <td></td>
               <td class="maint-col">19,000円</td>
-              <td class="breakdown-col"><span class="sc-pos">+20</span> <span class="sc-pos">+10</span> <span class="sc-zero">0</span> <span class="sc-pos">+10</span> <span class="sc-pos">+10</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span> <span class="sc-pos">+5</span> <span class="sc-pos">+3</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span></td>
+              <td class="breakdown-col"><span class="sc-pos" title="予算">+20</span> <span class="sc-pos" title="面積">+10</span> <span class="sc-zero" title="耐震">0</span> <span class="sc-pos" title="駅距離">+10</span> <span class="sc-pos" title="立地">+10</span> <span class="sc-zero" title="間取り">0</span> <span class="sc-zero" title="ペット">0</span> <span class="sc-pos" title="管理費">+5</span> <span class="sc-pos" title="リノベ">+3</span> <span class="sc-zero" title="仲介">0</span> <span class="sc-zero" title="民泊">0</span></td>
               <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
               <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
             </tr>
@@ -369,7 +370,7 @@
               <td>1996年</td>
               <td></td>
               <td class="maint-col">32,800円</td>
-              <td class="breakdown-col"><span class="sc-pos">+10</span> <span class="sc-pos">+15</span> <span class="sc-pos">+15</span> <span class="sc-neg">-5</span> <span class="sc-pos">+20</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span> <span class="sc-neg">-3</span> <span class="sc-pos">+3</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span></td>
+              <td class="breakdown-col"><span class="sc-pos" title="予算">+10</span> <span class="sc-pos" title="面積">+15</span> <span class="sc-pos" title="耐震">+15</span> <span class="sc-neg" title="駅距離">-5</span> <span class="sc-pos" title="立地">+20</span> <span class="sc-zero" title="間取り">0</span> <span class="sc-zero" title="ペット">0</span> <span class="sc-neg" title="管理費">-3</span> <span class="sc-pos" title="リノベ">+3</span> <span class="sc-zero" title="仲介">0</span> <span class="sc-zero" title="民泊">0</span></td>
               <td><span class="score-badge" style="--badge:#fb923c">55</span></td>
               <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
             </tr>
@@ -384,7 +385,7 @@
               <td>1989年</td>
               <td></td>
               <td class="maint-col">35,415円</td>
-              <td class="breakdown-col"><span class="sc-pos">+10</span> <span class="sc-pos">+10</span> <span class="sc-pos">+15</span> <span class="sc-neg">-5</span> <span class="sc-neg">-5</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span> <span class="sc-neg">-3</span> <span class="sc-pos">+3</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span></td>
+              <td class="breakdown-col"><span class="sc-pos" title="予算">+10</span> <span class="sc-pos" title="面積">+10</span> <span class="sc-pos" title="耐震">+15</span> <span class="sc-neg" title="駅距離">-5</span> <span class="sc-neg" title="立地">-5</span> <span class="sc-zero" title="間取り">0</span> <span class="sc-zero" title="ペット">0</span> <span class="sc-neg" title="管理費">-3</span> <span class="sc-pos" title="リノベ">+3</span> <span class="sc-zero" title="仲介">0</span> <span class="sc-zero" title="民泊">0</span></td>
               <td><span class="score-badge" style="--badge:#ef4444">25</span></td>
               <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
             </tr>
@@ -399,7 +400,7 @@
               <td>2003年</td>
               <td>１LDK</td>
               <td class="maint-col">20,200円</td>
-              <td class="breakdown-col"><span class="sc-pos">+10</span> <span class="sc-pos">+10</span> <span class="sc-pos">+15</span> <span class="sc-neg">-25</span> <span class="sc-neg">-5</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span> <span class="sc-pos">+3</span> <span class="sc-pos">+3</span> <span class="sc-zero">0</span> <span class="sc-zero">0</span></td>
+              <td class="breakdown-col"><span class="sc-pos" title="予算">+10</span> <span class="sc-pos" title="面積">+10</span> <span class="sc-pos" title="耐震">+15</span> <span class="sc-neg" title="駅距離">-25</span> <span class="sc-neg" title="立地">-5</span> <span class="sc-zero" title="間取り">0</span> <span class="sc-zero" title="ペット">0</span> <span class="sc-pos" title="管理費">+3</span> <span class="sc-pos" title="リノベ">+3</span> <span class="sc-zero" title="仲介">0</span> <span class="sc-zero" title="民泊">0</span></td>
               <td><span class="score-badge" style="--badge:#ef4444">11</span></td>
               <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
             </tr>
@@ -531,7 +532,7 @@
 
     <div class="footer">
       <div>Sources: 楽待, restate (data/multi_site_tokyo_raw.txt + data/restate_tokyo_raw.txt)</div>
-      <div>Generated on 2026-02-25 14:01:58</div>
+      <div>Generated on 2026-02-25 14:10:27</div>
     </div>
   </div>
 

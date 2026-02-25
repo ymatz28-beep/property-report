@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>大阪 物件検索レポート</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg:#0b0f16;
+      --bg2:#101826;
+      --card:rgba(255,255,255,0.045);
+      --line:rgba(255,255,255,0.12);
+      --muted:#a9b3c6;
+      --text:#edf3ff;
+      --accent:#6ee7ff;
+      --accent-rgb:110,231,255;
+      --success:#22c55e;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --radius:18px;
+      --shadow:0 18px 60px rgba(0,0,0,0.45);
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      color:var(--text);
+      font-family:"Inter","Noto Sans JP",sans-serif;
+      background:
+        radial-gradient(circle at 15% -10%, rgba(var(--accent-rgb),0.16), transparent 40%),
+        radial-gradient(circle at 88% 12%, rgba(110,120,255,0.10), transparent 45%),
+        linear-gradient(180deg,#070b11,#0b0f16 28%, #0d1320 100%);
+    }
+    .wrap { max-width:1280px; margin:0 auto; padding:24px 16px 44px; }
+    .hero {
+      position:relative;
+      padding:28px;
+      border-radius:24px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(12px);
+    }
+    .hero::after {
+      content:"";
+      position:absolute; inset:auto -10% -35% auto;
+      width:360px; height:360px; border-radius:50%;
+      background:radial-gradient(circle, rgba(var(--accent-rgb),0.22), transparent 70%);
+      filter:blur(8px);
+    }
+    .kicker { color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-weight:700; font-size:12px; }
+    h1 { margin:10px 0 10px; font-size:clamp(28px,4.2vw,46px); line-height:1.06; font-weight:900; font-family:"Noto Sans JP","Inter",sans-serif; }
+    .hero-sub { color:#d0d9eb; margin:0; max-width:860px; }
+    .badge-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+    .badge {
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(var(--accent-rgb),0.35);
+      background:rgba(var(--accent-rgb),0.08);
+      color:#e8fbff; font-size:12px; font-weight:600;
+    }
+    .grid-4 {
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:14px;
+    }
+    .card {
+      border:1px solid var(--line);
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:16px;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .stat .label { color:var(--muted); font-size:12px; }
+    .stat .value { font-size:28px; font-weight:800; margin-top:6px; }
+    .stat .sub { color:#cdd6e8; font-size:12px; margin-top:4px; }
+    .section {
+      margin-top:16px;
+      border:1px solid var(--line);
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px;
+      backdrop-filter: blur(10px);
+    }
+    .section h2 {
+      margin:0 0 12px; font-size:18px; font-weight:800; letter-spacing:.02em;
+      display:flex; align-items:center; gap:10px;
+    }
+    .section h2::before {
+      content:"";
+      width:10px; height:10px; border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12);
+    }
+    .cond-list {
+      margin:0; padding-left:18px; color:#d8e0f0; line-height:1.75;
+      columns:2; column-gap:24px;
+    }
+    .table-shell { overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); }
+    table { width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }
+    thead th {
+      position:sticky; top:0; z-index:1;
+      background:rgba(12,17,26,.92); color:#dbe7fa;
+      font-size:12px; text-align:left; padding:12px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      white-space:nowrap;
+    }
+    thead th button {
+      all:unset; cursor:pointer; color:inherit; font-weight:700;
+      display:inline-flex; gap:6px; align-items:center;
+    }
+    tbody td {
+      padding:12px 10px; border-bottom:1px solid rgba(255,255,255,.05);
+      font-size:13px; vertical-align:top;
+    }
+    tbody tr:nth-child(even) td { background:rgba(255,255,255,.012); }
+    tbody tr:hover td { background:rgba(var(--accent-rgb),.06); }
+    .tier-strong td { box-shadow: inset 4px 0 0 rgba(34,197,94,.7); }
+    .tier-good td { box-shadow: inset 4px 0 0 rgba(250,204,21,.7); }
+    .tier-conditional td { box-shadow: inset 4px 0 0 rgba(251,146,60,.7); }
+    .tier-pass td { box-shadow: inset 4px 0 0 rgba(239,68,68,.7); }
+    a { color:#eaf7ff; text-decoration:none; }
+    a:hover { color:var(--accent); text-decoration:underline; }
+    .name-col a { font-weight:700; }
+    .source-tag {
+      margin-top:4px; font-size:11px; color:var(--muted);
+      display:inline-block; padding:2px 8px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
+    }
+    .score-badge {
+      display:inline-grid; place-items:center;
+      min-width:38px; padding:5px 10px; border-radius:999px;
+      border:1px solid color-mix(in oklab, var(--badge) 50%, white 10%);
+      background:color-mix(in oklab, var(--badge) 16%, transparent);
+      color:#fff; font-weight:800;
+    }
+    .tier-pill {
+      display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px;
+      border:1px solid color-mix(in oklab, var(--tier) 45%, white 8%);
+      background:color-mix(in oklab, var(--tier) 14%, transparent);
+      font-weight:700; font-size:12px;
+    }
+    .focus-grid {
+      display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px;
+    }
+    .focus-card {
+      border-radius:18px; border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      padding:14px; box-shadow:var(--shadow);
+    }
+    .focus-head { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:start; }
+    .focus-rank {
+      width:36px; height:36px; border-radius:12px; display:grid; place-items:center;
+      background:rgba(var(--accent-rgb),.12); border:1px solid rgba(var(--accent-rgb),.35); font-weight:800;
+    }
+    .focus-head h3 { margin:0; font-size:17px; line-height:1.3; }
+    .focus-head p { margin:4px 0 0; color:var(--muted); font-size:12px; }
+    .focus-score {
+      min-width:68px; text-align:center; font-weight:900; font-size:24px;
+      color:#fff; border-radius:14px; padding:8px 10px;
+      border:1px solid color-mix(in oklab, var(--accent) 40%, white 8%);
+      background:color-mix(in oklab, var(--accent) 14%, transparent);
+    }
+    .focus-score span { display:block; margin-top:4px; font-size:10px; color:#dfe8f7; font-weight:700; }
+    .chip-row { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
+    .chip {
+      display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700;
+      padding:5px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.09);
+      background:rgba(255,255,255,.03); color:#e6eefc;
+    }
+    .chip-penalty { border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.10); color:#ffdada; }
+    .focus-comment { margin:10px 0 0; color:#dbe4f4; line-height:1.65; font-size:13px; }
+    .focus-meta { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:12px; }
+    .focus-meta span { padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.06); background:rgba(255,255,255,.02); }
+    .chart-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:14px; }
+    .chart-col { display:grid; gap:14px; }
+    .chart-card canvas { width:100%; max-height:360px; }
+    .notes { margin:0; padding-left:18px; line-height:1.8; color:#d9e2f3; }
+    .footer { margin-top:16px; color:var(--muted); font-size:12px; text-align:center; }
+    .footer a { color:#cfeeff; }
+    @media (max-width: 960px) {
+      .grid-4 { grid-template-columns:repeat(2, minmax(0,1fr)); }
+      .chart-grid, .focus-grid { grid-template-columns:1fr; }
+      .cond-list { columns:1; }
+      .hero { padding:18px; }
+    }
+    @media (max-width: 560px) {
+      .grid-4 { grid-template-columns:1fr; }
+      .focus-head { grid-template-columns:auto 1fr; }
+      .focus-score { grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior:auto !important; animation:none !important; transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="kicker">PROPERTY SEARCH REPORT / 大阪</div>
+      <h1>大阪 民泊向け中古マンション候補レポート</h1>
+      <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
+      <div class="badge-row">
+        <span class="badge">検索日 2026-02-22</span>
+        <span class="badge">原データ 89件</span>
+        <span class="badge">重複除外 50件</span>
+        <span class="badge">売却済除外 6件</span>
+        <span class="badge">OC除外 0件</span>
+        <span class="badge">ペット不可除外 2件</span>
+        <span class="badge">有効件数 31件</span>
+        <span class="badge">データソース: SUUMO, multi, restate</span>
+      </div>
+      <div class="badge-row">
+        <span class="badge">大阪市西区・北区・中央区中心</span><span class="badge">価格上限 5,000万円</span><span class="badge">専有面積 40-70㎡目安</span><span class="badge">ペット可/相談可優先</span>
+      </div>
+    </section>
+
+    <section class="grid-4">
+      <div class="card stat"><div class="label">総候補数</div><div class="value">31</div><div class="sub">重複排除後</div></div>
+      <div class="card stat"><div class="label">平均価格</div><div class="value">3,606.8万円</div><div class="sub">全候補平均</div></div>
+      <div class="card stat"><div class="label">平均面積</div><div class="value">59.73㎡</div><div class="sub">全候補平均</div></div>
+      <div class="card stat"><div class="label">最高スコア</div><div class="value">95</div><div class="sub">ラマダ南森町</div></div>
+    </section>
+
+    <section class="section">
+      <h2>Search Conditions</h2>
+      <ul class="cond-list">
+        <li>データ元条件: 5000万以下, 40-70㎡, ペット相談可</li>
+        <li>重複排除キー: 物件名 + 価格（先勝ち）</li>
+        <li>駅アクセスに「バス」を含む場合、徒歩分数評価は0点</li>
+        <li>築年1981年7月以降を新耐震として評価</li>
+        <li>管理費修繕積立金: 1万円/月以下=+10, 1.5万以下=+7, 2万以下=+5, 3万超=マイナス</li>
+        <li>民泊禁止は -30 点ペナルティ</li>
+        <li>SUUMO + 楽待 + Yahoo不動産 + 大阪R不動産のマルチソース</li><li>北堀江/南堀江を最優先、天満・中津・心斎橋周辺も重点評価</li><li>ペット可は高加点（15点）、リノベ未実施は加点、仲介手数料割引も加点</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Property Table</h2>
+      <div class="table-shell">
+        <table id="propertyTable">
+          <thead>
+            <tr>
+              <th><button data-sort="index" data-type="number">#</button></th>
+              <th><button data-sort="name" data-type="string">物件名</button></th>
+              <th><button data-sort="price" data-type="number">価格</button></th>
+              <th><button data-sort="area" data-type="number">面積</button></th>
+              <th><button data-sort="location" data-type="string">所在地</button></th>
+              <th><button data-sort="walk" data-type="number">最寄駅</button></th>
+              <th><button data-sort="year" data-type="number">築年</button></th>
+              <th><button data-sort="layout" data-type="string">間取り</button></th>
+              <th><button data-sort="score" data-type="number">スコア</button></th>
+              <th><button data-sort="tier" data-type="string">評価</button></th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr class="tier-strong" data-index="1" data-name="ラマダ南森町" data-location="大阪府大阪市北区天神橋２" data-layout="2LDK" data-tier="強く推奨" data-price="3800" data-area="53.50" data-score="95" data-year="1993" data-walk="5">
+              <td>1</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20265735/" target="_blank" rel="noopener noreferrer">ラマダ南森町</a><div class="source-tag">SUUMO</div></td>
+              <td>3,800万円</td>
+              <td>53.50㎡</td>
+              <td>大阪府大阪市北区天神橋２</td>
+              <td>地下鉄谷町線「南森町」徒歩5分</td>
+              <td>1993年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">95</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="2" data-name="セレッソコート南堀江マルティア" data-location="大阪府大阪市西区南堀江３-4-9" data-layout="2LDK" data-tier="強く推奨" data-price="4380" data-area="53.00" data-score="93" data-year="2000" data-walk="4">
+              <td>2</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener noreferrer">セレッソコート南堀江マルティア</a><div class="source-tag">SUUMO</div></td>
+              <td>4,380万円</td>
+              <td>53.00㎡</td>
+              <td>大阪府大阪市西区南堀江３-4-9</td>
+              <td>地下鉄千日前線「桜川」徒歩4分</td>
+              <td>2000年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">93</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="3" data-name="メロディハイム中津5番館" data-location="大阪府大阪市北区中津１" data-layout="3LDK" data-tier="強く推奨" data-price="4480" data-area="59.76" data-score="90" data-year="1986" data-walk="2">
+              <td>3</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78549343/" target="_blank" rel="noopener noreferrer">メロディハイム中津5番館</a><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>59.76㎡</td>
+              <td>大阪府大阪市北区中津１</td>
+              <td>地下鉄御堂筋線「中津」徒歩2分</td>
+              <td>1986年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">90</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="4" data-name="朝日プラザ長堀西" data-location="大阪府大阪市西区立売堀６" data-layout="2LDK" data-tier="強く推奨" data-price="3880" data-area="60.73" data-score="88" data-year="1985" data-walk="5">
+              <td>4</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20084171/" target="_blank" rel="noopener noreferrer">朝日プラザ長堀西</a><div class="source-tag">SUUMO</div></td>
+              <td>3,880万円</td>
+              <td>60.73㎡</td>
+              <td>大阪府大阪市西区立売堀６</td>
+              <td>地下鉄中央線「阿波座」徒歩5分</td>
+              <td>1985年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">88</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="5" data-name="ベル・アーバニティ同心" data-location="大阪府大阪市北区同心１-1-2" data-layout="2LDK" data-tier="強く推奨" data-price="4480" data-area="55.58" data-score="85" data-year="1996" data-walk="8">
+              <td>5</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20268812/" target="_blank" rel="noopener noreferrer">ベル・アーバニティ同心</a><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>55.58㎡</td>
+              <td>大阪府大阪市北区同心１-1-2</td>
+              <td>ＪＲ東西線「大阪天満宮」徒歩8分</td>
+              <td>1996年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">85</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="6" data-name="ビーバードルチェ阿波座" data-location="大阪府大阪市西区川口３" data-layout="3DK" data-tier="強く推奨" data-price="2350" data-area="54.40" data-score="83" data-year="1988" data-walk="8">
+              <td>6</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78585947/" target="_blank" rel="noopener noreferrer">ビーバードルチェ阿波座</a><div class="source-tag">SUUMO</div></td>
+              <td>2,350万円</td>
+              <td>54.40㎡</td>
+              <td>大阪府大阪市西区川口３</td>
+              <td>地下鉄中央線「九条」徒歩8分</td>
+              <td>1988年</td>
+              <td>3DK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">83</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="7" data-name="大洋ハイツ梅田西" data-location="大阪府大阪市北区大淀南２" data-layout="1LDK" data-tier="強く推奨" data-price="2780" data-area="40.00" data-score="83" data-year="1987" data-walk="9">
+              <td>7</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20130887/" target="_blank" rel="noopener noreferrer">大洋ハイツ梅田西</a><div class="source-tag">SUUMO</div></td>
+              <td>2,780万円</td>
+              <td>40.00㎡</td>
+              <td>大阪府大阪市北区大淀南２</td>
+              <td>ＪＲ大阪環状線「福島」徒歩9分</td>
+              <td>1987年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">83</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="8" data-name="シャルマンフジ・リッツ谷町" data-location="大阪府大阪市中央区谷町６-2-9" data-layout="2LDK+S（納戸）" data-tier="強く推奨" data-price="4080" data-area="61.48" data-score="81" data-year="1996" data-walk="4">
+              <td>8</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20136777/" target="_blank" rel="noopener noreferrer">シャルマンフジ・リッツ谷町</a><div class="source-tag">SUUMO</div></td>
+              <td>4,080万円</td>
+              <td>61.48㎡</td>
+              <td>大阪府大阪市中央区谷町６-2-9</td>
+              <td>地下鉄谷町線「谷町六丁目」徒歩4分</td>
+              <td>1996年</td>
+              <td>2LDK+S（納戸）</td>
+              <td><span class="score-badge" style="--badge:#22c55e">81</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="9" data-name="チュリス北梅田" data-location="大阪府大阪市北区大淀中２" data-layout="3LDK" data-tier="強く推奨" data-price="4380" data-area="62.99" data-score="80" data-year="1998" data-walk="10">
+              <td>9</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_79179658/" target="_blank" rel="noopener noreferrer">チュリス北梅田</a><div class="source-tag">SUUMO</div></td>
+              <td>4,380万円</td>
+              <td>62.99㎡</td>
+              <td>大阪府大阪市北区大淀中２</td>
+              <td>阪急神戸線「中津」徒歩10分</td>
+              <td>1998年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#22c55e">80</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="10" data-name="サンハイツ南堀江" data-location="大阪府大阪市西区南堀江２-3-4" data-layout="3LDK" data-tier="推奨" data-price="2900" data-area="63.05" data-score="78" data-year="1980" data-walk="7">
+              <td>10</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20087553/" target="_blank" rel="noopener noreferrer">サンハイツ南堀江</a><div class="source-tag">SUUMO</div></td>
+              <td>2,900万円</td>
+              <td>63.05㎡</td>
+              <td>大阪府大阪市西区南堀江２-3-4</td>
+              <td>地下鉄千日前線「桜川」徒歩7分</td>
+              <td>1980年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="11" data-name="土佐堀ビューハイツ" data-location="大阪府大阪市西区江戸堀２" data-layout="3LDK" data-tier="推奨" data-price="3680" data-area="70.30" data-score="78" data-year="1982" data-walk="10">
+              <td>11</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78806447/" target="_blank" rel="noopener noreferrer">土佐堀ビューハイツ</a><div class="source-tag">SUUMO</div></td>
+              <td>3,680万円</td>
+              <td>70.30㎡</td>
+              <td>大阪府大阪市西区江戸堀２</td>
+              <td>地下鉄四つ橋線「肥後橋」徒歩10分</td>
+              <td>1982年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="12" data-name="中津リバーサイドコーポＤ棟" data-location="大阪府大阪市北区中津２-8" data-layout="2LDK" data-tier="推奨" data-price="1980" data-area="69.85" data-score="75" data-year="1971" data-walk="7">
+              <td>12</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20160725/" target="_blank" rel="noopener noreferrer">中津リバーサイドコーポＤ棟</a><div class="source-tag">SUUMO</div></td>
+              <td>1,980万円</td>
+              <td>69.85㎡</td>
+              <td>大阪府大阪市北区中津２-8</td>
+              <td>地下鉄御堂筋線「中津」徒歩7分</td>
+              <td>1971年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">75</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="13" data-name="扇町シティハイツ" data-location="大阪府大阪市北区同心２" data-layout="2LDK" data-tier="推奨" data-price="2988" data-area="45.64" data-score="75" data-year="1981" data-walk="6">
+              <td>13</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20273765/" target="_blank" rel="noopener noreferrer">扇町シティハイツ</a><div class="source-tag">SUUMO</div></td>
+              <td>2,988万円</td>
+              <td>45.64㎡</td>
+              <td>大阪府大阪市北区同心２</td>
+              <td>ＪＲ大阪環状線「天満」徒歩6分</td>
+              <td>1981年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">75</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="14" data-name="大淀セントポリア" data-location="大阪府大阪市北区本庄西３" data-layout="2LDK" data-tier="推奨" data-price="3280" data-area="64.01" data-score="75" data-year="1981" data-walk="12">
+              <td>14</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_78757351/" target="_blank" rel="noopener noreferrer">大淀セントポリア</a><div class="source-tag">SUUMO</div></td>
+              <td>3,280万円</td>
+              <td>64.01㎡</td>
+              <td>大阪府大阪市北区本庄西３</td>
+              <td>地下鉄谷町線「天神橋筋六丁目」徒歩12分</td>
+              <td>1981年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">75</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="15" data-name="リーガル豊崎" data-location="大阪府大阪市北区豊崎６-15-14" data-layout="3LDK" data-tier="推奨" data-price="4000" data-area="55.75" data-score="75" data-year="1997" data-walk="12">
+              <td>15</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20197143/" target="_blank" rel="noopener noreferrer">リーガル豊崎</a><div class="source-tag">SUUMO</div></td>
+              <td>4,000万円</td>
+              <td>55.75㎡</td>
+              <td>大阪府大阪市北区豊崎６-15-14</td>
+              <td>地下鉄御堂筋線「中津」徒歩12分</td>
+              <td>1997年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">75</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="16" data-name="アルス心斎橋UNAGIDANI" data-location="大阪府大阪市中央区東心斎橋１" data-layout="1LDK" data-tier="推奨" data-price="4380" data-area="45.51" data-score="75" data-year="2004" data-walk="6">
+              <td>16</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20254419/" target="_blank" rel="noopener noreferrer">アルス心斎橋UNAGIDANI</a><div class="source-tag">SUUMO</div></td>
+              <td>4,380万円</td>
+              <td>45.51㎡</td>
+              <td>大阪府大阪市中央区東心斎橋１</td>
+              <td>地下鉄御堂筋線「心斎橋」徒歩6分</td>
+              <td>2004年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">75</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="17" data-name="アルス心斎橋ＵＮＡＧＩＤＡＮＩ" data-location="大阪府大阪市中央区東心斎橋１" data-layout="1LDK" data-tier="推奨" data-price="4380" data-area="45.51" data-score="75" data-year="2004" data-walk="6">
+              <td>17</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20245135/" target="_blank" rel="noopener noreferrer">アルス心斎橋ＵＮＡＧＩＤＡＮＩ</a><div class="source-tag">SUUMO</div></td>
+              <td>4,380万円</td>
+              <td>45.51㎡</td>
+              <td>大阪府大阪市中央区東心斎橋１</td>
+              <td>地下鉄御堂筋線「心斎橋」徒歩6分</td>
+              <td>2004年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">75</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="18" data-name="サンコーポ北堀江" data-location="大阪府大阪市西区北堀江２" data-layout="2LDK" data-tier="推奨" data-price="3698" data-area="73.61" data-score="73" data-year="1979" data-walk="5">
+              <td>18</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79011122/" target="_blank" rel="noopener noreferrer">サンコーポ北堀江</a><div class="source-tag">SUUMO</div></td>
+              <td>3,698万円</td>
+              <td>73.61㎡</td>
+              <td>大阪府大阪市西区北堀江２</td>
+              <td>地下鉄長堀鶴見緑地線「西大橋」徒歩5分</td>
+              <td>1979年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="19" data-name="西道頓堀コーポ１号棟" data-location="大阪府大阪市西区南堀江４" data-layout="2LDK" data-tier="推奨" data-price="3980" data-area="60.77" data-score="73" data-year="1974" data-walk="7">
+              <td>19</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78024626/" target="_blank" rel="noopener noreferrer">西道頓堀コーポ１号棟</a><div class="source-tag">SUUMO</div></td>
+              <td>3,980万円</td>
+              <td>60.77㎡</td>
+              <td>大阪府大阪市西区南堀江４</td>
+              <td>阪神電鉄阪神なんば線「桜川」徒歩7分</td>
+              <td>1974年</td>
+              <td>2LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="20" data-name="クローバーハイツ第二大手前" data-location="大阪府大阪市中央区北新町" data-layout="2LDK+S（納戸）" data-tier="推奨" data-price="2800" data-area="66.98" data-score="71" data-year="1980" data-walk="7">
+              <td>20</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20057963/" target="_blank" rel="noopener noreferrer">クローバーハイツ第二大手前</a><div class="source-tag">SUUMO</div></td>
+              <td>2,800万円</td>
+              <td>66.98㎡</td>
+              <td>大阪府大阪市中央区北新町</td>
+              <td>地下鉄谷町線「谷町四丁目」徒歩7分</td>
+              <td>1980年</td>
+              <td>2LDK+S（納戸）</td>
+              <td><span class="score-badge" style="--badge:#facc15">71</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="21" data-name="中津リバーサイドコーポ Ｃ棟" data-location="大阪府大阪市北区中津２" data-layout="1LDK" data-tier="推奨" data-price="2400" data-area="69.85" data-score="70" data-year="1971" data-walk="7">
+              <td>21</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_78992737/" target="_blank" rel="noopener noreferrer">中津リバーサイドコーポ Ｃ棟</a><div class="source-tag">SUUMO</div></td>
+              <td>2,400万円</td>
+              <td>69.85㎡</td>
+              <td>大阪府大阪市北区中津２</td>
+              <td>地下鉄御堂筋線「中津」徒歩7分</td>
+              <td>1971年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="22" data-name="リーガル東天満" data-location="大阪府大阪市北区東天満１丁目" data-layout="" data-tier="推奨" data-price="3650" data-area="45.90" data-score="70" data-year="2000" data-walk="2">
+              <td>22</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3552336/show.html" target="_blank" rel="noopener noreferrer">リーガル東天満</a><div class="source-tag">楽待</div></td>
+              <td>3,650万円</td>
+              <td>45.90㎡</td>
+              <td>大阪府大阪市北区東天満１丁目</td>
+              <td>大阪天満宮駅徒歩2分</td>
+              <td>2000年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="23" data-name="扇町シティハイツ" data-location="大阪府大阪市北区同心２" data-layout="3LDK" data-tier="推奨" data-price="3998" data-area="60.42" data-score="70" data-year="1981" data-walk="6">
+              <td>23</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_78795707/" target="_blank" rel="noopener noreferrer">扇町シティハイツ</a><div class="source-tag">SUUMO</div></td>
+              <td>3,998万円</td>
+              <td>60.42㎡</td>
+              <td>大阪府大阪市北区同心２</td>
+              <td>ＪＲ大阪環状線「天満」徒歩6分</td>
+              <td>1981年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="24" data-name="エステムコート梅田天神橋2グラシオ" data-location="大阪府大阪市北区本庄西２" data-layout="2DK" data-tier="推奨" data-price="4280" data-area="42.56" data-score="70" data-year="2013" data-walk="10">
+              <td>24</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20216752/" target="_blank" rel="noopener noreferrer">エステムコート梅田天神橋2グラシオ</a><div class="source-tag">SUUMO</div></td>
+              <td>4,280万円</td>
+              <td>42.56㎡</td>
+              <td>大阪府大阪市北区本庄西２</td>
+              <td>地下鉄谷町線「天神橋筋六丁目」徒歩10分</td>
+              <td>2013年</td>
+              <td>2DK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="25" data-name="コープ野村扇町" data-location="大阪府大阪市北区天神橋３" data-layout="3LDK" data-tier="推奨" data-price="4399" data-area="66.21" data-score="70" data-year="1976" data-walk="4">
+              <td>25</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20273461/" target="_blank" rel="noopener noreferrer">コープ野村扇町</a><div class="source-tag">SUUMO</div></td>
+              <td>4,399万円</td>
+              <td>66.21㎡</td>
+              <td>大阪府大阪市北区天神橋３</td>
+              <td>地下鉄堺筋線「扇町」徒歩4分</td>
+              <td>1976年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="26" data-name="扇町公園の近くでペットと暮らす" data-location="大阪府大阪市北区天神橋3丁目" data-layout="1LDK" data-tier="推奨" data-price="4580" data-area="66.21" data-score="70" data-year="1976" data-walk="6">
+              <td>26</td>
+              <td class="name-col"><a href="https://www.realosakaestate.jp/estate.php?n=25517" target="_blank" rel="noopener noreferrer">扇町公園の近くでペットと暮らす</a><div class="source-tag">大阪R不動産</div></td>
+              <td>4,580万円</td>
+              <td>66.21㎡</td>
+              <td>大阪府大阪市北区天神橋3丁目</td>
+              <td>JR環状線「天満」駅 徒歩6分／大阪メトロ堺筋線「扇町駅」駅 徒歩6分</td>
+              <td>1976年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">70</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="27" data-name="メゾン北梅田" data-location="大阪府大阪市北区豊崎４" data-layout="3K" data-tier="推奨" data-price="2690" data-area="48.89" data-score="65" data-year="1973" data-walk="7">
+              <td>27</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20008556/" target="_blank" rel="noopener noreferrer">メゾン北梅田</a><div class="source-tag">SUUMO</div></td>
+              <td>2,690万円</td>
+              <td>48.89㎡</td>
+              <td>大阪府大阪市北区豊崎４</td>
+              <td>地下鉄御堂筋線「中津」徒歩7分</td>
+              <td>1973年</td>
+              <td>3K</td>
+              <td><span class="score-badge" style="--badge:#facc15">65</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="28" data-name="コープ野村梅田Ａ棟" data-location="大阪府大阪市北区鶴野町" data-layout="1LDK" data-tier="推奨" data-price="3580" data-area="60.50" data-score="65" data-year="1981" data-walk="7">
+              <td>28</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20193277/" target="_blank" rel="noopener noreferrer">コープ野村梅田Ａ棟</a><div class="source-tag">SUUMO</div></td>
+              <td>3,580万円</td>
+              <td>60.50㎡</td>
+              <td>大阪府大阪市北区鶴野町</td>
+              <td>地下鉄谷町線「中崎町」徒歩7分</td>
+              <td>1981年</td>
+              <td>1LDK</td>
+              <td><span class="score-badge" style="--badge:#facc15">65</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="29" data-name="リバーサイドほんじょう" data-location="大阪府大阪市北区本庄東３" data-layout="3LDK" data-tier="条件付き" data-price="2880" data-area="68.51" data-score="60" data-year="1981" data-walk="12">
+              <td>29</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20143321/" target="_blank" rel="noopener noreferrer">リバーサイドほんじょう</a><div class="source-tag">SUUMO</div></td>
+              <td>2,880万円</td>
+              <td>68.51㎡</td>
+              <td>大阪府大阪市北区本庄東３</td>
+              <td>阪急千里線「天神橋筋六丁目」徒歩12分</td>
+              <td>1981年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#fb923c">60</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="30" data-name="中津リバーサイドコーポ" data-location="大阪府大阪市北区中津２丁目" data-layout="" data-tier="条件付き" data-price="2980" data-area="69.85" data-score="55" data-year="1971" data-walk="6">
+              <td>30</td>
+              <td class="name-col"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3550849/show.html" target="_blank" rel="noopener noreferrer">中津リバーサイドコーポ</a><div class="source-tag">楽待</div></td>
+              <td>2,980万円</td>
+              <td>69.85㎡</td>
+              <td>大阪府大阪市北区中津２丁目</td>
+              <td>＊大阪メトロ御堂筋線「中津」駅 徒歩6分</td>
+              <td>1971年</td>
+              <td></td>
+              <td><span class="score-badge" style="--badge:#fb923c">55</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-pass" data-index="31" data-name="大淀町スワローハイツ" data-location="大阪府大阪市北区大淀中４" data-layout="3LDK" data-tier="見送り" data-price="3698" data-area="90.36" data-score="48" data-year="1980" data-walk="15">
+              <td>31</td>
+              <td class="name-col"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_78865430/" target="_blank" rel="noopener noreferrer">大淀町スワローハイツ</a><div class="source-tag">SUUMO</div></td>
+              <td>3,698万円</td>
+              <td>90.36㎡</td>
+              <td>大阪府大阪市北区大淀中４</td>
+              <td>ＪＲ大阪環状線「福島」徒歩15分</td>
+              <td>1980年</td>
+              <td>3LDK</td>
+              <td><span class="score-badge" style="--badge:#ef4444">48</span></td>
+              <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Top 5 Focus Cards</h2>
+      <div class="focus-grid">
+        
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#1</div>
+                <div>
+                  <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20265735/" target="_blank" rel="noopener noreferrer">ラマダ南森町</a></h3>
+                  <p>3,800万円 / 53.50㎡ / 大阪府大阪市北区天神橋２</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">95<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +15</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +12</span><span class="chip ">間取り +10</span><span class="chip ">ペット +10</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">ペット相談可 / 予算適合 / 駅近 / 観光導線が強い立地</p>
+              <div class="focus-meta">
+                <span>地下鉄谷町線「南森町」徒歩5分</span>
+                <span>1993年3月</span>
+                <span>2LDK</span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#2</div>
+                <div>
+                  <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener noreferrer">セレッソコート南堀江マルティア</a></h3>
+                  <p>4,380万円 / 53.00㎡ / 大阪府大阪市西区南堀江３-4-9</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">93<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +10</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +15</span><span class="chip ">間取り +10</span><span class="chip ">ペット +10</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">ペット相談可 / 駅近 / 観光導線が強い立地 / 新耐震</p>
+              <div class="focus-meta">
+                <span>地下鉄千日前線「桜川」徒歩4分</span>
+                <span>2000年6月</span>
+                <span>2LDK</span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#3</div>
+                <div>
+                  <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78549343/" target="_blank" rel="noopener noreferrer">メロディハイム中津5番館</a></h3>
+                  <p>4,480万円 / 59.76㎡ / 大阪府大阪市北区中津１</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">90<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +10</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +12</span><span class="chip ">間取り +10</span><span class="chip ">ペット +10</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">ペット相談可 / 駅近 / 観光導線が強い立地 / 新耐震</p>
+              <div class="focus-meta">
+                <span>地下鉄御堂筋線「中津」徒歩2分</span>
+                <span>1986年7月</span>
+                <span>3LDK</span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#4</div>
+                <div>
+                  <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20084171/" target="_blank" rel="noopener noreferrer">朝日プラザ長堀西</a></h3>
+                  <p>3,880万円 / 60.73㎡ / 大阪府大阪市西区立売堀６</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">88<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +15</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +10</span><span class="chip ">間取り +10</span><span class="chip ">ペット +10</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">ペット相談可 / 予算適合 / 駅近 / 新耐震</p>
+              <div class="focus-meta">
+                <span>地下鉄中央線「阿波座」徒歩5分</span>
+                <span>1985年11月</span>
+                <span>2LDK</span>
+                
+              </div>
+            </article>
+            
+            <article class="focus-card">
+              <div class="focus-head">
+                <div class="focus-rank">#5</div>
+                <div>
+                  <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20268812/" target="_blank" rel="noopener noreferrer">ベル・アーバニティ同心</a></h3>
+                  <p>4,480万円 / 55.58㎡ / 大阪府大阪市北区同心１-1-2</p>
+                </div>
+                <div class="focus-score" style="--accent:#22c55e">85<span>強く推奨</span></div>
+              </div>
+              <div class="chip-row"><span class="chip ">予算 +10</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +10</span><span class="chip ">立地 +12</span><span class="chip ">間取り +10</span><span class="chip ">ペット +10</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">ペット相談可 / 駅近 / 観光導線が強い立地 / 新耐震</p>
+              <div class="focus-meta">
+                <span>ＪＲ東西線「大阪天満宮」徒歩8分</span>
+                <span>1996年12月</span>
+                <span>2LDK</span>
+                
+              </div>
+            </article>
+            
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Charts</h2>
+      <div class="chart-grid">
+        <div class="card chart-card"><canvas id="radarChart"></canvas></div>
+        <div class="chart-col">
+          <div class="card chart-card"><canvas id="bucketChart"></canvas></div>
+          <div class="card chart-card"><canvas id="priceChart"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Investor Notes</h2>
+      <ul class="notes">
+        <li>法人（iUMAプロパティマネジメント）での購入を第一優先</li><li>セゾンファンデックス・筑波銀行の融資枠を活用</li><li>特区民泊の制度期限は2026/5/29。間に合わなければ簡易宿所許可で対応</li><li>管理規約の民泊可否は個別確認が必要</li><li>戸建て・メゾネットは管理規約制約なしのため並行検索推奨</li>
+      </ul>
+    </section>
+
+    <div class="footer">
+      <div>Sources: SUUMO, multi, restate (data/suumo_osaka_v2_raw.txt + data/multi_site_osaka_raw.txt, data/restate_osaka_raw.txt)</div>
+      <div>Generated on 2026-02-25 09:25:53</div>
+    </div>
+  </div>
+
+  <script>
+    const chartAccent = 'rgba(110,231,255, 1)';
+    const chartAccentFill = 'rgba(110,231,255, 0.18)';
+    const radarLabels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "管理費修繕", "リノベ余地", "仲介手数料", "民泊規約"];
+    const radarDatasets = [{"label": "1. ラマダ南森町", "data": [75, 100, 100, 100, 80, 100, 67, 0, 60, 0, 100], "borderWidth": 2}, {"label": "2. セレッソコート南堀江マルティア", "data": [50, 100, 100, 100, 100, 100, 67, 0, 60, 0, 100], "borderWidth": 2}, {"label": "3. メロディハイム中津5番館", "data": [50, 100, 100, 100, 80, 100, 67, 0, 60, 0, 100], "borderWidth": 2}, {"label": "4. 朝日プラザ長堀西", "data": [75, 67, 100, 100, 67, 100, 67, 0, 60, 0, 100], "borderWidth": 2}, {"label": "5. ベル・アーバニティ同心", "data": [50, 100, 100, 67, 80, 100, 67, 0, 60, 0, 100], "borderWidth": 2}].map((d, i) => {
+      const hueShift = [0, 18, 35, 52, 70][i] || 0;
+      const alpha = 0.14 + i * 0.03;
+      return {
+        ...d,
+        borderColor: i === 0 ? chartAccent : `hsla(${(195 + hueShift)%360}, 90%, 68%, .95)`,
+        backgroundColor: i === 0 ? chartAccentFill : `hsla(${(195 + hueShift)%360}, 90%, 68%, ${alpha})`,
+        pointRadius: 2,
+        pointHoverRadius: 4,
+      };
+    });
+    const bucketLabels = ["南森町/天神橋/天満/扇町/東天満", "北堀江/南堀江", "中津/中崎町", "阿波座/靱公園/靱本町", "梅田/大淀/福島", "谷町", "肥後橋/淀屋橋/北浜/江戸堀", "長堀橋/心斎橋"];
+    const bucketValues = [10, 4, 8, 2, 2, 2, 1, 2];
+    const priceLabels = ["1500-1999万円", "2000-2499万円", "2500-2999万円", "3000-3499万円", "3500-3999万円", "4000-4499万円", "4500-4999万円"];
+    const priceValues = [1, 2, 7, 1, 9, 10, 1];
+
+    const commonGrid = {
+      color: 'rgba(255,255,255,0.08)',
+      drawBorder: false,
+    };
+    const commonTicks = { color: 'rgba(220,230,245,0.8)', font: { family: 'Inter, Noto Sans JP, sans-serif' } };
+
+    new Chart(document.getElementById('radarChart'), {
+      type: 'radar',
+      data: { labels: radarLabels, datasets: radarDatasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#e8efff' } },
+          title: { display: true, text: 'Top5 スコア内訳比較（0-100正規化）', color: '#e8efff' }
+        },
+        scales: {
+          r: {
+            suggestedMin: 0,
+            suggestedMax: 100,
+            angleLines: { color: 'rgba(255,255,255,0.08)' },
+            grid: { color: 'rgba(255,255,255,0.08)' },
+            pointLabels: { color: 'rgba(230,240,255,0.88)', font: { size: 11 } },
+            ticks: { backdropColor: 'transparent', color: 'rgba(220,230,245,0.55)', stepSize: 20 }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('bucketChart'), {
+      type: 'bar',
+      data: {
+        labels: bucketLabels,
+        datasets: [{
+          label: '件数',
+          data: bucketValues,
+          borderRadius: 8,
+          borderSkipped: false,
+          backgroundColor: bucketValues.map((_, i) => `rgba(110,231,255, ${0.35 + (i % 5) * 0.1})`),
+          borderColor: bucketValues.map((_, i) => `rgba(110,231,255, ${0.7 + (i % 3) * 0.1})`),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'エリア分布（立地バケット別件数）', color: '#e8efff' }
+        },
+        scales: {
+          x: { ticks: commonTicks, grid: { display: false } },
+          y: { ticks: commonTicks, grid: commonGrid, beginAtZero: true }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('priceChart'), {
+      type: 'bar',
+      data: {
+        labels: priceLabels,
+        datasets: [{
+          label: '件数',
+          data: priceValues,
+          borderRadius: 8,
+          borderSkipped: false,
+          backgroundColor: priceValues.map((_, i) => `rgba(255,255,255, ${0.14 + (i % 4) * 0.05})`),
+          borderColor: priceValues.map(() => chartAccent),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: '価格分布（500万円刻み）', color: '#e8efff' }
+        },
+        scales: {
+          x: { ticks: commonTicks, grid: { display: false } },
+          y: { ticks: commonTicks, grid: commonGrid, beginAtZero: true }
+        }
+      }
+    });
+
+    (() => {
+      const table = document.getElementById('propertyTable');
+      const tbody = table.querySelector('tbody');
+      const headers = table.querySelectorAll('thead button[data-sort]');
+      let sortState = { key: 'score', dir: 'desc' };
+
+      const valueFor = (row, key, type) => {
+        if (key === 'name') {
+          return (row.dataset.name || '').toLowerCase();
+        }
+        const v = row.dataset[key];
+        return type === 'number' ? Number(v) : (v || '');
+      };
+
+      const applySort = (key, type) => {
+        if (sortState.key === key) {
+          sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortState = { key, dir: key === 'score' ? 'desc' : 'asc' };
+        }
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        rows.sort((a, b) => {
+          const av = valueFor(a, key, type);
+          const bv = valueFor(b, key, type);
+          let cmp = 0;
+          if (type === 'number') cmp = av - bv;
+          else cmp = String(av).localeCompare(String(bv), 'ja');
+          if (cmp === 0) cmp = Number(a.dataset.index) - Number(b.dataset.index);
+          return sortState.dir === 'asc' ? cmp : -cmp;
+        });
+        rows.forEach(r => tbody.appendChild(r));
+        headers.forEach(h => h.textContent = h.textContent.replace(/[↑↓]$/, ''));
+        const active = Array.from(headers).find(h => h.dataset.sort === key);
+        if (active) active.textContent = active.textContent + (sortState.dir === 'asc' ? '↑' : '↓');
+      };
+
+      headers.forEach(h => {
+        h.addEventListener('click', () => applySort(h.dataset.sort, h.dataset.type || 'string'));
+      });
+    })();
+  </script>
+</body>
+</html>

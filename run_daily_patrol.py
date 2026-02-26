@@ -99,29 +99,35 @@ def patrol_dead_urls() -> dict:
         except Exception:
             pass
 
+    # Skip URLs already marked SOLD (persist across CI runs)
+    known_sold = {
+        u for u, info in status_data.get("properties", {}).items()
+        if info.get("status") == "SOLD"
+    }
+    urls_to_check = sorted(all_urls - known_sold)
+    log(f"  スキップ: {len(known_sold)} (既にSOLD), チェック対象: {len(urls_to_check)}")
+
     dead_urls: list[str] = []
     new_dead: list[str] = []
     checked = 0
 
-    for url in sorted(all_urls):
+    for url in urls_to_check:
         alive, code = check_url_alive(url)
         checked += 1
 
         if not alive:
             dead_urls.append(url)
-            prev_status = status_data.get("properties", {}).get(url, {}).get("status", "")
-            if prev_status != "SOLD":
-                new_dead.append(url)
-                status_data.setdefault("properties", {})[url] = {
-                    "status": "SOLD",
-                    "detected": datetime.now().isoformat(),
-                    "http_code": code,
-                }
-                log(f"  ❌ DEAD ({code}): {url[:80]}")
+            new_dead.append(url)
+            status_data.setdefault("properties", {})[url] = {
+                "status": "SOLD",
+                "detected": datetime.now().isoformat(),
+                "http_code": code,
+            }
+            log(f"  ❌ DEAD ({code}): {url[:80]}")
 
         if checked % 20 == 0:
-            log(f"  ... {checked}/{len(all_urls)} checked")
-        time.sleep(0.5)  # Rate limiting
+            log(f"  ... {checked}/{len(urls_to_check)} checked")
+        time.sleep(0.3)  # Rate limiting
 
     status_data["last_check"] = datetime.now().isoformat()
     STATUS_FILE.write_text(json.dumps(status_data, ensure_ascii=False, indent=2), encoding="utf-8")

@@ -29,22 +29,24 @@ jobs:
           pip install -r requirements.txt
           playwright install chromium --with-deps
 
-      - name: Configure git credentials
+      - name: Configure git user
         run: |
-          git config --global user.name "Property Report Bot"
-          git config --global user.email "noreply@github.com"
-          git config --global credential.helper store
-          echo "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com" > ~/.git-credentials
+          git config user.name "Property Report Bot"
+          git config user.email "noreply@github.com"
 
       - name: Run daily patrol
         run: python run_daily_patrol.py
         timeout-minutes: 25
 
-      - name: Commit data updates
+      - name: Commit and push data updates
         run: |
           git add data/ output/
-          git diff --cached --quiet || git commit -m "Auto-patrol: update data $(date +%Y-%m-%d)"
-          git push origin main
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-patrol: update data $(date +%Y-%m-%d)"
+            git push origin main
+          else
+            echo "No data changes to commit"
+          fi
 
       - name: Notify Gmail
         if: always() && hashFiles('data/patrol_summary.txt')

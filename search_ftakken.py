@@ -178,6 +178,18 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
     elif "ペット不可" in block or "ペット飼育不可" in block:
         pet = "不可"
 
+    # Maintenance fee (管理費+修繕積立金)
+    maintenance = ""
+    total_fee = 0
+    kanri_m = re.search(r"管理費[^\d]*?([\d,]+)\s*円", block)
+    shuuzen_m = re.search(r"修繕積立金[^\d]*?([\d,]+)\s*円", block)
+    if kanri_m:
+        total_fee += int(kanri_m.group(1).replace(",", ""))
+    if shuuzen_m:
+        total_fee += int(shuuzen_m.group(1).replace(",", ""))
+    if total_fee > 0:
+        maintenance = str(total_fee)
+
     return {
         "source": "ふれんず",
         "name": name,
@@ -189,6 +201,7 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
         "layout": layout,
         "pet": pet,
         "brokerage": "",
+        "maintenance": maintenance,
         "url": url,
     }
 
@@ -342,6 +355,7 @@ def save_results(properties: list[dict], city_key: str) -> Path:
             prop["layout"],
             prop["pet"],
             prop["brokerage"],
+            prop.get("maintenance", ""),
             prop["url"],
         ])
         lines.append(line)

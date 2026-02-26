@@ -24,6 +24,10 @@ def find_extra_data_paths(city_key: str) -> list[Path]:
     restate = DATA_DIR / f"restate_{city_key}_raw.txt"
     if restate.exists():
         paths.append(restate)
+    # LIFULL HOME'S
+    lifull = DATA_DIR / f"lifull_{city_key}_raw.txt"
+    if lifull.exists():
+        paths.append(lifull)
     return paths
 
 
@@ -34,7 +38,7 @@ def main() -> None:
         accent="#ff6b6b",
         accent_rgb="255,107,107",
         data_path=Path("data/suumo_fukuoka_raw.txt"),
-        output_path=Path("output/fukuoka_search_report.html"),
+        output_path=Path("output/minpaku-fukuoka.html"),
         hero_conditions=[
             "福岡市博多区・中央区・南区中心",
             "価格上限 5,000万円",
@@ -42,7 +46,7 @@ def main() -> None:
             "ペット可/相談可重視（評価項目）",
         ],
         search_condition_bullets=[
-            "SUUMO + 楽待 + Yahoo不動産 + ふれんず + 福岡R不動産のマルチソース",
+            "SUUMO + 楽待 + Yahoo不動産 + athome + LIFULL + ふれんず + 福岡R不動産のマルチソース",
             "天神/中洲、博多駅前/祇園を高評価エリアとして優先",
             "ペット可は高加点（15点）、リノベ未実施は加点、仲介手数料割引も加点",
         ],

@@ -224,8 +224,9 @@ def collect_all_properties() -> list[dict]:
 
 
 REPORT_URLS = {
-    "fukuoka": "https://ymatz28-beep.github.io/property-report/fukuoka_search_report.html",
-    "osaka": "https://ymatz28-beep.github.io/property-report/osaka_search_report.html",
+    "fukuoka": "https://ymatz28-beep.github.io/property-report/minpaku-fukuoka.html",
+    "osaka": "https://ymatz28-beep.github.io/property-report/minpaku-osaka.html",
+    "tokyo": "https://ymatz28-beep.github.io/property-report/minpaku-tokyo.html",
 }
 
 
@@ -279,6 +280,64 @@ def run_ftakken_search():
         print(f"  [ERROR] ふれんず: {e}")
 
 
+def _generate_index_html() -> str:
+    """ランディングページHTMLを生成"""
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    reports = [
+        ("minpaku-osaka.html", "大阪", "民泊向け中古マンション候補", "#6ee7ff"),
+        ("minpaku-fukuoka.html", "福岡", "民泊向け中古マンション候補", "#ff6b6b"),
+        ("minpaku-tokyo.html", "東京", "民泊向け中古マンション候補", "#a78bfa"),
+        ("naiken-analysis.html", "内覧", "扇町 & 天満橋 — 重要事項調査分析", "#fb923c"),
+    ]
+    cards = ""
+    for href, city, desc, color in reports:
+        cards += f"""
+        <a href="{href}" class="report-card" style="--card-accent:{color}">
+          <div class="card-city">{city}</div>
+          <div class="card-desc">{desc}</div>
+          <div class="card-arrow">&rarr;</div>
+        </a>"""
+    return f"""<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Property Report Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {{ --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; }}
+    * {{ box-sizing:border-box; margin:0; }}
+    body {{ font-family:'Inter','Noto Sans JP',sans-serif; background:radial-gradient(ellipse at 20% -10%,rgba(110,231,255,0.08),transparent 50%),radial-gradient(ellipse at 80% 10%,rgba(167,139,250,0.06),transparent 50%),linear-gradient(180deg,#070b11,#0b0f16 30%,#0d1320); color:var(--text); min-height:100vh; }}
+    .wrap {{ max-width:800px; margin:0 auto; padding:80px 20px 60px; }}
+    h1 {{ font-size:clamp(28px,5vw,48px); font-weight:900; text-align:center; line-height:1.1; }}
+    .sub {{ text-align:center; color:var(--muted); margin-top:12px; font-size:14px; }}
+    .grid {{ margin-top:48px; display:grid; gap:16px; }}
+    .report-card {{
+      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:16px;
+      padding:24px 28px; border-radius:18px; text-decoration:none; color:var(--text);
+      border:1px solid var(--line); background:var(--card);
+      transition:all .2s;
+    }}
+    .report-card:hover {{ border-color:var(--card-accent); background:rgba(255,255,255,0.06); transform:translateY(-2px); }}
+    .card-city {{ font-size:28px; font-weight:900; color:var(--card-accent); min-width:60px; }}
+    .card-desc {{ font-size:14px; color:var(--muted); }}
+    .card-arrow {{ font-size:24px; color:var(--card-accent); opacity:0.5; }}
+    .report-card:hover .card-arrow {{ opacity:1; }}
+    .footer {{ margin-top:60px; text-align:center; color:var(--muted); font-size:12px; }}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Property Report Hub</h1>
+    <p class="sub">iUMAプロパティマネジメント — 不動産投資分析レポート</p>
+    <div class="grid">{cards}
+    </div>
+    <div class="footer">Last updated: {now}</div>
+  </div>
+</body>
+</html>"""
+
+
 def deploy_to_gh_pages():
     """レポートをGitHub Pagesにデプロイ"""
     import tempfile
@@ -291,9 +350,19 @@ def deploy_to_gh_pages():
             capture_output=True, timeout=30,
         )
 
+        # Set git identity in temp repo (required for commit in fresh clone)
+        subprocess.run(["git", "config", "user.email", "noreply@github.com"], cwd=deploy_dir, capture_output=True)
+        subprocess.run(["git", "config", "user.name", "Property Report Bot"], cwd=deploy_dir, capture_output=True)
+
+        # Remove old report files
+        for old in ["fukuoka_search_report.html", "osaka_search_report.html", "tokyo_search_report.html"]:
+            old_path = deploy_dir / old
+            if old_path.exists():
+                old_path.unlink()
+
         # Copy updated reports
         updated = False
-        for report in OUTPUT_DIR.glob("*_search_report.html"):
+        for report in list(OUTPUT_DIR.glob("minpaku-*.html")) + list(OUTPUT_DIR.glob("naiken-*.html")):
             dest = deploy_dir / report.name
             dest.write_text(report.read_text(encoding="utf-8"), encoding="utf-8")
             updated = True
@@ -301,6 +370,10 @@ def deploy_to_gh_pages():
         if not updated:
             print("  デプロイ対象なし")
             return False
+
+        # Generate landing page
+        index_html = _generate_index_html()
+        (deploy_dir / "index.html").write_text(index_html, encoding="utf-8")
 
         # Commit and push
         subprocess.run(["git", "add", "-A"], cwd=deploy_dir, capture_output=True)
@@ -312,19 +385,22 @@ def deploy_to_gh_pages():
             return False
 
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
-        subprocess.run(
+        commit_result = subprocess.run(
             ["git", "commit", "-m", f"Auto-update reports {now}"],
             cwd=deploy_dir, capture_output=True, timeout=10,
         )
+        if commit_result.returncode != 0:
+            print(f"  コミットエラー: {commit_result.stderr.decode()[:300]}")
+            return False
         push_result = subprocess.run(
             ["git", "push", "origin", "gh-pages"],
-            cwd=deploy_dir, capture_output=True, timeout=30,
+            cwd=deploy_dir, capture_output=True, timeout=60,
         )
         if push_result.returncode == 0:
             print("  GitHub Pagesデプロイ完了")
             return True
         else:
-            print(f"  デプロイエラー: {push_result.stderr.decode()[:200]}")
+            print(f"  pushエラー: {push_result.stderr.decode()[:300]}")
             return False
     except Exception as e:
         print(f"  デプロイエラー: {e}")

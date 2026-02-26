@@ -4,8 +4,8 @@
 楽待・athome・Yahoo不動産等から物件情報を取得し、
 SUUMOと同じパイプ区切り形式で出力する。
 
-出力フォーマット (11列):
-source|name|price|location|area|built|station|layout|pet|brokerage|url
+出力フォーマット (12列):
+source|name|price|location|area|built|station|layout|pet|brokerage|maintenance|url
 """
 
 import json
@@ -14,7 +14,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urlencode
+from urllib.parse import quote, unquote, urlencode
 from urllib.request import Request, urlopen
 
 BASE_DIR = Path(__file__).parent
@@ -96,6 +96,26 @@ def fetch_page(url: str, retries: int = 2) -> str | None:
             print(f"  [WARN] Connection error: {e}")
             return None
     return None
+
+
+def _extract_maintenance_fee(text: str) -> str:
+    """Extract maintenance fee (管理費+修繕積立金) from context text.
+    Returns total monthly yen as string, e.g. '15400' or '' if not found."""
+    total = 0
+    # Pattern: 管理費 X円 and/or 修繕積立金 Y円
+    kanri_m = re.search(r"管理費[^\d]*?([\d,]+)\s*円", text)
+    shuuzen_m = re.search(r"修繕積立金[^\d]*?([\d,]+)\s*円", text)
+    if kanri_m:
+        total += int(kanri_m.group(1).replace(",", ""))
+    if shuuzen_m:
+        total += int(shuuzen_m.group(1).replace(",", ""))
+    if total > 0:
+        return str(total)
+    # Fallback: 管理費等 X円/月
+    fee_m = re.search(r"管理費等[^\d]*?([\d,]+)\s*円", text)
+    if fee_m:
+        return fee_m.group(1).replace(",", "")
+    return ""
 
 
 def is_target_location(location: str, city_key: str) -> bool:
@@ -339,6 +359,9 @@ def _extract_rakumachi_fields(context: str, url: str, prop_id: str, city_key: st
     elif "ペット不可" in text:
         pet = "不可"
 
+    # Maintenance fee (管理費+修繕積立金)
+    maintenance = _extract_maintenance_fee(text)
+
     return {
         "source": "楽待",
         "name": name,
@@ -350,6 +373,7 @@ def _extract_rakumachi_fields(context: str, url: str, prop_id: str, city_key: st
         "layout": layout,
         "pet": pet,
         "brokerage": brokerage,
+        "maintenance": maintenance,
         "url": url,
     }
 
@@ -359,79 +383,89 @@ def _extract_rakumachi_fields(context: str, url: str, prop_id: str, city_key: st
 # ============================================================
 
 def search_yahoo_realestate(city_key: str) -> list[dict]:
-    """Search Yahoo!不動産 for used condos."""
+    """Search Yahoo!不動産 for used condos using prefecture-level search."""
     config = AREA_CONFIGS[city_key]
     print(f"\n=== Yahoo!不動産 ({config['label']}) 検索中... ===")
 
-    # Yahoo Real Estate search URLs by area
-    area_codes = {
-        "osaka": {
-            "北区": "27127", "西区": "27106", "中央区": "27128",
-        },
-        "fukuoka": {
-            "博多区": "40132", "中央区": "40133",
-        },
-        "tokyo": {
-            "渋谷区": "13113", "新宿区": "13104", "目黒区": "13110",
-        },
-    }
+    pref_codes = {"osaka": "27", "fukuoka": "40", "tokyo": "13"}
+    pf = pref_codes.get(city_key, "")
+    if not pf:
+        return []
 
     properties = []
-    codes = area_codes.get(city_key, {})
+    max_pages = 10  # 30 items/page × 10 = 300 max
 
-    for ward, code in codes.items():
+    for page in range(1, max_pages + 1):
         url = (
-            f"https://realestate.yahoo.co.jp/used/mansion/search/"
-            f"?area={code}&priceMax={PRICE_MAX // 10000}"
-            f"&areaMin={AREA_MIN}&areaMax={AREA_MAX}"
+            f"https://realestate.yahoo.co.jp/used/mansion/search/partials/"
+            f"?pf={pf}&priceMax={PRICE_MAX // 10000}"
+            f"&areaMin={AREA_MIN}&areaMax={AREA_MAX}&page={page}"
         )
-        print(f"  {ward} 検索中...")
+        print(f"  Page {page}...")
         html = fetch_page(url)
         if not html:
-            print(f"  [SKIP] {ward}: アクセス不可")
-            continue
+            break
 
-        ward_props = _parse_yahoo_html(html, city_key)
-        properties.extend(ward_props)
-        print(f"  → {len(ward_props)}件")
+        page_props = _parse_yahoo_html(html, city_key)
+        properties.extend(page_props)
+        print(f"  → {len(page_props)}件 (累計: {len(properties)}件)")
+
+        # Check hasNextPage
+        if '"hasNextPage":false' in html or '"hasNextPage": false' in html:
+            break
+        if not page_props:
+            break
         time.sleep(1)
+
+    # Filter to target wards only
+    before = len(properties)
+    properties = [p for p in properties if is_target_location(p.get("location", ""), city_key)]
+    print(f"  エリアフィルタ: {before}件 → {len(properties)}件")
 
     print(f"  Yahoo!不動産 合計: {len(properties)}件")
     return properties
 
 
 def _parse_yahoo_html(html: str, city_key: str) -> list[dict]:
-    """Parse Yahoo Real Estate listing page."""
+    """Parse Yahoo Real Estate listing page using card-based approach."""
     properties = []
-    text = re.sub(r"<[^>]+>", "\n", html)
 
-    # Find property blocks by URL pattern
-    url_pattern = re.compile(r'href="(https://realestate\.yahoo\.co\.jp/used/mansion/detail_corp/[^"]+)"')
-    for match in url_pattern.finditer(html):
-        prop_url = match.group(1)
-        start = max(0, match.start() - 1500)
-        end = min(len(html), match.end() + 1500)
-        context = html[start:end]
-        ctx_text = re.sub(r"<[^>]+>", " ", context)
+    # Split by card boundaries
+    cards = re.split(r'<li\s+class="ListBukken2__list__item[^"]*">', html)
+
+    for card in cards[1:]:  # Skip first (before first card)
+        # Get text content
+        ctx_text = re.sub(r"<[^>]+>", " ", card)
         ctx_text = re.sub(r"\s+", " ", ctx_text)
 
-        # Extract fields — check 億 first to avoid partial match
+        # Extract URL
+        url_m = re.search(r'href="(https://realestate\.yahoo\.co\.jp/used/mansion/detail_corp/[^"]+)"', card)
+        if not url_m:
+            continue
+        prop_url = url_m.group(1)
+
+        # Extract price — check 億 first
         price_m = re.search(r"\d+(?:\.\d+)?億\s*\d*万?\s*円?", ctx_text)
         if not price_m:
-            price_m = re.search(r"(\d{1,2},?\d{3})\s*万円", ctx_text)
+            price_m = re.search(r"([\d,]+)\s*万円", ctx_text)
         if not price_m:
             continue
         price_man = parse_price_text(price_m.group(0))
         if price_man <= 0 or price_man > 5000:
             continue
 
-        area_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", ctx_text)
-        area_text = area_m.group(0) if area_m else ""
+        # Extract area (m2 may be split by tags: "87.0m" + "2")
+        area_m = re.search(r"(\d+(?:\.\d+)?)\s*m\s*2|(\d+(?:\.\d+)?)\s*㎡", ctx_text)
+        if area_m:
+            val = area_m.group(1) or area_m.group(2)
+            area_text = f"{val}㎡"
+        else:
+            area_text = ""
 
         loc_m = re.search(r"(?:大阪府|福岡県|東京都)[^\s,]{3,20}", ctx_text)
         location = loc_m.group(0) if loc_m else ""
 
-        year_m = re.search(r"(\d{4})年(?:\s*(\d{1,2})月)?", ctx_text)
+        year_m = re.search(r"(\d{4})年(?:\s*(\d{1,2})月)?(?:（築\d+年）)?", ctx_text)
         built_text = year_m.group(0) if year_m else ""
 
         station_m = re.search(r"[^\s]*(?:線|電鉄)\s*「?[^」\s]+」?\s*(?:駅?\s*)?徒歩\s*\d+\s*分", ctx_text)
@@ -440,14 +474,16 @@ def _parse_yahoo_html(html: str, city_key: str) -> list[dict]:
         layout_m = re.search(r"(\d[SLDK]+(?:\+S)?)", ctx_text)
         layout = layout_m.group(1) if layout_m else ""
 
-        name_m = re.search(r"(?:マンション名|物件名)?[：:]?\s*([^\s]{2,30}(?:マンション|コーポ|ハイツ|タワー|パーク|レジデンス|プラザ|コート)[^\s]{0,10})", ctx_text)
+        # Building name: first alt text or heading
+        name_m = re.search(r'alt="([^"]{2,40})"', card)
         name = name_m.group(1) if name_m else ""
         if not name:
-            name = f"Yahoo物件"
+            name = "Yahoo物件"
 
-        # Skip entries with insufficient data
         if not location and not station_text:
             continue
+
+        maintenance = _extract_maintenance_fee(ctx_text)
 
         properties.append({
             "source": "Yahoo不動産",
@@ -460,6 +496,7 @@ def _parse_yahoo_html(html: str, city_key: str) -> list[dict]:
             "layout": layout,
             "pet": "",
             "brokerage": "",
+            "maintenance": maintenance,
             "url": prop_url,
         })
 
@@ -477,18 +514,27 @@ def search_athome(city_key: str) -> list[dict]:
 
     ward_slugs = {
         "osaka": {
-            "北区": "osakashi-kita-ku",
-            "西区": "osakashi-nishi-ku",
-            "中央区": "osakashi-chuo-ku",
+            "北区": "osaka_kita-city",
+            "西区": "osaka_nishi-city",
+            "中央区": "osaka_chuo-city",
+            "福島区": "osaka_fukushima-city",
         },
         "fukuoka": {
-            "博多区": "fukuokashi-hakata-ku",
-            "中央区": "fukuokashi-chuo-ku",
+            "博多区": "fukuoka_hakata-city",
+            "中央区": "fukuoka_chuo-city",
+            "南区": "fukuoka_minami-city",
         },
         "tokyo": {
-            "渋谷区": "shibuya-ku",
-            "新宿区": "shinjuku-ku",
-            "目黒区": "meguro-ku",
+            "渋谷区": "shibuya-city",
+            "新宿区": "shinjuku-city",
+            "目黒区": "meguro-city",
+            "豊島区": "toshima-city",
+            "台東区": "taito-city",
+            "中野区": "nakano-city",
+            "文京区": "bunkyo-city",
+            "港区": "minato-city",
+            "品川区": "shinagawa-city",
+            "墨田区": "sumida-city",
         },
     }
 
@@ -524,77 +570,156 @@ def search_athome(city_key: str) -> list[dict]:
 
 
 def _parse_athome_html(html: str, city_key: str) -> list[dict]:
-    """Parse athome listing page."""
+    """Parse athome listing page. Try serverApp-state JSON first, then card-based regex."""
     properties = []
 
-    # Find property detail URLs
-    url_pattern = re.compile(r'href="(https://www\.athome\.co\.jp/mansion/chuko/[^"]*?/\d+/[^"]*)"')
-    seen_urls = set()
+    # Approach A: Parse serverApp-state JSON (most reliable)
+    state_match = re.search(r'id="serverApp-state"[^>]*>(.*?)</script>', html, re.DOTALL)
+    if state_match:
+        try:
+            state_data = json.loads(state_match.group(1))
+            bukken_list = []
+            for key, val in state_data.items():
+                if "bukken/list" in key or "first-view" in key:
+                    body_str = val.get("body", "{}")
+                    body = json.loads(body_str) if isinstance(body_str, str) else body_str
+                    bl = body.get("data", {}).get("bukkenData", {}).get("bukkenList", [])
+                    if bl:
+                        bukken_list = bl
+                        break
 
-    for match in url_pattern.finditer(html):
-        prop_url = match.group(1)
-        if prop_url in seen_urls:
+            for b in bukken_list:
+                price_str = str(b.get("kakaku", "0"))
+                price_man = int(re.sub(r"[^\d]", "", price_str)) if price_str else 0
+                if price_man <= 0 or price_man > 5000:
+                    continue
+
+                area_info = b.get("areaInfo", {})
+                area_text = area_info.get("area", "")
+                area_val = parse_area_text(area_text) if area_text else 0
+                if area_val > 0 and (area_val < AREA_MIN or area_val > AREA_MAX):
+                    continue
+
+                location = b.get("location", "")
+                if location and not is_target_location(location, city_key):
+                    continue
+
+                access_list = b.get("bukkenAccess", [])
+                station_text = access_list[0].get("name", "") if access_list else ""
+
+                built_info = b.get("bukkenInfo", {}).get("chikunengetsu", "")
+                year_m = re.search(r"(\d{4})年(?:\s*(\d{1,2})月)?", built_info)
+                built_text = year_m.group(0) if year_m else ""
+
+                layout = b.get("madori", "")
+                title = b.get("title", "athome物件")
+                bukken_no = b.get("bukkenNo", "")
+                prop_url = f"https://www.athome.co.jp/mansion/{bukken_no}/"
+
+                if b.get("leasingFlg"):
+                    continue
+
+                properties.append({
+                    "source": "athome",
+                    "name": title[:40],
+                    "price_text": f"{price_man}万円",
+                    "location": location,
+                    "area_text": area_text,
+                    "built_text": built_text,
+                    "station_text": station_text,
+                    "layout": layout,
+                    "pet": "",
+                    "brokerage": "",
+                    "maintenance": "",
+                    "url": prop_url,
+                })
+
+            if properties:
+                return properties
+        except (json.JSONDecodeError, KeyError, TypeError) as e:
+            print(f"    [WARN] athome JSON parse: {e}")
+
+    # Approach B: Card-based regex fallback
+    url_pattern = re.compile(r'href="/mansion/(\d{7,12})/\?')
+    seen_ids = set()
+
+    name_re = re.compile(r'class="title-wrap__title-text">\s*([^<]+?)\s*<', re.DOTALL)
+    price_re = re.compile(r'class="property-price">\s*([\d,]+)\s*<span[^>]*>万円', re.DOTALL)
+    layout_re = re.compile(r'<strong[^>]*>間取り</strong>\s*<span[^>]*>([^<]+)</span>', re.DOTALL)
+    year_re = re.compile(r'<strong[^>]*>築年月</strong>\s*<span[^>]*>([^<]+)</span>', re.DOTALL)
+    area_re = re.compile(r'<strong[^>]*>専有面積</strong>\s*<span[^>]*>([^<]+)</span>', re.DOTALL)
+    loc_re = re.compile(r'<strong[^>]*>所在地</strong>\s*<span[^>]*>([^<]+)</span>', re.DOTALL)
+    station_re = re.compile(r'<strong[^>]*>交通</strong>\s*<span[^>]*>([^<]+)</span>', re.DOTALL)
+
+    cards = re.split(r'class="card-box open"', html)
+
+    for card in cards[1:]:  # Skip first (before first card)
+        # Get property ID
+        id_m = url_pattern.search(card)
+        if not id_m:
             continue
-        seen_urls.add(prop_url)
-
-        start = max(0, match.start() - 2000)
-        end = min(len(html), match.end() + 2000)
-        context = html[start:end]
-        ctx_text = re.sub(r"<[^>]+>", " ", context)
-        ctx_text = re.sub(r"\s+", " ", ctx_text)
-
-        # Check 億 first to avoid partial match
-        price_m = re.search(r"\d+(?:\.\d+)?億\s*\d*万?\s*円?", ctx_text)
-        if not price_m:
-            price_m = re.search(r"(\d{1,2},?\d{3})\s*万円", ctx_text)
-        if not price_m:
+        prop_id = id_m.group(1)
+        if prop_id in seen_ids:
             continue
-        price_man = parse_price_text(price_m.group(0))
+        seen_ids.add(prop_id)
+
+        # Price
+        pm = price_re.search(card)
+        if not pm:
+            continue
+        price_man = int(pm.group(1).replace(",", ""))
         if price_man <= 0 or price_man > 5000:
             continue
 
-        area_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", ctx_text)
-        area_text = area_m.group(0) if area_m else ""
+        # Area
+        am = area_re.search(card)
+        area_text = am.group(1).strip() if am else ""
+        if am:
+            area_val = parse_area_text(area_text)
+            if area_val > 0 and (area_val < AREA_MIN or area_val > AREA_MAX):
+                continue
 
-        loc_m = re.search(r"(?:大阪府|福岡県|東京都)[^\s,]{3,20}", ctx_text)
-        location = loc_m.group(0) if loc_m else ""
+        # Location
+        lm = loc_re.search(card)
+        location = lm.group(1).strip() if lm else ""
+        if location and not is_target_location(location, city_key):
+            continue
 
-        year_m = re.search(r"(\d{4})年(?:\s*(\d{1,2})月)?", ctx_text)
-        built_text = year_m.group(0) if year_m else ""
+        # Name
+        nm = name_re.search(card)
+        name = nm.group(1).strip().split("\n")[0].strip() if nm else "athome物件"
 
-        station_m = re.search(r"[^\s]*(?:線|電鉄)?\s*「?[^」\s]+」?\s*(?:駅?\s*)?徒歩\s*\d+\s*分", ctx_text)
-        station_text = station_m.group(0) if station_m else ""
+        # Layout
+        laym = layout_re.search(card)
+        layout = laym.group(1).strip() if laym else ""
 
-        layout_m = re.search(r"(\d[SLDK]+(?:\+S)?)", ctx_text)
-        layout = layout_m.group(1) if layout_m else ""
+        # Year built
+        ym = year_re.search(card)
+        built_text = ym.group(1).strip() if ym else ""
+        # Clean up: "1981年2月（築45年1ヶ月）" → "1981年2月"
+        built_text = re.sub(r"（.*?）", "", built_text).strip()
 
-        # Try to extract name
-        name = ""
-        name_patterns = [
-            r"([^\s<>]{2,}(?:マンション|コーポ|ハイツ|タワー|パーク|レジデンス|プラザ|コート|ハウス)[^\s<>]{0,10})",
-            r"([ァ-ヶー]{3,}[^\s<>]{0,10})",
-        ]
-        for np in name_patterns:
-            nm = re.search(np, ctx_text)
-            if nm:
-                name = nm.group(1)[:40]
-                break
+        # Station
+        sm = station_re.search(card)
+        station_text = sm.group(1).strip() if sm else ""
 
+        # OC check
+        card_text = re.sub(r"<[^>]+>", " ", card)
+        if "賃貸中" in card_text or "オーナーチェンジ" in card_text:
+            continue
+
+        # Pet
         pet = ""
-        if "ペット可" in ctx_text:
+        if "ペット可" in card_text:
             pet = "可"
-        elif "ペット相談" in ctx_text:
+        elif "ペット相談" in card_text:
             pet = "相談可"
 
-        brokerage = ""
-        if "手数料無料" in ctx_text or "仲介手数料不要" in ctx_text:
-            brokerage = "無料"
-        elif "手数料半額" in ctx_text:
-            brokerage = "半額"
+        prop_url = f"https://www.athome.co.jp/mansion/{prop_id}/"
 
         properties.append({
             "source": "athome",
-            "name": name or "athome物件",
+            "name": name[:40],
             "price_text": f"{price_man}万円",
             "location": location,
             "area_text": area_text,
@@ -602,7 +727,8 @@ def _parse_athome_html(html: str, city_key: str) -> list[dict]:
             "station_text": station_text,
             "layout": layout,
             "pet": pet,
-            "brokerage": brokerage,
+            "brokerage": "",
+            "maintenance": "",
             "url": prop_url,
         })
 
@@ -639,6 +765,7 @@ def save_results(properties: list[dict], city_key: str, source_name: str) -> Pat
             prop["layout"],
             prop["pet"],
             prop["brokerage"],
+            prop.get("maintenance", ""),
             prop["url"],
         ])
         lines.append(line)
@@ -676,6 +803,7 @@ def save_combined(all_properties: list[dict], city_key: str) -> Path:
             prop["layout"],
             prop["pet"],
             prop["brokerage"],
+            prop.get("maintenance", ""),
             prop["url"],
         ])
         lines.append(line)
@@ -702,6 +830,145 @@ def get_ftakken_urls(city_key: str) -> dict[str, str]:
     return FTAKKEN_SEARCH_URLS.get(city_key, {})
 
 
+# ============================================================
+# Cowcamo (カウカモ) - Tokyo only
+# ============================================================
+
+def search_cowcamo(city_key: str) -> list[dict]:
+    """Search カウカモ for curated renovation condos (Tokyo area only)."""
+    if city_key != "tokyo":
+        return []
+
+    print(f"\n=== カウカモ (東京) 検索中... ===")
+    properties = []
+    max_pages = 5
+
+    for page in range(1, max_pages + 1):
+        url = (
+            f"https://cowcamo.jp/update?page={page}"
+            f"&price_max={PRICE_MAX}&size_min={AREA_MIN}&size_max={AREA_MAX}"
+        )
+        print(f"  Page {page}...")
+        html_text = fetch_page(url)
+        if not html_text:
+            break
+
+        page_props = _parse_cowcamo_html(html_text, city_key)
+        if not page_props:
+            break
+
+        properties.extend(page_props)
+        print(f"  → {len(page_props)}件取得 (累計: {len(properties)}件)")
+
+        # Check if there's a next page
+        if f"page={page + 1}" not in html_text:
+            break
+
+        time.sleep(1.5)
+
+    print(f"  カウカモ 合計: {len(properties)}件")
+    return properties
+
+
+def _parse_cowcamo_html(html_text: str, city_key: str) -> list[dict]:
+    """Parse カウカモ listing page for property cards using div.p-entry structure."""
+    try:
+        from bs4 import BeautifulSoup
+    except ImportError:
+        print("  [WARN] beautifulsoup4 not installed, skipping cowcamo")
+        return []
+
+    soup = BeautifulSoup(html_text, "html.parser")
+    properties = []
+
+    # Find all property cards (div.p-entry)
+    cards = soup.select("div.p-entry")
+    if not cards:
+        # Fallback: try article or section-based cards
+        cards = soup.select("article.p-entry, section.p-entry, div[class*='entry']")
+
+    for card in cards:
+        # Extract link
+        link = card.find("a", href=True)
+        if not link:
+            continue
+        href = unquote(link.get("href", ""))
+        if not (href.startswith("/short_stories/") or "/東京都/" in href):
+            continue
+
+        # Extract price
+        price_el = card.select_one(".p-entry__price")
+        price_text_raw = price_el.get_text(strip=True) if price_el else card.get_text(" ", strip=True)
+        price_m = re.search(r"([\d,]+)\s*万円", price_text_raw)
+        if not price_m:
+            continue
+        price_man = int(price_m.group(1).replace(",", ""))
+        if price_man <= 0 or price_man > 5000:
+            continue
+
+        # Extract area + layout from .p-entry__layout
+        layout_el = card.select_one(".p-entry__layout")
+        layout_text = layout_el.get_text(strip=True) if layout_el else ""
+        area_m = re.search(r"([\d.]+)\s*㎡", layout_text)
+        area_text = f"{area_m.group(1)}㎡" if area_m else ""
+        layout_m = re.search(r"(\d[SLDK]+(?:\+[^\s]*)?)", layout_text)
+        layout = layout_m.group(1) if layout_m else ""
+
+        # Extract station, location, pet from .p-entry__misc <span> elements
+        misc_el = card.select_one(".p-entry__misc")
+        station_text = ""
+        location = ""
+        pet = ""
+        if misc_el:
+            spans = misc_el.find_all("span")
+            for span in spans:
+                span_text = span.get_text(strip=True)
+                if "駅" in span_text:
+                    station_text = span_text
+                elif "区" in span_text or "市" in span_text:
+                    loc_m = re.search(r"((?:渋谷|新宿|目黒|豊島|台東|中野|文京|港|品川|墨田|中央|千代田|江東|世田谷|杉並|板橋|北|練馬)区[^\s]*)", span_text)
+                    if loc_m:
+                        location = f"東京都{loc_m.group(1)}"
+                    else:
+                        location = span_text
+                elif span_text in ("可", "不可", "相談"):
+                    pet = "相談可" if span_text == "相談" else span_text
+
+        # Title: .p-entry__title > link title attr > location+layout fallback
+        title_el = card.select_one(".p-entry__title")
+        if title_el and title_el.get_text(strip=True):
+            name = title_el.get_text(strip=True)[:40]
+        elif link.get("title"):
+            # title attr: 「上板橋駅 / 3LDK / 85.24㎡」を詳しく知る
+            t = link["title"].replace("を詳しく知る", "").strip("「」 ")
+            name = t[:40] if t else f"{station_text} {layout}"[:40]
+        else:
+            name = f"{location} {layout}".strip()[:40] or "カウカモ物件"
+
+        prop_url = f"https://cowcamo.jp{href}"
+
+        # Filter: only Tokyo target wards
+        if location and not is_target_location(location, city_key):
+            continue
+
+        properties.append({
+            "source": "カウカモ",
+            "name": name,
+            "price_text": f"{price_man}万円",
+            "location": location,
+            "area_text": area_text,
+            "built_text": "",
+            "station_text": station_text,
+            "layout": layout,
+            "pet": pet,
+            "brokerage": "",
+            "maintenance": "",
+            "url": prop_url,
+        })
+
+    return properties
+
+
 def search_city(city_key: str) -> Path:
     """Run all site searches for a city and save combined results."""
     print(f"\n{'='*60}")
@@ -715,6 +982,7 @@ def search_city(city_key: str) -> Path:
         ("rakumachi", search_rakumachi),
         ("yahoo", search_yahoo_realestate),
         ("athome", search_athome),
+        ("cowcamo", search_cowcamo),
     ]
 
     for source_key, search_fn in searchers:
@@ -741,12 +1009,13 @@ def main():
     print(f"マルチサイト物件検索 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print(f"条件: {PRICE_MAX // 10000}万以下, {AREA_MIN}-{AREA_MAX}㎡")
 
-    for city_key in ["osaka", "fukuoka"]:
+    for city_key in ["osaka", "fukuoka", "tokyo"]:
         search_city(city_key)
 
     print("\n完了。レポート生成は以下を実行:")
     print("  python generate_osaka_report.py")
     print("  python generate_fukuoka_report.py")
+    print("  python generate_tokyo_report.py")
 
 
 if __name__ == "__main__":

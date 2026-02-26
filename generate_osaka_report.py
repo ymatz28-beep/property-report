@@ -21,6 +21,10 @@ def find_extra_data_paths(city_key: str) -> list[Path]:
     restate = DATA_DIR / f"restate_{city_key}_raw.txt"
     if restate.exists():
         paths.append(restate)
+    # LIFULL HOME'S
+    lifull = DATA_DIR / f"lifull_{city_key}_raw.txt"
+    if lifull.exists():
+        paths.append(lifull)
     return paths
 
 
@@ -31,7 +35,7 @@ def main() -> None:
         accent="#6ee7ff",
         accent_rgb="110,231,255",
         data_path=Path("data/suumo_osaka_v2_raw.txt"),
-        output_path=Path("output/osaka_search_report.html"),
+        output_path=Path("output/minpaku-osaka.html"),
         hero_conditions=[
             "大阪市西区・北区・中央区中心",
             "価格上限 5,000万円",
@@ -39,7 +43,7 @@ def main() -> None:
             "ペット可/相談可優先",
         ],
         search_condition_bullets=[
-            "SUUMO + 楽待 + Yahoo不動産 + 大阪R不動産のマルチソース",
+            "SUUMO + 楽待 + Yahoo不動産 + athome + LIFULL + 大阪R不動産のマルチソース",
             "北堀江/南堀江を最優先、天満・中津・心斎橋周辺も重点評価",
             "ペット可は高加点（15点）、リノベ未実施は加点、仲介手数料割引も加点",
         ],
@@ -50,7 +54,7 @@ def main() -> None:
             "管理規約の民泊可否は個別確認が必要",
             "戸建て・メゾネットは管理規約制約なしのため並行検索推奨",
         ],
-        include_osaka_r=False,
+        include_osaka_r=True,
         extra_data_paths=find_extra_data_paths("osaka"),
     )
     out = generate_report(config)

@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>内覧分析 — 扇町 & 天満橋</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; --accent:#6ee7ff; --green:#34d399; --red:#f87171; --yellow:#facc15; --orange:#fb923c; }
+    * { box-sizing:border-box; margin:0; }
+    body { font-family:'Inter','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:24px 16px; }
+    .wrap { max-width:900px; margin:0 auto; }
+    h1 { font-size:28px; font-weight:900; margin-bottom:8px; }
+    .date { color:var(--muted); font-size:13px; margin-bottom:32px; }
+    .property { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px; margin-bottom:24px; }
+    .property h2 { font-size:22px; font-weight:800; margin-bottom:4px; }
+    .property .sub { color:var(--muted); font-size:13px; margin-bottom:20px; }
+    .tag { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:700; margin-right:6px; margin-bottom:6px; }
+    .tag-red { background:rgba(248,113,113,.15); color:var(--red); border:1px solid rgba(248,113,113,.3); }
+    .tag-green { background:rgba(52,211,153,.15); color:var(--green); border:1px solid rgba(52,211,153,.3); }
+    .tag-yellow { background:rgba(250,204,21,.15); color:var(--yellow); border:1px solid rgba(250,204,21,.3); }
+    .tag-blue { background:rgba(110,231,255,.15); color:var(--accent); border:1px solid rgba(110,231,255,.3); }
+    .tag-muted { background:rgba(169,179,198,.1); color:var(--muted); border:1px solid rgba(169,179,198,.2); }
+    table { width:100%; border-collapse:collapse; margin:16px 0; font-size:14px; }
+    th { text-align:left; padding:8px 12px; color:var(--muted); font-weight:600; font-size:12px; border-bottom:1px solid var(--line); }
+    td { padding:8px 12px; border-bottom:1px solid rgba(255,255,255,.04); }
+    .val { font-weight:700; }
+    .warn { color:var(--red); font-weight:700; }
+    .ok { color:var(--green); font-weight:700; }
+    .neutral { color:var(--muted); }
+    .section-title { font-size:16px; font-weight:800; margin:24px 0 12px; padding-left:12px; border-left:3px solid var(--accent); }
+    .checklist { list-style:none; padding:0; }
+    .checklist li { padding:8px 0; border-bottom:1px solid rgba(255,255,255,.04); font-size:14px; }
+    .checklist li::before { content:"☐ "; color:var(--accent); font-weight:700; }
+    .verdict { padding:16px 20px; border-radius:12px; margin-top:20px; font-size:14px; line-height:1.7; }
+    .verdict-caution { background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.2); }
+    .verdict-ok { background:rgba(52,211,153,.08); border:1px solid rgba(52,211,153,.2); }
+    .verdict-neutral { background:rgba(250,204,21,.08); border:1px solid rgba(250,204,21,.2); }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .nav { margin-top:40px; text-align:center; }
+    .nav a { display:inline-block; padding:10px 24px; border-radius:999px; border:1px solid var(--line); color:var(--text); margin:4px; font-size:13px; }
+    .nav a:hover { border-color:var(--accent); background:rgba(110,231,255,.06); }
+    .compare { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+    @media (max-width:640px) { .compare { grid-template-columns:1fr; } }
+    .compare-card { background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:12px; padding:16px; }
+    .compare-card h3 { font-size:15px; font-weight:800; margin-bottom:12px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>内覧分析メモ</h1>
+  <p class="date">2026-02-25 作成 — 重要事項調査報告書ベース</p>
+
+  <!-- ============ 比較サマリー（トップ） ============ -->
+  <div class="property">
+    <h2>比較サマリー</h2>
+
+    <div class="compare">
+      <div class="compare-card">
+        <h3>扇町（コープ野村扇町）</h3>
+        <table>
+          <tr><th>価格</th><td>4,580万円</td></tr>
+          <tr><th>面積</th><td>66.21㎡</td></tr>
+          <tr><th>民泊</th><td class="ok">⚡ 可能性あり（禁止明記なし）</td></tr>
+          <tr><th>ペット</th><td class="ok">犬猫OK</td></tr>
+          <tr><th>管理費合計</th><td class="ok">17,000円</td></tr>
+          <tr><th>修繕積立金残高</th><td class="ok">5,034万円</td></tr>
+          <tr><th>大規模修繕</th><td class="ok">2024年3月完了</td></tr>
+          <tr><th>立地</th><td>扇町公園近く</td></tr>
+        </table>
+      </div>
+      <div class="compare-card">
+        <h3>天満橋（天満橋北スカイハイツ）</h3>
+        <table>
+          <tr><th>価格</th><td>3,480万円</td></tr>
+          <tr><th>面積</th><td>60.39㎡</td></tr>
+          <tr><th>民泊</th><td class="warn">❌ 禁止</td></tr>
+          <tr><th>ペット</th><td>制限あり</td></tr>
+          <tr><th>管理費合計</th><td class="ok">21,200円</td></tr>
+          <tr><th>管理費会計</th><td class="ok">黒字</td></tr>
+          <tr><th>立地</th><td>東天満2丁目</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="verdict verdict-ok">
+      <strong>判断ポイント:</strong><br>
+      ・<strong>扇町は民泊の可能性あり</strong>（専有部分用途に住戸・店舗・事務所を許容、民泊禁止の明記なし）<br>
+      ・民泊可なら特区民泊で申請（<strong>期限2026/5/29</strong>）→ 自宅兼民泊モデルが実現<br>
+      ・管理費17,000円/月（安い）、大規模修繕2024年完了、修繕積立金5,034万（健全）<br>
+      ・天満橋は民泊不可確定 → 純粋自宅+節税なら3,480万でコスパ良い<br>
+      ・両物件とも旧耐震（1976/1980年）→ 耐震補強コスト or リスク許容の判断が必要<br>
+      ・法人（iUMAプロパティマネジメント）購入ならセゾンファンデックス or 筑波銀行で対応<br><br>
+      <strong style="color:var(--accent)">→ 扇町が第1優先。内覧時に管理規約原本で民泊条項を最終確認する</strong>
+    </div>
+  </div>
+
+  <!-- ============ 物件1: 扇町 ============ -->
+  <div class="property">
+    <h2>扇町公園の近くでペットと暮らす</h2>
+    <p class="sub">コープ野村扇町 302号室 — 大阪市北区天神橋3-10-30 / 1LDK / 66.21㎡ / 1976年</p>
+    <div>
+      <span class="tag tag-blue">4,580万円</span>
+      <span class="tag tag-green">ペット可（犬猫OK）</span>
+      <span class="tag tag-yellow">旧耐震(1976)</span>
+      <span class="tag tag-green">管理費17,000円</span>
+      <span class="tag tag-muted">JR天満 徒歩6分 / 堺筋線扇町 徒歩6分</span>
+    </div>
+
+    <div class="section-title">民泊可否（最重要）</div>
+    <div class="verdict verdict-ok">
+      <strong class="ok">⚡ 民泊の可能性あり — 要最終確認</strong><br>
+      専有部分の用途: <strong>「住戸・店舗・事務所」</strong>（管理規約により各専有部分に応じた用途のみ可）<br>
+      他の3物件（ダイアパレス谷町・天満橋北・立ち止まる余白）は「住宅宿泊事業民泊＝禁止」と明記されていたが、<strong>扇町にはその記載がない</strong>。<br>
+      店舗・事務所用途も許容されており、民泊禁止の明示的規定なし。<br><br>
+      → <strong>大嶺さんに「特区民泊」「住宅宿泊事業」の可否を確認</strong><br>
+      → 管理規約の原本（平成24年改定版）で民泊条項の有無を確認<br>
+      → 特区民泊の新規受付は<strong>2026/5/29で終了</strong>（残り約3ヶ月）
+    </div>
+
+    <div class="section-title">重要事項調査報告書 — 詳細分析</div>
+    <table>
+      <tr><th>価格</th><td class="val">4,580万円</td></tr>
+      <tr><th>面積</th><td>66.21㎡（3LDKからリノベ→1LDK）</td></tr>
+      <tr><th>築年</th><td>1976年8月（築50年・<span class="warn">旧耐震</span>）</td></tr>
+      <tr><th>最寄駅</th><td>JR環状線「天満」徒歩6分 / 堺筋線「扇町」徒歩6分</td></tr>
+      <tr><th>管理費</th><td class="val ok">9,000円/月</td></tr>
+      <tr><th>修繕積立金</th><td class="val ok">8,000円/月</td></tr>
+      <tr><th>月額合計</th><td class="val ok">17,000円（非常に安い → スコア+7）</td></tr>
+      <tr><th>修繕積立金残高</th><td class="ok">50,347,524円（2025/2/28現在）</td></tr>
+      <tr><th>滞納(当住戸)</th><td class="ok">0円</td></tr>
+      <tr><th>管理組合全体滞納</th><td class="warn">426,100円（管理費182,300 + 修繕162,000 + 水道81,800）</td></tr>
+      <tr><th>管理会社</th><td>互光建物管理（全部委託・通勤）</td></tr>
+      <tr><th>管理員</th><td>滝川氏 / TEL: 06-6354-0627 / 月〜土 9:00-17:00</td></tr>
+      <tr><th>管理規約</th><td>平成24年改定。冊子は各区分所有者に配布済み</td></tr>
+      <tr><th>ペット</th><td class="ok">犬・猫・小鳥・小魚・小動物OK（室内飼育、飼育届提出）</td></tr>
+      <tr><th>専有部分用途</th><td class="ok"><strong>住戸・店舗・事務所</strong>（民泊禁止の明記なし）</td></tr>
+      <tr><th>借入</th><td class="ok">なし</td></tr>
+      <tr><th>スコア</th><td class="val">70点（推奨）</td></tr>
+      <tr><th>ソース</th><td><a href="https://www.realosakaestate.jp/estate.php?n=25517" target="_blank">大阪R不動産</a></td></tr>
+    </table>
+
+    <div class="section-title">修繕履歴（充実）</div>
+    <table>
+      <tr><th>時期</th><th>工事内容</th></tr>
+      <tr><td>平成7年(1995)</td><td>大規模修繕</td></tr>
+      <tr><td>平成10年(1998)</td><td>地下駐車場塗装</td></tr>
+      <tr><td>平成12年(2000)</td><td>エレベーター改修</td></tr>
+      <tr><td>平成17年(2005)</td><td>地下駐車場消防設備改修</td></tr>
+      <tr><td>平成18年(2006)</td><td>大規模修繕</td></tr>
+      <tr><td>平成21年(2009)</td><td>大規模修繕 第2期</td></tr>
+      <tr><td>平成22年(2010)</td><td>高架水槽取替・エントランス他改修</td></tr>
+      <tr><td>平成23年(2011)</td><td>受水槽ライニング・給排水地中埋設管改修</td></tr>
+      <tr><td>平成27年(2015)</td><td>鉄部塗装工事</td></tr>
+      <tr><td>令和3年(2021)</td><td>共用部排水管 更新工事</td></tr>
+      <tr><td class="ok">令和6年(2024)</td><td class="ok"><strong>大規模修繕工事 完了（直近！）</strong></td></tr>
+    </table>
+
+    <div class="section-title">注意事項</div>
+    <table>
+      <tr><th>修繕積立金値上げ</th><td class="warn">1〜2年以内に改訂検討中（具体額未定）</td></tr>
+      <tr><th>耐震診断</th><td class="warn">未実施</td></tr>
+      <tr><th>アスベスト</th><td class="warn">未実施</td></tr>
+      <tr><th>駐車場</th><td>25,000円/月 平面（使用権承継不可）</td></tr>
+      <tr><th>フローリング</th><td>L-45以上。管理事務所に届出必要</td></tr>
+      <tr><th>長期修繕計画</th><td class="ok">令和6年作成あり（総会資料に添付）</td></tr>
+      <tr><th>その他</th><td>大きな事故・事件なし / 土壌汚染なし / ゴミ24時間可</td></tr>
+    </table>
+
+    <div class="section-title">内覧チェックリスト</div>
+    <ul class="checklist">
+      <li><strong>管理規約原本で民泊条項の有無を確認（最重要）</strong></li>
+      <li>特区民泊の申請可否を大嶺さんに確認（期限2026/5/29）</li>
+      <li>修繕積立金の値上げ幅の見込み</li>
+      <li>ペット飼育のサイズ・頭数制限</li>
+      <li>リノベ済みの施工内容・施工業者・保証</li>
+      <li>日当たり・眺望・騒音（扇町公園近く）</li>
+      <li>エレベーターの状態（2000年改修後の更新状況）</li>
+      <li>302号室の階数・向き</li>
+    </ul>
+  </div>
+
+  <!-- ============ 物件2: 天満橋北スカイハイツ ============ -->
+  <div class="property">
+    <h2>暮らしが教える、この魅力。</h2>
+    <p class="sub">天満橋北スカイハイツ — 大阪市北区東天満2-1-23 / 1301号室 / LDK / 60.39㎡ / 1980年</p>
+    <div>
+      <span class="tag tag-blue">3,480万円</span>
+      <span class="tag tag-green">ペット制限あり</span>
+      <span class="tag tag-red">民泊禁止</span>
+      <span class="tag tag-yellow">旧耐震(1980)</span>
+      <span class="tag tag-muted">南森町エリア</span>
+    </div>
+
+    <div class="section-title">民泊可否</div>
+    <div class="verdict verdict-caution">
+      <strong class="warn">❌ 民泊禁止</strong><br>
+      専有部分用途: <strong>住宅専用（住宅宿泊事業は不可）</strong><br>
+      使用規則にも民泊禁止規定あり。<br>
+      → 購入するなら<strong>純粋自宅＋節税</strong>目的のみ。
+    </div>
+
+    <div class="section-title">重要事項調査報告書 — 詳細分析</div>
+    <table>
+      <tr><th>価格</th><td class="val">3,480万円</td></tr>
+      <tr><th>面積</th><td>60.39㎡</td></tr>
+      <tr><th>築年</th><td>1980年9月（築46年・<span class="warn">旧耐震</span>）</td></tr>
+      <tr><th>総戸数</th><td>52戸 / 1棟</td></tr>
+      <tr><th>管理組合</th><td>天満橋北スカイハイツ管理組合（理事3名/監事1名・輪番制）</td></tr>
+      <tr><th>管理会社</th><td>長谷工コミュニティ（全部委託）</td></tr>
+      <tr><th>管理費</th><td class="val">9,660円/月 + トランクルーム670円</td></tr>
+      <tr><th>修繕積立金</th><td class="val">10,870円/月</td></tr>
+      <tr><th>月額合計</th><td class="val ok">21,200円（安い ← スコア+5）</td></tr>
+      <tr><th>値上げ予定</th><td class="ok">変更予定なし（2025/12/31時点）</td></tr>
+      <tr><th>滞納</th><td class="ok">管理費0円 / 修繕積立金0円（滞納なし）</td></tr>
+      <tr><th>スコア</th><td>30点（見送り）※民泊ペナルティ-30点が効いている</td></tr>
+      <tr><th>ソース</th><td><a href="https://www.realosakaestate.jp/estate.php?n=24522" target="_blank">大阪R不動産</a></td></tr>
+    </table>
+
+    <div class="section-title">管理組合 財務状況</div>
+    <table>
+      <tr><th colspan="2" style="color:var(--accent)">管理費会計（2024年11月）</th></tr>
+      <tr><th>収入総額</th><td>12,674,838円（前期繰越1,616,265円含む）</td></tr>
+      <tr><th>支出総額</th><td>9,296,492円</td></tr>
+      <tr><th>繰越額</th><td class="ok">3,378,346円（黒字）</td></tr>
+      <tr><th>滞納総額</th><td>37,340円（資産4,132,317円中）</td></tr>
+      <tr><th colspan="2" style="color:var(--accent)">修繕積立金会計</th></tr>
+      <tr><th>収入総額</th><td>28,515,016円（前期繰越20,631,856円含む）</td></tr>
+      <tr><th>支出総額</th><td>2,249,500円</td></tr>
+      <tr><th>繰越額</th><td class="ok">26,265,516円</td></tr>
+      <tr><th>滞納総額</th><td>40,390円</td></tr>
+      <tr><th>借入金残高</th><td class="ok">0円</td></tr>
+    </table>
+
+    <div class="section-title">修繕履歴</div>
+    <table>
+      <tr><th>時期</th><th>工事内容</th></tr>
+      <tr><td>2015/11</td><td>電気温水器水管改修 / 各戸玄関扉取替</td></tr>
+      <tr><td>2015/11</td><td>連結送水管改修 / 非常照明バッテリー取替</td></tr>
+      <tr><td>2016/03</td><td>屋上DN防水改修</td></tr>
+      <tr><td>2017/06</td><td>大規模修繕工事</td></tr>
+      <tr><td>2019/05</td><td>共用部照明LED化</td></tr>
+      <tr><td>2020/02</td><td>駐車場舗装改修</td></tr>
+      <tr><td>2022/06</td><td>排水管改修 他</td></tr>
+    </table>
+
+    <div class="section-title">注意事項</div>
+    <table>
+      <tr><th>耐震</th><td class="warn">旧耐震（1980年）/ 耐震診断なし / 新耐震適合証明なし</td></tr>
+      <tr><th>アスベスト</th><td class="warn">一部含有（2022/3調査）— 電気室の壁吹付→無、配管貫通部けい酸カルシウム板・耐火二層管→有</td></tr>
+      <tr><th>ペット</th><td>飼育制限あり（詳細は管理規約参照）</td></tr>
+      <tr><th>駐車場</th><td>敷地内2台のみ / 35,000円/月 / 権利承継不可</td></tr>
+      <tr><th>長期修繕計画</th><td class="warn">なし</td></tr>
+      <tr><th>確認済証</th><td class="warn">新築時・保存なし</td></tr>
+      <tr><th>建替え</th><td class="ok">決議なし・検討なし</td></tr>
+      <tr><th>管理事務所</th><td>月〜金 9-17時 / 土 9-15時（第1月曜休）/ TEL: 06-6358-1819</td></tr>
+    </table>
+
+    <div class="section-title">内覧チェックリスト</div>
+    <ul class="checklist">
+      <li>ペット飼育制限の詳細（犬猫可か？サイズ・頭数制限は？）</li>
+      <li>アスベスト含有箇所は共用部のみか？居室への影響は？</li>
+      <li>1301号室の日当たり・眺望（13階）</li>
+      <li>部屋の現況（リノベ要否・水回り状態）</li>
+      <li>管理事務所の雰囲気・管理状態</li>
+      <li>エレベーター台数・更新状況</li>
+      <li>将来の修繕計画（長期修繕計画がないため口頭確認）</li>
+      <li>純粋自宅として購入する場合の値引き余地</li>
+    </ul>
+  </div>
+
+  <div class="nav">
+    <a href="minpaku-osaka.html">大阪レポート全体</a>
+    <a href="index.html">トップ</a>
+  </div>
+</div>
+</body>
+</html>

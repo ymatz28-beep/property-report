@@ -3,8 +3,8 @@
 R不動産スクレイパー（東京・大阪・福岡共通）
 各都市のR不動産サイトから売買物件を取得し、パイプ区切り形式で出力。
 
-出力フォーマット (11列):
-source|name|price|location|area|built|station|layout|pet|brokerage|url
+出力フォーマット (12列):
+source|name|price|location|area|built|station|layout|pet|brokerage|maintenance|url
 """
 
 import re
@@ -222,6 +222,18 @@ def parse_detail_page(html: str, prop_url: str, source_name: str) -> dict | None
     elif re.search(r"ペット(?:飼育)?可(?!否)", body_text):
         pet = "可"
 
+    # Maintenance fee (管理費+修繕積立金)
+    maintenance = ""
+    total_fee = 0
+    kanri_m = re.search(r"管理費[^\d]*?([\d,]+)\s*円", body_text)
+    shuuzen_m = re.search(r"修繕積立金[^\d]*?([\d,]+)\s*円", body_text)
+    if kanri_m:
+        total_fee += int(kanri_m.group(1).replace(",", ""))
+    if shuuzen_m:
+        total_fee += int(shuuzen_m.group(1).replace(",", ""))
+    if total_fee > 0:
+        maintenance = str(total_fee)
+
     return {
         "source": source_name,
         "name": name,
@@ -233,6 +245,7 @@ def parse_detail_page(html: str, prop_url: str, source_name: str) -> dict | None
         "layout": layout,
         "pet": pet,
         "brokerage": "",
+        "maintenance": maintenance,
         "url": prop_url,
     }
 
@@ -318,7 +331,7 @@ def save_results(properties: list[dict], city_key: str) -> Path:
             prop["source"], prop["name"], prop["price_text"],
             prop["location"], prop["area_text"], prop["built_text"],
             prop["station_text"], prop["layout"], prop["pet"],
-            prop["brokerage"], prop["url"],
+            prop["brokerage"], prop.get("maintenance", ""), prop["url"],
         ])
         lines.append(line)
 

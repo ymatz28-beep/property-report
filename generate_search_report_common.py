@@ -47,7 +47,9 @@ class PropertyRow:
     minpaku_status: str = ""
     pet_status: str = ""  # "可", "相談可", "不可", ""
     brokerage_text: str = ""  # "無料", "半額", "割引", "3%+6.6万", ""
+    maintenance_fee_text: str = ""  # "管理費8,000円+修繕5,400円" or total yen/月
     raw_line: str = ""
+    maintenance_fee: int = 0  # Total monthly fee in yen (管理費+修繕積立金)
     price_man: int = 0
     area_sqm: float | None = None
     built_year: int | None = None
@@ -83,6 +85,34 @@ def parse_built(text: str) -> tuple[int | None, int | None]:
     if y:
         return int(y.group(1)), int(m.group(1)) if m else 1
     return None, None
+
+
+def parse_maintenance_fee(text: str) -> int:
+    """Parse maintenance fee text to total monthly yen.
+
+    Handles formats like:
+    - "15400" (raw yen)
+    - "15,400円/月"
+    - "管理費8,000円+修繕5,400円"
+    - "8000+5400"
+    """
+    if not text:
+        return 0
+    text = text.replace(",", "").replace("　", "").replace(" ", "")
+    # Try sum of multiple amounts: "管理費8000円+修繕積立金5400円" or "8000+5400"
+    amounts = re.findall(r"(\d+)\s*円?", text)
+    if amounts:
+        total = sum(int(a) for a in amounts)
+        # Sanity check: monthly fee should be 1,000-200,000 yen
+        if 1000 <= total <= 200000:
+            return total
+    # Single number
+    m = re.search(r"(\d+)", text)
+    if m:
+        val = int(m.group(1))
+        if 1000 <= val <= 200000:
+            return val
+    return 0
 
 
 def parse_walk_minutes(station_text: str) -> int | None:
@@ -163,6 +193,23 @@ def parse_data_file(data_path: Path, default_source: str = "SUUMO") -> list[Prop
                 url=parts[10],
                 raw_line=s,
             )
+        elif len(parts) == 12:
+            # Extended format with maintenance fee: source|name|price|location|area|built|station|layout|pet|brokerage|maintenance|url
+            row = PropertyRow(
+                source=parts[0] or default_source,
+                name=parts[1],
+                price_text=parts[2],
+                location=parts[3],
+                area_text=parts[4],
+                built_text=parts[5],
+                station_text=parts[6],
+                layout=parts[7],
+                pet_status=parts[8],
+                brokerage_text=parts[9],
+                maintenance_fee_text=parts[10],
+                url=parts[11],
+                raw_line=s,
+            )
         else:
             continue
         hydrate_parsed_fields(row)
@@ -199,6 +246,7 @@ def hydrate_parsed_fields(row: PropertyRow) -> None:
     row.area_sqm = parse_area_sqm(row.area_text)
     row.built_year, row.built_month = parse_built(row.built_text)
     row.walk_min = parse_walk_minutes(row.station_text)
+    row.maintenance_fee = parse_maintenance_fee(row.maintenance_fee_text)
 
 
 def _normalize_name(name: str) -> str:
@@ -210,20 +258,24 @@ def _normalize_name(name: str) -> str:
 
 
 def dedupe_properties(rows: list[PropertyRow]) -> tuple[list[PropertyRow], int]:
-    seen: set[tuple] = set()
+    seen: dict[tuple, int] = {}  # key -> index in out
     out: list[PropertyRow] = []
     dup_count = 0
     for row in rows:
-        # Primary key: normalized name + area_sqm (same building, same unit)
         norm = _normalize_name(row.name)
         key_physical = (norm, row.area_sqm)
-        # Fallback: original name + price
         key_name_price = (row.name, row.price_man)
-        if key_physical in seen or key_name_price in seen:
+        existing_idx = seen.get(key_physical) or seen.get(key_name_price)
+        if existing_idx is not None:
+            # Prefer the row with more data (maintenance fee)
+            existing = out[existing_idx]
+            if not existing.maintenance_fee_text and row.maintenance_fee_text:
+                out[existing_idx] = row
             dup_count += 1
             continue
-        seen.add(key_physical)
-        seen.add(key_name_price)
+        idx = len(out)
+        seen[key_physical] = idx
+        seen[key_name_price] = idx
         out.append(row)
     return out, dup_count
 
@@ -335,6 +387,25 @@ def pet_score_for_row(row: PropertyRow) -> int:
     return 0
 
 
+def maintenance_fee_score(fee: int) -> int:
+    """Maintenance fee scoring: lower is better. fee = total monthly yen (管理費+修繕積立金)."""
+    if fee == 0:
+        return 0  # Unknown - no penalty, no bonus
+    if fee <= 10000:
+        return 10
+    if fee <= 15000:
+        return 7
+    if fee <= 20000:
+        return 5
+    if fee <= 25000:
+        return 3
+    if fee <= 30000:
+        return 0
+    if fee <= 40000:
+        return -3
+    return -5  # 40,000円超
+
+
 def brokerage_score(row: PropertyRow) -> int:
     """Brokerage fee scoring: 無料=5, 半額=3, 割引=2, normal=0"""
     text = row.brokerage_text
@@ -350,15 +421,18 @@ def brokerage_score(row: PropertyRow) -> int:
 
 
 def renovation_score(row: PropertyRow) -> int:
-    """Renovation scoring: unrenovated=5 (can DIY), renovated=0, unknown=3"""
+    """Renovation scoring: unrenovated=+5, renovated=-5, R不動産 renovated=0 (exception)"""
     text = f"{row.name} {row.raw_line}".lower()
     renovated_keywords = [
         "リノベーション済", "リノベ済", "リフォーム済", "フルリノベ",
         "フルリフォーム", "新装", "内装済", "室内リフォーム",
         "リノベーション済み", "リフォーム済み",
     ]
+    is_restate = "R不動産" in row.source or "realosakaestate" in row.url or "realfukuokaestate" in row.url or "realtokyoestate" in row.url
     if any(kw.lower() in text for kw in renovated_keywords):
-        return 0  # Already renovated - no DIY opportunity
+        if is_restate:
+            return 0  # R不動産: renovated is OK (no penalty)
+        return -5  # Renovated - no DIY opportunity, price premium
     unrenovated_keywords = [
         "現況", "現状渡し", "そのまま", "古い",
     ]
@@ -368,7 +442,8 @@ def renovation_score(row: PropertyRow) -> int:
 
 
 def minpaku_penalty(row: PropertyRow) -> int:
-    return -30 if "民泊禁止" in row.minpaku_status else 0
+    # 民泊禁止はハードフィルタで除外済みなので、ここでは確認不能=0
+    return 0
 
 
 def grade_tier(total: int) -> tuple[str, str, str]:
@@ -399,16 +474,19 @@ def build_comment(row: PropertyRow) -> str:
         strengths.append("新耐震")
     if b.get("layout", 0) == 10:
         strengths.append("2-3LDKで運用幅あり")
+    if b.get("maintenance", 0) >= 7:
+        strengths.append("管理費修繕積立金が安い")
     if b.get("renovation", 0) >= 5:
         strengths.append("リノベ余地あり")
     if b.get("brokerage", 0) >= 3:
         strengths.append(f"仲介手数料{row.brokerage_text}")
-    if b.get("renovation", 0) == 0:
-        cautions.append("リノベ済み（DIY余地なし）")
+    if b.get("maintenance", 0) < 0:
+        cautions.append("管理費修繕積立金が高い")
+    if b.get("renovation", 0) < 0:
+        cautions.append("リノベ済み（DIY余地なし・割高）")
     if b.get("pet", 0) <= 0:
         cautions.append("ペット条件要確認")
-    if b.get("minpaku_penalty", 0) < 0:
-        cautions.append("民泊規約で大幅減点")
+    # 民泊不可はハードフィルタで除外済みなのでコメント不要
     if row.walk_min is None:
         cautions.append("バス便で駅距離評価は低い")
     elif row.walk_min > 10:
@@ -461,6 +539,7 @@ def score_row(row: PropertyRow, config: ReportConfig) -> None:
         "location": loc_score,
         "layout": layout_score(row.layout),
         "pet": row.pet_score,
+        "maintenance": maintenance_fee_score(row.maintenance_fee),
         "renovation": renovation_score(row),
         "brokerage": brokerage_score(row),
         "minpaku_penalty": minpaku_penalty(row),
@@ -500,7 +579,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     price_bin_labels = [f"{b}-{b+499}万円" for b in sorted(price_bins)]
     price_bin_values = [price_bins[b] for b in sorted(price_bins)]
 
-    radar_labels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "リノベ余地", "仲介手数料", "民泊規約"]
+    radar_labels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "管理費修繕", "リノベ余地", "仲介手数料", "民泊規約"]
     radar_datasets = []
     for i, r in enumerate(top5):
         b = r.score_breakdown
@@ -515,6 +594,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
                     round(b["location"] / 15 * 100),
                     round(b["layout"] / 10 * 100),
                     max(0, round(b["pet"] / 15 * 100)),
+                    max(0, round(b["maintenance"] / 10 * 100)),
                     round(b["renovation"] / 5 * 100),
                     round(b["brokerage"] / 5 * 100),
                     0 if b["minpaku_penalty"] < 0 else 100,
@@ -523,22 +603,34 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
             }
         )
 
+    def _score_cell(val: int, label: str = "") -> str:
+        short = label[:2] if label else ""
+        if val > 0:
+            return f'<span class="sc-pill sc-pos">{short}+{val}</span>'
+        if val < 0:
+            return f'<span class="sc-pill sc-neg">{short}{val}</span>'
+        return f'<span class="sc-pill sc-zero">{short}0</span>'
+
     table_rows_html = []
     for idx, r in enumerate(rows_sorted, start=1):
         score_badge = f'<span class="score-badge" style="--badge:{r.tier_color}">{r.total_score}</span>'
         link = f'<a href="{html.escape(r.url)}" target="_blank" rel="noopener noreferrer">{html.escape(r.name)}</a>'
         built_disp = f"{r.built_year}年" if r.built_year else html.escape(r.built_text)
+        b = r.score_breakdown
+        maint_disp = f"{r.maintenance_fee:,}円" if r.maintenance_fee > 0 else "-"
         table_rows_html.append(
             f"""
             <tr class="{r.tier_class}" data-index="{idx}" data-name="{html.escape(r.name)}" data-location="{html.escape(r.location)}" data-layout="{html.escape(r.layout)}" data-tier="{html.escape(r.tier_label)}" data-price="{r.price_man}" data-area="{(r.area_sqm or 0):.2f}" data-score="{r.total_score}" data-year="{r.built_year or 0}" data-walk="{r.walk_min if r.walk_min is not None else 999}">
               <td>{idx}</td>
-              <td class="name-col">{link}<div class="source-tag">{html.escape(r.source)}</div></td>
+              <td class="name-col"><div class="clamp2">{link}</div><div class="source-tag">{html.escape(r.source)}</div></td>
               <td>{format_price_man(r.price_man)}</td>
               <td>{format_area(r.area_sqm)}</td>
-              <td>{html.escape(r.location)}</td>
-              <td>{html.escape(r.station_text)}</td>
+              <td><div class="clamp2">{html.escape(r.location)}</div></td>
+              <td><div class="clamp2">{html.escape(r.station_text)}</div></td>
               <td>{built_disp}</td>
               <td>{html.escape(r.layout)}</td>
+              <td class="maint-col">{maint_disp}</td>
+              <td class="breakdown-col">{_score_cell(b["budget"],"予算")} {_score_cell(b["area"],"面積")} {_score_cell(b["earthquake"],"耐震")} {_score_cell(b["station"],"駅距")} {_score_cell(b["location"],"立地")} {_score_cell(b["layout"],"間取")} {_score_cell(b["pet"],"ペト")} {_score_cell(b["maintenance"],"管理")} {_score_cell(b["renovation"],"リノ")} {_score_cell(b["brokerage"],"仲介")} {_score_cell(b["minpaku_penalty"],"民泊")}</td>
               <td>{score_badge}</td>
               <td><span class="tier-pill" style="--tier:{r.tier_color}">{html.escape(r.tier_label)}</span></td>
             </tr>
@@ -556,6 +648,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
             ("立地", b["location"]),
             ("間取り", b["layout"]),
             ("ペット", b["pet"]),
+            ("管理費修繕", b["maintenance"]),
             ("リノベ", b["renovation"]),
             ("仲介", b["brokerage"]),
             ("民泊規約", b["minpaku_penalty"]),
@@ -692,7 +785,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
       columns:2; column-gap:24px;
     }}
     .table-shell {{ overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); }}
-    table {{ width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }}
+    table {{ width:100%; border-collapse:separate; border-spacing:0; min-width:1480px; }}
     thead th {{
       position:sticky; top:0; z-index:1;
       background:rgba(12,17,26,.92); color:#dbe7fa;
@@ -716,7 +809,18 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     .tier-pass td {{ box-shadow: inset 4px 0 0 rgba(239,68,68,.7); }}
     a {{ color:#eaf7ff; text-decoration:none; }}
     a:hover {{ color:var(--accent); text-decoration:underline; }}
+    .name-col {{ max-width:160px; }}
+    .clamp2 {{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }}
     .name-col a {{ font-weight:700; }}
+    .sc-pill {{ display:inline-block; padding:1px 4px; border-radius:4px; font-size:10px; font-weight:700; margin:1px; line-height:1.3; }}
+    .sc-pos {{ background:rgba(52,211,153,.15); color:#34d399; }}
+    .sc-neg {{ background:rgba(248,113,113,.15); color:#f87171; }}
+    .sc-zero {{ background:rgba(107,114,128,.1); color:#6b7280; }}
+    .breakdown-col {{ font-family:'Inter',monospace; max-width:260px; }}
+    .breakdown-th {{ min-width:200px; }}
+    .breakdown-legend {{ font-size:9px; color:var(--muted); letter-spacing:0.5px; margin-top:2px; font-weight:400; }}
+    .maint-col {{ white-space:nowrap; font-size:12px; }}
+    td:nth-child(5), td:nth-child(6) {{ max-width:140px; font-size:12px; }}
     .source-tag {{
       margin-top:4px; font-size:11px; color:var(--muted);
       display:inline-block; padding:2px 8px; border-radius:999px;
@@ -801,7 +905,10 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         <span class="badge">重複除外 {duplicate_count}件</span>
         <span class="badge">売却済除外 {meta.get("sold_removed", "0")}件</span>
         <span class="badge">OC除外 {meta.get("oc_removed", "0")}件</span>
-        <span class="badge">有効件数 {len(rows_sorted)}件</span>
+        <span class="badge">ペット不可除外 {meta.get("pet_ng_removed", "0")}件</span>
+        <span class="badge">民泊不可除外 {meta.get("minpaku_ng_removed", "0")}件</span>
+        <span class="badge">低スコア除外 {meta.get("quality_filtered", "0")}件</span>
+        <span class="badge">厳選TOP {len(rows_sorted)}件</span>
         <span class="badge">{html.escape(city_badge)}</span>
       </div>
       <div class="badge-row">
@@ -823,7 +930,8 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         <li>重複排除キー: 物件名 + 価格（先勝ち）</li>
         <li>駅アクセスに「バス」を含む場合、徒歩分数評価は0点</li>
         <li>築年1981年7月以降を新耐震として評価</li>
-        <li>民泊禁止は -30 点ペナルティ</li>
+        <li>管理費修繕積立金: 1万円/月以下=+10, 1.5万以下=+7, 2万以下=+5, 3万超=マイナス</li>
+        <li>民泊禁止は除外（ペット不可と同様ハードフィルタ）</li>
         {''.join(f"<li>{html.escape(item)}</li>" for item in config.search_condition_bullets)}
       </ul>
     </section>
@@ -842,6 +950,8 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
               <th><button data-sort="walk" data-type="number">最寄駅</button></th>
               <th><button data-sort="year" data-type="number">築年</button></th>
               <th><button data-sort="layout" data-type="string">間取り</button></th>
+              <th>管理費修繕</th>
+              <th class="breakdown-th">スコア内訳</th>
               <th><button data-sort="score" data-type="number">スコア</button></th>
               <th><button data-sort="tier" data-type="string">評価</button></th>
             </tr>
@@ -1083,23 +1193,73 @@ def generate_report(config: ReportConfig) -> Path:
     # Filter out owner-change / tenant-occupied / investment-only properties
     _OC_KEYWORDS = [
         "オーナーチェンジ", "賃貸中", "利回り", "投資顧問", "投資物件",
-        "家賃", "月額賃料", "年間収入", "年間賃料", "月額",
-        "表面利回", "想定利回", "収益",
+        "家賃", "月額賃料", "年間収入", "年間賃料",
+        "表面利回", "想定利回", "収益", "入居者付", "入居中",
+        "賃借人", "テナント付", "現行賃料", "満室",
     ]
     before_oc = len(deduped)
 
     def _is_oc(r: PropertyRow) -> bool:
-        text = f"{r.name} {r.station_text} {r.minpaku_status}"
+        # Check ALL text fields for OC keywords (raw_line has the full original row)
+        text = f"{r.name} {r.station_text} {r.minpaku_status} {r.location} {r.raw_line}"
         return any(kw in text for kw in _OC_KEYWORDS)
 
     deduped = [r for r in deduped if not _is_oc(r)]
     oc_count = before_oc - len(deduped)
 
+    # Filter out ペット不可 properties
+    before_pet = len(deduped)
+
+    def _is_pet_ng(r: PropertyRow) -> bool:
+        text = f"{r.pet_status} {r.name} {r.raw_line}"
+        if r.pet_status == "不可" or "ペット不可" in text or "ペット飼育不可" in text:
+            return True
+        return False
+
+    deduped = [r for r in deduped if not _is_pet_ng(r)]
+    pet_ng_count = before_pet - len(deduped)
+
+    # Filter out 民泊禁止 properties
+    before_minpaku = len(deduped)
+
+    def _is_minpaku_ng(r: PropertyRow) -> bool:
+        text = f"{r.minpaku_status} {r.name} {r.raw_line}"
+        return "民泊禁止" in text or "民泊不可" in text or "住宅宿泊事業不可" in text
+
+    deduped = [r for r in deduped if not _is_minpaku_ng(r)]
+    minpaku_ng_count = before_minpaku - len(deduped)
+
     for row in deduped:
         score_row(row, config)
+
+    # 厳選フィルタ: 最低スコア閾値 + 上位N件に制限
+    MIN_SCORE = 30
+    MAX_DISPLAY = 50
+    before_quality = len(deduped)
+    deduped = [r for r in deduped if r.total_score >= MIN_SCORE]
+    quality_filtered = before_quality - len(deduped)
+    deduped_sorted = sorted(deduped, key=lambda r: -r.total_score)
+    if len(deduped_sorted) > MAX_DISPLAY:
+        # ペット可物件を優先保護: 先にペット可を確保、残り枠を高スコア順で埋める
+        def _is_pet_ok(r: PropertyRow) -> bool:
+            return r.pet_status in ("可", "相談可") or r.pet_score >= 10
+        pet_ok = [r for r in deduped_sorted if _is_pet_ok(r)]
+        others = [r for r in deduped_sorted if not _is_pet_ok(r)]
+        remaining_slots = max(0, MAX_DISPLAY - len(pet_ok))
+        deduped = pet_ok + others[:remaining_slots]
+        deduped = sorted(deduped, key=lambda r: -r.total_score)
+        top_n_trimmed = len(deduped_sorted) - len(deduped)
+    else:
+        deduped = deduped_sorted
+        top_n_trimmed = 0
+
     meta["sources_loaded"] = ", ".join(sources_loaded)
     meta["sold_removed"] = str(sold_count)
     meta["oc_removed"] = str(oc_count)
+    meta["pet_ng_removed"] = str(pet_ng_count)
+    meta["minpaku_ng_removed"] = str(minpaku_ng_count)
+    meta["quality_filtered"] = str(quality_filtered)
+    meta["top_n_trimmed"] = str(top_n_trimmed)
     html_text = build_report_html(config, deduped, meta, raw_count=raw_count, duplicate_count=duplicate_count)
     config.output_path.parent.mkdir(parents=True, exist_ok=True)
     config.output_path.write_text(html_text, encoding="utf-8")
@@ -1107,4 +1267,72 @@ def generate_report(config: ReportConfig) -> Path:
         print(f"  Removed {sold_count} sold properties")
     if oc_count > 0:
         print(f"  Removed {oc_count} owner-change/tenant-occupied properties")
+    if pet_ng_count > 0:
+        print(f"  Removed {pet_ng_count} pet-NG properties")
+    if minpaku_ng_count > 0:
+        print(f"  Removed {minpaku_ng_count} minpaku-NG properties")
+    if quality_filtered > 0:
+        print(f"  Removed {quality_filtered} low-score (< {MIN_SCORE}) properties")
+    if top_n_trimmed > 0:
+        print(f"  Trimmed to top {MAX_DISPLAY} (cut {top_n_trimmed} lower-ranked)")
+    print(f"  Final: {len(deduped)}件 厳選済み")
+
+    # Auto QA
+    _run_qa(config.output_path, deduped, config.city_label)
+
     return config.output_path
+
+
+def _run_qa(output_path: Path, rows: list[PropertyRow], city_label: str) -> None:
+    """レポート生成後の自動QAチェック"""
+    warnings: list[str] = []
+    errors: list[str] = []
+    total = len(rows)
+
+    # 1. 件数チェック
+    if total == 0:
+        errors.append("物件が0件です")
+
+    # 2. 管理費データカバレッジ
+    maint_count = sum(1 for r in rows if r.maintenance_fee > 0)
+    maint_pct = (maint_count / total * 100) if total > 0 else 0
+    if maint_pct < 10:
+        warnings.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — ほぼ未取得")
+    elif maint_pct < 50:
+        warnings.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — 半数未満")
+
+    # 3. URL欠損
+    no_url = sum(1 for r in rows if not r.url or r.url.strip() == "")
+    if no_url > 0:
+        errors.append(f"URL欠損: {no_url}件")
+
+    # 4. スコア範囲
+    score_min = min((r.total_score for r in rows), default=0)
+    score_max = max((r.total_score for r in rows), default=0)
+    if score_max > 150 or score_min < -50:
+        warnings.append(f"スコア範囲が異常: {score_min}〜{score_max}")
+
+    # 5. 出力ファイルサイズ
+    if output_path.exists():
+        size_kb = output_path.stat().st_size / 1024
+        if size_kb < 5:
+            errors.append(f"出力ファイルが小さすぎ: {size_kb:.1f}KB")
+
+    # 6. 重複チェック（同じURLが残っていないか）
+    urls = [r.url for r in rows if r.url]
+    dup_urls = len(urls) - len(set(urls))
+    if dup_urls > 0:
+        warnings.append(f"URL重複: {dup_urls}件")
+
+    # 結果出力
+    prefix = f"  QA [{city_label}]"
+    if errors:
+        for e in errors:
+            print(f"{prefix} ❌ {e}")
+    if warnings:
+        for w in warnings:
+            print(f"{prefix} ⚠ {w}")
+    if not errors and not warnings:
+        print(f"{prefix} ✅ {total}件 OK (管理費{maint_pct:.0f}%)")
+    elif not errors:
+        print(f"{prefix} ✅ {total}件 (警告{len(warnings)}件)")

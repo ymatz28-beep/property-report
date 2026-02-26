@@ -12,6 +12,14 @@ def find_extra_data_paths(city_key: str) -> list[Path]:
     restate = DATA_DIR / f"restate_{city_key}_raw.txt"
     if restate.exists():
         paths.append(restate)
+    # LIFULL HOME'S
+    lifull = DATA_DIR / f"lifull_{city_key}_raw.txt"
+    if lifull.exists():
+        paths.append(lifull)
+    # カウカモ
+    cowcamo = DATA_DIR / f"cowcamo_tokyo_raw.txt"
+    if cowcamo.exists():
+        paths.append(cowcamo)
     return paths
 
 
@@ -22,7 +30,7 @@ def main() -> None:
         accent="#a78bfa",
         accent_rgb="167,139,250",
         data_path=Path("data/multi_site_tokyo_raw.txt"),
-        output_path=Path("output/tokyo_search_report.html"),
+        output_path=Path("output/minpaku-tokyo.html"),
         hero_conditions=[
             "渋谷区・新宿区・目黒区・台東区・豊島区中心",
             "価格上限 5,000万円",
@@ -30,7 +38,7 @@ def main() -> None:
             "ペット可/相談可優先",
         ],
         search_condition_bullets=[
-            "楽待 + Yahoo不動産のマルチソース",
+            "楽待 + Yahoo不動産 + athome + LIFULL + カウカモのマルチソース",
             "渋谷/恵比寿/新宿を最優先、浅草/池袋/上野も重点評価",
             "ペット可は高加点（15点）、リノベ未実施は加点、仲介手数料割引も加点",
         ],

@@ -32,15 +32,15 @@ HEADERS = {
 
 def log(msg: str) -> None:
     ts = datetime.now().strftime("%H:%M:%S")
-    print(f"[{ts}] {msg}")
+    print(f"[{ts}] {msg}", flush=True)
 
 
-def run_script(name: str, args: list[str] | None = None) -> bool:
+def run_script(name: str, args: list[str] | None = None, timeout: int = 180) -> bool:
     """Run a Python script and return success status."""
     cmd = [sys.executable, name] + (args or [])
     log(f"  Running: {' '.join(cmd)}")
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600, cwd=str(BASE_DIR))
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, cwd=str(BASE_DIR))
         if result.returncode != 0:
             log(f"  [WARN] {name} exited with code {result.returncode}")
             if result.stderr:

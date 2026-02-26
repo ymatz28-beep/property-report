@@ -45,3 +45,27 @@ jobs:
           git add data/ output/
           git diff --cached --quiet || git commit -m "Auto-patrol: update data $(date +%Y-%m-%d)"
           git push origin main
+
+      - name: Notify Gmail
+        if: always() && hashFiles('data/patrol_summary.txt')
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.GMAIL_ADDRESS }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          subject: "🏠 物件パトロール完了 (${{ github.run_number }})"
+          to: ${{ secrets.GMAIL_ADDRESS }}
+          from: Property Patrol Bot
+          body: file://data/patrol_summary.txt
+        continue-on-error: true
+
+      - name: Notify LINE
+        if: always() && hashFiles('data/patrol_summary.txt')
+        run: |
+          SUMMARY=$(cat data/patrol_summary.txt)
+          curl -s -X POST https://api.line.me/v2/bot/message/push \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.LINE_CHANNEL_TOKEN }}" \
+            -d "{\"to\":\"${{ secrets.LINE_USER_ID }}\",\"messages\":[{\"type\":\"text\",\"text\":\"$SUMMARY\"}]}" || true
+        continue-on-error: true

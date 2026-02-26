@@ -193,6 +193,18 @@ def main():
     log(f"===== 完了 ({elapsed:.0f}秒) =====")
     log(f"  URL: {url_report['total']}件チェック, {url_report['new_dead']}件新規DEAD")
 
+    # Write summary for notifications
+    report_url = "https://ymatz28-beep.github.io/property-report/"
+    summary = (
+        f"🏠 物件パトロール完了 ({start.strftime('%m/%d %H:%M')})\n"
+        f"URL: {url_report['total']}件チェック\n"
+        f"新規DEAD: {url_report['new_dead']}件\n"
+        f"所要: {elapsed:.0f}秒\n"
+        f"\n{report_url}"
+    )
+    SUMMARY_FILE = BASE_DIR / "data" / "patrol_summary.txt"
+    SUMMARY_FILE.write_text(summary, encoding="utf-8")
+
 
 if __name__ == "__main__":
     main()

@@ -136,6 +136,46 @@ def patrol_dead_urls() -> dict:
     return {"total": len(all_urls), "dead": len(dead_urls), "new_dead": len(new_dead)}
 
 
+def parse_raw_files() -> dict[str, dict]:
+    """Parse all raw files. Returns {url: {name, price, location, source}}."""
+    properties = {}
+    for f in DATA_DIR.glob("*_raw.txt"):
+        source = f.stem.replace("_raw", "")
+        for line in f.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("|")
+            if len(parts) >= 4:
+                url = parts[-1].strip()
+                if url.startswith("http"):
+                    properties[url] = {
+                        "name": parts[1].strip() if len(parts) > 1 else "",
+                        "price": parts[2].strip() if len(parts) > 2 else "",
+                        "location": parts[3].strip() if len(parts) > 3 else "",
+                        "source": source,
+                    }
+    return properties
+
+
+def diff_properties(before: dict, after: dict) -> dict:
+    """Compare before/after snapshots. Returns diff summary."""
+    before_urls = set(before.keys())
+    after_urls = set(after.keys())
+    new_urls = after_urls - before_urls
+    removed_urls = before_urls - after_urls
+
+    new_props = [after[u] for u in sorted(new_urls)]
+    removed_props = [before[u] for u in sorted(removed_urls)]
+
+    return {
+        "new": new_props,
+        "removed": removed_props,
+        "before_count": len(before_urls),
+        "after_count": len(after_urls),
+    }
+
+
 def search_all_sites() -> None:
     """Run all property searches."""
     log("=== 物件検索開始 ===")
@@ -173,35 +213,71 @@ def deploy() -> None:
         log("  デプロイ不要（変更なし）またはエラー")
 
 
+def format_summary(start: datetime, elapsed: float, diff: dict, url_report: dict) -> str:
+    """Format patrol summary for email/LINE notification."""
+    report_url = "https://ymatz28-beep.github.io/property-report/"
+    lines = [f"🏠 物件パトロール完了 ({start.strftime('%m/%d %H:%M')})"]
+    lines.append(f"物件数: {diff['after_count']}件 (前回: {diff['before_count']}件)")
+
+    # New properties
+    new = diff["new"]
+    if new:
+        lines.append(f"\n🆕 新規 {len(new)}件:")
+        for p in new[:10]:
+            lines.append(f"  • {p['name']} {p['price']} ({p['source']})")
+        if len(new) > 10:
+            lines.append(f"  ... 他{len(new) - 10}件")
+    else:
+        lines.append("\n🆕 新規: なし")
+
+    # Removed / DEAD
+    removed = diff["removed"]
+    if removed or url_report["new_dead"] > 0:
+        dead_count = url_report["new_dead"] + len(removed)
+        lines.append(f"\n❌ 掲載終了 {dead_count}件:")
+        for p in removed[:5]:
+            lines.append(f"  • {p['name']} ({p['source']})")
+        if url_report["new_dead"] > 0:
+            lines.append(f"  + URLチェックで{url_report['new_dead']}件検出")
+    else:
+        lines.append("\n❌ 掲載終了: なし")
+
+    lines.append(f"\n⏱ 所要: {elapsed / 60:.0f}分")
+    lines.append(report_url)
+    return "\n".join(lines)
+
+
 def main():
     start = datetime.now()
     log(f"===== 物件巡回パトロール開始 {start.strftime('%Y-%m-%d %H:%M')} =====")
 
+    # 0. Snapshot before search
+    before = parse_raw_files()
+    log(f"  スナップショット: {len(before)}件")
+
     # 1. Search all sites
     search_all_sites()
 
-    # 2. Check dead URLs
+    # 2. Diff properties
+    after = parse_raw_files()
+    diff = diff_properties(before, after)
+    log(f"  差分: 新規{len(diff['new'])}件, 消失{len(diff['removed'])}件")
+
+    # 3. Check dead URLs
     url_report = patrol_dead_urls()
 
-    # 3. Generate reports
+    # 4. Generate reports
     generate_reports()
 
-    # 4. Deploy
+    # 5. Deploy
     deploy()
 
     elapsed = (datetime.now() - start).total_seconds()
     log(f"===== 完了 ({elapsed:.0f}秒) =====")
-    log(f"  URL: {url_report['total']}件チェック, {url_report['new_dead']}件新規DEAD")
 
     # Write summary for notifications
-    report_url = "https://ymatz28-beep.github.io/property-report/"
-    summary = (
-        f"🏠 物件パトロール完了 ({start.strftime('%m/%d %H:%M')})\n"
-        f"URL: {url_report['total']}件チェック\n"
-        f"新規DEAD: {url_report['new_dead']}件\n"
-        f"所要: {elapsed:.0f}秒\n"
-        f"\n{report_url}"
-    )
+    summary = format_summary(start, elapsed, diff, url_report)
+    log(summary)
     SUMMARY_FILE = BASE_DIR / "data" / "patrol_summary.txt"
     SUMMARY_FILE.write_text(summary, encoding="utf-8")
 

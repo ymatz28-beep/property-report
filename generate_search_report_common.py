@@ -29,6 +29,7 @@ def global_nav_html(current: str = "") -> str:
         ("minpaku-fukuoka.html", "福岡"),
         ("minpaku-tokyo.html", "東京"),
         ("naiken-analysis.html", "内覧分析"),
+        ("inquiry-messages.html", "問い合わせ"),
     ]
     links = []
     for href, label in pages:

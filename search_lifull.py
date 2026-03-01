@@ -105,11 +105,15 @@ def _parse_lifull_page(page) -> list[dict]:
         if not card_text or len(card_text) < 30:
             continue
 
-        # Extract price
-        price_m = re.search(r"([\d,]+)万円", card_text)
-        if not price_m:
-            continue
-        price_man = int(price_m.group(1).replace(",", ""))
+        # Extract price (handle 億 format: "1億1000万円" etc.)
+        oku_m = re.search(r"(\d+)\s*億\s*(?:(\d+)\s*万)?円?", card_text)
+        if oku_m:
+            price_man = int(oku_m.group(1)) * 10000 + (int(oku_m.group(2)) if oku_m.group(2) else 0)
+        else:
+            price_m = re.search(r"([\d,]+)万円", card_text)
+            if not price_m:
+                continue
+            price_man = int(price_m.group(1).replace(",", ""))
         if price_man <= 0 or price_man > PRICE_MAX:
             continue
 

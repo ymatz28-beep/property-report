@@ -51,16 +51,16 @@ WARD_CONFIGS = {
         "area_code": "030",  # Kanto
         "pref_code": "13",
         "wards": {
-            "sc_shibuyaku": "渋谷区",
-            "sc_shinjukuku": "新宿区",
-            "sc_meguroku": "目黒区",
-            "sc_toshimaku": "豊島区",
-            "sc_taitouku": "台東区",
-            "sc_nakanoku": "中野区",
-            "sc_bunkyouku": "文京区",
-            "sc_minatoku": "港区",
-            "sc_shinagawaku": "品川区",
-            "sc_sumidaku": "墨田区",
+            "sc_shibuya": "渋谷区",
+            "sc_shinjuku": "新宿区",
+            "sc_meguro": "目黒区",
+            "sc_toshima": "豊島区",
+            "sc_taito": "台東区",
+            "sc_nakano": "中野区",
+            "sc_bunkyo": "文京区",
+            "sc_minato": "港区",
+            "sc_shinagawa": "品川区",
+            "sc_sumida": "墨田区",
         },
         "pref_slug": "tokyo",
     },
@@ -225,8 +225,14 @@ def enrich_detail(url: str) -> dict:
 
 
 def _parse_price_man(text: str) -> int:
-    """Parse SUUMO price text to 万円 integer."""
+    """Parse SUUMO price text to 万円 integer. Handles 億 format."""
     text = text.replace(",", "").replace("　", "").strip()
+    # Handle 億 format: "1億1000万円" -> 11000, "2億円" -> 20000
+    oku_m = re.search(r"(\d+)\s*億\s*(?:(\d+)\s*万)?円?", text)
+    if oku_m:
+        oku = int(oku_m.group(1)) * 10000
+        man = int(oku_m.group(2)) if oku_m.group(2) else 0
+        return oku + man
     m = re.search(r"(\d+)\s*万円", text)
     if m:
         return int(m.group(1))

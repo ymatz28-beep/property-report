@@ -9,6 +9,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    
+.gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
+.gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.gnav a:hover{color:#fff}
+.gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
+@media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+
     :root {
       --bg:#0b0f16;
       --bg2:#101826;
@@ -211,6 +219,7 @@
   </style>
 </head>
 <body>
+  <div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="portfolio_dashboard.html">ポートフォリオ</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html" class="cur">東京</a><a href="naiken-analysis.html">内覧分析</a></div></div>
   <div class="wrap">
     <section class="hero">
       <div class="kicker">PROPERTY SEARCH REPORT / 東京</div>
@@ -218,15 +227,15 @@
       <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
       <div class="badge-row">
         <span class="badge">検索日 2026-02-28</span>
-        <span class="badge">原データ 19件</span>
-        <span class="badge">重複除外 1件</span>
+        <span class="badge">原データ 158件</span>
+        <span class="badge">重複除外 31件</span>
         <span class="badge">売却済除外 0件</span>
         <span class="badge">OC除外 0件</span>
         <span class="badge">ペット不可除外 5件</span>
         <span class="badge">民泊不可除外 0件</span>
         <span class="badge">低スコア除外 1件</span>
-        <span class="badge">厳選TOP 12件</span>
-        <span class="badge">データソース: Yahoo不動産, restate, cowcamo</span>
+        <span class="badge">厳選TOP 112件</span>
+        <span class="badge">データソース: Yahoo不動産, restate, cowcamo, suumo</span>
       </div>
       <div class="badge-row">
         <span class="badge">渋谷区・新宿区・目黒区・台東区・豊島区中心</span><span class="badge">価格上限 5,000万円</span><span class="badge">専有面積 40-70㎡目安</span><span class="badge">ペット可/相談可優先</span>
@@ -234,10 +243,10 @@
     </section>
 
     <section class="grid-4">
-      <div class="card stat"><div class="label">総候補数</div><div class="value">12</div><div class="sub">重複排除後</div></div>
-      <div class="card stat"><div class="label">平均価格</div><div class="value">4,167.0万円</div><div class="sub">全候補平均</div></div>
-      <div class="card stat"><div class="label">平均面積</div><div class="value">45.31㎡</div><div class="sub">全候補平均</div></div>
-      <div class="card stat"><div class="label">最高スコア</div><div class="value">83</div><div class="sub">江戸川橋駅 / 2LDK / 46.92㎡</div></div>
+      <div class="card stat"><div class="label">総候補数</div><div class="value">112</div><div class="sub">重複排除後</div></div>
+      <div class="card stat"><div class="label">平均価格</div><div class="value">4,045.4万円</div><div class="sub">全候補平均</div></div>
+      <div class="card stat"><div class="label">平均面積</div><div class="value">49.44㎡</div><div class="sub">全候補平均</div></div>
+      <div class="card stat"><div class="label">最高スコア</div><div class="value">98</div><div class="sub">キャニオンマンション上鷺宮</div></div>
     </section>
 
     <section class="section">
@@ -275,8 +284,293 @@
           </thead>
           <tbody>
             
-            <tr class="tier-strong" data-index="1" data-name="江戸川橋駅 / 2LDK / 46.92㎡" data-location="東京都新宿区山吹町" data-layout="2LDK" data-tier="強く推奨" data-price="4999" data-area="46.92" data-score="83" data-year="0" data-walk="4">
+            <tr class="tier-strong" data-index="1" data-name="キャニオンマンション上鷺宮" data-location="東京都中野区上鷺宮４" data-layout="3LDK" data-tier="強く推奨" data-price="3300" data-area="59.40" data-score="98" data-year="1978" data-walk="3">
               <td>1</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78764639/" target="_blank" rel="noopener noreferrer">キャニオンマンション上鷺宮</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,300万円</td>
+              <td>59.40㎡</td>
+              <td><div class="clamp2">東京都中野区上鷺宮４</div></td>
+              <td><div class="clamp2">西武池袋線「富士見台」徒歩3分</div></td>
+              <td>1978年</td>
+              <td>3LDK</td>
+              <td class="maint-col">3,000円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">98</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="2" data-name="マイステージ野方" data-location="東京都中野区野方３" data-layout="1LDK" data-tier="強く推奨" data-price="3680" data-area="50.60" data-score="98" data-year="2000" data-walk="3">
+              <td>2</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20220965/" target="_blank" rel="noopener noreferrer">マイステージ野方</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,680万円</td>
+              <td>50.60㎡</td>
+              <td><div class="clamp2">東京都中野区野方３</div></td>
+              <td><div class="clamp2">西武新宿線「野方」徒歩3分</div></td>
+              <td>2000年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">98</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="3" data-name="サンライズ鷺宮" data-location="東京都中野区鷺宮４" data-layout="2LDK" data-tier="強く推奨" data-price="2980" data-area="49.25" data-score="93" data-year="1981" data-walk="6">
+              <td>3</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20270062/" target="_blank" rel="noopener noreferrer">サンライズ鷺宮</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,980万円</td>
+              <td>49.25㎡</td>
+              <td><div class="clamp2">東京都中野区鷺宮４</div></td>
+              <td><div class="clamp2">西武新宿線「鷺ノ宮」徒歩6分</div></td>
+              <td>1981年</td>
+              <td>2LDK</td>
+              <td class="maint-col">7,400円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">93</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="4" data-name="日神シルバーパレス鷺宮" data-location="東京都中野区鷺宮２-1-13" data-layout="1LDK" data-tier="強く推奨" data-price="4280" data-area="47.94" data-score="93" data-year="1984" data-walk="9">
+              <td>4</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79157881/" target="_blank" rel="noopener noreferrer">日神シルバーパレス鷺宮</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,280万円</td>
+              <td>47.94㎡</td>
+              <td><div class="clamp2">東京都中野区鷺宮２-1-13</div></td>
+              <td><div class="clamp2">西武新宿線「野方」徒歩9分</div></td>
+              <td>1984年</td>
+              <td>1LDK</td>
+              <td class="maint-col">8,060円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">93</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="5" data-name="ライオンズマンション曳舟" data-location="東京都墨田区京島３" data-layout="2LDK" data-tier="強く推奨" data-price="4480" data-area="61.36" data-score="91" data-year="1982" data-walk="5">
+              <td>5</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_78638013/" target="_blank" rel="noopener noreferrer">ライオンズマンション曳舟</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>61.36㎡</td>
+              <td><div class="clamp2">東京都墨田区京島３</div></td>
+              <td><div class="clamp2">京成押上線「京成曳舟」徒歩5分</div></td>
+              <td>1982年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">91</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="6" data-name="スターハイツ台東" data-location="東京都台東区台東２" data-layout="2LDK" data-tier="強く推奨" data-price="4480" data-area="44.54" data-score="90" data-year="1982" data-walk="6">
+              <td>6</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20234759/" target="_blank" rel="noopener noreferrer">スターハイツ台東</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>44.54㎡</td>
+              <td><div class="clamp2">東京都台東区台東２</div></td>
+              <td><div class="clamp2">都営大江戸線「新御徒町」徒歩6分</div></td>
+              <td>1982年</td>
+              <td>2LDK</td>
+              <td class="maint-col">12,614円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">90</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="7" data-name="ハイネス野方" data-location="東京都中野区野方５" data-layout="3LDK" data-tier="強く推奨" data-price="3490" data-area="60.16" data-score="88" data-year="1971" data-walk="4">
+              <td>7</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78788788/" target="_blank" rel="noopener noreferrer">ハイネス野方</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,490万円</td>
+              <td>60.16㎡</td>
+              <td><div class="clamp2">東京都中野区野方５</div></td>
+              <td><div class="clamp2">西武新宿線「野方」徒歩4分</div></td>
+              <td>1971年</td>
+              <td>3LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">88</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="8" data-name="エクレール菊川" data-location="東京都墨田区菊川３" data-layout="2DK" data-tier="強く推奨" data-price="3980" data-area="41.85" data-score="88" data-year="1983" data-walk="1">
+              <td>8</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20219545/" target="_blank" rel="noopener noreferrer">エクレール菊川</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,980万円</td>
+              <td>41.85㎡</td>
+              <td><div class="clamp2">東京都墨田区菊川３</div></td>
+              <td><div class="clamp2">都営新宿線「菊川」徒歩1分</div></td>
+              <td>1983年</td>
+              <td>2DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">88</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="9" data-name="新大塚タウンプラザ" data-location="東京都豊島区東池袋５" data-layout="1LDK" data-tier="強く推奨" data-price="3990" data-area="40.14" data-score="88" data-year="1982" data-walk="4">
+              <td>9</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20265506/" target="_blank" rel="noopener noreferrer">新大塚タウンプラザ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,990万円</td>
+              <td>40.14㎡</td>
+              <td><div class="clamp2">東京都豊島区東池袋５</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「新大塚」徒歩4分</div></td>
+              <td>1982年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">88</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="10" data-name="菊川ローヤルコーポ" data-location="東京都墨田区菊川３" data-layout="3DK" data-tier="強く推奨" data-price="4100" data-area="56.66" data-score="88" data-year="1981" data-walk="5">
+              <td>10</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_77817708/" target="_blank" rel="noopener noreferrer">菊川ローヤルコーポ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,100万円</td>
+              <td>56.66㎡</td>
+              <td><div class="clamp2">東京都墨田区菊川３</div></td>
+              <td><div class="clamp2">都営新宿線「菊川」徒歩5分</div></td>
+              <td>1981年</td>
+              <td>3DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">88</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="11" data-name="ドルミ中野弥生町" data-location="東京都中野区弥生町１-57-4" data-layout="1LDK" data-tier="強く推奨" data-price="4180" data-area="40.00" data-score="88" data-year="1983" data-walk="4">
+              <td>11</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20222354/" target="_blank" rel="noopener noreferrer">ドルミ中野弥生町</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,180万円</td>
+              <td>40.00㎡</td>
+              <td><div class="clamp2">東京都中野区弥生町１-57-4</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「中野新橋」徒歩4分</div></td>
+              <td>1983年</td>
+              <td>1LDK</td>
+              <td class="maint-col">9,600円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">88</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="12" data-name="パーク・ハイム沼袋" data-location="東京都中野区沼袋４-２２－１８" data-layout="2LDK" data-tier="強く推奨" data-price="4280" data-area="60.10" data-score="88" data-year="1985" data-walk="7">
+              <td>12</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78951111/" target="_blank" rel="noopener noreferrer">パーク・ハイム沼袋</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,280万円</td>
+              <td>60.10㎡</td>
+              <td><div class="clamp2">東京都中野区沼袋４-２２－１８</div></td>
+              <td><div class="clamp2">西武新宿線「沼袋」徒歩7分</div></td>
+              <td>1985年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">88</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="13" data-name="中野弥生町スカイハイツ" data-location="東京都中野区弥生町５" data-layout="1LDK" data-tier="強く推奨" data-price="4480" data-area="43.50" data-score="88" data-year="1982" data-walk="3">
+              <td>13</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79094539/" target="_blank" rel="noopener noreferrer">中野弥生町スカイハイツ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>43.50㎡</td>
+              <td><div class="clamp2">東京都中野区弥生町５</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「中野富士見町」徒歩3分</div></td>
+              <td>1982年</td>
+              <td>1LDK</td>
+              <td class="maint-col">8,950円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">88</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="14" data-name="藤和シティコープ池袋" data-location="東京都豊島区池袋本町１" data-layout="2LDK" data-tier="強く推奨" data-price="4880" data-area="45.00" data-score="88" data-year="1993" data-walk="5">
+              <td>14</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78942164/" target="_blank" rel="noopener noreferrer">藤和シティコープ池袋</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,880万円</td>
+              <td>45.00㎡</td>
+              <td><div class="clamp2">東京都豊島区池袋本町１</div></td>
+              <td><div class="clamp2">東武東上線「北池袋」徒歩5分</div></td>
+              <td>1993年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">88</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="15" data-name="京成サンコーポ浅草" data-location="東京都台東区西浅草１" data-layout="2LDK" data-tier="強く推奨" data-price="3400" data-area="62.21" data-score="86" data-year="1972" data-walk="5">
+              <td>15</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20313257/" target="_blank" rel="noopener noreferrer">京成サンコーポ浅草</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,400万円</td>
+              <td>62.21㎡</td>
+              <td><div class="clamp2">東京都台東区西浅草１</div></td>
+              <td><div class="clamp2">東京メトロ銀座線「田原町」徒歩5分</div></td>
+              <td>1972年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">86</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="16" data-name="マンション宮" data-location="東京都台東区西浅草３" data-layout="2LDK" data-tier="強く推奨" data-price="4980" data-area="58.30" data-score="86" data-year="1975" data-walk="5">
+              <td>16</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20117413/" target="_blank" rel="noopener noreferrer">マンション宮</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,980万円</td>
+              <td>58.30㎡</td>
+              <td><div class="clamp2">東京都台東区西浅草３</div></td>
+              <td><div class="clamp2">つくばエクスプレス「浅草」徒歩5分</div></td>
+              <td>1975年</td>
+              <td>2LDK</td>
+              <td class="maint-col">16,000円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">86</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="17" data-name="菊川グリーンハイツ" data-location="東京都墨田区菊川３" data-layout="2DK" data-tier="強く推奨" data-price="4180" data-area="50.00" data-score="83" data-year="1980" data-walk="4">
+              <td>17</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79057808/" target="_blank" rel="noopener noreferrer">菊川グリーンハイツ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,180万円</td>
+              <td>50.00㎡</td>
+              <td><div class="clamp2">東京都墨田区菊川３</div></td>
+              <td><div class="clamp2">都営新宿線「菊川」徒歩4分</div></td>
+              <td>1980年</td>
+              <td>2DK</td>
+              <td class="maint-col">9,300円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">83</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="18" data-name="ニュー池袋ハイツ" data-location="東京都豊島区東池袋１" data-layout="1LDK" data-tier="強く推奨" data-price="4480" data-area="42.33" data-score="83" data-year="1982" data-walk="5">
+              <td>18</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78583580/" target="_blank" rel="noopener noreferrer">ニュー池袋ハイツ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>42.33㎡</td>
+              <td><div class="clamp2">東京都豊島区東池袋１</div></td>
+              <td><div class="clamp2">ＪＲ山手線「池袋」徒歩5分</div></td>
+              <td>1982年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">83</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="19" data-name="ライオンズマンション中野弥生町" data-location="東京都中野区弥生町１" data-layout="2LDK" data-tier="強く推奨" data-price="4990" data-area="50.92" data-score="83" data-year="1981" data-walk="9">
+              <td>19</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79082245/" target="_blank" rel="noopener noreferrer">ライオンズマンション中野弥生町</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,990万円</td>
+              <td>50.92㎡</td>
+              <td><div class="clamp2">東京都中野区弥生町１</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「中野坂上」徒歩9分</div></td>
+              <td>1981年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">83</span></td>
+              <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            </tr>
+            
+            <tr class="tier-strong" data-index="20" data-name="江戸川橋駅 / 2LDK / 46.92㎡" data-location="東京都新宿区山吹町" data-layout="2LDK" data-tier="強く推奨" data-price="4999" data-area="46.92" data-score="83" data-year="0" data-walk="4">
+              <td>20</td>
               <td class="name-col"><div class="clamp2"><a href="https://cowcamo.jp/short_stories/tGCfZNycJWs" target="_blank" rel="noopener noreferrer">江戸川橋駅 / 2LDK / 46.92㎡</a></div><div class="source-tag">カウカモ</div></td>
               <td>4,999万円</td>
               <td>46.92㎡</td>
@@ -290,23 +584,158 @@
               <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
             </tr>
             
-            <tr class="tier-strong" data-index="2" data-name="蔵前コヤマハイツ" data-location="東京都台東区寿3丁目" data-layout="3LDK" data-tier="強く推奨" data-price="2780" data-area="57.96" data-score="81" data-year="1971" data-walk="2">
-              <td>2</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024631498/" target="_blank" rel="noopener noreferrer">蔵前コヤマハイツ</a></div><div class="source-tag">Yahoo不動産</div></td>
-              <td>2,780万円</td>
-              <td>57.96㎡</td>
-              <td><div class="clamp2">東京都台東区寿3丁目</div></td>
-              <td><div class="clamp2">東京メトロ銀座線 「田原町」駅 徒歩2分</div></td>
-              <td>1971年</td>
-              <td>3LDK</td>
-              <td class="maint-col">-</td>
-              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-              <td><span class="score-badge" style="--badge:#22c55e">81</span></td>
+            <tr class="tier-strong" data-index="21" data-name="立花パーク・ホームズ" data-location="東京都墨田区立花５" data-layout="2LDK" data-tier="強く推奨" data-price="2850" data-area="49.84" data-score="80" data-year="1987" data-walk="6">
+              <td>21</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20170777/" target="_blank" rel="noopener noreferrer">立花パーク・ホームズ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,850万円</td>
+              <td>49.84㎡</td>
+              <td><div class="clamp2">東京都墨田区立花５</div></td>
+              <td><div class="clamp2">東武亀戸線「小村井」徒歩6分</div></td>
+              <td>1987年</td>
+              <td>2LDK</td>
+              <td class="maint-col">11,180円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#22c55e">80</span></td>
               <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
             </tr>
             
-            <tr class="tier-good" data-index="3" data-name="幡ヶ谷駅 / 1LDK＋S / 47.03㎡" data-location="東京都渋谷区幡ヶ谷" data-layout="1LDK" data-tier="推奨" data-price="4980" data-area="47.03" data-score="78" data-year="0" data-walk="4">
-              <td>3</td>
+            <tr class="tier-good" data-index="22" data-name="ライオンズプラザ東向島" data-location="東京都墨田区墨田１-１５－１５" data-layout="2DK" data-tier="推奨" data-price="2980" data-area="42.48" data-score="78" data-year="1993" data-walk="4">
+              <td>22</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_78658957/" target="_blank" rel="noopener noreferrer">ライオンズプラザ東向島</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,980万円</td>
+              <td>42.48㎡</td>
+              <td><div class="clamp2">東京都墨田区墨田１-１５－１５</div></td>
+              <td><div class="clamp2">東武伊勢崎線「東向島」徒歩4分</div></td>
+              <td>1993年</td>
+              <td>2DK</td>
+              <td class="maint-col">8,100円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="23" data-name="上高田四丁目団地" data-location="東京都中野区上高田４" data-layout="2DK" data-tier="推奨" data-price="3000" data-area="49.14" data-score="78" data-year="1971" data-walk="10">
+              <td>23</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_77015069/" target="_blank" rel="noopener noreferrer">上高田四丁目団地</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,000万円</td>
+              <td>49.14㎡</td>
+              <td><div class="clamp2">東京都中野区上高田４</div></td>
+              <td><div class="clamp2">西武新宿線「新井薬師前」徒歩10分</div></td>
+              <td>1971年</td>
+              <td>2DK</td>
+              <td class="maint-col">18,500円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="24" data-name="ダイアパレス亀戸立花" data-location="東京都墨田区立花４-3-8" data-layout="1LDK+S（納戸）" data-tier="推奨" data-price="3280" data-area="54.90" data-score="78" data-year="1994" data-walk="2">
+              <td>24</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20291038/" target="_blank" rel="noopener noreferrer">ダイアパレス亀戸立花</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,280万円</td>
+              <td>54.90㎡</td>
+              <td><div class="clamp2">東京都墨田区立花４-3-8</div></td>
+              <td><div class="clamp2">東武亀戸線「小村井」徒歩2分</div></td>
+              <td>1994年</td>
+              <td>1LDK+S（納戸）</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="25" data-name="ライオンズマンション江古田" data-location="東京都中野区江原町３" data-layout="2LDK" data-tier="推奨" data-price="3480" data-area="49.71" data-score="78" data-year="1972" data-walk="5">
+              <td>25</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20261992/" target="_blank" rel="noopener noreferrer">ライオンズマンション江古田</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,480万円</td>
+              <td>49.71㎡</td>
+              <td><div class="clamp2">東京都中野区江原町３</div></td>
+              <td><div class="clamp2">都営大江戸線「新江古田」徒歩5分</div></td>
+              <td>1972年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="26" data-name="エクセルシィオール五條" data-location="東京都中野区本町３" data-layout="2LDK" data-tier="推奨" data-price="3499" data-area="49.23" data-score="78" data-year="1980" data-walk="4">
+              <td>26</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20255704/" target="_blank" rel="noopener noreferrer">エクセルシィオール五條</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,499万円</td>
+              <td>49.23㎡</td>
+              <td><div class="clamp2">東京都中野区本町３</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「中野新橋」徒歩4分</div></td>
+              <td>1980年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="27" data-name="ライオンズマンション江古田" data-location="東京都中野区江原町３-5-10" data-layout="3LDK" data-tier="推奨" data-price="3880" data-area="58.18" data-score="78" data-year="1972" data-walk="5">
+              <td>27</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20333115/" target="_blank" rel="noopener noreferrer">ライオンズマンション江古田</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,880万円</td>
+              <td>58.18㎡</td>
+              <td><div class="clamp2">東京都中野区江原町３-5-10</div></td>
+              <td><div class="clamp2">都営大江戸線「新江古田」徒歩5分</div></td>
+              <td>1972年</td>
+              <td>3LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="28" data-name="リバーサイド・ヒロ" data-location="東京都中野区本町３" data-layout="1LDK" data-tier="推奨" data-price="4350" data-area="42.00" data-score="78" data-year="1989" data-walk="4">
+              <td>28</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20269711/" target="_blank" rel="noopener noreferrer">リバーサイド・ヒロ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,350万円</td>
+              <td>42.00㎡</td>
+              <td><div class="clamp2">東京都中野区本町３</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「中野新橋」徒歩4分</div></td>
+              <td>1989年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="29" data-name="アビタシオン南長崎" data-location="東京都豊島区南長崎６" data-layout="2DK" data-tier="推奨" data-price="4580" data-area="50.75" data-score="78" data-year="1994" data-walk="9">
+              <td>29</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20188152/" target="_blank" rel="noopener noreferrer">アビタシオン南長崎</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,580万円</td>
+              <td>50.75㎡</td>
+              <td><div class="clamp2">東京都豊島区南長崎６</div></td>
+              <td><div class="clamp2">西武池袋線「東長崎」徒歩9分</div></td>
+              <td>1994年</td>
+              <td>2DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="30" data-name="宏和マンション池袋" data-location="東京都豊島区西池袋５" data-layout="2LDK" data-tier="推奨" data-price="4699" data-area="44.62" data-score="78" data-year="1979" data-walk="2">
+              <td>30</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20226917/" target="_blank" rel="noopener noreferrer">宏和マンション池袋</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,699万円</td>
+              <td>44.62㎡</td>
+              <td><div class="clamp2">東京都豊島区西池袋５</div></td>
+              <td><div class="clamp2">東京メトロ有楽町線「要町」徒歩2分</div></td>
+              <td>1979年</td>
+              <td>2LDK</td>
+              <td class="maint-col">15,900円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="31" data-name="幡ヶ谷駅 / 1LDK＋S / 47.03㎡" data-location="東京都渋谷区幡ヶ谷" data-layout="1LDK" data-tier="推奨" data-price="4980" data-area="47.03" data-score="78" data-year="0" data-walk="4">
+              <td>31</td>
               <td class="name-col"><div class="clamp2"><a href="https://cowcamo.jp/short_stories/ch0ZrXkJnXM" target="_blank" rel="noopener noreferrer">幡ヶ谷駅 / 1LDK＋S / 47.03㎡</a></div><div class="source-tag">カウカモ</div></td>
               <td>4,980万円</td>
               <td>47.03㎡</td>
@@ -320,138 +749,1218 @@
               <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
             </tr>
             
-            <tr class="tier-good" data-index="4" data-name="ドルミ中野弥生町" data-location="東京都中野区弥生町1丁目" data-layout="1LDK" data-tier="推奨" data-price="4180" data-area="40.00" data-score="68" data-year="1983" data-walk="4">
-              <td>4</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024609469/" target="_blank" rel="noopener noreferrer">ドルミ中野弥生町</a></div><div class="source-tag">Yahoo不動産</div></td>
-              <td>4,180万円</td>
-              <td>40.00㎡</td>
-              <td><div class="clamp2">東京都中野区弥生町1丁目</div></td>
-              <td><div class="clamp2">東京メトロ丸ノ内方南支線 「中野新橋」駅 徒歩4分</div></td>
-              <td>1983年</td>
+            <tr class="tier-good" data-index="32" data-name="パール上池袋" data-location="東京都豊島区上池袋２" data-layout="1LDK" data-tier="推奨" data-price="4998" data-area="41.80" data-score="78" data-year="1990" data-walk="9">
+              <td>32</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78299844/" target="_blank" rel="noopener noreferrer">パール上池袋</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,998万円</td>
+              <td>41.80㎡</td>
+              <td><div class="clamp2">東京都豊島区上池袋２</div></td>
+              <td><div class="clamp2">ＪＲ山手線「池袋」徒歩9分</div></td>
+              <td>1990年</td>
               <td>1LDK</td>
               <td class="maint-col">-</td>
-              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">78</span></td>
               <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
             </tr>
             
-            <tr class="tier-good" data-index="5" data-name="アークステージ高田馬場" data-location="東京都新宿区高田馬場3丁目" data-layout="2LDK" data-tier="推奨" data-price="4999" data-area="51.78" data-score="68" data-year="1996" data-walk="11">
-              <td>5</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0023592069/" target="_blank" rel="noopener noreferrer">アークステージ高田馬場</a></div><div class="source-tag">Yahoo不動産</div></td>
-              <td>4,999万円</td>
-              <td>51.78㎡</td>
-              <td><div class="clamp2">東京都新宿区高田馬場3丁目</div></td>
-              <td><div class="clamp2">西武新宿線 「高田馬場」駅 徒歩11分</div></td>
-              <td>1996年</td>
+            <tr class="tier-good" data-index="33" data-name="恵進マンション" data-location="東京都墨田区吾妻橋３-2-4" data-layout="ワンルーム" data-tier="推奨" data-price="2480" data-area="41.33" data-score="76" data-year="1972" data-walk="1">
+              <td>33</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20158878/" target="_blank" rel="noopener noreferrer">恵進マンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,480万円</td>
+              <td>41.33㎡</td>
+              <td><div class="clamp2">東京都墨田区吾妻橋３-2-4</div></td>
+              <td><div class="clamp2">都営浅草線「本所吾妻橋」徒歩1分</div></td>
+              <td>1972年</td>
+              <td>ワンルーム</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">76</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="34" data-name="祐天寺第二コーポラス" data-location="東京都目黒区上目黒５" data-layout="2LDK" data-tier="推奨" data-price="4280" data-area="50.22" data-score="75" data-year="1970" data-walk="9">
+              <td>34</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20025481/" target="_blank" rel="noopener noreferrer">祐天寺第二コーポラス</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,280万円</td>
+              <td>50.22㎡</td>
+              <td><div class="clamp2">東京都目黒区上目黒５</div></td>
+              <td><div class="clamp2">東急東横線「祐天寺」徒歩9分</div></td>
+              <td>1970年</td>
+              <td>2LDK</td>
+              <td class="maint-col">10,985円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">75</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="35" data-name="エクレール巣鴨" data-location="東京都豊島区西巣鴨３" data-layout="2DK" data-tier="推奨" data-price="4550" data-area="47.87" data-score="75" data-year="1984" data-walk="5">
+              <td>35</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78908924/" target="_blank" rel="noopener noreferrer">エクレール巣鴨</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,550万円</td>
+              <td>47.87㎡</td>
+              <td><div class="clamp2">東京都豊島区西巣鴨３</div></td>
+              <td><div class="clamp2">都営三田線「西巣鴨」徒歩5分</div></td>
+              <td>1984年</td>
+              <td>2DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">75</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="36" data-name="大江戸コーポ" data-location="東京都中野区中央２" data-layout="1LDK" data-tier="推奨" data-price="2980" data-area="46.28" data-score="73" data-year="1970" data-walk="1">
+              <td>36</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78515092/" target="_blank" rel="noopener noreferrer">大江戸コーポ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,980万円</td>
+              <td>46.28㎡</td>
+              <td><div class="clamp2">東京都中野区中央２</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「中野坂上」徒歩1分</div></td>
+              <td>1970年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="37" data-name="中銀南長崎マンシオン" data-location="東京都豊島区南長崎１-3-1" data-layout="1LDK" data-tier="推奨" data-price="3480" data-area="45.80" data-score="73" data-year="1971" data-walk="7">
+              <td>37</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20335422/" target="_blank" rel="noopener noreferrer">中銀南長崎マンシオン</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,480万円</td>
+              <td>45.80㎡</td>
+              <td><div class="clamp2">東京都豊島区南長崎１-3-1</div></td>
+              <td><div class="clamp2">西武池袋線「椎名町」徒歩7分</div></td>
+              <td>1971年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="38" data-name="ニックハイム向島百花園" data-location="東京都墨田区東向島３" data-layout="2LDK" data-tier="推奨" data-price="3480" data-area="47.30" data-score="73" data-year="1982" data-walk="10">
+              <td>38</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20020844/" target="_blank" rel="noopener noreferrer">ニックハイム向島百花園</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,480万円</td>
+              <td>47.30㎡</td>
+              <td><div class="clamp2">東京都墨田区東向島３</div></td>
+              <td><div class="clamp2">東武伊勢崎線「東向島」徒歩10分</div></td>
+              <td>1982年</td>
               <td>2LDK</td>
               <td class="maint-col">-</td>
-              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="39" data-name="ヴィラロイヤル東中野" data-location="東京都中野区東中野５" data-layout="2LDK" data-tier="推奨" data-price="3500" data-area="62.94" data-score="73" data-year="1969" data-walk="7">
+              <td>39</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79163699/" target="_blank" rel="noopener noreferrer">ヴィラロイヤル東中野</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,500万円</td>
+              <td>62.94㎡</td>
+              <td><div class="clamp2">東京都中野区東中野５</div></td>
+              <td><div class="clamp2">ＪＲ中央線「東中野」徒歩7分</div></td>
+              <td>1969年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="40" data-name="ヴィラロイヤル東中野 706号室" data-location="東京都中野区東中野５" data-layout="2LDK" data-tier="推奨" data-price="3500" data-area="62.94" data-score="73" data-year="1969" data-walk="7">
+              <td>40</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79140949/" target="_blank" rel="noopener noreferrer">ヴィラロイヤル東中野 706号室</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,500万円</td>
+              <td>62.94㎡</td>
+              <td><div class="clamp2">東京都中野区東中野５</div></td>
+              <td><div class="clamp2">ＪＲ中央線「東中野」徒歩7分</div></td>
+              <td>1969年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="41" data-name="GENOVIA墨田文化skygurden" data-location="東京都墨田区文花２-11-5" data-layout="1LDK" data-tier="推奨" data-price="3650" data-area="40.59" data-score="73" data-year="2018" data-walk="2">
+              <td>41</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79096886/" target="_blank" rel="noopener noreferrer">GENOVIA墨田文化skygurden</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,650万円</td>
+              <td>40.59㎡</td>
+              <td><div class="clamp2">東京都墨田区文花２-11-5</div></td>
+              <td><div class="clamp2">東武亀戸線「小村井」徒歩2分</div></td>
+              <td>2018年</td>
+              <td>1LDK</td>
+              <td class="maint-col">18,800円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="42" data-name="市ヶ谷ローヤルコーポ" data-location="東京都新宿区南町１５" data-layout="1LDK" data-tier="推奨" data-price="3750" data-area="48.73" data-score="73" data-year="1976" data-walk="7">
+              <td>42</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_78814800/" target="_blank" rel="noopener noreferrer">市ヶ谷ローヤルコーポ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,750万円</td>
+              <td>48.73㎡</td>
+              <td><div class="clamp2">東京都新宿区南町１５</div></td>
+              <td><div class="clamp2">都営大江戸線「牛込神楽坂」徒歩7分</div></td>
+              <td>1976年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="43" data-name="マンションヴィップ上池袋" data-location="東京都豊島区上池袋１-１０－６" data-layout="2LDK" data-tier="推奨" data-price="4000" data-area="69.36" data-score="73" data-year="1980" data-walk="10">
+              <td>43</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20210109/" target="_blank" rel="noopener noreferrer">マンションヴィップ上池袋</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,000万円</td>
+              <td>69.36㎡</td>
+              <td><div class="clamp2">東京都豊島区上池袋１-１０－６</div></td>
+              <td><div class="clamp2">ＪＲ山手線「池袋」徒歩10分</div></td>
+              <td>1980年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="44" data-name="東池袋ハイツ壱番館" data-location="東京都豊島区東池袋３-２０－２０" data-layout="ワンルーム" data-tier="推奨" data-price="4280" data-area="40.19" data-score="73" data-year="1987" data-walk="10">
+              <td>44</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20106208/" target="_blank" rel="noopener noreferrer">東池袋ハイツ壱番館</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,280万円</td>
+              <td>40.19㎡</td>
+              <td><div class="clamp2">東京都豊島区東池袋３-２０－２０</div></td>
+              <td><div class="clamp2">ＪＲ山手線「池袋」徒歩10分</div></td>
+              <td>1987年</td>
+              <td>ワンルーム</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="45" data-name="東長崎ハイツ" data-location="東京都豊島区長崎５" data-layout="3LDK" data-tier="推奨" data-price="4380" data-area="67.53" data-score="73" data-year="1981" data-walk="4">
+              <td>45</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_77575928/" target="_blank" rel="noopener noreferrer">東長崎ハイツ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,380万円</td>
+              <td>67.53㎡</td>
+              <td><div class="clamp2">東京都豊島区長崎５</div></td>
+              <td><div class="clamp2">西武池袋線「東長崎」徒歩4分</div></td>
+              <td>1981年</td>
+              <td>3LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="46" data-name="藤和東中野コープ" data-location="東京都中野区東中野３-16-18" data-layout="2LDK" data-tier="推奨" data-price="4480" data-area="53.84" data-score="73" data-year="1968" data-walk="2">
+              <td>46</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78800772/" target="_blank" rel="noopener noreferrer">藤和東中野コープ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>53.84㎡</td>
+              <td><div class="clamp2">東京都中野区東中野３-16-18</div></td>
+              <td><div class="clamp2">東京メトロ東西線「落合」徒歩2分</div></td>
+              <td>1968年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="47" data-name="プロスペアー中野" data-location="東京都中野区中野２" data-layout="2DK" data-tier="推奨" data-price="4480" data-area="44.66" data-score="73" data-year="1982" data-walk="4">
+              <td>47</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78420924/" target="_blank" rel="noopener noreferrer">プロスペアー中野</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>44.66㎡</td>
+              <td><div class="clamp2">東京都中野区中野２</div></td>
+              <td><div class="clamp2">ＪＲ総武線「中野」徒歩4分</div></td>
+              <td>1982年</td>
+              <td>2DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="48" data-name="東建池袋要町マンション" data-location="東京都豊島区要町３" data-layout="2LDK" data-tier="推奨" data-price="4580" data-area="48.60" data-score="73" data-year="1971" data-walk="2">
+              <td>48</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20321930/" target="_blank" rel="noopener noreferrer">東建池袋要町マンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,580万円</td>
+              <td>48.60㎡</td>
+              <td><div class="clamp2">東京都豊島区要町３</div></td>
+              <td><div class="clamp2">東京メトロ有楽町線「千川」徒歩2分</div></td>
+              <td>1971年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="49" data-name="東建池袋要町マンシヨン" data-location="東京都豊島区要町３" data-layout="2LDK" data-tier="推奨" data-price="4580" data-area="48.60" data-score="73" data-year="1971" data-walk="2">
+              <td>49</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20315179/" target="_blank" rel="noopener noreferrer">東建池袋要町マンシヨン</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,580万円</td>
+              <td>48.60㎡</td>
+              <td><div class="clamp2">東京都豊島区要町３</div></td>
+              <td><div class="clamp2">東京メトロ副都心線「千川」徒歩2分</div></td>
+              <td>1971年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="50" data-name="プリマドムス立花" data-location="東京都墨田区立花３" data-layout="2LDK" data-tier="推奨" data-price="4580" data-area="56.03" data-score="73" data-year="1990" data-walk="5">
+              <td>50</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20100853/" target="_blank" rel="noopener noreferrer">プリマドムス立花</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,580万円</td>
+              <td>56.03㎡</td>
+              <td><div class="clamp2">東京都墨田区立花３</div></td>
+              <td><div class="clamp2">東武亀戸線「東あずま」徒歩5分</div></td>
+              <td>1990年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="51" data-name="ニックハイム南池袋" data-location="東京都豊島区南池袋３-8-1" data-layout="2DK" data-tier="推奨" data-price="4580" data-area="44.18" data-score="73" data-year="1981" data-walk="6">
+              <td>51</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20296698/" target="_blank" rel="noopener noreferrer">ニックハイム南池袋</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,580万円</td>
+              <td>44.18㎡</td>
+              <td><div class="clamp2">東京都豊島区南池袋３-8-1</div></td>
+              <td><div class="clamp2">ＪＲ山手線「池袋」徒歩6分</div></td>
+              <td>1981年</td>
+              <td>2DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="52" data-name="湯島武蔵野マンション" data-location="東京都文京区本郷３" data-layout="1LDK" data-tier="推奨" data-price="4780" data-area="41.79" data-score="73" data-year="1971" data-walk="5">
+              <td>52</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_bunkyo/nc_20265119/" target="_blank" rel="noopener noreferrer">湯島武蔵野マンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,780万円</td>
+              <td>41.79㎡</td>
+              <td><div class="clamp2">東京都文京区本郷３</div></td>
+              <td><div class="clamp2">都営大江戸線「本郷三丁目」徒歩5分</div></td>
+              <td>1971年</td>
+              <td>1LDK</td>
+              <td class="maint-col">7,138円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="53" data-name="中野プリンスマンション" data-location="東京都中野区中野５" data-layout="1LDK" data-tier="推奨" data-price="4930" data-area="42.33" data-score="73" data-year="1984" data-walk="7">
+              <td>53</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20279251/" target="_blank" rel="noopener noreferrer">中野プリンスマンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,930万円</td>
+              <td>42.33㎡</td>
+              <td><div class="clamp2">東京都中野区中野５</div></td>
+              <td><div class="clamp2">ＪＲ総武線「中野」徒歩7分</div></td>
+              <td>1984年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="54" data-name="中銀東上野マンシオン" data-location="東京都台東区東上野５" data-layout="2LDK" data-tier="推奨" data-price="4980" data-area="57.90" data-score="73" data-year="1980" data-walk="6">
+              <td>54</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20309360/" target="_blank" rel="noopener noreferrer">中銀東上野マンシオン</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,980万円</td>
+              <td>57.90㎡</td>
+              <td><div class="clamp2">東京都台東区東上野５</div></td>
+              <td><div class="clamp2">ＪＲ山手線「上野」徒歩6分</div></td>
+              <td>1980年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">73</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="55" data-name="浅草ロイヤルマンション" data-location="東京都台東区今戸２" data-layout="2LDK" data-tier="推奨" data-price="4198" data-area="50.60" data-score="71" data-year="1979" data-walk="15">
+              <td>55</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_79072581/" target="_blank" rel="noopener noreferrer">浅草ロイヤルマンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,198万円</td>
+              <td>50.60㎡</td>
+              <td><div class="clamp2">東京都台東区今戸２</div></td>
+              <td><div class="clamp2">東武伊勢崎線「浅草」徒歩15分</div></td>
+              <td>1979年</td>
+              <td>2LDK</td>
+              <td class="maint-col">8,320円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">71</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="56" data-name="リバーサイドハイツ" data-location="東京都墨田区本所１" data-layout="2LDK" data-tier="推奨" data-price="4480" data-area="47.77" data-score="71" data-year="1980" data-walk="6">
+              <td>56</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20279060/" target="_blank" rel="noopener noreferrer">リバーサイドハイツ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>47.77㎡</td>
+              <td><div class="clamp2">東京都墨田区本所１</div></td>
+              <td><div class="clamp2">都営大江戸線「蔵前」徒歩6分</div></td>
+              <td>1980年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">71</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="57" data-name="中野坂上ダイヤハイツ" data-location="東京都中野区本町２" data-layout="ワンルーム" data-tier="推奨" data-price="2400" data-area="41.85" data-score="68" data-year="1971" data-walk="1">
+              <td>57</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79199006/" target="_blank" rel="noopener noreferrer">中野坂上ダイヤハイツ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,400万円</td>
+              <td>41.85㎡</td>
+              <td><div class="clamp2">東京都中野区本町２</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「中野坂上」徒歩1分</div></td>
+              <td>1971年</td>
+              <td>ワンルーム</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#facc15">68</span></td>
               <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
             </tr>
             
-            <tr class="tier-good" data-index="6" data-name="ライジングプレイス浅草弐番館" data-location="東京都台東区千束4丁目" data-layout="1K" data-tier="推奨" data-price="2330" data-area="25.61" data-score="66" data-year="2008" data-walk="8">
-              <td>6</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0023817347/" target="_blank" rel="noopener noreferrer">ライジングプレイス浅草弐番館</a></div><div class="source-tag">Yahoo不動産</div></td>
-              <td>2,330万円</td>
-              <td>25.61㎡</td>
-              <td><div class="clamp2">東京都台東区千束4丁目</div></td>
-              <td><div class="clamp2">東京メトロ日比谷線 「三ノ輪」駅 徒歩8分</div></td>
-              <td>2008年</td>
-              <td>1K</td>
+            <tr class="tier-good" data-index="58" data-name="光建ハイツ目白" data-location="東京都豊島区目白５" data-layout="2DK" data-tier="推奨" data-price="2750" data-area="49.77" data-score="68" data-year="1981" data-walk="7">
+              <td>58</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20035299/" target="_blank" rel="noopener noreferrer">光建ハイツ目白</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,750万円</td>
+              <td>49.77㎡</td>
+              <td><div class="clamp2">東京都豊島区目白５</div></td>
+              <td><div class="clamp2">西武池袋線「椎名町」徒歩7分</div></td>
+              <td>1981年</td>
+              <td>2DK</td>
               <td class="maint-col">-</td>
-              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-zero">面積0</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="59" data-name="光栄ハイツ" data-location="東京都中野区本町５" data-layout="2DK" data-tier="推奨" data-price="3080" data-area="44.19" data-score="68" data-year="1979" data-walk="5">
+              <td>59</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20318478/" target="_blank" rel="noopener noreferrer">光栄ハイツ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,080万円</td>
+              <td>44.19㎡</td>
+              <td><div class="clamp2">東京都中野区本町５</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「中野富士見町」徒歩5分</div></td>
+              <td>1979年</td>
+              <td>2DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="60" data-name="秀和都立大レジデンス" data-location="東京都目黒区中根２" data-layout="1LDK" data-tier="推奨" data-price="3499" data-area="44.09" data-score="68" data-year="1968" data-walk="8">
+              <td>60</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_78872857/" target="_blank" rel="noopener noreferrer">秀和都立大レジデンス</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,499万円</td>
+              <td>44.09㎡</td>
+              <td><div class="clamp2">東京都目黒区中根２</div></td>
+              <td><div class="clamp2">東急東横線「都立大学」徒歩8分</div></td>
+              <td>1968年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="61" data-name="大塚キャノンハイツ" data-location="東京都豊島区西巣鴨１-5-6" data-layout="2DK" data-tier="推奨" data-price="3880" data-area="47.07" data-score="68" data-year="1979" data-walk="9">
+              <td>61</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20335958/" target="_blank" rel="noopener noreferrer">大塚キャノンハイツ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,880万円</td>
+              <td>47.07㎡</td>
+              <td><div class="clamp2">東京都豊島区西巣鴨１-5-6</div></td>
+              <td><div class="clamp2">ＪＲ山手線「大塚」徒歩9分</div></td>
+              <td>1979年</td>
+              <td>2DK</td>
+              <td class="maint-col">16,500円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="62" data-name="ニュー目黒フラワーマンション" data-location="東京都目黒区下目黒２-19-8" data-layout="1LDK" data-tier="推奨" data-price="3980" data-area="47.84" data-score="68" data-year="1970" data-walk="8">
+              <td>62</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_79168160/" target="_blank" rel="noopener noreferrer">ニュー目黒フラワーマンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,980万円</td>
+              <td>47.84㎡</td>
+              <td><div class="clamp2">東京都目黒区下目黒２-19-8</div></td>
+              <td><div class="clamp2">ＪＲ山手線「目黒」徒歩8分</div></td>
+              <td>1970年</td>
+              <td>1LDK</td>
+              <td class="maint-col">17,900円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="63" data-name="ハイネス大塚" data-location="東京都豊島区南大塚２" data-layout="1LDK" data-tier="推奨" data-price="3980" data-area="40.74" data-score="68" data-year="1975" data-walk="8">
+              <td>63</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20058074/" target="_blank" rel="noopener noreferrer">ハイネス大塚</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,980万円</td>
+              <td>40.74㎡</td>
+              <td><div class="clamp2">東京都豊島区南大塚２</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「新大塚」徒歩8分</div></td>
+              <td>1975年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="64" data-name="サンコート池袋" data-location="東京都豊島区池袋４-17-3" data-layout="1LDK" data-tier="推奨" data-price="3998" data-area="42.44" data-score="68" data-year="1984" data-walk="13">
+              <td>64</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20214392/" target="_blank" rel="noopener noreferrer">サンコート池袋</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,998万円</td>
+              <td>42.44㎡</td>
+              <td><div class="clamp2">東京都豊島区池袋４-17-3</div></td>
+              <td><div class="clamp2">ＪＲ山手線「池袋」徒歩13分</div></td>
+              <td>1984年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="65" data-name="エクレール亀戸" data-location="東京都墨田区文花２" data-layout="1LDK+S（納戸）" data-tier="推奨" data-price="4080" data-area="51.66" data-score="68" data-year="1984" data-walk="6">
+              <td>65</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_78817240/" target="_blank" rel="noopener noreferrer">エクレール亀戸</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,080万円</td>
+              <td>51.66㎡</td>
+              <td><div class="clamp2">東京都墨田区文花２</div></td>
+              <td><div class="clamp2">東武亀戸線「小村井」徒歩6分</div></td>
+              <td>1984年</td>
+              <td>1LDK+S（納戸）</td>
+              <td class="maint-col">19,712円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="66" data-name="カクエイ・ハイホーム" data-location="東京都豊島区南長崎５-4-1" data-layout="3DK" data-tier="推奨" data-price="4180" data-area="59.14" data-score="68" data-year="1967" data-walk="4">
+              <td>66</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_79189814/" target="_blank" rel="noopener noreferrer">カクエイ・ハイホーム</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,180万円</td>
+              <td>59.14㎡</td>
+              <td><div class="clamp2">東京都豊島区南長崎５-4-1</div></td>
+              <td><div class="clamp2">西武池袋線「東長崎」徒歩4分</div></td>
+              <td>1967年</td>
+              <td>3DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="67" data-name="ドルミ錦糸町大興ビル" data-location="東京都墨田区江東橋３" data-layout="2LDK" data-tier="推奨" data-price="4480" data-area="52.91" data-score="68" data-year="1980" data-walk="5">
+              <td>67</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79117927/" target="_blank" rel="noopener noreferrer">ドルミ錦糸町大興ビル</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>52.91㎡</td>
+              <td><div class="clamp2">東京都墨田区江東橋３</div></td>
+              <td><div class="clamp2">ＪＲ総武線「錦糸町」徒歩5分</div></td>
+              <td>1980年</td>
+              <td>2LDK</td>
+              <td class="maint-col">9,380円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="68" data-name="クレスト落合" data-location="東京都中野区上高田１" data-layout="1DK" data-tier="推奨" data-price="4480" data-area="41.21" data-score="68" data-year="1995" data-walk="9">
+              <td>68</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_77735033/" target="_blank" rel="noopener noreferrer">クレスト落合</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>41.21㎡</td>
+              <td><div class="clamp2">東京都中野区上高田１</div></td>
+              <td><div class="clamp2">東京メトロ東西線「落合」徒歩9分</div></td>
+              <td>1995年</td>
+              <td>1DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="69" data-name="シーアイマンションあずま百樹園" data-location="東京都墨田区文花２" data-layout="3LDK" data-tier="推奨" data-price="4499" data-area="62.71" data-score="68" data-year="1995" data-walk="5">
+              <td>69</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_78318672/" target="_blank" rel="noopener noreferrer">シーアイマンションあずま百樹園</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,499万円</td>
+              <td>62.71㎡</td>
+              <td><div class="clamp2">東京都墨田区文花２</div></td>
+              <td><div class="clamp2">東武亀戸線「小村井」徒歩5分</div></td>
+              <td>1995年</td>
+              <td>3LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="70" data-name="プリマドムス立花" data-location="東京都墨田区立花３" data-layout="2LDK" data-tier="推奨" data-price="4980" data-area="64.99" data-score="68" data-year="1990" data-walk="5">
+              <td>70</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20335733/" target="_blank" rel="noopener noreferrer">プリマドムス立花</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,980万円</td>
+              <td>64.99㎡</td>
+              <td><div class="clamp2">東京都墨田区立花３</div></td>
+              <td><div class="clamp2">東武亀戸線「東あずま」徒歩5分</div></td>
+              <td>1990年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="71" data-name="京王南台コーポラス" data-location="東京都中野区南台５" data-layout="2LDK" data-tier="推奨" data-price="4980" data-area="54.88" data-score="68" data-year="1970" data-walk="6">
+              <td>71</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20286505/" target="_blank" rel="noopener noreferrer">京王南台コーポラス</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,980万円</td>
+              <td>54.88㎡</td>
+              <td><div class="clamp2">東京都中野区南台５</div></td>
+              <td><div class="clamp2">東京メトロ丸ノ内線「方南町」徒歩6分</div></td>
+              <td>1970年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="72" data-name="ドラゴンマンション三ノ輪壱番館" data-location="東京都台東区日本堤２" data-layout="2LDK" data-tier="推奨" data-price="4980" data-area="58.08" data-score="68" data-year="1999" data-walk="8">
+              <td>72</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20235868/" target="_blank" rel="noopener noreferrer">ドラゴンマンション三ノ輪壱番館</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,980万円</td>
+              <td>58.08㎡</td>
+              <td><div class="clamp2">東京都台東区日本堤２</div></td>
+              <td><div class="clamp2">東京メトロ日比谷線「三ノ輪」徒歩8分</div></td>
+              <td>1999年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">68</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="73" data-name="メイゾン向島" data-location="東京都墨田区向島２" data-layout="2LDK" data-tier="推奨" data-price="3699" data-area="53.12" data-score="66" data-year="1973" data-walk="11">
+              <td>73</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79226905/" target="_blank" rel="noopener noreferrer">メイゾン向島</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,699万円</td>
+              <td>53.12㎡</td>
+              <td><div class="clamp2">東京都墨田区向島２</div></td>
+              <td><div class="clamp2">東京メトロ半蔵門線「押上」徒歩11分</div></td>
+              <td>1973年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#facc15">66</span></td>
               <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
             </tr>
             
-            <tr class="tier-conditional" data-index="7" data-name="日神デュオステージ笹塚西館" data-location="東京都渋谷区笹塚2丁目" data-layout="1DK" data-tier="条件付き" data-price="4580" data-area="29.84" data-score="63" data-year="2003" data-walk="3">
-              <td>7</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024371014/" target="_blank" rel="noopener noreferrer">日神デュオステージ笹塚西館</a></div><div class="source-tag">Yahoo不動産</div></td>
-              <td>4,580万円</td>
-              <td>29.84㎡</td>
-              <td><div class="clamp2">東京都渋谷区笹塚2丁目</div></td>
-              <td><div class="clamp2">京王線 「笹塚」駅 徒歩3分</div></td>
-              <td>2003年</td>
-              <td>1DK</td>
+            <tr class="tier-good" data-index="74" data-name="カーサ本所" data-location="東京都墨田区本所４" data-layout="1LDK+S（納戸）" data-tier="推奨" data-price="4280" data-area="46.58" data-score="66" data-year="1979" data-walk="6">
+              <td>74</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79121082/" target="_blank" rel="noopener noreferrer">カーサ本所</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,280万円</td>
+              <td>46.58㎡</td>
+              <td><div class="clamp2">東京都墨田区本所４</div></td>
+              <td><div class="clamp2">都営浅草線「本所吾妻橋」徒歩6分</div></td>
+              <td>1979年</td>
+              <td>1LDK+S（納戸）</td>
               <td class="maint-col">-</td>
-              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-zero">面積0</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">66</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-good" data-index="75" data-name="パールハイツ大塚" data-location="東京都豊島区北大塚３" data-layout="3DK" data-tier="推奨" data-price="4480" data-area="49.51" data-score="65" data-year="1979" data-walk="8">
+              <td>75</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20273042/" target="_blank" rel="noopener noreferrer">パールハイツ大塚</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>49.51㎡</td>
+              <td><div class="clamp2">東京都豊島区北大塚３</div></td>
+              <td><div class="clamp2">ＪＲ山手線「大塚」徒歩8分</div></td>
+              <td>1979年</td>
+              <td>3DK</td>
+              <td class="maint-col">13,920円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#facc15">65</span></td>
+              <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="76" data-name="秀和東中野レジデンス" data-location="東京都中野区東中野１" data-layout="3DK" data-tier="条件付き" data-price="4198" data-area="52.46" data-score="63" data-year="1969" data-walk="2">
+              <td>76</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20044213/" target="_blank" rel="noopener noreferrer">秀和東中野レジデンス</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,198万円</td>
+              <td>52.46㎡</td>
+              <td><div class="clamp2">東京都中野区東中野１</div></td>
+              <td><div class="clamp2">ＪＲ中央線「東中野」徒歩2分</div></td>
+              <td>1969年</td>
+              <td>3DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
               <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
             </tr>
             
-            <tr class="tier-conditional" data-index="8" data-name="東洋巣鴨コーポ" data-location="東京都豊島区巣鴨1丁目" data-layout="3LDK" data-tier="条件付き" data-price="4998" data-area="57.74" data-score="63" data-year="1981" data-walk="3">
-              <td>8</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024635871/" target="_blank" rel="noopener noreferrer">東洋巣鴨コーポ</a></div><div class="source-tag">Yahoo不動産</div></td>
-              <td>4,998万円</td>
-              <td>57.74㎡</td>
-              <td><div class="clamp2">東京都豊島区巣鴨1丁目</div></td>
-              <td><div class="clamp2">山手線 「巣鴨」駅 徒歩3分</div></td>
-              <td>1981年</td>
-              <td>3LDK</td>
-              <td class="maint-col">-</td>
-              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-              <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
-              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
-            </tr>
-            
-            <tr class="tier-conditional" data-index="9" data-name="パイロットハウス北新宿" data-location="東京都新宿区北新宿3丁目" data-layout="1LDK" data-tier="条件付き" data-price="2980" data-area="36.10" data-score="58" data-year="1978" data-walk="7">
-              <td>9</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024256864/" target="_blank" rel="noopener noreferrer">パイロットハウス北新宿</a></div><div class="source-tag">Yahoo不動産</div></td>
-              <td>2,980万円</td>
-              <td>36.10㎡</td>
-              <td><div class="clamp2">東京都新宿区北新宿3丁目</div></td>
-              <td><div class="clamp2">総武線 「東中野」駅 徒歩7分</div></td>
-              <td>1978年</td>
+            <tr class="tier-conditional" data-index="77" data-name="学芸大スカイマンション" data-location="東京都目黒区鷹番２" data-layout="1LDK" data-tier="条件付き" data-price="4480" data-area="40.10" data-score="63" data-year="1968" data-walk="3">
+              <td>77</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20251578/" target="_blank" rel="noopener noreferrer">学芸大スカイマンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>40.10㎡</td>
+              <td><div class="clamp2">東京都目黒区鷹番２</div></td>
+              <td><div class="clamp2">東急東横線「学芸大学」徒歩3分</div></td>
+              <td>1968年</td>
               <td>1LDK</td>
               <td class="maint-col">-</td>
-              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-zero">面積0</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
               <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
             </tr>
             
-            <tr class="tier-conditional" data-index="10" data-name="パレステージ墨田立花" data-location="東京都墨田区立花5丁目" data-layout="2LDK" data-tier="条件付き" data-price="3980" data-area="45.00" data-score="58" data-year="2020" data-walk="9">
-              <td>10</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024628505/" target="_blank" rel="noopener noreferrer">パレステージ墨田立花</a></div><div class="source-tag">Yahoo不動産</div></td>
-              <td>3,980万円</td>
-              <td>45.00㎡</td>
-              <td><div class="clamp2">東京都墨田区立花5丁目</div></td>
-              <td><div class="clamp2">東武亀戸線 「小村井」駅 徒歩9分</div></td>
-              <td>2020年</td>
+            <tr class="tier-conditional" data-index="78" data-name="レジェンド三ノ輪" data-location="東京都台東区三ノ輪１" data-layout="1LDK" data-tier="条件付き" data-price="4480" data-area="42.92" data-score="63" data-year="1990" data-walk="4">
+              <td>78</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20333006/" target="_blank" rel="noopener noreferrer">レジェンド三ノ輪</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>42.92㎡</td>
+              <td><div class="clamp2">東京都台東区三ノ輪１</div></td>
+              <td><div class="clamp2">東京メトロ日比谷線「三ノ輪」徒歩4分</div></td>
+              <td>1990年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="79" data-name="ウェルシャン第2 池袋" data-location="東京都豊島区南池袋１" data-layout="1LDK" data-tier="条件付き" data-price="4498" data-area="43.13" data-score="63" data-year="1979" data-walk="6">
+              <td>79</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_79049545/" target="_blank" rel="noopener noreferrer">ウェルシャン第2 池袋</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,498万円</td>
+              <td>43.13㎡</td>
+              <td><div class="clamp2">東京都豊島区南池袋１</div></td>
+              <td><div class="clamp2">ＪＲ山手線「池袋」徒歩6分</div></td>
+              <td>1979年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="80" data-name="ウェルシャン第２池袋" data-location="東京都豊島区南池袋１" data-layout="1LDK" data-tier="条件付き" data-price="4498" data-area="45.48" data-score="63" data-year="1979" data-walk="6">
+              <td>80</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_79132332/" target="_blank" rel="noopener noreferrer">ウェルシャン第２池袋</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,498万円</td>
+              <td>45.48㎡</td>
+              <td><div class="clamp2">東京都豊島区南池袋１</div></td>
+              <td><div class="clamp2">ＪＲ埼京線「池袋」徒歩6分</div></td>
+              <td>1979年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="81" data-name="モアステージ墨田" data-location="東京都墨田区墨田５" data-layout="2LDK" data-tier="条件付き" data-price="4580" data-area="69.54" data-score="63" data-year="1989" data-walk="8">
+              <td>81</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20279061/" target="_blank" rel="noopener noreferrer">モアステージ墨田</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,580万円</td>
+              <td>69.54㎡</td>
+              <td><div class="clamp2">東京都墨田区墨田５</div></td>
+              <td><div class="clamp2">東武伊勢崎線「鐘ヶ淵」徒歩8分</div></td>
+              <td>1989年</td>
               <td>2LDK</td>
               <td class="maint-col">-</td>
-              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="82" data-name="クイーンハイツ三田" data-location="東京都港区三田３" data-layout="2DK" data-tier="条件付き" data-price="4250" data-area="48.38" data-score="62" data-year="1978" data-walk="6">
+              <td>82</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_minato/nc_20018936/" target="_blank" rel="noopener noreferrer">クイーンハイツ三田</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,250万円</td>
+              <td>48.38㎡</td>
+              <td><div class="clamp2">東京都港区三田３</div></td>
+              <td><div class="clamp2">都営三田線「三田」徒歩6分</div></td>
+              <td>1978年</td>
+              <td>2DK</td>
+              <td class="maint-col">14,596円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">62</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="83" data-name="藤和東浅草コープ" data-location="東京都台東区橋場１" data-layout="2DK" data-tier="条件付き" data-price="2580" data-area="45.92" data-score="61" data-year="1980" data-walk="15">
+              <td>83</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_78988627/" target="_blank" rel="noopener noreferrer">藤和東浅草コープ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,580万円</td>
+              <td>45.92㎡</td>
+              <td><div class="clamp2">東京都台東区橋場１</div></td>
+              <td><div class="clamp2">ＪＲ常磐線「南千住」徒歩15分</div></td>
+              <td>1980年</td>
+              <td>2DK</td>
+              <td class="maint-col">16,600円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">61</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="84" data-name="中野ダイヤモンドマンション" data-location="東京都中野区新井１" data-layout="2LDK" data-tier="条件付き" data-price="3580" data-area="49.89" data-score="60" data-year="1970" data-walk="12">
+              <td>84</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20050815/" target="_blank" rel="noopener noreferrer">中野ダイヤモンドマンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,580万円</td>
+              <td>49.89㎡</td>
+              <td><div class="clamp2">東京都中野区新井１</div></td>
+              <td><div class="clamp2">ＪＲ中央線「中野」徒歩12分</div></td>
+              <td>1970年</td>
+              <td>2LDK</td>
+              <td class="maint-col">14,200円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">60</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="85" data-name="江古田パレス" data-location="東京都中野区江古田３" data-layout="2DK" data-tier="条件付き" data-price="1800" data-area="44.72" data-score="58" data-year="1973" data-walk="11">
+              <td>85</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78736028/" target="_blank" rel="noopener noreferrer">江古田パレス</a></div><div class="source-tag">SUUMO</div></td>
+              <td>1,800万円</td>
+              <td>44.72㎡</td>
+              <td><div class="clamp2">東京都中野区江古田３</div></td>
+              <td><div class="clamp2">都営大江戸線「新江古田」徒歩11分</div></td>
+              <td>1973年</td>
+              <td>2DK</td>
+              <td class="maint-col">8,500円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
               <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
             </tr>
             
-            <tr class="tier-pass" data-index="11" data-name="春日ビューハイツ" data-location="東京都文京区春日2丁目" data-layout="1LDK" data-tier="見送り" data-price="4199" data-area="44.16" data-score="48" data-year="1978" data-walk="10">
-              <td>11</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024084793/" target="_blank" rel="noopener noreferrer">春日ビューハイツ</a></div><div class="source-tag">Yahoo不動産</div></td>
-              <td>4,199万円</td>
-              <td>44.16㎡</td>
-              <td><div class="clamp2">東京都文京区春日2丁目</div></td>
-              <td><div class="clamp2">総武線 「飯田橋」駅 徒歩10分</div></td>
-              <td>1978年</td>
+            <tr class="tier-conditional" data-index="86" data-name="パラストすみだ" data-location="東京都墨田区立花３" data-layout="3K" data-tier="条件付き" data-price="2080" data-area="40.83" data-score="58" data-year="1979" data-walk="3">
+              <td>86</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_78395204/" target="_blank" rel="noopener noreferrer">パラストすみだ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,080万円</td>
+              <td>40.83㎡</td>
+              <td><div class="clamp2">東京都墨田区立花３</div></td>
+              <td><div class="clamp2">東武亀戸線「東あずま」徒歩3分</div></td>
+              <td>1979年</td>
+              <td>3K</td>
+              <td class="maint-col">17,850円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="87" data-name="下谷サニーハイツ" data-location="東京都台東区下谷３" data-layout="1LDK" data-tier="条件付き" data-price="3480" data-area="40.45" data-score="58" data-year="1975" data-walk="6">
+              <td>87</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_79134266/" target="_blank" rel="noopener noreferrer">下谷サニーハイツ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,480万円</td>
+              <td>40.45㎡</td>
+              <td><div class="clamp2">東京都台東区下谷３</div></td>
+              <td><div class="clamp2">東京メトロ日比谷線「三ノ輪」徒歩6分</div></td>
+              <td>1975年</td>
+              <td>1LDK</td>
+              <td class="maint-col">18,840円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="88" data-name="オクトピア日本堤" data-location="東京都台東区日本堤２" data-layout="ワンルーム" data-tier="条件付き" data-price="3780" data-area="44.28" data-score="58" data-year="1982" data-walk="7">
+              <td>88</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20006342/" target="_blank" rel="noopener noreferrer">オクトピア日本堤</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,780万円</td>
+              <td>44.28㎡</td>
+              <td><div class="clamp2">東京都台東区日本堤２</div></td>
+              <td><div class="clamp2">東京メトロ日比谷線「三ノ輪」徒歩7分</div></td>
+              <td>1982年</td>
+              <td>ワンルーム</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="89" data-name="VIP目白" data-location="東京都豊島区目白４" data-layout="2LDK" data-tier="条件付き" data-price="3980" data-area="43.74" data-score="58" data-year="1976" data-walk="6">
+              <td>89</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20102501/" target="_blank" rel="noopener noreferrer">VIP目白</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,980万円</td>
+              <td>43.74㎡</td>
+              <td><div class="clamp2">東京都豊島区目白４</div></td>
+              <td><div class="clamp2">ＪＲ山手線「目白」徒歩6分</div></td>
+              <td>1976年</td>
+              <td>2LDK</td>
+              <td class="maint-col">16,735円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="90" data-name="ＶＩＰ目白" data-location="東京都豊島区目白４" data-layout="2LDK" data-tier="条件付き" data-price="3980" data-area="43.74" data-score="58" data-year="1976" data-walk="7">
+              <td>90</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20102335/" target="_blank" rel="noopener noreferrer">ＶＩＰ目白</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,980万円</td>
+              <td>43.74㎡</td>
+              <td><div class="clamp2">東京都豊島区目白４</div></td>
+              <td><div class="clamp2">ＪＲ山手線「目白」徒歩7分</div></td>
+              <td>1976年</td>
+              <td>2LDK</td>
+              <td class="maint-col">16,735円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="91" data-name="東向島サニーホームズ" data-location="東京都墨田区東向島２" data-layout="2LDK" data-tier="条件付き" data-price="4190" data-area="57.64" data-score="58" data-year="1973" data-walk="4">
+              <td>91</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20002013/" target="_blank" rel="noopener noreferrer">東向島サニーホームズ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,190万円</td>
+              <td>57.64㎡</td>
+              <td><div class="clamp2">東京都墨田区東向島２</div></td>
+              <td><div class="clamp2">東武伊勢崎線「曳舟」徒歩4分</div></td>
+              <td>1973年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="92" data-name="目黒ダイカンプラザ" data-location="東京都目黒区目黒本町２" data-layout="1LDK" data-tier="条件付き" data-price="4280" data-area="43.82" data-score="58" data-year="1983" data-walk="14">
+              <td>92</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20219203/" target="_blank" rel="noopener noreferrer">目黒ダイカンプラザ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,280万円</td>
+              <td>43.82㎡</td>
+              <td><div class="clamp2">東京都目黒区目黒本町２</div></td>
+              <td><div class="clamp2">東急東横線「学芸大学」徒歩14分</div></td>
+              <td>1983年</td>
               <td>1LDK</td>
               <td class="maint-col">-</td>
-              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="93" data-name="東向島サニーホームズ" data-location="東京都墨田区東向島２" data-layout="2LDK" data-tier="条件付き" data-price="4299" data-area="56.27" data-score="58" data-year="1973" data-walk="3">
+              <td>93</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20211015/" target="_blank" rel="noopener noreferrer">東向島サニーホームズ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,299万円</td>
+              <td>56.27㎡</td>
+              <td><div class="clamp2">東京都墨田区東向島２</div></td>
+              <td><div class="clamp2">東武伊勢崎線「曳舟」徒歩3分</div></td>
+              <td>1973年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="94" data-name="セザール学芸大学" data-location="東京都目黒区鷹番２" data-layout="2DK" data-tier="条件付き" data-price="4980" data-area="41.21" data-score="58" data-year="1976" data-walk="1">
+              <td>94</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_77308399/" target="_blank" rel="noopener noreferrer">セザール学芸大学</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,980万円</td>
+              <td>41.21㎡</td>
+              <td><div class="clamp2">東京都目黒区鷹番２</div></td>
+              <td><div class="clamp2">東急東横線「学芸大学」徒歩1分</div></td>
+              <td>1976年</td>
+              <td>2DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="95" data-name="朝日言問マンション" data-location="東京都墨田区向島２" data-layout="1LDK" data-tier="条件付き" data-price="4999" data-area="46.45" data-score="58" data-year="1982" data-walk="6">
+              <td>95</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20233261/" target="_blank" rel="noopener noreferrer">朝日言問マンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,999万円</td>
+              <td>46.45㎡</td>
+              <td><div class="clamp2">東京都墨田区向島２</div></td>
+              <td><div class="clamp2">東武伊勢崎線「とうきょうスカイツリー」徒歩6分</div></td>
+              <td>1982年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="96" data-name="下谷第2サマリヤマンション" data-location="東京都台東区下谷３" data-layout="2DK" data-tier="条件付き" data-price="2500" data-area="43.13" data-score="53" data-year="1975" data-walk="7">
+              <td>96</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20338280/" target="_blank" rel="noopener noreferrer">下谷第2サマリヤマンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,500万円</td>
+              <td>43.13㎡</td>
+              <td><div class="clamp2">東京都台東区下谷３</div></td>
+              <td><div class="clamp2">東京メトロ日比谷線「入谷」徒歩7分</div></td>
+              <td>1975年</td>
+              <td>2DK</td>
+              <td class="maint-col">17,190円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="97" data-name="隅田グリーンマンション" data-location="東京都墨田区墨田５" data-layout="2DK" data-tier="条件付き" data-price="2780" data-area="47.54" data-score="53" data-year="1977" data-walk="7">
+              <td>97</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79007217/" target="_blank" rel="noopener noreferrer">隅田グリーンマンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,780万円</td>
+              <td>47.54㎡</td>
+              <td><div class="clamp2">東京都墨田区墨田５</div></td>
+              <td><div class="clamp2">東武伊勢崎線「鐘ヶ淵」徒歩7分</div></td>
+              <td>1977年</td>
+              <td>2DK</td>
+              <td class="maint-col">17,200円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="98" data-name="キャッスルマンション百花園" data-location="東京都墨田区堤通１" data-layout="2DK" data-tier="条件付き" data-price="2970" data-area="46.84" data-score="53" data-year="1983" data-walk="12">
+              <td>98</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_76231085/" target="_blank" rel="noopener noreferrer">キャッスルマンション百花園</a></div><div class="source-tag">SUUMO</div></td>
+              <td>2,970万円</td>
+              <td>46.84㎡</td>
+              <td><div class="clamp2">東京都墨田区堤通１</div></td>
+              <td><div class="clamp2">東武伊勢崎線「曳舟」徒歩12分</div></td>
+              <td>1983年</td>
+              <td>2DK</td>
+              <td class="maint-col">16,300円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="99" data-name="下谷第2サマリヤマンション" data-location="東京都台東区下谷３-16-14" data-layout="1DK+S（納戸）" data-tier="条件付き" data-price="3290" data-area="43.53" data-score="53" data-year="1975" data-walk="7">
+              <td>99</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20322800/" target="_blank" rel="noopener noreferrer">下谷第2サマリヤマンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,290万円</td>
+              <td>43.53㎡</td>
+              <td><div class="clamp2">東京都台東区下谷３-16-14</div></td>
+              <td><div class="clamp2">東京メトロ日比谷線「入谷」徒歩7分</div></td>
+              <td>1975年</td>
+              <td>1DK+S（納戸）</td>
+              <td class="maint-col">17,310円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="100" data-name="テラスハウスヴィップ目白" data-location="東京都豊島区目白４" data-layout="1LDK+S（納戸）" data-tier="条件付き" data-price="3980" data-area="43.74" data-score="53" data-year="1976" data-walk="7">
+              <td>100</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20137238/" target="_blank" rel="noopener noreferrer">テラスハウスヴィップ目白</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,980万円</td>
+              <td>43.74㎡</td>
+              <td><div class="clamp2">東京都豊島区目白４</div></td>
+              <td><div class="clamp2">ＪＲ山手線「目白」徒歩7分</div></td>
+              <td>1976年</td>
+              <td>1LDK+S（納戸）</td>
+              <td class="maint-col">16,735円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="101" data-name="クレストフォルム向島" data-location="東京都墨田区堤通１" data-layout="2LDK+S（納戸）" data-tier="条件付き" data-price="3980" data-area="62.10" data-score="53" data-year="2000" data-walk="12">
+              <td>101</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_78495225/" target="_blank" rel="noopener noreferrer">クレストフォルム向島</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,980万円</td>
+              <td>62.10㎡</td>
+              <td><div class="clamp2">東京都墨田区堤通１</div></td>
+              <td><div class="clamp2">東武伊勢崎線「東向島」徒歩12分</div></td>
+              <td>2000年</td>
+              <td>2LDK+S（納戸）</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="102" data-name="ヴィラロイヤル両国" data-location="東京都墨田区両国３" data-layout="1LDK" data-tier="条件付き" data-price="3999" data-area="43.08" data-score="53" data-year="1975" data-walk="2">
+              <td>102</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20245050/" target="_blank" rel="noopener noreferrer">ヴィラロイヤル両国</a></div><div class="source-tag">SUUMO</div></td>
+              <td>3,999万円</td>
+              <td>43.08㎡</td>
+              <td><div class="clamp2">東京都墨田区両国３</div></td>
+              <td><div class="clamp2">ＪＲ総武線「両国」徒歩2分</div></td>
+              <td>1975年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="103" data-name="サンパークマンション鶯谷" data-location="東京都台東区下谷２" data-layout="2LDK" data-tier="条件付き" data-price="4190" data-area="60.08" data-score="53" data-year="1980" data-walk="2">
+              <td>103</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_78454194/" target="_blank" rel="noopener noreferrer">サンパークマンション鶯谷</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,190万円</td>
+              <td>60.08㎡</td>
+              <td><div class="clamp2">東京都台東区下谷２</div></td>
+              <td><div class="clamp2">東京メトロ日比谷線「入谷」徒歩2分</div></td>
+              <td>1980年</td>
+              <td>2LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-conditional" data-index="104" data-name="NICアーバンハイム亀戸" data-location="東京都墨田区立花１" data-layout="3LDK" data-tier="条件付き" data-price="4280" data-area="56.16" data-score="53" data-year="1986" data-walk="13">
+              <td>104</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20200479/" target="_blank" rel="noopener noreferrer">NICアーバンハイム亀戸</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,280万円</td>
+              <td>56.16㎡</td>
+              <td><div class="clamp2">東京都墨田区立花１</div></td>
+              <td><div class="clamp2">ＪＲ総武線「亀戸」徒歩13分</div></td>
+              <td>1986年</td>
+              <td>3LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#fb923c">53</span></td>
+              <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            </tr>
+            
+            <tr class="tier-pass" data-index="105" data-name="ハイツ錦糸町" data-location="東京都墨田区江東橋１" data-layout="3LDK" data-tier="見送り" data-price="4980" data-area="63.18" data-score="48" data-year="1974" data-walk="8">
+              <td>105</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_78837911/" target="_blank" rel="noopener noreferrer">ハイツ錦糸町</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,980万円</td>
+              <td>63.18㎡</td>
+              <td><div class="clamp2">東京都墨田区江東橋１</div></td>
+              <td><div class="clamp2">ＪＲ総武線「錦糸町」徒歩8分</div></td>
+              <td>1974年</td>
+              <td>3LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#ef4444">48</span></td>
               <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
             </tr>
             
-            <tr class="tier-pass" data-index="12" data-name="ユテライズ根岸" data-location="東京都台東区根岸4丁目" data-layout="2LDK" data-tier="見送り" data-price="4999" data-area="61.56" data-score="38" data-year="1980" data-walk="6">
-              <td>12</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024093758/" target="_blank" rel="noopener noreferrer">ユテライズ根岸</a></div><div class="source-tag">Yahoo不動産</div></td>
-              <td>4,999万円</td>
-              <td>61.56㎡</td>
-              <td><div class="clamp2">東京都台東区根岸4丁目</div></td>
-              <td><div class="clamp2">東京メトロ日比谷線 「入谷」駅 徒歩6分</div></td>
-              <td>1980年</td>
-              <td>2LDK</td>
+            <tr class="tier-pass" data-index="106" data-name="両国マンション" data-location="東京都墨田区千歳１" data-layout="3LDK" data-tier="見送り" data-price="4980" data-area="64.53" data-score="48" data-year="1964" data-walk="9">
+              <td>106</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79184127/" target="_blank" rel="noopener noreferrer">両国マンション</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,980万円</td>
+              <td>64.53㎡</td>
+              <td><div class="clamp2">東京都墨田区千歳１</div></td>
+              <td><div class="clamp2">都営大江戸線「森下」徒歩9分</div></td>
+              <td>1964年</td>
+              <td>3LDK</td>
               <td class="maint-col">-</td>
-              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#ef4444">48</span></td>
+              <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
+            </tr>
+            
+            <tr class="tier-pass" data-index="107" data-name="第二目黒コーポビアネーズ" data-location="東京都目黒区目黒４" data-layout="1LDK" data-tier="見送り" data-price="4590" data-area="41.52" data-score="45" data-year="1977" data-walk="15">
+              <td>107</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20103313/" target="_blank" rel="noopener noreferrer">第二目黒コーポビアネーズ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,590万円</td>
+              <td>41.52㎡</td>
+              <td><div class="clamp2">東京都目黒区目黒４</div></td>
+              <td><div class="clamp2">都営三田線「目黒」徒歩15分</div></td>
+              <td>1977年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#ef4444">45</span></td>
+              <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
+            </tr>
+            
+            <tr class="tier-pass" data-index="108" data-name="ドルミ錦糸町長谷川ビル" data-location="東京都墨田区江東橋２" data-layout="2DK" data-tier="見送り" data-price="4480" data-area="46.75" data-score="43" data-year="1979" data-walk="8">
+              <td>108</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79055534/" target="_blank" rel="noopener noreferrer">ドルミ錦糸町長谷川ビル</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,480万円</td>
+              <td>46.75㎡</td>
+              <td><div class="clamp2">東京都墨田区江東橋２</div></td>
+              <td><div class="clamp2">ＪＲ総武線「錦糸町」徒歩8分</div></td>
+              <td>1979年</td>
+              <td>2DK</td>
+              <td class="maint-col">15,860円</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#ef4444">43</span></td>
+              <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
+            </tr>
+            
+            <tr class="tier-pass" data-index="109" data-name="■■ストーク両国秀山■■" data-location="東京都墨田区石原３" data-layout="2DK" data-tier="見送り" data-price="4080" data-area="46.10" data-score="38" data-year="1989" data-walk="11">
+              <td>109</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20317765/" target="_blank" rel="noopener noreferrer">■■ストーク両国秀山■■</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,080万円</td>
+              <td>46.10㎡</td>
+              <td><div class="clamp2">東京都墨田区石原３</div></td>
+              <td><div class="clamp2">都営大江戸線「両国」徒歩11分</div></td>
+              <td>1989年</td>
+              <td>2DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#ef4444">38</span></td>
+              <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
+            </tr>
+            
+            <tr class="tier-pass" data-index="110" data-name="ライオンズマンション駒込第２" data-location="東京都文京区本駒込４-37-7" data-layout="2DK" data-tier="見送り" data-price="4520" data-area="49.63" data-score="38" data-year="1979" data-walk="11">
+              <td>110</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_bunkyo/nc_20217763/" target="_blank" rel="noopener noreferrer">ライオンズマンション駒込第２</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,520万円</td>
+              <td>49.63㎡</td>
+              <td><div class="clamp2">東京都文京区本駒込４-37-7</div></td>
+              <td><div class="clamp2">ＪＲ京浜東北線「田端」徒歩11分</div></td>
+              <td>1979年</td>
+              <td>2DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#ef4444">38</span></td>
+              <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
+            </tr>
+            
+            <tr class="tier-pass" data-index="111" data-name="ストーク両国秀山◆新規リフォーム済◆南向き◆ペット可…" data-location="東京都墨田区石原３" data-layout="2DK" data-tier="見送り" data-price="4080" data-area="46.10" data-score="35" data-year="1989" data-walk="11">
+              <td>111</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20285931/" target="_blank" rel="noopener noreferrer">ストーク両国秀山◆新規リフォーム済◆南向き◆ペット可…</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,080万円</td>
+              <td>46.10㎡</td>
+              <td><div class="clamp2">東京都墨田区石原３</div></td>
+              <td><div class="clamp2">都営大江戸線「両国」徒歩11分</div></td>
+              <td>1989年</td>
+              <td>2DK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+15</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-neg">リノ-5</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#ef4444">35</span></td>
+              <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
+            </tr>
+            
+            <tr class="tier-pass" data-index="112" data-name="第２目黒コーポビアネーズ" data-location="東京都目黒区目黒４" data-layout="1LDK" data-tier="見送り" data-price="4590" data-area="41.52" data-score="33" data-year="1977" data-walk="17">
+              <td>112</td>
+              <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20162423/" target="_blank" rel="noopener noreferrer">第２目黒コーポビアネーズ</a></div><div class="source-tag">SUUMO</div></td>
+              <td>4,590万円</td>
+              <td>41.52㎡</td>
+              <td><div class="clamp2">東京都目黒区目黒４</div></td>
+              <td><div class="clamp2">ＪＲ山手線「目黒」徒歩17分</div></td>
+              <td>1977年</td>
+              <td>1LDK</td>
+              <td class="maint-col">-</td>
+              <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-neg">駅距-15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+              <td><span class="score-badge" style="--badge:#ef4444">33</span></td>
               <td><span class="tier-pill" style="--tier:#ef4444">見送り</span></td>
             </tr>
             
@@ -468,17 +1977,17 @@
               <div class="focus-head">
                 <div class="focus-rank">#1</div>
                 <div>
-                  <h3><a href="https://cowcamo.jp/short_stories/tGCfZNycJWs" target="_blank" rel="noopener noreferrer">江戸川橋駅 / 2LDK / 46.92㎡</a></h3>
-                  <p>4,999万円 / 46.92㎡ / 東京都新宿区山吹町</p>
+                  <h3><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78764639/" target="_blank" rel="noopener noreferrer">キャニオンマンション上鷺宮</a></h3>
+                  <p>3,300万円 / 59.40㎡ / 東京都中野区上鷺宮４</p>
                 </div>
-                <div class="focus-score" style="--accent:#22c55e">83<span>強く推奨</span></div>
+                <div class="focus-score" style="--accent:#22c55e">98<span>強く推奨</span></div>
               </div>
-              <div class="chip-row"><span class="chip ">予算 +10</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +0</span><span class="chip ">駅 +15</span><span class="chip ">立地 +20</span><span class="chip ">間取り +10</span><span class="chip ">ペット +15</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
-              <p class="focus-comment">ペット可確定 / 駅近 / 観光導線が強い立地 / 2-3LDKで運用幅あり</p>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +0</span><span class="chip ">駅 +15</span><span class="chip ">立地 +15</span><span class="chip ">間取り +10</span><span class="chip ">ペット +10</span><span class="chip ">管理費修繕 +10</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">ペット相談可 / 予算適合 / 駅近 / 観光導線が強い立地</p>
               <div class="focus-meta">
-                <span>江戸川橋駅徒歩4分</span>
-                <span></span>
-                <span>2LDK</span>
+                <span>西武池袋線「富士見台」徒歩3分</span>
+                <span>1978年5月</span>
+                <span>3LDK</span>
                 
               </div>
             </article>
@@ -487,17 +1996,17 @@
               <div class="focus-head">
                 <div class="focus-rank">#2</div>
                 <div>
-                  <h3><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024631498/" target="_blank" rel="noopener noreferrer">蔵前コヤマハイツ</a></h3>
-                  <p>2,780万円 / 57.96㎡ / 東京都台東区寿3丁目</p>
+                  <h3><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20220965/" target="_blank" rel="noopener noreferrer">マイステージ野方</a></h3>
+                  <p>3,680万円 / 50.60㎡ / 東京都中野区野方３</p>
                 </div>
-                <div class="focus-score" style="--accent:#22c55e">81<span>強く推奨</span></div>
+                <div class="focus-score" style="--accent:#22c55e">98<span>強く推奨</span></div>
               </div>
-              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +0</span><span class="chip ">駅 +15</span><span class="chip ">立地 +18</span><span class="chip ">間取り +10</span><span class="chip ">ペット +0</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
-              <p class="focus-comment">予算適合 / 駅近 / 観光導線が強い立地 / 2-3LDKで運用幅あり。注意: ペット条件要確認</p>
+              <div class="chip-row"><span class="chip ">予算 +15</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +20</span><span class="chip ">間取り +5</span><span class="chip ">ペット +10</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">ペット相談可 / 予算適合 / 駅近 / 観光導線が強い立地</p>
               <div class="focus-meta">
-                <span>東京メトロ銀座線 「田原町」駅 徒歩2分</span>
-                <span>1971年10月（築55年）</span>
-                <span>3LDK</span>
+                <span>西武新宿線「野方」徒歩3分</span>
+                <span>2000年7月</span>
+                <span>1LDK</span>
                 
               </div>
             </article>
@@ -506,17 +2015,17 @@
               <div class="focus-head">
                 <div class="focus-rank">#3</div>
                 <div>
-                  <h3><a href="https://cowcamo.jp/short_stories/ch0ZrXkJnXM" target="_blank" rel="noopener noreferrer">幡ヶ谷駅 / 1LDK＋S / 47.03㎡</a></h3>
-                  <p>4,980万円 / 47.03㎡ / 東京都渋谷区幡ヶ谷</p>
+                  <h3><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20270062/" target="_blank" rel="noopener noreferrer">サンライズ鷺宮</a></h3>
+                  <p>2,980万円 / 49.25㎡ / 東京都中野区鷺宮４</p>
                 </div>
-                <div class="focus-score" style="--accent:#facc15">78<span>推奨</span></div>
+                <div class="focus-score" style="--accent:#22c55e">93<span>強く推奨</span></div>
               </div>
-              <div class="chip-row"><span class="chip ">予算 +10</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +0</span><span class="chip ">駅 +15</span><span class="chip ">立地 +20</span><span class="chip ">間取り +5</span><span class="chip ">ペット +15</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
-              <p class="focus-comment">ペット可確定 / 駅近 / 観光導線が強い立地</p>
+              <div class="chip-row"><span class="chip ">予算 +20</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +0</span><span class="chip ">駅 +10</span><span class="chip ">立地 +20</span><span class="chip ">間取り +10</span><span class="chip ">ペット +10</span><span class="chip ">管理費修繕 +10</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">ペット相談可 / 予算適合 / 駅近 / 観光導線が強い立地</p>
               <div class="focus-meta">
-                <span>幡ヶ谷駅徒歩4分</span>
-                <span></span>
-                <span>1LDK</span>
+                <span>西武新宿線「鷺ノ宮」徒歩6分</span>
+                <span>1981年1月</span>
+                <span>2LDK</span>
                 
               </div>
             </article>
@@ -525,16 +2034,16 @@
               <div class="focus-head">
                 <div class="focus-rank">#4</div>
                 <div>
-                  <h3><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024609469/" target="_blank" rel="noopener noreferrer">ドルミ中野弥生町</a></h3>
-                  <p>4,180万円 / 40.00㎡ / 東京都中野区弥生町1丁目</p>
+                  <h3><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79157881/" target="_blank" rel="noopener noreferrer">日神シルバーパレス鷺宮</a></h3>
+                  <p>4,280万円 / 47.94㎡ / 東京都中野区鷺宮２-1-13</p>
                 </div>
-                <div class="focus-score" style="--accent:#facc15">68<span>推奨</span></div>
+                <div class="focus-score" style="--accent:#22c55e">93<span>強く推奨</span></div>
               </div>
-              <div class="chip-row"><span class="chip ">予算 +10</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +10</span><span class="chip ">間取り +5</span><span class="chip ">ペット +0</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
-              <p class="focus-comment">駅近 / 新耐震。注意: ペット条件要確認</p>
+              <div class="chip-row"><span class="chip ">予算 +10</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +10</span><span class="chip ">立地 +20</span><span class="chip ">間取り +5</span><span class="chip ">ペット +10</span><span class="chip ">管理費修繕 +10</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">ペット相談可 / 駅近 / 観光導線が強い立地 / 新耐震</p>
               <div class="focus-meta">
-                <span>東京メトロ丸ノ内方南支線 「中野新橋」駅 徒歩4分</span>
-                <span>1983年1月（築44年）</span>
+                <span>西武新宿線「野方」徒歩9分</span>
+                <span>1984年5月</span>
                 <span>1LDK</span>
                 
               </div>
@@ -544,16 +2053,16 @@
               <div class="focus-head">
                 <div class="focus-rank">#5</div>
                 <div>
-                  <h3><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0023592069/" target="_blank" rel="noopener noreferrer">アークステージ高田馬場</a></h3>
-                  <p>4,999万円 / 51.78㎡ / 東京都新宿区高田馬場3丁目</p>
+                  <h3><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_78638013/" target="_blank" rel="noopener noreferrer">ライオンズマンション曳舟</a></h3>
+                  <p>4,480万円 / 61.36㎡ / 東京都墨田区京島３</p>
                 </div>
-                <div class="focus-score" style="--accent:#facc15">68<span>推奨</span></div>
+                <div class="focus-score" style="--accent:#22c55e">91<span>強く推奨</span></div>
               </div>
-              <div class="chip-row"><span class="chip ">予算 +10</span><span class="chip ">面積 +15</span><span class="chip ">耐震 +15</span><span class="chip chip-penalty">駅 -5</span><span class="chip ">立地 +20</span><span class="chip ">間取り +10</span><span class="chip ">ペット +0</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
-              <p class="focus-comment">観光導線が強い立地 / 新耐震 / 2-3LDKで運用幅あり。注意: ペット条件要確認、駅距離はやや弱い</p>
+              <div class="chip-row"><span class="chip ">予算 +10</span><span class="chip ">面積 +10</span><span class="chip ">耐震 +15</span><span class="chip ">駅 +15</span><span class="chip ">立地 +18</span><span class="chip ">間取り +10</span><span class="chip ">ペット +10</span><span class="chip ">管理費修繕 +0</span><span class="chip ">リノベ +3</span><span class="chip ">仲介 +0</span><span class="chip ">民泊規約 +0</span></div>
+              <p class="focus-comment">ペット相談可 / 駅近 / 観光導線が強い立地 / 新耐震</p>
               <div class="focus-meta">
-                <span>西武新宿線 「高田馬場」駅 徒歩11分</span>
-                <span>1996年1月（築31年）</span>
+                <span>京成押上線「京成曳舟」徒歩5分</span>
+                <span>1982年6月</span>
                 <span>2LDK</span>
                 
               </div>
@@ -581,8 +2090,9 @@
     </section>
 
     <div class="footer">
-      <div>Sources: Yahoo不動産, restate, cowcamo (data/multi_site_tokyo_raw.txt + data/restate_tokyo_raw.txt, data/cowcamo_tokyo_raw.txt)</div>
-      <div>Generated on 2026-02-28 22:02:22</div>
+      <div style="margin-bottom:8px"><a href="index.html">Hub</a> · <a href="portfolio_dashboard.html">ポートフォリオ</a> · <a href="minpaku-osaka.html">大阪</a> · <a href="minpaku-fukuoka.html">福岡</a> · <a href="minpaku-tokyo.html">東京</a> · <a href="naiken-analysis.html">内覧分析</a></div>
+      <div>Sources: Yahoo不動産, restate, cowcamo, suumo (data/multi_site_tokyo_raw.txt + data/restate_tokyo_raw.txt, data/cowcamo_tokyo_raw.txt, data/suumo_tokyo_raw.txt)</div>
+      <div>Generated on 2026-03-01 21:31:26</div>
     </div>
   </div>
 
@@ -590,7 +2100,7 @@
     const chartAccent = 'rgba(167,139,250, 1)';
     const chartAccentFill = 'rgba(167,139,250, 0.18)';
     const radarLabels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "管理費修繕", "リノベ余地", "仲介手数料", "民泊規約"];
-    const radarDatasets = [{"label": "1. 江戸川橋駅 / 2LDK / 46.", "data": [50, 67, 0, 100, 133, 100, 100, 0, 60, 0, 100], "borderWidth": 2}, {"label": "2. 蔵前コヤマハイツ", "data": [100, 100, 0, 100, 120, 100, 0, 0, 60, 0, 100], "borderWidth": 2}, {"label": "3. 幡ヶ谷駅 / 1LDK＋S / 47", "data": [50, 67, 0, 100, 133, 50, 100, 0, 60, 0, 100], "borderWidth": 2}, {"label": "4. ドルミ中野弥生町", "data": [50, 67, 100, 100, 67, 50, 0, 0, 60, 0, 100], "borderWidth": 2}, {"label": "5. アークステージ高田馬場", "data": [50, 100, 100, -33, 133, 100, 0, 0, 60, 0, 100], "borderWidth": 2}].map((d, i) => {
+    const radarDatasets = [{"label": "1. キャニオンマンション上鷺宮", "data": [100, 100, 0, 100, 100, 100, 67, 100, 60, 0, 100], "borderWidth": 2}, {"label": "2. マイステージ野方", "data": [75, 100, 100, 100, 133, 50, 67, 0, 60, 0, 100], "borderWidth": 2}, {"label": "3. サンライズ鷺宮", "data": [100, 67, 0, 67, 133, 100, 67, 100, 60, 0, 100], "borderWidth": 2}, {"label": "4. 日神シルバーパレス鷺宮", "data": [50, 67, 100, 67, 133, 50, 67, 100, 60, 0, 100], "borderWidth": 2}, {"label": "5. ライオンズマンション曳舟", "data": [50, 67, 100, 100, 120, 100, 67, 0, 60, 0, 100], "borderWidth": 2}].map((d, i) => {
       const hueShift = [0, 18, 35, 52, 70][i] || 0;
       const alpha = 0.14 + i * 0.03;
       return {
@@ -601,10 +2111,10 @@
         pointHoverRadius: 4,
       };
     });
-    const bucketLabels = ["新宿/神宮前", "浅草/蔵前/押上", "渋谷/恵比寿/代官山", "中野/高円寺", "巣鴨/駒込/文京", "Other"];
-    const bucketValues = [3, 2, 2, 1, 2, 2];
-    const priceLabels = ["2000-2499万円", "2500-2999万円", "3500-3999万円", "4000-4499万円", "4500-4999万円"];
-    const priceValues = [1, 2, 1, 2, 6];
+    const bucketLabels = ["池袋/大塚", "新宿/神宮前", "浅草/蔵前/押上", "上野/御徒町", "中野/高円寺", "Other", "渋谷/恵比寿/代官山", "目黒/学芸大学", "三田/品川/五反田", "巣鴨/駒込/文京"];
+    const bucketValues = [22, 11, 9, 2, 20, 35, 1, 7, 3, 2];
+    const priceLabels = ["1500-1999万円", "2000-2499万円", "2500-2999万円", "3000-3499万円", "3500-3999万円", "4000-4499万円", "4500-4999万円"];
+    const priceValues = [1, 3, 9, 13, 20, 39, 27];
 
     const commonGrid = {
       color: 'rgba(255,255,255,0.08)',

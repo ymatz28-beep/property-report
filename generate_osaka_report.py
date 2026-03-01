@@ -34,7 +34,7 @@ def main() -> None:
         city_label="大阪",
         accent="#6ee7ff",
         accent_rgb="110,231,255",
-        data_path=Path("data/suumo_osaka_v2_raw.txt"),
+        data_path=Path("data/suumo_osaka_raw.txt"),
         output_path=Path("output/minpaku-osaka.html"),
         hero_conditions=[
             "大阪市西区・北区・中央区中心",

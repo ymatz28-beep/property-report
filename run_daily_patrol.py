@@ -180,6 +180,9 @@ def search_all_sites() -> None:
     """Run all property searches."""
     log("=== 物件検索開始 ===")
 
+    # SUUMO (main source — includes inline management fee enrichment)
+    run_script("search_suumo.py", timeout=600)
+
     # Standard HTTP scrapers (rakumachi, yahoo, athome, cowcamo)
     run_script("search_multi_site.py")
 
@@ -188,9 +191,9 @@ def search_all_sites() -> None:
 
     # Playwright-based scrapers
     run_script("search_ftakken.py")
-    run_script("search_lifull.py")
+    run_script("search_lifull.py", timeout=120)
 
-    # Enrich maintenance fees from detail pages
+    # Enrich maintenance fees from detail pages (for non-SUUMO sources)
     log("=== 管理費enrichment ===")
     run_script("enrich_maintenance.py")
 

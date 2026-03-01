@@ -10,6 +10,33 @@ from pathlib import Path
 from typing import Iterable
 
 
+def global_nav_css() -> str:
+    return """
+.gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
+.gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.gnav a:hover{color:#fff}
+.gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
+@media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+"""
+
+
+def global_nav_html(current: str = "") -> str:
+    pages = [
+        ("index.html", "Hub"),
+        ("portfolio_dashboard.html", "ポートフォリオ"),
+        ("minpaku-osaka.html", "大阪"),
+        ("minpaku-fukuoka.html", "福岡"),
+        ("minpaku-tokyo.html", "東京"),
+        ("naiken-analysis.html", "内覧分析"),
+    ]
+    links = []
+    for href, label in pages:
+        cls = ' class="cur"' if href == current else ""
+        links.append(f'<a href="{href}"{cls}>{label}</a>')
+    return f'<div class="gnav"><div class="gnav-inner">{"".join(links)}</div></div>'
+
+
 OSAKA_R_ROWS = [
     "扇町公園の近くでペットと暮らす|4580万円|北区天神橋3丁目|66.21m2|1976年|天満/扇町 徒歩6分|1LDK+FS|民泊可否未確認|https://www.realosaka.jp/estate/2816/",
     "贅沢な二人暮らし|4100万円|中央区谷町5丁目|67.15m2|1980年|谷町六丁目 徒歩2分|1LDK|民泊禁止|https://www.realosaka.jp/estate/2823/",
@@ -354,8 +381,13 @@ def classify_location_osaka(text: str) -> tuple[str, int]:
 
 
 def classify_location_fukuoka(text: str) -> tuple[str, int]:
+    # Strip railway line names to avoid false matches (e.g. "天神大牟田線" → "天神")
+    cleaned = re.sub(
+        r"(西鉄天神大牟田線|地下鉄空港線|地下鉄箱崎線|地下鉄七隈線|ＪＲ鹿児島本線|ＪＲ篠栗線|JR鹿児島本線|JR篠栗線)",
+        "", text,
+    )
     checks = [
-        ("博多駅/祇園", 20, ["博多駅", "祇園"]),
+        ("博多駅/祇園", 20, ["博多駅", "祇園町"]),
         ("天神/中洲/春吉", 20, ["天神", "中洲", "春吉"]),
         ("薬院", 18, ["薬院"]),
         ("赤坂/大濠/大手門", 15, ["赤坂", "大濠", "大手門"]),
@@ -366,7 +398,7 @@ def classify_location_fukuoka(text: str) -> tuple[str, int]:
         ("大橋/高宮", 0, ["大橋", "高宮"]),
     ]
     for label, score, kws in checks:
-        if any(kw in text for kw in kws):
+        if any(kw in cleaned for kw in kws):
             return label, score
     return "Other", -5
 
@@ -692,6 +724,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    {global_nav_css()}
     :root {{
       --bg:#0b0f16;
       --bg2:#101826;
@@ -894,6 +927,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
   </style>
 </head>
 <body>
+  {global_nav_html(f"minpaku-{config.city_key}.html")}
   <div class="wrap">
     <section class="hero">
       <div class="kicker">PROPERTY SEARCH REPORT / {html.escape(config.city_label.upper())}</div>
@@ -989,6 +1023,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     </section>
 
     <div class="footer">
+      <div style="margin-bottom:8px"><a href="index.html">Hub</a> · <a href="portfolio_dashboard.html">ポートフォリオ</a> · <a href="minpaku-osaka.html">大阪</a> · <a href="minpaku-fukuoka.html">福岡</a> · <a href="minpaku-tokyo.html">東京</a> · <a href="naiken-analysis.html">内覧分析</a></div>
       <div>Sources: {html.escape(sources_str)} ({html.escape(str(config.data_path))}{' + ' + ', '.join(str(p) for p in config.extra_data_paths) if config.extra_data_paths else ''})</div>
       <div>Generated on {html.escape(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))}</div>
     </div>
@@ -1293,11 +1328,11 @@ def _run_qa(output_path: Path, rows: list[PropertyRow], city_label: str) -> None
     if total == 0:
         errors.append("物件が0件です")
 
-    # 2. 管理費データカバレッジ
+    # 2. 管理費データカバレッジ (30%未満はFAIL)
     maint_count = sum(1 for r in rows if r.maintenance_fee > 0)
     maint_pct = (maint_count / total * 100) if total > 0 else 0
-    if maint_pct < 10:
-        warnings.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — ほぼ未取得")
+    if maint_pct < 30:
+        errors.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — 30%未満。enrichment要確認")
     elif maint_pct < 50:
         warnings.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — 半数未満")
 

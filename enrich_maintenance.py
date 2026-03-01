@@ -79,6 +79,20 @@ def enrich_rakumachi(html: str) -> str:
     return ""
 
 
+def enrich_suumo(html: str) -> str:
+    """Extract maintenance fee from SUUMO detail page."""
+    total_fee = 0
+    kanri_m = re.search(r'管理費</div>.*?</th>\s*<td[^>]*>\s*([\d,]+)\s*円', html, re.DOTALL)
+    if kanri_m:
+        total_fee += int(kanri_m.group(1).replace(",", ""))
+    shuuzen_m = re.search(r'修繕積立金</div>.*?</th>\s*<td[^>]*>\s*([\d,]+)\s*円', html, re.DOTALL)
+    if shuuzen_m:
+        total_fee += int(shuuzen_m.group(1).replace(",", ""))
+    if total_fee > 0:
+        return str(total_fee)
+    return ""
+
+
 def enrich_cowcamo(html: str) -> str:
     """Extract maintenance fee from cowcamo detail page.
     Format: 管理費 → (whitespace/tags) → 8,700 円／月
@@ -137,8 +151,8 @@ def enrich_file(filepath: Path) -> int:
             new_lines.append(line)
             continue
 
-        # Only enrich rakumachi and cowcamo
-        if source not in ("楽待", "カウカモ"):
+        # Only enrich supported sources
+        if source not in ("楽待", "カウカモ", "SUUMO"):
             new_lines.append(line)
             continue
 
@@ -153,6 +167,8 @@ def enrich_file(filepath: Path) -> int:
             fee_text = enrich_rakumachi(html)
         elif source == "カウカモ":
             fee_text = enrich_cowcamo(html)
+        elif source == "SUUMO":
+            fee_text = enrich_suumo(html)
         else:
             fee_text = ""
 
@@ -175,6 +191,9 @@ def main():
     print("=== 管理費enrichment開始 ===\n")
 
     targets = [
+        DATA_DIR / "suumo_osaka_raw.txt",
+        DATA_DIR / "suumo_fukuoka_raw.txt",
+        DATA_DIR / "suumo_tokyo_raw.txt",
         DATA_DIR / "multi_site_osaka_raw.txt",
         DATA_DIR / "multi_site_fukuoka_raw.txt",
         DATA_DIR / "multi_site_tokyo_raw.txt",

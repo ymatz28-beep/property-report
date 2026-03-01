@@ -237,8 +237,7 @@ def search_lifull(city_key: str) -> list[dict]:
 
             try:
                 page.goto(url, timeout=30000, wait_until="domcontentloaded")
-                page.wait_for_load_state("networkidle", timeout=20000)
-                time.sleep(2)
+                time.sleep(3)  # Wait for JS rendering (networkidle hangs on ad resources)
             except PlaywrightTimeout:
                 print(f"    [WARN] Timeout: {ward_name}")
                 continue

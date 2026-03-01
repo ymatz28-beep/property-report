@@ -20,6 +20,10 @@ def find_extra_data_paths(city_key: str) -> list[Path]:
     cowcamo = DATA_DIR / f"cowcamo_tokyo_raw.txt"
     if cowcamo.exists():
         paths.append(cowcamo)
+    # SUUMO
+    suumo = DATA_DIR / f"suumo_{city_key}_raw.txt"
+    if suumo.exists():
+        paths.append(suumo)
     return paths
 
 

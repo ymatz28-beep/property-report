@@ -14,7 +14,7 @@ env:
 jobs:
   patrol:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
 
       - name: Run daily patrol
         run: python run_daily_patrol.py
-        timeout-minutes: 35
+        timeout-minutes: 50
 
       - name: Commit and push data updates
         run: |
@@ -65,9 +65,11 @@ jobs:
       - name: Notify LINE
         if: always() && hashFiles('data/patrol_summary.txt')
         run: |
-          SUMMARY=$(cat data/patrol_summary.txt)
+          SUMMARY="[property] $(cat data/patrol_summary.txt)"
+          # Escape for JSON
+          SUMMARY_JSON=$(echo "$SUMMARY" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")
           curl -s -X POST https://api.line.me/v2/bot/message/push \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.LINE_CHANNEL_TOKEN }}" \
-            -d "{\"to\":\"${{ secrets.LINE_USER_ID }}\",\"messages\":[{\"type\":\"text\",\"text\":\"$SUMMARY\"}]}" || true
+            -d "{\"to\":\"${{ secrets.LINE_USER_ID }}\",\"messages\":[{\"type\":\"text\",\"text\":$SUMMARY_JSON}]}" || true
         continue-on-error: true

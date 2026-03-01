@@ -42,15 +42,17 @@
     .copy-btn { position:absolute; top:8px; right:8px; padding:6px 16px; border-radius:8px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:#fff; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s; }
     .copy-btn:hover { background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.3); }
     .copy-btn.copied { background:rgba(52,211,153,.2); border-color:rgba(52,211,153,.5); color:var(--green); }
-    .summary { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:32px; }
-    .summary-card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; }
-    .summary-card .num { font-size:28px; font-weight:900; }
-    .summary-card .lbl { font-size:12px; color:var(--muted); margin-top:4px; }
     .nav { margin-top:40px; text-align:center; }
     .nav a { display:inline-block; padding:10px 24px; border-radius:999px; border:1px solid var(--line); color:var(--text); margin:4px; font-size:13px; text-decoration:none; }
     .nav a:hover { border-color:#3b9eff; background:rgba(59,158,255,.06); }
+    .city-jump { display:flex; gap:10px; margin-bottom:32px; position:sticky; top:40px; z-index:100; background:var(--bg); padding:12px 0; border-bottom:1px solid var(--line); }
+    .jump-btn { flex:1; text-align:center; padding:10px 16px; border-radius:10px; border:1px solid var(--line); color:var(--text); font-size:14px; font-weight:700; text-decoration:none; transition:all .2s; }
+    .jump-btn:hover { border-color:var(--jc); background:rgba(255,255,255,.04); color:var(--jc); }
+    .city-section { scroll-margin-top:120px; }
     @media(max-width:640px) {
       .card-header { flex-wrap:wrap; }
+      .city-jump { flex-wrap:wrap; }
+      .jump-btn { flex:none; width:calc(50% - 5px); font-size:13px; }
     }
   </style>
 </head>
@@ -60,13 +62,12 @@
   <h1>問い合わせメッセージ</h1>
   <p class="subtitle">生成日: 2026-03-01 — スコア上位20件/都市 — 合計60件 — コピーして各サイトのフォームに貼り付け</p>
 
-  <div class="summary">
-    <div class="summary-card"><div class="num" style="color:#3b9eff">20</div><div class="lbl">大阪</div></div><div class="summary-card"><div class="num" style="color:#34d399">20</div><div class="lbl">福岡</div></div><div class="summary-card"><div class="num" style="color:#a78bfa">20</div><div class="lbl">東京</div></div>
-    <div class="summary-card"><div class="num">60</div><div class="lbl">合計</div></div>
+  <div class="city-jump">
+    <a href="#city-osaka" class="jump-btn" style="--jc:#3b9eff">大阪（20件）</a><a href="#city-fukuoka" class="jump-btn" style="--jc:#34d399">福岡（20件）</a><a href="#city-tokyo" class="jump-btn" style="--jc:#a78bfa">東京（20件）</a>
   </div>
 
   
-        <div class="city-section">
+        <div class="city-section" id="city-osaka">
           <h2 class="city-title" style="border-left-color:#3b9eff">大阪（20件）</h2>
         
           <div class="card" style="--card-accent:#3b9eff">
@@ -655,7 +656,7 @@
             </div>
           </div>
             </div>
-        <div class="city-section">
+        <div class="city-section" id="city-fukuoka">
           <h2 class="city-title" style="border-left-color:#34d399">福岡（20件）</h2>
         
           <div class="card" style="--card-accent:#34d399">
@@ -1270,7 +1271,7 @@
             </div>
           </div>
             </div>
-        <div class="city-section">
+        <div class="city-section" id="city-tokyo">
           <h2 class="city-title" style="border-left-color:#a78bfa">東京（20件）</h2>
         
           <div class="card" style="--card-accent:#a78bfa">

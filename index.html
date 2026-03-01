@@ -3,57 +3,299 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Property Report Hub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <title>iUMA Real Estate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; }
-    * { box-sizing:border-box; margin:0; }
-    body { font-family:'Inter','Noto Sans JP',sans-serif; background:radial-gradient(ellipse at 20% -10%,rgba(110,231,255,0.08),transparent 50%),radial-gradient(ellipse at 80% 10%,rgba(167,139,250,0.06),transparent 50%),linear-gradient(180deg,#070b11,#0b0f16 30%,#0d1320); color:var(--text); min-height:100vh; }
-    .wrap { max-width:800px; margin:0 auto; padding:80px 20px 60px; }
-    h1 { font-size:clamp(28px,5vw,48px); font-weight:900; text-align:center; line-height:1.1; }
-    .sub { text-align:center; color:var(--muted); margin-top:12px; font-size:14px; }
-    .grid { margin-top:48px; display:grid; gap:16px; }
-    .report-card {
-      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:16px;
-      padding:24px 28px; border-radius:18px; text-decoration:none; color:var(--text);
-      border:1px solid var(--line); background:var(--card);
-      transition:all .2s;
+    :root {
+      --bg: #050507;
+      --surface: rgba(255,255,255,0.035);
+      --surface-hover: rgba(255,255,255,0.065);
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.18);
+      --text: #f5f5f7;
+      --text-secondary: #a1a1aa;
+      --muted: #71717a;
+      --dim: #3f3f46;
+      --accent: #3b9eff;
     }
-    .report-card:hover { border-color:var(--card-accent); background:rgba(255,255,255,0.06); transform:translateY(-2px); }
-    .card-city { font-size:28px; font-weight:900; color:var(--card-accent); min-width:60px; }
-    .card-desc { font-size:14px; color:var(--muted); }
-    .card-arrow { font-size:24px; color:var(--card-accent); opacity:0.5; }
-    .report-card:hover .card-arrow { opacity:1; }
-    .footer { margin-top:60px; text-align:center; color:var(--muted); font-size:12px; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', 'Noto Sans JP', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .atmosphere { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .atm-orb {
+      position: absolute; border-radius: 50%; filter: blur(120px);
+      opacity: 0; animation: orbPulse 8s ease-in-out infinite;
+    }
+    .atm-orb:nth-child(1) {
+      width: 500px; height: 500px; top: -10%; left: -5%;
+      background: radial-gradient(circle, rgba(59,158,255,0.1), transparent 70%);
+    }
+    .atm-orb:nth-child(2) {
+      width: 400px; height: 400px; bottom: 10%; right: -10%;
+      background: radial-gradient(circle, rgba(59,158,255,0.06), transparent 70%);
+      animation-delay: 4s;
+    }
+    @keyframes orbPulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    .grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.18;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    }
+
+    .page { position: relative; z-index: 2; max-width: 960px; margin: 0 auto; padding: 0 32px; }
+
+    nav {
+      padding: 40px 0 0;
+      display: flex; align-items: center; justify-content: space-between;
+      opacity: 0; animation: reveal 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; }
+    .nav-mark {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, #3b9eff 0%, #60b8ff 100%);
+      display: grid; place-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600; font-size: 13px; color: #fff; letter-spacing: -0.5px;
+    }
+    .nav-name { font-weight: 600; font-size: 14px; letter-spacing: 0.04em; color: var(--text); }
+    .nav-back {
+      font-size: 12px; color: var(--muted); text-decoration: none;
+      display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--text); }
+
+    .hero {
+      margin-top: 80px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end;
+      opacity: 0; animation: reveal 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
+    }
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(52px, 7vw, 80px);
+      font-weight: 400; line-height: 0.95; letter-spacing: -0.02em; color: var(--text);
+    }
+    .hero-accent { font-style: italic; color: var(--accent); }
+    .hero-aside { padding-bottom: 8px; }
+    .hero-aside p { font-size: 14px; color: var(--text-secondary); line-height: 1.8; max-width: 320px; }
+    .hero-line { width: 40px; height: 1px; background: var(--accent); margin-bottom: 16px; }
+
+    .divider {
+      margin: 64px 0 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      opacity: 0; animation: reveal 0.8s ease 0.3s forwards;
+    }
+
+    .reports { margin-top: 0; }
+
+    .report-item {
+      display: block; text-decoration: none; color: var(--text);
+      position: relative; padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    .report-item:hover { padding-left: 12px; }
+    .report-item::after {
+      content: ''; position: absolute; left: 0; bottom: -1px;
+      width: 0; height: 1px; background: var(--accent);
+      transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .report-item:hover::after { width: 100%; }
+
+    .report-row {
+      display: grid; grid-template-columns: 60px 1fr auto; gap: 24px; align-items: start;
+    }
+    .report-ordinal {
+      font-family: 'DM Serif Display', serif;
+      font-size: 36px; line-height: 1; color: var(--dim);
+      transition: color 0.35s; padding-top: 2px;
+    }
+    .report-item:hover .report-ordinal { color: var(--accent); }
+
+    .report-body { display: flex; flex-direction: column; gap: 10px; }
+    .report-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent);
+    }
+    .report-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px; font-weight: 400; line-height: 1.2;
+      transition: color 0.3s;
+    }
+    .report-item:hover .report-title { color: var(--accent); }
+    .report-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+
+    .report-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .report-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 500; padding: 4px 10px; border-radius: 6px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      color: var(--text-secondary); transition: all 0.25s;
+    }
+    .report-item:hover .report-tag { border-color: rgba(255,255,255,0.12); color: var(--text); }
+
+    .report-arrow {
+      align-self: center; width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid var(--border); display: grid; place-items: center;
+      font-size: 16px; color: var(--muted);
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    .report-item:hover .report-arrow {
+      background: var(--accent); border-color: var(--accent);
+      color: var(--bg); transform: translateX(4px);
+    }
+
+    .fi {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .fi.v { opacity: 1; transform: translateY(0); }
+
+    footer {
+      margin-top: 80px; padding: 32px 0 48px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      opacity: 0; animation: reveal 0.8s ease 0.6s forwards;
+    }
+    .foot-left, .foot-right {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim);
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .page { padding: 0 20px; }
+      .hero { grid-template-columns: 1fr; gap: 24px; margin-top: 56px; }
+      .report-row { grid-template-columns: 40px 1fr; gap: 16px; }
+      .report-arrow { display: none; }
+      .report-ordinal { font-size: 28px; }
+      .report-title { font-size: 22px; }
+      .report-item { padding: 28px 0; }
+      footer { flex-direction: column; gap: 16px; align-items: flex-start; }
+    }
+
+    @media (max-width: 480px) {
+      .report-row { grid-template-columns: 1fr; }
+      .report-ordinal { font-size: 20px; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Property Report Hub</h1>
-    <p class="sub">iUMAプロパティマネジメント — 不動産投資分析レポート</p>
-    <div class="grid">
-        <a href="minpaku-osaka.html" class="report-card" style="--card-accent:#6ee7ff">
-          <div class="card-city">大阪</div>
-          <div class="card-desc">民泊向け中古マンション候補</div>
-          <div class="card-arrow">&rarr;</div>
-        </a>
-        <a href="minpaku-fukuoka.html" class="report-card" style="--card-accent:#ff6b6b">
-          <div class="card-city">福岡</div>
-          <div class="card-desc">民泊向け中古マンション候補</div>
-          <div class="card-arrow">&rarr;</div>
-        </a>
-        <a href="minpaku-tokyo.html" class="report-card" style="--card-accent:#a78bfa">
-          <div class="card-city">東京</div>
-          <div class="card-desc">民泊向け中古マンション候補</div>
-          <div class="card-arrow">&rarr;</div>
-        </a>
-        <a href="naiken-analysis.html" class="report-card" style="--card-accent:#fb923c">
-          <div class="card-city">内覧</div>
-          <div class="card-desc">扇町 & 天満橋 — 重要事項調査分析</div>
-          <div class="card-arrow">&rarr;</div>
-        </a>
+  <div class="atmosphere"><div class="atm-orb"></div><div class="atm-orb"></div></div>
+  <div class="grain"></div>
+  <div class="page">
+    <nav>
+      <div class="nav-brand">
+        <div class="nav-mark">iU</div>
+        <div class="nav-name">Real Estate</div>
+      </div>
+      <a class="nav-back" href="https://ymatz28-beep.github.io/report-dashboard/">&larr; Dashboard</a>
+    </nav>
+
+    <div class="hero">
+      <h1>Property<br><span class="hero-accent">Reports.</span></h1>
+      <div class="hero-aside">
+        <div class="hero-line"></div>
+        <p>民泊物件検索・内覧分析レポートを一元管理。<br>毎日自動巡回・スコアリング・レポート生成。</p>
+      </div>
     </div>
-    <div class="footer">Last updated: 2026-03-01 07:53</div>
+
+    <div class="divider"></div>
+    <div class="reports" id="reports"></div>
+
+    <footer>
+      <div class="foot-left">iUMA REAL ESTATE &mdash; 2026</div>
+      <div class="foot-right">AUTO-UPDATED DAILY</div>
+    </footer>
   </div>
+
+  <script>
+    var REPORTS = [
+      {
+        label: "Minpaku Search",
+        title: "民泊物件検索 — 大阪",
+        desc: "大阪市内の中古マンション候補をスコアリング。",
+        tags: ["中央区", "北区", "西区", "浪速区"],
+        url: "minpaku-osaka.html"
+      },
+      {
+        label: "Minpaku Search",
+        title: "民泊物件検索 — 福岡",
+        desc: "福岡市内の中古マンション候補をスコアリング。",
+        tags: ["博多区", "中央区", "南区"],
+        url: "minpaku-fukuoka.html"
+      },
+      {
+        label: "Minpaku Search",
+        title: "民泊物件検索 — 東京",
+        desc: "東京23区の中古マンション候補をスコアリング。",
+        tags: ["台東区", "新宿区", "豊島区", "墨田区"],
+        url: "minpaku-tokyo.html"
+      },
+      {
+        label: "Inspection Analysis",
+        title: "内覧分析 — 扇町 & 天満橋",
+        desc: "重要事項調査報告書の分析。管理規約・修繕計画・民泊可否の評価。",
+        tags: ["管理規約", "修繕計画", "民泊可否"],
+        url: "naiken-analysis.html"
+      }
+    ];
+
+    function pad(n) { return n < 10 ? "0" + n : "" + n; }
+
+    function render() {
+      var container = document.getElementById("reports");
+      var items = [];
+
+      REPORTS.forEach(function(r, i) {
+        var el = document.createElement("a");
+        el.href = r.url;
+        el.className = "report-item fi";
+
+        var tagsHtml = (r.tags || []).map(function(t) {
+          return '<span class="report-tag">' + t + '</span>';
+        }).join("");
+
+        el.innerHTML =
+          '<div class="report-row">' +
+            '<div class="report-ordinal">' + pad(i + 1) + '</div>' +
+            '<div class="report-body">' +
+              '<div class="report-label">' + r.label + '</div>' +
+              '<div class="report-title">' + r.title + '</div>' +
+              '<div class="report-desc">' + r.desc + '</div>' +
+              (tagsHtml ? '<div class="report-tags">' + tagsHtml + '</div>' : '') +
+            '</div>' +
+            '<div class="report-arrow">\u2192</div>' +
+          '</div>';
+
+        items.push(el);
+        container.appendChild(el);
+      });
+
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          items.forEach(function(el, i) {
+            setTimeout(function() { el.classList.add("v"); }, 400 + i * 120);
+          });
+        });
+      });
+    }
+
+    render();
+  </script>
 </body>
 </html>

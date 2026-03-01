@@ -216,9 +216,24 @@
     @media (prefers-reduced-motion: reduce) {
       * { scroll-behavior:auto !important; animation:none !important; transition:none !important; }
     }
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.10);font-family:'Inter','Noto Sans JP',sans-serif}
+.site-header .site-brand{font-size:13px;font-weight:700;color:#3b9eff}
+.site-header .site-nav{display:flex;gap:6px;flex-wrap:wrap}
+.site-header .site-nav a{font-size:11px;color:#a9b3c6;text-decoration:none;padding:4px 10px;border-radius:4px;border:1px solid transparent;transition:all .15s}
+.site-header .site-nav a:hover{color:#edf3ff;background:rgba(255,255,255,0.04)}
+.site-header .site-nav a.current{color:#3b9eff;border-color:rgba(59,158,255,0.3);background:rgba(59,158,255,0.08)}
+@media(max-width:768px){.site-header{flex-direction:column;gap:8px;align-items:flex-start}}
   </style>
 </head>
 <body>
+<div class="site-header">
+  <div class="site-brand">iUMA</div>
+  <nav class="site-nav">
+    <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
+    <a href="https://ymatz28-beep.github.io/report-dashboard/stock/portfolio.html">Stock</a>
+    <a href="https://ymatz28-beep.github.io/property-report/" class="current">Property</a>
+  </nav>
+</div>
   <div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html" class="cur">東京</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a></div></div>
   <div class="wrap">
     <section class="hero">

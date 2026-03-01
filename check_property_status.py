@@ -360,9 +360,9 @@ def deploy_to_gh_pages():
             if old_path.exists():
                 old_path.unlink()
 
-        # Copy updated reports
+        # Copy all output HTML files (reports, inquiry, index, naiken, etc.)
         updated = False
-        for report in list(OUTPUT_DIR.glob("minpaku-*.html")) + list(OUTPUT_DIR.glob("naiken-*.html")):
+        for report in OUTPUT_DIR.glob("*.html"):
             dest = deploy_dir / report.name
             dest.write_text(report.read_text(encoding="utf-8"), encoding="utf-8")
             updated = True
@@ -370,10 +370,6 @@ def deploy_to_gh_pages():
         if not updated:
             print("  デプロイ対象なし")
             return False
-
-        # Generate landing page
-        index_html = _generate_index_html()
-        (deploy_dir / "index.html").write_text(index_html, encoding="utf-8")
 
         # Commit and push
         subprocess.run(["git", "add", "-A"], cwd=deploy_dir, capture_output=True)
@@ -397,8 +393,14 @@ def deploy_to_gh_pages():
             cwd=deploy_dir, capture_output=True, timeout=60,
         )
         if push_result.returncode == 0:
-            print("  GitHub Pagesデプロイ完了")
-            return True
+            print("  GitHub Pages push完了。ビルド待ち...")
+            # Wait for GitHub Pages build and verify
+            if _verify_gh_pages_deploy():
+                print("  GitHub Pagesデプロイ完了 ✅")
+                return True
+            else:
+                print("  ⚠ push成功したがサイト疎通確認失敗（ビルド遅延の可能性）")
+                return True  # push自体は成功
         else:
             print(f"  pushエラー: {push_result.stderr.decode()[:300]}")
             return False
@@ -408,6 +410,36 @@ def deploy_to_gh_pages():
     finally:
         import shutil
         shutil.rmtree(deploy_dir, ignore_errors=True)
+
+
+def _verify_gh_pages_deploy(max_wait: int = 90) -> bool:
+    """Wait for GitHub Pages build and verify site is live."""
+    verify_urls = [
+        "https://ymatz28-beep.github.io/property-report/",
+        "https://ymatz28-beep.github.io/property-report/minpaku-osaka.html",
+    ]
+    headers = {"User-Agent": "Mozilla/5.0 PropertyReportBot/1.0"}
+    start = time.time()
+    attempt = 0
+    while time.time() - start < max_wait:
+        attempt += 1
+        all_ok = True
+        for url in verify_urls:
+            try:
+                req = Request(url, headers=headers)
+                with urlopen(req, timeout=10) as resp:
+                    if resp.status != 200:
+                        all_ok = False
+                        break
+            except (HTTPError, URLError, TimeoutError):
+                all_ok = False
+                break
+        if all_ok:
+            print(f"  サイト疎通確認OK（{attempt}回目、{time.time()-start:.0f}秒）")
+            return True
+        time.sleep(10)
+    print(f"  サイト疎通確認タイムアウト（{max_wait}秒）")
+    return False
 
 
 def regenerate_reports() -> bool:

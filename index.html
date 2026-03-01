@@ -162,6 +162,13 @@
     }
     .fi.v { opacity: 1; transform: translateY(0); }
 
+    .gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+    .gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
+    .gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+    .gnav a:hover{color:#fff}
+    .gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
+    @media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+
     footer {
       margin-top: 80px; padding: 32px 0 48px;
       border-top: 1px solid var(--border);
@@ -195,6 +202,7 @@
   </style>
 </head>
 <body>
+  <div class="gnav"><div class="gnav-inner"><a href="index.html" class="cur">Hub</a><a href="portfolio_dashboard.html">ポートフォリオ</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html">内覧分析</a></div></div>
   <div class="atmosphere"><div class="atm-orb"></div><div class="atm-orb"></div></div>
   <div class="grain"></div>
   <div class="page">
@@ -218,6 +226,7 @@
     <div class="reports" id="reports"></div>
 
     <footer>
+      <div style="margin-bottom:12px;font-size:11px"><a href="index.html" style="color:var(--accent)">Hub</a> · <a href="portfolio_dashboard.html" style="color:var(--text-secondary)">ポートフォリオ</a> · <a href="minpaku-osaka.html" style="color:var(--text-secondary)">大阪</a> · <a href="minpaku-fukuoka.html" style="color:var(--text-secondary)">福岡</a> · <a href="minpaku-tokyo.html" style="color:var(--text-secondary)">東京</a> · <a href="naiken-analysis.html" style="color:var(--text-secondary)">内覧分析</a></div>
       <div class="foot-left">iUMA REAL ESTATE &mdash; 2026</div>
       <div class="foot-right">AUTO-UPDATED DAILY</div>
     </footer>
@@ -225,6 +234,13 @@
 
   <script>
     var REPORTS = [
+      {
+        label: "Portfolio",
+        title: "不動産ポートフォリオ",
+        desc: "保有8物件のCF分析・減価償却・出口戦略・拡大ロードマップ。",
+        tags: ["CF分析", "償却", "Exit", "拡大戦略"],
+        url: "portfolio_dashboard.html"
+      },
       {
         label: "Minpaku Search",
         title: "民泊物件検索 — 大阪",

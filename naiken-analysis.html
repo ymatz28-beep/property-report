@@ -38,12 +38,6 @@
     .verdict-neutral { background:rgba(250,204,21,.08); border:1px solid rgba(250,204,21,.2); }
     a { color:var(--accent); text-decoration:none; }
     a:hover { text-decoration:underline; }
-    .gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
-    .gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
-    .gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
-    .gnav a:hover{color:#fff}
-    .gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
-    @media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
     .nav { margin-top:40px; text-align:center; }
     .nav a { display:inline-block; padding:10px 24px; border-radius:999px; border:1px solid var(--line); color:var(--text); margin:4px; font-size:13px; }
     .nav a:hover { border-color:var(--accent); background:rgba(110,231,255,.06); }
@@ -54,7 +48,6 @@
   </style>
 </head>
 <body>
-<div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="portfolio_dashboard.html">ポートフォリオ</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html" class="cur">内覧分析</a></div></div>
 <div class="wrap">
   <h1>内覧分析メモ</h1>
   <p class="date">2026-02-25 作成 — 重要事項調査報告書ベース</p>
@@ -69,7 +62,7 @@
         <table>
           <tr><th>価格</th><td>4,580万円</td></tr>
           <tr><th>面積</th><td>66.21㎡</td></tr>
-          <tr><th>民泊</th><td class="warn">❌ 不可（内覧確認済み）</td></tr>
+          <tr><th>民泊</th><td class="ok">⚡ 可能性あり（禁止明記なし）</td></tr>
           <tr><th>ペット</th><td class="ok">犬猫OK</td></tr>
           <tr><th>管理費合計</th><td class="ok">17,000円</td></tr>
           <tr><th>修繕積立金残高</th><td class="ok">5,034万円</td></tr>
@@ -91,12 +84,15 @@
       </div>
     </div>
 
-    <div class="verdict verdict-caution">
-      <strong>内覧結果（2026-02-25確認済み）:</strong><br>
-      ・<strong style="color:var(--red)">扇町・天満橋ともに民泊不可</strong>が確定<br>
-      ・書面上は禁止明記がなかった扇町も、管理組合に確認した結果、民泊は認められない<br>
-      ・両物件とも民泊候補からは除外。純粋な自宅用途 or 投資用途で再検討が必要<br>
-      ・<strong>民泊可物件の検索を継続</strong> — 大阪・福岡の新規候補を引き続きパトロール<br>
+    <div class="verdict verdict-ok">
+      <strong>判断ポイント:</strong><br>
+      ・<strong>扇町は民泊の可能性あり</strong>（専有部分用途に住戸・店舗・事務所を許容、民泊禁止の明記なし）<br>
+      ・民泊可なら特区民泊で申請（<strong>期限2026/5/29</strong>）→ 自宅兼民泊モデルが実現<br>
+      ・管理費17,000円/月（安い）、大規模修繕2024年完了、修繕積立金5,034万（健全）<br>
+      ・天満橋は民泊不可確定 → 純粋自宅+節税なら3,480万でコスパ良い<br>
+      ・両物件とも旧耐震（1976/1980年）→ 耐震補強コスト or リスク許容の判断が必要<br>
+      ・法人（iUMAプロパティマネジメント）購入ならセゾンファンデックス or 筑波銀行で対応<br><br>
+      <strong style="color:var(--accent)">→ 扇町が第1優先。内覧時に管理規約原本で民泊条項を最終確認する</strong>
     </div>
   </div>
 
@@ -106,7 +102,6 @@
     <p class="sub">コープ野村扇町 302号室 — 大阪市北区天神橋3-10-30 / 1LDK / 66.21㎡ / 1976年</p>
     <div>
       <span class="tag tag-blue">4,580万円</span>
-      <span class="tag tag-red">民泊不可（確認済）</span>
       <span class="tag tag-green">ペット可（犬猫OK）</span>
       <span class="tag tag-yellow">旧耐震(1976)</span>
       <span class="tag tag-green">管理費17,000円</span>
@@ -114,11 +109,14 @@
     </div>
 
     <div class="section-title">民泊可否（最重要）</div>
-    <div class="verdict verdict-caution">
-      <strong class="warn">❌ 民泊不可 — 内覧時に確認済み</strong><br>
-      書面上は「住戸・店舗・事務所」と用途が広く、民泊禁止の明記はなかったが、<br>
-      <strong>管理組合に確認した結果、民泊は認められない</strong>ことが判明。<br><br>
-      → 民泊候補から除外。純粋な自宅用途での検討に切替
+    <div class="verdict verdict-ok">
+      <strong class="ok">⚡ 民泊の可能性あり — 要最終確認</strong><br>
+      専有部分の用途: <strong>「住戸・店舗・事務所」</strong>（管理規約により各専有部分に応じた用途のみ可）<br>
+      他の3物件（ダイアパレス谷町・天満橋北・立ち止まる余白）は「住宅宿泊事業民泊＝禁止」と明記されていたが、<strong>扇町にはその記載がない</strong>。<br>
+      店舗・事務所用途も許容されており、民泊禁止の明示的規定なし。<br><br>
+      → <strong>大嶺さんに「特区民泊」「住宅宿泊事業」の可否を確認</strong><br>
+      → 管理規約の原本（平成24年改定版）で民泊条項の有無を確認<br>
+      → 特区民泊の新規受付は<strong>2026/5/29で終了</strong>（残り約3ヶ月）
     </div>
 
     <div class="section-title">重要事項調査報告書 — 詳細分析</div>
@@ -137,7 +135,7 @@
       <tr><th>管理員</th><td>滝川氏 / TEL: 06-6354-0627 / 月〜土 9:00-17:00</td></tr>
       <tr><th>管理規約</th><td>平成24年改定。冊子は各区分所有者に配布済み</td></tr>
       <tr><th>ペット</th><td class="ok">犬・猫・小鳥・小魚・小動物OK（室内飼育、飼育届提出）</td></tr>
-      <tr><th>専有部分用途</th><td class="warn"><strong>住戸・店舗・事務所</strong>（民泊不可 — 管理組合確認済み）</td></tr>
+      <tr><th>専有部分用途</th><td class="ok"><strong>住戸・店舗・事務所</strong>（民泊禁止の明記なし）</td></tr>
       <tr><th>借入</th><td class="ok">なし</td></tr>
       <tr><th>スコア</th><td class="val">70点（推奨）</td></tr>
       <tr><th>ソース</th><td><a href="https://www.realosakaestate.jp/estate.php?n=25517" target="_blank">大阪R不動産</a></td></tr>
@@ -273,11 +271,8 @@
   </div>
 
   <div class="nav">
-    <a href="index.html">Hub</a>
-    <a href="portfolio_dashboard.html">ポートフォリオ</a>
-    <a href="minpaku-osaka.html">大阪</a>
-    <a href="minpaku-fukuoka.html">福岡</a>
-    <a href="minpaku-tokyo.html">東京</a>
+    <a href="minpaku-osaka.html">大阪レポート全体</a>
+    <a href="index.html">トップ</a>
   </div>
 </div>
 </body>

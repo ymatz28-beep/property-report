@@ -203,6 +203,7 @@ def generate_reports() -> None:
     log("=== レポート生成 ===")
     for script in ["generate_osaka_report.py", "generate_fukuoka_report.py", "generate_tokyo_report.py"]:
         run_script(script)
+    run_script("generate_inquiry_messages.py")
 
 
 def deploy() -> None:

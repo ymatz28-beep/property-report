@@ -126,9 +126,38 @@ def load_city_properties(city_key: str) -> list[PropertyRow]:
     return deduped[:MAX_PER_CITY]
 
 
+def _generate_attraction(row: PropertyRow) -> str:
+    """Generate natural-sounding reason for interest based on score breakdown."""
+    b = row.score_breakdown
+    points = []
+    if b.get("station", 0) >= 15:
+        points.append("駅からのアクセスの良さ")
+    elif b.get("station", 0) >= 10:
+        points.append("立地の利便性")
+    if b.get("area", 0) >= 15:
+        points.append(f"{row.area_sqm:.0f}㎡のゆとりある広さ")
+    if b.get("location", 0) >= 15:
+        points.append("周辺環境")
+    if b.get("pet", 0) >= 15:
+        points.append("ペット飼育可能な点")
+    if b.get("budget", 0) >= 20:
+        points.append("価格帯")
+    if not points:
+        points.append("条件に合致する内容")
+    return "、".join(points[:2]) + "に魅力を感じ"
+
+
+def _detect_source_type(row: PropertyRow) -> str:
+    """Classify source into message variant type."""
+    if "R不動産" in row.source or "カウカモ" in row.source or "ふれんず" in row.source:
+        return "direct_email"
+    if row.source == "楽待":
+        return "investor_portal"
+    return "portal_form"  # SUUMO, Yahoo, athome, LIFULL
+
+
 def generate_message(row: PropertyRow, city_key: str) -> str:
     """Generate customized inquiry message for a property."""
-    # Determine city context
     city_context = {
         "osaka": "大阪でセカンド拠点となる住居用物件",
         "fukuoka": "福岡で住居用物件",
@@ -136,56 +165,84 @@ def generate_message(row: PropertyRow, city_key: str) -> str:
     }
     city_text = city_context.get(city_key, "住居用物件")
 
-    # Clean property name (remove ● and marketing fluff)
+    # Clean property name
     name = re.sub(r"[●★☆◎♪]", "", row.name).strip()
     if len(name) > 30:
         name = name[:30]
 
+    # Detect source type
+    source_type = _detect_source_type(row)
+
+    # Attraction comment
+    attraction = _generate_attraction(row)
+
     # Build missing data questions
     questions = []
-
     if row.maintenance_fee == 0:
         questions.append("月額の管理費・修繕積立金の金額")
-
     if not row.pet_status or row.pet_status.strip() == "":
         questions.append("ペット飼育の可否（小型犬を飼っております）")
     elif row.pet_status == "相談可":
         questions.append("ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）")
-
-    # Always ask about management rules (indirect minpaku check)
-    questions.append("管理規約の写しまたは主要な使用制限事項")
-
     if not row.built_year:
         questions.append("築年月")
 
-    # Build message
     lines = []
-    lines.append("お世話になります。")
-    lines.append(f"東京在住の手嶋と申します。")
-    lines.append("")
 
-    # Source-specific intro
-    if "R不動産" in row.source:
-        lines.append(f"貴サイトに掲載されている「{name}」の物件に大変興味を持ちご連絡いたしました。")
+    if source_type == "portal_form":
+        # --- Concise portal form version ---
+        lines.append(f"東京在住、法人での購入検討中の手嶋と申します。")
+        lines.append(f"「{name}」（{row.price_text}）について、{attraction}お問い合わせいたします。")
+        lines.append("")
+        lines.append(f"現在{city_text}を探しており、ペットと暮らせる物件を重視しております。")
+        lines.append("内覧をお願いできればと思います。")
+        if questions:
+            lines.append("")
+            lines.append("あわせて以下もご確認いただけますと幸いです。")
+            for q in questions:
+                lines.append(f"・{q}")
+        lines.append("")
+        lines.append("なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。")
+        lines.append("")
+        lines.append("よろしくお願いいたします。")
+
+    elif source_type == "investor_portal":
+        # --- Investor portal version (楽待) ---
+        lines.append(f"法人（合同会社）での購入を検討中の手嶋と申します。")
+        lines.append(f"「{name}」について問い合わせいたします。{attraction}興味を持ちました。")
+        lines.append("")
+        lines.append("内覧希望です。ご対応可能な日程をお知らせください。")
+        if questions:
+            lines.append("")
+            for q in questions:
+                lines.append(f"・{q}")
+        lines.append("")
+        lines.append("管理規約の用途制限（賃貸・転貸等）の有無についてもご教示ください。")
+        lines.append("")
+        lines.append("よろしくお願いいたします。")
+
     else:
-        lines.append(f"掲載されている「{name}」（{row.price_text}）の物件についてお問い合わせいたします。")
-
-    lines.append("")
-    lines.append(f"現在、法人名義で{city_text}を探しており、ペットと一緒に住める物件を重視しております。")
-    lines.append(f"こちらの物件に興味がありますので、可能であれば内覧をお願いできればと思います。")
-    lines.append("")
-
-    if questions:
-        lines.append("また、検討にあたり以下の点を確認させていただけると幸いです。")
+        # --- Direct email version (R不動産, カウカモ, ふれんず) ---
+        lines.append("お世話になります。")
+        lines.append("東京在住の手嶋と申します。")
+        lines.append("法人（iUMAプロパティマネジメント合同会社）での購入を検討しております。")
         lines.append("")
-        for i, q in enumerate(questions, 1):
-            lines.append(f"  {i}. {q}")
+        lines.append(f"貴サイトに掲載されている「{name}」を拝見し、{attraction}ご連絡いたしました。")
         lines.append("")
-
-    lines.append("ご多忙のところ恐れ入りますが、ご回答いただけますと助かります。")
-    lines.append("どうぞよろしくお願いいたします。")
-    lines.append("")
-    lines.append("手嶋 優真")
+        lines.append(f"現在{city_text}を探しており、ペットと一緒に住める物件を重視しております。")
+        lines.append("ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。")
+        if questions:
+            lines.append("")
+            lines.append("つきまして、以下の点についてもあわせてお伺いできればと存じます。")
+            for q in questions:
+                lines.append(f"・{q}")
+        lines.append("")
+        lines.append("また、購入後の利用形態について管理規約で制限されている事項がございましたら、")
+        lines.append("事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。")
+        lines.append("")
+        lines.append("お手数ですが、ご検討のほどよろしくお願い申し上げます。")
+        lines.append("")
+        lines.append("手嶋 優真")
 
     return "\n".join(lines)
 
@@ -220,6 +277,9 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
             idx += 1
             msg_id = f"msg-{idx}"
             channel = SOURCE_CHANNELS.get(row.source, "問い合わせ")
+            source_type = _detect_source_type(row)
+            type_labels = {"portal_form": "ポータルフォーム", "investor_portal": "投資家向け", "direct_email": "直接メール"}
+            type_label = type_labels.get(source_type, "")
 
             # Missing data tags
             tags = []
@@ -253,7 +313,7 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
               <div class="card-info">
                 <div class="card-name">{html_mod.escape(row.name[:40])}</div>
                 <div class="card-meta">{html_mod.escape(info_line)}</div>
-                <div class="card-score">{row.total_score}pt — {html_mod.escape(channel)}</div>
+                <div class="card-score">{row.total_score}pt — {html_mod.escape(channel)} ({html_mod.escape(type_label)})</div>
               </div>
               <a href="{html_mod.escape(row.url)}" target="_blank" class="card-link">物件ページ →</a>
             </div>

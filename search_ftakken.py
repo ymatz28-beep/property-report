@@ -178,17 +178,22 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
     elif "ペット不可" in block or "ペット飼育不可" in block:
         pet = "不可"
 
-    # Maintenance fee (管理費+修繕積立金)
+    # Maintenance fee (管理費+修繕積立金) — breakdown format
     maintenance = ""
-    total_fee = 0
+    kanri = 0
+    shuuzen = 0
     kanri_m = re.search(r"管理費[^\d]*?([\d,]+)\s*円", block)
     shuuzen_m = re.search(r"修繕積立金[^\d]*?([\d,]+)\s*円", block)
     if kanri_m:
-        total_fee += int(kanri_m.group(1).replace(",", ""))
+        kanri = int(kanri_m.group(1).replace(",", ""))
     if shuuzen_m:
-        total_fee += int(shuuzen_m.group(1).replace(",", ""))
-    if total_fee > 0:
-        maintenance = str(total_fee)
+        shuuzen = int(shuuzen_m.group(1).replace(",", ""))
+    if kanri > 0 and shuuzen > 0:
+        maintenance = f"管理費{kanri}+修繕{shuuzen}"
+    elif kanri > 0:
+        maintenance = f"管理費{kanri}"
+    elif shuuzen > 0:
+        maintenance = f"修繕{shuuzen}"
 
     return {
         "source": "ふれんず",

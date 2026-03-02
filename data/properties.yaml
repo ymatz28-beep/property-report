@@ -1,0 +1,285 @@
+# Property Master Data — Single Source of Truth
+# All dashboards (portfolio_dashboard, wealth-planner, asset-strategy) reference this file.
+# Updated: 2026-03-01
+
+properties:
+  # ===== 個人名義 =====
+  - id: akashicho
+    name: 明石町アビタシオン
+    location: 東京都中央区明石町
+    type: 自宅兼
+    entity: 個人
+    structure: RC
+    useful_life: 47
+    acquisition_date: "2017-02"
+    building_cost: 20464664
+    total_price: 35000000
+    area_sqm: null
+    depreciation_rate: 0.022
+    business_ratio: 0.30
+    status: 保有中
+    management_company: null
+    loans:
+      - lender: SBI新生銀行
+        amount: 35000000
+        remaining: null
+        monthly_payment: 110000
+        rate: null
+        term_years: 35
+    monthly_rent: 0  # 自宅利用
+    annual_gross_rent: 0
+    annual_expenses: 0
+    fixed_asset_tax: null
+    notes: "自宅兼用。事業按分30%。3,000万円特別控除適用可"
+
+  - id: ebina
+    name: aile de la verite
+    name_ja: 海老名
+    location: 神奈川県海老名市河原
+    type: 賃貸
+    entity: 個人
+    structure: 木造
+    useful_life: 22
+    acquisition_date: "2017-03"
+    building_cost: 46090000
+    total_price: 46090000
+    area_sqm: 152.06
+    depreciation_rate: 0.046
+    business_ratio: 1.0
+    status: 保有中
+    management_company: Robot Home
+    loans:
+      - lender: 西京銀行①（日本保証）
+        amount: 78300000
+        remaining: 66022000
+        monthly_payment: 280368
+        rate: 2.60
+        term_years: 30
+      - lender: 西京銀行②（新日本橋）
+        amount: 19600000
+        remaining: 16727000
+        monthly_payment: 74693
+        rate: 3.025
+        term_years: 30
+      - lender: アプラス
+        amount: 4000000
+        remaining: 0
+        monthly_payment: 42328
+        rate: 3.90
+        term_years: 10
+    monthly_rent: 461727
+    annual_gross_rent: 6217350
+    annual_expenses: 676632
+    fixed_asset_tax: null
+    notes: "H29取得。長期譲渡(20%)適用可。CF改善なければ2039償却切れ前に出口検討"
+
+  - id: nagoya
+    name: pavillon honnete biwajima
+    name_ja: 名古屋
+    location: 愛知県名古屋市西区枇杷島
+    type: 賃貸
+    entity: 個人
+    structure: 木造
+    useful_life: 22
+    acquisition_date: "2018-05"
+    building_cost: 46788400
+    total_price: 46788400
+    area_sqm: 169.32
+    depreciation_rate: 0.046
+    business_ratio: 1.0
+    status: 保有中
+    management_company: Robot Home
+    loans:
+      - lender: 西京銀行③（日本保証）
+        amount: 65800000
+        remaining: 57171000
+        monthly_payment: 235609
+        rate: 2.60
+        term_years: 30
+      - lender: 西京銀行④（新日本橋）
+        amount: 16400000
+        remaining: 14395000
+        monthly_payment: 62498
+        rate: 3.025
+        term_years: 30
+      - lender: ジャックス
+        amount: 4500000
+        remaining: null
+        monthly_payment: 32836
+        rate: 3.80
+        term_years: 10
+    monthly_rent: 391047
+    annual_gross_rent: 4736800
+    annual_expenses: 405944
+    fixed_asset_tax: null
+    notes: "H30取得。長期譲渡(20%)適用可。満室稼働中"
+
+  - id: chiba
+    name: Ile de la Main Elevee hanazono
+    name_ja: 千葉
+    location: 千葉市花見川区花園町
+    type: 賃貸
+    entity: 個人
+    structure: 木造
+    useful_life: 22
+    acquisition_date: "2024-11"
+    building_cost: 91740000
+    total_price: 91740000
+    area_sqm: 337.26
+    depreciation_rate: 0.046
+    business_ratio: 1.0
+    status: 保有中
+    management_company: null
+    loans:
+      - lender: auじぶん銀行
+        amount: 152500000
+        remaining: null
+        monthly_payment: 497384
+        rate: 2.15
+        term_years: 35
+    monthly_rent: 759812
+    annual_gross_rent: 9792000
+    annual_expenses: null
+    fixed_asset_tax: null
+    notes: "R6.11取得。12戸アパート。2029年まで短期譲渡(39%)"
+
+  # ===== 法人名義（iUMA PM）=====
+  - id: nishiurawa
+    name: Ile de la Main Elevee nishiurawa
+    name_ja: 西浦和
+    location: さいたま市桜区田島
+    type: 賃貸
+    entity: 法人
+    structure: 木造
+    useful_life: 22
+    acquisition_date: "2025-01"
+    building_cost: null
+    total_price: 144000000
+    area_sqm: null
+    depreciation_rate: 0.046
+    business_ratio: 1.0
+    status: 保有中
+    management_company: Robot Home
+    loans:
+      - lender: 筑波銀行
+        amount: 144000000
+        remaining: null
+        monthly_payment: 507200
+        rate: 2.40
+        term_years: 35
+    monthly_rent: 783000
+    annual_gross_rent: null
+    annual_expenses: 59050  # monthly
+    fixed_asset_tax: null
+    notes: "2025年12月稼働開始。純CF ¥156,750/月"
+
+  - id: higashiurawa
+    name: Ile de la Main Elevee higashiurawa
+    name_ja: 東浦和
+    location: さいたま市緑区東浦和
+    type: 賃貸
+    entity: 法人
+    structure: 木造
+    useful_life: 22
+    acquisition_date: "2025-01"
+    building_cost: null
+    total_price: 161900000
+    area_sqm: null
+    depreciation_rate: 0.046
+    business_ratio: 1.0
+    status: 建築中
+    management_company: Robot Home
+    loans:
+      - lender: 筑波銀行
+        amount: 161900000
+        remaining: null
+        monthly_payment: 570200
+        rate: 2.40
+        term_years: 35
+    monthly_rent: 876000  # 見込
+    annual_gross_rent: null
+    annual_expenses: null
+    fixed_asset_tax: null
+    notes: "建築中。完成2026年8月、入居2026年9月5日。見込CF ¥240,350/月"
+
+  - id: chisan_hakata
+    name: チサンマンション第三博多
+    name_ja: 博多
+    location: 福岡市
+    type: 事務所
+    entity: 法人
+    structure: RC
+    useful_life: 47
+    acquisition_date: null
+    building_cost: null
+    total_price: 15400000
+    area_sqm: null
+    depreciation_rate: 0.022
+    business_ratio: 1.0
+    status: 保有中
+    management_company: null
+    loans:
+      - lender: 筑波銀行
+        amount: 15400000
+        remaining: null
+        monthly_payment: 100000
+        rate: 2.85
+        term_years: 15
+    monthly_rent: 0  # 自社利用
+    annual_gross_rent: 0
+    annual_expenses: 27940  # monthly: 管理¥12,600 + 修繕¥12,800 + 水道¥2,540
+    fixed_asset_tax: null
+    notes: "区分所有。自社事務所利用中。将来的に民泊転用候補"
+
+  - id: sendai
+    name: クレストモール
+    name_ja: 仙台
+    location: 仙台市
+    type: 賃貸
+    entity: 法人
+    structure: null  # 要確認
+    useful_life: null  # 要確認
+    acquisition_date: null  # 要確認
+    building_cost: null
+    total_price: null
+    area_sqm: null
+    depreciation_rate: null
+    business_ratio: 1.0
+    status: 保有中
+    management_company: Robot Home
+    loans:
+      - lender: 日本政策金融公庫
+        amount: 29500000
+        remaining: 19000000
+        monthly_payment: 162000
+        rate: 1.90
+        term_years: null
+    monthly_rent: 186507
+    annual_gross_rent: 2752279
+    annual_expenses: 514195  # annual
+    fixed_asset_tax: 66000
+    notes: "法人最古物件。Robot Home管理。CF安定。構造・取得年要確認"
+
+# ===== 売却済み =====
+sold:
+  - name: ハイネス中野
+    location: 中野区中央
+    sold_year: 2021
+    sold_price: 29000000
+    capital_gain: 2320000
+
+  - name: pavillon honnete
+    location: さいたま市見沼区
+    sold_year: 2024
+    sold_price: 71190000
+    capital_gain: 15750000
+
+# ===== メタデータ =====
+meta:
+  total_properties: 8
+  personal_count: 4
+  corporate_count: 4
+  tax_rate_personal: 0.43  # 所得税33% + 住民税10%
+  tax_rate_corporate: 0.34  # 中小企業特例
+  data_source: "2024年確定申告 + iUMA第8期決算書 + Robot Home実績"
+  last_updated: "2026-03-01"

@@ -1,12 +1,61 @@
 # HANDOFF
 
-## 最終更新: 2026-02-26（セッション86）
+## 最終更新: 2026-03-02（セッション94: ペット不明スコア改善+テーブル幅調整）
 
-## 完了済み（直近セッション86）
-- （作業なし — Prompt is too longエラーで全リクエスト失敗。画像貼付+長大コンテキストが原因）
+## 完了済み（直近セッション94）
+- **ペット不明スコア改善** — `pet_score_for_row()` の不明(空欄)スコアを0→-15に変更。日本のマンションはデフォルトでペット不可が多いため、記載なし=飼育不可の可能性が高いと判断。ペット可確認済み物件が自動的に上位に来る設計に
+  - 朝日プラザ南堀江: #2(98点) → #9(83点) に下降
+- **テーブル列幅調整** — 最寄駅の「徒歩○分」が見えるように幅配分を最適化
+  - 物件名: 160→130px、所在地: 140→110px、最寄駅: 140→160px（拡大）
+  - スコア内訳: 260→220px、間取り: max-width 55px+nowrap
+  - セルpadding: 12px 10px → 10px 6px
+- **3都市レポート検索条件表示更新** — 「ペット可は高加点（+15）、不明は-15」に変更
+- **CLAUDE.md Autonomous QAルール強化** — レポートデプロイ後のQA巡回を自律実行ルールに昇格（指示不要・自動実行）
+- **QA巡回実施** — 3都市全レポートでペット不可混入ゼロ、上位5件全てペット+10以上を確認
 
-## 完了済み（前セッション84-85）
-- **git pushエラー(exit 128)修正** — credential.helper + .git-credentials手動設定を削除。actions/checkout@v4の組み込み認証に任せる。git configもlocalに変更。データ変更がない場合はpushスキップするよう改善
+## 完了済み（セッション93）
+- **カンマ入り管理費の表示バグ修正** — `_format_maintenance_disp()` でカンマ含む管理費文字列が正常表示されるように修正
+- **Yahoo不動産/R不動産のenrichment追加** — +104件の管理費内訳取得
+- **管理費表示ラベル追加** — 管理のみ/合計/記載なし を区別して表示
+- **ふれんずPlaywright enrichment関数の実装** — `enrich_ftakken_file()` を `enrich_maintenance.py` に追加。詳細ページから管理費+修繕積立金を個別取得する仕組み
+- ⚠️ **ふれんずenrichment未実行（中断）** — 349件の詳細ページ巡回を開始したがバッファリング中に中断。0件処理済み
+
+## 完了済み（セッション92）
+- **スマホ最適化実装+デプロイ完了** — `generate_search_report_common.py` CSSメディアクエリ全面改修:
+  - 768px / 640px ブレークポイント追加（計4段階: 960/768/640/480px→最終的に960/768/640の3段階）
+  - ベースmin-width 1480px → 1180px に削減
+  - Hero/Stats/Conditionsセクションをモバイルでコンパクト化（padding縮小、フォント縮小、sub-text非表示）
+  - スコアバッジにtitle属性追加（長押しで11軸内訳を確認可能）
+  - **方針決定: 列の非表示は行わない**。全12列を横スクロールで閲覧可能にする
+    - 初回は hide-tablet/hide-phone で段階的に列を非表示にしたが、ユーザーから「管理費修繕や最寄駅が消える」とフィードバック → 全列維持+横スクロールに変更
+  - セルフォント/paddingを768px以下で段階的に縮小
+  - スコア内訳バッジのサイズも段階的に圧縮（260→180→140→120px）
+  - 3都市レポート再生成+gh-pagesデプロイ完了
+
+## 完了済み（セッション91）
+- **モバイル最適化の詳細調査完了** — 11項目診断。実装はセッション92で実施
+
+## 完了済み（セッション90）
+- **プロジェクト構造・スコアリングロジック全体調査** — Exploreエージェントで`generate_search_report_common.py`のスコアリング関数（11軸）、レポートHTML/CSS、管理費パース・スコアリング・表示ロジックを網羅的に分析
+- **3つの改善ポイント特定** — (1)管理費ペナルティ最大-5は弱すぎる→高コスト物件が上位に残る (2)管理修繕費の表示確認 (3)テーブルmin-width 700-800pxでスマホ横スクロール発生
+- ⚠️ **Prompt is too longで中断（計3回）** — (1)Explore結果82kトークン→Read L430-609成功→Read L570-620で中断 (2)続行セッションで/compact失敗 (3)さらに続行で「どこで止まった？」の質問すらPrompt is too longで応答不可。合計6回のAPI拒否
+
+## 完了済み（セッション89）
+- **管理費データ旧形式一括修正** — SUUMO名前マッチングで92件修正（athome大阪9, multi_site福岡37, multi_site大阪9, 楽待福岡3, Yahoo福岡34）。100%完了: cowcamo東京/ftakken福岡/楽待東京
+
+## 完了済み（セッション87-88）
+- **SUUMOスクレイパー新規作成** (`search_suumo.py`) — 全3都市（大阪/福岡/東京）の中古マンション検索。詳細ページから管理費+修繕積立金をinline enrichment
+- **億パーサーバグ修正** — `_parse_price_man()`が「1億1000万円」→「1000万円」と誤パース。search_suumo.py + search_lifull.py両方修正
+- **東京SUUMOスラッグ修正** — `sc_shibuyaku`→`sc_shibuya`等、全10区。404エラーで0件だった東京が139件取得成功
+- **日次パトロールにSUUMO組込み** — run_daily_patrol.pyにSUUMO追加（timeout=600s）
+- **enrich_maintenance.py拡張** — SUUMOソース対応追加
+- **LIFULL timeout修正** — networkidle待機→sleep(3)で安定化
+- **QA閾値強化** — 管理費カバー率30%未満でエラー（以前はWARN）
+- **GitHub Actions timeout延長** — job 60min, step 50min
+- **問い合わせ文面作成** — 民泊可否確認用メッセージ（管理会社/仲介業者向け）
+
+## 完了済み（セッション84-86）
+- **git pushエラー(exit 128)修正** — credential.helper + .git-credentials手動設定を削除。actions/checkout@v4の組み込み認証に任せる
 
 ## 完了済み（過去セッション）
 - Daily Patrol GitHub Actions 稼働確認完了（24分41秒） + CI最適化（SOLDスキップ/タイムアウト調整/PYTHONUNBUFFERED） + gh auth workflow追加 + デフォルトブランチmain化（82）
@@ -22,30 +71,40 @@
 - マルチソース検索 + f-takkenスクレイパー（67）
 
 ## 進行中 / 未完了
+- **ふれんずenrichment実行待ち** — 349件の詳細ページ巡回。`python enrich_maintenance.py` → レポート再生成 → デプロイ。推定15-20分。技術メモ: 詳細ページは直接アクセスで403、一覧→詳細の順でNavigate必要（session cookie）。金額フォーマットは「管理費 9500円」「積立金 1万4990円」（万円表記あり）
+- **スコアリング改善（管理費ペナルティ強化）** — 現状max -5では高コスト物件が上位に残る。ペナルティ拡大が必要（セッション90で特定）
+- **管理費データ残課題** — old形式29件+empty241件がSUUMO名前マッチ不可（multi_site/yahoo/rakumachi等にSUUMO該当なし）。個別スクレイピングか元サイトからの直接取得が必要
+- **property-report Hub モバイル微調整** — kaizen#21 QA巡回で指摘: 640px以下（iPhone SE 375px等）のブレークポイント不足。heroのmargin-top未縮小、gnav/footerのタッチターゲット不足。ただしviewport meta+768px/480pxブレークポイントは既に実装済みで深刻度は低い
 - **Gmail通知認証エラー** — `535 BadCredentials`。アプリパスワードをスペースなし16文字で再設定必要（`gh secret set GMAIL_APP_PASSWORD`）
-- **LINE通知未設定** — LINE Developers登録 + Messaging APIチャネル作成 + Secrets追加が必要（LINE_CHANNEL_TOKEN, LINE_USER_ID）
+- **LINE通知方針変更** — kaizen#20で「新物件検出時のみLINE通知」に決定（`send_line_if_new()`）。LINE Developers登録 + Secrets追加は引き続き必要
 - #1 扇町の民泊可否 — **2026-02-25内覧予定。大嶺さんに直接確認する**
 - **athome CAPTCHA** — 認証パズル（認証中）でHTTP/Playwright両方ブロック。解決策なし
 - Webレポート v2（公開用・プライバシー対策版）の設計・実装
 - ポートフォリオダッシュボードの数値確定
 
 ## 次回アクション（優先順）
-1. **Gmail通知修正** — アプリパスワード再発行（https://myaccount.google.com/apppasswords）→ スペース除去して`gh secret set GMAIL_APP_PASSWORD` → workflow_dispatchでテスト
-2. **内覧結果の反映** — 扇町・天満橋の内覧結果をデータに反映
-3. **LINE通知設定** — LINE Developers登録 → Messaging APIチャネル作成 → Secrets追加
-4. **athome代替策検討** — CAPTCHA回避不可。別サイト（LIFULL等）の追加を検討
-5. **patrol横展開** — stock-analyzerに同パターン（データ取得→レポート生成→gh-pagesデプロイ）のGitHub Actionsを横展開（改善アイデア）
+1. **ふれんずenrichment実行 + レポート再生成 + デプロイ** — `python enrich_maintenance.py` で349件巡回（15-20分）→ レポート再生成 → gh-pagesデプロイ → WebFetch確認
+2. **スコアリング改善+レポート再生成+デプロイ** — 管理費ペナルティ強化（`maintenance_fee_score()` L441-457: -5→-10/-15等に拡大） + レポート生成・デプロイ。⚠️ 必ず新規セッション・最小コンテキストで開始
+3. **Gmail通知修正** — アプリパスワード再発行（https://myaccount.google.com/apppasswords）→ スペース除去して`gh secret set GMAIL_APP_PASSWORD` → workflow_dispatchでテスト
+4. **内覧結果の反映** — 扇町・天満橋の内覧結果をデータに反映
+5. **LINE通知設定** — LINE Developers登録 → Messaging APIチャネル作成 → Secrets追加。新物件検出時のみ通知
+6. **管理費empty物件の元サイト直接取得** — SUUMO未掲載241件について、Yahoo/楽待/multi_siteの詳細ページから管理費を個別スクレイピングするパイプライン構築
+7. 💡**改善アイデア: ふれんずenrichmentの差分実行** — 現在は全349件を毎回巡回。enrichment済みフラグを管理し、未取得分のみ巡回すれば実行時間を大幅短縮可能
 
 ## Key Decisions
+- **モバイル最適化の現状と課題を詳細調査済み**（セッション91）: viewport meta ✓, レスポンシブグリッド(minmax) ✓, hide-mobile ✓(2列のみ)。不足: 768px/640pxブレークポイント未定義、テーブルmin-width 700-1480pxで横スクロール、スコア内訳列11バッジがモバイルで窮屈、生成ファイル間のmin-width不統一
+- **スコアリング全11軸の構造確認済み**（セッション90、94で更新）: budget(20), area(15), earthquake(15), station(15), location(20), layout(10), pet(+15/+10/-15), maintenance(10/-5→強化予定), renovation(5/-5), brokerage(5), minpaku_penalty(0)。pet不明=-15に変更済み
+- **管理費ペナルティ-5は不十分と判断**（セッション90）: 4万円超でも-5点しか減点されず、他の高スコアで相殺されて高コスト物件が上位に残る問題
+- **Prompt is too long 6セッション連続**（85,86,89,90,90続行,90続行2）: Exploreエージェントが82kトークン消費→メインコンテキスト圧迫→/compactすら不可→ユーザー質問にすら応答不可。対策: 新規セッション+サブエージェント禁止+コード読み込み最小限
 - **git push修正**: actions/checkout@v4の組み込み認証を使う。手動credential helper設定は不要かつ競合する
 - **通知はcontinue-on-error: true** — Secrets未設定でもパトロール本体に影響なし。Gmail/LINE片方だけでもOK
 - 物件購入は法人（iUMAプロパティマネジメント）優先
 - **サイト構造**: report-dashboard（統合ハブ）→ property-report（不動産のみ）/ trip-planner（旅行のみ）/ stock/portfolio.html（株）。各サブサイトに← Dashboardリンク
 - **デザイン言語**: DM Serif Display + Outfit + JetBrains Mono。ダークBG #050507、グレインテクスチャ、アニメーションorb。カテゴリ別アクセント: 不動産 #3b9eff / 旅行 #ff6b35 / 株 #8b5cf6
 - **SSF設計**: CATEGORIES配列駆動。新カテゴリ追加 = 1オブジェクト追加するだけ
-- ペット不可: ハードフィルタで完全除外
+- ペット不可: ハードフィルタで完全除外。ペット不明(空欄): -15点（記載なし≒飼育不可と推定）
 - 厳選フィルタ: MIN_SCORE=30 + MAX_DISPLAY=50 + ペット可優先
-- 管理費enrichment: 楽待+カウカモの詳細ページから取得（enrich_maintenance.py）
+- 管理費enrichment: SUUMO（inline） + 楽待+カウカモ（enrich_maintenance.py） + SUUMO名前マッチング（他サイトの旧形式/空欄修正用、348物件lookup）
 - 楽待の価格パラメータ（pmin/pmax）は万円単位
 - **deploy_to_gh_pages()にはgit config user設定が必須**
 - **レポート更新後は自律的にQAを実行する**
@@ -54,8 +113,10 @@
 - **同種ミス2回以上はCLAUDE.mdに昇格して恒久ルール化する**
 - **property-reportのデフォルトブランチはmain**（GitHub Actions認識のため変更済み。gh-pagesはデプロイ専用）
 - **gh auth にworkflowスコープ追加済み** — ワークフローファイルをローカルから直接push可能
+- **LINE通知は新物件検出時のみ**（kaizen#20）— 毎日パトロールは実行するがLINEは条件付き。Gmail+Webが主チャネル
 
 ## ブロッカー / 注意事項
+- **Prompt is too longが7セッションで発生（85,86,89,90,90続行,90続行2,91）** — Exploreサブエージェントの大量結果がコンテキストを圧迫。次回対策: (1)必ず新規セッションで開始 (2)画像なし (3)サブエージェント禁止（調査完了済み） (4)コード読み込みは必要最小限(50行以内) (5)/compactを早めに実行
 - **特区民泊の新規受付は2026年5月29日で終了** → 残り約3ヶ月
 - #1 扇町の民泊可否が最重要の未確認事項
 - athome全都市でCAPTCHA認証ブロック（解決不可）
@@ -74,7 +135,23 @@
   - `trip-planner` — 旅行（mainブランチ）: https://ymatz28-beep.github.io/trip-planner/
 - `gh` CLI でデプロイ
 
+## Key Decisions (追加)
+- **ふれんず詳細ページは直接アクセス不可（403）**（セッション93）: 一覧ページ→詳細ページの順でNavigateする必要あり（session cookie依存）。万円表記（「1万4990円」等）のパース対応済み
+- **Yahoo不動産/R不動産からも管理費enrichment可能と確認**（セッション93）: +104件の内訳取得に成功
+- **スマホ最適化: 列非表示ではなく横スクロール方式を採用**（セッション92）: ユーザーフィードバックにより、hide-mobile/tablet/phoneで列を非表示にする方式はNG。管理費修繕・最寄駅・築年・評価など全列を維持し、横スクロールで閲覧可能にする。セルサイズの段階的縮小で対応
+
 ## History
+- 2026-03-02 セッション94: ペット不明スコア0→-15変更 + テーブル列幅調整（最寄駅拡大） + QA巡回自動化ルール追加 + 3都市再生成デプロイ
+- 2026-03-02 セッション93: 管理費バグ修正(カンマ入り) + Yahoo/R不動産enrichment(+104件) + ふれんずPlaywright enrichment関数実装。349件巡回は中断（0件処理）
+- 2026-03-02 kaizen#21 QA巡回: property-report/index.htmlのモバイルレスポンシブ調査。viewport+768/480px BP実装済み確認。640px以下の微調整を進行中に追加
+- 2026-03-02 セッション92: スマホ最適化実装。4段階ブレークポイント追加、hero/stats/conditionsコンパクト化、スコアバッジtitle属性追加。ユーザーFBで列非表示→全列横スクロール方式に変更。3都市レポート再生成+デプロイ
+- 2026-03-02 セッション91: モバイル最適化の詳細調査完了。CSS/メディアクエリ・全8HTMLレポートを分析し11項目の診断レポート生成。Prompt is too longで最終出力中断
+- 2026-03-02 セッション90(続行2): 前回続行のコンテキスト引き継ぎで即Prompt is too long。ユーザーの「どこで止まった？」にも2回とも応答不可。完全にコンテキスト限界
+- 2026-03-02 セッション90(続行): コード読み込み試行(L430-609成功)→2回目Read(L570-620)でPrompt is too long→/compactも「Conversation too long」で失敗
+- 2026-03-02 セッション90: スコアリング構造調査（全11軸分析） + 改善3点特定（管理費ペナルティ/表示/スマホ最適化）。Prompt is too longで中断
+- 2026-03-02 セッション89: 管理費旧形式一括修正（SUUMO名前マッチで92件修正）。レポート再生成は「Prompt is too long」で中断
+- 2026-03-01 kaizen#20反映: LINE通知最適化 — 新物件検出時のみLINE通知（`send_line_if_new()`）。月間LINE使用量~5通/月に
+- 2026-03-01 セッション87-88: SUUMOスクレイパー新規作成 + 億パーサーバグ修正 + 東京slugs修正 + 日次パトロール組込み + QA強化。大阪115件/福岡187件/東京112件
 - 2026-02-26 セッション86: Prompt is too longエラーで作業不可（画像+長大コンテキスト。2セッション連続）
 - 2026-02-26 セッション85: Prompt is too longエラーで作業不可（画像貼付が原因の可能性）
 - 2026-02-26 セッション84: git pushエラー修正（credential helper競合解消 + 条件付きpush）
@@ -86,10 +163,3 @@
 - 2026-02-25 セッション77: SUUMO管理費enrichmentスクリプト修正 + QA自動化 + スコア2文字ラベル
 - 2026-02-25 セッション76: スコア内訳UI改善 + 内覧分析ページ作成 + Hub追加 + デプロイ
 - 2026-02-25 セッション75: 管理費スコアリング + ペット不可ハードフィルタ + ランディングページ + デプロイ修正
-- 2026-02-24 セッション74: HANDOFF更新（セッション73トランスクリプトからの反映）
-- 2026-02-23 セッション73: リンク修正 + R不動産統合 + ペット/OC/駅距離/エリアスコア修正 + 東京版作成
-- 2026-02-22 セッション68: フルオートパイプライン構築
-- 2026-02-22 セッション67: マルチソース検索 + f-takkenスクレイパー
-- 2026-02-22 セッション66: 大阪・福岡レポート + 民泊スコアリング
-- 2026-02-21 セッション65: 重要事項調査報告書分析
-- 2026-02-21 セッション64: SEARCH_CRITERIA.md作成

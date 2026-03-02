@@ -251,6 +251,47 @@ def format_summary(start: datetime, elapsed: float, diff: dict, url_report: dict
     return "\n".join(lines)
 
 
+def send_line_if_new(diff: dict) -> None:
+    """Send LINE push notification only when new properties are found."""
+    new_props = diff.get("new", [])
+    if not new_props:
+        log("  LINE通知スキップ（新規物件なし）")
+        return
+
+    # Shared LINE utility (subprocess call — same pattern as other projects)
+    line_script = BASE_DIR.parent / "lib" / "line_notify.py"
+    if not line_script.exists():
+        log(f"  LINE utility not found: {line_script}")
+        return
+
+    # Build area string from locations (deduplicated, compact)
+    areas: list[str] = []
+    for p in new_props:
+        loc = p.get("location", "")
+        # Extract city/ward level (e.g. "大阪市中央区..." → "大阪市中央区")
+        short = loc.split("丁目")[0].split("番")[0][:12] if loc else ""
+        if short and short not in areas:
+            areas.append(short)
+    area_str = ", ".join(areas[:5])
+    if len(areas) > 5:
+        area_str += f" 他{len(areas) - 5}エリア"
+
+    report_url = "https://ymatz28-beep.github.io/property-report/"
+    message = f"[property] 新規{len(new_props)}件検出 ({area_str})\n{report_url}"
+
+    try:
+        result = subprocess.run(
+            [sys.executable, str(line_script), message],
+            capture_output=True, text=True, timeout=15,
+        )
+        if result.returncode == 0:
+            log(f"  LINE通知送信: 新規{len(new_props)}件")
+        else:
+            log(f"  LINE送信失敗: {result.stderr.strip()}")
+    except Exception as e:
+        log(f"  LINE送信エラー: {e}")
+
+
 def main():
     start = datetime.now()
     log(f"===== 物件巡回パトロール開始 {start.strftime('%Y-%m-%d %H:%M')} =====")
@@ -284,6 +325,9 @@ def main():
     log(summary)
     SUMMARY_FILE = BASE_DIR / "data" / "patrol_summary.txt"
     SUMMARY_FILE.write_text(summary, encoding="utf-8")
+
+    # 6. LINE notification (only when new properties found)
+    send_line_if_new(diff)
 
 
 if __name__ == "__main__":

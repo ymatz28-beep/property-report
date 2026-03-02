@@ -9,12 +9,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg: #0f1117;
-  --surface: #1a1d27;
+  --bg: #0b0f16;
+  --surface: rgba(255,255,255,0.04);
   --surface2: #242834;
-  --border: #2e3344;
-  --text: #e4e6ed;
-  --text-muted: #8b90a0;
+  --border: rgba(255,255,255,0.10);
+  --text: #edf3ff;
+  --text-muted: #a9b3c6;
   --accent: #6c8cff;
   --accent2: #a78bfa;
   --green: #34d399;
@@ -130,9 +130,24 @@ footer { padding:30px 0; text-align:center; color:var(--text-muted); font-size:1
 .gnav a:hover{color:#fff}
 .gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
 @media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.10);font-family:'Inter','Noto Sans JP',sans-serif}
+.site-header .site-brand{font-size:13px;font-weight:700;color:#3b9eff}
+.site-header .site-nav{display:flex;gap:6px;flex-wrap:wrap}
+.site-header .site-nav a{font-size:11px;color:#a9b3c6;text-decoration:none;padding:4px 10px;border-radius:4px;border:1px solid transparent;transition:all .15s}
+.site-header .site-nav a:hover{color:#edf3ff;background:rgba(255,255,255,0.04)}
+.site-header .site-nav a.current{color:#3b9eff;border-color:rgba(59,158,255,0.3);background:rgba(59,158,255,0.08)}
+@media(max-width:768px){.site-header{flex-direction:column;gap:8px;align-items:flex-start}}
 </style>
 </head>
 <body>
+<div class="site-header">
+  <div class="site-brand">iUMA</div>
+  <nav class="site-nav">
+    <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
+
+    <a href="https://ymatz28-beep.github.io/property-report/" class="current">Property</a>
+  </nav>
+</div>
 <div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="portfolio_dashboard.html" class="cur">ポートフォリオ</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a></div></div>
 
 <div class="privacy-banner">CONFIDENTIAL - LOCAL USE ONLY <span>非公開</span></div>

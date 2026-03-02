@@ -80,16 +80,49 @@ def enrich_rakumachi(html: str) -> str:
 
 
 def enrich_suumo(html: str) -> str:
-    """Extract maintenance fee from SUUMO detail page."""
-    total_fee = 0
-    kanri_m = re.search(r'管理費</div>.*?</th>\s*<td[^>]*>\s*([\d,]+)\s*円', html, re.DOTALL)
+    """Extract maintenance fee from SUUMO detail page. Returns breakdown format."""
+    kanri = 0
+    shuuzen = 0
+    kanri_m = re.search(r'管理費</div>.*?</th>\s*<td[^>]*>(.*?)</td>', html, re.DOTALL)
     if kanri_m:
-        total_fee += int(kanri_m.group(1).replace(",", ""))
-    shuuzen_m = re.search(r'修繕積立金</div>.*?</th>\s*<td[^>]*>\s*([\d,]+)\s*円', html, re.DOTALL)
+        kanri = _parse_yen(kanri_m.group(1))
+    shuuzen_m = re.search(r'修繕積立金</div>.*?</th>\s*<td[^>]*>(.*?)</td>', html, re.DOTALL)
     if shuuzen_m:
-        total_fee += int(shuuzen_m.group(1).replace(",", ""))
-    if total_fee > 0:
-        return str(total_fee)
+        shuuzen = _parse_yen(shuuzen_m.group(1))
+    if kanri > 0 and shuuzen > 0:
+        return f"管理費{kanri}+修繕{shuuzen}"
+    elif kanri > 0:
+        return f"管理費{kanri}"
+    elif shuuzen > 0:
+        return f"修繕{shuuzen}"
+    return ""
+
+
+def enrich_yahoo(html: str) -> str:
+    """Extract maintenance fee from Yahoo不動産 detail page.
+    Format: 管理費 4,600円/月 ... 修繕積立金 5,800円/月
+    """
+    text = re.sub(r"<[^>]+>", " ", html)
+    text = re.sub(r"\s+", " ", text)
+
+    kanri = 0
+    shuuzen = 0
+
+    m = re.search(r"管理費\s*([\d,]+)\s*円", text)
+    if m:
+        kanri = int(m.group(1).replace(",", ""))
+
+    m = re.search(r"修繕積立金\s*([\d,]+)\s*円", text)
+    if m:
+        shuuzen = int(m.group(1).replace(",", ""))
+
+    if kanri or shuuzen:
+        parts = []
+        if kanri:
+            parts.append(f"管理費{kanri}")
+        if shuuzen:
+            parts.append(f"修繕{shuuzen}")
+        return "+".join(parts)
     return ""
 
 
@@ -146,13 +179,15 @@ def enrich_file(filepath: Path) -> int:
         maintenance = parts[10].strip()
         url = parts[11].strip()
 
-        # Skip if already has maintenance data
-        if maintenance:
+        # Skip if already has breakdown data (管理費+修繕)
+        # Re-enrich if only a raw number (no breakdown)
+        has_breakdown = "管理" in maintenance or "修繕" in maintenance
+        if maintenance and has_breakdown:
             new_lines.append(line)
             continue
 
         # Only enrich supported sources
-        if source not in ("楽待", "カウカモ", "SUUMO"):
+        if source not in ("楽待", "カウカモ", "SUUMO", "Yahoo不動産", "福岡R不動産", "大阪R不動産", "東京R不動産"):
             new_lines.append(line)
             continue
 
@@ -169,6 +204,10 @@ def enrich_file(filepath: Path) -> int:
             fee_text = enrich_cowcamo(html)
         elif source == "SUUMO":
             fee_text = enrich_suumo(html)
+        elif source == "Yahoo不動産":
+            fee_text = enrich_yahoo(html)
+        elif source in ("福岡R不動産", "大阪R不動産", "東京R不動産"):
+            fee_text = enrich_yahoo(html)  # Same format as Yahoo
         else:
             fee_text = ""
 
@@ -187,26 +226,148 @@ def enrich_file(filepath: Path) -> int:
     return updated
 
 
+def _parse_ftakken_fee(text: str) -> str:
+    """Parse ふれんず detail page text for 管理費 + 積立金.
+
+    Formats: '9500円', '1万4990円', '1万300円'
+    """
+    def _parse_yen(s: str) -> int:
+        s = s.replace(",", "").strip()
+        m = re.match(r"(\d+)万(\d+)円", s)
+        if m:
+            return int(m.group(1)) * 10000 + int(m.group(2))
+        m = re.match(r"(\d+)万円", s)
+        if m:
+            return int(m.group(1)) * 10000
+        m = re.match(r"(\d+)円", s)
+        if m:
+            return int(m.group(1))
+        return 0
+
+    kanri = 0
+    tsumitate = 0
+
+    m = re.search(r"管理費\s+([\d万,]+円)", text)
+    if m:
+        kanri = _parse_yen(m.group(1))
+
+    m = re.search(r"積立金\s+([\d万,]+円)", text)
+    if m:
+        tsumitate = _parse_yen(m.group(1))
+
+    if kanri > 0 and tsumitate > 0:
+        return f"管理費{kanri}+修繕{tsumitate}"
+    elif kanri > 0:
+        return f"管理費{kanri}"
+    elif tsumitate > 0:
+        return f"修繕{tsumitate}"
+    return ""
+
+
+def enrich_ftakken_file(filepath: Path) -> int:
+    """Enrich ふれんず properties by visiting detail pages with Playwright.
+
+    Requires a browser session via listing page first (detail pages return 403 without cookies).
+    """
+    if not filepath.exists():
+        return 0
+
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print("  [WARN] playwright not installed, skipping ftakken enrichment")
+        return 0
+
+    lines = filepath.read_text(encoding="utf-8").splitlines()
+
+    # Collect indices needing enrichment
+    to_enrich = []
+    for i, line in enumerate(lines):
+        if line.startswith("#") or not line.strip():
+            continue
+        parts = line.split("|")
+        if len(parts) < 12:
+            continue
+        source = parts[0].strip()
+        if source != "ふれんず":
+            continue
+        maintenance = parts[10].strip()
+        has_breakdown = "管理" in maintenance and "修繕" in maintenance
+        if has_breakdown:
+            continue
+        url = parts[11].strip()
+        if not url or "f-takken.com" not in url:
+            continue
+        to_enrich.append((i, parts, url))
+
+    if not to_enrich:
+        return 0
+
+    print(f"  ふれんず enrichment: {len(to_enrich)}件の詳細ページを巡回")
+
+    updated = 0
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        ctx = browser.new_context(
+            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
+        page = ctx.new_page()
+
+        # Visit listing page first to get session cookies
+        try:
+            page.goto(
+                "https://www.f-takken.com/freins/buy/mansion/area?locate[]=40132&data_409=1",
+                timeout=60000,
+            )
+            page.wait_for_load_state("networkidle", timeout=30000)
+            time.sleep(2)
+        except Exception as e:
+            print(f"  [WARN] Failed to load listing page: {e}")
+            browser.close()
+            return 0
+
+        for idx, parts, url in to_enrich:
+            try:
+                page.goto(url, timeout=20000)
+                page.wait_for_load_state("networkidle", timeout=15000)
+                time.sleep(1)
+                text = page.inner_text("body")
+            except Exception as e:
+                print(f"    [WARN] {parts[1][:25]}: {e}")
+                time.sleep(1)
+                continue
+
+            fee_text = _parse_ftakken_fee(text)
+            if fee_text:
+                parts[10] = fee_text
+                lines[idx] = "|".join(parts)
+                updated += 1
+                print(f"    {parts[1][:25]} → {fee_text}")
+            else:
+                print(f"    {parts[1][:25]} → データなし")
+
+            time.sleep(0.5)
+
+        browser.close()
+
+    filepath.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return updated
+
+
 def main():
     print("=== 管理費enrichment開始 ===\n")
 
-    targets = [
-        DATA_DIR / "suumo_osaka_raw.txt",
-        DATA_DIR / "suumo_fukuoka_raw.txt",
-        DATA_DIR / "suumo_tokyo_raw.txt",
-        DATA_DIR / "multi_site_osaka_raw.txt",
-        DATA_DIR / "multi_site_fukuoka_raw.txt",
-        DATA_DIR / "multi_site_tokyo_raw.txt",
-        DATA_DIR / "rakumachi_osaka_raw.txt",
-        DATA_DIR / "rakumachi_fukuoka_raw.txt",
-        DATA_DIR / "rakumachi_tokyo_raw.txt",
-    ]
+    targets = sorted(DATA_DIR.glob("*_raw.txt"))
 
     total = 0
     for f in targets:
         if f.exists():
             print(f"\n--- {f.name} ---")
-            count = enrich_file(f)
+            if "ftakken" in f.name:
+                count = enrich_ftakken_file(f)
+            else:
+                count = enrich_file(f)
             total += count
             print(f"  → {count}件 enriched")
 

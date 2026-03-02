@@ -361,8 +361,12 @@ def deploy_to_gh_pages():
                 old_path.unlink()
 
         # Copy all output HTML files (reports, inquiry, index, naiken, etc.)
+        # Exclude confidential/local-only files from public deploy
+        _DEPLOY_EXCLUDE = {"portfolio_dashboard.html"}
         updated = False
         for report in OUTPUT_DIR.glob("*.html"):
+            if report.name in _DEPLOY_EXCLUDE:
+                continue
             dest = deploy_dir / report.name
             dest.write_text(report.read_text(encoding="utf-8"), encoding="utf-8")
             updated = True

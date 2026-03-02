@@ -10,6 +10,28 @@ from pathlib import Path
 from typing import Iterable
 
 
+def site_header_css() -> str:
+    return """
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.10);font-family:'Inter','Noto Sans JP',sans-serif}
+.site-header .site-brand{font-size:13px;font-weight:700;color:#3b9eff}
+.site-header .site-nav{display:flex;gap:6px;flex-wrap:wrap}
+.site-header .site-nav a{font-size:11px;color:#a9b3c6;text-decoration:none;padding:4px 10px;border-radius:4px;border:1px solid transparent;transition:all .15s}
+.site-header .site-nav a:hover{color:#edf3ff;background:rgba(255,255,255,0.04)}
+.site-header .site-nav a.current{color:#3b9eff;border-color:rgba(59,158,255,0.3);background:rgba(59,158,255,0.08)}
+@media(max-width:768px){.site-header{flex-direction:column;gap:8px;align-items:flex-start}}
+"""
+
+
+def site_header_html() -> str:
+    return """<div class="site-header">
+  <div class="site-brand">iUMA</div>
+  <nav class="site-nav">
+    <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
+    <a href="https://ymatz28-beep.github.io/property-report/" class="current">Property</a>
+  </nav>
+</div>"""
+
+
 def global_nav_css() -> str:
     return """
 .gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
@@ -24,7 +46,6 @@ def global_nav_css() -> str:
 def global_nav_html(current: str = "") -> str:
     pages = [
         ("index.html", "Hub"),
-        ("portfolio_dashboard.html", "ポートフォリオ"),
         ("minpaku-osaka.html", "大阪"),
         ("minpaku-fukuoka.html", "福岡"),
         ("minpaku-tokyo.html", "東京"),
@@ -405,7 +426,11 @@ def classify_location_fukuoka(text: str) -> tuple[str, int]:
 
 
 def pet_score_for_row(row: PropertyRow) -> int:
-    """Pet scoring: 可=15, 相談可=10, SUUMO(filtered for pet)=10, unknown=0, 不可=-5"""
+    """Pet scoring: 可=15, 相談可=10, unknown=-15, 不可=-5 (but hard-filtered).
+
+    Most Japanese condos default to no-pets, so unknown pet status is treated
+    as a strong negative to prevent unconfirmed properties from ranking high.
+    """
     text = f"{row.pet_status} {row.name} {row.minpaku_status}"
     # Check 不可 BEFORE 可 to avoid false positives
     if "ペット不可" in text or row.pet_status == "不可":
@@ -414,14 +439,14 @@ def pet_score_for_row(row: PropertyRow) -> int:
         return 15
     if "ペット相談" in text or row.pet_status == "相談可":
         return 10
-    if row.source == "SUUMO":
-        # SUUMO data was pre-filtered for ペット相談可
-        return 10
-    return 0
+    return -15
 
 
 def maintenance_fee_score(fee: int) -> int:
-    """Maintenance fee scoring: lower is better. fee = total monthly yen (管理費+修繕積立金)."""
+    """Maintenance fee scoring: lower is better. fee = total monthly yen (管理費+修繕積立金).
+
+    Symmetric scale: max +10 (≤1万) / max -10 (>5万).
+    """
     if fee == 0:
         return 0  # Unknown - no penalty, no bonus
     if fee <= 10000:
@@ -435,8 +460,10 @@ def maintenance_fee_score(fee: int) -> int:
     if fee <= 30000:
         return 0
     if fee <= 40000:
-        return -3
-    return -5  # 40,000円超
+        return -5
+    if fee <= 50000:
+        return -8
+    return -10  # 50,000円超
 
 
 def brokerage_score(row: PropertyRow) -> int:
@@ -636,6 +663,26 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
             }
         )
 
+    def _format_maintenance_disp(r: PropertyRow) -> str:
+        """Format maintenance fee display with breakdown (管理費 + 修繕)."""
+        if r.maintenance_fee <= 0:
+            return '<span class="maint-na">記載なし</span>'
+        # Try to extract breakdown from maintenance_fee_text
+        text = r.maintenance_fee_text.replace(",", "")
+        kanri_m = re.search(r"管理費(\d+)", text)
+        shuuzen_m = re.search(r"修繕(\d+)", text)
+        if kanri_m and shuuzen_m:
+            k = int(kanri_m.group(1))
+            s = int(shuuzen_m.group(1))
+            return f'<span title="管理費{k:,}円 + 修繕{s:,}円">{k + s:,}円</span><span class="maint-detail">管理{k:,} + 修繕{s:,}</span>'
+        if kanri_m:
+            k = int(kanri_m.group(1))
+            return f'<span title="管理費{k:,}円（修繕不明）">{k:,}円</span><span class="maint-detail">管理のみ</span>'
+        if shuuzen_m:
+            s = int(shuuzen_m.group(1))
+            return f'<span title="修繕{s:,}円（管理費不明）">{s:,}円</span><span class="maint-detail">修繕のみ</span>'
+        return f'<span title="内訳不明">{r.maintenance_fee:,}円</span><span class="maint-detail">合計</span>'
+
     def _score_cell(val: int, label: str = "") -> str:
         short = label[:2] if label else ""
         if val > 0:
@@ -646,11 +693,12 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
 
     table_rows_html = []
     for idx, r in enumerate(rows_sorted, start=1):
-        score_badge = f'<span class="score-badge" style="--badge:{r.tier_color}">{r.total_score}</span>'
+        b = r.score_breakdown
+        breakdown_title = f"予算{b['budget']:+d} 面積{b['area']:+d} 耐震{b['earthquake']:+d} 駅距{b['station']:+d} 立地{b['location']:+d} 間取{b['layout']:+d} ペト{b['pet']:+d} 管理{b['maintenance']:+d} リノ{b['renovation']:+d} 仲介{b['brokerage']:+d} 民泊{b['minpaku_penalty']:+d}"
+        score_badge = f'<span class="score-badge" style="--badge:{r.tier_color}" title="{html.escape(breakdown_title)}">{r.total_score}</span>'
         link = f'<a href="{html.escape(r.url)}" target="_blank" rel="noopener noreferrer">{html.escape(r.name)}</a>'
         built_disp = f"{r.built_year}年" if r.built_year else html.escape(r.built_text)
-        b = r.score_breakdown
-        maint_disp = f"{r.maintenance_fee:,}円" if r.maintenance_fee > 0 else "-"
+        maint_disp = _format_maintenance_disp(r)
         table_rows_html.append(
             f"""
             <tr class="{r.tier_class}" data-index="{idx}" data-name="{html.escape(r.name)}" data-location="{html.escape(r.location)}" data-layout="{html.escape(r.layout)}" data-tier="{html.escape(r.tier_label)}" data-price="{r.price_man}" data-area="{(r.area_sqm or 0):.2f}" data-score="{r.total_score}" data-year="{r.built_year or 0}" data-walk="{r.walk_min if r.walk_min is not None else 999}">
@@ -725,12 +773,13 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    {site_header_css()}
     {global_nav_css()}
     :root {{
       --bg:#0b0f16;
       --bg2:#101826;
-      --card:rgba(255,255,255,0.045);
-      --line:rgba(255,255,255,0.12);
+      --card:rgba(255,255,255,0.04);
+      --line:rgba(255,255,255,0.10);
       --muted:#a9b3c6;
       --text:#edf3ff;
       --accent:{config.accent};
@@ -738,7 +787,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
       --success:#22c55e;
       --warn:#f59e0b;
       --danger:#ef4444;
-      --radius:18px;
+      --radius:12px;
       --shadow:0 18px 60px rgba(0,0,0,0.45);
     }}
     * {{ box-sizing:border-box; }}
@@ -818,8 +867,8 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
       margin:0; padding-left:18px; color:#d8e0f0; line-height:1.75;
       columns:2; column-gap:24px;
     }}
-    .table-shell {{ overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); }}
-    table {{ width:100%; border-collapse:separate; border-spacing:0; min-width:1480px; }}
+    .table-shell {{ overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); -webkit-overflow-scrolling:touch; }}
+    table {{ width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }}
     thead th {{
       position:sticky; top:0; z-index:1;
       background:rgba(12,17,26,.92); color:#dbe7fa;
@@ -832,7 +881,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
       display:inline-flex; gap:6px; align-items:center;
     }}
     tbody td {{
-      padding:12px 10px; border-bottom:1px solid rgba(255,255,255,.05);
+      padding:10px 6px; border-bottom:1px solid rgba(255,255,255,.05);
       font-size:13px; vertical-align:top;
     }}
     tbody tr:nth-child(even) td {{ background:rgba(255,255,255,.012); }}
@@ -843,18 +892,22 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     .tier-pass td {{ box-shadow: inset 4px 0 0 rgba(239,68,68,.7); }}
     a {{ color:#eaf7ff; text-decoration:none; }}
     a:hover {{ color:var(--accent); text-decoration:underline; }}
-    .name-col {{ max-width:160px; }}
+    .name-col {{ max-width:130px; }}
     .clamp2 {{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }}
     .name-col a {{ font-weight:700; }}
     .sc-pill {{ display:inline-block; padding:1px 4px; border-radius:4px; font-size:10px; font-weight:700; margin:1px; line-height:1.3; }}
     .sc-pos {{ background:rgba(52,211,153,.15); color:#34d399; }}
     .sc-neg {{ background:rgba(248,113,113,.15); color:#f87171; }}
     .sc-zero {{ background:rgba(107,114,128,.1); color:#6b7280; }}
-    .breakdown-col {{ font-family:'Inter',monospace; max-width:260px; }}
-    .breakdown-th {{ min-width:200px; }}
+    .breakdown-col {{ font-family:'Inter',monospace; max-width:220px; }}
+    .breakdown-th {{ min-width:180px; }}
     .breakdown-legend {{ font-size:9px; color:var(--muted); letter-spacing:0.5px; margin-top:2px; font-weight:400; }}
     .maint-col {{ white-space:nowrap; font-size:12px; }}
-    td:nth-child(5), td:nth-child(6) {{ max-width:140px; font-size:12px; }}
+    .maint-detail {{ display:block; font-size:10px; color:var(--muted); margin-top:2px; }}
+    .maint-na {{ font-size:11px; color:var(--muted); opacity:0.6; }}
+    td:nth-child(5) {{ max-width:110px; font-size:12px; }}
+    td:nth-child(6) {{ max-width:160px; font-size:12px; }}
+    td:nth-child(8) {{ white-space:nowrap; max-width:55px; }}
     .source-tag {{
       margin-top:4px; font-size:11px; color:var(--muted);
       display:inline-block; padding:2px 8px; border-radius:999px;
@@ -877,7 +930,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
       display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px;
     }}
     .focus-card {{
-      border-radius:18px; border:1px solid var(--line);
+      border-radius:12px; border:1px solid var(--line);
       background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
       padding:14px; box-shadow:var(--shadow);
     }}
@@ -911,16 +964,90 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     .notes {{ margin:0; padding-left:18px; line-height:1.8; color:#d9e2f3; }}
     .footer {{ margin-top:16px; color:var(--muted); font-size:12px; text-align:center; }}
     .footer a {{ color:#cfeeff; }}
+    /* Collapsible sections for mobile */
+    .collapsible-toggle {{
+      display:none; cursor:pointer; background:none; border:none; color:var(--muted);
+      font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.1);
+    }}
+    .collapsible-toggle::after {{ content:" ▼"; font-size:10px; }}
+    .collapsible-toggle.is-open::after {{ content:" ▲"; }}
+    /* Mobile jump nav */
+    .mobile-jump {{ display:none; }}
+    /* --- Responsive: 960px (tablet landscape) --- */
     @media (max-width: 960px) {{
       .grid-4 {{ grid-template-columns:repeat(2, minmax(0,1fr)); }}
       .chart-grid, .focus-grid {{ grid-template-columns:1fr; }}
       .cond-list {{ columns:1; }}
-      .hero {{ padding:18px; }}
+      .hero {{ padding:14px; }}
+      .hero h1 {{ font-size:18px; }}
+      .hero-sub {{ display:none; }}
+      .badge-row {{ gap:4px; }}
+      .badge {{ font-size:10px; padding:3px 6px; }}
+      .stat .value {{ font-size:20px; }}
+      .collapsible-toggle {{ display:inline-block; }}
+      .collapsible-content.is-collapsed {{ display:none; }}
+      .mobile-jump {{
+        display:flex; gap:8px; padding:10px 0; flex-wrap:wrap;
+        position:sticky; top:40px; z-index:5; background:var(--bg); margin-bottom:4px;
+      }}
+      .mobile-jump a {{
+        padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700;
+        border:1px solid var(--accent); color:var(--accent); text-decoration:none;
+      }}
+      .mobile-jump a.primary {{ background:var(--accent); color:#050507; }}
+      .breakdown-col {{ max-width:180px; }}
+      .maint-detail {{ font-size:9px; }}
     }}
-    @media (max-width: 560px) {{
-      .grid-4 {{ grid-template-columns:1fr; }}
+    /* --- Responsive: 768px (tablet portrait) --- */
+    @media (max-width: 768px) {{
+      .hero {{ padding:10px 12px; }}
+      .hero h1 {{ font-size:16px; margin:6px 0; }}
+      .kicker {{ font-size:10px; }}
+      .section {{ padding:12px; margin-top:10px; }}
+      .section h2 {{ font-size:15px; margin-bottom:8px; }}
+      .stat .value {{ font-size:18px; }}
+      .stat .sub {{ font-size:10px; }}
+      .card {{ padding:10px; }}
+      .grid-4 {{ gap:8px; }}
+      .focus-head h3 {{ font-size:14px; }}
+      .focus-score {{ font-size:20px; padding:6px 8px; min-width:56px; }}
+      .focus-card {{ padding:10px; }}
+      .chip {{ font-size:10px; padding:4px 6px; }}
+      /* Table: compact cells, keep all columns, horizontal scroll */
+      tbody td {{ padding:8px 6px; font-size:12px; }}
+      thead th {{ font-size:11px; padding:8px 6px; }}
+      .breakdown-col {{ max-width:140px; }}
+      .sc-pill {{ font-size:9px; padding:1px 3px; }}
+    }}
+    /* --- Responsive: 640px (smartphone) --- */
+    @media (max-width: 640px) {{
+      .hero {{ padding:8px 10px; border-radius:14px; }}
+      .hero h1 {{ font-size:15px; margin:4px 0; }}
+      .hero::after {{ display:none; }}
+      .badge-row {{ gap:3px; margin-top:6px; }}
+      .badge {{ font-size:9px; padding:2px 6px; }}
+      .grid-4 {{ grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px; margin-top:8px; }}
+      .card.stat {{ padding:8px 4px; text-align:center; }}
+      .stat .label {{ font-size:10px; }}
+      .stat .value {{ font-size:15px; margin-top:2px; }}
+      .stat .sub {{ display:none; }}
+      /* Table: further compact, reduce min-width for narrow screens */
+      table {{ min-width:auto; }}
+      tbody td {{ padding:6px 4px; font-size:11px; }}
+      thead th {{ padding:6px 4px; font-size:10px; }}
+      .name-col {{ max-width:120px; }}
+      .score-badge {{ min-width:32px; padding:4px 8px; font-size:13px; }}
+      .source-tag {{ font-size:9px; padding:1px 5px; }}
+      .breakdown-col {{ max-width:120px; }}
+      .sc-pill {{ font-size:8px; padding:1px 2px; margin:0; }}
+      .maint-col {{ font-size:11px; }}
+      .maint-detail {{ font-size:8px; }}
       .focus-head {{ grid-template-columns:auto 1fr; }}
-      .focus-score {{ grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; }}
+      .focus-score {{ grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; font-size:18px; }}
+      .focus-head h3 {{ font-size:13px; }}
+      .focus-comment {{ font-size:12px; }}
+      .mobile-jump {{ top:36px; gap:6px; padding:8px 0; }}
+      .mobile-jump a {{ padding:5px 10px; font-size:11px; }}
     }}
     @media (prefers-reduced-motion: reduce) {{
       * {{ scroll-behavior:auto !important; animation:none !important; transition:none !important; }}
@@ -928,26 +1055,38 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
   </style>
 </head>
 <body>
+{site_header_html()}
   {global_nav_html(f"minpaku-{config.city_key}.html")}
   <div class="wrap">
+    <nav class="mobile-jump">
+      <a href="#propertyTable" class="primary">物件一覧</a>
+      <a href="#focusCards">Top5</a>
+      <a href="#charts">Charts</a>
+    </nav>
+
     <section class="hero">
       <div class="kicker">PROPERTY SEARCH REPORT / {html.escape(config.city_label.upper())}</div>
       <h1>{html.escape(config.city_label)} 民泊向け中古マンション候補レポート</h1>
       <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
       <div class="badge-row">
         <span class="badge">検索日 {html.escape(search_date)}</span>
-        <span class="badge">原データ {raw_count}件</span>
-        <span class="badge">重複除外 {duplicate_count}件</span>
-        <span class="badge">売却済除外 {meta.get("sold_removed", "0")}件</span>
-        <span class="badge">OC除外 {meta.get("oc_removed", "0")}件</span>
-        <span class="badge">ペット不可除外 {meta.get("pet_ng_removed", "0")}件</span>
-        <span class="badge">民泊不可除外 {meta.get("minpaku_ng_removed", "0")}件</span>
-        <span class="badge">低スコア除外 {meta.get("quality_filtered", "0")}件</span>
-        <span class="badge">厳選TOP {len(rows_sorted)}件</span>
+        <span class="badge">厳選 {len(rows_sorted)}件 / {raw_count}件</span>
         <span class="badge">{html.escape(city_badge)}</span>
       </div>
-      <div class="badge-row">
-        {''.join(f'<span class="badge">{html.escape(b)}</span>' for b in config.hero_conditions)}
+      <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
+      <div class="collapsible-content is-collapsed">
+        <div class="badge-row" style="margin-top:8px;">
+          <span class="badge">原データ {raw_count}件</span>
+          <span class="badge">重複除外 {duplicate_count}件</span>
+          <span class="badge">売却済除外 {meta.get("sold_removed", "0")}件</span>
+          <span class="badge">OC除外 {meta.get("oc_removed", "0")}件</span>
+          <span class="badge">ペット不可除外 {meta.get("pet_ng_removed", "0")}件</span>
+          <span class="badge">民泊不可除外 {meta.get("minpaku_ng_removed", "0")}件</span>
+          <span class="badge">低スコア除外 {meta.get("quality_filtered", "0")}件</span>
+        </div>
+        <div class="badge-row">
+          {''.join(f'<span class="badge">{html.escape(b)}</span>' for b in config.hero_conditions)}
+        </div>
       </div>
     </section>
 
@@ -960,15 +1099,18 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
 
     <section class="section">
       <h2>Search Conditions</h2>
-      <ul class="cond-list">
-        <li>データ元条件: {html.escape(meta.get("conditions", "5000万以下 / 40-70㎡ / ペット相談可"))}</li>
-        <li>重複排除キー: 物件名 + 価格（先勝ち）</li>
-        <li>駅アクセスに「バス」を含む場合、徒歩分数評価は0点</li>
-        <li>築年1981年7月以降を新耐震として評価</li>
-        <li>管理費修繕積立金: 1万円/月以下=+10, 1.5万以下=+7, 2万以下=+5, 3万超=マイナス</li>
-        <li>民泊禁止は除外（ペット不可と同様ハードフィルタ）</li>
-        {''.join(f"<li>{html.escape(item)}</li>" for item in config.search_condition_bullets)}
-      </ul>
+      <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">詳細を見る</button>
+      <div class="collapsible-content is-collapsed">
+        <ul class="cond-list">
+          <li>データ元条件: {html.escape(meta.get("conditions", "5000万以下 / 40-70㎡ / ペット相談可"))}</li>
+          <li>重複排除キー: 物件名 + 価格（先勝ち）</li>
+          <li>駅アクセスに「バス」を含む場合、徒歩分数評価は0点</li>
+          <li>築年1981年7月以降を新耐震として評価</li>
+          <li>管理費修繕積立金: 1万円/月以下=+10, 1.5万以下=+7, 2万以下=+5, 3万超=マイナス</li>
+          <li>民泊禁止は除外（ペット不可と同様ハードフィルタ）</li>
+          {''.join(f"<li>{html.escape(item)}</li>" for item in config.search_condition_bullets)}
+        </ul>
+      </div>
     </section>
 
     <section class="section">
@@ -999,14 +1141,14 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     </section>
 
     <section class="section">
-      <h2>Top 5 Focus Cards</h2>
+      <h2 id="focusCards">Top 5 Focus Cards</h2>
       <div class="focus-grid">
         {''.join(focus_cards_html)}
       </div>
     </section>
 
     <section class="section">
-      <h2>Charts</h2>
+      <h2 id="charts">Charts</h2>
       <div class="chart-grid">
         <div class="card chart-card"><canvas id="radarChart"></canvas></div>
         <div class="chart-col">
@@ -1024,7 +1166,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     </section>
 
     <div class="footer">
-      <div style="margin-bottom:8px"><a href="index.html">Hub</a> · <a href="portfolio_dashboard.html">ポートフォリオ</a> · <a href="minpaku-osaka.html">大阪</a> · <a href="minpaku-fukuoka.html">福岡</a> · <a href="minpaku-tokyo.html">東京</a> · <a href="naiken-analysis.html">内覧分析</a></div>
+      <div style="margin-bottom:8px"><a href="index.html">Hub</a> · <a href="minpaku-osaka.html">大阪</a> · <a href="minpaku-fukuoka.html">福岡</a> · <a href="minpaku-tokyo.html">東京</a> · <a href="naiken-analysis.html">内覧分析</a> · <a href="inquiry-messages.html">問い合わせ</a></div>
       <div>Sources: {html.escape(sources_str)} ({html.escape(str(config.data_path))}{' + ' + ', '.join(str(p) for p in config.extra_data_paths) if config.extra_data_paths else ''})</div>
       <div>Generated on {html.escape(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))}</div>
     </div>

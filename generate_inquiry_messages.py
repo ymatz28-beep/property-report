@@ -191,7 +191,7 @@ def generate_message(row: PropertyRow, city_key: str) -> str:
 
     if source_type == "portal_form":
         # --- Concise portal form version ---
-        lines.append(f"東京在住、法人での購入検討中の手嶋と申します。")
+        lines.append(f"東京在住、法人での購入検討中です。")
         lines.append(f"「{name}」（{row.price_text}）について、{attraction}お問い合わせいたします。")
         lines.append("")
         lines.append(f"現在{city_text}を探しており、ペットと暮らせる物件を重視しております。")
@@ -208,7 +208,7 @@ def generate_message(row: PropertyRow, city_key: str) -> str:
 
     elif source_type == "investor_portal":
         # --- Investor portal version (楽待) ---
-        lines.append(f"法人（合同会社）での購入を検討中の手嶋と申します。")
+        lines.append(f"法人（合同会社）での購入を検討しております。")
         lines.append(f"「{name}」について問い合わせいたします。{attraction}興味を持ちました。")
         lines.append("")
         lines.append("内覧希望です。ご対応可能な日程をお知らせください。")
@@ -224,8 +224,7 @@ def generate_message(row: PropertyRow, city_key: str) -> str:
     else:
         # --- Direct email version (R不動産, カウカモ, ふれんず) ---
         lines.append("お世話になります。")
-        lines.append("東京在住の手嶋と申します。")
-        lines.append("法人（iUMAプロパティマネジメント合同会社）での購入を検討しております。")
+        lines.append("東京在住で、法人での購入を検討しております。")
         lines.append("")
         lines.append(f"貴サイトに掲載されている「{name}」を拝見し、{attraction}ご連絡いたしました。")
         lines.append("")
@@ -242,7 +241,7 @@ def generate_message(row: PropertyRow, city_key: str) -> str:
         lines.append("")
         lines.append("お手数ですが、ご検討のほどよろしくお願い申し上げます。")
         lines.append("")
-        lines.append("手嶋 優真")
+        lines.append("[署名]")
 
     return "\n".join(lines)
 
@@ -269,7 +268,7 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
         label = city_labels[city_key]
 
         cards_html.append(f'''
-        <div class="city-section">
+        <div class="city-section" id="city-{city_key}">
           <h2 class="city-title" style="border-left-color:{accent}">{label}（{len(items)}件）</h2>
         ''')
 
@@ -311,11 +310,10 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
             <div class="card-header">
               <div class="card-rank">#{idx}</div>
               <div class="card-info">
-                <div class="card-name">{html_mod.escape(row.name[:40])}</div>
+                <a href="{html_mod.escape(row.url)}" target="_blank" class="card-name">{html_mod.escape(row.name[:40])}</a>
                 <div class="card-meta">{html_mod.escape(info_line)}</div>
                 <div class="card-score">{row.total_score}pt — {html_mod.escape(channel)} ({html_mod.escape(type_label)})</div>
               </div>
-              <a href="{html_mod.escape(row.url)}" target="_blank" class="card-link">物件ページ →</a>
             </div>
             <div class="card-tags">{"".join(tags)}</div>
             <div class="msg-container">
@@ -341,7 +339,7 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
     {nav_css}
-    :root {{ --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; --green:#34d399; --red:#f87171; --yellow:#facc15; }}
+    :root {{ --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; --green:#34d399; --red:#f87171; --yellow:#eab308; }}
     * {{ box-sizing:border-box; margin:0; }}
     body {{ font-family:'Inter','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }}
     .wrap {{ max-width:900px; margin:0 auto; padding:24px 16px 80px; }}
@@ -354,11 +352,10 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
     .card-header {{ display:flex; align-items:flex-start; gap:12px; margin-bottom:10px; }}
     .card-rank {{ font-size:14px; font-weight:800; color:var(--muted); min-width:28px; padding-top:2px; }}
     .card-info {{ flex:1; }}
-    .card-name {{ font-size:16px; font-weight:800; line-height:1.3; }}
+    .card-name {{ font-size:16px; font-weight:800; line-height:1.3; color:var(--text); text-decoration:none; display:block; transition:color .2s; }}
+    .card-name:hover {{ color:var(--card-accent, #3b9eff); }}
     .card-meta {{ font-size:13px; color:var(--muted); margin-top:2px; }}
     .card-score {{ font-size:12px; color:var(--muted); margin-top:2px; }}
-    .card-link {{ font-size:12px; color:var(--card-accent, #3b9eff); text-decoration:none; white-space:nowrap; padding-top:2px; }}
-    .card-link:hover {{ text-decoration:underline; }}
     .card-tags {{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }}
     .tag {{ display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; }}
     .tag-red {{ background:rgba(248,113,113,.12); color:var(--red); border:1px solid rgba(248,113,113,.25); }}
@@ -370,16 +367,17 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
     .copy-btn {{ position:absolute; top:8px; right:8px; padding:6px 16px; border-radius:8px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:#fff; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s; }}
     .copy-btn:hover {{ background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.3); }}
     .copy-btn.copied {{ background:rgba(52,211,153,.2); border-color:rgba(52,211,153,.5); color:var(--green); }}
-    .summary {{ display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:32px; }}
-    .summary-card {{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; }}
-    .summary-card .num {{ font-size:28px; font-weight:900; }}
-    .summary-card .lbl {{ font-size:12px; color:var(--muted); margin-top:4px; }}
     .nav {{ margin-top:40px; text-align:center; }}
     .nav a {{ display:inline-block; padding:10px 24px; border-radius:999px; border:1px solid var(--line); color:var(--text); margin:4px; font-size:13px; text-decoration:none; }}
     .nav a:hover {{ border-color:#3b9eff; background:rgba(59,158,255,.06); }}
+    .city-jump {{ display:flex; gap:10px; margin-bottom:32px; position:sticky; top:40px; z-index:100; background:var(--bg); padding:12px 0; border-bottom:1px solid var(--line); }}
+    .jump-btn {{ flex:1; text-align:center; padding:10px 16px; border-radius:10px; border:1px solid var(--line); color:var(--text); font-size:14px; font-weight:700; text-decoration:none; transition:all .2s; }}
+    .jump-btn:hover {{ border-color:var(--jc); background:rgba(255,255,255,.04); color:var(--jc); }}
+    .city-section {{ scroll-margin-top:120px; }}
     @media(max-width:640px) {{
       .card-header {{ flex-wrap:wrap; }}
-      .card-link {{ width:100%; text-align:right; }}
+      .city-jump {{ flex-wrap:wrap; }}
+      .jump-btn {{ flex:none; width:calc(50% - 5px); font-size:13px; }}
     }}
   </style>
 </head>
@@ -389,9 +387,8 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
   <h1>問い合わせメッセージ</h1>
   <p class="subtitle">生成日: {today} — スコア上位{MAX_PER_CITY}件/都市 — 合計{total}件 — コピーして各サイトのフォームに貼り付け</p>
 
-  <div class="summary">
-    {"".join(f'<div class="summary-card"><div class="num" style="color:{city_colors[k][0]}">{len(all_data.get(k, []))}</div><div class="lbl">{city_labels[k]}</div></div>' for k in ["osaka", "fukuoka", "tokyo"])}
-    <div class="summary-card"><div class="num">{total}</div><div class="lbl">合計</div></div>
+  <div class="city-jump">
+    {"".join(f'<a href="#city-{k}" class="jump-btn" style="--jc:{city_colors[k][0]}">{city_labels[k]}（{len(all_data.get(k, []))}件）</a>' for k in ["osaka", "fukuoka", "tokyo"] if all_data.get(k))}
   </div>
 
   {"".join(cards_html)}

@@ -200,17 +200,30 @@ def enrich_detail(url: str) -> dict:
     if not html:
         return result
 
-    # Management fee (管理費)
-    # HTML structure: 管理費</div>...(hints etc)...</th><td class="...">8800円／月...</td>
-    total_fee = 0
-    kanri_m = re.search(r'管理費</div>.*?</th>\s*<td[^>]*>\s*([\d,]+)\s*円', html, re.DOTALL)
+    # Management fee (管理費) + Repair reserve (修繕積立金)
+    # HTML structure: 管理費</div>...(hints etc)...</th><td class="...">1万3210円／月...</td>
+    def _parse_suumo_yen(text: str) -> int:
+        text = text.replace(",", "").replace("，", "").strip()
+        m = re.search(r"(\d+)万(\d*)円", text)
+        if m:
+            return int(m.group(1)) * 10000 + (int(m.group(2)) if m.group(2) else 0)
+        m2 = re.search(r"(\d+)円", text)
+        return int(m2.group(1)) if m2 else 0
+
+    kanri = 0
+    shuuzen = 0
+    kanri_m = re.search(r'管理費</div>.*?</th>\s*<td[^>]*>(.*?)</td>', html, re.DOTALL)
     if kanri_m:
-        total_fee += int(kanri_m.group(1).replace(",", ""))
-    shuuzen_m = re.search(r'修繕積立金</div>.*?</th>\s*<td[^>]*>\s*([\d,]+)\s*円', html, re.DOTALL)
+        kanri = _parse_suumo_yen(kanri_m.group(1))
+    shuuzen_m = re.search(r'修繕積立金</div>.*?</th>\s*<td[^>]*>(.*?)</td>', html, re.DOTALL)
     if shuuzen_m:
-        total_fee += int(shuuzen_m.group(1).replace(",", ""))
-    if total_fee > 0:
-        result["maintenance"] = str(total_fee)
+        shuuzen = _parse_suumo_yen(shuuzen_m.group(1))
+    if kanri > 0 and shuuzen > 0:
+        result["maintenance"] = f"管理費{kanri}+修繕{shuuzen}"
+    elif kanri > 0:
+        result["maintenance"] = f"管理費{kanri}"
+    elif shuuzen > 0:
+        result["maintenance"] = f"修繕{shuuzen}"
 
     # Pet status from tokuchoPickupList
     tokucho_m = re.search(r'tokuchoPickupList\s*:\s*\[([^\]]+)\]', html)

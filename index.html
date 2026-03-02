@@ -192,6 +192,30 @@
       .report-row { grid-template-columns: 1fr; }
       .report-ordinal { font-size: 20px; }
     }
+
+    @media (max-width: 375px) {
+      .page { padding: 0 14px; }
+      .hero { margin-top: 40px; gap: 16px; }
+      .hero h1 { font-size: clamp(36px, 10vw, 52px); }
+      .hero-aside p { font-size: 12px; }
+      .report-item { padding: 20px 0; }
+      .report-title { font-size: 18px; }
+      .report-desc { font-size: 11px; }
+      .report-ordinal { font-size: 16px; }
+      .report-tag { font-size: 9px; padding: 3px 7px; }
+      nav { padding: 24px 0 0; }
+      .nav-mark { width: 28px; height: 28px; font-size: 11px; }
+      .nav-name { font-size: 12px; }
+      footer { margin-top: 48px; padding: 24px 0 32px; }
+    }
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.10);font-family:'Inter','Noto Sans JP',sans-serif}
+.site-header .site-brand{font-size:13px;font-weight:700;color:#3b9eff}
+.site-header .site-nav{display:flex;gap:6px;flex-wrap:wrap}
+.site-header .site-nav a{font-size:11px;color:#a9b3c6;text-decoration:none;padding:4px 10px;border-radius:4px;border:1px solid transparent;transition:all .15s}
+.site-header .site-nav a:hover{color:#edf3ff;background:rgba(255,255,255,0.04)}
+.site-header .site-nav a.current{color:#3b9eff;border-color:rgba(59,158,255,0.3);background:rgba(59,158,255,0.08)}
+@media(max-width:768px){.site-header{flex-direction:column;gap:8px;align-items:flex-start}}
+@media(max-width:375px){.site-header{padding:8px 12px}.site-header .site-nav a{padding:6px 10px;min-height:44px;display:inline-flex;align-items:center}}
   </style>
   <style>
 .gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
@@ -199,11 +223,20 @@
 .gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
 .gnav a:hover{color:#fff}
 .gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
-@media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+@media(max-width:640px){.gnav a{padding:10px 10px;font-size:10px;min-height:44px;display:inline-flex;align-items:center}}
+@media(max-width:375px){.gnav-inner{padding:0 8px}.gnav a{padding:10px 8px;font-size:9px}}
   </style>
 </head>
 <body>
-<div class="gnav"><div class="gnav-inner"><a href="index.html" class="cur">Hub</a><a href="portfolio_dashboard.html">ポートフォリオ</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a></div></div>
+<div class="site-header">
+  <div class="site-brand">iUMA</div>
+  <nav class="site-nav">
+    <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
+
+    <a href="https://ymatz28-beep.github.io/property-report/" class="current">Property</a>
+  </nav>
+</div>
+<div class="gnav"><div class="gnav-inner"><a href="index.html" class="cur">Hub</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a></div></div>
   <div class="atmosphere"><div class="atm-orb"></div><div class="atm-orb"></div></div>
   <div class="grain"></div>
   <div class="page">

@@ -6,10 +6,10 @@
   <title>内覧分析 — 扇町 & 天満橋</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; --accent:#6ee7ff; --green:#34d399; --red:#f87171; --yellow:#facc15; --orange:#fb923c; }
+    :root { --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; --accent:#6ee7ff; --green:#34d399; --red:#f87171; --yellow:#eab308; --orange:#fb923c; }
     * { box-sizing:border-box; margin:0; }
-    body { font-family:'Inter','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:24px 16px; }
-    .wrap { max-width:900px; margin:0 auto; }
+    body { font-family:'Inter','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+    .wrap { max-width:900px; margin:0 auto; padding:24px 16px; }
     h1 { font-size:28px; font-weight:900; margin-bottom:8px; }
     .date { color:var(--muted); font-size:13px; margin-bottom:32px; }
     .property { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px; margin-bottom:24px; }
@@ -41,20 +41,37 @@
     .nav { margin-top:40px; text-align:center; }
     .nav a { display:inline-block; padding:10px 24px; border-radius:999px; border:1px solid var(--line); color:var(--text); margin:4px; font-size:13px; }
     .nav a:hover { border-color:var(--accent); background:rgba(110,231,255,.06); }
-    .gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
-    .gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
-    .gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
-    .gnav a:hover{color:#fff}
-    .gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
-    @media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
     .compare { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
     @media (max-width:640px) { .compare { grid-template-columns:1fr; } }
     .compare-card { background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:12px; padding:16px; }
     .compare-card h3 { font-size:15px; font-weight:800; margin-bottom:12px; }
   </style>
+  <style>
+.gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
+.gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.gnav a:hover{color:#fff}
+.gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
+@media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.10);font-family:'Inter','Noto Sans JP',sans-serif}
+.site-header .site-brand{font-size:13px;font-weight:700;color:#3b9eff}
+.site-header .site-nav{display:flex;gap:6px;flex-wrap:wrap}
+.site-header .site-nav a{font-size:11px;color:#a9b3c6;text-decoration:none;padding:4px 10px;border-radius:4px;border:1px solid transparent;transition:all .15s}
+.site-header .site-nav a:hover{color:#edf3ff;background:rgba(255,255,255,0.04)}
+.site-header .site-nav a.current{color:#3b9eff;border-color:rgba(59,158,255,0.3);background:rgba(59,158,255,0.08)}
+@media(max-width:768px){.site-header{flex-direction:column;gap:8px;align-items:flex-start}}
+  </style>
 </head>
 <body>
-<div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="portfolio_dashboard.html">ポートフォリオ</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a class="cur" href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a></div></div>
+<div class="site-header">
+  <div class="site-brand">iUMA</div>
+  <nav class="site-nav">
+    <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
+
+    <a href="https://ymatz28-beep.github.io/property-report/" class="current">Property</a>
+  </nav>
+</div>
+<div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html" class="cur">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a></div></div>
 <div class="wrap">
   <h1>内覧分析メモ</h1>
   <p class="date">2026-02-25 作成 — 重要事項調査報告書ベース</p>
@@ -278,12 +295,8 @@
   </div>
 
   <div class="nav">
-    <a href="index.html">Hub</a>
-    <a href="portfolio_dashboard.html">ポートフォリオ</a>
-    <a href="minpaku-osaka.html">大阪</a>
-    <a href="minpaku-fukuoka.html">福岡</a>
-    <a href="minpaku-tokyo.html">東京</a>
-    <a href="inquiry-messages.html">問い合わせ</a>
+    <a href="minpaku-osaka.html">大阪レポート全体</a>
+    <a href="index.html">トップ</a>
   </div>
 </div>
 </body>

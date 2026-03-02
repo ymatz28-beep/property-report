@@ -9,6 +9,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    
+.gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
+.gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.gnav a:hover{color:#fff}
+.gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
+@media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+
     :root {
       --bg:#0b0f16;
       --bg2:#101826;
@@ -136,13 +144,23 @@
     .breakdown-col { font-family:'Inter',monospace; max-width:260px; }
     .breakdown-th { min-width:200px; }
     .breakdown-legend { font-size:9px; color:var(--muted); letter-spacing:0.5px; margin-top:2px; font-weight:400; }
+    .layout-col { max-width:70px; white-space:nowrap; font-size:12px; }
     .maint-col { white-space:nowrap; font-size:12px; }
+    .maint-sub { font-size:9px; color:var(--muted); margin-top:1px; }
     td:nth-child(5), td:nth-child(6) { max-width:140px; font-size:12px; }
     .source-tag {
       margin-top:4px; font-size:11px; color:var(--muted);
       display:inline-block; padding:2px 8px; border-radius:999px;
       border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
     }
+    .pet-badge {
+      display:inline-block; margin-top:3px; font-size:10px; font-weight:700;
+      padding:1px 6px; border-radius:4px;
+    }
+    .pet-ok { background:rgba(52,211,153,.18); color:#34d399; }
+    .pet-consult { background:rgba(96,165,250,.18); color:#60a5fa; }
+    .pet-ng { background:rgba(248,113,113,.18); color:#f87171; }
+    .pet-unknown { background:rgba(251,191,36,.15); color:#fbbf24; }
     .score-badge {
       display:inline-grid; place-items:center;
       min-width:38px; padding:5px 10px; border-radius:999px;
@@ -211,6 +229,7 @@
   </style>
 </head>
 <body>
+  <div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="portfolio_dashboard.html">ポートフォリオ</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html" class="cur">東京</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a></div></div>
   <div class="wrap">
     <section class="hero">
       <div class="kicker">PROPERTY SEARCH REPORT / 東京</div>
@@ -277,13 +296,13 @@
             
             <tr class="tier-strong" data-index="1" data-name="火の灯る住処" data-location="埼玉県さいたま市南区大字大谷口" data-layout="" data-tier="強く推奨" data-price="3500" data-area="62.12" data-score="83" data-year="2012" data-walk="999">
               <td>1</td>
-              <td class="name-col"><div class="clamp2"><a href="https://www.realtokyoestate.co.jp/estate.php?n=25733" target="_blank" rel="noopener noreferrer">火の灯る住処</a></div><div class="source-tag">東京R不動産</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://www.realtokyoestate.co.jp/estate.php?n=25733" target="_blank" rel="noopener noreferrer">火の灯る住処</a></div><div class="source-tag">東京R不動産</div><span class="pet-badge pet-ok">ペット可</span></td>
               <td>3,500万円</td>
               <td>62.12㎡</td>
               <td><div class="clamp2">埼玉県さいたま市南区大字大谷口</div></td>
               <td><div class="clamp2">宇都宮線・湘南新宿ライン「浦和」駅 バス10分 「広ヶ谷戸」バス停 徒歩9分／武蔵野線・京浜東北線「南浦和」駅 徒歩26</div></td>
               <td>2012年</td>
-              <td></td>
+              <td class="layout-col"></td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-zero">駅距0</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+15</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#22c55e">83</span></td>
@@ -292,13 +311,13 @@
             
             <tr class="tier-strong" data-index="2" data-name="江戸川橋駅 / 2LDK / 46.92㎡" data-location="東京都新宿区山吹町" data-layout="2LDK" data-tier="強く推奨" data-price="4999" data-area="46.92" data-score="83" data-year="0" data-walk="4">
               <td>2</td>
-              <td class="name-col"><div class="clamp2"><a href="https://cowcamo.jp/short_stories/tGCfZNycJWs" target="_blank" rel="noopener noreferrer">江戸川橋駅 / 2LDK / 46.92㎡</a></div><div class="source-tag">カウカモ</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://cowcamo.jp/short_stories/tGCfZNycJWs" target="_blank" rel="noopener noreferrer">江戸川橋駅 / 2LDK / 46.92㎡</a></div><div class="source-tag">カウカモ</div><span class="pet-badge pet-ok">ペット可</span></td>
               <td>4,999万円</td>
               <td>46.92㎡</td>
               <td><div class="clamp2">東京都新宿区山吹町</div></td>
               <td><div class="clamp2">江戸川橋駅徒歩4分</div></td>
               <td></td>
-              <td>2LDK</td>
+              <td class="layout-col">2LDK</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+15</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#22c55e">83</span></td>
@@ -307,13 +326,13 @@
             
             <tr class="tier-strong" data-index="3" data-name="蔵前コヤマハイツ" data-location="東京都台東区寿3丁目" data-layout="3LDK" data-tier="強く推奨" data-price="2780" data-area="57.96" data-score="81" data-year="1971" data-walk="2">
               <td>3</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024631498/" target="_blank" rel="noopener noreferrer">蔵前コヤマハイツ</a></div><div class="source-tag">Yahoo不動産</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024631498/" target="_blank" rel="noopener noreferrer">蔵前コヤマハイツ</a></div><div class="source-tag">Yahoo不動産</div><span class="pet-badge pet-unknown">ペット未確認</span></td>
               <td>2,780万円</td>
               <td>57.96㎡</td>
               <td><div class="clamp2">東京都台東区寿3丁目</div></td>
               <td><div class="clamp2">東京メトロ銀座線 「田原町」駅 徒歩2分</div></td>
               <td>1971年</td>
-              <td>3LDK</td>
+              <td class="layout-col">3LDK</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#22c55e">81</span></td>
@@ -322,13 +341,13 @@
             
             <tr class="tier-good" data-index="4" data-name="幡ヶ谷駅 / 1LDK＋S / 47.03㎡" data-location="東京都渋谷区幡ヶ谷" data-layout="1LDK" data-tier="推奨" data-price="4980" data-area="47.03" data-score="78" data-year="0" data-walk="4">
               <td>4</td>
-              <td class="name-col"><div class="clamp2"><a href="https://cowcamo.jp/short_stories/ch0ZrXkJnXM" target="_blank" rel="noopener noreferrer">幡ヶ谷駅 / 1LDK＋S / 47.03㎡</a></div><div class="source-tag">カウカモ</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://cowcamo.jp/short_stories/ch0ZrXkJnXM" target="_blank" rel="noopener noreferrer">幡ヶ谷駅 / 1LDK＋S / 47.03㎡</a></div><div class="source-tag">カウカモ</div><span class="pet-badge pet-ok">ペット可</span></td>
               <td>4,980万円</td>
               <td>47.03㎡</td>
               <td><div class="clamp2">東京都渋谷区幡ヶ谷</div></td>
               <td><div class="clamp2">幡ヶ谷駅徒歩4分</div></td>
               <td></td>
-              <td>1LDK</td>
+              <td class="layout-col">1LDK</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+15</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#facc15">78</span></td>
@@ -337,13 +356,13 @@
             
             <tr class="tier-good" data-index="5" data-name="ドルミ中野弥生町" data-location="東京都中野区弥生町1丁目" data-layout="1LDK" data-tier="推奨" data-price="4180" data-area="40.00" data-score="68" data-year="1983" data-walk="4">
               <td>5</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024609469/" target="_blank" rel="noopener noreferrer">ドルミ中野弥生町</a></div><div class="source-tag">Yahoo不動産</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024609469/" target="_blank" rel="noopener noreferrer">ドルミ中野弥生町</a></div><div class="source-tag">Yahoo不動産</div><span class="pet-badge pet-unknown">ペット未確認</span></td>
               <td>4,180万円</td>
               <td>40.00㎡</td>
               <td><div class="clamp2">東京都中野区弥生町1丁目</div></td>
               <td><div class="clamp2">東京メトロ丸ノ内方南支線 「中野新橋」駅 徒歩4分</div></td>
               <td>1983年</td>
-              <td>1LDK</td>
+              <td class="layout-col">1LDK</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#facc15">68</span></td>
@@ -352,13 +371,13 @@
             
             <tr class="tier-good" data-index="6" data-name="アークステージ高田馬場" data-location="東京都新宿区高田馬場3丁目" data-layout="2LDK" data-tier="推奨" data-price="4999" data-area="51.78" data-score="68" data-year="1996" data-walk="11">
               <td>6</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0023592069/" target="_blank" rel="noopener noreferrer">アークステージ高田馬場</a></div><div class="source-tag">Yahoo不動産</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0023592069/" target="_blank" rel="noopener noreferrer">アークステージ高田馬場</a></div><div class="source-tag">Yahoo不動産</div><span class="pet-badge pet-unknown">ペット未確認</span></td>
               <td>4,999万円</td>
               <td>51.78㎡</td>
               <td><div class="clamp2">東京都新宿区高田馬場3丁目</div></td>
               <td><div class="clamp2">西武新宿線 「高田馬場」駅 徒歩11分</div></td>
               <td>1996年</td>
-              <td>2LDK</td>
+              <td class="layout-col">2LDK</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#facc15">68</span></td>
@@ -367,13 +386,13 @@
             
             <tr class="tier-good" data-index="7" data-name="ライジングプレイス浅草弐番館" data-location="東京都台東区千束4丁目" data-layout="1K" data-tier="推奨" data-price="2330" data-area="25.61" data-score="66" data-year="2008" data-walk="8">
               <td>7</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0023817347/" target="_blank" rel="noopener noreferrer">ライジングプレイス浅草弐番館</a></div><div class="source-tag">Yahoo不動産</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0023817347/" target="_blank" rel="noopener noreferrer">ライジングプレイス浅草弐番館</a></div><div class="source-tag">Yahoo不動産</div><span class="pet-badge pet-unknown">ペット未確認</span></td>
               <td>2,330万円</td>
               <td>25.61㎡</td>
               <td><div class="clamp2">東京都台東区千束4丁目</div></td>
               <td><div class="clamp2">東京メトロ日比谷線 「三ノ輪」駅 徒歩8分</div></td>
               <td>2008年</td>
-              <td>1K</td>
+              <td class="layout-col">1K</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-zero">面積0</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#facc15">66</span></td>
@@ -382,13 +401,13 @@
             
             <tr class="tier-conditional" data-index="8" data-name="日神デュオステージ笹塚西館" data-location="東京都渋谷区笹塚2丁目" data-layout="1DK" data-tier="条件付き" data-price="4580" data-area="29.84" data-score="63" data-year="2003" data-walk="3">
               <td>8</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024371014/" target="_blank" rel="noopener noreferrer">日神デュオステージ笹塚西館</a></div><div class="source-tag">Yahoo不動産</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024371014/" target="_blank" rel="noopener noreferrer">日神デュオステージ笹塚西館</a></div><div class="source-tag">Yahoo不動産</div><span class="pet-badge pet-unknown">ペット未確認</span></td>
               <td>4,580万円</td>
               <td>29.84㎡</td>
               <td><div class="clamp2">東京都渋谷区笹塚2丁目</div></td>
               <td><div class="clamp2">京王線 「笹塚」駅 徒歩3分</div></td>
               <td>2003年</td>
-              <td>1DK</td>
+              <td class="layout-col">1DK</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-zero">面積0</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#fb923c">63</span></td>
@@ -397,13 +416,13 @@
             
             <tr class="tier-conditional" data-index="9" data-name="パイロットハウス北新宿" data-location="東京都新宿区北新宿3丁目" data-layout="1LDK" data-tier="条件付き" data-price="2980" data-area="36.10" data-score="58" data-year="1978" data-walk="7">
               <td>9</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024256864/" target="_blank" rel="noopener noreferrer">パイロットハウス北新宿</a></div><div class="source-tag">Yahoo不動産</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024256864/" target="_blank" rel="noopener noreferrer">パイロットハウス北新宿</a></div><div class="source-tag">Yahoo不動産</div><span class="pet-badge pet-unknown">ペット未確認</span></td>
               <td>2,980万円</td>
               <td>36.10㎡</td>
               <td><div class="clamp2">東京都新宿区北新宿3丁目</div></td>
               <td><div class="clamp2">総武線 「東中野」駅 徒歩7分</div></td>
               <td>1978年</td>
-              <td>1LDK</td>
+              <td class="layout-col">1LDK</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-zero">面積0</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
@@ -412,13 +431,13 @@
             
             <tr class="tier-conditional" data-index="10" data-name="パレステージ墨田立花" data-location="東京都墨田区立花5丁目" data-layout="2LDK" data-tier="条件付き" data-price="3980" data-area="45.00" data-score="58" data-year="2020" data-walk="9">
               <td>10</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024628505/" target="_blank" rel="noopener noreferrer">パレステージ墨田立花</a></div><div class="source-tag">Yahoo不動産</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024628505/" target="_blank" rel="noopener noreferrer">パレステージ墨田立花</a></div><div class="source-tag">Yahoo不動産</div><span class="pet-badge pet-unknown">ペット未確認</span></td>
               <td>3,980万円</td>
               <td>45.00㎡</td>
               <td><div class="clamp2">東京都墨田区立花5丁目</div></td>
               <td><div class="clamp2">東武亀戸線 「小村井」駅 徒歩9分</div></td>
               <td>2020年</td>
-              <td>2LDK</td>
+              <td class="layout-col">2LDK</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#fb923c">58</span></td>
@@ -427,13 +446,13 @@
             
             <tr class="tier-pass" data-index="11" data-name="春日ビューハイツ" data-location="東京都文京区春日2丁目" data-layout="1LDK" data-tier="見送り" data-price="4199" data-area="44.16" data-score="48" data-year="1978" data-walk="10">
               <td>11</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024084793/" target="_blank" rel="noopener noreferrer">春日ビューハイツ</a></div><div class="source-tag">Yahoo不動産</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024084793/" target="_blank" rel="noopener noreferrer">春日ビューハイツ</a></div><div class="source-tag">Yahoo不動産</div><span class="pet-badge pet-unknown">ペット未確認</span></td>
               <td>4,199万円</td>
               <td>44.16㎡</td>
               <td><div class="clamp2">東京都文京区春日2丁目</div></td>
               <td><div class="clamp2">総武線 「飯田橋」駅 徒歩10分</div></td>
               <td>1978年</td>
-              <td>1LDK</td>
+              <td class="layout-col">1LDK</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#ef4444">48</span></td>
@@ -442,13 +461,13 @@
             
             <tr class="tier-pass" data-index="12" data-name="ユテライズ根岸" data-location="東京都台東区根岸4丁目" data-layout="2LDK" data-tier="見送り" data-price="4999" data-area="61.56" data-score="38" data-year="1980" data-walk="6">
               <td>12</td>
-              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024093758/" target="_blank" rel="noopener noreferrer">ユテライズ根岸</a></div><div class="source-tag">Yahoo不動産</div></td>
+              <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024093758/" target="_blank" rel="noopener noreferrer">ユテライズ根岸</a></div><div class="source-tag">Yahoo不動産</div><span class="pet-badge pet-unknown">ペット未確認</span></td>
               <td>4,999万円</td>
               <td>61.56㎡</td>
               <td><div class="clamp2">東京都台東区根岸4丁目</div></td>
               <td><div class="clamp2">東京メトロ日比谷線 「入谷」駅 徒歩6分</div></td>
               <td>1980年</td>
-              <td>2LDK</td>
+              <td class="layout-col">2LDK</td>
               <td class="maint-col">-</td>
               <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-neg">立地-5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-zero">ペト0</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
               <td><span class="score-badge" style="--badge:#ef4444">38</span></td>
@@ -581,8 +600,9 @@
     </section>
 
     <div class="footer">
+      <div style="margin-bottom:8px"><a href="index.html">Hub</a> · <a href="portfolio_dashboard.html">ポートフォリオ</a> · <a href="minpaku-osaka.html">大阪</a> · <a href="minpaku-fukuoka.html">福岡</a> · <a href="minpaku-tokyo.html">東京</a> · <a href="naiken-analysis.html">内覧分析</a></div>
       <div>Sources: Yahoo不動産, restate, cowcamo (data/multi_site_tokyo_raw.txt + data/restate_tokyo_raw.txt, data/cowcamo_tokyo_raw.txt)</div>
-      <div>Generated on 2026-02-27 03:09:26</div>
+      <div>Generated on 2026-03-02 20:40:36</div>
     </div>
   </div>
 

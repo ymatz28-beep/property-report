@@ -381,9 +381,7 @@ def pet_score_for_row(row: PropertyRow) -> int:
         return 15
     if "ペット相談" in text or row.pet_status == "相談可":
         return 10
-    if row.source == "SUUMO":
-        # SUUMO data was pre-filtered for ペット相談可
-        return 10
+    # SUUMO source alone is not enough — require explicit pet_status
     return 0
 
 
@@ -611,6 +609,15 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
             return f'<span class="sc-pill sc-neg">{short}{val}</span>'
         return f'<span class="sc-pill sc-zero">{short}0</span>'
 
+    def _pet_badge(r: PropertyRow) -> str:
+        if r.pet_status == "可":
+            return '<span class="pet-badge pet-ok">ペット可</span>'
+        if r.pet_status == "相談可":
+            return '<span class="pet-badge pet-consult">ペット相談可</span>'
+        if r.pet_status == "不可":
+            return '<span class="pet-badge pet-ng">ペット不可</span>'
+        return '<span class="pet-badge pet-unknown">ペット未確認</span>'
+
     table_rows_html = []
     for idx, r in enumerate(rows_sorted, start=1):
         score_badge = f'<span class="score-badge" style="--badge:{r.tier_color}">{r.total_score}</span>'
@@ -622,7 +629,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
             f"""
             <tr class="{r.tier_class}" data-index="{idx}" data-name="{html.escape(r.name)}" data-location="{html.escape(r.location)}" data-layout="{html.escape(r.layout)}" data-tier="{html.escape(r.tier_label)}" data-price="{r.price_man}" data-area="{(r.area_sqm or 0):.2f}" data-score="{r.total_score}" data-year="{r.built_year or 0}" data-walk="{r.walk_min if r.walk_min is not None else 999}">
               <td>{idx}</td>
-              <td class="name-col"><div class="clamp2">{link}</div><div class="source-tag">{html.escape(r.source)}</div></td>
+              <td class="name-col"><div class="clamp2">{link}</div><div class="source-tag">{html.escape(r.source)}</div>{_pet_badge(r)}</td>
               <td>{format_price_man(r.price_man)}</td>
               <td>{format_area(r.area_sqm)}</td>
               <td><div class="clamp2">{html.escape(r.location)}</div></td>
@@ -826,6 +833,14 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
       display:inline-block; padding:2px 8px; border-radius:999px;
       border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
     }}
+    .pet-badge {{
+      display:inline-block; margin-top:3px; font-size:10px; font-weight:700;
+      padding:1px 6px; border-radius:4px;
+    }}
+    .pet-ok {{ background:rgba(52,211,153,.18); color:#34d399; }}
+    .pet-consult {{ background:rgba(96,165,250,.18); color:#60a5fa; }}
+    .pet-ng {{ background:rgba(248,113,113,.18); color:#f87171; }}
+    .pet-unknown {{ background:rgba(251,191,36,.15); color:#fbbf24; }}
     .score-badge {{
       display:inline-grid; place-items:center;
       min-width:38px; padding:5px 10px; border-radius:999px;

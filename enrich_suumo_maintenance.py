@@ -36,18 +36,25 @@ def _fetch_suumo_html(url: str) -> str:
         return ""
 
 
-def fetch_maintenance_from_html(html: str) -> int:
-    """HTMLから管理費+修繕積立金の合計を取得。"""
+def fetch_maintenance_breakdown_from_html(html: str) -> tuple[int, int]:
+    """HTMLから管理費と修繕積立金を個別に取得。返り値: (kanri, shuzen)"""
     if not html:
-        return 0
-    total = 0
+        return 0, 0
+    kanri = 0
+    shuzen = 0
     m_kanri = re.search(r"管理費.*?<td[^>]*>(.*?)</td>", html, re.DOTALL)
     if m_kanri:
-        total += _parse_suumo_yen(m_kanri.group(1))
+        kanri = _parse_suumo_yen(m_kanri.group(1))
     m_shuzen = re.search(r"修繕積立金.*?<td[^>]*>(.*?)</td>", html, re.DOTALL)
     if m_shuzen:
-        total += _parse_suumo_yen(m_shuzen.group(1))
-    return total
+        shuzen = _parse_suumo_yen(m_shuzen.group(1))
+    return kanri, shuzen
+
+
+def fetch_maintenance_from_html(html: str) -> int:
+    """HTMLから管理費+修繕積立金の合計を取得。後方互換用。"""
+    kanri, shuzen = fetch_maintenance_breakdown_from_html(html)
+    return kanri + shuzen
 
 
 def fetch_pet_status_from_html(html: str) -> str:
@@ -87,8 +94,8 @@ def enrich_file(filepath: Path) -> int:
 
         parts = line.split("|")
 
-        # Already 12 columns with maintenance data
-        if len(parts) == 12 and parts[10].strip():
+        # Already 12 columns with breakdown maintenance data (管理費X円+修繕Y円)
+        if len(parts) == 12 and parts[10].strip() and "管理費" in parts[10]:
             updated_lines.append(line)
             total_data += 1
             continue
@@ -100,38 +107,56 @@ def enrich_file(filepath: Path) -> int:
             if "suumo.jp" in url:
                 print(f"  Fetching: {parts[0][:20]}...")
                 html = _fetch_suumo_html(url)
-                maint = fetch_maintenance_from_html(html)
+                kanri, shuzen = fetch_maintenance_breakdown_from_html(html)
                 pet = fetch_pet_status_from_html(html)
-                maint_str = str(maint) if maint > 0 else ""
+                if kanri > 0 or shuzen > 0:
+                    maint_str = f"管理費{kanri}円+修繕{shuzen}円"
+                else:
+                    maint_str = ""
                 # Convert to 12-col: source|name|price|location|area|built|station|layout|pet|brokerage|maintenance|url
                 new_line = f"SUUMO|{parts[0]}|{parts[1]}|{parts[2]}|{parts[3]}|{parts[4]}|{parts[5]}|{parts[6]}|{pet}||{maint_str}|{url}"
                 updated_lines.append(new_line)
-                if maint > 0 or pet:
+                maint_total = kanri + shuzen
+                if maint_total > 0 or pet:
                     enriched += 1
                 info_parts = []
-                if maint > 0:
-                    info_parts.append(f"管理費{maint:,}円/月")
+                if maint_total > 0:
+                    info_parts.append(f"管理{kanri:,}+修繕{shuzen:,}={maint_total:,}円/月")
                 if pet:
                     info_parts.append(f"ペット{pet}")
                 print(f"    → {' / '.join(info_parts) if info_parts else 'データなし'}")
                 time.sleep(1.5)  # Rate limiting
             else:
                 updated_lines.append(line)
-        # 12-column but missing pet info — re-enrich pet only
-        elif len(parts) == 12 and not parts[8].strip():
+        # 12-column but needs re-enrichment (missing pet or numeric-only maintenance)
+        elif len(parts) == 12 and (not parts[8].strip() or ("管理費" not in parts[10] and parts[10].strip())):
             url = parts[11].strip()
             total_data += 1
             if "suumo.jp" in url:
-                print(f"  Re-enriching pet: {parts[1][:20]}...")
+                needs_pet = not parts[8].strip()
+                needs_maint = "管理費" not in parts[10] and parts[10].strip()
+                desc = []
+                if needs_pet:
+                    desc.append("pet")
+                if needs_maint:
+                    desc.append("maint-breakdown")
+                print(f"  Re-enriching ({'+'.join(desc)}): {parts[1][:20]}...")
                 html = _fetch_suumo_html(url)
-                pet = fetch_pet_status_from_html(html)
-                parts[8] = pet
+                if needs_pet:
+                    pet = fetch_pet_status_from_html(html)
+                    parts[8] = pet
+                if needs_maint and html:
+                    kanri, shuzen = fetch_maintenance_breakdown_from_html(html)
+                    if kanri > 0 or shuzen > 0:
+                        parts[10] = f"管理費{kanri}円+修繕{shuzen}円"
                 updated_lines.append("|".join(parts))
-                if pet:
-                    enriched += 1
-                    print(f"    → ペット{pet}")
-                else:
-                    print(f"    → ペット情報なし")
+                enriched += 1
+                info = []
+                if needs_pet:
+                    info.append(f"ペット{parts[8] or '不明'}")
+                if needs_maint:
+                    info.append(f"管理費:{parts[10]}")
+                print(f"    → {' / '.join(info)}")
                 time.sleep(1.5)
             else:
                 updated_lines.append(line)

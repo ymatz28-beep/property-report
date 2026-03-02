@@ -10,6 +10,34 @@ from pathlib import Path
 from typing import Iterable
 
 
+def global_nav_css() -> str:
+    return """
+.gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
+.gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.gnav a:hover{color:#fff}
+.gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
+@media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+"""
+
+
+def global_nav_html(current: str = "") -> str:
+    pages = [
+        ("index.html", "Hub"),
+        ("portfolio_dashboard.html", "ポートフォリオ"),
+        ("minpaku-osaka.html", "大阪"),
+        ("minpaku-fukuoka.html", "福岡"),
+        ("minpaku-tokyo.html", "東京"),
+        ("naiken-analysis.html", "内覧分析"),
+        ("inquiry-messages.html", "問い合わせ"),
+    ]
+    links = []
+    for href, label in pages:
+        cls = ' class="cur"' if href == current else ""
+        links.append(f'<a href="{href}"{cls}>{label}</a>')
+    return f'<div class="gnav"><div class="gnav-inner">{"".join(links)}</div></div>'
+
+
 OSAKA_R_ROWS = [
     "扇町公園の近くでペットと暮らす|4580万円|北区天神橋3丁目|66.21m2|1976年|天満/扇町 徒歩6分|1LDK+FS|民泊可否未確認|https://www.realosaka.jp/estate/2816/",
     "贅沢な二人暮らし|4100万円|中央区谷町5丁目|67.15m2|1980年|谷町六丁目 徒歩2分|1LDK|民泊禁止|https://www.realosaka.jp/estate/2823/",
@@ -50,6 +78,8 @@ class PropertyRow:
     maintenance_fee_text: str = ""  # "管理費8,000円+修繕5,400円" or total yen/月
     raw_line: str = ""
     maintenance_fee: int = 0  # Total monthly fee in yen (管理費+修繕積立金)
+    kanri_fee: int = 0  # 管理費 only
+    shuzen_fee: int = 0  # 修繕積立金 only
     price_man: int = 0
     area_sqm: float | None = None
     built_year: int | None = None
@@ -241,12 +271,27 @@ def parse_osaka_r_rows(lines: Iterable[str]) -> list[PropertyRow]:
     return rows
 
 
+def _parse_maintenance_breakdown(text: str) -> tuple[int, int]:
+    """Parse '管理費8000円+修繕5400円' into (kanri, shuzen)."""
+    if not text:
+        return 0, 0
+    kanri = shuzen = 0
+    m_k = re.search(r"管理費\s*(\d+)\s*円", text.replace(",", ""))
+    if m_k:
+        kanri = int(m_k.group(1))
+    m_s = re.search(r"修繕\s*(\d+)\s*円", text.replace(",", ""))
+    if m_s:
+        shuzen = int(m_s.group(1))
+    return kanri, shuzen
+
+
 def hydrate_parsed_fields(row: PropertyRow) -> None:
     row.price_man = parse_price_man(row.price_text)
     row.area_sqm = parse_area_sqm(row.area_text)
     row.built_year, row.built_month = parse_built(row.built_text)
     row.walk_min = parse_walk_minutes(row.station_text)
     row.maintenance_fee = parse_maintenance_fee(row.maintenance_fee_text)
+    row.kanri_fee, row.shuzen_fee = _parse_maintenance_breakdown(row.maintenance_fee_text)
 
 
 def _normalize_name(name: str) -> str:
@@ -354,8 +399,13 @@ def classify_location_osaka(text: str) -> tuple[str, int]:
 
 
 def classify_location_fukuoka(text: str) -> tuple[str, int]:
+    # Strip railway line names to avoid false matches (e.g. "天神大牟田線" → "天神")
+    cleaned = re.sub(
+        r"(西鉄天神大牟田線|地下鉄空港線|地下鉄箱崎線|地下鉄七隈線|ＪＲ鹿児島本線|ＪＲ篠栗線|JR鹿児島本線|JR篠栗線)",
+        "", text,
+    )
     checks = [
-        ("博多駅/祇園", 20, ["博多駅", "祇園"]),
+        ("博多駅/祇園", 20, ["博多駅", "祇園町"]),
         ("天神/中洲/春吉", 20, ["天神", "中洲", "春吉"]),
         ("薬院", 18, ["薬院"]),
         ("赤坂/大濠/大手門", 15, ["赤坂", "大濠", "大手門"]),
@@ -366,7 +416,7 @@ def classify_location_fukuoka(text: str) -> tuple[str, int]:
         ("大橋/高宮", 0, ["大橋", "高宮"]),
     ]
     for label, score, kws in checks:
-        if any(kw in text for kw in kws):
+        if any(kw in cleaned for kw in kws):
             return label, score
     return "Other", -5
 
@@ -624,7 +674,12 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         link = f'<a href="{html.escape(r.url)}" target="_blank" rel="noopener noreferrer">{html.escape(r.name)}</a>'
         built_disp = f"{r.built_year}年" if r.built_year else html.escape(r.built_text)
         b = r.score_breakdown
-        maint_disp = f"{r.maintenance_fee:,}円" if r.maintenance_fee > 0 else "-"
+        if r.kanri_fee > 0 or r.shuzen_fee > 0:
+            maint_disp = f"管理{r.kanri_fee:,}円<br>修繕{r.shuzen_fee:,}円"
+        elif r.maintenance_fee > 0:
+            maint_disp = f"{r.maintenance_fee:,}円"
+        else:
+            maint_disp = "-"
         table_rows_html.append(
             f"""
             <tr class="{r.tier_class}" data-index="{idx}" data-name="{html.escape(r.name)}" data-location="{html.escape(r.location)}" data-layout="{html.escape(r.layout)}" data-tier="{html.escape(r.tier_label)}" data-price="{r.price_man}" data-area="{(r.area_sqm or 0):.2f}" data-score="{r.total_score}" data-year="{r.built_year or 0}" data-walk="{r.walk_min if r.walk_min is not None else 999}">
@@ -699,6 +754,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    {global_nav_css()}
     :root {{
       --bg:#0b0f16;
       --bg2:#101826;
@@ -909,6 +965,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
   </style>
 </head>
 <body>
+  {global_nav_html(f"minpaku-{config.city_key}.html")}
   <div class="wrap">
     <section class="hero">
       <div class="kicker">PROPERTY SEARCH REPORT / {html.escape(config.city_label.upper())}</div>
@@ -1004,6 +1061,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     </section>
 
     <div class="footer">
+      <div style="margin-bottom:8px"><a href="index.html">Hub</a> · <a href="portfolio_dashboard.html">ポートフォリオ</a> · <a href="minpaku-osaka.html">大阪</a> · <a href="minpaku-fukuoka.html">福岡</a> · <a href="minpaku-tokyo.html">東京</a> · <a href="naiken-analysis.html">内覧分析</a></div>
       <div>Sources: {html.escape(sources_str)} ({html.escape(str(config.data_path))}{' + ' + ', '.join(str(p) for p in config.extra_data_paths) if config.extra_data_paths else ''})</div>
       <div>Generated on {html.escape(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))}</div>
     </div>
@@ -1308,11 +1366,11 @@ def _run_qa(output_path: Path, rows: list[PropertyRow], city_label: str) -> None
     if total == 0:
         errors.append("物件が0件です")
 
-    # 2. 管理費データカバレッジ
+    # 2. 管理費データカバレッジ (30%未満はFAIL)
     maint_count = sum(1 for r in rows if r.maintenance_fee > 0)
     maint_pct = (maint_count / total * 100) if total > 0 else 0
-    if maint_pct < 10:
-        warnings.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — ほぼ未取得")
+    if maint_pct < 30:
+        errors.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — 30%未満。enrichment要確認")
     elif maint_pct < 50:
         warnings.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — 半数未満")
 

@@ -4,10 +4,20 @@ import datetime as dt
 import html
 import json
 import re
+import sys
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
+
+# ---------------------------------------------------------------------------
+# Make the shared lib importable
+# ---------------------------------------------------------------------------
+_LIB_ROOT = Path(__file__).resolve().parent.parent  # …/Documents/Projects
+if str(_LIB_ROOT) not in sys.path:
+    sys.path.insert(0, str(_LIB_ROOT))
+
+from lib.renderer import create_env  # noqa: E402
 
 
 def site_header_css() -> str:
@@ -144,6 +154,7 @@ def parse_maintenance_fee(text: str) -> int:
     - "15,400円/月"
     - "管理費8,000円+修繕5,400円"
     - "8000+5400"
+    - "5830" (very low total for older properties)
     """
     if not text:
         return 0
@@ -152,14 +163,15 @@ def parse_maintenance_fee(text: str) -> int:
     amounts = re.findall(r"(\d+)\s*円?", text)
     if amounts:
         total = sum(int(a) for a in amounts)
-        # Sanity check: monthly fee should be 1,000-200,000 yen
-        if 1000 <= total <= 200000:
+        # Sanity check: monthly fee should be 500-200,000 yen
+        # (some old/small condos have fees under 1000 per component)
+        if 500 <= total <= 200000:
             return total
     # Single number
     m = re.search(r"(\d+)", text)
     if m:
         val = int(m.group(1))
-        if 1000 <= val <= 200000:
+        if 500 <= val <= 200000:
             return val
     return 0
 
@@ -306,6 +318,20 @@ def _normalize_name(name: str) -> str:
     return s
 
 
+def _row_data_richness(row: PropertyRow) -> int:
+    """Score how much useful data a row has (higher = richer)."""
+    score = 0
+    if row.maintenance_fee_text:
+        score += 3
+    if "管理費" in row.maintenance_fee_text and "修繕" in row.maintenance_fee_text:
+        score += 2  # Prefer rows with breakdown detail
+    if row.pet_status:
+        score += 1
+    if row.brokerage_text:
+        score += 1
+    return score
+
+
 def dedupe_properties(rows: list[PropertyRow]) -> tuple[list[PropertyRow], int]:
     seen: dict[tuple, int] = {}  # key -> index in out
     out: list[PropertyRow] = []
@@ -314,11 +340,14 @@ def dedupe_properties(rows: list[PropertyRow]) -> tuple[list[PropertyRow], int]:
         norm = _normalize_name(row.name)
         key_physical = (norm, row.area_sqm)
         key_name_price = (row.name, row.price_man)
-        existing_idx = seen.get(key_physical) or seen.get(key_name_price)
+        # Use sentinel-based lookup to avoid 0-index truthiness bug
+        idx_phys = seen.get(key_physical)
+        idx_name = seen.get(key_name_price)
+        existing_idx = idx_phys if idx_phys is not None else idx_name
         if existing_idx is not None:
-            # Prefer the row with more data (maintenance fee)
+            # Prefer the row with richer data (maintenance fee, pet status, etc.)
             existing = out[existing_idx]
-            if not existing.maintenance_fee_text and row.maintenance_fee_text:
+            if _row_data_richness(row) > _row_data_richness(existing):
                 out[existing_idx] = row
             dup_count += 1
             continue
@@ -446,9 +475,10 @@ def maintenance_fee_score(fee: int) -> int:
     """Maintenance fee scoring: lower is better. fee = total monthly yen (管理費+修繕積立金).
 
     Symmetric scale: max +10 (≤1万) / max -10 (>5万).
+    Unknown (fee=0) gets -3 penalty to avoid unverified properties ranking high.
     """
     if fee == 0:
-        return 0  # Unknown - no penalty, no bonus
+        return -3  # Unknown - mild penalty to incentivize data verification
     if fee <= 10000:
         return 10
     if fee <= 15000:
@@ -540,7 +570,9 @@ def build_comment(row: PropertyRow) -> str:
         strengths.append("リノベ余地あり")
     if b.get("brokerage", 0) >= 3:
         strengths.append(f"仲介手数料{row.brokerage_text}")
-    if b.get("maintenance", 0) < 0:
+    if row.maintenance_fee == 0:
+        cautions.append("管理費修繕データなし（要確認）")
+    elif b.get("maintenance", 0) < 0:
         cautions.append("管理費修繕積立金が高い")
     if b.get("renovation", 0) < 0:
         cautions.append("リノベ済み（DIY余地なし・割高）")
@@ -622,7 +654,127 @@ def safe_json(obj: object) -> str:
     return json.dumps(obj, ensure_ascii=False)
 
 
+def _format_maintenance_disp(r: PropertyRow) -> str:
+    """Format maintenance fee display with breakdown (管理費 + 修繕).
+
+    Always shows something explicit:
+    - Full breakdown: "13,400円 管理8,000 + 修繕5,400"
+    - Total only: "18,500円/月 (内訳なし)"
+    - No data: "データなし" with score penalty indicator
+    """
+    if r.maintenance_fee <= 0:
+        return '<span class="maint-na">データなし</span>'
+    text = r.maintenance_fee_text.replace(",", "")
+    kanri_m = re.search(r"管理費(\d+)", text)
+    shuuzen_m = re.search(r"修繕(\d+)", text)
+    if kanri_m and shuuzen_m:
+        k = int(kanri_m.group(1))
+        s = int(shuuzen_m.group(1))
+        return f'<span title="管理費{k:,}円 + 修繕{s:,}円">{k + s:,}円</span><span class="maint-detail">管理{k:,} + 修繕{s:,}</span>'
+    if kanri_m:
+        k = int(kanri_m.group(1))
+        return f'<span title="管理費{k:,}円（修繕不明）">{k:,}円</span><span class="maint-detail">管理のみ</span>'
+    if shuuzen_m:
+        s = int(shuuzen_m.group(1))
+        return f'<span title="修繕{s:,}円（管理費不明）">{s:,}円</span><span class="maint-detail">修繕のみ</span>'
+    # Bare number (common in Osaka SUUMO data) - show as total
+    return f'<span title="管理費+修繕 合計">{r.maintenance_fee:,}円/月</span><span class="maint-detail">内訳なし</span>'
+
+
+def _score_cell(val: int, label: str = "") -> str:
+    short = label[:2] if label else ""
+    if val > 0:
+        return f'<span class="sc-pill sc-pos">{short}+{val}</span>'
+    if val < 0:
+        return f'<span class="sc-pill sc-neg">{short}{val}</span>'
+    return f'<span class="sc-pill sc-zero">{short}0</span>'
+
+
+def _build_table_row_data(r: PropertyRow, idx: int) -> dict:
+    """Build a dict for a single table row for the Jinja2 template."""
+    b = r.score_breakdown
+    breakdown_title = f"予算{b['budget']:+d} 面積{b['area']:+d} 耐震{b['earthquake']:+d} 駅距{b['station']:+d} 立地{b['location']:+d} 間取{b['layout']:+d} ペト{b['pet']:+d} 管理{b['maintenance']:+d} リノ{b['renovation']:+d} 仲介{b['brokerage']:+d} 民泊{b['minpaku_penalty']:+d}"
+    breakdown_html = " ".join([
+        _score_cell(b["budget"], "予算"), _score_cell(b["area"], "面積"),
+        _score_cell(b["earthquake"], "耐震"), _score_cell(b["station"], "駅距"),
+        _score_cell(b["location"], "立地"), _score_cell(b["layout"], "間取"),
+        _score_cell(b["pet"], "ペト"), _score_cell(b["maintenance"], "管理"),
+        _score_cell(b["renovation"], "リノ"), _score_cell(b["brokerage"], "仲介"),
+        _score_cell(b["minpaku_penalty"], "民泊"),
+    ])
+    return {
+        "idx": idx,
+        "name": r.name,
+        "url": r.url,
+        "source": r.source,
+        "price_man": r.price_man,
+        "price_formatted": format_price_man(r.price_man),
+        "area_display": f"{(r.area_sqm or 0):.2f}",
+        "area_formatted": format_area(r.area_sqm),
+        "location": r.location,
+        "station_text": r.station_text,
+        "built_year": r.built_year or 0,
+        "built_display": f"{r.built_year}年" if r.built_year else r.built_text,
+        "layout": r.layout,
+        "walk_min": r.walk_min if r.walk_min is not None else 999,
+        "maint_display": _format_maintenance_disp(r),
+        "breakdown_html": breakdown_html,
+        "breakdown_title": breakdown_title,
+        "total_score": r.total_score,
+        "tier_label": r.tier_label,
+        "tier_class": r.tier_class,
+        "tier_color": r.tier_color,
+    }
+
+
+def _build_focus_card_data(r: PropertyRow, rank: int) -> dict:
+    """Build a dict for a focus card for the Jinja2 template."""
+    b = r.score_breakdown
+    chips = [
+        {"label": "予算", "value": b["budget"]},
+        {"label": "面積", "value": b["area"]},
+        {"label": "耐震", "value": b["earthquake"]},
+        {"label": "駅", "value": b["station"]},
+        {"label": "立地", "value": b["location"]},
+        {"label": "間取り", "value": b["layout"]},
+        {"label": "ペット", "value": b["pet"]},
+        {"label": "管理費修繕", "value": b["maintenance"]},
+        {"label": "リノベ", "value": b["renovation"]},
+        {"label": "仲介", "value": b["brokerage"]},
+        {"label": "民泊規約", "value": b["minpaku_penalty"]},
+    ]
+    return {
+        "rank": rank,
+        "name": r.name,
+        "url": r.url,
+        "price_formatted": format_price_man(r.price_man),
+        "area_formatted": format_area(r.area_sqm),
+        "location": r.location,
+        "total_score": r.total_score,
+        "tier_label": r.tier_label,
+        "tier_color": r.tier_color,
+        "chips": chips,
+        "detail_comment": r.detail_comment,
+        "station_text": r.station_text,
+        "built_text": r.built_text,
+        "layout": r.layout,
+        "minpaku_status": r.minpaku_status,
+    }
+
+
+# Navigation pages for property report
+_NAV_PAGES = [
+    {"href": "index.html", "label": "Hub"},
+    {"href": "minpaku-osaka.html", "label": "大阪"},
+    {"href": "minpaku-fukuoka.html", "label": "福岡"},
+    {"href": "minpaku-tokyo.html", "label": "東京"},
+    {"href": "naiken-analysis.html", "label": "内覧分析"},
+    {"href": "inquiry-messages.html", "label": "問い合わせ"},
+]
+
+
 def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[str, str], raw_count: int, duplicate_count: int) -> str:
+    """Build property search report HTML using the shared Jinja2 template."""
     rows_sorted = sorted(rows, key=lambda r: (-r.total_score, r.price_man, (r.walk_min or 999), r.name))
     top5 = rows_sorted[:5]
 
@@ -643,685 +795,70 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     radar_datasets = []
     for i, r in enumerate(top5):
         b = r.score_breakdown
-        radar_datasets.append(
-            {
-                "label": f"{i+1}. {r.name[:18]}",
-                "data": [
-                    round(b["budget"] / 20 * 100),
-                    round(b["area"] / 15 * 100),
-                    round(b["earthquake"] / 15 * 100),
-                    round(b["station"] / 15 * 100),
-                    round(b["location"] / 15 * 100),
-                    round(b["layout"] / 10 * 100),
-                    max(0, round(b["pet"] / 15 * 100)),
-                    max(0, round(b["maintenance"] / 10 * 100)),
-                    round(b["renovation"] / 5 * 100),
-                    round(b["brokerage"] / 5 * 100),
-                    0 if b["minpaku_penalty"] < 0 else 100,
-                ],
-                "borderWidth": 2,
-            }
-        )
+        radar_datasets.append({
+            "label": f"{i+1}. {r.name[:18]}",
+            "data": [
+                round(b["budget"] / 20 * 100),
+                round(b["area"] / 15 * 100),
+                round(b["earthquake"] / 15 * 100),
+                round(b["station"] / 15 * 100),
+                round(b["location"] / 15 * 100),
+                round(b["layout"] / 10 * 100),
+                max(0, round(b["pet"] / 15 * 100)),
+                max(0, round(b["maintenance"] / 10 * 100)),
+                round(b["renovation"] / 5 * 100),
+                round(b["brokerage"] / 5 * 100),
+                0 if b["minpaku_penalty"] < 0 else 100,
+            ],
+            "borderWidth": 2,
+        })
 
-    def _format_maintenance_disp(r: PropertyRow) -> str:
-        """Format maintenance fee display with breakdown (管理費 + 修繕)."""
-        if r.maintenance_fee <= 0:
-            return '<span class="maint-na">記載なし</span>'
-        # Try to extract breakdown from maintenance_fee_text
-        text = r.maintenance_fee_text.replace(",", "")
-        kanri_m = re.search(r"管理費(\d+)", text)
-        shuuzen_m = re.search(r"修繕(\d+)", text)
-        if kanri_m and shuuzen_m:
-            k = int(kanri_m.group(1))
-            s = int(shuuzen_m.group(1))
-            return f'<span title="管理費{k:,}円 + 修繕{s:,}円">{k + s:,}円</span><span class="maint-detail">管理{k:,} + 修繕{s:,}</span>'
-        if kanri_m:
-            k = int(kanri_m.group(1))
-            return f'<span title="管理費{k:,}円（修繕不明）">{k:,}円</span><span class="maint-detail">管理のみ</span>'
-        if shuuzen_m:
-            s = int(shuuzen_m.group(1))
-            return f'<span title="修繕{s:,}円（管理費不明）">{s:,}円</span><span class="maint-detail">修繕のみ</span>'
-        return f'<span title="内訳不明">{r.maintenance_fee:,}円</span><span class="maint-detail">合計</span>'
-
-    def _score_cell(val: int, label: str = "") -> str:
-        short = label[:2] if label else ""
-        if val > 0:
-            return f'<span class="sc-pill sc-pos">{short}+{val}</span>'
-        if val < 0:
-            return f'<span class="sc-pill sc-neg">{short}{val}</span>'
-        return f'<span class="sc-pill sc-zero">{short}0</span>'
-
-    table_rows_html = []
-    for idx, r in enumerate(rows_sorted, start=1):
-        b = r.score_breakdown
-        breakdown_title = f"予算{b['budget']:+d} 面積{b['area']:+d} 耐震{b['earthquake']:+d} 駅距{b['station']:+d} 立地{b['location']:+d} 間取{b['layout']:+d} ペト{b['pet']:+d} 管理{b['maintenance']:+d} リノ{b['renovation']:+d} 仲介{b['brokerage']:+d} 民泊{b['minpaku_penalty']:+d}"
-        score_badge = f'<span class="score-badge" style="--badge:{r.tier_color}" title="{html.escape(breakdown_title)}">{r.total_score}</span>'
-        link = f'<a href="{html.escape(r.url)}" target="_blank" rel="noopener noreferrer">{html.escape(r.name)}</a>'
-        built_disp = f"{r.built_year}年" if r.built_year else html.escape(r.built_text)
-        maint_disp = _format_maintenance_disp(r)
-        table_rows_html.append(
-            f"""
-            <tr class="{r.tier_class}" data-index="{idx}" data-name="{html.escape(r.name)}" data-location="{html.escape(r.location)}" data-layout="{html.escape(r.layout)}" data-tier="{html.escape(r.tier_label)}" data-price="{r.price_man}" data-area="{(r.area_sqm or 0):.2f}" data-score="{r.total_score}" data-year="{r.built_year or 0}" data-walk="{r.walk_min if r.walk_min is not None else 999}">
-              <td>{idx}</td>
-              <td class="name-col"><div class="clamp2">{link}</div><div class="source-tag">{html.escape(r.source)}</div></td>
-              <td>{format_price_man(r.price_man)}</td>
-              <td>{format_area(r.area_sqm)}</td>
-              <td><div class="clamp2">{html.escape(r.location)}</div></td>
-              <td><div class="clamp2">{html.escape(r.station_text)}</div></td>
-              <td>{built_disp}</td>
-              <td>{html.escape(r.layout)}</td>
-              <td class="maint-col">{maint_disp}</td>
-              <td class="breakdown-col">{_score_cell(b["budget"],"予算")} {_score_cell(b["area"],"面積")} {_score_cell(b["earthquake"],"耐震")} {_score_cell(b["station"],"駅距")} {_score_cell(b["location"],"立地")} {_score_cell(b["layout"],"間取")} {_score_cell(b["pet"],"ペト")} {_score_cell(b["maintenance"],"管理")} {_score_cell(b["renovation"],"リノ")} {_score_cell(b["brokerage"],"仲介")} {_score_cell(b["minpaku_penalty"],"民泊")}</td>
-              <td>{score_badge}</td>
-              <td><span class="tier-pill" style="--tier:{r.tier_color}">{html.escape(r.tier_label)}</span></td>
-            </tr>
-            """
-        )
-
-    focus_cards_html = []
-    for i, r in enumerate(top5, start=1):
-        b = r.score_breakdown
-        chips = [
-            ("予算", b["budget"]),
-            ("面積", b["area"]),
-            ("耐震", b["earthquake"]),
-            ("駅", b["station"]),
-            ("立地", b["location"]),
-            ("間取り", b["layout"]),
-            ("ペット", b["pet"]),
-            ("管理費修繕", b["maintenance"]),
-            ("リノベ", b["renovation"]),
-            ("仲介", b["brokerage"]),
-            ("民泊規約", b["minpaku_penalty"]),
-        ]
-        chip_html = "".join(
-            f'<span class="chip {"chip-penalty" if v < 0 else ""}">{html.escape(k)} {v:+d}</span>' for k, v in chips
-        )
-        focus_cards_html.append(
-            f"""
-            <article class="focus-card">
-              <div class="focus-head">
-                <div class="focus-rank">#{i}</div>
-                <div>
-                  <h3><a href="{html.escape(r.url)}" target="_blank" rel="noopener noreferrer">{html.escape(r.name)}</a></h3>
-                  <p>{format_price_man(r.price_man)} / {format_area(r.area_sqm)} / {html.escape(r.location)}</p>
-                </div>
-                <div class="focus-score" style="--accent:{r.tier_color}">{r.total_score}<span>{html.escape(r.tier_label)}</span></div>
-              </div>
-              <div class="chip-row">{chip_html}</div>
-              <p class="focus-comment">{html.escape(r.detail_comment)}</p>
-              <div class="focus-meta">
-                <span>{html.escape(r.station_text)}</span>
-                <span>{html.escape(r.built_text)}</span>
-                <span>{html.escape(r.layout)}</span>
-                {"<span>"+html.escape(r.minpaku_status)+"</span>" if r.minpaku_status else ""}
-              </div>
-            </article>
-            """
-        )
-
+    # Build structured data for template
+    table_rows = [_build_table_row_data(r, idx) for idx, r in enumerate(rows_sorted, start=1)]
+    focus_cards = [_build_focus_card_data(r, i) for i, r in enumerate(top5, start=1)]
     sources_str = meta.get("sources_loaded", "SUUMO")
     city_badge = f"データソース: {sources_str}"
-    html_doc = f"""<!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{html.escape(config.city_label)} 物件検索レポート</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    {site_header_css()}
-    {global_nav_css()}
-    :root {{
-      --bg:#0b0f16;
-      --bg2:#101826;
-      --card:rgba(255,255,255,0.04);
-      --line:rgba(255,255,255,0.10);
-      --muted:#a9b3c6;
-      --text:#edf3ff;
-      --accent:{config.accent};
-      --accent-rgb:{config.accent_rgb};
-      --success:#22c55e;
-      --warn:#f59e0b;
-      --danger:#ef4444;
-      --radius:12px;
-      --shadow:0 18px 60px rgba(0,0,0,0.45);
-    }}
-    * {{ box-sizing:border-box; }}
-    body {{
-      margin:0;
-      color:var(--text);
-      font-family:"Inter","Noto Sans JP",sans-serif;
-      background:
-        radial-gradient(circle at 15% -10%, rgba(var(--accent-rgb),0.16), transparent 40%),
-        radial-gradient(circle at 88% 12%, rgba(110,120,255,0.10), transparent 45%),
-        linear-gradient(180deg,#070b11,#0b0f16 28%, #0d1320 100%);
-    }}
-    .wrap {{ max-width:1280px; margin:0 auto; padding:24px 16px 44px; }}
-    .hero {{
-      position:relative;
-      padding:28px;
-      border-radius:24px;
-      border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-      box-shadow:var(--shadow);
-      overflow:hidden;
-      backdrop-filter: blur(12px);
-    }}
-    .hero::after {{
-      content:"";
-      position:absolute; inset:auto -10% -35% auto;
-      width:360px; height:360px; border-radius:50%;
-      background:radial-gradient(circle, rgba(var(--accent-rgb),0.22), transparent 70%);
-      filter:blur(8px);
-    }}
-    .kicker {{ color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-weight:700; font-size:12px; }}
-    h1 {{ margin:10px 0 10px; font-size:clamp(28px,4.2vw,46px); line-height:1.06; font-weight:900; font-family:"Noto Sans JP","Inter",sans-serif; }}
-    .hero-sub {{ color:#d0d9eb; margin:0; max-width:860px; }}
-    .badge-row {{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }}
-    .badge {{
-      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
-      border:1px solid rgba(var(--accent-rgb),0.35);
-      background:rgba(var(--accent-rgb),0.08);
-      color:#e8fbff; font-size:12px; font-weight:600;
-    }}
-    .grid-4 {{
-      margin-top:16px;
-      display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
-      gap:14px;
-    }}
-    .card {{
-      border:1px solid var(--line);
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:16px;
-      backdrop-filter: blur(10px);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
-    }}
-    .stat .label {{ color:var(--muted); font-size:12px; }}
-    .stat .value {{ font-size:28px; font-weight:800; margin-top:6px; }}
-    .stat .sub {{ color:#cdd6e8; font-size:12px; margin-top:4px; }}
-    .section {{
-      margin-top:16px;
-      border:1px solid var(--line);
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:18px;
-      backdrop-filter: blur(10px);
-    }}
-    .section h2 {{
-      margin:0 0 12px; font-size:18px; font-weight:800; letter-spacing:.02em;
-      display:flex; align-items:center; gap:10px;
-    }}
-    .section h2::before {{
-      content:"";
-      width:10px; height:10px; border-radius:50%;
-      background:var(--accent);
-      box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12);
-    }}
-    .cond-list {{
-      margin:0; padding-left:18px; color:#d8e0f0; line-height:1.75;
-      columns:2; column-gap:24px;
-    }}
-    .table-shell {{ overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); -webkit-overflow-scrolling:touch; }}
-    table {{ width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }}
-    thead th {{
-      position:sticky; top:0; z-index:1;
-      background:rgba(12,17,26,.92); color:#dbe7fa;
-      font-size:12px; text-align:left; padding:12px 10px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      white-space:nowrap;
-    }}
-    thead th button {{
-      all:unset; cursor:pointer; color:inherit; font-weight:700;
-      display:inline-flex; gap:6px; align-items:center;
-    }}
-    tbody td {{
-      padding:10px 6px; border-bottom:1px solid rgba(255,255,255,.05);
-      font-size:13px; vertical-align:top;
-    }}
-    tbody tr:nth-child(even) td {{ background:rgba(255,255,255,.012); }}
-    tbody tr:hover td {{ background:rgba(var(--accent-rgb),.06); }}
-    .tier-strong td {{ box-shadow: inset 4px 0 0 rgba(34,197,94,.7); }}
-    .tier-good td {{ box-shadow: inset 4px 0 0 rgba(250,204,21,.7); }}
-    .tier-conditional td {{ box-shadow: inset 4px 0 0 rgba(251,146,60,.7); }}
-    .tier-pass td {{ box-shadow: inset 4px 0 0 rgba(239,68,68,.7); }}
-    a {{ color:#eaf7ff; text-decoration:none; }}
-    a:hover {{ color:var(--accent); text-decoration:underline; }}
-    .name-col {{ max-width:130px; }}
-    .clamp2 {{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }}
-    .name-col a {{ font-weight:700; }}
-    .sc-pill {{ display:inline-block; padding:1px 4px; border-radius:4px; font-size:10px; font-weight:700; margin:1px; line-height:1.3; }}
-    .sc-pos {{ background:rgba(52,211,153,.15); color:#34d399; }}
-    .sc-neg {{ background:rgba(248,113,113,.15); color:#f87171; }}
-    .sc-zero {{ background:rgba(107,114,128,.1); color:#6b7280; }}
-    .breakdown-col {{ font-family:'Inter',monospace; max-width:220px; }}
-    .breakdown-th {{ min-width:180px; }}
-    .breakdown-legend {{ font-size:9px; color:var(--muted); letter-spacing:0.5px; margin-top:2px; font-weight:400; }}
-    .maint-col {{ white-space:nowrap; font-size:12px; }}
-    .maint-detail {{ display:block; font-size:10px; color:var(--muted); margin-top:2px; }}
-    .maint-na {{ font-size:11px; color:var(--muted); opacity:0.6; }}
-    td:nth-child(5) {{ max-width:110px; font-size:12px; }}
-    td:nth-child(6) {{ max-width:160px; font-size:12px; }}
-    td:nth-child(8) {{ white-space:nowrap; max-width:55px; }}
-    .source-tag {{
-      margin-top:4px; font-size:11px; color:var(--muted);
-      display:inline-block; padding:2px 8px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
-    }}
-    .score-badge {{
-      display:inline-grid; place-items:center;
-      min-width:38px; padding:5px 10px; border-radius:999px;
-      border:1px solid color-mix(in oklab, var(--badge) 50%, white 10%);
-      background:color-mix(in oklab, var(--badge) 16%, transparent);
-      color:#fff; font-weight:800;
-    }}
-    .tier-pill {{
-      display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px;
-      border:1px solid color-mix(in oklab, var(--tier) 45%, white 8%);
-      background:color-mix(in oklab, var(--tier) 14%, transparent);
-      font-weight:700; font-size:12px;
-    }}
-    .focus-grid {{
-      display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px;
-    }}
-    .focus-card {{
-      border-radius:12px; border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      padding:14px; box-shadow:var(--shadow);
-    }}
-    .focus-head {{ display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:start; }}
-    .focus-rank {{
-      width:36px; height:36px; border-radius:12px; display:grid; place-items:center;
-      background:rgba(var(--accent-rgb),.12); border:1px solid rgba(var(--accent-rgb),.35); font-weight:800;
-    }}
-    .focus-head h3 {{ margin:0; font-size:17px; line-height:1.3; }}
-    .focus-head p {{ margin:4px 0 0; color:var(--muted); font-size:12px; }}
-    .focus-score {{
-      min-width:68px; text-align:center; font-weight:900; font-size:24px;
-      color:#fff; border-radius:14px; padding:8px 10px;
-      border:1px solid color-mix(in oklab, var(--accent) 40%, white 8%);
-      background:color-mix(in oklab, var(--accent) 14%, transparent);
-    }}
-    .focus-score span {{ display:block; margin-top:4px; font-size:10px; color:#dfe8f7; font-weight:700; }}
-    .chip-row {{ margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }}
-    .chip {{
-      display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700;
-      padding:5px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.09);
-      background:rgba(255,255,255,.03); color:#e6eefc;
-    }}
-    .chip-penalty {{ border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.10); color:#ffdada; }}
-    .focus-comment {{ margin:10px 0 0; color:#dbe4f4; line-height:1.65; font-size:13px; }}
-    .focus-meta {{ margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:12px; }}
-    .focus-meta span {{ padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.06); background:rgba(255,255,255,.02); }}
-    .chart-grid {{ display:grid; grid-template-columns:1.2fr 1fr; gap:14px; }}
-    .chart-col {{ display:grid; gap:14px; }}
-    .chart-card canvas {{ width:100%; max-height:360px; }}
-    .notes {{ margin:0; padding-left:18px; line-height:1.8; color:#d9e2f3; }}
-    .footer {{ margin-top:16px; color:var(--muted); font-size:12px; text-align:center; }}
-    .footer a {{ color:#cfeeff; }}
-    /* Collapsible sections for mobile */
-    .collapsible-toggle {{
-      display:none; cursor:pointer; background:none; border:none; color:var(--muted);
-      font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.1);
-    }}
-    .collapsible-toggle::after {{ content:" ▼"; font-size:10px; }}
-    .collapsible-toggle.is-open::after {{ content:" ▲"; }}
-    /* Mobile jump nav */
-    .mobile-jump {{ display:none; }}
-    /* --- Responsive: 960px (tablet landscape) --- */
-    @media (max-width: 960px) {{
-      .grid-4 {{ grid-template-columns:repeat(2, minmax(0,1fr)); }}
-      .chart-grid, .focus-grid {{ grid-template-columns:1fr; }}
-      .cond-list {{ columns:1; }}
-      .hero {{ padding:14px; }}
-      .hero h1 {{ font-size:18px; }}
-      .hero-sub {{ display:none; }}
-      .badge-row {{ gap:4px; }}
-      .badge {{ font-size:10px; padding:3px 6px; }}
-      .stat .value {{ font-size:20px; }}
-      .collapsible-toggle {{ display:inline-block; }}
-      .collapsible-content.is-collapsed {{ display:none; }}
-      .mobile-jump {{
-        display:flex; gap:8px; padding:10px 0; flex-wrap:wrap;
-        position:sticky; top:40px; z-index:5; background:var(--bg); margin-bottom:4px;
-      }}
-      .mobile-jump a {{
-        padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700;
-        border:1px solid var(--accent); color:var(--accent); text-decoration:none;
-      }}
-      .mobile-jump a.primary {{ background:var(--accent); color:#050507; }}
-      .breakdown-col {{ max-width:180px; }}
-      .maint-detail {{ font-size:9px; }}
-    }}
-    /* --- Responsive: 768px (tablet portrait) --- */
-    @media (max-width: 768px) {{
-      .hero {{ padding:10px 12px; }}
-      .hero h1 {{ font-size:16px; margin:6px 0; }}
-      .kicker {{ font-size:10px; }}
-      .section {{ padding:12px; margin-top:10px; }}
-      .section h2 {{ font-size:15px; margin-bottom:8px; }}
-      .stat .value {{ font-size:18px; }}
-      .stat .sub {{ font-size:10px; }}
-      .card {{ padding:10px; }}
-      .grid-4 {{ gap:8px; }}
-      .focus-head h3 {{ font-size:14px; }}
-      .focus-score {{ font-size:20px; padding:6px 8px; min-width:56px; }}
-      .focus-card {{ padding:10px; }}
-      .chip {{ font-size:10px; padding:4px 6px; }}
-      /* Table: compact cells, keep all columns, horizontal scroll */
-      tbody td {{ padding:8px 6px; font-size:12px; }}
-      thead th {{ font-size:11px; padding:8px 6px; }}
-      .breakdown-col {{ max-width:140px; }}
-      .sc-pill {{ font-size:9px; padding:1px 3px; }}
-    }}
-    /* --- Responsive: 640px (smartphone) --- */
-    @media (max-width: 640px) {{
-      .hero {{ padding:8px 10px; border-radius:14px; }}
-      .hero h1 {{ font-size:15px; margin:4px 0; }}
-      .hero::after {{ display:none; }}
-      .badge-row {{ gap:3px; margin-top:6px; }}
-      .badge {{ font-size:9px; padding:2px 6px; }}
-      .grid-4 {{ grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px; margin-top:8px; }}
-      .card.stat {{ padding:8px 4px; text-align:center; }}
-      .stat .label {{ font-size:10px; }}
-      .stat .value {{ font-size:15px; margin-top:2px; }}
-      .stat .sub {{ display:none; }}
-      /* Table: further compact, reduce min-width for narrow screens */
-      table {{ min-width:auto; }}
-      tbody td {{ padding:6px 4px; font-size:11px; }}
-      thead th {{ padding:6px 4px; font-size:10px; }}
-      .name-col {{ max-width:120px; }}
-      .score-badge {{ min-width:32px; padding:4px 8px; font-size:13px; }}
-      .source-tag {{ font-size:9px; padding:1px 5px; }}
-      .breakdown-col {{ max-width:120px; }}
-      .sc-pill {{ font-size:8px; padding:1px 2px; margin:0; }}
-      .maint-col {{ font-size:11px; }}
-      .maint-detail {{ font-size:8px; }}
-      .focus-head {{ grid-template-columns:auto 1fr; }}
-      .focus-score {{ grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; font-size:18px; }}
-      .focus-head h3 {{ font-size:13px; }}
-      .focus-comment {{ font-size:12px; }}
-      .mobile-jump {{ top:36px; gap:6px; padding:8px 0; }}
-      .mobile-jump a {{ padding:5px 10px; font-size:11px; }}
-    }}
-    @media (prefers-reduced-motion: reduce) {{
-      * {{ scroll-behavior:auto !important; animation:none !important; transition:none !important; }}
-    }}
-  </style>
-</head>
-<body>
-{site_header_html()}
-  {global_nav_html(f"minpaku-{config.city_key}.html")}
-  <div class="wrap">
-    <nav class="mobile-jump">
-      <a href="#propertyTable" class="primary">物件一覧</a>
-      <a href="#focusCards">Top5</a>
-      <a href="#charts">Charts</a>
-    </nav>
 
-    <section class="hero">
-      <div class="kicker">PROPERTY SEARCH REPORT / {html.escape(config.city_label.upper())}</div>
-      <h1>{html.escape(config.city_label)} 民泊向け中古マンション候補レポート</h1>
-      <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
-      <div class="badge-row">
-        <span class="badge">検索日 {html.escape(search_date)}</span>
-        <span class="badge">厳選 {len(rows_sorted)}件 / {raw_count}件</span>
-        <span class="badge">{html.escape(city_badge)}</span>
-      </div>
-      <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
-      <div class="collapsible-content is-collapsed">
-        <div class="badge-row" style="margin-top:8px;">
-          <span class="badge">原データ {raw_count}件</span>
-          <span class="badge">重複除外 {duplicate_count}件</span>
-          <span class="badge">売却済除外 {meta.get("sold_removed", "0")}件</span>
-          <span class="badge">OC除外 {meta.get("oc_removed", "0")}件</span>
-          <span class="badge">ペット不可除外 {meta.get("pet_ng_removed", "0")}件</span>
-          <span class="badge">民泊不可除外 {meta.get("minpaku_ng_removed", "0")}件</span>
-          <span class="badge">低スコア除外 {meta.get("quality_filtered", "0")}件</span>
-        </div>
-        <div class="badge-row">
-          {''.join(f'<span class="badge">{html.escape(b)}</span>' for b in config.hero_conditions)}
-        </div>
-      </div>
-    </section>
+    # Build config dict for template (only serializable fields)
+    config_dict = {
+        "city_key": config.city_key,
+        "city_label": config.city_label,
+        "accent": config.accent,
+        "accent_rgb": config.accent_rgb,
+        "hero_conditions": config.hero_conditions,
+        "data_path": str(config.data_path),
+        "extra_data_paths": [str(p) for p in config.extra_data_paths],
+    }
 
-    <section class="grid-4">
-      <div class="card stat"><div class="label">総候補数</div><div class="value">{len(rows_sorted)}</div><div class="sub">重複排除後</div></div>
-      <div class="card stat"><div class="label">平均価格</div><div class="value">{avg_price:,.1f}万円</div><div class="sub">全候補平均</div></div>
-      <div class="card stat"><div class="label">平均面積</div><div class="value">{avg_area:.2f}㎡</div><div class="sub">全候補平均</div></div>
-      <div class="card stat"><div class="label">最高スコア</div><div class="value">{top_prop.total_score if top_prop else '-'}</div><div class="sub">{html.escape(top_prop.name if top_prop else '')}</div></div>
-    </section>
-
-    <section class="section">
-      <h2>Search Conditions</h2>
-      <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">詳細を見る</button>
-      <div class="collapsible-content is-collapsed">
-        <ul class="cond-list">
-          <li>データ元条件: {html.escape(meta.get("conditions", "5000万以下 / 40-70㎡ / ペット相談可"))}</li>
-          <li>重複排除キー: 物件名 + 価格（先勝ち）</li>
-          <li>駅アクセスに「バス」を含む場合、徒歩分数評価は0点</li>
-          <li>築年1981年7月以降を新耐震として評価</li>
-          <li>管理費修繕積立金: 1万円/月以下=+10, 1.5万以下=+7, 2万以下=+5, 3万超=マイナス</li>
-          <li>民泊禁止は除外（ペット不可と同様ハードフィルタ）</li>
-          {''.join(f"<li>{html.escape(item)}</li>" for item in config.search_condition_bullets)}
-        </ul>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Property Table</h2>
-      <div class="table-shell">
-        <table id="propertyTable">
-          <thead>
-            <tr>
-              <th><button data-sort="index" data-type="number">#</button></th>
-              <th><button data-sort="name" data-type="string">物件名</button></th>
-              <th><button data-sort="price" data-type="number">価格</button></th>
-              <th><button data-sort="area" data-type="number">面積</button></th>
-              <th><button data-sort="location" data-type="string">所在地</button></th>
-              <th><button data-sort="walk" data-type="number">最寄駅</button></th>
-              <th><button data-sort="year" data-type="number">築年</button></th>
-              <th><button data-sort="layout" data-type="string">間取り</button></th>
-              <th>管理費修繕</th>
-              <th class="breakdown-th">スコア内訳</th>
-              <th><button data-sort="score" data-type="number">スコア</button></th>
-              <th><button data-sort="tier" data-type="string">評価</button></th>
-            </tr>
-          </thead>
-          <tbody>
-            {''.join(table_rows_html)}
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2 id="focusCards">Top 5 Focus Cards</h2>
-      <div class="focus-grid">
-        {''.join(focus_cards_html)}
-      </div>
-    </section>
-
-    <section class="section">
-      <h2 id="charts">Charts</h2>
-      <div class="chart-grid">
-        <div class="card chart-card"><canvas id="radarChart"></canvas></div>
-        <div class="chart-col">
-          <div class="card chart-card"><canvas id="bucketChart"></canvas></div>
-          <div class="card chart-card"><canvas id="priceChart"></canvas></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Investor Notes</h2>
-      <ul class="notes">
-        {''.join(f'<li>{html.escape(n)}</li>' for n in config.investor_notes)}
-      </ul>
-    </section>
-
-    <div class="footer">
-      <div style="margin-bottom:8px"><a href="index.html">Hub</a> · <a href="minpaku-osaka.html">大阪</a> · <a href="minpaku-fukuoka.html">福岡</a> · <a href="minpaku-tokyo.html">東京</a> · <a href="naiken-analysis.html">内覧分析</a> · <a href="inquiry-messages.html">問い合わせ</a></div>
-      <div>Sources: {html.escape(sources_str)} ({html.escape(str(config.data_path))}{' + ' + ', '.join(str(p) for p in config.extra_data_paths) if config.extra_data_paths else ''})</div>
-      <div>Generated on {html.escape(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))}</div>
-    </div>
-  </div>
-
-  <script>
-    const chartAccent = 'rgba({config.accent_rgb}, 1)';
-    const chartAccentFill = 'rgba({config.accent_rgb}, 0.18)';
-    const radarLabels = {safe_json(radar_labels)};
-    const radarDatasets = {safe_json(radar_datasets)}.map((d, i) => {{
-      const hueShift = [0, 18, 35, 52, 70][i] || 0;
-      const alpha = 0.14 + i * 0.03;
-      return {{
-        ...d,
-        borderColor: i === 0 ? chartAccent : `hsla(${{(195 + hueShift)%360}}, 90%, 68%, .95)`,
-        backgroundColor: i === 0 ? chartAccentFill : `hsla(${{(195 + hueShift)%360}}, 90%, 68%, ${{alpha}})`,
-        pointRadius: 2,
-        pointHoverRadius: 4,
-      }};
-    }});
-    const bucketLabels = {safe_json(list(bucket_counts.keys()))};
-    const bucketValues = {safe_json(list(bucket_counts.values()))};
-    const priceLabels = {safe_json(price_bin_labels)};
-    const priceValues = {safe_json(price_bin_values)};
-
-    const commonGrid = {{
-      color: 'rgba(255,255,255,0.08)',
-      drawBorder: false,
-    }};
-    const commonTicks = {{ color: 'rgba(220,230,245,0.8)', font: {{ family: 'Inter, Noto Sans JP, sans-serif' }} }};
-
-    new Chart(document.getElementById('radarChart'), {{
-      type: 'radar',
-      data: {{ labels: radarLabels, datasets: radarDatasets }},
-      options: {{
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {{
-          legend: {{ labels: {{ color: '#e8efff' }} }},
-          title: {{ display: true, text: 'Top5 スコア内訳比較（0-100正規化）', color: '#e8efff' }}
-        }},
-        scales: {{
-          r: {{
-            suggestedMin: 0,
-            suggestedMax: 100,
-            angleLines: {{ color: 'rgba(255,255,255,0.08)' }},
-            grid: {{ color: 'rgba(255,255,255,0.08)' }},
-            pointLabels: {{ color: 'rgba(230,240,255,0.88)', font: {{ size: 11 }} }},
-            ticks: {{ backdropColor: 'transparent', color: 'rgba(220,230,245,0.55)', stepSize: 20 }}
-          }}
-        }}
-      }}
-    }});
-
-    new Chart(document.getElementById('bucketChart'), {{
-      type: 'bar',
-      data: {{
-        labels: bucketLabels,
-        datasets: [{{
-          label: '件数',
-          data: bucketValues,
-          borderRadius: 8,
-          borderSkipped: false,
-          backgroundColor: bucketValues.map((_, i) => `rgba({config.accent_rgb}, ${{0.35 + (i % 5) * 0.1}})`),
-          borderColor: bucketValues.map((_, i) => `rgba({config.accent_rgb}, ${{0.7 + (i % 3) * 0.1}})`),
-          borderWidth: 1
-        }}]
-      }},
-      options: {{
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {{
-          legend: {{ display: false }},
-          title: {{ display: true, text: 'エリア分布（立地バケット別件数）', color: '#e8efff' }}
-        }},
-        scales: {{
-          x: {{ ticks: commonTicks, grid: {{ display: false }} }},
-          y: {{ ticks: commonTicks, grid: commonGrid, beginAtZero: true }}
-        }}
-      }}
-    }});
-
-    new Chart(document.getElementById('priceChart'), {{
-      type: 'bar',
-      data: {{
-        labels: priceLabels,
-        datasets: [{{
-          label: '件数',
-          data: priceValues,
-          borderRadius: 8,
-          borderSkipped: false,
-          backgroundColor: priceValues.map((_, i) => `rgba(255,255,255, ${{0.14 + (i % 4) * 0.05}})`),
-          borderColor: priceValues.map(() => chartAccent),
-          borderWidth: 1
-        }}]
-      }},
-      options: {{
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {{
-          legend: {{ display: false }},
-          title: {{ display: true, text: '価格分布（500万円刻み）', color: '#e8efff' }}
-        }},
-        scales: {{
-          x: {{ ticks: commonTicks, grid: {{ display: false }} }},
-          y: {{ ticks: commonTicks, grid: commonGrid, beginAtZero: true }}
-        }}
-      }}
-    }});
-
-    (() => {{
-      const table = document.getElementById('propertyTable');
-      const tbody = table.querySelector('tbody');
-      const headers = table.querySelectorAll('thead button[data-sort]');
-      let sortState = {{ key: 'score', dir: 'desc' }};
-
-      const valueFor = (row, key, type) => {{
-        if (key === 'name') {{
-          return (row.dataset.name || '').toLowerCase();
-        }}
-        const v = row.dataset[key];
-        return type === 'number' ? Number(v) : (v || '');
-      }};
-
-      const applySort = (key, type) => {{
-        if (sortState.key === key) {{
-          sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
-        }} else {{
-          sortState = {{ key, dir: key === 'score' ? 'desc' : 'asc' }};
-        }}
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-        rows.sort((a, b) => {{
-          const av = valueFor(a, key, type);
-          const bv = valueFor(b, key, type);
-          let cmp = 0;
-          if (type === 'number') cmp = av - bv;
-          else cmp = String(av).localeCompare(String(bv), 'ja');
-          if (cmp === 0) cmp = Number(a.dataset.index) - Number(b.dataset.index);
-          return sortState.dir === 'asc' ? cmp : -cmp;
-        }});
-        rows.forEach(r => tbody.appendChild(r));
-        headers.forEach(h => h.textContent = h.textContent.replace(/[↑↓]$/, ''));
-        const active = Array.from(headers).find(h => h.dataset.sort === key);
-        if (active) active.textContent = active.textContent + (sortState.dir === 'asc' ? '↑' : '↓');
-      }};
-
-      headers.forEach(h => {{
-        h.addEventListener('click', () => applySort(h.dataset.sort, h.dataset.type || 'string'));
-      }});
-    }})();
-  </script>
-</body>
-</html>
-"""
-    return html_doc
+    # Render with lib.renderer
+    env = create_env()
+    template = env.get_template("pages/property_report.html")
+    return template.render(
+        config=config_dict,
+        rows_sorted=rows_sorted,
+        top5=top5,
+        meta=meta,
+        raw_count=raw_count,
+        duplicate_count=duplicate_count,
+        avg_price=avg_price,
+        avg_area=avg_area,
+        top_prop=top_prop,
+        search_date=search_date,
+        radar_labels=radar_labels,
+        radar_datasets=radar_datasets,
+        bucket_labels=list(bucket_counts.keys()),
+        bucket_values=list(bucket_counts.values()),
+        price_bin_labels=price_bin_labels,
+        price_bin_values=price_bin_values,
+        city_badge=city_badge,
+        table_rows=table_rows,
+        focus_cards=focus_cards,
+        search_condition_bullets=config.search_condition_bullets,
+        investor_notes=config.investor_notes,
+        sources_str=sources_str,
+        nav_pages=_NAV_PAGES,
+        current_page=f"minpaku-{config.city_key}.html",
+    )
 
 
 def load_sold_urls() -> set[str]:
@@ -1473,11 +1010,15 @@ def _run_qa(output_path: Path, rows: list[PropertyRow], city_label: str) -> None
 
     # 2. 管理費データカバレッジ (30%未満はFAIL)
     maint_count = sum(1 for r in rows if r.maintenance_fee > 0)
+    maint_breakdown_count = sum(1 for r in rows if r.maintenance_fee > 0 and ("管理費" in r.maintenance_fee_text or "修繕" in r.maintenance_fee_text))
     maint_pct = (maint_count / total * 100) if total > 0 else 0
     if maint_pct < 30:
         errors.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — 30%未満。enrichment要確認")
     elif maint_pct < 50:
-        warnings.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — 半数未満")
+        warnings.append(f"管理費データ: {maint_count}/{total}件 ({maint_pct:.0f}%) — 半数未満 (内訳あり{maint_breakdown_count}件)")
+    else:
+        # Still report coverage for monitoring
+        pass  # Will be included in the OK line below
 
     # 3. URL欠損
     no_url = sum(1 for r in rows if not r.url or r.url.strip() == "")
@@ -1511,6 +1052,6 @@ def _run_qa(output_path: Path, rows: list[PropertyRow], city_label: str) -> None
         for w in warnings:
             print(f"{prefix} ⚠ {w}")
     if not errors and not warnings:
-        print(f"{prefix} ✅ {total}件 OK (管理費{maint_pct:.0f}%)")
+        print(f"{prefix} ✅ {total}件 OK (管理費{maint_pct:.0f}%, 内訳あり{maint_breakdown_count}件)")
     elif not errors:
-        print(f"{prefix} ✅ {total}件 (警告{len(warnings)}件)")
+        print(f"{prefix} ✅ {total}件 (警告{len(warnings)}件, 管理費{maint_pct:.0f}%)")

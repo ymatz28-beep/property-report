@@ -6,17 +6,17 @@ DATA_DIR = Path("data")
 
 
 def find_extra_data_paths(city_key: str) -> list[Path]:
-    """Find multi-site data files for this city."""
+    """Find individual enriched source files for this city.
+
+    Always loads individual site files (which contain enriched maintenance data)
+    instead of multi_site_*_raw.txt (which is a stale merge without enrichment).
+    """
     paths = []
-    combined = DATA_DIR / f"multi_site_{city_key}_raw.txt"
-    if combined.exists():
-        paths.append(combined)
-    else:
-        # Fallback: individual site files
-        for pattern in [f"rakumachi_{city_key}_raw.txt", f"yahoo_{city_key}_raw.txt", f"athome_{city_key}_raw.txt"]:
-            p = DATA_DIR / pattern
-            if p.exists():
-                paths.append(p)
+    # Individual enriched source files (preferred over multi_site combined)
+    for prefix in ["rakumachi", "yahoo", "athome", "cowcamo"]:
+        p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
+        if p.exists():
+            paths.append(p)
     # R不動産
     restate = DATA_DIR / f"restate_{city_key}_raw.txt"
     if restate.exists():
@@ -63,4 +63,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

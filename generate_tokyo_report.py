@@ -6,8 +6,17 @@ DATA_DIR = Path("data")
 
 
 def find_extra_data_paths(city_key: str) -> list[Path]:
-    """Find extra data files (R不動産 etc). multi_site is primary, not extra."""
+    """Find individual enriched source files for this city.
+
+    Always loads individual site files (which contain enriched maintenance data)
+    instead of multi_site_*_raw.txt (which is a stale merge without enrichment).
+    """
     paths = []
+    # Individual enriched source files (preferred over multi_site combined)
+    for prefix in ["rakumachi", "yahoo", "athome", "cowcamo"]:
+        p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
+        if p.exists():
+            paths.append(p)
     # R不動産
     restate = DATA_DIR / f"restate_{city_key}_raw.txt"
     if restate.exists():
@@ -16,14 +25,6 @@ def find_extra_data_paths(city_key: str) -> list[Path]:
     lifull = DATA_DIR / f"lifull_{city_key}_raw.txt"
     if lifull.exists():
         paths.append(lifull)
-    # カウカモ
-    cowcamo = DATA_DIR / f"cowcamo_tokyo_raw.txt"
-    if cowcamo.exists():
-        paths.append(cowcamo)
-    # SUUMO
-    suumo = DATA_DIR / f"suumo_{city_key}_raw.txt"
-    if suumo.exists():
-        paths.append(suumo)
     return paths
 
 
@@ -33,7 +34,7 @@ def main() -> None:
         city_label="東京",
         accent="#a78bfa",
         accent_rgb="167,139,250",
-        data_path=Path("data/multi_site_tokyo_raw.txt"),
+        data_path=Path("data/suumo_tokyo_raw.txt"),
         output_path=Path("output/minpaku-tokyo.html"),
         hero_conditions=[
             "渋谷区・新宿区・目黒区・台東区・豊島区中心",
@@ -42,7 +43,7 @@ def main() -> None:
             "ペット可/相談可優先",
         ],
         search_condition_bullets=[
-            "楽待 + Yahoo不動産 + athome + LIFULL + カウカモのマルチソース",
+            "SUUMO + 楽待 + Yahoo不動産 + athome + LIFULL + カウカモのマルチソース",
             "渋谷/恵比寿/新宿を最優先、浅草/池袋/上野も重点評価",
             "ペット可は高加点（+15）、不明は-15。リノベ未実施は加点、仲介手数料割引も加点",
         ],

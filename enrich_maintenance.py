@@ -156,6 +156,34 @@ def enrich_cowcamo(html: str) -> str:
     return ""
 
 
+
+def enrich_athome(html: str) -> str:
+    """Extract maintenance fee from athome detail page.
+    Format: 管理費等 6,900円 ... 修繕積立金 9,600円
+    """
+    text = re.sub(r"<[^>]+>", " ", html)
+    text = re.sub(r"\s+", " ", text)
+
+    kanri = 0
+    shuuzen = 0
+
+    m = re.search(r"管理費等\s*([\d,]+)\s*円", text)
+    if m:
+        kanri = int(m.group(1).replace(",", ""))
+
+    m = re.search(r"修繕積立金\s*([\d,]+)\s*円", text)
+    if m:
+        shuuzen = int(m.group(1).replace(",", ""))
+
+    if kanri or shuuzen:
+        parts = []
+        if kanri:
+            parts.append(f"管理費{kanri}")
+        if shuuzen:
+            parts.append(f"修繕{shuuzen}")
+        return "+".join(parts)
+    return ""
+
 def enrich_file(filepath: Path) -> int:
     """Enrich a raw data file with maintenance fees. Returns count of enriched rows."""
     if not filepath.exists():
@@ -187,7 +215,7 @@ def enrich_file(filepath: Path) -> int:
             continue
 
         # Only enrich supported sources
-        if source not in ("楽待", "カウカモ", "SUUMO", "Yahoo不動産", "福岡R不動産", "大阪R不動産", "東京R不動産"):
+        if source not in ("楽待", "カウカモ", "SUUMO", "Yahoo不動産", "athome", "福岡R不動産", "大阪R不動産", "東京R不動産"):
             new_lines.append(line)
             continue
 
@@ -206,6 +234,8 @@ def enrich_file(filepath: Path) -> int:
             fee_text = enrich_suumo(html)
         elif source == "Yahoo不動産":
             fee_text = enrich_yahoo(html)
+        elif source == "athome":
+            fee_text = enrich_athome(html)
         elif source in ("福岡R不動産", "大阪R不動産", "東京R不動産"):
             fee_text = enrich_yahoo(html)  # Same format as Yahoo
         else:

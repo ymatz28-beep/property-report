@@ -216,7 +216,7 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
 
 /* Section jump nav */
 .section-jump {
-  position:sticky; top:38px; z-index:8;
+  position:sticky; top:88px; z-index:8;
   background:rgba(14,18,28,.88); backdrop-filter:blur(10px);
   border-bottom:1px solid rgba(255,255,255,.06);
   padding:6px 16px; margin:0 -16px;
@@ -376,7 +376,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 .collapsible-toggle.is-open::after { content:" \25B2"; }
 
 /* Scroll offset for sticky nav */
-[id] { scroll-margin-top:90px; }
+[id] { scroll-margin-top:130px; }
 
 /* === Tablet landscape (960px) === */
 @media (max-width: 960px) {
@@ -443,9 +443,9 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   .focus-score { grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; font-size:18px; }
   .focus-head h3 { font-size:13px; }
   .focus-comment { font-size:12px; }
-  .section-jump { top:36px; padding:4px 12px; gap:4px; }
+  .section-jump { top:86px; padding:4px 12px; gap:4px; }
   .section-jump a { min-height:40px; padding:6px 12px; font-size:11px; }
-  [id] { scroll-margin-top:82px; }
+  [id] { scroll-margin-top:124px; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior:auto !important; animation:none !important; transition:none !important; }
@@ -498,6 +498,13 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
   .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
 }
+/* ── Property Sub-nav (gnav) ── */
+.gnav{position:sticky;top:52px;z-index:90;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
+.gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.gnav a:hover{color:#fff}
+.gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
+@media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
 </style>
 
 <header class="site-header">
@@ -518,6 +525,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
     </a>
   </nav>
 </header>
+<div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html" class="cur">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a></div></div>
 
 <div class="wrap">
   <nav class="section-jump" id="sectionJump">

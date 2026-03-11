@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>iUMA Real Estate</title>
+  <title>物件レポート</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #050507;
@@ -23,7 +23,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Outfit', 'Noto Sans JP', system-ui, sans-serif;
+      font-family: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
       background: var(--bg); color: var(--text);
       min-height: 100vh; overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
@@ -55,105 +55,73 @@
 
     .page { position: relative; z-index: 2; max-width: 960px; margin: 0 auto; padding: 0 32px; }
 
-    nav {
-      padding: 40px 0 0;
-      display: flex; align-items: center; justify-content: space-between;
-      opacity: 0; animation: reveal 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
-    }
-    .nav-brand { display: flex; align-items: center; gap: 12px; }
-    .nav-mark {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: linear-gradient(135deg, #3b9eff 0%, #60b8ff 100%);
-      display: grid; place-items: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 600; font-size: 13px; color: #fff; letter-spacing: -0.5px;
-    }
-    .nav-name { font-weight: 600; font-size: 14px; letter-spacing: 0.04em; color: var(--text); }
-    .nav-back {
-      font-size: 12px; color: var(--muted); text-decoration: none;
-      display: flex; align-items: center; gap: 6px; transition: color 0.2s;
-    }
-    .nav-back:hover { color: var(--text); }
-
-    .hero {
-      margin-top: 80px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end;
+    .hub-header {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--border);
       opacity: 0; animation: reveal 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
     }
-    .hero h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(52px, 7vw, 80px);
-      font-weight: 400; line-height: 0.95; letter-spacing: -0.02em; color: var(--text);
+    .hub-header h1 {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      font-size: 22px; font-weight: 600; letter-spacing: -0.01em;
     }
-    .hero-accent { font-style: italic; color: var(--accent); }
-    .hero-aside { padding-bottom: 8px; }
-    .hero-aside p { font-size: 14px; color: var(--text-secondary); line-height: 1.8; max-width: 320px; }
-    .hero-line { width: 40px; height: 1px; background: var(--accent); margin-bottom: 16px; }
-
-    .divider {
-      margin: 64px 0 0; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-      opacity: 0; animation: reveal 0.8s ease 0.3s forwards;
+    .hub-header p {
+      font-size: 13px; color: var(--text-secondary); margin-top: 6px;
     }
 
     .reports { margin-top: 0; }
 
     .report-item {
       display: block; text-decoration: none; color: var(--text);
-      position: relative; padding: 40px 0;
+      position: relative; padding: 16px 0;
       border-bottom: 1px solid var(--border);
-      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      transition: all 0.25s ease;
     }
-    .report-item:hover { padding-left: 12px; }
+    .report-item:hover { padding-left: 8px; }
     .report-item::after {
       content: ''; position: absolute; left: 0; bottom: -1px;
       width: 0; height: 1px; background: var(--accent);
-      transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+      transition: width 0.4s ease;
     }
     .report-item:hover::after { width: 100%; }
 
     .report-row {
-      display: grid; grid-template-columns: 60px 1fr auto; gap: 24px; align-items: start;
+      display: grid; grid-template-columns: 28px 1fr auto; gap: 14px; align-items: center;
     }
     .report-ordinal {
-      font-family: 'DM Serif Display', serif;
-      font-size: 36px; line-height: 1; color: var(--dim);
-      transition: color 0.35s; padding-top: 2px;
+      font-size: 13px; font-weight: 500; color: var(--muted);
+      transition: color 0.25s;
     }
     .report-item:hover .report-ordinal { color: var(--accent); }
 
-    .report-body { display: flex; flex-direction: column; gap: 10px; }
+    .report-body { display: flex; flex-direction: column; gap: 4px; }
     .report-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
       text-transform: uppercase; color: var(--accent);
     }
     .report-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: 28px; font-weight: 400; line-height: 1.2;
-      transition: color 0.3s;
+      font-size: 15px; font-weight: 600; line-height: 1.3;
+      transition: color 0.25s;
     }
     .report-item:hover .report-title { color: var(--accent); }
-    .report-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+    .report-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
 
-    .report-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .report-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
     .report-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; font-weight: 500; padding: 4px 10px; border-radius: 6px;
+      font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 4px;
       background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
-      color: var(--text-secondary); transition: all 0.25s;
+      color: var(--text-secondary); transition: all 0.2s;
     }
     .report-item:hover .report-tag { border-color: rgba(255,255,255,0.12); color: var(--text); }
 
     .report-arrow {
-      align-self: center; width: 32px; height: 32px; border-radius: 50%;
+      align-self: center; width: 28px; height: 28px; border-radius: 50%;
       border: 1px solid var(--border); display: grid; place-items: center;
-      font-size: 16px; color: var(--muted);
-      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      font-size: 14px; color: var(--muted);
+      transition: all 0.25s ease;
     }
     .report-item:hover .report-arrow {
       background: var(--accent); border-color: var(--accent);
-      color: var(--bg); transform: translateX(4px);
+      color: var(--bg); transform: translateX(3px);
     }
 
     .fi {
@@ -169,7 +137,7 @@
       opacity: 0; animation: reveal 0.8s ease 0.6s forwards;
     }
     .foot-left, .foot-right {
-      font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim);
+      font-size: 10px; color: var(--dim); letter-spacing: 0.04em;
     }
 
     @keyframes reveal {
@@ -179,37 +147,25 @@
 
     @media (max-width: 768px) {
       .page { padding: 0 20px; }
-      .hero { grid-template-columns: 1fr; gap: 24px; margin-top: 56px; }
-      .report-row { grid-template-columns: 40px 1fr; gap: 16px; }
+      .hub-header { padding: 32px 0 20px; }
+      .report-row { grid-template-columns: 24px 1fr; gap: 12px; }
       .report-arrow { display: none; }
-      .report-ordinal { font-size: 28px; }
-      .report-title { font-size: 22px; }
-      .report-item { padding: 28px 0; }
-      footer { flex-direction: column; gap: 16px; align-items: flex-start; }
-    }
-
-    @media (max-width: 480px) {
-      .report-row { grid-template-columns: 1fr; }
-      .report-ordinal { font-size: 20px; }
+      .report-item { padding: 14px 0; }
+      footer { flex-direction: column; gap: 12px; align-items: flex-start; margin-top: 40px; }
     }
 
     @media (max-width: 375px) {
       .page { padding: 0 14px; }
-      .hero { margin-top: 40px; gap: 16px; }
-      .hero h1 { font-size: clamp(36px, 10vw, 52px); }
-      .hero-aside p { font-size: 12px; }
-      .report-item { padding: 20px 0; }
-      .report-title { font-size: 18px; }
+      .hub-header { padding: 24px 0 16px; }
+      .hub-header h1 { font-size: 18px; }
+      .hub-header p { font-size: 11px; }
+      .report-item { padding: 12px 0; }
+      .report-title { font-size: 14px; }
       .report-desc { font-size: 11px; }
-      .report-ordinal { font-size: 16px; }
-      .report-tag { font-size: 9px; padding: 3px 7px; }
-      nav { padding: 24px 0 0; }
-      .nav-mark { width: 28px; height: 28px; font-size: 11px; }
-      .nav-name { font-size: 12px; }
-      footer { margin-top: 48px; padding: 24px 0 32px; }
+      .report-tag { font-size: 9px; padding: 2px 6px; }
+      footer { margin-top: 32px; padding: 20px 0 24px; }
     }
-.site-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.10);font-family:'Inter','Noto Sans JP',sans-serif}
-.site-header .site-brand{font-size:13px;font-weight:700;color:#3b9eff}
+.site-header{display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.10);font-family:'Inter','Noto Sans JP',sans-serif}
 .site-header .site-nav{display:flex;gap:6px;flex-wrap:wrap}
 .site-header .site-nav a{font-size:11px;color:#a9b3c6;text-decoration:none;padding:4px 10px;border-radius:4px;border:1px solid transparent;transition:all .15s}
 .site-header .site-nav a:hover{color:#edf3ff;background:rgba(255,255,255,0.04)}
@@ -229,10 +185,8 @@
 </head>
 <body>
 <div class="site-header">
-  <div class="site-brand">iUMA</div>
   <nav class="site-nav">
     <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
-
     <a href="https://ymatz28-beep.github.io/property-report/" class="current">Property</a>
   </nav>
 </div>
@@ -240,27 +194,14 @@
   <div class="atmosphere"><div class="atm-orb"></div><div class="atm-orb"></div></div>
   <div class="grain"></div>
   <div class="page">
-    <nav>
-      <div class="nav-brand">
-        <div class="nav-mark">iU</div>
-        <div class="nav-name">Real Estate</div>
-      </div>
-      <a class="nav-back" href="https://ymatz28-beep.github.io/report-dashboard/">&larr; Dashboard</a>
-    </nav>
-
-    <div class="hero">
-      <h1>Property<br><span class="hero-accent">Reports.</span></h1>
-      <div class="hero-aside">
-        <div class="hero-line"></div>
-        <p>民泊物件検索・内覧分析レポートを一元管理。<br>毎日自動巡回・スコアリング・レポート生成。</p>
-      </div>
+    <div class="hub-header">
+      <h1>物件レポート</h1>
+      <p>毎日自動巡回・スコアリング・レポート生成</p>
     </div>
-
-    <div class="divider"></div>
     <div class="reports" id="reports"></div>
 
     <footer>
-      <div class="foot-left">iUMA REAL ESTATE &mdash; 2026</div>
+      <div class="foot-left">REAL ESTATE &mdash; 2026</div>
       <div class="foot-right">AUTO-UPDATED DAILY</div>
     </footer>
   </div>

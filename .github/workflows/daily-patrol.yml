@@ -48,28 +48,4 @@ jobs:
             echo "No data changes to commit"
           fi
 
-      - name: Notify Gmail
-        if: always() && hashFiles('data/patrol_summary.txt')
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.GMAIL_ADDRESS }}
-          password: ${{ secrets.GMAIL_APP_PASSWORD }}
-          subject: "[AI] 🏠 物件パトロール完了"
-          to: ${{ secrets.GMAIL_NOTIFY_ADDRESS }}
-          from: Property Patrol Bot
-          body: file://data/patrol_summary.txt
-        continue-on-error: true
-
-      - name: Notify LINE
-        if: always() && hashFiles('data/patrol_summary.txt')
-        run: |
-          SUMMARY="[property] $(cat data/patrol_summary.txt)"
-          # Escape for JSON
-          SUMMARY_JSON=$(echo "$SUMMARY" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")
-          curl -s -X POST https://api.line.me/v2/bot/message/push \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.LINE_CHANNEL_TOKEN }}" \
-            -d "{\"to\":\"${{ secrets.LINE_USER_ID }}\",\"messages\":[{\"type\":\"text\",\"text\":$SUMMARY_JSON}]}" || true
-        continue-on-error: true
+      # Gmail/LINE単体通知は廃止 — Daily Digestに統合済み (2026-03-07)

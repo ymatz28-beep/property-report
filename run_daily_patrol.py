@@ -326,8 +326,8 @@ def main():
     SUMMARY_FILE = BASE_DIR / "data" / "patrol_summary.txt"
     SUMMARY_FILE.write_text(summary, encoding="utf-8")
 
-    # 6. LINE notification (only when new properties found)
-    send_line_if_new(diff)
+    # 6. LINE notification — disabled (Daily Digestに統合済み。単体通知は形骸化防止のため停止)
+    # send_line_if_new(diff)
 
 
 if __name__ == "__main__":

@@ -1,16 +1,45 @@
 # HANDOFF
 
-## 最終更新: 2026-03-02（セッション94: ペット不明スコア改善+テーブル幅調整）
+## 最終更新: 2026-03-05（Projects#43 gnav修正+iuma-private hub更新+筑波銀行返済計画）
 
-## 完了済み（直近セッション94）
-- **ペット不明スコア改善** — `pet_score_for_row()` の不明(空欄)スコアを0→-15に変更。日本のマンションはデフォルトでペット不可が多いため、記載なし=飼育不可の可能性が高いと判断。ペット可確認済み物件が自動的に上位に来る設計に
-  - 朝日プラザ南堀江: #2(98点) → #9(83点) に下降
+## 完了済み（Projects#43）
+- **property-report gnav修正（#43）** — 大阪/福岡/東京ページにgnav追加。private URL（Stock/Wealth/Action）除去、PublicリンクのみのProperty/Tripに限定。gh-pagesデプロイ済み（2ae066c）
+- **iuma-private hubにProperty/Travel追加** — privateハブにリンク追加+デプロイ済み
+- **筑波銀行 西浦和 返済計画表反映** — ¥144M/2.40%/¥507,107（月額返済）
+- **筑波銀行 東浦和 土地つなぎ融資判明** — ¥47.3M/2.65%/利息のみ（期間中）
+- **wealth dashboard 更新+デプロイ** — 上記2物件の返済計画を反映
+- **lessons.md gnav欠落記録** — property-reportのgnav private URLリスクをlessons.mdに記録
+
+## 完了済み（Projects#42）
+- **Typography Rule全面適用** — property-report 6ファイルのh1 `clamp(28-46px)→clamp(20-26px)`、`--fs-display` `48px→36px`。push済み
+  - minpaku output: fs-display 48px→36px。Cloudflareデプロイ済み
+  - `design_tokens.py`: `--fs-display` `clamp(24px,5vw,48px)→clamp(22px,4vw,36px)`（唯一の定義元修正）
+  - DESIGN_SYSTEM.md更新済み
+- **lint-typography.sh作成** — 全HTML横断でfont-size>40pxを自動検出。patrol.sh Phase 2.5に組み込み
+- **エコシステム根本改革レビュー（Creator→Critic完了）** — 個別レポートページのgnavにprivate URL残存をCriticが指摘。修正必要
+- **worktree全クリーンアップ** — 6個の残存worktreeを削除
+
+## 完了済み（セッション95-96）
+- **gnav統一 + フォントInter統一** — 全ダッシュボード/レポートにグローバルナビ追加、フォントをInter統一
+  - Private hub (iuma-private.pages.dev): h1削除・gnav追加・デプロイ完了
+  - Public hub (report-dashboard): h1削除・gnav追加・push済み
+  - Stock report / Action dashboard: gnav統一・フォントInter統一・再生成・デプロイ済み
+  - Wealth pages / Trip planner / iuma-hub.html: gnav追加・フォントInter統一済み
+  - inquiry-messages.html: site_header追加済み。タイトルから"iUMA"プレフィックス削除
+- **site-header簡素化** — `.site-brand`（"iUMA"テキスト）を全property reportページから削除。ナビリンクのみのシンプルヘッダーに。モバイルブレークポイント768px→375pxに変更
+- **管理費表示バグ修正** — dedup index=0 falsy bug修正、`_row_data_richness`優先度ロジック改善、fee=0ペナルティ(-3)追加、「データなし」表示、parse閾値1000→500
+- **3都市レポート再生成+デプロイ** — rebaseコンフリクト解決（5ファイル: property_status.json + 4 HTML）→再生成→push完了
+  - 管理費表示率: 大阪100%、福岡100%、東京90%
+  - QA: 大阪50件OK、福岡70件OK、東京50件OK
+- **git rebaseトラブル解決** — stash残留によるrebase continueループを、abort→stash drop→pull --rebase→theirs採用+再生成で解決
+- **iUMA hub統合リンク検証** — iuma-hub.htmlからProperty Portfolio（`output/portfolio_dashboard.html` LOCAL）とProperty Reports（gh-pages WEB）の2系統リンクを確認
+- **ポートフォリオダッシュボード基盤作成**（未コミット） — `generate_portfolio.py`（YAML→Jinja2→HTML）+ `templates/portfolio_dashboard.html` + `qa_validate.py`（利回り/DSCR/CCR/スコア/ローン計算の機械的検証）
+
+## 完了済み（セッション94）
+- **ペット不明スコア改善** — `pet_score_for_row()` の不明(空欄)スコアを0→-15に変更
 - **テーブル列幅調整** — 最寄駅の「徒歩○分」が見えるように幅配分を最適化
-  - 物件名: 160→130px、所在地: 140→110px、最寄駅: 140→160px（拡大）
-  - スコア内訳: 260→220px、間取り: max-width 55px+nowrap
-  - セルpadding: 12px 10px → 10px 6px
 - **3都市レポート検索条件表示更新** — 「ペット可は高加点（+15）、不明は-15」に変更
-- **CLAUDE.md Autonomous QAルール強化** — レポートデプロイ後のQA巡回を自律実行ルールに昇格（指示不要・自動実行）
+- **CLAUDE.md Autonomous QAルール強化** — レポートデプロイ後のQA巡回を自律実行ルールに昇格
 - **QA巡回実施** — 3都市全レポートでペット不可混入ゼロ、上位5件全てペット+10以上を確認
 
 ## 完了済み（セッション93）
@@ -71,25 +100,27 @@
 - マルチソース検索 + f-takkenスクレイパー（67）
 
 ## 進行中 / 未完了
-- **ふれんずenrichment実行待ち** — 349件の詳細ページ巡回。`python enrich_maintenance.py` → レポート再生成 → デプロイ。推定15-20分。技術メモ: 詳細ページは直接アクセスで403、一覧→詳細の順でNavigate必要（session cookie）。金額フォーマットは「管理費 9500円」「積立金 1万4990円」（万円表記あり）
-- **スコアリング改善（管理費ペナルティ強化）** — 現状max -5では高コスト物件が上位に残る。ペナルティ拡大が必要（セッション90で特定）
-- **管理費データ残課題** — old形式29件+empty241件がSUUMO名前マッチ不可（multi_site/yahoo/rakumachi等にSUUMO該当なし）。個別スクレイピングか元サイトからの直接取得が必要
-- **property-report Hub モバイル微調整** — kaizen#21 QA巡回で指摘: 640px以下（iPhone SE 375px等）のブレークポイント不足。heroのmargin-top未縮小、gnav/footerのタッチターゲット不足。ただしviewport meta+768px/480pxブレークポイントは既に実装済みで深刻度は低い
-- **Gmail通知認証エラー** — `535 BadCredentials`。アプリパスワードをスペースなし16文字で再設定必要（`gh secret set GMAIL_APP_PASSWORD`）
-- **LINE通知方針変更** — kaizen#20で「新物件検出時のみLINE通知」に決定（`send_line_if_new()`）。LINE Developers登録 + Secrets追加は引き続き必要
-- #1 扇町の民泊可否 — **2026-02-25内覧予定。大嶺さんに直接確認する**
-- **athome CAPTCHA** — 認証パズル（認証中）でHTTP/Playwright両方ブロック。解決策なし
+- ~~**公開gnavからprivate URL除去**~~ — **完了(2026-03-05)**。3都市全ページ修正+デプロイ済み
+- **P1: property-shared.css外部化** — エージェントチーム議論で決定。全CSSを1ファイルに集約し、変更が1箇所で全ページに反映される仕組みを構築
+- ~~**patrol QA警告: Fukuoka/Osakaモバイルスクロール**~~ — **修正済み(2026-03-07)**。3都市全ページmin-width:1180px削除+gh-pagesデプロイ済み
+- **patrol QA警告: Tokyo pet-tokyo.html不在** — config修正済み、次回patrol(3/5 3AM)で解消予定
+- **スコアリング改善（管理費ペナルティ強化）** — 現状max -5では高コスト物件が上位に残る。ペナルティ拡大が必要
+- **Gmail通知認証エラー** — `535 BadCredentials`。アプリパスワード再設定必要
+- **LINE通知方針変更** — 新物件検出時のみLINE通知。LINE Developers登録 + Secrets追加が必要
+- **athome CAPTCHA** — 認証パズルでHTTP/Playwright両方ブロック。解決策なし
+- **ポートフォリオダッシュボード数値確定+コミット** — generate_portfolio.py / qa_validate.py / templates/ が未コミット。数値検証後にコミット+デプロイ
 - Webレポート v2（公開用・プライバシー対策版）の設計・実装
-- ポートフォリオダッシュボードの数値確定
 
 ## 次回アクション（優先順）
-1. **ふれんずenrichment実行 + レポート再生成 + デプロイ** — `python enrich_maintenance.py` で349件巡回（15-20分）→ レポート再生成 → gh-pagesデプロイ → WebFetch確認
-2. **スコアリング改善+レポート再生成+デプロイ** — 管理費ペナルティ強化（`maintenance_fee_score()` L441-457: -5→-10/-15等に拡大） + レポート生成・デプロイ。⚠️ 必ず新規セッション・最小コンテキストで開始
-3. **Gmail通知修正** — アプリパスワード再発行（https://myaccount.google.com/apppasswords）→ スペース除去して`gh secret set GMAIL_APP_PASSWORD` → workflow_dispatchでテスト
-4. **内覧結果の反映** — 扇町・天満橋の内覧結果をデータに反映
-5. **LINE通知設定** — LINE Developers登録 → Messaging APIチャネル作成 → Secrets追加。新物件検出時のみ通知
-6. **管理費empty物件の元サイト直接取得** — SUUMO未掲載241件について、Yahoo/楽待/multi_siteの詳細ページから管理費を個別スクレイピングするパイプライン構築
-7. 💡**改善アイデア: ふれんずenrichmentの差分実行** — 現在は全349件を毎回巡回。enrichment済みフラグを管理し、未取得分のみ巡回すれば実行時間を大幅短縮可能
+1. ~~**公開gnavからprivate URL除去**~~ — **完了(2026-03-05)**
+2. ~~**Fukuoka/Osakaモバイルスクロール修正**~~ — **修正済み(2026-03-07)**
+3. **チサン博多 返済計画表** — 後回し→次セッションで反映
+4. **Gmail通知修正** — アプリパスワード再発行 → `gh secret set GMAIL_APP_PASSWORD` → workflow_dispatchでテスト
+5. **内覧結果の反映** — 扇町・天満橋の内覧結果をデータに反映
+6. **スコアリング改善+レポート再生成+デプロイ** — 管理費ペナルティ強化（`maintenance_fee_score()`: -5→-10/-15等に拡大）
+7. **LINE通知設定** — LINE Developers登録 → Messaging APIチャネル作成 → Secrets追加
+8. **UI QA自動チェック** — daily patrolに`_run_ui_qa()`追加: フォント検査、site-header/gnav存在確認、iUMA混入チェック
+9. 💡**改善アイデア: property-shared.css外部化** — 全ページのsite-header/gnav/フォント/変数CSSを`output/property-shared.css`に集約。CSS変更が1ファイルで全ページ反映される仕組み
 
 ## Key Decisions
 - **モバイル最適化の現状と課題を詳細調査済み**（セッション91）: viewport meta ✓, レスポンシブグリッド(minmax) ✓, hide-mobile ✓(2列のみ)。不足: 768px/640pxブレークポイント未定義、テーブルmin-width 700-1480pxで横スクロール、スコア内訳列11バッジがモバイルで窮屈、生成ファイル間のmin-width不統一
@@ -136,19 +167,29 @@
 - `gh` CLI でデプロイ
 
 ## Key Decisions (追加)
+- **Typography全面適用+自動検査（Projects#42）**: h1 `clamp(20-26px)`、fs-display `36px`に統一。`lint-typography.sh`でfont-size>40pxを自動検出（patrol.sh Phase 2.5）。3層仕組み化: 思想(CLAUDE.md) + 定義(design_tokens.py) + 検査(lint→patrol)
+- **公開gnavのOPSECリスク（Projects#42）**: 公開property-reportページのgnavにprivateサイトURL（Stock/Wealth/Action）が含まれている。URL構造漏洩リスクあり。公開ページはproperty/tripのみに制限すべき
+- **Typography Rule適用（Projects#41）**: CLAUDE.md にh1 max 40px、モバイル max 24px、装飾的巨大テキスト禁止ルール追加。property reportのフォントサイズもこれに準拠
+- **iUMA hubからproperty-analyzerへの2系統リンク**（セッション96）: Public（Property Reports → gh-pages）+ Private（Property Portfolio → output/portfolio_dashboard.html LOCAL）。ポートフォリオは非公開データ含むためローカルのみ
+- **ポートフォリオダッシュボードはJinja2テンプレート分離方式**（セッション95）: `generate_portfolio.py`（YAML→Jinja2→HTML）。Template Protection原則に準拠。`qa_validate.py`で利回り/DSCR/CCR等の計算を機械的に検証
+- **全ダッシュボードgnav+Inter統一完了**（セッション95）: Private/Public hub、Stock、Action、Property、Wealth、Trip、iuma-hub全てにグローバルナビ+Interフォント統一。デザイン言語の一貫性確保
+- **管理費dedup index=0 falsyバグ**（セッション95）: Pythonの`if not index`でindex=0がFalseと評価されデータロスが発生。`if index is None`に修正
+- **rebase conflict解決パターン**（セッション95）: 出力HTMLのコンフリクトは再生成で解決。theirs採用→スクリプト再実行→git add→rebase continue
 - **ふれんず詳細ページは直接アクセス不可（403）**（セッション93）: 一覧ページ→詳細ページの順でNavigateする必要あり（session cookie依存）。万円表記（「1万4990円」等）のパース対応済み
 - **Yahoo不動産/R不動産からも管理費enrichment可能と確認**（セッション93）: +104件の内訳取得に成功
 - **スマホ最適化: 列非表示ではなく横スクロール方式を採用**（セッション92）: ユーザーフィードバックにより、hide-mobile/tablet/phoneで列を非表示にする方式はNG。管理費修繕・最寄駅・築年・評価など全列を維持し、横スクロールで閲覧可能にする。セルサイズの段階的縮小で対応
 
 ## History
+- 2026-03-05 Projects#43: property-report gnav修正（3都市private URL除去+デプロイ）+ iuma-private hub更新 + 筑波銀行2物件返済計画反映（西浦和¥144M/東浦和¥47.3M）+ wealth dashboard更新
+- 2026-03-04 Projects#42: Typography全面適用（6ファイルh1縮小+fs-display 36px+design_tokens修正）+ lint-typography.sh作成（patrol Phase 2.5）+ エコシステムレビューCritic指摘（gnav private URL除去必要）+ worktree 6個削除
+- 2026-03-04 Projects#41: patrol QA確認 — Fukuoka/Osaka min-widthスマホスクロール警告、Tokyo pet-tokyo.html不在（config修正済み）。Typography Rule追加（CLAUDE.md）
+- 2026-03-04 セッション95-96: gnav統一+Inter統一+site-header簡素化（brand削除・BP変更）+ 管理費dedupバグ修正 + rebase解決 + 3都市再生成push + iUMA hub統合リンク検証 + ポートフォリオ基盤作成（未コミット）
 - 2026-03-02 セッション94: ペット不明スコア0→-15変更 + テーブル列幅調整（最寄駅拡大） + QA巡回自動化ルール追加 + 3都市再生成デプロイ
 - 2026-03-02 セッション93: 管理費バグ修正(カンマ入り) + Yahoo/R不動産enrichment(+104件) + ふれんずPlaywright enrichment関数実装。349件巡回は中断（0件処理）
 - 2026-03-02 kaizen#21 QA巡回: property-report/index.htmlのモバイルレスポンシブ調査。viewport+768/480px BP実装済み確認。640px以下の微調整を進行中に追加
 - 2026-03-02 セッション92: スマホ最適化実装。4段階ブレークポイント追加、hero/stats/conditionsコンパクト化、スコアバッジtitle属性追加。ユーザーFBで列非表示→全列横スクロール方式に変更。3都市レポート再生成+デプロイ
 - 2026-03-02 セッション91: モバイル最適化の詳細調査完了。CSS/メディアクエリ・全8HTMLレポートを分析し11項目の診断レポート生成。Prompt is too longで最終出力中断
-- 2026-03-02 セッション90(続行2): 前回続行のコンテキスト引き継ぎで即Prompt is too long。ユーザーの「どこで止まった？」にも2回とも応答不可。完全にコンテキスト限界
-- 2026-03-02 セッション90(続行): コード読み込み試行(L430-609成功)→2回目Read(L570-620)でPrompt is too long→/compactも「Conversation too long」で失敗
-- 2026-03-02 セッション90: スコアリング構造調査（全11軸分析） + 改善3点特定（管理費ペナルティ/表示/スマホ最適化）。Prompt is too longで中断
+- 2026-03-02 セッション90(+続行2回): スコアリング構造調査（全11軸分析）+ 改善3点特定。Prompt is too longで3回中断（Explore 82kトークン→/compact不可→質問応答すら不可）
 - 2026-03-02 セッション89: 管理費旧形式一括修正（SUUMO名前マッチで92件修正）。レポート再生成は「Prompt is too long」で中断
 - 2026-03-01 kaizen#20反映: LINE通知最適化 — 新物件検出時のみLINE通知（`send_line_if_new()`）。月間LINE使用量~5通/月に
 - 2026-03-01 セッション87-88: SUUMOスクレイパー新規作成 + 億パーサーバグ修正 + 東京slugs修正 + 日次パトロール組込み + QA強化。大阪115件/福岡187件/東京112件
@@ -158,8 +199,6 @@
 - 2026-02-26 セッション83: Gmail+LINE通知追加 + テスト実行成功(25m5s) + Gmail認証エラー発覚(BadCredentials) + git pushエラー(exit 128)
 - 2026-02-26 セッション82: Daily Patrol GitHub Actions稼働確認完了(24m41s) + CI最適化(SOLDスキップ/タイムアウト調整/PYTHONUNBUFFERED) + gh auth workflow追加 + デフォルトブランチmain化
 - 2026-02-26 セッション81: GitHub Actions daily-patrol作成 + deploy()2重実行修正 + requirements.txt更新 + セッション74-80蓄積一括push
-- 2026-02-26 セッション80: CLAUDE.md圧縮(303→288行) + Autonomous QA + Self-Improvement昇格ルール + Subagent活用ルール + プロジェクトセレクター改善(c -a, HIDDEN, RECENT_DAYS)
-- 2026-02-26 セッション78-79: カウカモparser修正 + Yahoo parser全面書き換え + 管理費enrichment + 厳選フィルタ + 統合ランディングページ + サイト構造修正 + デザイン統一 + スマホ対応 + daikoku削除
-- 2026-02-25 セッション77: SUUMO管理費enrichmentスクリプト修正 + QA自動化 + スコア2文字ラベル
-- 2026-02-25 セッション76: スコア内訳UI改善 + 内覧分析ページ作成 + Hub追加 + デプロイ
-- 2026-02-25 セッション75: 管理費スコアリング + ペット不可ハードフィルタ + ランディングページ + デプロイ修正
+- 2026-02-26 セッション78-80: CLAUDE.md圧縮+強化、カウカモ/Yahoo parser修正、管理費enrichment、厳選フィルタ、統合ランディング、デザイン統一、スマホ対応
+- 2026-02-25 セッション75-77: 管理費スコアリング + ペット不可フィルタ + スコア内訳UI + 内覧分析ページ + SUUMO enrichment修正 + QA自動化
+

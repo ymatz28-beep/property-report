@@ -21,6 +21,8 @@ from generate_search_report_common import (
     dedupe_properties,
     global_nav_css,
     global_nav_html,
+    site_header_css,
+    site_header_html,
     load_sold_urls,
     parse_data_file,
     parse_osaka_r_rows,
@@ -329,15 +331,18 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
 
     nav_css = global_nav_css()
     nav_html = global_nav_html("inquiry-messages.html")
+    sh_css = site_header_css()
+    sh_html = site_header_html()
 
     return f'''<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>問い合わせメッセージ — iUMA Property</title>
+  <title>問い合わせメッセージ — Property</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
+    {sh_css}
     {nav_css}
     :root {{ --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; --green:#34d399; --red:#f87171; --yellow:#eab308; }}
     * {{ box-sizing:border-box; margin:0; }}
@@ -382,6 +387,7 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
   </style>
 </head>
 <body>
+{sh_html}
 {nav_html}
 <div class="wrap">
   <h1>問い合わせメッセージ</h1>

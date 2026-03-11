@@ -22,29 +22,67 @@ from lib.renderer import create_env  # noqa: E402
 
 def site_header_css() -> str:
     return """
-.site-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.10);font-family:'Inter','Noto Sans JP',sans-serif}
-.site-header .site-brand{font-size:13px;font-weight:700;color:#3b9eff}
-.site-header .site-nav{display:flex;gap:6px;flex-wrap:wrap}
-.site-header .site-nav a{font-size:11px;color:#a9b3c6;text-decoration:none;padding:4px 10px;border-radius:4px;border:1px solid transparent;transition:all .15s}
-.site-header .site-nav a:hover{color:#edf3ff;background:rgba(255,255,255,0.04)}
-.site-header .site-nav a.current{color:#3b9eff;border-color:rgba(59,158,255,0.3);background:rgba(59,158,255,0.08)}
-@media(max-width:768px){.site-header{flex-direction:column;gap:8px;align-items:flex-start}}
+/* ── Shared Gnav ── */
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 52px;
+  background: rgba(22,24,31,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky; top: 0; z-index: 100;
+}
+.site-nav { display: flex; gap: 4px; }
+.site-nav a {
+  color: #71717a; text-decoration: none; font-size: 13px; font-weight: 500;
+  padding: 6px 14px; border-radius: 6px; transition: background .15s, color .15s;
+}
+.site-nav a:hover, .site-nav a[aria-current="page"] {
+  background: rgba(255,255,255,0.065); color: #f5f5f7;
+}
+.nav-toggle { display: none; }
+.nav-toggle-label { display: none; cursor: pointer; padding: 8px; }
+.nav-toggle-label span,
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  display: block; background: #f5f5f7; height: 2px; width: 20px;
+  border-radius: 2px; position: relative; transition: .3s;
+}
+.nav-toggle-label span::before,
+.nav-toggle-label span::after { content: ''; position: absolute; }
+.nav-toggle-label span::before { top: -6px; }
+.nav-toggle-label span::after { top: 6px; }
+@media (max-width: 640px) {
+  .nav-toggle-label { display: block; }
+  .site-nav {
+    display: none; flex-direction: column; gap: 0;
+    position: absolute; top: 52px; left: 0; right: 0; z-index: 200;
+    background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 0;
+  }
+  .site-nav a { padding: 12px 24px; border-radius: 0; font-size: 14px; }
+  .nav-toggle:checked ~ .site-nav { display: flex; }
+  .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
+  .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
+  .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
+}
 """
 
 
 def site_header_html() -> str:
-    return """<div class="site-header">
-  <div class="site-brand">iUMA</div>
+    return """<header class="site-header">
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+  <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
   <nav class="site-nav">
     <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
-    <a href="https://ymatz28-beep.github.io/property-report/" class="current">Property</a>
+    <a href="https://ymatz28-beep.github.io/property-report/" aria-current="page">Property</a>
+    <a href="https://ymatz28-beep.github.io/trip-planner/">Travel</a>
   </nav>
-</div>"""
+</header>"""
 
 
 def global_nav_css() -> str:
     return """
-.gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav{position:sticky;top:52px;z-index:90;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
 .gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
 .gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
 .gnav a:hover{color:#fff}
@@ -702,11 +740,23 @@ def _build_table_row_data(r: PropertyRow, idx: int) -> dict:
         _score_cell(b["renovation"], "リノ"), _score_cell(b["brokerage"], "仲介"),
         _score_cell(b["minpaku_penalty"], "民泊"),
     ])
+    # Pet badge for template
+    pet_badge = ""
+    pet_badge_class = ""
+    if r.pet_score >= 15:
+        pet_badge = "ペット可"
+        pet_badge_class = "pet-ok"
+    elif r.pet_score >= 10:
+        pet_badge = "ペット相談可"
+        pet_badge_class = "pet-maybe"
+
     return {
         "idx": idx,
         "name": r.name,
         "url": r.url,
         "source": r.source,
+        "pet_badge": pet_badge,
+        "pet_badge_class": pet_badge_class,
         "price_man": r.price_man,
         "price_formatted": format_price_man(r.price_man),
         "area_display": f"{(r.area_sqm or 0):.2f}",

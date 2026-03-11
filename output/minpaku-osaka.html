@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>大阪 物件検索レポート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
@@ -32,7 +32,7 @@
   --text-secondary: #9ca3af;
   --text-muted: #7c8293;
   --text-decorative: #5f6678;
-  --font-display: 'Cormorant Garamond', serif;
+  --font-display: 'Inter', 'Noto Sans JP', sans-serif;
   --font-body: 'Inter', 'Noto Sans JP', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --space-1: 4px;
@@ -57,7 +57,7 @@
   --z-nav: 100;
   --z-modal: 200;
   --z-toast: 300;
-  --fs-display: clamp(24px, 5vw, 48px);
+  --fs-display: clamp(22px, 4vw, 36px);
   --fs-h1: clamp(20px, 2.5vw, 26px);
   --fs-h2: clamp(16px, 2vw, 22px);
   --fs-h3: clamp(14px, 1.8vw, 18px);
@@ -294,6 +294,14 @@ td:nth-child(5) { max-width:110px; font-size:12px; }
 td:nth-child(6) { max-width:160px; font-size:12px; }
 td:nth-child(8) { white-space:nowrap; max-width:55px; }
 
+/* Pet tag */
+.pet-tag {
+  display:inline-block; margin-top:3px; font-size:10px; font-weight:700;
+  padding:1px 6px; border-radius:999px; line-height:1.4;
+}
+.pet-ok { background:rgba(34,197,94,.15); color:#34d399; border:1px solid rgba(34,197,94,.3); }
+.pet-maybe { background:rgba(250,204,21,.12); color:#facc15; border:1px solid rgba(250,204,21,.25); }
+
 /* Source tag */
 .source-tag {
   margin-top:4px; font-size:11px; color:var(--muted);
@@ -422,13 +430,19 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   table { min-width:auto; }
   tbody td { padding:6px 4px; font-size:11px; }
   thead th { padding:6px 4px; font-size:10px; }
-  .name-col { max-width:120px; }
+  .name-col { max-width:140px; }
   .score-badge { min-width:32px; padding:4px 8px; font-size:13px; }
   .source-tag { font-size:9px; padding:1px 5px; }
+  /* Hide: スコア内訳, 評価(tier), 管理費, 築年, 間取り — モバイルではスコアバッジの色で十分 */
   .breakdown-col, .breakdown-th { display:none; }
+  .tier-col, .tier-th { display:none; }
+  .maint-col, .maint-th { display:none; }
+  .year-col, .year-th { display:none; }
+  .layout-col, .layout-th { display:none; }
   .sc-pill { font-size:8px; padding:1px 2px; margin:0; }
-  .maint-col { font-size:11px; }
-  .maint-detail { font-size:8px; }
+  /* 所在地・最寄駅を広めに確保 */
+  td:nth-child(5) { max-width:140px; }
+  td:nth-child(6) { max-width:180px; }
   .focus-head { grid-template-columns:auto 1fr; }
   .focus-score { grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; font-size:18px; }
   .focus-head h3 { font-size:13px; }
@@ -445,123 +459,66 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 <body>
 
 <style>
+/* ── Shared Gnav ── */
 .site-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px var(--space-4);
-  margin-bottom: var(--space-4);
-  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 52px;
+  background: rgba(22,24,31,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky; top: 0; z-index: 100;
 }
-.site-header .site-brand {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent);
-  white-space: nowrap;
+.site-nav { display: flex; gap: 4px; }
+.site-nav a {
+  color: #71717a; text-decoration: none; font-size: 13px; font-weight: 500;
+  padding: 6px 14px; border-radius: 6px; transition: background .15s, color .15s;
 }
-.site-header .site-nav {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+.site-nav a:hover, .site-nav a[aria-current="page"] {
+  background: rgba(255,255,255,0.065); color: #f5f5f7;
 }
-.site-header .site-nav a {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-decoration: none;
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  transition: all 0.15s;
-  border: 1px solid transparent;
-  min-height: 32px;
-  display: inline-flex;
-  align-items: center;
-}
-.site-header .site-nav a:hover {
-  color: var(--text);
-  background: var(--surface2);
-}
-.site-header .site-nav a.current {
-  color: var(--accent);
-  border-color: rgba(99,102,241,0.3);
-  background: rgba(99,102,241,0.08);
-}
-
-/* Mobile hamburger */
 .nav-toggle { display: none; }
-.nav-toggle-label {
-  display: none;
-  cursor: pointer;
-  width: 44px;
-  height: 44px;
-  align-items: center;
-  justify-content: center;
-}
+.nav-toggle-label { display: none; cursor: pointer; padding: 8px; }
 .nav-toggle-label span,
 .nav-toggle-label span::before,
 .nav-toggle-label span::after {
-  display: block;
-  background: var(--text-secondary);
-  height: 2px;
-  width: 20px;
-  border-radius: 2px;
-  position: relative;
-  transition: all 0.3s;
+  display: block; background: #f5f5f7; height: 2px; width: 20px;
+  border-radius: 2px; position: relative; transition: .3s;
 }
 .nav-toggle-label span::before,
-.nav-toggle-label span::after {
-  content: '';
-  position: absolute;
-}
+.nav-toggle-label span::after { content: ''; position: absolute; }
 .nav-toggle-label span::before { top: -6px; }
 .nav-toggle-label span::after { top: 6px; }
-
 @media (max-width: 640px) {
-  .site-header {
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 8px var(--space-3);
+  .nav-toggle-label { display: block; }
+  .site-nav {
+    display: none; flex-direction: column; gap: 0;
+    position: absolute; top: 52px; left: 0; right: 0; z-index: 200;
+    background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 0;
   }
-  .nav-toggle-label { display: inline-flex; }
-  .site-header .site-nav {
-    display: none;
-    width: 100%;
-    flex-direction: column;
-    gap: 4px;
-    padding-top: 8px;
-  }
-  .nav-toggle:checked ~ .site-nav {
-    display: flex;
-  }
-  .nav-toggle:checked + .nav-toggle-label span { background: transparent; }
-  .nav-toggle:checked + .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
-  .nav-toggle:checked + .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
-  .site-header .site-nav a {
-    padding: 8px 12px;
-    font-size: 12px;
-  }
+  .site-nav a { padding: 12px 24px; border-radius: 0; font-size: 14px; }
+  .nav-toggle:checked ~ .site-nav { display: flex; }
+  .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
+  .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
+  .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
 }
 </style>
 
 <header class="site-header">
-  <div class="site-brand">iUMA</div>
   <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
   <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
-  <nav class="site-nav" aria-label="Site navigation">
-    <a href="https://iuma-private.pages.dev/stock/portfolio.html"
+  <nav class="site-nav">
+    <a href="https://ymatz28-beep.github.io/report-dashboard/"
 >
-      Stock
+      Hub
     </a>
     <a href="https://ymatz28-beep.github.io/property-report/"
 >
       Property
     </a>
-    <a href="https://iuma-private.pages.dev/wealth/dashboard.html"
+    <a href="https://ymatz28-beep.github.io/trip-planner/"
 >
-      Wealth
-    </a>
-    <a href="https://iuma-private.pages.dev/action/"
->
-      Action
+      Travel
     </a>
   </nav>
 </header>
@@ -580,16 +537,16 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
     <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
     <div class="badge-row">
       <span class="badge">検索日 2026-03-03</span>
-      <span class="badge">厳選 50件 / 165件</span>
+      <span class="badge">厳選 50件 / 171件</span>
       <span class="badge">データソース: SUUMO, rakumachi, yahoo, athome, restate, 大阪R不動産</span>
     </div>
     <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
     <div class="collapsible-content is-collapsed">
       <div class="badge-row" style="margin-top:8px;">
-        <span class="badge">原データ 165件</span>
-        <span class="badge">重複除外 31件</span>
+        <span class="badge">原データ 171件</span>
+        <span class="badge">重複除外 32件</span>
         <span class="badge">売却済除外 0件</span>
-        <span class="badge">OC除外 1件</span>
+        <span class="badge">OC除外 2件</span>
         <span class="badge">ペット不可除外 3件</span>
         <span class="badge">民泊不可除外 1件</span>
         <span class="badge">低スコア除外 1件</span>
@@ -640,126 +597,126 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <th><button data-sort="area" data-type="number">面積</button></th>
             <th><button data-sort="location" data-type="string">所在地</button></th>
             <th><button data-sort="walk" data-type="number">最寄駅</button></th>
-            <th><button data-sort="year" data-type="number">築年</button></th>
-            <th><button data-sort="layout" data-type="string">間取り</button></th>
-            <th>管理費修繕</th>
+            <th class="year-th"><button data-sort="year" data-type="number">築年</button></th>
+            <th class="layout-th"><button data-sort="layout" data-type="string">間取り</button></th>
+            <th class="maint-th">管理費修繕</th>
             <th class="breakdown-th">スコア内訳</th>
             <th><button data-sort="score" data-type="number">スコア</button></th>
-            <th><button data-sort="tier" data-type="string">評価</button></th>
+            <th class="tier-th"><button data-sort="tier" data-type="string">評価</button></th>
           </tr>
         </thead>
         <tbody>
           <tr class="tier-strong" data-index="1" data-name="サニーハウス谷町" data-location="大阪府大阪市中央区十二軒町6-28" data-layout="2LDK" data-tier="強く推奨" data-price="3498" data-area="54.88" data-score="99" data-year="1982" data-walk="4">
             <td>1</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20101804/" target="_blank" rel="noopener noreferrer">サニーハウス谷町</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20101804/" target="_blank" rel="noopener noreferrer">サニーハウス谷町</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,498万円</td>
             <td>54.88㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区十二軒町6-28</div></td>
             <td><div class="clamp2">地下鉄谷町線「谷町六丁目」徒歩4分</div></td>
-            <td>1982年</td>
-            <td>2LDK</td>
+            <td class="year-col">1982年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費10,800円 + 修繕11,700円">22,500円</span><span class="maint-detail">管理10,800 + 修繕11,700</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+8</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+15 耐震+15 駅距+15 立地+8 間取+10 ペト+10 管理+3 リノ+3 仲介+0 民泊+0">99</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="2" data-name="●ストークマンション長堀●" data-location="大阪府大阪市西区新町４-17-7" data-layout="2LDK" data-tier="強く推奨" data-price="3050" data-area="56.91" data-score="96" data-year="1982" data-walk="4">
             <td>2</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener noreferrer">●ストークマンション長堀●</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener noreferrer">●ストークマンション長堀●</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,050万円</td>
             <td>56.91㎡</td>
             <td><div class="clamp2">大阪府大阪市西区新町４-17-7</div></td>
             <td><div class="clamp2">地下鉄千日前線「西長堀」徒歩4分</div></td>
-            <td>1982年</td>
-            <td>2LDK</td>
+            <td class="year-col">1982年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費9,900円 + 修繕12,600円">22,500円</span><span class="maint-detail">管理9,900 + 修繕12,600</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+15 耐震+15 駅距+15 立地+5 間取+10 ペト+10 管理+3 リノ+3 仲介+0 民泊+0">96</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="3" data-name="サントピア九条" data-location="大阪府大阪市西区九条１" data-layout="2LDK" data-tier="強く推奨" data-price="1750" data-area="52.50" data-score="93" data-year="1981" data-walk="2">
             <td>3</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener noreferrer">サントピア九条</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener noreferrer">サントピア九条</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>1,750万円</td>
             <td>52.50㎡</td>
             <td><div class="clamp2">大阪府大阪市西区九条１</div></td>
             <td><div class="clamp2">阪神電鉄阪神なんば線「九条」徒歩2分</div></td>
-            <td>1981年</td>
-            <td>2LDK</td>
+            <td class="year-col">1981年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費11,550円 + 修繕15,750円">27,300円</span><span class="maint-detail">管理11,550 + 修繕15,750</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+15 耐震+15 駅距+15 立地+5 間取+10 ペト+10 管理+0 リノ+3 仲介+0 民泊+0">93</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="4" data-name="セレッソコート南堀江マルティア" data-location="大阪府大阪市西区南堀江３-4-9" data-layout="2LDK" data-tier="強く推奨" data-price="4380" data-area="53.00" data-score="93" data-year="2000" data-walk="4">
             <td>4</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener noreferrer">セレッソコート南堀江マルティア</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener noreferrer">セレッソコート南堀江マルティア</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,380万円</td>
             <td>53.00㎡</td>
             <td><div class="clamp2">大阪府大阪市西区南堀江３-4-9</div></td>
             <td><div class="clamp2">地下鉄千日前線「桜川」徒歩4分</div></td>
-            <td>2000年</td>
-            <td>2LDK</td>
+            <td class="year-col">2000年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費11,600円 + 修繕18,200円">29,800円</span><span class="maint-detail">管理11,600 + 修繕18,200</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+15 耐震+15 駅距+15 立地+15 間取+10 ペト+10 管理+0 リノ+3 仲介+0 民泊+0">93</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="5" data-name="匠空阿波座西" data-location="大阪府大阪市西区本田１" data-layout="1LDK" data-tier="強く推奨" data-price="3888" data-area="53.98" data-score="90" data-year="2008" data-walk="8">
             <td>5</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20207017/" target="_blank" rel="noopener noreferrer">匠空阿波座西</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20207017/" target="_blank" rel="noopener noreferrer">匠空阿波座西</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,888万円</td>
             <td>53.98㎡</td>
             <td><div class="clamp2">大阪府大阪市西区本田１</div></td>
             <td><div class="clamp2">地下鉄中央線「阿波座」徒歩8分</div></td>
-            <td>2008年</td>
-            <td>1LDK</td>
+            <td class="year-col">2008年</td>
+            <td class="layout-col">1LDK</td>
             <td class="maint-col"><span title="管理費9,120円 + 修繕2,160円">11,280円</span><span class="maint-detail">管理9,120 + 修繕2,160</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+15 面積+15 耐震+15 駅距+10 立地+10 間取+5 ペト+10 管理+7 リノ+3 仲介+0 民泊+0">90</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="6" data-name="レ・ジェイドイクス" data-location="大阪府大阪市中央区松屋町" data-layout="2LDK" data-tier="強く推奨" data-price="4780" data-area="57.14" data-score="88" data-year="2014" data-walk="2">
             <td>6</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20285324/" target="_blank" rel="noopener noreferrer">レ・ジェイドイクス</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20285324/" target="_blank" rel="noopener noreferrer">レ・ジェイドイクス</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,780万円</td>
             <td>57.14㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区松屋町</div></td>
             <td><div class="clamp2">地下鉄長堀鶴見緑地線「松屋町」徒歩2分</div></td>
-            <td>2014年</td>
-            <td>2LDK</td>
+            <td class="year-col">2014年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費10,110円 + 修繕8,570円">18,680円</span><span class="maint-detail">管理10,110 + 修繕8,570</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+15 耐震+15 駅距+15 立地+5 間取+10 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">88</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="7" data-name="西道頓堀コーポ1号棟" data-location="大阪府大阪市西区南堀江４" data-layout="3LDK" data-tier="強く推奨" data-price="2600" data-area="60.77" data-score="85" data-year="1974" data-walk="7">
             <td>7</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20209265/" target="_blank" rel="noopener noreferrer">西道頓堀コーポ1号棟</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20209265/" target="_blank" rel="noopener noreferrer">西道頓堀コーポ1号棟</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>2,600万円</td>
             <td>60.77㎡</td>
             <td><div class="clamp2">大阪府大阪市西区南堀江４</div></td>
             <td><div class="clamp2">地下鉄千日前線「西長堀」徒歩7分</div></td>
-            <td>1974年</td>
-            <td>3LDK</td>
+            <td class="year-col">1974年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費4,000円 + 修繕11,000円">15,000円</span><span class="maint-detail">管理4,000 + 修繕11,000</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+10 耐震+0 駅距+10 立地+15 間取+10 ペト+10 管理+7 リノ+3 仲介+0 民泊+0">85</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="8" data-name="ベル・アーバニティ同心" data-location="大阪府大阪市北区同心１" data-layout="2LDK" data-tier="強く推奨" data-price="4480" data-area="55.58" data-score="85" data-year="1996" data-walk="8">
             <td>8</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20274808/" target="_blank" rel="noopener noreferrer">ベル・アーバニティ同心</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20274808/" target="_blank" rel="noopener noreferrer">ベル・アーバニティ同心</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,480万円</td>
             <td>55.58㎡</td>
             <td><div class="clamp2">大阪府大阪市北区同心１</div></td>
             <td><div class="clamp2">ＪＲ東西線「大阪天満宮」徒歩8分</div></td>
-            <td>1996年</td>
-            <td>2LDK</td>
+            <td class="year-col">1996年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費15,600円 + 修繕11,900円">27,500円</span><span class="maint-detail">管理15,600 + 修繕11,900</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+15 耐震+15 駅距+10 立地+12 間取+10 ペト+10 管理+0 リノ+3 仲介+0 民泊+0">85</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="9" data-name="朝日プラザ南堀江" data-location="大阪府大阪市西区南堀江４-29-19" data-layout="2LDK" data-tier="強く推奨" data-price="2880" data-area="54.09" data-score="83" data-year="1986" data-walk="3">
             <td>9</td>
@@ -768,236 +725,236 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>54.09㎡</td>
             <td><div class="clamp2">大阪府大阪市西区南堀江４-29-19</div></td>
             <td><div class="clamp2">地下鉄長堀鶴見緑地線「ドーム前千代崎」徒歩3分</div></td>
-            <td>1986年</td>
-            <td>2LDK</td>
+            <td class="year-col">1986年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費8,650円 + 修繕9,190円">17,840円</span><span class="maint-detail">管理8,650 + 修繕9,190</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+15 耐震+15 駅距+15 立地+15 間取+10 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">83</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="10" data-name="天神橋ホワイトハイツ" data-location="大阪府大阪市北区本庄東２-2-28" data-layout="2LDK" data-tier="強く推奨" data-price="2998" data-area="60.48" data-score="83" data-year="1978" data-walk="4">
             <td>10</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20323378/" target="_blank" rel="noopener noreferrer">天神橋ホワイトハイツ</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20323378/" target="_blank" rel="noopener noreferrer">天神橋ホワイトハイツ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>2,998万円</td>
             <td>60.48㎡</td>
             <td><div class="clamp2">大阪府大阪市北区本庄東２-2-28</div></td>
             <td><div class="clamp2">地下鉄谷町線「天神橋筋六丁目」徒歩4分</div></td>
-            <td>1978年</td>
-            <td>2LDK</td>
+            <td class="year-col">1978年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費12,960円 + 修繕8,470円">21,430円</span><span class="maint-detail">管理12,960 + 修繕8,470</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+10 耐震+0 駅距+15 立地+12 間取+10 ペト+10 管理+3 リノ+3 仲介+0 民泊+0">83</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="11" data-name="グランドメゾン谷町四丁目" data-location="大阪府大阪市中央区内本町１" data-layout="1LDK" data-tier="強く推奨" data-price="4750" data-area="41.57" data-score="81" data-year="2024" data-walk="3">
             <td>11</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/" target="_blank" rel="noopener noreferrer">グランドメゾン谷町四丁目</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/" target="_blank" rel="noopener noreferrer">グランドメゾン谷町四丁目</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,750万円</td>
             <td>41.57㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区内本町１</div></td>
             <td><div class="clamp2">地下鉄谷町線「谷町四丁目」徒歩3分</div></td>
-            <td>2024年</td>
-            <td>1LDK</td>
+            <td class="year-col">2024年</td>
+            <td class="layout-col">1LDK</td>
             <td class="maint-col"><span title="管理費10,378円 + 修繕6,230円">16,608円</span><span class="maint-detail">管理10,378 + 修繕6,230</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+8</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+10 耐震+15 駅距+15 立地+8 間取+5 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">81</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="12" data-name="中津リバーサイドコーポ" data-location="大阪府大阪市北区中津２" data-layout="2LDK" data-tier="強く推奨" data-price="1880" data-area="62.93" data-score="80" data-year="1971" data-walk="9">
             <td>12</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20335921/" target="_blank" rel="noopener noreferrer">中津リバーサイドコーポ</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20335921/" target="_blank" rel="noopener noreferrer">中津リバーサイドコーポ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>1,880万円</td>
             <td>62.93㎡</td>
             <td><div class="clamp2">大阪府大阪市北区中津２</div></td>
             <td><div class="clamp2">地下鉄御堂筋線「中津」徒歩9分</div></td>
-            <td>1971年</td>
-            <td>2LDK</td>
+            <td class="year-col">1971年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費8,500円 + 修繕9,000円">17,500円</span><span class="maint-detail">管理8,500 + 修繕9,000</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+10 耐震+0 駅距+10 立地+12 間取+10 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">80</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="13" data-name="梅田北セントポリア" data-location="大阪府大阪市北区本庄西３" data-layout="1LDK" data-tier="強く推奨" data-price="2480" data-area="50.84" data-score="80" data-year="1982" data-walk="11">
             <td>13</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_78731794/" target="_blank" rel="noopener noreferrer">梅田北セントポリア</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_78731794/" target="_blank" rel="noopener noreferrer">梅田北セントポリア</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>2,480万円</td>
             <td>50.84㎡</td>
             <td><div class="clamp2">大阪府大阪市北区本庄西３</div></td>
             <td><div class="clamp2">阪急千里線「天神橋筋六丁目」徒歩11分</div></td>
-            <td>1982年</td>
-            <td>1LDK</td>
+            <td class="year-col">1982年</td>
+            <td class="layout-col">1LDK</td>
             <td class="maint-col"><span title="管理費7,400円 + 修繕8,100円">15,500円</span><span class="maint-detail">管理7,400 + 修繕8,100</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+15 耐震+15 駅距-5 立地+12 間取+5 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">80</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="14" data-name="中津パークマンション" data-location="大阪府大阪市北区中津３-36-7" data-layout="2LDK" data-tier="強く推奨" data-price="2580" data-area="61.60" data-score="80" data-year="1980" data-walk="6">
             <td>14</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_79162652/" target="_blank" rel="noopener noreferrer">中津パークマンション</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_79162652/" target="_blank" rel="noopener noreferrer">中津パークマンション</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>2,580万円</td>
             <td>61.60㎡</td>
             <td><div class="clamp2">大阪府大阪市北区中津３-36-7</div></td>
             <td><div class="clamp2">地下鉄御堂筋線「中津」徒歩6分</div></td>
-            <td>1980年</td>
-            <td>2LDK</td>
+            <td class="year-col">1980年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費8,900円 + 修繕9,000円">17,900円</span><span class="maint-detail">管理8,900 + 修繕9,000</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+10 耐震+0 駅距+10 立地+12 間取+10 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">80</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="15" data-name="中津リバーサイドコーポＤ棟" data-location="大阪府大阪市北区中津２" data-layout="2LDK" data-tier="強く推奨" data-price="3298" data-area="69.85" data-score="80" data-year="1971" data-walk="10">
             <td>15</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20324746/" target="_blank" rel="noopener noreferrer">中津リバーサイドコーポＤ棟</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20324746/" target="_blank" rel="noopener noreferrer">中津リバーサイドコーポＤ棟</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,298万円</td>
             <td>69.85㎡</td>
             <td><div class="clamp2">大阪府大阪市北区中津２</div></td>
             <td><div class="clamp2">地下鉄御堂筋線「中津」徒歩10分</div></td>
-            <td>1971年</td>
-            <td>2LDK</td>
+            <td class="year-col">1971年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費8,500円 + 修繕9,000円">17,500円</span><span class="maint-detail">管理8,500 + 修繕9,000</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+10 耐震+0 駅距+10 立地+12 間取+10 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">80</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="16" data-name="アルス心斎橋ＵＮＡＧＩＤＡＮＩ" data-location="大阪府大阪市中央区東心斎橋１" data-layout="1LDK" data-tier="強く推奨" data-price="4380" data-area="45.51" data-score="80" data-year="2004" data-walk="6">
             <td>16</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20245135/" target="_blank" rel="noopener noreferrer">アルス心斎橋ＵＮＡＧＩＤＡＮＩ</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20245135/" target="_blank" rel="noopener noreferrer">アルス心斎橋ＵＮＡＧＩＤＡＮＩ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,380万円</td>
             <td>45.51㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区東心斎橋１</div></td>
             <td><div class="clamp2">地下鉄御堂筋線「心斎橋」徒歩6分</div></td>
-            <td>2004年</td>
-            <td>1LDK</td>
+            <td class="year-col">2004年</td>
+            <td class="layout-col">1LDK</td>
             <td class="maint-col"><span title="管理費6,700円 + 修繕11,400円">18,100円</span><span class="maint-detail">管理6,700 + 修繕11,400</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+10 耐震+15 駅距+10 立地+12 間取+5 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">80</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-strong" data-index="17" data-name="ジリオ森ノ宮中央" data-location="大阪府大阪市中央区森ノ宮中央１" data-layout="1LDK" data-tier="強く推奨" data-price="4730" data-area="40.82" data-score="80" data-year="2021" data-walk="4">
             <td>17</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20126903/" target="_blank" rel="noopener noreferrer">ジリオ森ノ宮中央</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20126903/" target="_blank" rel="noopener noreferrer">ジリオ森ノ宮中央</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,730万円</td>
             <td>40.82㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区森ノ宮中央１</div></td>
             <td><div class="clamp2">地下鉄中央線「森ノ宮」徒歩4分</div></td>
-            <td>2021年</td>
-            <td>1LDK</td>
+            <td class="year-col">2021年</td>
+            <td class="layout-col">1LDK</td>
             <td class="maint-col"><span title="管理費10,790円 + 修繕4,080円">14,870円</span><span class="maint-detail">管理10,790 + 修繕4,080</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+5</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+10 耐震+15 駅距+15 立地+5 間取+5 ペト+10 管理+7 リノ+3 仲介+0 民泊+0">80</span></td>
-            <td><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="18" data-name="ハイム船場" data-location="大阪府大阪市中央区久太郎町２" data-layout="2LDK" data-tier="推奨" data-price="3490" data-area="62.17" data-score="78" data-year="1980" data-walk="2">
             <td>18</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20340821/" target="_blank" rel="noopener noreferrer">ハイム船場</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20340821/" target="_blank" rel="noopener noreferrer">ハイム船場</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,490万円</td>
             <td>62.17㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区久太郎町２</div></td>
             <td><div class="clamp2">地下鉄堺筋線「堺筋本町」徒歩2分</div></td>
-            <td>1980年</td>
-            <td>2LDK</td>
+            <td class="year-col">1980年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費10,300円 + 修繕7,120円">17,420円</span><span class="maint-detail">管理10,300 + 修繕7,120</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+10 耐震+0 駅距+15 立地+5 間取+10 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">78</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="19" data-name="クレスタ梅田EASTアヴァンツィオ" data-location="大阪府大阪市北区長柄西２-11-24" data-layout="2LDK" data-tier="推奨" data-price="3580" data-area="58.56" data-score="78" data-year="2006" data-walk="14">
             <td>19</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20265387/" target="_blank" rel="noopener noreferrer">クレスタ梅田EASTアヴァンツィオ</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20265387/" target="_blank" rel="noopener noreferrer">クレスタ梅田EASTアヴァンツィオ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,580万円</td>
             <td>58.56㎡</td>
             <td><div class="clamp2">大阪府大阪市北区長柄西２-11-24</div></td>
             <td><div class="clamp2">地下鉄谷町線「天神橋筋六丁目」徒歩14分</div></td>
-            <td>2006年</td>
-            <td>2LDK</td>
+            <td class="year-col">2006年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費9,660円 + 修繕11,710円">21,370円</span><span class="maint-detail">管理9,660 + 修繕11,710</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+15 耐震+15 駅距-5 立地+12 間取+10 ペト+10 管理+3 リノ+3 仲介+0 民泊+0">78</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="20" data-name="ザ・大阪レジデンス備後町" data-location="大阪府大阪市中央区備後町２" data-layout="1LDK" data-tier="推奨" data-price="4480" data-area="45.62" data-score="78" data-year="2016" data-walk="5">
             <td>20</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20363025/" target="_blank" rel="noopener noreferrer">ザ・大阪レジデンス備後町</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20363025/" target="_blank" rel="noopener noreferrer">ザ・大阪レジデンス備後町</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,480万円</td>
             <td>45.62㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区備後町２</div></td>
             <td><div class="clamp2">地下鉄御堂筋線「本町」徒歩5分</div></td>
-            <td>2016年</td>
-            <td>1LDK</td>
+            <td class="year-col">2016年</td>
+            <td class="layout-col">1LDK</td>
             <td class="maint-col"><span title="管理費9,030円 + 修繕6,390円">15,420円</span><span class="maint-detail">管理9,030 + 修繕6,390</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+5</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+10 耐震+15 駅距+15 立地+5 間取+5 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">78</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="21" data-name="エフ・ステージ松屋町" data-location="大阪府大阪市中央区瓦屋町１" data-layout="2LDK" data-tier="推奨" data-price="4980" data-area="56.55" data-score="78" data-year="2012" data-walk="6">
             <td>21</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_78262479/" target="_blank" rel="noopener noreferrer">エフ・ステージ松屋町</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_78262479/" target="_blank" rel="noopener noreferrer">エフ・ステージ松屋町</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,980万円</td>
             <td>56.55㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区瓦屋町１</div></td>
             <td><div class="clamp2">地下鉄長堀鶴見緑地線「松屋町」徒歩6分</div></td>
-            <td>2012年</td>
-            <td>2LDK</td>
+            <td class="year-col">2012年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費11,460円 + 修繕14,960円">26,420円</span><span class="maint-detail">管理11,460 + 修繕14,960</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+15 駅距+10 立地+5 間取+10 ペト+10 管理+0 リノ+3 仲介+0 民泊+0">78</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="22" data-name="リーガル豊崎" data-location="大阪府大阪市北区豊崎６-15-14" data-layout="3LDK" data-tier="推奨" data-price="3780" data-area="55.75" data-score="75" data-year="1997" data-walk="12">
             <td>22</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20197143/" target="_blank" rel="noopener noreferrer">リーガル豊崎</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20197143/" target="_blank" rel="noopener noreferrer">リーガル豊崎</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,780万円</td>
             <td>55.75㎡</td>
             <td><div class="clamp2">大阪府大阪市北区豊崎６-15-14</div></td>
             <td><div class="clamp2">地下鉄御堂筋線「中津」徒歩12分</div></td>
-            <td>1997年</td>
-            <td>3LDK</td>
+            <td class="year-col">1997年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費7,940円 + 修繕17,300円">25,240円</span><span class="maint-detail">管理7,940 + 修繕17,300</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+15 耐震+15 駅距-5 立地+12 間取+10 ペト+10 管理+0 リノ+3 仲介+0 民泊+0">75</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="23" data-name="扇町シティハイツ" data-location="大阪府大阪市北区同心２" data-layout="3LDK" data-tier="推奨" data-price="3998" data-area="60.42" data-score="75" data-year="1981" data-walk="6">
             <td>23</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_78795558/" target="_blank" rel="noopener noreferrer">扇町シティハイツ</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_78795558/" target="_blank" rel="noopener noreferrer">扇町シティハイツ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,998万円</td>
             <td>60.42㎡</td>
             <td><div class="clamp2">大阪府大阪市北区同心２</div></td>
             <td><div class="clamp2">ＪＲ大阪環状線「天満」徒歩6分</div></td>
-            <td>1981年</td>
-            <td>3LDK</td>
+            <td class="year-col">1981年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費6,500円 + 修繕12,000円">18,500円</span><span class="maint-detail">管理6,500 + 修繕12,000</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+10 耐震+0 駅距+10 立地+12 間取+10 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">75</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="24" data-name="エステムコート梅田天神橋2グラシオ" data-location="大阪府大阪市北区本庄西２" data-layout="2DK" data-tier="推奨" data-price="4150" data-area="42.56" data-score="75" data-year="2013" data-walk="10">
             <td>24</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20216752/" target="_blank" rel="noopener noreferrer">エステムコート梅田天神橋2グラシオ</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20216752/" target="_blank" rel="noopener noreferrer">エステムコート梅田天神橋2グラシオ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,150万円</td>
             <td>42.56㎡</td>
             <td><div class="clamp2">大阪府大阪市北区本庄西２</div></td>
             <td><div class="clamp2">地下鉄谷町線「天神橋筋六丁目」徒歩10分</div></td>
-            <td>2013年</td>
-            <td>2DK</td>
+            <td class="year-col">2013年</td>
+            <td class="layout-col">2DK</td>
             <td class="maint-col"><span title="管理費9,600円 + 修繕8,900円">18,500円</span><span class="maint-detail">管理9,600 + 修繕8,900</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+10 耐震+15 駅距+10 立地+12 間取+0 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">75</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="25" data-name="コープ野村扇町" data-location="大阪府大阪市北区天神橋３" data-layout="3LDK" data-tier="推奨" data-price="4399" data-area="66.21" data-score="75" data-year="1976" data-walk="4">
             <td>25</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20155725/" target="_blank" rel="noopener noreferrer">コープ野村扇町</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20155725/" target="_blank" rel="noopener noreferrer">コープ野村扇町</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,399万円</td>
             <td>66.21㎡</td>
             <td><div class="clamp2">大阪府大阪市北区天神橋３</div></td>
             <td><div class="clamp2">地下鉄堺筋線「扇町」徒歩4分</div></td>
-            <td>1976年</td>
-            <td>3LDK</td>
+            <td class="year-col">1976年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費8,400円 + 修繕7,600円">16,000円</span><span class="maint-detail">管理8,400 + 修繕7,600</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+10 耐震+0 駅距+15 立地+12 間取+10 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">75</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="26" data-name="ラグザ大阪・レジデンス" data-location="大阪府大阪市福島区福島５" data-layout="2LDK" data-tier="推奨" data-price="2780" data-area="55.17" data-score="73" data-year="1999" data-walk="4">
             <td>26</td>
@@ -1006,12 +963,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>55.17㎡</td>
             <td><div class="clamp2">大阪府大阪市福島区福島５</div></td>
             <td><div class="clamp2">ＪＲ大阪環状線「福島」徒歩4分</div></td>
-            <td>1999年</td>
-            <td>2LDK</td>
+            <td class="year-col">1999年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費15,730円 + 修繕10,630円">26,360円</span><span class="maint-detail">管理15,730 + 修繕10,630</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+15 駅距+15 立地+10 間取+10 ペト-15 管理+0 リノ+3 仲介+0 民泊+0">73</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="27" data-name="ビーバードルチェ阿波座" data-location="大阪府大阪市西区川口３" data-layout="2LDK" data-tier="推奨" data-price="3180" data-area="54.03" data-score="73" data-year="1988" data-walk="8">
             <td>27</td>
@@ -1020,26 +977,26 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>54.03㎡</td>
             <td><div class="clamp2">大阪府大阪市西区川口３</div></td>
             <td><div class="clamp2">地下鉄中央線「九条」徒歩8分</div></td>
-            <td>1988年</td>
-            <td>2LDK</td>
+            <td class="year-col">1988年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費7,620円 + 修繕9,670円">17,290円</span><span class="maint-detail">管理7,620 + 修繕9,670</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+15 駅距+10 立地+10 間取+10 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">73</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="28" data-name="グリーンシティOSAKA" data-location="大阪府大阪市福島区海老江１" data-layout="3LDK" data-tier="推奨" data-price="3680" data-area="64.13" data-score="73" data-year="1986" data-walk="11">
             <td>28</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20359436/" target="_blank" rel="noopener noreferrer">グリーンシティOSAKA</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20359436/" target="_blank" rel="noopener noreferrer">グリーンシティOSAKA</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,680万円</td>
             <td>64.13㎡</td>
             <td><div class="clamp2">大阪府大阪市福島区海老江１</div></td>
             <td><div class="clamp2">阪神本線「野田」徒歩11分</div></td>
-            <td>1986年</td>
-            <td>3LDK</td>
+            <td class="year-col">1986年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費6,280円 + 修繕12,540円">18,820円</span><span class="maint-detail">管理6,280 + 修繕12,540</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-neg">駅距-5</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+10 耐震+15 駅距-5 立地+10 間取+10 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">73</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="29" data-name="エルベロワイヤル壱六" data-location="大阪府大阪市西区江之子島１" data-layout="3LDK" data-tier="推奨" data-price="3480" data-area="63.28" data-score="71" data-year="1982" data-walk="5">
             <td>29</td>
@@ -1048,12 +1005,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>63.28㎡</td>
             <td><div class="clamp2">大阪府大阪市西区江之子島１</div></td>
             <td><div class="clamp2">地下鉄中央線「阿波座」徒歩5分</div></td>
-            <td>1982年</td>
-            <td>3LDK</td>
+            <td class="year-col">1982年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費10,120円 + 修繕11,010円">21,130円</span><span class="maint-detail">管理10,120 + 修繕11,010</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+10 耐震+15 駅距+15 立地+10 間取+10 ペト-15 管理+3 リノ+3 仲介+0 民泊+0">71</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="30" data-name="シャルマンフジ・リッツ南堀江" data-location="大阪府大阪市西区南堀江２" data-layout="2LDK" data-tier="推奨" data-price="3680" data-area="60.35" data-score="71" data-year="1997" data-walk="4">
             <td>30</td>
@@ -1062,12 +1019,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>60.35㎡</td>
             <td><div class="clamp2">大阪府大阪市西区南堀江２</div></td>
             <td><div class="clamp2">地下鉄長堀鶴見緑地線「西大橋」徒歩4分</div></td>
-            <td>1997年</td>
-            <td>2LDK</td>
+            <td class="year-col">1997年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費12,250円 + 修繕10,860円">23,110円</span><span class="maint-detail">管理12,250 + 修繕10,860</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+10 耐震+15 駅距+15 立地+15 間取+10 ペト-15 管理+3 リノ+3 仲介+0 民泊+0">71</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="31" data-name="ネオアージュ土佐堀" data-location="大阪府大阪市西区江戸堀２" data-layout="1LDK" data-tier="推奨" data-price="3280" data-area="54.54" data-score="70" data-year="1987" data-walk="7">
             <td>31</td>
@@ -1076,12 +1033,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>54.54㎡</td>
             <td><div class="clamp2">大阪府大阪市西区江戸堀２</div></td>
             <td><div class="clamp2">京阪中之島線「中之島」徒歩7分</div></td>
-            <td>1987年</td>
-            <td>1LDK</td>
+            <td class="year-col">1987年</td>
+            <td class="layout-col">1LDK</td>
             <td class="maint-col"><span title="管理費7,635円 + 修繕6,818円">14,453円</span><span class="maint-detail">管理7,635 + 修繕6,818</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+15 駅距+10 立地+10 間取+5 ペト-15 管理+7 リノ+3 仲介+0 民泊+0">70</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="32" data-name="シーズ梅田東" data-location="大阪府大阪市北区中崎西１" data-layout="2LDK" data-tier="推奨" data-price="3300" data-area="51.01" data-score="70" data-year="1995" data-walk="1">
             <td>32</td>
@@ -1090,12 +1047,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>51.01㎡</td>
             <td><div class="clamp2">大阪府大阪市北区中崎西１</div></td>
             <td><div class="clamp2">地下鉄谷町線「中崎町」徒歩1分</div></td>
-            <td>1995年</td>
-            <td>2LDK</td>
+            <td class="year-col">1995年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費13,970円 + 修繕16,900円">30,870円</span><span class="maint-detail">管理13,970 + 修繕16,900</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-neg">管理-5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+15 駅距+15 立地+12 間取+10 ペト-15 管理-5 リノ+3 仲介+0 民泊+0">70</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="33" data-name="ストークマンション天満" data-location="大阪府大阪市北区池田町" data-layout="3LDK" data-tier="推奨" data-price="3580" data-area="62.12" data-score="70" data-year="1982" data-walk="5">
             <td>33</td>
@@ -1104,26 +1061,26 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>62.12㎡</td>
             <td><div class="clamp2">大阪府大阪市北区池田町</div></td>
             <td><div class="clamp2">ＪＲ大阪環状線「天満」徒歩5分</div></td>
-            <td>1982年</td>
-            <td>3LDK</td>
+            <td class="year-col">1982年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費8,400円 + 修繕8,080円">16,480円</span><span class="maint-detail">管理8,400 + 修繕8,080</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+10 耐震+15 駅距+15 立地+12 間取+10 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">70</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="34" data-name="コープ野村梅田Ａ棟" data-location="大阪府大阪市北区鶴野町" data-layout="1LDK" data-tier="推奨" data-price="3580" data-area="60.50" data-score="70" data-year="1981" data-walk="7">
             <td>34</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20245086/" target="_blank" rel="noopener noreferrer">コープ野村梅田Ａ棟</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20245086/" target="_blank" rel="noopener noreferrer">コープ野村梅田Ａ棟</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,580万円</td>
             <td>60.50㎡</td>
             <td><div class="clamp2">大阪府大阪市北区鶴野町</div></td>
             <td><div class="clamp2">地下鉄谷町線「中崎町」徒歩7分</div></td>
-            <td>1981年</td>
-            <td>1LDK</td>
+            <td class="year-col">1981年</td>
+            <td class="layout-col">1LDK</td>
             <td class="maint-col"><span title="管理費11,600円 + 修繕7,140円">18,740円</span><span class="maint-detail">管理11,600 + 修繕7,140</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+10 耐震+0 駅距+10 立地+12 間取+5 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">70</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="35" data-name="朝日プラザ梅田Ⅱ" data-location="大阪府大阪市北区豊崎３" data-layout="2LDK" data-tier="推奨" data-price="3980" data-area="66.11" data-score="70" data-year="1985" data-walk="5">
             <td>35</td>
@@ -1132,12 +1089,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>66.11㎡</td>
             <td><div class="clamp2">大阪府大阪市北区豊崎３</div></td>
             <td><div class="clamp2">地下鉄御堂筋線「中津」徒歩5分</div></td>
-            <td>1985年</td>
-            <td>2LDK</td>
+            <td class="year-col">1985年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費7,610円 + 修繕10,570円">18,180円</span><span class="maint-detail">管理7,610 + 修繕10,570</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+10 耐震+15 駅距+15 立地+12 間取+10 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">70</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="36" data-name="グランドヴィラ境川" data-location="大阪府大阪市西区境川１" data-layout="2LDK" data-tier="推奨" data-price="2680" data-area="53.46" data-score="68" data-year="1989" data-walk="7">
             <td>36</td>
@@ -1146,12 +1103,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>53.46㎡</td>
             <td><div class="clamp2">大阪府大阪市西区境川１</div></td>
             <td><div class="clamp2">阪神電鉄阪神なんば線「九条」徒歩7分</div></td>
-            <td>1989年</td>
-            <td>2LDK</td>
+            <td class="year-col">1989年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費11,320円 + 修繕6,830円">18,150円</span><span class="maint-detail">管理11,320 + 修繕6,830</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+15 駅距+10 立地+5 間取+10 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">68</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="37" data-name="西長堀ガーデンハイツ" data-location="大阪府大阪市西区北堀江２" data-layout="2LDK" data-tier="推奨" data-price="3400" data-area="58.75" data-score="68" data-year="1979" data-walk="2">
             <td>37</td>
@@ -1160,12 +1117,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>58.75㎡</td>
             <td><div class="clamp2">大阪府大阪市西区北堀江２</div></td>
             <td><div class="clamp2">地下鉄長堀鶴見緑地線「西大橋」徒歩2分</div></td>
-            <td>1979年</td>
-            <td>2LDK</td>
+            <td class="year-col">1979年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費9,180円 + 修繕8,120円">17,300円</span><span class="maint-detail">管理9,180 + 修繕8,120</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+0 駅距+15 立地+15 間取+10 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">68</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="38" data-name="松屋町グランドハイツ" data-location="大阪府大阪市中央区瓦屋町２" data-layout="2LDK" data-tier="推奨" data-price="3400" data-area="58.88" data-score="68" data-year="1983" data-walk="6">
             <td>38</td>
@@ -1174,12 +1131,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>58.88㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区瓦屋町２</div></td>
             <td><div class="clamp2">地下鉄長堀鶴見緑地線「松屋町」徒歩6分</div></td>
-            <td>1983年</td>
-            <td>2LDK</td>
+            <td class="year-col">1983年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費8,700円 + 修繕8,700円">17,400円</span><span class="maint-detail">管理8,700 + 修繕8,700</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+5</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+15 駅距+10 立地+5 間取+10 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">68</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="39" data-name="梅田北セントポリア" data-location="大阪府大阪市北区本庄西３" data-layout="1LDK" data-tier="推奨" data-price="2280" data-area="40.04" data-score="67" data-year="1982" data-walk="10">
             <td>39</td>
@@ -1188,12 +1145,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>40.04㎡</td>
             <td><div class="clamp2">大阪府大阪市北区本庄西３</div></td>
             <td><div class="clamp2">地下鉄谷町線「天神橋筋六丁目」徒歩10分</div></td>
-            <td>1982年</td>
-            <td>1LDK</td>
+            <td class="year-col">1982年</td>
+            <td class="layout-col">1LDK</td>
             <td class="maint-col"><span title="管理費5,800円 + 修繕6,320円">12,120円</span><span class="maint-detail">管理5,800 + 修繕6,320</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+10 耐震+15 駅距+10 立地+12 間取+5 ペト-15 管理+7 リノ+3 仲介+0 民泊+0">67</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="40" data-name="ノバカネイチ阿波座2番館" data-location="大阪府大阪市西区川口３" data-layout="3LDK" data-tier="推奨" data-price="3290" data-area="64.79" data-score="66" data-year="1983" data-walk="8">
             <td>40</td>
@@ -1202,12 +1159,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>64.79㎡</td>
             <td><div class="clamp2">大阪府大阪市西区川口３</div></td>
             <td><div class="clamp2">地下鉄中央線「九条」徒歩8分</div></td>
-            <td>1983年</td>
-            <td>3LDK</td>
+            <td class="year-col">1983年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費7,700円 + 修繕16,200円">23,900円</span><span class="maint-detail">管理7,700 + 修繕16,200</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+10 耐震+15 駅距+10 立地+10 間取+10 ペト-15 管理+3 リノ+3 仲介+0 民泊+0">66</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="41" data-name="ノバカネイチ阿波座二番館" data-location="大阪府大阪市西区川口３" data-layout="3LDK" data-tier="推奨" data-price="3290" data-area="64.79" data-score="66" data-year="1983" data-walk="8">
             <td>41</td>
@@ -1216,12 +1173,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>64.79㎡</td>
             <td><div class="clamp2">大阪府大阪市西区川口３</div></td>
             <td><div class="clamp2">地下鉄中央線「九条」徒歩8分</div></td>
-            <td>1983年</td>
-            <td>3LDK</td>
+            <td class="year-col">1983年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費7,700円 + 修繕16,200円">23,900円</span><span class="maint-detail">管理7,700 + 修繕16,200</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+10 耐震+15 駅距+10 立地+10 間取+10 ペト-15 管理+3 リノ+3 仲介+0 民泊+0">66</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="42" data-name="メロディーハイム高麗橋" data-location="大阪府大阪市中央区東高麗橋" data-layout="3LDK" data-tier="推奨" data-price="4300" data-area="59.83" data-score="66" data-year="1998" data-walk="5">
             <td>42</td>
@@ -1230,12 +1187,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>59.83㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区東高麗橋</div></td>
             <td><div class="clamp2">地下鉄堺筋線「北浜」徒歩5分</div></td>
-            <td>1998年</td>
-            <td>3LDK</td>
+            <td class="year-col">1998年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費7,780円 + 修繕16,340円">24,120円</span><span class="maint-detail">管理7,780 + 修繕16,340</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+15 駅距+15 立地+10 間取+10 ペト-15 管理+3 リノ+3 仲介+0 民泊+0">66</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="43" data-name="ラインビルド南船場" data-location="大阪府大阪市中央区南船場１" data-layout="1K" data-tier="推奨" data-price="2380" data-area="40.05" data-score="65" data-year="1985" data-walk="3">
             <td>43</td>
@@ -1244,12 +1201,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>40.05㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区南船場１</div></td>
             <td><div class="clamp2">地下鉄長堀鶴見緑地線「長堀橋」徒歩3分</div></td>
-            <td>1985年</td>
-            <td>1K</td>
+            <td class="year-col">1985年</td>
+            <td class="layout-col">1K</td>
             <td class="maint-col"><span title="管理費14,540円 + 修繕4,860円">19,400円</span><span class="maint-detail">管理14,540 + 修繕4,860</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+10 耐震+15 駅距+15 立地+12 間取+0 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">65</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="44" data-name="センチュリーパークユニ東梅田" data-location="大阪府大阪市北区南扇町" data-layout="2DK" data-tier="推奨" data-price="2880" data-area="41.58" data-score="65" data-year="1983" data-walk="5">
             <td>44</td>
@@ -1258,12 +1215,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>41.58㎡</td>
             <td><div class="clamp2">大阪府大阪市北区南扇町</div></td>
             <td><div class="clamp2">地下鉄堺筋線「扇町」徒歩5分</div></td>
-            <td>1983年</td>
-            <td>2DK</td>
+            <td class="year-col">1983年</td>
+            <td class="layout-col">2DK</td>
             <td class="maint-col"><span title="管理費9,410円 + 修繕7,060円">16,470円</span><span class="maint-detail">管理9,410 + 修繕7,060</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+10 耐震+15 駅距+15 立地+12 間取+0 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">65</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="45" data-name="シティーコープマーキュリー" data-location="大阪府大阪市中央区平野町１" data-layout="2LDK" data-tier="推奨" data-price="3780" data-area="63.40" data-score="65" data-year="1982" data-walk="3">
             <td>45</td>
@@ -1272,12 +1229,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>63.40㎡</td>
             <td><div class="clamp2">大阪府大阪市中央区平野町１</div></td>
             <td><div class="clamp2">地下鉄谷町線「天満橋」徒歩3分</div></td>
-            <td>1982年</td>
-            <td>2LDK</td>
+            <td class="year-col">1982年</td>
+            <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費14,300円 + 修繕14,380円">28,680円</span><span class="maint-detail">管理14,300 + 修繕14,380</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+10 耐震+15 駅距+15 立地+12 間取+10 ペト-15 管理+0 リノ+3 仲介+0 民泊+0">65</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-good" data-index="46" data-name="レック北梅田" data-location="大阪府大阪市北区中崎西４" data-layout="1LDK" data-tier="推奨" data-price="3998" data-area="49.18" data-score="65" data-year="1982" data-walk="5">
             <td>46</td>
@@ -1286,12 +1243,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>49.18㎡</td>
             <td><div class="clamp2">大阪府大阪市北区中崎西４</div></td>
             <td><div class="clamp2">地下鉄谷町線「中崎町」徒歩5分</div></td>
-            <td>1982年</td>
-            <td>1LDK</td>
+            <td class="year-col">1982年</td>
+            <td class="layout-col">1LDK</td>
             <td class="maint-col"><span title="管理費9,830円 + 修繕5,900円">15,730円</span><span class="maint-detail">管理9,830 + 修繕5,900</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+10 耐震+15 駅距+15 立地+12 間取+5 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">65</span></td>
-            <td><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
           <tr class="tier-conditional" data-index="47" data-name="ライオンズマンション江戸堀" data-location="大阪府大阪市西区江戸堀３" data-layout="3LDK" data-tier="条件付き" data-price="2100" data-area="64.43" data-score="63" data-year="1983" data-walk="7">
             <td>47</td>
@@ -1300,12 +1257,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>64.43㎡</td>
             <td><div class="clamp2">大阪府大阪市西区江戸堀３</div></td>
             <td><div class="clamp2">京阪中之島線「中之島」徒歩7分</div></td>
-            <td>1983年</td>
-            <td>3LDK</td>
+            <td class="year-col">1983年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費13,000円 + 修繕12,700円">25,700円</span><span class="maint-detail">管理13,000 + 修繕12,700</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#fb923c" title="予算+20 面積+10 耐震+15 駅距+10 立地+10 間取+10 ペト-15 管理+0 リノ+3 仲介+0 民泊+0">63</span></td>
-            <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
           </tr>
           <tr class="tier-conditional" data-index="48" data-name="グリーンコーポ天満橋" data-location="大阪府大阪市北区天満１" data-layout="3DK" data-tier="条件付き" data-price="2380" data-area="56.44" data-score="63" data-year="1981" data-walk="8">
             <td>48</td>
@@ -1314,12 +1271,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>56.44㎡</td>
             <td><div class="clamp2">大阪府大阪市北区天満１</div></td>
             <td><div class="clamp2">地下鉄谷町線「天満橋」徒歩8分</div></td>
-            <td>1981年</td>
-            <td>3DK</td>
+            <td class="year-col">1981年</td>
+            <td class="layout-col">3DK</td>
             <td class="maint-col"><span title="管理費10,920円 + 修繕13,990円">24,910円</span><span class="maint-detail">管理10,920 + 修繕13,990</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#fb923c" title="予算+20 面積+15 耐震+15 駅距+10 立地+12 間取+0 ペト-15 管理+3 リノ+3 仲介+0 民泊+0">63</span></td>
-            <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
           </tr>
           <tr class="tier-conditional" data-index="49" data-name="四ツ橋セントラルハイツ" data-location="大阪府大阪市西区南堀江１-18-27" data-layout="2LDK+S（納戸）" data-tier="条件付き" data-price="2880" data-area="56.75" data-score="63" data-year="1978" data-walk="6">
             <td>49</td>
@@ -1328,12 +1285,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>56.75㎡</td>
             <td><div class="clamp2">大阪府大阪市西区南堀江１-18-27</div></td>
             <td><div class="clamp2">地下鉄四つ橋線「四ツ橋」徒歩6分</div></td>
-            <td>1978年</td>
-            <td>2LDK+S（納戸）</td>
+            <td class="year-col">1978年</td>
+            <td class="layout-col">2LDK+S（納戸）</td>
             <td class="maint-col"><span title="管理費7,700円 + 修繕8,160円">15,860円</span><span class="maint-detail">管理7,700 + 修繕8,160</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#fb923c" title="予算+20 面積+15 耐震+0 駅距+10 立地+15 間取+10 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">63</span></td>
-            <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
           </tr>
           <tr class="tier-conditional" data-index="50" data-name="南堀江第二スカイハイツ" data-location="大阪府大阪市西区南堀江４" data-layout="3LDK" data-tier="条件付き" data-price="3050" data-area="69.59" data-score="63" data-year="1976" data-walk="5">
             <td>50</td>
@@ -1342,12 +1299,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td>69.59㎡</td>
             <td><div class="clamp2">大阪府大阪市西区南堀江４</div></td>
             <td><div class="clamp2">地下鉄長堀鶴見緑地線「ドーム前千代崎」徒歩5分</div></td>
-            <td>1976年</td>
-            <td>3LDK</td>
+            <td class="year-col">1976年</td>
+            <td class="layout-col">3LDK</td>
             <td class="maint-col"><span title="管理費11,760円 + 修繕7,680円">19,440円</span><span class="maint-detail">管理11,760 + 修繕7,680</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-15</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#fb923c" title="予算+20 面積+10 耐震+0 駅距+15 立地+15 間取+10 ペト-15 管理+5 リノ+3 仲介+0 民泊+0">63</span></td>
-            <td><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#fb923c">条件付き</span></td>
           </tr>
         </tbody>
       </table>
@@ -1531,7 +1488,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
     <div style="margin-bottom:8px">
       <a href="index.html">Hub</a> &middot;       <a href="minpaku-osaka.html">大阪</a> &middot;       <a href="minpaku-fukuoka.html">福岡</a> &middot;       <a href="minpaku-tokyo.html">東京</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, athome, restate, 大阪R不動産 (data/suumo_osaka_raw.txt + data/rakumachi_osaka_raw.txt, data/yahoo_osaka_raw.txt, data/athome_osaka_raw.txt, data/restate_osaka_raw.txt)</div>
-    <div>Generated on 2026-03-04 17:59</div>
+    <div>Generated on 2026-03-07 08:04</div>
   </div>
 </div>
 

@@ -728,7 +728,33 @@ def _score_cell(val: int, label: str = "") -> str:
     return f'<span class="sc-pill sc-zero">{short}0</span>'
 
 
-def _build_table_row_data(r: PropertyRow, idx: int) -> dict:
+def load_first_seen() -> dict[str, str]:
+    """Load first_seen.json registry. Returns {url: 'YYYY-MM-DD'}."""
+    first_seen_file = Path(__file__).parent / "data" / "first_seen.json"
+    if not first_seen_file.exists():
+        return {}
+    try:
+        return json.loads(first_seen_file.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _format_first_seen(url: str, first_seen: dict[str, str]) -> str:
+    """Format first-seen date for display. 'NEW' if today, else 'M/D'."""
+    date_str = first_seen.get(url, "")
+    if not date_str:
+        return ""
+    today = dt.date.today().isoformat()
+    if date_str == today:
+        return "NEW"
+    try:
+        d = dt.date.fromisoformat(date_str)
+        return f"{d.month}/{d.day}"
+    except ValueError:
+        return date_str
+
+
+def _build_table_row_data(r: PropertyRow, idx: int, first_seen: dict[str, str] | None = None) -> dict:
     """Build a dict for a single table row for the Jinja2 template."""
     b = r.score_breakdown
     breakdown_title = f"予算{b['budget']:+d} 面積{b['area']:+d} 耐震{b['earthquake']:+d} 駅距{b['station']:+d} 立地{b['location']:+d} 間取{b['layout']:+d} ペト{b['pet']:+d} 管理{b['maintenance']:+d} リノ{b['renovation']:+d} 仲介{b['brokerage']:+d} 民泊{b['minpaku_penalty']:+d}"
@@ -749,6 +775,10 @@ def _build_table_row_data(r: PropertyRow, idx: int) -> dict:
     elif r.pet_score >= 10:
         pet_badge = "ペット相談可"
         pet_badge_class = "pet-maybe"
+
+    # First-seen display
+    first_seen_display = _format_first_seen(r.url, first_seen or {})
+    is_new = first_seen_display == "NEW"
 
     return {
         "idx": idx,
@@ -774,6 +804,8 @@ def _build_table_row_data(r: PropertyRow, idx: int) -> dict:
         "tier_label": r.tier_label,
         "tier_class": r.tier_class,
         "tier_color": r.tier_color,
+        "first_seen": first_seen_display,
+        "is_new": is_new,
     }
 
 
@@ -823,6 +855,17 @@ _NAV_PAGES = [
 ]
 
 
+def load_patrol_summary() -> dict:
+    """Load patrol_summary.json if it exists. Returns empty dict on failure."""
+    summary_file = Path(__file__).parent / "data" / "patrol_summary.json"
+    if not summary_file.exists():
+        return {}
+    try:
+        return json.loads(summary_file.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
 def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[str, str], raw_count: int, duplicate_count: int) -> str:
     """Build property search report HTML using the shared Jinja2 template."""
     rows_sorted = sorted(rows, key=lambda r: (-r.total_score, r.price_man, (r.walk_min or 999), r.name))
@@ -864,7 +907,8 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         })
 
     # Build structured data for template
-    table_rows = [_build_table_row_data(r, idx) for idx, r in enumerate(rows_sorted, start=1)]
+    first_seen = load_first_seen()
+    table_rows = [_build_table_row_data(r, idx, first_seen) for idx, r in enumerate(rows_sorted, start=1)]
     focus_cards = [_build_focus_card_data(r, i) for i, r in enumerate(top5, start=1)]
     sources_str = meta.get("sources_loaded", "SUUMO")
     city_badge = f"データソース: {sources_str}"
@@ -879,6 +923,9 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         "data_path": str(config.data_path),
         "extra_data_paths": [str(p) for p in config.extra_data_paths],
     }
+
+    # Load patrol summary for freshness banner
+    patrol_summary = load_patrol_summary()
 
     # Render with lib.renderer
     env = create_env()
@@ -908,6 +955,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         sources_str=sources_str,
         nav_pages=_NAV_PAGES,
         current_page=f"minpaku-{config.city_key}.html",
+        patrol_summary=patrol_summary,
     )
 
 

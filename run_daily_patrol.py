@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "output"
 STATUS_FILE = DATA_DIR / "property_status.json"
+FIRST_SEEN_FILE = DATA_DIR / "first_seen.json"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -163,6 +164,38 @@ def parse_raw_files() -> dict[str, dict]:
                         "source": source,
                     }
     return properties
+
+
+def update_first_seen() -> None:
+    """Update first_seen.json with any new property URLs from raw data files."""
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # Load existing registry
+    registry: dict[str, str] = {}
+    if FIRST_SEEN_FILE.exists():
+        try:
+            registry = json.loads(FIRST_SEEN_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+
+    # Collect all current URLs from raw files
+    new_count = 0
+    for f in DATA_DIR.glob("*_raw.txt"):
+        for line in f.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("|")
+            if parts:
+                url = parts[-1].strip()
+                if url.startswith("http") and url not in registry:
+                    registry[url] = today
+                    new_count += 1
+
+    FIRST_SEEN_FILE.write_text(
+        json.dumps(registry, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    log(f"  first_seen.json 更新: {new_count}件追加 (合計{len(registry)}件)")
 
 
 def diff_properties(before: dict, after: dict) -> dict:
@@ -308,13 +341,16 @@ def main():
     diff = diff_properties(before, after)
     log(f"  差分: 新規{len(diff['new'])}件, 消失{len(diff['removed'])}件")
 
-    # 3. Check dead URLs
+    # 3. Update first-seen registry (before reports so they can use it)
+    update_first_seen()
+
+    # 4. Check dead URLs
     url_report = patrol_dead_urls()
 
-    # 4. Generate reports
+    # 5. Generate reports
     generate_reports()
 
-    # 5. Deploy
+    # 6. Deploy
     deploy()
 
     elapsed = (datetime.now() - start).total_seconds()
@@ -323,7 +359,7 @@ def main():
     # Write structured summary for Daily Digest
     save_patrol_summary(start, elapsed, diff, url_report)
 
-    # 6. LINE notification — disabled (Daily Digestに統合済み。単体通知は形骸化防止のため停止)
+    # 7. LINE notification — disabled (Daily Digestに統合済み。単体通知は形骸化防止のため停止)
     # send_line_if_new(diff)
 
 

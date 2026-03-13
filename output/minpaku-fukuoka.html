@@ -54,7 +54,9 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
+  --gnav-height: 52px;
   --z-nav: 100;
+  --z-subnav: 90;
   --z-modal: 200;
   --z-toast: 300;
   --fs-display: clamp(22px, 4vw, 36px);
@@ -68,7 +70,7 @@
 
 /* === Reset === */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { font-size: 16px; scroll-behavior: smooth; scroll-padding-top: 56px; }
+html { font-size: 16px; scroll-behavior: smooth; scroll-padding-top: calc(var(--gnav-height, 52px) + 60px); }
 body {
   font-family: var(--font-body);
   background: var(--bg);
@@ -216,7 +218,7 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
 
 /* Section jump nav */
 .section-jump {
-  position:sticky; top:38px; z-index:8;
+  position:sticky; top:var(--gnav-height, 52px); z-index:var(--z-subnav, 90);
   background:rgba(14,18,28,.88); backdrop-filter:blur(10px);
   border-bottom:1px solid rgba(255,255,255,.06);
   padding:6px 16px; margin:0 -16px;
@@ -383,7 +385,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 .collapsible-toggle.is-open::after { content:" \25B2"; }
 
 /* Scroll offset for sticky nav */
-[id] { scroll-margin-top:90px; }
+[id] { scroll-margin-top:calc(var(--gnav-height, 52px) + 56px); }
 
 /* === Tablet landscape (960px) === */
 @media (max-width: 960px) {
@@ -450,9 +452,9 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   .focus-score { grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; font-size:18px; }
   .focus-head h3 { font-size:13px; }
   .focus-comment { font-size:12px; }
-  .section-jump { top:36px; padding:4px 12px; gap:4px; }
+  .section-jump { top:var(--gnav-height, 52px); padding:4px 12px; gap:4px; }
   .section-jump a { min-height:40px; padding:6px 12px; font-size:11px; }
-  [id] { scroll-margin-top:82px; }
+  [id] { scroll-margin-top:calc(var(--gnav-height, 52px) + 48px); }
 }
 /* Freshness banner */
 .freshness-bar {
@@ -487,10 +489,10 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 /* ── Shared Gnav ── */
 .site-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; height: 52px;
+  padding: 0 24px; height: var(--gnav-height, 52px);
   background: rgba(22,24,31,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255,255,255,0.08);
-  position: sticky; top: 0; z-index: 100;
+  position: sticky; top: 0; z-index: var(--z-nav, 100);
 }
 .site-nav { display: flex; gap: 4px; }
 .site-nav a {
@@ -516,7 +518,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   .nav-toggle-label { display: block; }
   .site-nav {
     display: none; flex-direction: column; gap: 0;
-    position: absolute; top: 52px; left: 0; right: 0; z-index: 200;
+    position: absolute; top: var(--gnav-height, 52px); left: 0; right: 0; z-index: var(--z-modal, 200);
     background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
     padding: 8px 0;
@@ -1839,7 +1841,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
     <div style="margin-bottom:8px">
       <a href="index.html">Hub</a> &middot;       <a href="minpaku-osaka.html">大阪</a> &middot;       <a href="minpaku-fukuoka.html">福岡</a> &middot;       <a href="minpaku-tokyo.html">東京</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, ftakken, restate (data/suumo_fukuoka_raw.txt + data/rakumachi_fukuoka_raw.txt, data/yahoo_fukuoka_raw.txt, data/ftakken_fukuoka_raw.txt, data/restate_fukuoka_raw.txt)</div>
-    <div>Generated on 2026-03-13 10:23</div>
+    <div>Generated on 2026-03-13 10:45</div>
   </div>
 </div>
 

@@ -216,9 +216,29 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
   color:#e8fbff; font-size:12px; font-weight:600;
 }
 
+/* Page nav (cross-page navigation) */
+.page-nav {
+  position:sticky; top:var(--gnav-height, 52px); z-index:var(--z-subnav, 90);
+  background:rgba(10,12,18,.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  padding:0; display:flex; overflow-x:auto; white-space:nowrap;
+  scrollbar-width:none;
+}
+.page-nav::-webkit-scrollbar { display:none; }
+.page-nav a {
+  display:inline-flex; align-items:center; padding:8px 14px;
+  font-size:11px; font-weight:600; color:rgba(255,255,255,.5);
+  text-decoration:none; letter-spacing:.04em; transition:color .2s;
+}
+.page-nav a:hover { color:#fff; }
+.page-nav a.cur { color:#fff; border-bottom:2px solid var(--accent, #3b9eff); }
+@media (max-width:640px) {
+  .page-nav a { padding:10px 10px; font-size:10px; min-height:44px; }
+}
+
 /* Section jump nav */
 .section-jump {
-  position:sticky; top:var(--gnav-height, 52px); z-index:var(--z-subnav, 90);
+  position:sticky; top:calc(var(--gnav-height, 52px) + 36px); z-index:calc(var(--z-subnav, 90) - 1);
   background:rgba(14,18,28,.88); backdrop-filter:blur(10px);
   border-bottom:1px solid rgba(255,255,255,.06);
   padding:6px 16px; margin:0 -16px;
@@ -452,7 +472,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   .focus-score { grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; font-size:18px; }
   .focus-head h3 { font-size:13px; }
   .focus-comment { font-size:12px; }
-  .section-jump { top:var(--gnav-height, 52px); padding:4px 12px; gap:4px; }
+  .section-jump { top:calc(var(--gnav-height, 52px) + 36px); padding:4px 12px; gap:4px; }
   .section-jump a { min-height:40px; padding:6px 12px; font-size:11px; }
   [id] { scroll-margin-top:calc(var(--gnav-height, 52px) + 48px); }
 }
@@ -549,6 +569,15 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
     </a>
   </nav>
 </header>
+
+<nav class="page-nav">
+  <a href="index.html">Hub</a>
+  <a href="minpaku-osaka.html">大阪</a>
+  <a href="minpaku-fukuoka.html">福岡</a>
+  <a href="minpaku-tokyo.html" class="cur">東京</a>
+  <a href="naiken-analysis.html">内覧分析</a>
+  <a href="inquiry-messages.html">問い合わせ</a>
+</nav>
 
 <div class="wrap">
   <nav class="section-jump" id="sectionJump">
@@ -1571,7 +1600,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
     <div style="margin-bottom:8px">
       <a href="index.html">Hub</a> &middot;       <a href="minpaku-osaka.html">大阪</a> &middot;       <a href="minpaku-fukuoka.html">福岡</a> &middot;       <a href="minpaku-tokyo.html">東京</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, cowcamo, restate (data/suumo_tokyo_raw.txt + data/rakumachi_tokyo_raw.txt, data/yahoo_tokyo_raw.txt, data/cowcamo_tokyo_raw.txt, data/restate_tokyo_raw.txt)</div>
-    <div>Generated on 2026-03-13 11:02</div>
+    <div>Generated on 2026-03-13 11:08</div>
   </div>
 </div>
 

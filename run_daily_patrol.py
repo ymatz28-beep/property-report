@@ -64,19 +64,23 @@ def check_url_alive(url: str) -> tuple[bool, int]:
     """Check if a URL is still live. Returns (alive, status_code)."""
     from urllib.parse import quote, urlparse, urlunparse
     try:
-        # Percent-encode non-ASCII characters in URL path/query
+        # Percent-encode non-ASCII characters in all URL components
         parsed = urlparse(url)
-        safe_url = urlunparse(parsed._replace(
-            path=quote(parsed.path, safe="/:@!$&'()*+,;=-._~"),
-            query=quote(parsed.query, safe="/:@!$&'()*+,;=-._~="),
+        safe_url = urlunparse((
+            parsed.scheme,
+            parsed.netloc,
+            quote(parsed.path, safe="/:@!$&'()*+,;=-._~"),
+            quote(parsed.params, safe="/:@!$&'()*+,;=-._~"),
+            quote(parsed.query, safe="/:@!$&'()*+,;=-._~="),
+            quote(parsed.fragment, safe=""),
         ))
         req = Request(safe_url, headers=HEADERS, method="HEAD")
         with urlopen(req, timeout=10) as resp:
             return True, resp.status
     except HTTPError as e:
         return e.code not in (404, 410, 403), e.code
-    except (URLError, TimeoutError):
-        return True, 0  # Network error = assume still alive
+    except (URLError, TimeoutError, UnicodeEncodeError):
+        return True, 0  # Network/encoding error = assume still alive
 
 
 def patrol_dead_urls() -> dict:

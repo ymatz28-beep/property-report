@@ -61,8 +61,15 @@ def run_script(name: str, args: list[str] | None = None, timeout: int = 180) -> 
 
 def check_url_alive(url: str) -> tuple[bool, int]:
     """Check if a URL is still live. Returns (alive, status_code)."""
+    from urllib.parse import quote, urlparse, urlunparse
     try:
-        req = Request(url, headers=HEADERS, method="HEAD")
+        # Percent-encode non-ASCII characters in URL path/query
+        parsed = urlparse(url)
+        safe_url = urlunparse(parsed._replace(
+            path=quote(parsed.path, safe="/:@!$&'()*+,;=-._~"),
+            query=quote(parsed.query, safe="/:@!$&'()*+,;=-._~="),
+        ))
+        req = Request(safe_url, headers=HEADERS, method="HEAD")
         with urlopen(req, timeout=10) as resp:
             return True, resp.status
     except HTTPError as e:
@@ -217,38 +224,31 @@ def deploy() -> None:
         log("  デプロイ不要（変更なし）またはエラー")
 
 
-def format_summary(start: datetime, elapsed: float, diff: dict, url_report: dict) -> str:
-    """Format patrol summary for email/LINE notification."""
-    report_url = "https://ymatz28-beep.github.io/property-report/"
-    lines = [f"🏠 物件パトロール完了 ({start.strftime('%m/%d %H:%M')})"]
-    lines.append(f"物件数: {diff['after_count']}件 (前回: {diff['before_count']}件)")
-
-    # New properties
+def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report: dict) -> None:
+    """Save patrol summary as JSON (structured data for Daily Digest)."""
     new = diff["new"]
-    if new:
-        lines.append(f"\n🆕 新規 {len(new)}件:")
-        for p in new[:10]:
-            lines.append(f"  • {p['name']} {p['price']} ({p['source']})")
-        if len(new) > 10:
-            lines.append(f"  ... 他{len(new) - 10}件")
-    else:
-        lines.append("\n🆕 新規: なし")
-
-    # Removed / DEAD
     removed = diff["removed"]
-    if removed or url_report["new_dead"] > 0:
-        dead_count = url_report["new_dead"] + len(removed)
-        lines.append(f"\n❌ 掲載終了 {dead_count}件:")
-        for p in removed[:5]:
-            lines.append(f"  • {p['name']} ({p['source']})")
-        if url_report["new_dead"] > 0:
-            lines.append(f"  + URLチェックで{url_report['new_dead']}件検出")
-    else:
-        lines.append("\n❌ 掲載終了: なし")
+    dead_count = url_report.get("new_dead", 0) + len(removed)
 
-    lines.append(f"\n⏱ 所要: {elapsed / 60:.0f}分")
-    lines.append(report_url)
-    return "\n".join(lines)
+    summary = {
+        "date": start.strftime("%Y-%m-%d"),
+        "total": diff["after_count"],
+        "prev_total": diff["before_count"],
+        "new_count": len(new),
+        "removed_count": dead_count,
+        "elapsed_min": round(elapsed / 60),
+        "new_items": [
+            {"name": p["name"], "price_text": p["price"],
+             "price_man": int(p["price"].replace("万円", "").replace(",", "")),
+             "source": p["source"]}
+            for p in new
+        ],
+        "report_url": "https://ymatz28-beep.github.io/property-report/",
+    }
+
+    summary_file = BASE_DIR / "data" / "patrol_summary.json"
+    summary_file.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    log(f"  patrol_summary.json 保存 (total={summary['total']}, +{summary['new_count']}/-{summary['removed_count']})")
 
 
 def send_line_if_new(diff: dict) -> None:
@@ -320,11 +320,8 @@ def main():
     elapsed = (datetime.now() - start).total_seconds()
     log(f"===== 完了 ({elapsed:.0f}秒) =====")
 
-    # Write summary for notifications
-    summary = format_summary(start, elapsed, diff, url_report)
-    log(summary)
-    SUMMARY_FILE = BASE_DIR / "data" / "patrol_summary.txt"
-    SUMMARY_FILE.write_text(summary, encoding="utf-8")
+    # Write structured summary for Daily Digest
+    save_patrol_summary(start, elapsed, diff, url_report)
 
     # 6. LINE notification — disabled (Daily Digestに統合済み。単体通知は形骸化防止のため停止)
     # send_line_if_new(diff)

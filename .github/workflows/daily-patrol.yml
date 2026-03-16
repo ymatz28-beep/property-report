@@ -47,7 +47,7 @@ jobs:
           if ! git diff --cached --quiet; then
             git commit -m "Auto-patrol: update data $(date +%Y-%m-%d)"
             git pull --rebase origin main
-            git push origin main
+            git push origin main || { echo "::error::git push failed — data will be lost"; exit 1; }
           else
             echo "No data changes to commit"
           fi

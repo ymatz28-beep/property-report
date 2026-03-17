@@ -38,10 +38,15 @@ jobs:
           git config user.email "noreply@github.com"
 
       - name: Run daily patrol
+        id: patrol
         run: python run_daily_patrol.py
         timeout-minutes: 50
+        # Partial results (some sites scraped) are better than none.
+        # ConnectionResetError after 30+ min of scraping shouldn't discard earlier data.
+        continue-on-error: true
 
       - name: Commit and push data updates
+        if: always()
         run: |
           git add data/ output/
           if ! git diff --cached --quiet; then
@@ -51,5 +56,10 @@ jobs:
           else
             echo "No data changes to commit"
           fi
+
+      - name: Report patrol status
+        if: steps.patrol.outcome == 'failure'
+        run: |
+          echo "::warning::Patrol completed with errors (partial results committed). Check logs for ConnectionResetError or timeout details."
 
       # Gmail/LINE単体通知は廃止 — Daily Digestに統合済み (2026-03-07)

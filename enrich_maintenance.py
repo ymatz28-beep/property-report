@@ -33,7 +33,7 @@ def _fetch(url: str) -> str | None:
         req = Request(safe_url, headers=HEADERS)
         with urlopen(req, timeout=15) as resp:
             return resp.read().decode("utf-8", errors="replace")
-    except (HTTPError, URLError, TimeoutError) as e:
+    except (HTTPError, URLError, TimeoutError, ConnectionResetError, OSError) as e:
         print(f"    [WARN] {e} : {url[:60]}")
         return None
 

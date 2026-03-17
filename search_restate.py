@@ -65,9 +65,9 @@ def fetch_page(url: str, retries: int = 2) -> str | None:
                 continue
             print(f"  [WARN] HTTP {e.code}: {url}")
             return None
-        except (URLError, TimeoutError) as e:
+        except (URLError, TimeoutError, ConnectionResetError, OSError) as e:
             if attempt < retries:
-                time.sleep(2)
+                time.sleep(3 * (attempt + 1))
                 continue
             print(f"  [WARN] Connection error: {e}")
             return None

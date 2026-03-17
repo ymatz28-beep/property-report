@@ -79,7 +79,7 @@ def check_url_alive(url: str) -> tuple[bool, int]:
             return True, resp.status
     except HTTPError as e:
         return e.code not in (404, 410, 403), e.code
-    except (URLError, TimeoutError, UnicodeEncodeError):
+    except (URLError, TimeoutError, UnicodeEncodeError, ConnectionResetError, OSError):
         return True, 0  # Network/encoding error = assume still alive
 
 

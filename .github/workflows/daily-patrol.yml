@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 env:
   PYTHONUNBUFFERED: '1'
@@ -15,6 +16,9 @@ jobs:
   patrol:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    outputs:
+      data_committed: ${{ steps.commit.outputs.data_committed }}
+      patrol_failed: ${{ steps.patrol.outcome == 'failure' && 'true' || 'false' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -46,6 +50,7 @@ jobs:
         continue-on-error: true
 
       - name: Commit and push data updates
+        id: commit
         if: always()
         run: |
           git add data/ output/
@@ -53,8 +58,10 @@ jobs:
             git commit -m "Auto-patrol: update data $(date +%Y-%m-%d)"
             git pull --rebase origin main
             git push origin main || { echo "::error::git push failed — data will be lost"; exit 1; }
+            echo "data_committed=true" >> "$GITHUB_OUTPUT"
           else
             echo "No data changes to commit"
+            echo "data_committed=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Report patrol status
@@ -63,3 +70,18 @@ jobs:
           echo "::warning::Patrol completed with errors (partial results committed). Check logs for ConnectionResetError or timeout details."
 
       # Gmail/LINE単体通知は廃止 — Daily Digestに統合済み (2026-03-07)
+
+  # Auto-retry: パトロール失敗+データcommitなし(完全失敗)の場合、30分後に再実行
+  retry:
+    needs: patrol
+    if: always() && needs.patrol.outputs.patrol_failed == 'true' && needs.patrol.outputs.data_committed != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait 30 minutes before retry
+        run: sleep 1800
+
+      - name: Trigger retry via workflow_dispatch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run daily-patrol.yml --repo ${{ github.repository }}

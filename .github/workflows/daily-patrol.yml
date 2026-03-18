@@ -91,12 +91,42 @@ jobs:
             echo "No report changes to deploy"
           fi
 
-      - name: Report patrol status
-        if: steps.patrol.outcome == 'failure'
+      - name: Notify via Gmail
+        if: always()
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GMAIL_NOTIFY_ADDRESS: ${{ secrets.GMAIL_NOTIFY_ADDRESS }}
+          PATROL_OUTCOME: ${{ steps.patrol.outcome }}
+          DATA_COMMITTED: ${{ steps.commit.outputs.data_committed }}
         run: |
-          echo "::warning::Patrol completed with errors (partial results committed). Check logs for ConnectionResetError or timeout details."
-
-      # Gmail/LINE単体通知は廃止 — Daily Digestに統合済み (2026-03-07)
+          if [ "$PATROL_OUTCOME" = "success" ] && [ "$DATA_COMMITTED" = "true" ]; then
+            ICON="✅"
+            STATUS="完了"
+            BODY="スクレイピング成功、データ更新+gh-pagesデプロイ済み。\nhttps://ymatz28-beep.github.io/property-report/"
+          elif [ "$DATA_COMMITTED" = "true" ]; then
+            ICON="⚠️"
+            STATUS="部分成功"
+            BODY="スクレイピングにエラーあり（部分データcommit済み）。\nGHAログを確認: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          else
+            ICON="❌"
+            STATUS="失敗"
+            BODY="データ更新なし。30分後に自動リトライ予定。\nGHAログ: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+          SUBJECT="${ICON} 物件パトロール${STATUS} $(date +%m/%d)"
+          python3 -c "
+          import smtplib
+          from email.mime.text import MIMEText
+          import os
+          msg = MIMEText(os.environ['BODY'], 'plain', 'utf-8')
+          msg['Subject'] = os.environ['SUBJECT']
+          msg['From'] = os.environ['GMAIL_ADDRESS']
+          msg['To'] = os.environ['GMAIL_NOTIFY_ADDRESS']
+          with smtplib.SMTP_SSL('smtp.gmail.com', 465) as s:
+              s.login(os.environ['GMAIL_ADDRESS'], os.environ['GMAIL_APP_PASSWORD'])
+              s.send_message(msg)
+          print(f'Notification sent: {os.environ[\"SUBJECT\"]}')
+          " BODY="$BODY" SUBJECT="$SUBJECT"
 
   # Auto-retry: パトロール失敗+データcommitなし(完全失敗)の場合、30分後に再実行
   retry:

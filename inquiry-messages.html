@@ -7,15 +7,52 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
     
-.site-header{display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.10);font-family:'Inter','Noto Sans JP',sans-serif}
-.site-header .site-nav{display:flex;gap:6px;flex-wrap:wrap}
-.site-header .site-nav a{font-size:11px;color:#a9b3c6;text-decoration:none;padding:4px 10px;border-radius:4px;border:1px solid transparent;transition:all .15s}
-.site-header .site-nav a:hover{color:#edf3ff;background:rgba(255,255,255,0.04)}
-.site-header .site-nav a.current{color:#3b9eff;border-color:rgba(59,158,255,0.3);background:rgba(59,158,255,0.08)}
-@media(max-width:375px){.site-header{padding:8px 12px}.site-header .site-nav a{padding:6px 10px;min-height:44px;display:inline-flex;align-items:center}}
+/* ── Shared Gnav ── */
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 52px;
+  background: rgba(22,24,31,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky; top: 0; z-index: 100;
+}
+.site-nav { display: flex; gap: 4px; }
+.site-nav a {
+  color: #71717a; text-decoration: none; font-size: 13px; font-weight: 500;
+  padding: 6px 14px; border-radius: 6px; transition: background .15s, color .15s;
+}
+.site-nav a:hover, .site-nav a[aria-current="page"] {
+  background: rgba(255,255,255,0.065); color: #f5f5f7;
+}
+.nav-toggle { display: none; }
+.nav-toggle-label { display: none; cursor: pointer; padding: 8px; }
+.nav-toggle-label span,
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  display: block; background: #f5f5f7; height: 2px; width: 20px;
+  border-radius: 2px; position: relative; transition: .3s;
+}
+.nav-toggle-label span::before,
+.nav-toggle-label span::after { content: ''; position: absolute; }
+.nav-toggle-label span::before { top: -6px; }
+.nav-toggle-label span::after { top: 6px; }
+@media (max-width: 640px) {
+  .nav-toggle-label { display: block; }
+  .site-nav {
+    display: none; flex-direction: column; gap: 0;
+    position: absolute; top: 52px; left: 0; right: 0; z-index: 200;
+    background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 0;
+  }
+  .site-nav a { padding: 12px 24px; border-radius: 0; font-size: 14px; }
+  .nav-toggle:checked ~ .site-nav { display: flex; }
+  .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
+  .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
+  .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
+}
 
     
-.gnav{position:sticky;top:0;z-index:9999;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav{position:sticky;top:52px;z-index:90;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
 .gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
 .gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
 .gnav a:hover{color:#fff}
@@ -65,24 +102,27 @@
   </style>
 </head>
 <body>
-<div class="site-header">
+<header class="site-header">
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+  <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
   <nav class="site-nav">
     <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
-    <a href="https://ymatz28-beep.github.io/property-report/" class="current">Property</a>
+    <a href="https://ymatz28-beep.github.io/property-report/" aria-current="page">Property</a>
+    <a href="https://ymatz28-beep.github.io/trip-planner/">Travel</a>
   </nav>
-</div>
+</header>
 <div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html" class="cur">問い合わせ</a></div></div>
 <div class="wrap">
   <h1>問い合わせメッセージ</h1>
-  <p class="subtitle">生成日: 2026-03-04 — スコア上位20件/都市 — 合計60件 — コピーして各サイトのフォームに貼り付け</p>
+  <p class="subtitle">生成日: 2026-03-18 — スコア上位10件/都市 — 合計30件 — コピーして各サイトのフォームに貼り付け</p>
 
   <div class="city-jump">
-    <a href="#city-osaka" class="jump-btn" style="--jc:#3b9eff">大阪（20件）</a><a href="#city-fukuoka" class="jump-btn" style="--jc:#34d399">福岡（20件）</a><a href="#city-tokyo" class="jump-btn" style="--jc:#a78bfa">東京（20件）</a>
+    <a href="#city-osaka" class="jump-btn" style="--jc:#3b9eff">大阪（10件）</a><a href="#city-fukuoka" class="jump-btn" style="--jc:#34d399">福岡（10件）</a><a href="#city-tokyo" class="jump-btn" style="--jc:#a78bfa">東京（10件）</a>
   </div>
 
   
         <div class="city-section" id="city-osaka">
-          <h2 class="city-title" style="border-left-color:#3b9eff">大阪（20件）</h2>
+          <h2 class="city-title" style="border-left-color:#3b9eff">大阪（10件）</h2>
         
           <div class="card" style="--card-accent:#3b9eff">
             <div class="card-header">
@@ -95,17 +135,15 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 22,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-1">東京在住、法人での購入検討中です。
-「サニーハウス谷町」（3498万円）について、駅からのアクセスの良さ、55㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-1">「サニーハウス谷町」（3498万円）について、駅からのアクセスの良さ、55㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-1', this)" data-accent="#3b9eff">
                 コピー
@@ -124,17 +162,15 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 22,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-2">東京在住、法人での購入検討中です。
-「ストークマンション長堀」（3050万円）について、駅からのアクセスの良さ、57㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-2">「ストークマンション長堀」（3050万円）について、駅からのアクセスの良さ、57㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-2', this)" data-accent="#3b9eff">
                 コピー
@@ -153,17 +189,15 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 27,300円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-3">東京在住、法人での購入検討中です。
-「サントピア九条」（1750万円）について、駅からのアクセスの良さ、52㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-3">「サントピア九条」（1750万円）について、駅からのアクセスの良さ、52㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-3', this)" data-accent="#3b9eff">
                 コピー
@@ -182,17 +216,15 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 29,800円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-4">東京在住、法人での購入検討中です。
-「セレッソコート南堀江マルティア」（4380万円）について、駅からのアクセスの良さ、53㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-4">「セレッソコート南堀江マルティア」（4380万円）について、駅からのアクセスの良さ、53㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-4', this)" data-accent="#3b9eff">
                 コピー
@@ -204,24 +236,22 @@
             <div class="card-header">
               <div class="card-rank">#5</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20207017/" target="_blank" class="card-name">匠空阿波座西</a>
-                <div class="card-meta">3888万円 / 54㎡ / 2008年築 / 1LDK / 徒歩8分</div>
-                <div class="card-score">90pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20437273/" target="_blank" class="card-name">梅田北セントポリア</a>
+                <div class="card-meta">2280万円 / 40㎡ / 1982年築 / 1LDK / 徒歩10分</div>
+                <div class="card-score">92pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 11,280円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 12,120円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-5">東京在住、法人での購入検討中です。
-「匠空阿波座西」（3888万円）について、立地の利便性、54㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-5">「梅田北セントポリア」（2280万円）について、立地の利便性、価格帯に魅力を感じお問い合わせいたします。
 
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-5', this)" data-accent="#3b9eff">
                 コピー
@@ -233,24 +263,22 @@
             <div class="card-header">
               <div class="card-rank">#6</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20285324/" target="_blank" class="card-name">レ・ジェイドイクス</a>
-                <div class="card-meta">4780万円 / 57㎡ / 2014年築 / 2LDK / 徒歩2分</div>
-                <div class="card-score">88pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20454080/" target="_blank" class="card-name">ランズ南森町</a>
+                <div class="card-meta">3780万円 / 45㎡ / 2005年築 / 1LDK / 徒歩4分</div>
+                <div class="card-score">90pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 18,680円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 16,910円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-6">東京在住、法人での購入検討中です。
-「レ・ジェイドイクス」（4780万円）について、駅からのアクセスの良さ、57㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-6">「ランズ南森町」（3780万円）について、駅からのアクセスの良さに魅力を感じお問い合わせいたします。
 
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-6', this)" data-accent="#3b9eff">
                 コピー
@@ -262,24 +290,22 @@
             <div class="card-header">
               <div class="card-rank">#7</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20209265/" target="_blank" class="card-name">西道頓堀コーポ1号棟</a>
-                <div class="card-meta">2600万円 / 61㎡ / 1974年築 / 3LDK / 徒歩7分</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20465603/" target="_blank" class="card-name">ファインレジデンス福島野田The Garden</a>
+                <div class="card-meta">3800万円 / 40㎡ / 2023年築 / 1LDK / 徒歩7分</div>
                 <div class="card-score">85pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 15,000円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 11,620円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-7">東京在住、法人での購入検討中です。
-「西道頓堀コーポ1号棟」（2600万円）について、立地の利便性、周辺環境に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-7">「ファインレジデンス福島野田The Garden」（3800万円）について、立地の利便性に魅力を感じお問い合わせいたします。
 
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-7', this)" data-accent="#3b9eff">
                 コピー
@@ -291,24 +317,22 @@
             <div class="card-header">
               <div class="card-rank">#8</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20274808/" target="_blank" class="card-name">ベル・アーバニティ同心</a>
-                <div class="card-meta">4480万円 / 56㎡ / 1996年築 / 2LDK / 徒歩8分</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20468253/" target="_blank" class="card-name">ファインレジデンス福島野田　The &amp;nbsp;Garden</a>
+                <div class="card-meta">3800万円 / 40㎡ / 2023年築 / 1LDK / 徒歩7分</div>
                 <div class="card-score">85pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 27,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 11,620円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-8">東京在住、法人での購入検討中です。
-「ベル・アーバニティ同心」（4480万円）について、立地の利便性、56㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-8">「ファインレジデンス福島野田　The &amp;nbsp;Garden」（3800万円）について、立地の利便性に魅力を感じお問い合わせいたします。
 
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-8', this)" data-accent="#3b9eff">
                 コピー
@@ -320,24 +344,22 @@
             <div class="card-header">
               <div class="card-rank">#9</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78755083/" target="_blank" class="card-name">朝日プラザ南堀江</a>
-                <div class="card-meta">2880万円 / 54㎡ / 1986年築 / 2LDK / 徒歩3分</div>
-                <div class="card-score">83pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20443516/" target="_blank" class="card-name">西道頓堀コーポ</a>
+                <div class="card-meta">3890万円 / 70㎡ / 1974年築 / 3LDK / 徒歩5分</div>
+                <div class="card-score">85pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 17,840円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 15,000円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-9">東京在住、法人での購入検討中です。
-「朝日プラザ南堀江」（2880万円）について、駅からのアクセスの良さ、54㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-9">「西道頓堀コーポ」（3890万円）について、駅からのアクセスの良さ、周辺環境に魅力を感じお問い合わせいたします。
 
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の可否（小型犬を飼っております）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-9', this)" data-accent="#3b9eff">
                 コピー
@@ -349,389 +371,35 @@
             <div class="card-header">
               <div class="card-rank">#10</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20323378/" target="_blank" class="card-name">天神橋ホワイトハイツ</a>
-                <div class="card-meta">2998万円 / 60㎡ / 1978年築 / 2LDK / 徒歩4分</div>
-                <div class="card-score">83pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20331873/" target="_blank" class="card-name">ベル・アーバニティ同心</a>
+                <div class="card-meta">4480万円 / 56㎡ / 1996年築 / 2LDK / 徒歩10分</div>
+                <div class="card-score">85pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 21,430円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 27,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-10">東京在住、法人での購入検討中です。
-「天神橋ホワイトハイツ」（2998万円）について、駅からのアクセスの良さ、価格帯に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-10">「ベル・アーバニティ同心」（4480万円）について、立地の利便性、56㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-10', this)" data-accent="#3b9eff">
                 コピー
               </button>
             </div>
           </div>
-            
-          <div class="card" style="--card-accent:#3b9eff">
-            <div class="card-header">
-              <div class="card-rank">#11</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/" target="_blank" class="card-name">グランドメゾン谷町四丁目</a>
-                <div class="card-meta">4750万円 / 42㎡ / 2024年築 / 1LDK / 徒歩3分</div>
-                <div class="card-score">81pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 16,608円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-11">東京在住、法人での購入検討中です。
-「グランドメゾン谷町四丁目」（4750万円）について、駅からのアクセスの良さに魅力を感じお問い合わせいたします。
-
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-11', this)" data-accent="#3b9eff">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#3b9eff">
-            <div class="card-header">
-              <div class="card-rank">#12</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20335921/" target="_blank" class="card-name">中津リバーサイドコーポ</a>
-                <div class="card-meta">1880万円 / 63㎡ / 1971年築 / 2LDK / 徒歩9分</div>
-                <div class="card-score">80pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 17,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-12">東京在住、法人での購入検討中です。
-「中津リバーサイドコーポ」（1880万円）について、立地の利便性、価格帯に魅力を感じお問い合わせいたします。
-
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-12', this)" data-accent="#3b9eff">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#3b9eff">
-            <div class="card-header">
-              <div class="card-rank">#13</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_78731794/" target="_blank" class="card-name">梅田北セントポリア</a>
-                <div class="card-meta">2480万円 / 51㎡ / 1982年築 / 1LDK / 徒歩11分</div>
-                <div class="card-score">80pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 15,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-13">東京在住、法人での購入検討中です。
-「梅田北セントポリア」（2480万円）について、51㎡のゆとりある広さ、価格帯に魅力を感じお問い合わせいたします。
-
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-13', this)" data-accent="#3b9eff">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#3b9eff">
-            <div class="card-header">
-              <div class="card-rank">#14</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_79162652/" target="_blank" class="card-name">中津パークマンション</a>
-                <div class="card-meta">2580万円 / 62㎡ / 1980年築 / 2LDK / 徒歩6分</div>
-                <div class="card-score">80pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 17,900円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-14">東京在住、法人での購入検討中です。
-「中津パークマンション」（2580万円）について、立地の利便性、価格帯に魅力を感じお問い合わせいたします。
-
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-14', this)" data-accent="#3b9eff">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#3b9eff">
-            <div class="card-header">
-              <div class="card-rank">#15</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20324746/" target="_blank" class="card-name">中津リバーサイドコーポＤ棟</a>
-                <div class="card-meta">3298万円 / 70㎡ / 1971年築 / 2LDK / 徒歩10分</div>
-                <div class="card-score">80pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 17,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-15">東京在住、法人での購入検討中です。
-「中津リバーサイドコーポＤ棟」（3298万円）について、立地の利便性、価格帯に魅力を感じお問い合わせいたします。
-
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-15', this)" data-accent="#3b9eff">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#3b9eff">
-            <div class="card-header">
-              <div class="card-rank">#16</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20245135/" target="_blank" class="card-name">アルス心斎橋ＵＮＡＧＩＤＡＮＩ</a>
-                <div class="card-meta">4380万円 / 46㎡ / 2004年築 / 1LDK / 徒歩6分</div>
-                <div class="card-score">80pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 18,100円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-16">東京在住、法人での購入検討中です。
-「アルス心斎橋ＵＮＡＧＩＤＡＮＩ」（4380万円）について、立地の利便性に魅力を感じお問い合わせいたします。
-
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-16', this)" data-accent="#3b9eff">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#3b9eff">
-            <div class="card-header">
-              <div class="card-rank">#17</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20126903/" target="_blank" class="card-name">ジリオ森ノ宮中央</a>
-                <div class="card-meta">4730万円 / 41㎡ / 2021年築 / 1LDK / 徒歩4分</div>
-                <div class="card-score">80pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 14,870円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-17">東京在住、法人での購入検討中です。
-「ジリオ森ノ宮中央」（4730万円）について、駅からのアクセスの良さに魅力を感じお問い合わせいたします。
-
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-17', this)" data-accent="#3b9eff">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#3b9eff">
-            <div class="card-header">
-              <div class="card-rank">#18</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20340821/" target="_blank" class="card-name">ハイム船場</a>
-                <div class="card-meta">3490万円 / 62㎡ / 1980年築 / 2LDK / 徒歩2分</div>
-                <div class="card-score">78pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 17,420円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-18">東京在住、法人での購入検討中です。
-「ハイム船場」（3490万円）について、駅からのアクセスの良さ、価格帯に魅力を感じお問い合わせいたします。
-
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-18', this)" data-accent="#3b9eff">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#3b9eff">
-            <div class="card-header">
-              <div class="card-rank">#19</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20265387/" target="_blank" class="card-name">クレスタ梅田EASTアヴァンツィオ</a>
-                <div class="card-meta">3580万円 / 59㎡ / 2006年築 / 2LDK / 徒歩14分</div>
-                <div class="card-score">78pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 21,370円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-19">東京在住、法人での購入検討中です。
-「クレスタ梅田EASTアヴァンツィオ」（3580万円）について、59㎡のゆとりある広さに魅力を感じお問い合わせいたします。
-
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-19', this)" data-accent="#3b9eff">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#3b9eff">
-            <div class="card-header">
-              <div class="card-rank">#20</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20363025/" target="_blank" class="card-name">ザ・大阪レジデンス備後町</a>
-                <div class="card-meta">4480万円 / 46㎡ / 2016年築 / 1LDK / 徒歩5分</div>
-                <div class="card-score">78pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 15,420円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-20">東京在住、法人での購入検討中です。
-「ザ・大阪レジデンス備後町」（4480万円）について、駅からのアクセスの良さに魅力を感じお問い合わせいたします。
-
-現在大阪でセカンド拠点となる住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-20', this)" data-accent="#3b9eff">
-                コピー
-              </button>
-            </div>
-          </div>
             </div>
         <div class="city-section" id="city-fukuoka">
-          <h2 class="city-title" style="border-left-color:#34d399">福岡（20件）</h2>
+          <h2 class="city-title" style="border-left-color:#34d399">福岡（10件）</h2>
         
           <div class="card" style="--card-accent:#34d399">
             <div class="card-header">
-              <div class="card-rank">#21</div>
-              <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99358163" target="_blank" class="card-name">博多ニッコーハイツ 5階</a>
-                <div class="card-meta">1900万円 / 63㎡ / 1989年築 / 3LDK / 徒歩8分</div>
-                <div class="card-score">106pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 20,810円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-21">お世話になります。
-東京在住で、法人での購入を検討しております。
-
-貴サイトに掲載されている「博多ニッコーハイツ 5階」を拝見し、立地の利便性、周辺環境に魅力を感じご連絡いたしました。
-
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
-
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
-
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-21', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#22</div>
-              <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99644733" target="_blank" class="card-name">独立性の高い東南の角部屋。最上階の1階下の住戸。2023年6月大規模リフォーム工</a>
-                <div class="card-meta">3150万円 / 44㎡ / 1984年築 / 1LDK / 徒歩7分</div>
-                <div class="card-score">105pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 11,700円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-22">お世話になります。
-東京在住で、法人での購入を検討しております。
-
-貴サイトに掲載されている「独立性の高い東南の角部屋。最上階の1階下の住戸。2023年6」を拝見し、立地の利便性、周辺環境に魅力を感じご連絡いたしました。
-
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
-
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
-
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-22', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#23</div>
+              <div class="card-rank">#11</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20131079/" target="_blank" class="card-name">ヒューマインド博多駅東ネクスタイル</a>
                 <div class="card-meta">4480万円 / 58㎡ / 2005年築 / 2LDK / 徒歩5分</div>
@@ -740,19 +408,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 13,300円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-23">東京在住、法人での購入検討中です。
-「ヒューマインド博多駅東ネクスタイル」（4480万円）について、駅からのアクセスの良さ、58㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-11">「ヒューマインド博多駅東ネクスタイル」（4480万円）について、駅からのアクセスの良さ、58㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
-現在福岡で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-23', this)" data-accent="#34d399">
+              <button class="copy-btn" onclick="copyMsg('msg-11', this)" data-accent="#34d399">
                 コピー
               </button>
             </div>
@@ -760,61 +426,27 @@
             
           <div class="card" style="--card-accent:#34d399">
             <div class="card-header">
-              <div class="card-rank">#24</div>
-              <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99805564" target="_blank" class="card-name">■ペット飼育可（細則有り）■2022年大規模修繕工事済のきれいな外観</a>
-                <div class="card-meta">2380万円 / 69㎡ / 1993年築 / 3LDK / 徒歩8分</div>
-                <div class="card-score">104pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 22,160円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-24">お世話になります。
-東京在住で、法人での購入を検討しております。
-
-貴サイトに掲載されている「■ペット飼育可（細則有り）■2022年大規模修繕工事済のきれ」を拝見し、立地の利便性、周辺環境に魅力を感じご連絡いたしました。
-
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
-
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
-
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-24', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#25</div>
+              <div class="card-rank">#12</div>
               <div class="card-info">
                 <a href="https://www.f-takken.com/freins/items/99763695" target="_blank" class="card-name">アンピール天神東 405</a>
                 <div class="card-meta">3999万円 / 65㎡ / 1985年築 / 2LDK / 徒歩8分</div>
-                <div class="card-score">103pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+                <div class="card-score">101pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 16,500円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 22,800円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-25">お世話になります。
-東京在住で、法人での購入を検討しております。
-
+              <pre class="msg-text" id="msg-12">お世話になります。
 貴サイトに掲載されている「アンピール天神東 405」を拝見し、立地の利便性、周辺環境に魅力を感じご連絡いたしました。
 
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
+東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
+チワワ（3kg）を飼っております。ペット可と記載がございましたが、念のため問題ございませんでしょうか。
 
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-25', this)" data-accent="#34d399">
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
+よろしくお願い申し上げます。</pre>
+              <button class="copy-btn" onclick="copyMsg('msg-12', this)" data-accent="#34d399">
                 コピー
               </button>
             </div>
@@ -822,61 +454,27 @@
             
           <div class="card" style="--card-accent:#34d399">
             <div class="card-header">
-              <div class="card-rank">#26</div>
+              <div class="card-rank">#13</div>
               <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99773040" target="_blank" class="card-name">ニューライフ薬院 603</a>
-                <div class="card-meta">3180万円 / 47㎡ / 1986年築 / 1SLDK / 徒歩3分</div>
+                <a href="https://www.f-takken.com/freins/items/99795327" target="_blank" class="card-name">福岡市七隈線薬院駅 徒歩3分</a>
+                <div class="card-meta">3099万円 / 47㎡ / 1986年築 / 1SLDK / 徒歩3分</div>
                 <div class="card-score">99pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 24,490円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-26">お世話になります。
-東京在住で、法人での購入を検討しております。
-
-貴サイトに掲載されている「ニューライフ薬院 603」を拝見し、駅からのアクセスの良さ、周辺環境に魅力を感じご連絡いたしました。
-
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
-
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
-
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-26', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#27</div>
-              <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99775027" target="_blank" class="card-name">福岡市七隈線薬院駅 徒歩3分</a>
-                <div class="card-meta">3190万円 / 47㎡ / 1986年築 / 1SLDK / 徒歩3分</div>
-                <div class="card-score">99pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 24,490円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-27">お世話になります。
-東京在住で、法人での購入を検討しております。
-
+              <pre class="msg-text" id="msg-13">お世話になります。
 貴サイトに掲載されている「福岡市七隈線薬院駅 徒歩3分」を拝見し、駅からのアクセスの良さ、周辺環境に魅力を感じご連絡いたしました。
 
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
+東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
+チワワ（3kg）を飼っております。ペット可と記載がございましたが、念のため問題ございませんでしょうか。
 
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-27', this)" data-accent="#34d399">
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
+よろしくお願い申し上げます。</pre>
+              <button class="copy-btn" onclick="copyMsg('msg-13', this)" data-accent="#34d399">
                 コピー
               </button>
             </div>
@@ -884,30 +482,27 @@
             
           <div class="card" style="--card-accent:#34d399">
             <div class="card-header">
-              <div class="card-rank">#28</div>
+              <div class="card-rank">#14</div>
               <div class="card-info">
                 <a href="https://www.f-takken.com/freins/items/99798361" target="_blank" class="card-name">駅近、ペット可、生活環境充実！2026年2月リフォーム完了の1SLDKマンション</a>
-                <div class="card-meta">3190万円 / 47㎡ / 1986年築 / 1SLDK / 徒歩3分</div>
+                <div class="card-meta">3099万円 / 47㎡ / 1986年築 / 1SLDK / 徒歩3分</div>
                 <div class="card-score">99pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 24,490円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-28">お世話になります。
-東京在住で、法人での購入を検討しております。
-
+              <pre class="msg-text" id="msg-14">お世話になります。
 貴サイトに掲載されている「駅近、ペット可、生活環境充実！2026年2月リフォーム完了の」を拝見し、駅からのアクセスの良さ、周辺環境に魅力を感じご連絡いたしました。
 
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
+東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
+チワワ（3kg）を飼っております。ペット可と記載がございましたが、念のため問題ございませんでしょうか。
 
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-28', this)" data-accent="#34d399">
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
+よろしくお願い申し上げます。</pre>
+              <button class="copy-btn" onclick="copyMsg('msg-14', this)" data-accent="#34d399">
                 コピー
               </button>
             </div>
@@ -915,7 +510,7 @@
             
           <div class="card" style="--card-accent:#34d399">
             <div class="card-header">
-              <div class="card-rank">#29</div>
+              <div class="card-rank">#15</div>
               <div class="card-info">
                 <a href="https://www.f-takken.com/freins/items/99765771" target="_blank" class="card-name">福岡市七隈線櫛田神社前駅 徒歩9分</a>
                 <div class="card-meta">4280万円 / 65㎡ / 2004年築 / 2LDK / 徒歩9分</div>
@@ -924,21 +519,18 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 16,500円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-29">お世話になります。
-東京在住で、法人での購入を検討しております。
-
+              <pre class="msg-text" id="msg-15">お世話になります。
 貴サイトに掲載されている「福岡市七隈線櫛田神社前駅 徒歩9分」を拝見し、立地の利便性、周辺環境に魅力を感じご連絡いたしました。
 
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
+東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
+チワワ（3kg）を飼っております。ペット可と記載がございましたが、念のため問題ございませんでしょうか。
 
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-29', this)" data-accent="#34d399">
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
+よろしくお願い申し上げます。</pre>
+              <button class="copy-btn" onclick="copyMsg('msg-15', this)" data-accent="#34d399">
                 コピー
               </button>
             </div>
@@ -946,7 +538,7 @@
             
           <div class="card" style="--card-accent:#34d399">
             <div class="card-header">
-              <div class="card-rank">#30</div>
+              <div class="card-rank">#16</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/" target="_blank" class="card-name">オープンレジデンシア天神今泉</a>
                 <div class="card-meta">4900万円 / 46㎡ / 2023年築 / 2LDK / 徒歩6分</div>
@@ -955,19 +547,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 8,800円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-30">東京在住、法人での購入検討中です。
-「オープンレジデンシア天神今泉」（4900万円）について、立地の利便性、周辺環境に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-16">「オープンレジデンシア天神今泉」（4900万円）について、立地の利便性、周辺環境に魅力を感じお問い合わせいたします。
 
-現在福岡で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-30', this)" data-accent="#34d399">
+              <button class="copy-btn" onclick="copyMsg('msg-16', this)" data-accent="#34d399">
                 コピー
               </button>
             </div>
@@ -975,7 +565,63 @@
             
           <div class="card" style="--card-accent:#34d399">
             <div class="card-header">
-              <div class="card-rank">#31</div>
+              <div class="card-rank">#17</div>
+              <div class="card-info">
+                <a href="https://www.f-takken.com/freins/items/99358163" target="_blank" class="card-name">博多ニッコーハイツ 5階</a>
+                <div class="card-meta">1900万円 / 63㎡ / 1981年築 / 3LDK / 徒歩8分</div>
+                <div class="card-score">93pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+              </div>
+            </div>
+            <div class="card-tags"><span class="tag tag-green">管理費 16,500円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
+            <div class="msg-container">
+              <pre class="msg-text" id="msg-17">お世話になります。
+貴サイトに掲載されている「博多ニッコーハイツ 5階」を拝見し、立地の利便性、周辺環境に魅力を感じご連絡いたしました。
+
+東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
+
+チワワ（3kg）を飼っております。ペット可と記載がございましたが、念のため問題ございませんでしょうか。
+
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
+よろしくお願い申し上げます。</pre>
+              <button class="copy-btn" onclick="copyMsg('msg-17', this)" data-accent="#34d399">
+                コピー
+              </button>
+            </div>
+          </div>
+            
+          <div class="card" style="--card-accent:#34d399">
+            <div class="card-header">
+              <div class="card-rank">#18</div>
+              <div class="card-info">
+                <a href="https://www.f-takken.com/freins/items/99782845" target="_blank" class="card-name">大名エリア、1LDKの分譲マンションです。ペット飼育可能(規約の範囲内)♪</a>
+                <div class="card-meta">4280万円 / 66㎡ / 2004年築 / 3LDK / 徒歩9分</div>
+                <div class="card-score">93pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+              </div>
+            </div>
+            <div class="card-tags"><span class="tag tag-green">管理費 16,500円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
+            <div class="msg-container">
+              <pre class="msg-text" id="msg-18">お世話になります。
+貴サイトに掲載されている「大名エリア、1LDKの分譲マンションです。ペット飼育可能(規」を拝見し、立地の利便性、周辺環境に魅力を感じご連絡いたしました。
+
+東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
+
+チワワ（3kg）を飼っております。ペット可と記載がございましたが、念のため問題ございませんでしょうか。
+
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
+よろしくお願い申し上げます。</pre>
+              <button class="copy-btn" onclick="copyMsg('msg-18', this)" data-accent="#34d399">
+                コピー
+              </button>
+            </div>
+          </div>
+            
+          <div class="card" style="--card-accent:#34d399">
+            <div class="card-header">
+              <div class="card-rank">#19</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79085867/" target="_blank" class="card-name">クリオ渡辺通アーバンマークス</a>
                 <div class="card-meta">4380万円 / 45㎡ / 2023年築 / 2LDK / 徒歩9分</div>
@@ -984,19 +630,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 8,470円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-31">東京在住、法人での購入検討中です。
-「クリオ渡辺通アーバンマークス」（4380万円）について、立地の利便性、周辺環境に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-19">「クリオ渡辺通アーバンマークス」（4380万円）について、立地の利便性、周辺環境に魅力を感じお問い合わせいたします。
 
-現在福岡で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-31', this)" data-accent="#34d399">
+              <button class="copy-btn" onclick="copyMsg('msg-19', this)" data-accent="#34d399">
                 コピー
               </button>
             </div>
@@ -1004,7 +648,7 @@
             
           <div class="card" style="--card-accent:#34d399">
             <div class="card-header">
-              <div class="card-rank">#32</div>
+              <div class="card-rank">#20</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79063957/" target="_blank" class="card-name">コスモ博多古門戸</a>
                 <div class="card-meta">4599万円 / 54㎡ / 2003年築 / 1LDK+S（納戸） / 徒歩9分</div>
@@ -1013,277 +657,28 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 18,200円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-32">東京在住、法人での購入検討中です。
-「コスモ博多古門戸」（4599万円）について、立地の利便性、54㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-20">「コスモ博多古門戸」（4599万円）について、立地の利便性、54㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
-現在福岡で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-32', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#33</div>
-              <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99802152" target="_blank" class="card-name">ペットと暮らせる（規約による制限有り）中央区春吉二丁目のマンション！キャナルシテ</a>
-                <div class="card-meta">4980万円 / 65㎡ / 1994年築 / 2LDK / 徒歩10分</div>
-                <div class="card-score">93pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 16,300円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">ふれんず</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-33">お世話になります。
-東京在住で、法人での購入を検討しております。
-
-貴サイトに掲載されている「ペットと暮らせる（規約による制限有り）中央区春吉二丁目のマン」を拝見し、立地の利便性、周辺環境に魅力を感じご連絡いたしました。
-
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
-
-つきまして、以下の点についてもあわせてお伺いできればと存じます。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
-
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-33', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#34</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/" target="_blank" class="card-name">ロワールマンション西公園2</a>
-                <div class="card-meta">1950万円 / 55㎡ / 1984年築 / 2LDK / 徒歩15分</div>
-                <div class="card-score">90pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 14,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-34">東京在住、法人での購入検討中です。
-「ロワールマンション西公園2」（1950万円）について、55㎡のゆとりある広さ、周辺環境に魅力を感じお問い合わせいたします。
-
-現在福岡で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-34', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#35</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20001055/" target="_blank" class="card-name">クリオラベルヴィ呉服町</a>
-                <div class="card-meta">4599万円 / 47㎡ / 2018年築 / 2LDK / 徒歩5分</div>
-                <div class="card-score">90pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 17,680円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-35">東京在住、法人での購入検討中です。
-「クリオラベルヴィ呉服町」（4599万円）について、駅からのアクセスの良さに魅力を感じお問い合わせいたします。
-
-現在福岡で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-35', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#36</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79208316/" target="_blank" class="card-name">チサンマンション西公園</a>
-                <div class="card-meta">2480万円 / 52㎡ / 1984年築 / 2LDK / 徒歩11分</div>
-                <div class="card-score">88pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 15,850円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-36">東京在住、法人での購入検討中です。
-「チサンマンション西公園」（2480万円）について、52㎡のゆとりある広さ、周辺環境に魅力を感じお問い合わせいたします。
-
-現在福岡で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-36', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#37</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78948574/" target="_blank" class="card-name">ＧＳハイム博多</a>
-                <div class="card-meta">2140万円 / 66㎡ / 1980年築 / 3LDK / 徒歩10分</div>
-                <div class="card-score">86pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 21,900円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-37">東京在住、法人での購入検討中です。
-「ＧＳハイム博多」（2140万円）について、立地の利便性、周辺環境に魅力を感じお問い合わせいたします。
-
-現在福岡で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-37', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#38</div>
-              <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99781347" target="_blank" class="card-name">人気の薬院エリア★天神・博多へのアクセス良好◎リノベーション物件です☆</a>
-                <div class="card-meta">2930万円 / 57㎡ / 1983年築 / 2LDK / 徒歩3分</div>
-                <div class="card-score">86pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 22,535円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">ふれんず</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-38">お世話になります。
-東京在住で、法人での購入を検討しております。
-
-貴サイトに掲載されている「人気の薬院エリア天神・博多へのアクセス良好リノベーション物件」を拝見し、駅からのアクセスの良さ、57㎡のゆとりある広さに魅力を感じご連絡いたしました。
-
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
-
-つきまして、以下の点についてもあわせてお伺いできればと存じます。
-・ペット飼育の可否（小型犬を飼っております）
-
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
-
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-38', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#39</div>
-              <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99782845" target="_blank" class="card-name">詳細エリアを選択</a>
-                <div class="card-meta">4280万円 / 66㎡ / 2004年築 / 3LDK / 徒歩9分</div>
-                <div class="card-score">86pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 24,600円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">ふれんず</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-39">お世話になります。
-東京在住で、法人での購入を検討しております。
-
-貴サイトに掲載されている「詳細エリアを選択」を拝見し、立地の利便性、周辺環境に魅力を感じご連絡いたしました。
-
-現在福岡で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
-
-つきまして、以下の点についてもあわせてお伺いできればと存じます。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
-
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-39', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#40</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20310107/" target="_blank" class="card-name">プレイスポットしんばしビル本館</a>
-                <div class="card-meta">2480万円 / 41㎡ / 1975年築 / 1DK / 徒歩2分</div>
-                <div class="card-score">85pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 12,675円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-40">東京在住、法人での購入検討中です。
-「プレイスポットしんばしビル本館」（2480万円）について、駅からのアクセスの良さ、周辺環境に魅力を感じお問い合わせいたします。
-
-現在福岡で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-40', this)" data-accent="#34d399">
+              <button class="copy-btn" onclick="copyMsg('msg-20', this)" data-accent="#34d399">
                 コピー
               </button>
             </div>
           </div>
             </div>
         <div class="city-section" id="city-tokyo">
-          <h2 class="city-title" style="border-left-color:#a78bfa">東京（20件）</h2>
+          <h2 class="city-title" style="border-left-color:#a78bfa">東京（10件）</h2>
         
           <div class="card" style="--card-accent:#a78bfa">
             <div class="card-header">
-              <div class="card-rank">#41</div>
+              <div class="card-rank">#21</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78942164/" target="_blank" class="card-name">藤和シティコープ池袋</a>
                 <div class="card-meta">4880万円 / 45㎡ / 1993年築 / 2LDK / 徒歩5分</div>
@@ -1292,19 +687,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 24,600円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-41">東京在住、法人での購入検討中です。
-「藤和シティコープ池袋」（4880万円）について、駅からのアクセスの良さ、周辺環境に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-21">「藤和シティコープ池袋」（4880万円）について、駅からのアクセスの良さ、周辺環境に魅力を感じお問い合わせいたします。
 
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-41', this)" data-accent="#a78bfa">
+              <button class="copy-btn" onclick="copyMsg('msg-21', this)" data-accent="#a78bfa">
                 コピー
               </button>
             </div>
@@ -1312,7 +705,7 @@
             
           <div class="card" style="--card-accent:#a78bfa">
             <div class="card-header">
-              <div class="card-rank">#42</div>
+              <div class="card-rank">#22</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20220965/" target="_blank" class="card-name">マイステージ野方</a>
                 <div class="card-meta">3680万円 / 51㎡ / 2000年築 / 1LDK / 徒歩3分</div>
@@ -1321,19 +714,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 43,520円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-42">東京在住、法人での購入検討中です。
-「マイステージ野方」（3680万円）について、駅からのアクセスの良さ、51㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-22">「マイステージ野方」（3680万円）について、駅からのアクセスの良さ、51㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-42', this)" data-accent="#a78bfa">
+              <button class="copy-btn" onclick="copyMsg('msg-22', this)" data-accent="#a78bfa">
                 コピー
               </button>
             </div>
@@ -1341,7 +732,7 @@
             
           <div class="card" style="--card-accent:#a78bfa">
             <div class="card-header">
-              <div class="card-rank">#43</div>
+              <div class="card-rank">#23</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20158878/" target="_blank" class="card-name">恵進マンション</a>
                 <div class="card-meta">2480万円 / 41㎡ / 1972年築 / ワンルーム / 徒歩1分</div>
@@ -1350,19 +741,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 21,900円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-43">東京在住、法人での購入検討中です。
-「恵進マンション」（2480万円）について、駅からのアクセスの良さ、周辺環境に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-23">「恵進マンション」（2480万円）について、駅からのアクセスの良さ、周辺環境に魅力を感じお問い合わせいたします。
 
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-43', this)" data-accent="#a78bfa">
+              <button class="copy-btn" onclick="copyMsg('msg-23', this)" data-accent="#a78bfa">
                 コピー
               </button>
             </div>
@@ -1370,41 +759,7 @@
             
           <div class="card" style="--card-accent:#a78bfa">
             <div class="card-header">
-              <div class="card-rank">#44</div>
-              <div class="card-info">
-                <a href="https://cowcamo.jp/short_stories/ch0ZrXkJnXM" target="_blank" class="card-name">幡ヶ谷駅 / 1LDK＋S / 47.03㎡</a>
-                <div class="card-meta">4980万円 / 47㎡ / 築年不明 / 1LDK / 徒歩4分</div>
-                <div class="card-score">78pt — カウカモ問い合わせフォーム (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 25,520円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">カウカモ</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-44">お世話になります。
-東京在住で、法人での購入を検討しております。
-
-貴サイトに掲載されている「幡ヶ谷駅 / 1LDK＋S / 47.03㎡」を拝見し、駅からのアクセスの良さ、周辺環境に魅力を感じご連絡いたしました。
-
-現在都内で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
-
-つきまして、以下の点についてもあわせてお伺いできればと存じます。
-・築年月
-
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
-
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-44', this)" data-accent="#a78bfa">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#a78bfa">
-            <div class="card-header">
-              <div class="card-rank">#45</div>
+              <div class="card-rank">#24</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20020844/" target="_blank" class="card-name">ニックハイム向島百花園</a>
                 <div class="card-meta">3480万円 / 47㎡ / 1982年築 / 2LDK / 徒歩10分</div>
@@ -1413,19 +768,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 23,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-45">東京在住、法人での購入検討中です。
-「ニックハイム向島百花園」（3480万円）について、立地の利便性、価格帯に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-24">「ニックハイム向島百花園」（3480万円）について、立地の利便性、価格帯に魅力を感じお問い合わせいたします。
 
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-45', this)" data-accent="#a78bfa">
+              <button class="copy-btn" onclick="copyMsg('msg-24', this)" data-accent="#a78bfa">
                 コピー
               </button>
             </div>
@@ -1433,7 +786,7 @@
             
           <div class="card" style="--card-accent:#a78bfa">
             <div class="card-header">
-              <div class="card-rank">#46</div>
+              <div class="card-rank">#25</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79057808/" target="_blank" class="card-name">菊川グリーンハイツ</a>
                 <div class="card-meta">4180万円 / 50㎡ / 1980年築 / 2DK / 徒歩4分</div>
@@ -1442,19 +795,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 24,300円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-46">東京在住、法人での購入検討中です。
-「菊川グリーンハイツ」（4180万円）について、駅からのアクセスの良さ、50㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-25">「菊川グリーンハイツ」（4180万円）について、駅からのアクセスの良さ、50㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-46', this)" data-accent="#a78bfa">
+              <button class="copy-btn" onclick="copyMsg('msg-25', this)" data-accent="#a78bfa">
                 コピー
               </button>
             </div>
@@ -1462,41 +813,7 @@
             
           <div class="card" style="--card-accent:#a78bfa">
             <div class="card-header">
-              <div class="card-rank">#47</div>
-              <div class="card-info">
-                <a href="https://www.realtokyoestate.co.jp/estate.php?n=25658" target="_blank" class="card-name">コンパクトに心地よく</a>
-                <div class="card-meta">3850万円 / 65㎡ / 2008年築</div>
-                <div class="card-score">75pt — メール問い合わせ (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-red">管理費不明</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">東京R不動産</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-47">お世話になります。
-東京在住で、法人での購入を検討しております。
-
-貴サイトに掲載されている「コンパクトに心地よく」を拝見し、周辺環境、ペット飼育可能な点に魅力を感じご連絡いたしました。
-
-現在都内で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
-
-つきまして、以下の点についてもあわせてお伺いできればと存じます。
-・月額の管理費・修繕積立金の金額
-
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
-
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-47', this)" data-accent="#a78bfa">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#a78bfa">
-            <div class="card-header">
-              <div class="card-rank">#48</div>
+              <div class="card-rank">#26</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78515092/" target="_blank" class="card-name">大江戸コーポ</a>
                 <div class="card-meta">2980万円 / 46㎡ / 1970年築 / 1LDK / 徒歩1分</div>
@@ -1505,19 +822,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 28,000円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-48">東京在住、法人での購入検討中です。
-「大江戸コーポ」（2980万円）について、駅からのアクセスの良さ、価格帯に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-26">「大江戸コーポ」（2980万円）について、駅からのアクセスの良さ、価格帯に魅力を感じお問い合わせいたします。
 
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-48', this)" data-accent="#a78bfa">
+              <button class="copy-btn" onclick="copyMsg('msg-26', this)" data-accent="#a78bfa">
                 コピー
               </button>
             </div>
@@ -1525,7 +840,7 @@
             
           <div class="card" style="--card-accent:#a78bfa">
             <div class="card-header">
-              <div class="card-rank">#49</div>
+              <div class="card-rank">#27</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20214392/" target="_blank" class="card-name">サンコート池袋</a>
                 <div class="card-meta">3998万円 / 42㎡ / 1984年築 / 1LDK / 徒歩13分</div>
@@ -1534,19 +849,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 24,560円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-49">東京在住、法人での購入検討中です。
-「サンコート池袋」（3998万円）について、周辺環境に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-27">「サンコート池袋」（3998万円）について、周辺環境に魅力を感じお問い合わせいたします。
 
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-49', this)" data-accent="#a78bfa">
+              <button class="copy-btn" onclick="copyMsg('msg-27', this)" data-accent="#a78bfa">
                 コピー
               </button>
             </div>
@@ -1554,7 +867,7 @@
             
           <div class="card" style="--card-accent:#a78bfa">
             <div class="card-header">
-              <div class="card-rank">#50</div>
+              <div class="card-rank">#28</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78764639/" target="_blank" class="card-name">キャニオンマンション上鷺宮</a>
                 <div class="card-meta">3300万円 / 59㎡ / 1978年築 / 3LDK / 徒歩3分</div>
@@ -1563,19 +876,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 14,000円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-50">東京在住、法人での購入検討中です。
-「キャニオンマンション上鷺宮」（3300万円）について、駅からのアクセスの良さ、59㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-28">「キャニオンマンション上鷺宮」（3300万円）について、駅からのアクセスの良さ、59㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の可否（小型犬を飼っております）
+なお、チワワ（3kg）を飼っております。ペット飼育は可能でしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-50', this)" data-accent="#a78bfa">
+              <button class="copy-btn" onclick="copyMsg('msg-28', this)" data-accent="#a78bfa">
                 コピー
               </button>
             </div>
@@ -1583,7 +894,7 @@
             
           <div class="card" style="--card-accent:#a78bfa">
             <div class="card-header">
-              <div class="card-rank">#51</div>
+              <div class="card-rank">#29</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79163699/" target="_blank" class="card-name">ヴィラロイヤル東中野</a>
                 <div class="card-meta">3500万円 / 63㎡ / 1969年築 / 2LDK / 徒歩7分</div>
@@ -1592,19 +903,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 35,100円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-51">東京在住、法人での購入検討中です。
-「ヴィラロイヤル東中野」（3500万円）について、立地の利便性、価格帯に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-29">「ヴィラロイヤル東中野」（3500万円）について、立地の利便性、価格帯に魅力を感じお問い合わせいたします。
 
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-51', this)" data-accent="#a78bfa">
+              <button class="copy-btn" onclick="copyMsg('msg-29', this)" data-accent="#a78bfa">
                 コピー
               </button>
             </div>
@@ -1612,7 +921,7 @@
             
           <div class="card" style="--card-accent:#a78bfa">
             <div class="card-header">
-              <div class="card-rank">#52</div>
+              <div class="card-rank">#30</div>
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79140949/" target="_blank" class="card-name">ヴィラロイヤル東中野 706号室</a>
                 <div class="card-meta">3500万円 / 63㎡ / 1969年築 / 2LDK / 徒歩7分</div>
@@ -1621,258 +930,17 @@
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 35,100円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-52">東京在住、法人での購入検討中です。
-「ヴィラロイヤル東中野 706号室」（3500万円）について、立地の利便性、価格帯に魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-30">「ヴィラロイヤル東中野 706号室」（3500万円）について、立地の利便性、価格帯に魅力を感じお問い合わせいたします。
 
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
+東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
+渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-52', this)" data-accent="#a78bfa">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#a78bfa">
-            <div class="card-header">
-              <div class="card-rank">#53</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_79168160/" target="_blank" class="card-name">ニュー目黒フラワーマンション</a>
-                <div class="card-meta">3980万円 / 48㎡ / 1970年築 / 1LDK / 徒歩8分</div>
-                <div class="card-score">68pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 19,800円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-53">東京在住、法人での購入検討中です。
-「ニュー目黒フラワーマンション」（3980万円）について、立地の利便性に魅力を感じお問い合わせいたします。
-
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-53', this)" data-accent="#a78bfa">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#a78bfa">
-            <div class="card-header">
-              <div class="card-rank">#54</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_77817708/" target="_blank" class="card-name">菊川ローヤルコーポ</a>
-                <div class="card-meta">4100万円 / 57㎡ / 1981年築 / 3DK / 徒歩5分</div>
-                <div class="card-score">68pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 19,000円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-54">東京在住、法人での購入検討中です。
-「菊川ローヤルコーポ」（4100万円）について、駅からのアクセスの良さ、57㎡のゆとりある広さに魅力を感じお問い合わせいたします。
-
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の可否（小型犬を飼っております）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-54', this)" data-accent="#a78bfa">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#a78bfa">
-            <div class="card-header">
-              <div class="card-rank">#55</div>
-              <div class="card-info">
-                <a href="https://cowcamo.jp/short_stories/WY5x3j5crLQ" target="_blank" class="card-name">参宮橋駅 / 1DK / 37.50㎡</a>
-                <div class="card-meta">4880万円 / 38㎡ / 築年不明 / 1DK / 徒歩5分</div>
-                <div class="card-score">68pt — カウカモ問い合わせフォーム (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 18,550円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">カウカモ</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-55">お世話になります。
-東京在住で、法人での購入を検討しております。
-
-貴サイトに掲載されている「参宮橋駅 / 1DK / 37.50㎡」を拝見し、駅からのアクセスの良さ、周辺環境に魅力を感じご連絡いたしました。
-
-現在都内で住居用物件を探しており、ペットと一緒に住める物件を重視しております。
-ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。
-
-つきまして、以下の点についてもあわせてお伺いできればと存じます。
-・築年月
-
-また、購入後の利用形態について管理規約で制限されている事項がございましたら、
-事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。
-
-お手数ですが、ご検討のほどよろしくお願い申し上げます。
-
-[署名]</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-55', this)" data-accent="#a78bfa">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#a78bfa">
-            <div class="card-header">
-              <div class="card-rank">#56</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20335958/" target="_blank" class="card-name">大塚キャノンハイツ</a>
-                <div class="card-meta">3880万円 / 47㎡ / 1979年築 / 2DK / 徒歩9分</div>
-                <div class="card-score">66pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 24,750円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-56">東京在住、法人での購入検討中です。
-「大塚キャノンハイツ」（3880万円）について、立地の利便性、周辺環境に魅力を感じお問い合わせいたします。
-
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-56', this)" data-accent="#a78bfa">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#a78bfa">
-            <div class="card-header">
-              <div class="card-rank">#57</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20270062/" target="_blank" class="card-name">サンライズ鷺宮</a>
-                <div class="card-meta">2980万円 / 49㎡ / 1981年築 / 2LDK / 徒歩6分</div>
-                <div class="card-score">65pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 15,000円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-57">東京在住、法人での購入検討中です。
-「サンライズ鷺宮」（2980万円）について、立地の利便性、周辺環境に魅力を感じお問い合わせいたします。
-
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の可否（小型犬を飼っております）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-57', this)" data-accent="#a78bfa">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#a78bfa">
-            <div class="card-header">
-              <div class="card-rank">#58</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20235868/" target="_blank" class="card-name">ドラゴンマンション三ノ輪壱番館</a>
-                <div class="card-meta">4980万円 / 58㎡ / 1999年築 / 2LDK / 徒歩8分</div>
-                <div class="card-score">65pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-red">管理費不明</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-58">東京在住、法人での購入検討中です。
-「ドラゴンマンション三ノ輪壱番館」（4980万円）について、立地の利便性、58㎡のゆとりある広さに魅力を感じお問い合わせいたします。
-
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・月額の管理費・修繕積立金の金額
-・ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-58', this)" data-accent="#a78bfa">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#a78bfa">
-            <div class="card-header">
-              <div class="card-rank">#59</div>
-              <div class="card-info">
-                <a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024631498/" target="_blank" class="card-name">蔵前コヤマハイツ</a>
-                <div class="card-meta">2780万円 / 58㎡ / 1971年築 / 3LDK / 徒歩2分</div>
-                <div class="card-score">63pt — Yahoo不動産問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-red">管理費不明</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">Yahoo不動産</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-59">東京在住、法人での購入検討中です。
-「蔵前コヤマハイツ」（2780万円）について、駅からのアクセスの良さ、58㎡のゆとりある広さに魅力を感じお問い合わせいたします。
-
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・月額の管理費・修繕積立金の金額
-・ペット飼育の可否（小型犬を飼っております）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-59', this)" data-accent="#a78bfa">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#a78bfa">
-            <div class="card-header">
-              <div class="card-rank">#60</div>
-              <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20265506/" target="_blank" class="card-name">新大塚タウンプラザ</a>
-                <div class="card-meta">3990万円 / 40㎡ / 1982年築 / 1LDK / 徒歩4分</div>
-                <div class="card-score">63pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 26,980円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-60">東京在住、法人での購入検討中です。
-「新大塚タウンプラザ」（3990万円）について、駅からのアクセスの良さ、周辺環境に魅力を感じお問い合わせいたします。
-
-現在都内で住居用物件を探しており、ペットと暮らせる物件を重視しております。
-内覧をお願いできればと思います。
-
-あわせて以下もご確認いただけますと幸いです。
-・ペット飼育の可否（小型犬を飼っております）
-
-なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。
-
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-60', this)" data-accent="#a78bfa">
+              <button class="copy-btn" onclick="copyMsg('msg-30', this)" data-accent="#a78bfa">
                 コピー
               </button>
             </div>

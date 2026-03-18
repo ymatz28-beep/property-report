@@ -1,0 +1,733 @@
+{#
+  Property Search Report — extends base.html
+
+  This template receives context from generate_search_report_common.py's
+  build_report_html(). All property scoring, filtering, and data preparation
+  is done in Python; this template only handles rendering.
+
+  Required context:
+    config: { city_key, city_label, accent, accent_rgb, hero_conditions }
+    rows_sorted: list of scored PropertyRow dicts
+    top5: list of top 5 PropertyRow dicts
+    meta: { search_date, conditions, sources_loaded, sold_removed, ... }
+    raw_count: int
+    duplicate_count: int
+    avg_price: float
+    avg_area: float
+    top_prop: PropertyRow dict or None
+    radar_labels: list[str]
+    radar_datasets: list[dict]  (Chart.js datasets)
+    bucket_labels: list[str]
+    bucket_values: list[int]
+    price_bin_labels: list[str]
+    price_bin_values: list[int]
+    city_badge: str
+    table_rows: list[dict]
+    focus_cards: list[dict]
+    search_condition_bullets: list[str]
+    investor_notes: list[str]
+    nav_pages: list[{href, label}]
+    current_page: str
+#}
+{% extends "base.html" %}
+
+{% block title %}{{ config.city_label }} 物件検索レポート{% endblock %}
+
+{% block head_extra %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{# Use shared gnav from base.html #}
+
+{# Override footer — property has its own footer #}
+{% block footer %}{% endblock %}
+
+{% block styles %}
+/* === Site header === */
+
+/* === Global nav === */
+
+/* === Property-specific vars === */
+:root {
+  --accent: {{ config.accent }};
+  --accent-rgb: {{ config.accent_rgb }};
+  --card: rgba(255,255,255,0.04);
+  --line: rgba(255,255,255,0.10);
+  --muted: #a9b3c6;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --radius: 12px;
+  --shadow: 0 18px 60px rgba(0,0,0,0.45);
+}
+body {
+  background:
+    radial-gradient(circle at 15% -10%, rgba(var(--accent-rgb),0.16), transparent 40%),
+    radial-gradient(circle at 88% 12%, rgba(110,120,255,0.10), transparent 45%),
+    linear-gradient(180deg,#070b11,#0b0f16 28%, #0d1320 100%);
+}
+.wrap { max-width:1280px; margin:0 auto; padding:24px 16px 44px; }
+
+/* Hero */
+.hero {
+  position:relative; padding:28px; border-radius:24px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  box-shadow:var(--shadow); overflow:hidden; backdrop-filter: blur(12px);
+}
+.kicker { color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-weight:700; font-size:12px; }
+h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:700; font-family:var(--font-body); }
+.hero-sub { color:#d0d9eb; margin:0; max-width:860px; }
+.badge-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+.badge {
+  display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+  border:1px solid rgba(var(--accent-rgb),0.35);
+  background:rgba(var(--accent-rgb),0.08);
+  color:#e8fbff; font-size:12px; font-weight:600;
+}
+
+/* Page nav (cross-page navigation) */
+.page-nav {
+  position:sticky; top:var(--gnav-height, 52px); z-index:var(--z-subnav, 90);
+  background:rgba(10,12,18,.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  padding:0; display:flex; overflow-x:auto; white-space:nowrap;
+  scrollbar-width:none;
+}
+.page-nav::-webkit-scrollbar { display:none; }
+.page-nav a {
+  display:inline-flex; align-items:center; padding:8px 14px;
+  font-size:11px; font-weight:600; color:rgba(255,255,255,.5);
+  text-decoration:none; letter-spacing:.04em; transition:color .2s;
+}
+.page-nav a:hover { color:#fff; }
+.page-nav a.cur { color:#fff; border-bottom:2px solid var(--accent, #3b9eff); }
+@media (max-width:640px) {
+  .page-nav a { padding:10px 10px; font-size:10px; min-height:44px; }
+}
+
+/* Section jump nav */
+.section-jump {
+  position:sticky; top:calc(var(--gnav-height, 52px) + 36px); z-index:calc(var(--z-subnav, 90) - 1);
+  background:rgba(14,18,28,.88); backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  padding:6px 16px; margin:0 -16px;
+  display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.section-jump::-webkit-scrollbar { display:none; }
+.section-jump a {
+  flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;
+  min-height:44px; padding:8px 16px; border-radius:999px;
+  font-size:12px; font-weight:700; color:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.03);
+  text-decoration:none; white-space:nowrap; transition:color .15s, border-color .15s, background .15s;
+}
+.section-jump a:hover {
+  color:#fff; border-color:rgba(var(--accent-rgb),.4); background:rgba(var(--accent-rgb),.08);
+  text-decoration:none;
+}
+.section-jump a.active {
+  color:#fff; border-color:rgba(var(--accent-rgb),.5); background:rgba(var(--accent-rgb),.14);
+}
+
+/* Grid */
+.grid-4 { margin-top:32px; display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:14px; }
+.card {
+  border:1px solid var(--line); background:var(--card); border-radius:var(--radius);
+  padding:16px; backdrop-filter: blur(10px); box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+}
+.stat .label { color:var(--muted); font-size:12px; }
+.stat .value { font-size:clamp(18px, 3.5vw, 28px); font-weight:800; margin-top:6px; }
+.stat .sub { color:#cdd6e8; font-size:12px; margin-top:4px; }
+
+/* Sections */
+.section { margin-top:32px; border:1px solid var(--line); background:var(--card); border-radius:var(--radius); padding:18px; backdrop-filter: blur(10px); }
+.section h2 { margin:0 0 12px; font-size:18px; font-weight:800; letter-spacing:.02em; display:flex; align-items:center; gap:10px; }
+.section h2::before { content:""; width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12); }
+.cond-list { margin:0; padding-left:18px; color:#d8e0f0; line-height:1.75; columns:2; column-gap:24px; }
+
+/* Table */
+.table-shell { overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); -webkit-overflow-scrolling:touch; }
+table { width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }
+thead th {
+  position:sticky; top:0; z-index:1;
+  background:rgba(12,17,26,.92); color:#dbe7fa; font-size:12px;
+  text-align:left; padding:12px 10px; border-bottom:1px solid rgba(255,255,255,.08); white-space:nowrap;
+}
+thead th button { all:unset; cursor:pointer; color:inherit; font-weight:700; display:inline-flex; gap:6px; align-items:center; }
+tbody td { padding:10px 6px; border-bottom:1px solid rgba(255,255,255,.05); font-size:13px; vertical-align:top; }
+tbody tr:nth-child(even) td { background:rgba(255,255,255,.012); }
+tbody tr:hover td { background:rgba(var(--accent-rgb),.06); }
+.tier-strong td { box-shadow: inset 4px 0 0 rgba(34,197,94,.7); }
+.tier-good td { box-shadow: inset 4px 0 0 rgba(250,204,21,.7); }
+.tier-conditional td { box-shadow: inset 4px 0 0 rgba(251,146,60,.7); }
+.tier-pass td { box-shadow: inset 4px 0 0 rgba(239,68,68,.7); }
+a { color:#eaf7ff; text-decoration:none; }
+a:hover { color:var(--accent); text-decoration:underline; }
+.name-col { max-width:130px; }
+.clamp2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.name-col a { font-weight:700; }
+
+/* Score pills */
+.sc-pill { display:inline-block; padding:1px 4px; border-radius:4px; font-size:10px; font-weight:700; margin:1px; line-height:1.3; }
+.sc-pos { background:rgba(52,211,153,.15); color:#34d399; }
+.sc-neg { background:rgba(248,113,113,.15); color:#f87171; }
+.sc-zero { background:rgba(107,114,128,.1); color:#6b7280; }
+.breakdown-col { font-family:var(--font-mono); max-width:220px; }
+.breakdown-th { min-width:180px; }
+.breakdown-legend { font-size:9px; color:var(--muted); letter-spacing:0.5px; margin-top:2px; font-weight:400; }
+
+/* Maintenance */
+.maint-col { white-space:nowrap; font-size:12px; }
+.maint-detail { display:block; font-size:10px; color:var(--muted); margin-top:2px; }
+.maint-na { font-size:11px; color:var(--muted); opacity:0.6; }
+td:nth-child(5) { max-width:110px; font-size:12px; }
+td:nth-child(6) { max-width:160px; font-size:12px; }
+td:nth-child(8) { white-space:nowrap; max-width:55px; }
+
+/* Pet tag */
+.pet-tag {
+  display:inline-block; margin-top:3px; font-size:10px; font-weight:700;
+  padding:1px 6px; border-radius:999px; line-height:1.4;
+}
+.pet-ok { background:rgba(34,197,94,.15); color:#34d399; border:1px solid rgba(34,197,94,.3); }
+.pet-maybe { background:rgba(250,204,21,.12); color:#facc15; border:1px solid rgba(250,204,21,.25); }
+
+/* Source tag */
+.source-tag {
+  margin-top:4px; font-size:11px; color:var(--muted);
+  display:inline-block; padding:2px 8px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
+}
+/* First-seen column */
+.first-seen-col { white-space:nowrap; font-size:12px; text-align:center; }
+.new-badge {
+  display:inline-block; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:800;
+  background:rgba(59,130,246,.18); color:#60a5fa; border:1px solid rgba(59,130,246,.35);
+  letter-spacing:.04em;
+}
+.score-badge {
+  display:inline-grid; place-items:center;
+  min-width:38px; padding:5px 10px; border-radius:999px;
+  border:1px solid color-mix(in oklab, var(--badge) 50%, white 10%);
+  background:color-mix(in oklab, var(--badge) 16%, transparent);
+  color:#fff; font-weight:800;
+}
+.tier-pill {
+  display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px;
+  border:1px solid color-mix(in oklab, var(--tier) 45%, white 8%);
+  background:color-mix(in oklab, var(--tier) 14%, transparent);
+  font-weight:700; font-size:12px;
+}
+/* Tier pill accessibility: text icon prefix per tier */
+.tier-strong .tier-pill::before { content:"\25C6 "; /* ◆ */ }
+.tier-good .tier-pill::before { content:"\25CF "; /* ● */ }
+.tier-conditional .tier-pill::before { content:"\25C7 "; /* ◇ */ }
+.tier-pass .tier-pill::before { content:"\25CB "; /* ○ */ }
+
+/* Focus cards */
+.focus-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; }
+.focus-card {
+  border-radius:12px; border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  padding:14px; box-shadow:var(--shadow);
+}
+.focus-head { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:start; }
+.focus-rank {
+  width:36px; height:36px; border-radius:12px; display:grid; place-items:center;
+  background:rgba(var(--accent-rgb),.12); border:1px solid rgba(var(--accent-rgb),.35); font-weight:800;
+}
+.focus-head h3 { margin:0; font-size:17px; line-height:1.3; }
+.focus-head p { margin:4px 0 0; color:var(--muted); font-size:12px; }
+.focus-score {
+  min-width:68px; text-align:center; font-weight:900; font-size:24px;
+  color:#fff; border-radius:14px; padding:8px 10px;
+  border:1px solid color-mix(in oklab, var(--accent) 40%, white 8%);
+  background:color-mix(in oklab, var(--accent) 14%, transparent);
+}
+.focus-score span { display:block; margin-top:4px; font-size:10px; color:#dfe8f7; font-weight:700; }
+.chip-row { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
+.chip {
+  display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700;
+  padding:5px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.03); color:#e6eefc;
+}
+.chip-penalty { border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.10); color:#ffdada; }
+.focus-comment { margin:10px 0 0; color:#dbe4f4; line-height:1.65; font-size:13px; }
+.focus-meta { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:12px; }
+.focus-meta span { padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.06); background:rgba(255,255,255,.02); }
+
+/* Charts */
+.chart-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:14px; }
+.chart-col { display:grid; gap:14px; }
+.chart-card canvas { width:100%; max-height:360px; }
+.notes { margin:0; padding-left:18px; line-height:1.8; color:#d9e2f3; }
+.footer { margin-top:32px; color:var(--muted); font-size:12px; text-align:center; }
+.footer a { color:#cfeeff; }
+
+/* Collapsible sections for mobile */
+.collapsible-toggle {
+  display:none; cursor:pointer; background:none; border:none; color:var(--muted);
+  font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.1);
+}
+.collapsible-toggle::after { content:" \25BC"; font-size:10px; }
+.collapsible-toggle.is-open::after { content:" \25B2"; }
+
+/* Scroll offset for sticky nav */
+[id] { scroll-margin-top:calc(var(--gnav-height, 52px) + 56px); }
+
+/* === Tablet landscape (960px) === */
+@media (max-width: 960px) {
+  .grid-4 { grid-template-columns:repeat(2, minmax(0,1fr)); }
+  .chart-grid, .focus-grid { grid-template-columns:1fr; }
+  .cond-list { columns:1; }
+  .hero { padding:14px; }
+  .hero h1 { font-size:18px; }
+  .hero-sub { display:none; }
+  .badge-row { gap:4px; }
+  .badge { font-size:10px; padding:3px 6px; }
+  .stat .value { font-size:20px; }
+  .collapsible-toggle { display:inline-block; }
+  .collapsible-content.is-collapsed { display:none; }
+  .breakdown-col { max-width:180px; }
+  .maint-detail { font-size:9px; }
+}
+/* === Tablet portrait (768px) === */
+@media (max-width: 768px) {
+  table { min-width:auto; }
+  .hero { padding:10px 12px; }
+  .hero h1 { font-size:16px; margin:6px 0; }
+  .kicker { font-size:10px; }
+  .section { padding:12px; margin-top:24px; }
+  .section h2 { font-size:15px; margin-bottom:8px; }
+  .stat .value { font-size:18px; }
+  .stat .sub { font-size:10px; }
+  .card { padding:10px; }
+  .grid-4 { gap:8px; }
+  .focus-head h3 { font-size:14px; }
+  .focus-score { font-size:20px; padding:6px 8px; min-width:56px; }
+  .focus-card { padding:10px; }
+  .chip { font-size:10px; padding:4px 6px; }
+  tbody td { padding:8px 6px; font-size:12px; }
+  thead th { font-size:11px; padding:8px 6px; }
+  .breakdown-col { max-width:140px; }
+  .sc-pill { font-size:9px; padding:1px 3px; }
+}
+/* === Mobile (640px) === */
+@media (max-width: 640px) {
+  .hero { padding:8px 10px; border-radius:14px; }
+  .hero h1 { margin:4px 0; }
+  .badge-row { gap:3px; margin-top:6px; }
+  .badge { font-size:9px; padding:2px 6px; }
+  .grid-4 { grid-template-columns:repeat(2, minmax(0,1fr)); gap:6px; margin-top:12px; }
+  .card.stat { padding:8px 4px; text-align:center; }
+  .stat .label { font-size:10px; }
+  .stat .value { font-size:15px; margin-top:2px; }
+  .stat .sub { display:none; }
+  .section { margin-top:20px; }
+  table { min-width:800px; }
+  tbody td { padding:6px 4px; font-size:11px; }
+  thead th { padding:6px 4px; font-size:10px; }
+  .name-col { max-width:140px; }
+  .score-badge { min-width:32px; padding:4px 8px; font-size:13px; }
+  .source-tag { font-size:9px; padding:1px 5px; }
+  /* Hide: スコア内訳 + 評価(tier) のみ。他の列は横スクロールで閲覧可能 */
+  .breakdown-col, .breakdown-th { display:none; }
+  .tier-col, .tier-th { display:none; }
+  .sc-pill { font-size:8px; padding:1px 2px; margin:0; }
+  .maint-col { font-size:11px; }
+  .maint-detail { font-size:8px; }
+  .focus-head { grid-template-columns:auto 1fr; }
+  .focus-score { grid-column:1/-1; justify-self:start; min-width:auto; width:fit-content; font-size:18px; }
+  .focus-head h3 { font-size:13px; }
+  .focus-comment { font-size:12px; }
+  .section-jump { top:calc(var(--gnav-height, 52px) + 36px); padding:4px 12px; gap:4px; }
+  .section-jump a { min-height:40px; padding:6px 12px; font-size:11px; }
+  [id] { scroll-margin-top:calc(var(--gnav-height, 52px) + 48px); }
+}
+/* Freshness banner */
+.freshness-bar {
+  margin-top:14px; display:flex; align-items:center; gap:0;
+  border:1px solid var(--line); border-radius:999px;
+  background:rgba(255,255,255,0.03); backdrop-filter:blur(8px);
+  padding:0; overflow:hidden; font-size:12px; font-weight:600;
+  max-width:fit-content;
+}
+.freshness-bar .fb-chip {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:7px 14px; white-space:nowrap; color:#d0d9eb;
+  border-right:1px solid var(--line);
+}
+.freshness-bar .fb-chip:last-child { border-right:none; }
+.freshness-bar .fb-chip .fb-icon { font-size:13px; opacity:0.7; }
+.freshness-bar .fb-new { color:var(--success); }
+.freshness-bar .fb-removed { color:var(--danger); }
+@media (max-width: 640px) {
+  .freshness-bar { font-size:11px; border-radius:10px; flex-wrap:wrap; max-width:100%; }
+  .freshness-bar .fb-chip { padding:5px 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior:auto !important; animation:none !important; transition:none !important; }
+}
+{% endblock %}
+
+{% block content %}
+{# Cross-page navigation #}
+<nav class="page-nav">
+  {% for page in nav_pages %}
+  <a href="{{ page.href }}"{% if page.label == config.city_label or page.href == current_page %} class="cur"{% endif %}>{{ page.label }}</a>
+  {% endfor %}
+</nav>
+
+<div class="wrap">
+  {# Section jump navigation #}
+  <nav class="section-jump" id="sectionJump">
+    <a href="#sec-stats">Stats</a>
+    <a href="#sec-charts">Charts</a>
+    <a href="#sec-top5">Top5</a>
+    <a href="#sec-table">全物件テーブル</a>
+  </nav>
+
+  {# Hero #}
+  <section class="hero">
+    <div class="kicker">PROPERTY SEARCH REPORT / {{ config.city_label | upper }}</div>
+    <h1>{{ config.city_label }} 民泊向け中古マンション候補レポート</h1>
+    <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
+    <div class="badge-row">
+      <span class="badge">検索日 {{ search_date }}</span>
+      <span class="badge">厳選 {{ rows_sorted | length }}件 / {{ raw_count }}件</span>
+      <span class="badge">{{ city_badge }}</span>
+    </div>
+    <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
+    <div class="collapsible-content is-collapsed">
+      <div class="badge-row" style="margin-top:8px;">
+        <span class="badge">原データ {{ raw_count }}件</span>
+        <span class="badge">重複除外 {{ duplicate_count }}件</span>
+        <span class="badge">売却済除外 {{ meta.sold_removed | default("0") }}件</span>
+        <span class="badge">OC除外 {{ meta.oc_removed | default("0") }}件</span>
+        <span class="badge">ペット不可除外 {{ meta.pet_ng_removed | default("0") }}件</span>
+        <span class="badge">民泊不可除外 {{ meta.minpaku_ng_removed | default("0") }}件</span>
+        <span class="badge">低スコア除外 {{ meta.quality_filtered | default("0") }}件</span>
+      </div>
+      <div class="badge-row">
+        {% for b in config.hero_conditions %}
+        <span class="badge">{{ b }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  {# Freshness Banner #}
+  {% if patrol_summary and patrol_summary.date %}
+  <div class="freshness-bar">
+    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: {{ patrol_summary.date[5:] }}{% if patrol_summary.elapsed_min %} ({{ patrol_summary.elapsed_min }}分){% endif %}</span>
+    <span class="fb-chip">掲載中 {{ patrol_summary.total }}件</span>
+    {% if patrol_summary.new_count %}<span class="fb-chip fb-new">+{{ patrol_summary.new_count }} 新規</span>{% endif %}
+    {% if patrol_summary.removed_count %}<span class="fb-chip fb-removed">-{{ patrol_summary.removed_count }} 終了</span>{% endif %}
+  </div>
+  {% endif %}
+
+  {# Stats Grid #}
+  <section id="sec-stats" class="grid-4">
+    <div class="card stat"><div class="label">総候補数</div><div class="value">{{ rows_sorted | length }}</div><div class="sub">重複排除後</div></div>
+    <div class="card stat"><div class="label">平均価格</div><div class="value">{{ "%.1f" | format(avg_price) }}万円</div><div class="sub">全候補平均</div></div>
+    <div class="card stat"><div class="label">平均面積</div><div class="value">{{ "%.2f" | format(avg_area) }}㎡</div><div class="sub">全候補平均</div></div>
+    <div class="card stat"><div class="label">最高スコア</div><div class="value">{{ top_prop.total_score if top_prop else '-' }}</div><div class="sub">{{ top_prop.name if top_prop else '' }}</div></div>
+  </section>
+
+  {# Search Conditions #}
+  <section class="section">
+    <h2>Search Conditions</h2>
+    <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">詳細を見る</button>
+    <div class="collapsible-content is-collapsed">
+      <ul class="cond-list">
+        <li>データ元条件: {{ meta.conditions | default("5000万以下 / 40-70㎡ / ペット相談可") }}</li>
+        <li>重複排除キー: 物件名 + 価格（先勝ち）</li>
+        <li>駅アクセスに「バス」を含む場合、徒歩分数評価は0点</li>
+        <li>築年1981年7月以降を新耐震として評価</li>
+        <li>管理費修繕積立金: 1万円/月以下=+10, 1.5万以下=+7, 2万以下=+5, 3万超=マイナス</li>
+        <li>民泊禁止は除外（ペット不可と同様ハードフィルタ）</li>
+        {% for item in search_condition_bullets %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  {# Property Table #}
+  <section id="sec-table" class="section">
+    <h2>Property Table</h2>
+    <div class="table-shell">
+      <table id="propertyTable">
+        <thead>
+          <tr>
+            <th><button data-sort="index" data-type="number">#</button></th>
+            <th class="first-seen-th"><button data-sort="firstseen" data-type="string">掲載開始</button></th>
+            <th><button data-sort="name" data-type="string">物件名</button></th>
+            <th><button data-sort="price" data-type="number">価格</button></th>
+            <th><button data-sort="area" data-type="number">面積</button></th>
+            <th><button data-sort="location" data-type="string">所在地</button></th>
+            <th><button data-sort="walk" data-type="number">最寄駅</button></th>
+            <th class="year-th"><button data-sort="year" data-type="number">築年</button></th>
+            <th class="layout-th"><button data-sort="layout" data-type="string">間取り</button></th>
+            <th class="maint-th">管理費修繕</th>
+            <th class="breakdown-th">スコア内訳</th>
+            <th><button data-sort="score" data-type="number">スコア</button></th>
+            <th class="tier-th"><button data-sort="tier" data-type="string">評価</button></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in table_rows %}
+          <tr class="{{ row.tier_class }}" data-index="{{ row.idx }}" data-name="{{ row.name }}" data-location="{{ row.location }}" data-layout="{{ row.layout }}" data-tier="{{ row.tier_label }}" data-price="{{ row.price_man }}" data-area="{{ row.area_display }}" data-score="{{ row.total_score }}" data-year="{{ row.built_year }}" data-walk="{{ row.walk_min }}" data-firstseen="{{ row.first_seen }}">
+            <td>{{ row.idx }}</td>
+            <td class="first-seen-col">{% if row.is_new %}<span class="new-badge">NEW</span>{% else %}{{ row.first_seen }}{% endif %}</td>
+            <td class="name-col"><div class="clamp2"><a href="{{ row.url }}" target="_blank" rel="noopener noreferrer">{{ row.name }}</a></div>{% if row.pet_badge %}<span class="pet-tag {{ row.pet_badge_class }}">{{ row.pet_badge }}</span>{% endif %}<div class="source-tag">{{ row.source }}</div></td>
+            <td>{{ row.price_formatted }}</td>
+            <td>{{ row.area_formatted }}</td>
+            <td><div class="clamp2">{{ row.location }}</div></td>
+            <td><div class="clamp2">{{ row.station_text }}</div></td>
+            <td class="year-col">{{ row.built_display }}</td>
+            <td class="layout-col">{{ row.layout }}</td>
+            <td class="maint-col">{{ row.maint_display | safe }}</td>
+            <td class="breakdown-col">{{ row.breakdown_html | safe }}</td>
+            <td><span class="score-badge" style="--badge:{{ row.tier_color }}" title="{{ row.breakdown_title }}">{{ row.total_score }}</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:{{ row.tier_color }}">{{ row.tier_label }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {# Top 5 Focus Cards #}
+  <section id="sec-top5" class="section">
+    <h2>Top 5 Focus Cards</h2>
+    <div class="focus-grid">
+      {% for card in focus_cards %}
+      <article class="focus-card">
+        <div class="focus-head">
+          <div class="focus-rank">#{{ card.rank }}</div>
+          <div>
+            <h3><a href="{{ card.url }}" target="_blank" rel="noopener noreferrer">{{ card.name }}</a></h3>
+            <p>{{ card.price_formatted }} / {{ card.area_formatted }} / {{ card.location }}</p>
+          </div>
+          <div class="focus-score" style="--accent:{{ card.tier_color }}">{{ card.total_score }}<span>{{ card.tier_label }}</span></div>
+        </div>
+        <div class="chip-row">
+          {% for chip in card.chips %}
+          <span class="chip {% if chip.value < 0 %}chip-penalty{% endif %}">{{ chip.label }} {{ "%+d" | format(chip.value) }}</span>
+          {% endfor %}
+        </div>
+        <p class="focus-comment">{{ card.detail_comment }}</p>
+        <div class="focus-meta">
+          <span>{{ card.station_text }}</span>
+          <span>{{ card.built_text }}</span>
+          <span>{{ card.layout }}</span>
+          {% if card.minpaku_status %}<span>{{ card.minpaku_status }}</span>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  {# Charts #}
+  <section id="sec-charts" class="section">
+    <h2>Charts</h2>
+    <div class="chart-grid">
+      <div class="card chart-card"><canvas id="radarChart"></canvas></div>
+      <div class="chart-col">
+        <div class="card chart-card"><canvas id="bucketChart"></canvas></div>
+        <div class="card chart-card"><canvas id="priceChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  {# Investor Notes #}
+  <section class="section">
+    <h2>Investor Notes</h2>
+    <ul class="notes">
+      {% for note in investor_notes %}
+      <li>{{ note }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  {# Footer #}
+  <div class="footer">
+    <div style="margin-bottom:8px">
+      {% for page in nav_pages %}
+      <a href="{{ page.href }}">{{ page.label }}</a>{% if not loop.last %} &middot; {% endif %}
+      {% endfor %}
+    </div>
+    <div>Sources: {{ sources_str }} ({{ config.data_path }}{% if config.extra_data_paths %} + {{ config.extra_data_paths | join(', ') }}{% endif %})</div>
+    <div>Generated on {{ generated_at }}</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const chartAccent = 'rgba({{ config.accent_rgb }}, 1)';
+const chartAccentFill = 'rgba({{ config.accent_rgb }}, 0.18)';
+const radarLabels = {{ radar_labels | tojson }};
+const radarDatasets = {{ radar_datasets | tojson }}.map((d, i) => {
+  const hueShift = [0, 18, 35, 52, 70][i] || 0;
+  const alpha = 0.14 + i * 0.03;
+  return {
+    ...d,
+    borderColor: i === 0 ? chartAccent : `hsla(${(195 + hueShift)%360}, 90%, 68%, .95)`,
+    backgroundColor: i === 0 ? chartAccentFill : `hsla(${(195 + hueShift)%360}, 90%, 68%, ${alpha})`,
+    pointRadius: 2,
+    pointHoverRadius: 4,
+  };
+});
+const bucketLabels = {{ bucket_labels | tojson }};
+const bucketValues = {{ bucket_values | tojson }};
+const priceLabels = {{ price_bin_labels | tojson }};
+const priceValues = {{ price_bin_values | tojson }};
+
+const commonGrid = { color: 'rgba(255,255,255,0.08)', drawBorder: false };
+const commonTicks = { color: 'rgba(220,230,245,0.8)', font: { family: 'Inter, Noto Sans JP, sans-serif' } };
+
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: { labels: radarLabels, datasets: radarDatasets },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: '#e8efff' } },
+      title: { display: true, text: 'Top5 \u30B9\u30B3\u30A2\u5185\u8A33\u6BD4\u8F03\uFF080-100\u6B63\u898F\u5316\uFF09', color: '#e8efff' }
+    },
+    scales: {
+      r: {
+        suggestedMin: 0, suggestedMax: 100,
+        angleLines: { color: 'rgba(255,255,255,0.08)' },
+        grid: { color: 'rgba(255,255,255,0.08)' },
+        pointLabels: { color: 'rgba(230,240,255,0.88)', font: { size: 11 } },
+        ticks: { backdropColor: 'transparent', color: 'rgba(220,230,245,0.55)', stepSize: 20 }
+      }
+    }
+  }
+});
+
+new Chart(document.getElementById('bucketChart'), {
+  type: 'bar',
+  data: {
+    labels: bucketLabels,
+    datasets: [{
+      label: '\u4EF6\u6570', data: bucketValues, borderRadius: 8, borderSkipped: false,
+      backgroundColor: bucketValues.map((_, i) => `rgba({{ config.accent_rgb }}, ${0.35 + (i % 5) * 0.1})`),
+      borderColor: bucketValues.map((_, i) => `rgba({{ config.accent_rgb }}, ${0.7 + (i % 3) * 0.1})`),
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: '\u30A8\u30EA\u30A2\u5206\u5E03\uFF08\u7ACB\u5730\u30D0\u30B1\u30C3\u30C8\u5225\u4EF6\u6570\uFF09', color: '#e8efff' }
+    },
+    scales: {
+      x: { ticks: commonTicks, grid: { display: false } },
+      y: { ticks: commonTicks, grid: commonGrid, beginAtZero: true }
+    }
+  }
+});
+
+new Chart(document.getElementById('priceChart'), {
+  type: 'bar',
+  data: {
+    labels: priceLabels,
+    datasets: [{
+      label: '\u4EF6\u6570', data: priceValues, borderRadius: 8, borderSkipped: false,
+      backgroundColor: priceValues.map((_, i) => `rgba(255,255,255, ${0.14 + (i % 4) * 0.05})`),
+      borderColor: priceValues.map(() => chartAccent),
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: '\u4FA1\u683C\u5206\u5E03\uFF08500\u4E07\u5186\u523B\u307F\uFF09', color: '#e8efff' }
+    },
+    scales: {
+      x: { ticks: commonTicks, grid: { display: false } },
+      y: { ticks: commonTicks, grid: commonGrid, beginAtZero: true }
+    }
+  }
+});
+
+// Table sort
+(() => {
+  const table = document.getElementById('propertyTable');
+  const tbody = table.querySelector('tbody');
+  const headers = table.querySelectorAll('thead button[data-sort]');
+  let sortState = { key: 'score', dir: 'desc' };
+
+  const valueFor = (row, key, type) => {
+    if (key === 'name') return (row.dataset.name || '').toLowerCase();
+    const v = row.dataset[key];
+    return type === 'number' ? Number(v) : (v || '');
+  };
+
+  const applySort = (key, type) => {
+    if (sortState.key === key) {
+      sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortState = { key, dir: key === 'score' ? 'desc' : 'asc' };
+    }
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    rows.sort((a, b) => {
+      const av = valueFor(a, key, type);
+      const bv = valueFor(b, key, type);
+      let cmp = 0;
+      if (type === 'number') cmp = av - bv;
+      else cmp = String(av).localeCompare(String(bv), 'ja');
+      if (cmp === 0) cmp = Number(a.dataset.index) - Number(b.dataset.index);
+      return sortState.dir === 'asc' ? cmp : -cmp;
+    });
+    rows.forEach(r => tbody.appendChild(r));
+    headers.forEach(h => h.textContent = h.textContent.replace(/[\u2191\u2193]$/, ''));
+    const active = Array.from(headers).find(h => h.dataset.sort === key);
+    if (active) active.textContent = active.textContent + (sortState.dir === 'asc' ? '\u2191' : '\u2193');
+  };
+
+  headers.forEach(h => {
+    h.addEventListener('click', () => applySort(h.dataset.sort, h.dataset.type || 'string'));
+  });
+})();
+
+// Section jump nav: highlight active section on scroll
+(() => {
+  const nav = document.getElementById('sectionJump');
+  if (!nav) return;
+  const links = nav.querySelectorAll('a[href^="#"]');
+  const sections = Array.from(links).map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+  if (!sections.length) return;
+
+  const update = () => {
+    const scrollY = window.scrollY + 120;
+    let active = sections[0];
+    for (const sec of sections) {
+      if (sec.offsetTop <= scrollY) active = sec;
+    }
+    const activeId = active ? active.id : '';
+    links.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + activeId);
+    });
+  };
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => { update(); ticking = false; });
+      ticking = true;
+    }
+  }, { passive: true });
+  update();
+})();
+</script>
+{% endblock %}

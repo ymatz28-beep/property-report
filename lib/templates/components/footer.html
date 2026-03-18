@@ -1,0 +1,43 @@
+{#
+  Standard footer component.
+
+  Expected context:
+    footer_text: str (optional, e.g., "stock-analyzer v0.3")
+    generated_at: str (auto-injected by renderer)
+    show_confidential: bool (optional, default false)
+#}
+
+<style>
+.iuma-footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: var(--space-8) 0;
+  border-top: 1px solid var(--border);
+  margin-top: var(--space-8);
+}
+.iuma-footer .warn {
+  color: var(--red);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .iuma-footer {
+    padding: var(--space-4) 0;
+    font-size: 10px;
+  }
+}
+</style>
+
+<footer class="iuma-footer">
+  {% if show_confidential | default(false) %}
+  <div class="warn">CONFIDENTIAL</div>
+  {% endif %}
+  {% if footer_text is defined and footer_text %}
+  <div>{{ footer_text }}</div>
+  {% endif %}
+  <div style="margin-top:4px;">Generated at {{ generated_at }}</div>
+</footer>

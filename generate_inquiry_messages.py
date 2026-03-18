@@ -31,7 +31,7 @@ from generate_search_report_common import (
 
 DATA = Path("data")
 OUTPUT = Path("output")
-MAX_PER_CITY = 20  # Top N per city
+MAX_PER_CITY = 10  # Top N per city
 
 # OC keywords (copied from report pipeline)
 _OC_KW = [
@@ -158,92 +158,107 @@ def _detect_source_type(row: PropertyRow) -> str:
     return "portal_form"  # SUUMO, Yahoo, athome, LIFULL
 
 
+def _pet_line(row: PropertyRow) -> str | None:
+    """Generate pet confirmation line based on status."""
+    if row.pet_status == "可" or row.pet_status == "相談可":
+        return f"チワワ（3kg）を飼っております。ペット{row.pet_status}と記載がございましたが、念のため問題ございませんでしょうか。"
+    if not row.pet_status or row.pet_status.strip() == "":
+        return "なお、チワワ（3kg）を飼っております。ペット飼育は可能でしょうか。"
+    return None
+
+
+def _extra_questions(row: PropertyRow) -> list[str]:
+    """Build list of extra data questions (excluding pet)."""
+    questions = []
+    if row.maintenance_fee == 0:
+        questions.append("月額の管理費・修繕積立金の金額")
+    if not row.built_year:
+        questions.append("築年月")
+    return questions
+
+
+_CITY_AREAS = {
+    "osaka": "大阪市西区・北区・中央区",
+    "fukuoka": "福岡市博多区・中央区",
+    "tokyo": "渋谷区・新宿区・目黒区・台東区",
+}
+
+
 def generate_message(row: PropertyRow, city_key: str) -> str:
     """Generate customized inquiry message for a property."""
-    city_context = {
-        "osaka": "大阪でセカンド拠点となる住居用物件",
-        "fukuoka": "福岡で住居用物件",
-        "tokyo": "都内で住居用物件",
-    }
-    city_text = city_context.get(city_key, "住居用物件")
+    city_label = {"osaka": "大阪", "fukuoka": "福岡", "tokyo": "東京"}.get(city_key, "")
 
     # Clean property name
     name = re.sub(r"[●★☆◎♪]", "", row.name).strip()
     if len(name) > 30:
         name = name[:30]
 
-    # Detect source type
     source_type = _detect_source_type(row)
-
-    # Attraction comment
     attraction = _generate_attraction(row)
-
-    # Build missing data questions
-    questions = []
-    if row.maintenance_fee == 0:
-        questions.append("月額の管理費・修繕積立金の金額")
-    if not row.pet_status or row.pet_status.strip() == "":
-        questions.append("ペット飼育の可否（小型犬を飼っております）")
-    elif row.pet_status == "相談可":
-        questions.append("ペット飼育の条件（小型犬を飼っており、具体的な制限があれば）")
-    if not row.built_year:
-        questions.append("築年月")
+    pet = _pet_line(row)
+    extras = _extra_questions(row)
 
     lines = []
 
+    area = _CITY_AREAS.get(city_key, "")
+    common_context = f"{area}を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。"
+
     if source_type == "portal_form":
         # --- Concise portal form version ---
-        lines.append(f"東京在住、法人での購入検討中です。")
         lines.append(f"「{name}」（{row.price_text}）について、{attraction}お問い合わせいたします。")
         lines.append("")
-        lines.append(f"現在{city_text}を探しており、ペットと暮らせる物件を重視しております。")
-        lines.append("内覧をお願いできればと思います。")
-        if questions:
+        lines.append(f"東京と{city_label}の2拠点生活を実施しており、法人（合同会社）での購入を考えております。")
+        lines.append(common_context)
+        lines.append(f"不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。")
+        if pet:
+            lines.append("")
+            lines.append(pet)
+        if extras:
             lines.append("")
             lines.append("あわせて以下もご確認いただけますと幸いです。")
-            for q in questions:
+            for q in extras:
                 lines.append(f"・{q}")
         lines.append("")
-        lines.append("なお、管理規約で利用上の制限事項がございましたら、事前にご確認させていただきたく、管理規約の閲覧は可能でしょうか。")
-        lines.append("")
+        lines.append("上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。")
         lines.append("よろしくお願いいたします。")
 
     elif source_type == "investor_portal":
         # --- Investor portal version (楽待) ---
-        lines.append(f"法人（合同会社）での購入を検討しております。")
-        lines.append(f"「{name}」について問い合わせいたします。{attraction}興味を持ちました。")
+        lines.append(f"「{name}」について、{attraction}お問い合わせいたします。")
         lines.append("")
-        lines.append("内覧希望です。ご対応可能な日程をお知らせください。")
-        if questions:
+        lines.append(f"東京と{city_label}の2拠点生活を前提に、法人（合同会社）での購入を検討しております。")
+        lines.append(common_context)
+        lines.append(f"不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用したいと考えておりますが、こうした利用は可能でしょうか。")
+        if pet:
             lines.append("")
-            for q in questions:
+            lines.append(pet)
+        if extras:
+            lines.append("")
+            for q in extras:
                 lines.append(f"・{q}")
         lines.append("")
-        lines.append("管理規約の用途制限（賃貸・転貸等）の有無についてもご教示ください。")
-        lines.append("")
+        lines.append("上記が可能であれば、ぜひ内覧させていただきたいです。")
         lines.append("よろしくお願いいたします。")
 
     else:
         # --- Direct email version (R不動産, カウカモ, ふれんず) ---
         lines.append("お世話になります。")
-        lines.append("東京在住で、法人での購入を検討しております。")
-        lines.append("")
         lines.append(f"貴サイトに掲載されている「{name}」を拝見し、{attraction}ご連絡いたしました。")
         lines.append("")
-        lines.append(f"現在{city_text}を探しており、ペットと一緒に住める物件を重視しております。")
-        lines.append("ぜひ内覧をお願いしたいのですが、ご対応いただける日程はございますでしょうか。")
-        if questions:
+        lines.append(f"東京と{city_label}の2拠点生活を実施しており、法人（合同会社）での購入を考えております。")
+        lines.append(common_context)
+        lines.append(f"居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。")
+        if pet:
             lines.append("")
-            lines.append("つきまして、以下の点についてもあわせてお伺いできればと存じます。")
-            for q in questions:
+            lines.append(pet)
+        if extras:
+            lines.append("")
+            lines.append("あわせて、以下の点もお伺いできればと存じます。")
+            for q in extras:
                 lines.append(f"・{q}")
         lines.append("")
-        lines.append("また、購入後の利用形態について管理規約で制限されている事項がございましたら、")
-        lines.append("事前に把握しておきたく存じます。管理規約の閲覧は可能でしょうか。")
-        lines.append("")
-        lines.append("お手数ですが、ご検討のほどよろしくお願い申し上げます。")
-        lines.append("")
-        lines.append("[署名]")
+        lines.append("上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。")
+        lines.append("よろしくお願い申し上げます。")
 
     return "\n".join(lines)
 

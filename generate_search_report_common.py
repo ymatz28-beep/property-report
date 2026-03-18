@@ -13,9 +13,11 @@ from typing import Iterable
 # ---------------------------------------------------------------------------
 # Make the shared lib importable
 # ---------------------------------------------------------------------------
-_LIB_ROOT = Path(__file__).resolve().parent.parent  # …/Documents/Projects
-if str(_LIB_ROOT) not in sys.path:
-    sys.path.insert(0, str(_LIB_ROOT))
+_THIS_DIR = Path(__file__).resolve().parent
+_LIB_ROOT = _THIS_DIR.parent  # …/Documents/Projects (local)
+for p in [str(_THIS_DIR), str(_LIB_ROOT)]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 from lib.renderer import create_env  # noqa: E402
 
@@ -740,15 +742,15 @@ def load_first_seen() -> dict[str, str]:
 
 
 def _format_first_seen(url: str, first_seen: dict[str, str]) -> str:
-    """Format first-seen date for display. 'NEW' if today, else 'M/D'."""
+    """Format first-seen date for display. 'NEW' if within 3 days, else 'M/D'."""
     date_str = first_seen.get(url, "")
     if not date_str:
         return ""
-    today = dt.date.today().isoformat()
-    if date_str == today:
-        return "NEW"
     try:
         d = dt.date.fromisoformat(date_str)
+        days_ago = (dt.date.today() - d).days
+        if days_ago <= 3:
+            return "NEW"
         return f"{d.month}/{d.day}"
     except ValueError:
         return date_str
@@ -908,6 +910,16 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
 
     # Build structured data for template
     first_seen = load_first_seen()
+    # Backfill: register any URLs not yet tracked with today's date
+    today_iso = dt.date.today().isoformat()
+    backfilled = 0
+    for r in rows_sorted:
+        if r.url and r.url not in first_seen:
+            first_seen[r.url] = today_iso
+            backfilled += 1
+    if backfilled:
+        first_seen_file = Path(__file__).parent / "data" / "first_seen.json"
+        first_seen_file.write_text(json.dumps(first_seen, ensure_ascii=False, indent=2), encoding="utf-8")
     table_rows = [_build_table_row_data(r, idx, first_seen) for idx, r in enumerate(rows_sorted, start=1)]
     focus_cards = [_build_focus_card_data(r, i) for i, r in enumerate(top5, start=1)]
     sources_str = meta.get("sources_loaded", "SUUMO")

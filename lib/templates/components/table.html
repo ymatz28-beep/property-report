@@ -1,0 +1,89 @@
+{#
+  Responsive table macro.
+
+  Usage:
+    {% from "components/table.html" import responsive_table %}
+    {{ responsive_table(
+        headers=[
+            {"label": "Name", "key": "name"},
+            {"label": "Price", "key": "price", "align": "right"},
+            {"label": "Details", "key": "details", "hide_mobile": true},
+        ],
+        rows=[
+            {"name": "Item A", "price": "\\u00a51,000", "details": "..."},
+        ],
+    ) }}
+#}
+
+{% macro responsive_table(headers, rows, table_class="", sortable=false, table_id="") %}
+<style>
+.iuma-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.iuma-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.iuma-table th,
+.iuma-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.iuma-table th {
+  background: var(--surface2);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 11px;
+  {% if sortable %}
+  cursor: pointer;
+  user-select: none;
+  {% endif %}
+}
+.iuma-table tr:hover {
+  background: var(--surface2);
+}
+
+@media (max-width: 640px) {
+  .iuma-table th,
+  .iuma-table td {
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+  .iuma-table th { font-size: 9px; }
+  .iuma-table .hide-mobile { display: none; }
+}
+</style>
+
+<div class="iuma-table-wrap">
+  <table class="iuma-table {{ table_class }}" {% if table_id %}id="{{ table_id }}"{% endif %}>
+    <thead>
+      <tr>
+        {% for h in headers %}
+        <th {% if h.hide_mobile | default(false) %}class="hide-mobile"{% endif %}
+            {% if h.align | default("") %}style="text-align:{{ h.align }};"{% endif %}
+            {% if sortable and h.key %}data-sort="{{ h.key }}"{% endif %}>
+          {{ h.label }}
+          {% if sortable and h.key %}<span class="sort-arrow" style="font-size:9px;opacity:0.5;margin-left:4px;">&#9660;</span>{% endif %}
+        </th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        {% for h in headers %}
+        <td {% if h.hide_mobile | default(false) %}class="hide-mobile"{% endif %}
+            {% if h.align | default("") %}style="text-align:{{ h.align }};"{% endif %}>
+          {{ row[h.key] if h.key else "" }}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endmacro %}

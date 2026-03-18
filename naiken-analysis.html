@@ -53,60 +53,22 @@
 .gnav a:hover{color:#fff}
 .gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
 @media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
-/* ── Shared Gnav ── */
-.site-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; height: 52px;
-  background: rgba(22,24,31,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  position: relative; font-family: 'Inter','Noto Sans JP',sans-serif;
-}
-.site-nav { display: flex; gap: 4px; }
-.site-nav a {
-  font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5);
-  text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: .15s;
-}
-.site-nav a:hover, .site-nav a[aria-current="page"] {
-  background: rgba(255,255,255,0.065); color: #f5f5f7;
-}
-.nav-toggle { display: none; }
-.nav-toggle-label { display: none; cursor: pointer; padding: 8px; }
-.nav-toggle-label span,
-.nav-toggle-label span::before,
-.nav-toggle-label span::after {
-  display: block; background: #f5f5f7; height: 2px; width: 20px;
-  border-radius: 2px; position: relative; transition: .3s;
-}
-.nav-toggle-label span::before,
-.nav-toggle-label span::after { content: ''; position: absolute; }
-.nav-toggle-label span::before { top: -6px; }
-.nav-toggle-label span::after { top: 6px; }
-@media (max-width: 640px) {
-  .nav-toggle-label { display: block; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
-  .site-nav {
-    display: none; flex-direction: column; gap: 0;
-    position: absolute; top: 52px; left: 0; right: 0; z-index: 200;
-    background: rgba(22,24,31,0.97); backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    padding: 8px 0;
-  }
-  .site-nav a { padding: 12px 24px; border-radius: 0; font-size: 14px; }
-  .nav-toggle:checked ~ .site-nav { display: flex; }
-  .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
-  .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
-  .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
-}
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.10);font-family:'Inter','Noto Sans JP',sans-serif}
+.site-header .site-brand{font-size:13px;font-weight:700;color:#3b9eff}
+.site-header .site-nav{display:flex;gap:6px;flex-wrap:wrap}
+.site-header .site-nav a{font-size:11px;color:#a9b3c6;text-decoration:none;padding:4px 10px;border-radius:4px;border:1px solid transparent;transition:all .15s}
+.site-header .site-nav a:hover{color:#edf3ff;background:rgba(255,255,255,0.04)}
+.site-header .site-nav a.current{color:#3b9eff;border-color:rgba(59,158,255,0.3);background:rgba(59,158,255,0.08)}
+@media(max-width:768px){.site-header{flex-direction:column;gap:8px;align-items:flex-start}}
   </style>
 </head>
 <body>
-<header class="site-header">
-  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
-  <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
+<div class="site-header">
   <nav class="site-nav">
     <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
-    <a href="https://ymatz28-beep.github.io/property-report/" aria-current="page">Property</a>
+    <a href="https://ymatz28-beep.github.io/property-report/" class="current">Property</a>
   </nav>
-</header>
+</div>
 <div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html" class="cur">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a></div></div>
 <div class="wrap">
   <h1>内覧分析メモ</h1>

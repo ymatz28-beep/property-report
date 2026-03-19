@@ -37,24 +37,36 @@ def log(msg: str) -> None:
 
 
 def run_script(name: str, args: list[str] | None = None, timeout: int = 180) -> bool:
-    """Run a Python script and return success status."""
+    """Run a Python script and return success status.
+
+    No pipes (DEVNULL for stdout/stderr) to guarantee timeout reliability.
+    Process group kill ensures the entire tree is cleaned up.
+    """
+    import os as _os, signal as _sig
     cmd = [sys.executable, name] + (args or [])
     log(f"  Running: {' '.join(cmd)}")
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, cwd=str(BASE_DIR))
-        if result.returncode != 0:
-            log(f"  [WARN] {name} exited with code {result.returncode}")
-            if result.stderr:
-                log(f"  stderr: {result.stderr[:200]}")
-        else:
-            # Print last few lines of stdout
-            lines = result.stdout.strip().split("\n")
-            for line in lines[-5:]:
-                log(f"  {line}")
-        return result.returncode == 0
-    except subprocess.TimeoutExpired:
-        log(f"  [WARN] {name} timed out")
-        return False
+        proc = subprocess.Popen(
+            cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            cwd=str(BASE_DIR), start_new_session=True,
+        )
+        try:
+            proc.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            try:
+                _os.killpg(proc.pid, _sig.SIGKILL)
+            except OSError:
+                proc.kill()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pass
+            log(f"  [WARN] {name} timed out ({timeout}s)")
+            return False
+
+        if proc.returncode != 0:
+            log(f"  [WARN] {name} exited with code {proc.returncode}")
+        return proc.returncode == 0
     except Exception as e:
         log(f"  [ERROR] {name}: {e}")
         return False
@@ -248,51 +260,59 @@ def diff_properties(before: dict, after: dict) -> dict:
 
 
 def search_all_sites() -> list[dict]:
-    """Run all property searches in parallel. Returns list of step results."""
-    log("=== 物件検索開始（並列） ===")
-    # All search scripts write to separate files — safe to parallelize
-    steps = [
-        ("search_suumo.py", 600),
+    """Run searches: SUUMO first (heaviest), then rest in parallel."""
+    results = []
+
+    # Phase 1: SUUMO first (heaviest — 17 wards + detail enrichment)
+    # Running alone avoids CPU/network contention that causes timeouts
+    log("=== 物件検索: SUUMO (先行) ===")
+    ok = run_script("search_suumo.py", timeout=900)
+    results.append({"step": "search_suumo.py", "ok": ok})
+    if not ok:
+        log("  ⚠️ search_suumo.py 失敗 — 他ソースで続行")
+
+    # Phase 2: Remaining scrapers in parallel (lighter, separate files)
+    log("=== 物件検索: 他ソース（並列） ===")
+    parallel_steps = [
         ("search_multi_site.py", 600),
         ("search_restate.py", 300),
-        ("search_ftakken.py", 180),
+        ("search_ftakken.py", 300),
         ("search_lifull.py", 300),
     ]
 
-    # Launch all in parallel
+    import os as _os, signal as _sig
     procs: dict[str, subprocess.Popen] = {}
-    for script, timeout in steps:
+    for script, _timeout in parallel_steps:
         cmd = [sys.executable, script]
         log(f"  Starting: {script}")
         procs[script] = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            text=True, cwd=str(BASE_DIR),
+            cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            cwd=str(BASE_DIR), start_new_session=True,
         )
 
-    # Collect results with per-script timeouts
-    results = []
-    for script, timeout in steps:
+    for script, timeout in parallel_steps:
         proc = procs[script]
         try:
-            stdout, stderr = proc.communicate(timeout=timeout)
+            proc.wait(timeout=timeout)
             ok = proc.returncode == 0
             if not ok:
                 log(f"  ⚠️ {script} 失敗 (exit {proc.returncode}) — 続行")
-                if stderr:
-                    log(f"    stderr: {stderr.strip()[:200]}")
-            else:
-                lines = stdout.strip().split("\n")
-                for line in lines[-3:]:
-                    log(f"  {line}")
         except subprocess.TimeoutExpired:
-            proc.kill()
+            try:
+                _os.killpg(proc.pid, _sig.SIGKILL)
+            except OSError:
+                proc.kill()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pass
             ok = False
             log(f"  ⚠️ {script} タイムアウト ({timeout}s) — 続行")
         results.append({"step": script, "ok": ok})
 
-    # Enrich maintenance fees (depends on search results — must be sequential)
+    # Phase 3: Enrich maintenance fees (depends on search results)
     log("=== 管理費enrichment ===")
-    ok = run_script("enrich_maintenance.py", timeout=300)
+    ok = run_script("enrich_maintenance.py", timeout=600)
     results.append({"step": "enrich_maintenance.py", "ok": ok})
     return results
 

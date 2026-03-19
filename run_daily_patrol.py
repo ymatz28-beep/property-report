@@ -354,6 +354,15 @@ def main():
     # 5. Generate reports
     generate_reports()
 
+    # 5.5. Auto-flag high-score properties for inquiry pipeline
+    try:
+        from property_pipeline import auto_flag, generate_dashboard
+        auto_flag()
+        generate_dashboard()
+        log("  Pipeline auto-flag 完了")
+    except Exception as e:
+        log(f"  Pipeline auto-flag skipped: {e}")
+
     # 6. Deploy
     deploy()
 

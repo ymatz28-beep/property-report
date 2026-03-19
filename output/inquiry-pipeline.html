@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Property Pipeline — iUMA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-serif;min-height:100vh}
+
+/* ── Shared Gnav ── */
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 52px;
+  background: rgba(22,24,31,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky; top: 0; z-index: 100;
+}
+.site-nav { display: flex; gap: 4px; }
+.site-nav a {
+  color: #71717a; text-decoration: none; font-size: 13px; font-weight: 500;
+  padding: 6px 14px; border-radius: 6px; transition: background .15s, color .15s;
+}
+.site-nav a:hover, .site-nav a[aria-current="page"] {
+  background: rgba(255,255,255,0.065); color: #f5f5f7;
+}
+.nav-toggle { display: none; }
+.nav-toggle-label { display: none; cursor: pointer; padding: 8px; }
+.nav-toggle-label span,
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  display: block; background: #f5f5f7; height: 2px; width: 20px;
+  border-radius: 2px; position: relative; transition: .3s;
+}
+.nav-toggle-label span::before,
+.nav-toggle-label span::after { content: ''; position: absolute; }
+.nav-toggle-label span::before { top: -6px; }
+.nav-toggle-label span::after { top: 6px; }
+@media (max-width: 640px) {
+  .nav-toggle-label { display: block; }
+  .site-nav {
+    display: none; flex-direction: column; gap: 0;
+    position: absolute; top: 52px; left: 0; right: 0; z-index: 200;
+    background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 0;
+  }
+  .site-nav a { padding: 12px 24px; border-radius: 0; font-size: 14px; }
+  .nav-toggle:checked ~ .site-nav { display: flex; }
+  .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
+  .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
+  .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
+}
+
+
+.gnav{position:sticky;top:52px;z-index:90;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
+.gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.gnav a:hover{color:#fff}
+.gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
+@media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+
+.container{max-width:800px;margin:0 auto;padding:0 16px 80px}
+
+/* Hero */
+.hero{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:32px 32px 28px;margin:20px 0}
+.hero h1{font-size:clamp(20px,2.5vw,26px);font-weight:700}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.stat{background:rgba(255,255,255,.06);border-radius:10px;padding:10px 16px;text-align:center;min-width:72px}
+.stat-val{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.stat-label{font-size:10px;color:#71717a;margin-top:2px}
+
+/* Section nav — matches stock portfolio .nav-bar pattern */
+.section-nav{position:sticky;top:92px;z-index:80;background:rgba(10,12,18,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);margin:0 -16px;padding:0 16px}
+.section-nav-inner{display:flex;gap:0;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.section-nav-inner::-webkit-scrollbar{display:none}
+.nav-tab{display:inline-flex;align-items:center;gap:4px;padding:10px 16px;font-size:12px;font-weight:600;color:rgba(255,255,255,.45);text-decoration:none;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;cursor:pointer}
+.nav-tab:hover{color:rgba(255,255,255,.8)}
+.nav-tab.active{color:#fff;border-bottom-color:#3b9eff}
+.tab-count{font-size:10px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace}
+.nav-tab.active .tab-count{color:rgba(255,255,255,.6)}
+
+/* City sections */
+.city-section{margin-top:28px}
+.city-section.hidden{display:none}
+.city-header{padding-left:12px;margin-bottom:14px;display:flex;align-items:baseline;gap:12px}
+.city-header h2{font-size:18px;font-weight:700}
+.city-stats{display:flex;gap:10px;font-size:11px;color:#71717a}
+
+/* Cards */
+.inq-card{display:block;text-decoration:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:8px;transition:background .15s,border-color .15s}
+.inq-card:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}
+.card-name{color:#f5f5f7;font-size:14px;font-weight:600}
+.card-score{background:rgba(255,255,255,.08);padding:2px 8px;border-radius:8px;font-size:11px;font-family:'JetBrains Mono',monospace;color:#a1a1aa}
+.status-pill{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;color:#fff}
+.card-detail{color:#a1a1aa;font-size:12px;margin-top:6px}
+.card-filters{display:flex;gap:12px;margin-top:8px;font-size:11px;color:#71717a}
+.card-meta{color:#52525b;font-size:10px;margin-top:6px}
+
+/* Empty state */
+.empty{text-align:center;padding:60px 20px;color:#52525b}
+.empty h2{font-size:18px;color:#71717a;margin-bottom:8px}
+
+@media(max-width:640px){
+  .hero{padding:24px 20px 20px}
+  .stats{gap:8px}
+  .stat{min-width:60px;padding:8px 12px}
+  .stat-val{font-size:18px}
+  .nav-tab{padding:10px 12px;font-size:11px}
+  .city-header h2{font-size:16px}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+  <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
+  <nav class="site-nav">
+    <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
+    <a href="https://ymatz28-beep.github.io/property-report/" aria-current="page">Property</a>
+    <a href="https://ymatz28-beep.github.io/trip-planner/">Travel</a>
+  </nav>
+</header>
+<div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a><a href="inquiry-pipeline.html" class="cur">Pipeline</a></div></div>
+
+<div class="container">
+  <div class="hero">
+    <h1>Property Pipeline</h1>
+    <div class="stats">
+      <div class="stat"><div class="stat-val">30</div><div class="stat-label">Total</div></div>
+      <div class="stat"><div class="stat-val" style="color:#f97316">0</div><div class="stat-label">進行中</div></div>
+      <div class="stat"><div class="stat-val" style="color:#a78bfa">0</div><div class="stat-label">内見</div></div>
+      <div class="stat"><div class="stat-val" style="color:#22c55e">0</div><div class="stat-label">決定</div></div>
+      <div class="stat"><div class="stat-val" style="color:#ef4444">0</div><div class="stat-label">見送り</div></div>
+    </div>
+  </div>
+
+  <div class="section-nav"><div class="section-nav-inner"><a href="#" class="nav-tab active" onclick="showCity('all')" data-city="all">All <span class="tab-count">30</span></a><a href="#city-osaka" class="nav-tab" onclick="showCity('osaka')" data-city="osaka">大阪 <span class="tab-count">10</span></a><a href="#city-fukuoka" class="nav-tab" onclick="showCity('fukuoka')" data-city="fukuoka">福岡 <span class="tab-count">10</span></a><a href="#city-tokyo" class="nav-tab" onclick="showCity('tokyo')" data-city="tokyo">東京 <span class="tab-count">10</span></a></div></div>
+
+  
+<div class="city-section" id="city-osaka" data-city="osaka">
+  <div class="city-header" style="border-left:3px solid #3b9eff">
+    <h2>大阪</h2>
+    <div class="city-stats">
+      <span>10件</span>
+      
+      <span style="color:#3b9eff">候補 10</span>
+    </div>
+  </div>
+  <div class="city-cards"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20101804/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">サニーハウス谷町</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">99pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,498万 / 54.88㎡ / 2LDK / 地下鉄谷町線「谷町六丁目」徒歩4分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-001</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">●ストークマンション長堀●</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">96pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,050万 / 56.91㎡ / 2LDK / 地下鉄千日前線「西長堀」徒歩4分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-002</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">サントピア九条</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">93pt</span>
+    </div>
+  </div>
+  <div class="card-detail">1,750万 / 52.5㎡ / 2LDK / 阪神電鉄阪神なんば線「九条」徒歩2分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-003</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">セレッソコート南堀江マルティア</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">93pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,380万 / 53.0㎡ / 2LDK / 地下鉄千日前線「桜川」徒歩4分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-004</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20437273/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">梅田北セントポリア</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">92pt</span>
+    </div>
+  </div>
+  <div class="card-detail">2,280万 / 40.04㎡ / 1LDK / 地下鉄堺筋線「天神橋筋六丁目」徒歩10分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-005</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20454080/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">ランズ南森町</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">90pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,780万 / 45.09㎡ / 1LDK / ＪＲ東西線「大阪天満宮」徒歩4分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-006</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20465603/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">ファインレジデンス福島野田The Garden</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">85pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,800万 / 40.07㎡ / 1LDK / ＪＲ大阪環状線「野田」徒歩7分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-007</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20468253/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">ファインレジデンス福島野田　The &nbsp;Garden</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">85pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,800万 / 40.07㎡ / 1LDK / ＪＲ大阪環状線「野田」徒歩7分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-008</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20443516/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">西道頓堀コーポ</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">85pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,890万 / 69.61㎡ / 3LDK / 地下鉄長堀鶴見緑地線「ドーム前千代崎」徒歩5分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-009</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20331873/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">ベル・アーバニティ同心</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">85pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,480万 / 55.58㎡ / 2LDK / 地下鉄谷町線「南森町」徒歩10分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-010</div>
+</a></div>
+</div>
+<div class="city-section" id="city-fukuoka" data-city="fukuoka">
+  <div class="city-header" style="border-left:3px solid #34d399">
+    <h2>福岡</h2>
+    <div class="city-stats">
+      <span>10件</span>
+      
+      <span style="color:#34d399">候補 10</span>
+    </div>
+  </div>
+  <div class="city-cards"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20131079/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">ヒューマインド博多駅東ネクスタイル</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">105pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,480万 / 58.3㎡ / 2LDK / 地下鉄空港線「東比恵」徒歩5分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-011</div>
+</a>
+<a href="https://www.f-takken.com/freins/items/99763695" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">アンピール天神東 405</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">101pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,999万 / 65.04㎡ / 2LDK / 福岡市七隈線渡辺通駅 徒歩8分</div>
+  <div class="card-filters">
+    <span>ペット ✅</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">ふれんず / inq-012</div>
+</a>
+<a href="https://www.f-takken.com/freins/items/99795327" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">福岡市七隈線薬院駅 徒歩3分</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">99pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,099万 / 47.29㎡ / 1SLDK / 西鉄天神大牟田線薬院駅 徒歩3分</div>
+  <div class="card-filters">
+    <span>ペット ✅</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">ふれんず / inq-013</div>
+</a>
+<a href="https://www.f-takken.com/freins/items/99798361" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">駅近、ペット可、生活環境充実！2026年2月リフォーム完了の1SLDKマンション！オートロック・エレ</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">99pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,099万 / 47.29㎡ / 1SLDK / 福岡市七隈線薬院駅 徒歩3分</div>
+  <div class="card-filters">
+    <span>ペット ✅</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">ふれんず / inq-014</div>
+</a>
+<a href="https://www.f-takken.com/freins/items/99765771" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">福岡市七隈線櫛田神社前駅 徒歩9分</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">98pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,280万 / 65.04㎡ / 2LDK / 福岡市七隈線渡辺通駅 徒歩9分</div>
+  <div class="card-filters">
+    <span>ペット ✅</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">ふれんず / inq-015</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">オープンレジデンシア天神今泉</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">98pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,900万 / 46.01㎡ / 2LDK / 地下鉄七隈線「薬院大通」徒歩6分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-016</div>
+</a>
+<a href="https://www.f-takken.com/freins/items/99358163" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">博多ニッコーハイツ 5階</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">93pt</span>
+    </div>
+  </div>
+  <div class="card-detail">1,900万 / 62.91㎡ / 3LDK / 福岡市空港線東比恵駅 徒歩8分</div>
+  <div class="card-filters">
+    <span>ペット ✅</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">ふれんず / inq-017</div>
+</a>
+<a href="https://www.f-takken.com/freins/items/99782845" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">大名エリア、1LDKの分譲マンションです。ペット飼育可能(規約の範囲内)♪</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">93pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,280万 / 65.61㎡ / 3LDK / 福岡市七隈線桜坂駅 徒歩9分</div>
+  <div class="card-filters">
+    <span>ペット ✅</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">ふれんず / inq-018</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79085867/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">クリオ渡辺通アーバンマークス</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">93pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,380万 / 44.58㎡ / 2LDK / 地下鉄七隈線「渡辺通」徒歩9分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-019</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79063957/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">コスモ博多古門戸</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">93pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,599万 / 54.49㎡ / 1LDK+S（納戸） / 地下鉄空港線「中洲川端」徒歩9分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-020</div>
+</a></div>
+</div>
+<div class="city-section" id="city-tokyo" data-city="tokyo">
+  <div class="city-header" style="border-left:3px solid #a78bfa">
+    <h2>東京</h2>
+    <div class="city-stats">
+      <span>10件</span>
+      
+      <span style="color:#a78bfa">候補 10</span>
+    </div>
+  </div>
+  <div class="city-cards"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78942164/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">藤和シティコープ池袋</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">91pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,880万 / 45.0㎡ / 2LDK / 東武東上線「北池袋」徒歩5分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-021</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20220965/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">マイステージ野方</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">90pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,680万 / 50.6㎡ / 1LDK / 西武新宿線「野方」徒歩3分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-022</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20158878/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">恵進マンション</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">79pt</span>
+    </div>
+  </div>
+  <div class="card-detail">2,480万 / 41.33㎡ / ワンルーム / 都営浅草線「本所吾妻橋」徒歩1分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-023</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20020844/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">ニックハイム向島百花園</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">76pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,480万 / 47.3㎡ / 2LDK / 東武伊勢崎線「東向島」徒歩10分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-024</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79057808/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">菊川グリーンハイツ</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">76pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,180万 / 50.0㎡ / 2DK / 都営新宿線「菊川」徒歩4分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-025</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78515092/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">大江戸コーポ</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">73pt</span>
+    </div>
+  </div>
+  <div class="card-detail">2,980万 / 46.28㎡ / 1LDK / 東京メトロ丸ノ内線「中野坂上」徒歩1分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-026</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20214392/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">サンコート池袋</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">71pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,998万 / 42.44㎡ / 1LDK / ＪＲ山手線「池袋」徒歩13分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-027</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78764639/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">キャニオンマンション上鷺宮</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">70pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,300万 / 59.4㎡ / 3LDK / 西武池袋線「富士見台」徒歩3分</div>
+  <div class="card-filters">
+    <span>ペット ⏳</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-028</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79163699/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">ヴィラロイヤル東中野</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">68pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,500万 / 62.94㎡ / 2LDK / ＪＲ中央線「東中野」徒歩7分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-029</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79140949/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">ヴィラロイヤル東中野 706号室</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">68pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,500万 / 62.94㎡ / 2LDK / ＪＲ中央線「東中野」徒歩7分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-030</div>
+</a></div>
+</div>
+</div>
+
+<script>
+function showCity(city) {
+  document.querySelectorAll('.city-section').forEach(s => {
+    s.classList.toggle('hidden', city !== 'all' && s.dataset.city !== city);
+  });
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.city === city);
+  });
+}
+</script>
+</body>
+</html>

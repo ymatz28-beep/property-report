@@ -101,6 +101,7 @@ def global_nav_html(current: str = "") -> str:
         ("minpaku-tokyo.html", "東京"),
         ("naiken-analysis.html", "内覧分析"),
         ("inquiry-messages.html", "問い合わせ"),
+        ("inquiry-pipeline.html", "Pipeline"),
     ]
     links = []
     for href, label in pages:
@@ -1059,19 +1060,23 @@ def generate_report(config: ReportConfig) -> Path:
 
     # 厳選フィルタ: 最低スコア閾値 + 上位N件に制限
     MIN_SCORE = 30
-    MAX_DISPLAY = 50
+    MAX_DISPLAY = 20
     before_quality = len(deduped)
     deduped = [r for r in deduped if r.total_score >= MIN_SCORE]
     quality_filtered = before_quality - len(deduped)
     deduped_sorted = sorted(deduped, key=lambda r: -r.total_score)
     if len(deduped_sorted) > MAX_DISPLAY:
-        # ペット可物件を優先保護: 先にペット可を確保、残り枠を高スコア順で埋める
+        # ペット可物件を優先保護: ペット可をスコア順で先に確保、残り枠を非ペット可で埋める
+        # ただし総数はMAX_DISPLAYを超えない
         def _is_pet_ok(r: PropertyRow) -> bool:
             return r.pet_status in ("可", "相談可") or r.pet_score >= 10
-        pet_ok = [r for r in deduped_sorted if _is_pet_ok(r)]
+        pet_ok = sorted([r for r in deduped_sorted if _is_pet_ok(r)], key=lambda r: -r.total_score)
         others = [r for r in deduped_sorted if not _is_pet_ok(r)]
-        remaining_slots = max(0, MAX_DISPLAY - len(pet_ok))
-        deduped = pet_ok + others[:remaining_slots]
+        if len(pet_ok) >= MAX_DISPLAY:
+            deduped = pet_ok[:MAX_DISPLAY]
+        else:
+            remaining_slots = MAX_DISPLAY - len(pet_ok)
+            deduped = pet_ok + others[:remaining_slots]
         deduped = sorted(deduped, key=lambda r: -r.total_score)
         top_n_trimmed = len(deduped_sorted) - len(deduped)
     else:

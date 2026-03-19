@@ -203,9 +203,27 @@ def update_first_seen() -> None:
 
 
 def diff_properties(before: dict, after: dict) -> dict:
-    """Compare before/after snapshots. Returns diff summary."""
-    before_urls = set(before.keys())
-    after_urls = set(after.keys())
+    """Compare before/after snapshots. Returns diff summary.
+
+    Source-failure guard: if a source lost >70% of its properties,
+    treat it as a scraping failure and exclude from diff calculation.
+    """
+    # Per-source counts
+    from collections import Counter
+    before_by_src = Counter(v["source"] for v in before.values())
+    after_by_src = Counter(v["source"] for v in after.values())
+
+    # Detect failed sources (>70% drop)
+    failed_sources: set[str] = set()
+    for src, cnt in before_by_src.items():
+        after_cnt = after_by_src.get(src, 0)
+        if cnt >= 10 and after_cnt < cnt * 0.3:
+            failed_sources.add(src)
+            log(f"  ⚠️ ソース障害検出: {src} ({cnt}→{after_cnt}件, -{cnt - after_cnt}件) — 差分から除外")
+
+    before_urls = {u for u, v in before.items() if v["source"] not in failed_sources}
+    after_urls = {u for u, v in after.items() if v["source"] not in failed_sources}
+
     new_urls = after_urls - before_urls
     removed_urls = before_urls - after_urls
 
@@ -217,6 +235,7 @@ def diff_properties(before: dict, after: dict) -> dict:
         "removed": removed_props,
         "before_count": len(before_urls),
         "after_count": len(after_urls),
+        "failed_sources": sorted(failed_sources),
     }
 
 
@@ -274,6 +293,7 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
         "new_count": len(new),
         "removed_count": dead_count,
         "elapsed_min": round(elapsed / 60),
+        "failed_sources": diff.get("failed_sources", []),
         "new_items": [
             {"name": p["name"], "price_text": p["price"],
              "price_man": int(p["price"].replace("万円", "").replace(",", "")),

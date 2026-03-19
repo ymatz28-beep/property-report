@@ -332,7 +332,16 @@ def generate_reports() -> list[dict]:
 
 
 def deploy() -> None:
-    """Deploy to gh-pages."""
+    """Deploy to gh-pages.
+
+    On GHA, the workflow handles gh-pages deploy via shell step (with proper
+    auth token). Skip Python deploy to avoid unauthenticated clone failure.
+    """
+    import os
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        log("=== デプロイ ===")
+        log("  GHA環境 — ワークフローの shell ステップでデプロイ（Pythonスキップ）")
+        return
     log("=== デプロイ ===")
     from check_property_status import deploy_to_gh_pages
     result = deploy_to_gh_pages()

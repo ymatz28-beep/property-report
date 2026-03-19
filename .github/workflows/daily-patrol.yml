@@ -65,28 +65,43 @@ jobs:
           fi
 
       - name: Deploy reports to gh-pages
-        if: always() && steps.commit.outputs.data_committed == 'true'
+        if: always() && steps.patrol.outcome != 'skipped'
         run: |
-          # Save output HTML before branch switch
+          # Save output HTML before branch switch (exclude confidential files)
           mkdir -p /tmp/deploy-reports
+          count=0
           for f in output/*.html; do
+            [ ! -f "$f" ] && continue
             fname=$(basename "$f")
             [ "$fname" = "portfolio_dashboard.html" ] && continue
             cp "$f" "/tmp/deploy-reports/$fname"
+            count=$((count + 1))
           done
+
+          if [ "$count" -eq 0 ]; then
+            echo "No HTML files to deploy"
+            exit 0
+          fi
+          echo "Prepared $count HTML files for deploy"
 
           # Fetch and switch to gh-pages
           git fetch origin gh-pages:gh-pages
+          git stash --include-untracked || true
           git checkout gh-pages
 
-          # Copy saved reports
+          # Clean up stale non-HTML artifacts that leaked into gh-pages
+          for stale in __pycache__ .github lib data output; do
+            [ -e "$stale" ] && git rm -rf "$stale" 2>/dev/null && echo "Removed stale: $stale"
+          done
+
+          # Copy saved reports (only HTML files — no __pycache__ etc.)
           cp /tmp/deploy-reports/*.html ./
 
-          git add -A
+          git add *.html
           if ! git diff --cached --quiet; then
             git commit -m "Auto-deploy reports $(date +%Y-%m-%d)"
             git push origin gh-pages
-            echo "✅ gh-pages deployed"
+            echo "gh-pages deployed successfully"
           else
             echo "No report changes to deploy"
           fi

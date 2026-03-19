@@ -1058,30 +1058,29 @@ def generate_report(config: ReportConfig) -> Path:
     for row in deduped:
         score_row(row, config)
 
-    # 厳選フィルタ: 最低スコア閾値 + 上位N件に制限
-    MIN_SCORE = 30
-    MAX_DISPLAY = 20
+    # 厳選フィルタ: ティアベース表示制御
+    # 緑(80+) = 全数表示、黄(65-79) = 緑が少ない場合のみ補充、オレンジ/赤 = 非表示
+    TIER_GREEN = 80   # 強く推奨: 常に表示
+    TIER_YELLOW = 65  # 推奨: 緑が少ない場合に補充
+    MAX_YELLOW_FILL = 20  # 緑+黄の合計上限
     before_quality = len(deduped)
-    deduped = [r for r in deduped if r.total_score >= MIN_SCORE]
+    # オレンジ(50-64)・赤(<50)を除外
+    deduped = [r for r in deduped if r.total_score >= TIER_YELLOW]
     quality_filtered = before_quality - len(deduped)
     deduped_sorted = sorted(deduped, key=lambda r: -r.total_score)
-    if len(deduped_sorted) > MAX_DISPLAY:
-        # ペット可物件を優先保護: ペット可をスコア順で先に確保、残り枠を非ペット可で埋める
-        # ただし総数はMAX_DISPLAYを超えない
-        def _is_pet_ok(r: PropertyRow) -> bool:
-            return r.pet_status in ("可", "相談可") or r.pet_score >= 10
-        pet_ok = sorted([r for r in deduped_sorted if _is_pet_ok(r)], key=lambda r: -r.total_score)
-        others = [r for r in deduped_sorted if not _is_pet_ok(r)]
-        if len(pet_ok) >= MAX_DISPLAY:
-            deduped = pet_ok[:MAX_DISPLAY]
-        else:
-            remaining_slots = MAX_DISPLAY - len(pet_ok)
-            deduped = pet_ok + others[:remaining_slots]
-        deduped = sorted(deduped, key=lambda r: -r.total_score)
-        top_n_trimmed = len(deduped_sorted) - len(deduped)
+
+    green = [r for r in deduped_sorted if r.total_score >= TIER_GREEN]
+    yellow = [r for r in deduped_sorted if TIER_YELLOW <= r.total_score < TIER_GREEN]
+
+    if len(green) >= MAX_YELLOW_FILL:
+        # 緑だけで十分 → 黄は表示しない
+        deduped = green
+        top_n_trimmed = len(yellow)
     else:
-        deduped = deduped_sorted
-        top_n_trimmed = 0
+        # 緑を全数 + 黄で上限まで補充
+        yellow_slots = MAX_YELLOW_FILL - len(green)
+        deduped = green + yellow[:yellow_slots]
+        top_n_trimmed = max(0, len(yellow) - yellow_slots)
 
     meta["sources_loaded"] = ", ".join(sources_loaded)
     meta["sold_removed"] = str(sold_count)
@@ -1102,9 +1101,9 @@ def generate_report(config: ReportConfig) -> Path:
     if minpaku_ng_count > 0:
         print(f"  Removed {minpaku_ng_count} minpaku-NG properties")
     if quality_filtered > 0:
-        print(f"  Removed {quality_filtered} low-score (< {MIN_SCORE}) properties")
+        print(f"  Removed {quality_filtered} low-score (< {TIER_YELLOW}) properties")
     if top_n_trimmed > 0:
-        print(f"  Trimmed to top {MAX_DISPLAY} (cut {top_n_trimmed} lower-ranked)")
+        print(f"  Tier filter: {len(green)}件 green + {len(deduped) - len(green)}件 yellow (cut {top_n_trimmed} lower-ranked)")
     print(f"  Final: {len(deduped)}件 厳選済み")
 
     # Auto QA

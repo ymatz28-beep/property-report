@@ -15,6 +15,7 @@ Commands:
   --decide ID go|pass   Record decision
   --sync                Sync viewing/status from inbox-zero agent_memory
   --dashboard           Generate pipeline dashboard HTML
+  --naiken              Generate naiken analysis for viewing properties
   --stats               Show pipeline statistics
 """
 
@@ -688,6 +689,171 @@ def _build_viewing_schedule(inquiries: list[dict], agent_memory: dict) -> str:
 </div>'''
 
 
+def generate_naiken_analysis() -> Path | None:
+    """Auto-generate naiken-analysis.html from viewing properties.
+
+    Reads inquiries.yaml for status=viewing properties, groups by viewing_date,
+    and generates a comparison + analysis page. Returns None if no viewing properties.
+    """
+    from generate_search_report_common import (
+        global_nav_css,
+        global_nav_html,
+        site_header_css,
+        site_header_html,
+    )
+
+    inquiries = load_inquiries()
+    viewing = [i for i in inquiries if i.get("status") == "viewing"]
+    if not viewing:
+        # Generate placeholder
+        html = f"""<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>内覧分析</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>{site_header_css()}{global_nav_css()}
+body{{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-serif;min-height:100vh}}
+.wrap{{max-width:900px;margin:0 auto;padding:24px 16px}}
+h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
+.empty{{color:#a9b3c6;margin-top:40px;text-align:center;font-size:15px}}
+</style></head><body>
+{site_header_html()}{global_nav_html("naiken-analysis.html")}
+<div class="wrap"><h1>内覧分析</h1>
+<p class="empty">現在、内覧予定の物件はありません。<br>物件パイプラインで「viewing」ステータスに進んだ物件がここに自動表示されます。</p>
+</div></body></html>"""
+        out = OUTPUT / "naiken-analysis.html"
+        out.write_text(html, encoding="utf-8")
+        return out
+
+    # Group by viewing_date
+    by_date: dict[str, list[dict]] = {}
+    for v in viewing:
+        d = v.get("viewing_date", "未定")
+        by_date.setdefault(d, []).append(v)
+
+    # Get agent info from agent_memory (dict keyed by email)
+    agent_memory = _load_agent_memory()
+    agent_contacts: dict[str, dict] = {}
+    for email, ag in agent_memory.items():
+        name = ag.get("name", "")
+        if name:
+            agent_contacts[name] = {
+                "company": ag.get("company", ""),
+                "phone": ag.get("phone", ""),
+                "email": email,
+            }
+
+    # Generate sections for each viewing date
+    date_sections = []
+    for vdate, props in sorted(by_date.items()):
+        # Determine city label
+        cities = set(CITY_LABELS.get(p.get("city", ""), p.get("city", "")) for p in props)
+        city_str = "・".join(sorted(cities))
+
+        # Agent info
+        agents = set(p.get("agent", "") for p in props if p.get("agent"))
+        agent_info_html = ""
+        for ag_name in agents:
+            info = agent_contacts.get(ag_name, {})
+            company = info.get("company", "")
+            phone = info.get("phone", "")
+            parts = [f"<strong>{ag_name}</strong>"]
+            if company:
+                parts.append(f"（{company}）")
+            if phone:
+                parts.append(f"<br>TEL: <span style='font-family:JetBrains Mono,monospace'>{phone}</span>")
+            agent_info_html += "担当: " + "".join(parts) + "<br>"
+
+        # Schedule banner
+        viewing_time = ""
+        for p in props:
+            t = p.get("viewing_time", "")
+            if t:
+                viewing_time = str(t)
+                break
+
+        schedule_html = f"""<div style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:20px;margin-bottom:24px">
+<h2 style="font-size:18px;margin-bottom:8px;color:#a78bfa">{vdate} 内覧スケジュール — {city_str} {len(props)}件</h2>
+<div style="font-size:14px;line-height:1.8">"""
+        if viewing_time:
+            schedule_html += f"<strong>{viewing_time}</strong> 集合<br>"
+        for idx, p in enumerate(props, 1):
+            schedule_html += f"{'→ ' if idx > 1 else ''}{idx}. {p['name']}<br>"
+        schedule_html += f"<br>{agent_info_html}</div></div>"
+
+        # Comparison table
+        compare_cards = ""
+        for idx, p in enumerate(props, 1):
+            yr = p.get("year_built", "")
+            age = f"築{datetime.now().year - yr}年" if isinstance(yr, int) and yr else ""
+            sqm_price = round(p["price"] / p["area"], 1) if p.get("price") and p.get("area") else ""
+            pet_cls = "color:#34d399" if p.get("pet") == "ok" else "color:#a9b3c6"
+            pet_label = {"ok": "可", "ng": "不可"}.get(str(p.get("pet", "")), str(p.get("pet", "未確認")))
+
+            compare_cards += f"""<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:12px">
+<h3 style="font-size:16px;margin-bottom:8px">{idx}. {p['name']}</h3>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6;width:80px">価格</th><td style="padding:4px 8px;font-weight:700">{p.get('price', '?')}万円</td></tr>
+<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">面積</th><td style="padding:4px 8px">{p.get('area', '?')}㎡</td></tr>
+<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">間取り</th><td style="padding:4px 8px">{p.get('layout', '?')}</td></tr>
+<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">築年</th><td style="padding:4px 8px">{yr}年 {f'（{age}）' if age else ''}</td></tr>
+<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">駅</th><td style="padding:4px 8px">{p.get('station', '?')}</td></tr>
+<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">㎡単価</th><td style="padding:4px 8px;font-family:JetBrains Mono,monospace">{f'{sqm_price}万/㎡' if sqm_price else '?'}</td></tr>
+<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">管理費</th><td style="padding:4px 8px">{f'{p["management_fee"]:,}円/月' if p.get('management_fee') else '?'}</td></tr>
+<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">ペット</th><td style="padding:4px 8px;{pet_cls};font-weight:700">{pet_label}</td></tr>
+<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">短期賃貸</th><td style="padding:4px 8px">{p.get('short_term') or '未確認'}</td></tr>
+</table></div>"""
+
+        # Checklist
+        checklist = """<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px;margin-top:16px">
+<h3 style="font-size:16px;margin-bottom:12px">共通チェック項目</h3>
+<ul style="font-size:13px;line-height:2;color:#a9b3c6;padding-left:20px">
+<li>ペット飼育可否（チワワ3kg）— 規約原本を確認</li>
+<li>短期賃貸（マンスリー1ヶ月以上）の可否 — 管理規約の該当条文</li>
+<li>管理費・修繕積立金の今後の値上げ予定</li>
+<li>大規模修繕の履歴と次回予定</li>
+<li>管理組合の運営状況・議事録</li>
+<li>周辺の騒音・日当たり・風通し</li>
+<li>駐車場・駐輪場の空き状況と費用</li>
+<li>インターネット回線（光回線対応か）</li>
+<li>法人名義での購入可否</li>
+</ul></div>"""
+
+        date_sections.append(f"{schedule_html}\n{compare_cards}\n{checklist}")
+
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
+    all_sections = "\n".join(date_sections)
+
+    # Title: use first date's city
+    first_props = list(by_date.values())[0]
+    first_cities = set(CITY_LABELS.get(p.get("city", ""), "") for p in first_props)
+    title_city = "・".join(sorted(c for c in first_cities if c))
+    first_date = sorted(by_date.keys())[0]
+
+    html = f"""<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>内覧分析 — {title_city} {first_date}</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{{--bg:#050507;--text:#f5f5f7;--muted:#a9b3c6}}
+*{{box-sizing:border-box;margin:0}}
+body{{font-family:'Inter','Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}}
+{site_header_css()}{global_nav_css()}
+.wrap{{max-width:900px;margin:0 auto;padding:24px 16px}}
+h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:4px}}
+.meta{{color:var(--muted);font-size:12px;margin-bottom:24px}}
+</style></head><body>
+{site_header_html()}{global_nav_html("naiken-analysis.html")}
+<div class="wrap">
+<h1>内覧分析 — {title_city} {len(viewing)}物件</h1>
+<p class="meta">自動生成: {now_str} / {len(viewing)}件の内覧予定物件</p>
+{all_sections}
+</div></body></html>"""
+
+    out = OUTPUT / "naiken-analysis.html"
+    out.write_text(html, encoding="utf-8")
+    return out
+
+
 def generate_dashboard() -> Path:
     from generate_search_report_common import (
         global_nav_css,
@@ -1022,6 +1188,13 @@ def main() -> None:
     elif cmd == "--dashboard":
         path = generate_dashboard()
         subprocess.run(["open", str(path)])
+
+    elif cmd == "--naiken":
+        path = generate_naiken_analysis()
+        if path:
+            subprocess.run(["open", str(path)])
+        else:
+            print("No viewing properties found.")
 
     elif cmd == "--stats":
         print_stats()

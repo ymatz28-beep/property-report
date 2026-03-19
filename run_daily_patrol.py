@@ -475,7 +475,7 @@ def main():
 
     # 5.5. Auto-flag for inquiry pipeline (non-critical)
     try:
-        from property_pipeline import auto_flag, generate_dashboard, sync_from_agent_memory
+        from property_pipeline import auto_flag, generate_dashboard, generate_naiken_analysis, sync_from_agent_memory
         auto_flag()
         all_steps.append({"step": "pipeline_flag", "ok": True})
         log("  Pipeline auto-flag 完了")
@@ -500,6 +500,15 @@ def main():
     except Exception as e:
         all_steps.append({"step": "pipeline_dashboard", "ok": False})
         log(f"  ⚠️ Pipeline dashboard skipped: {e}")
+
+    # 5.8. Regenerate naiken analysis (viewing properties → comparison page)
+    try:
+        generate_naiken_analysis()
+        all_steps.append({"step": "naiken_analysis", "ok": True})
+        log("  内覧分析レポート生成完了")
+    except Exception as e:
+        all_steps.append({"step": "naiken_analysis", "ok": False})
+        log(f"  ⚠️ 内覧分析レポート skipped: {e}")
 
     # 6. Deploy (always attempt — even partial reports are better than stale)
     try:

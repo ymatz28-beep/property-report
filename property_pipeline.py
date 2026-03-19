@@ -434,9 +434,12 @@ def _build_viewing_schedule(inquiries: list[dict], agent_memory: dict) -> str:
         agent_email = agent_info.get("email", "")
 
         # 担当者連絡先行
+        agent_title = agent_info.get("title", "")
         agent_line = ""
         if agent_name:
             parts = [f"<strong>{agent_name}</strong>"]
+            if agent_title:
+                parts.append(f"<span class='agent-title'>{agent_title}</span>")
             if agent_company:
                 parts.append(f"（{agent_company}）")
             agent_line = f'<div class="sched-agent">👤 {"".join(parts)}</div>'
@@ -664,6 +667,7 @@ body{{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-s
 .sched-date{{font-size:13px;color:#a78bfa;margin-bottom:4px}}
 .sched-loc{{font-size:12px;color:#71717a;margin-bottom:4px}}
 .sched-agent{{font-size:12px;color:#d4d4d8;margin-bottom:2px}}
+.agent-title{{font-size:10px;color:#71717a;margin-left:4px}}
 .sched-contact{{font-size:11px;color:#71717a;margin-bottom:4px;font-family:'JetBrains Mono',monospace}}
 .sched-filters{{font-size:11px;color:#71717a;margin-top:6px}}
 .sched-notes{{font-size:11px;color:#a1a1aa;font-style:italic;margin-top:4px}}

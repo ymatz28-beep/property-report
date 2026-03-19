@@ -239,34 +239,42 @@ def diff_properties(before: dict, after: dict) -> dict:
     }
 
 
-def search_all_sites() -> None:
-    """Run all property searches."""
+def search_all_sites() -> list[dict]:
+    """Run all property searches. Returns list of step results for resilience tracking."""
     log("=== 物件検索開始 ===")
+    steps = [
+        ("search_suumo.py", {"timeout": 600}),
+        ("search_multi_site.py", {}),
+        ("search_restate.py", {}),
+        ("search_ftakken.py", {}),
+        ("search_lifull.py", {"timeout": 120}),
+    ]
+    results = []
+    for script, kwargs in steps:
+        ok = run_script(script, **kwargs)
+        results.append({"step": script, "ok": ok})
+        if not ok:
+            log(f"  ⚠️ {script} 失敗 — 続行")
 
-    # SUUMO (main source — includes inline management fee enrichment)
-    run_script("search_suumo.py", timeout=600)
-
-    # Standard HTTP scrapers (rakumachi, yahoo, athome, cowcamo)
-    run_script("search_multi_site.py")
-
-    # R不動産 (BeautifulSoup)
-    run_script("search_restate.py")
-
-    # Playwright-based scrapers
-    run_script("search_ftakken.py")
-    run_script("search_lifull.py", timeout=120)
-
-    # Enrich maintenance fees from detail pages (for non-SUUMO sources)
+    # Enrich maintenance fees (depends on search results but non-critical)
     log("=== 管理費enrichment ===")
-    run_script("enrich_maintenance.py")
+    ok = run_script("enrich_maintenance.py")
+    results.append({"step": "enrich_maintenance.py", "ok": ok})
+    return results
 
 
-def generate_reports() -> None:
-    """Generate all city reports."""
+def generate_reports() -> list[dict]:
+    """Generate all city reports. Returns step results."""
     log("=== レポート生成 ===")
+    results = []
     for script in ["generate_osaka_report.py", "generate_fukuoka_report.py", "generate_tokyo_report.py"]:
-        run_script(script)
-    run_script("generate_inquiry_messages.py")
+        ok = run_script(script)
+        results.append({"step": script, "ok": ok})
+        if not ok:
+            log(f"  ⚠️ {script} 失敗 — 他都市は続行")
+    ok = run_script("generate_inquiry_messages.py")
+    results.append({"step": "generate_inquiry_messages.py", "ok": ok})
+    return results
 
 
 def deploy() -> None:
@@ -280,7 +288,7 @@ def deploy() -> None:
         log("  デプロイ不要（変更なし）またはエラー")
 
 
-def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report: dict) -> None:
+def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report: dict, failed_steps: list[str] | None = None) -> None:
     """Save patrol summary as JSON (structured data for Daily Digest)."""
     new = diff["new"]
     removed = diff["removed"]
@@ -294,6 +302,7 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
         "removed_count": dead_count,
         "elapsed_min": round(elapsed / 60),
         "failed_sources": diff.get("failed_sources", []),
+        "failed_steps": failed_steps or [],
         "new_items": [
             {"name": p["name"], "price_text": p["price"],
              "price_man": int(p["price"].replace("万円", "").replace(",", "")),
@@ -353,47 +362,88 @@ def main():
     start = datetime.now()
     log(f"===== 物件巡回パトロール開始 {start.strftime('%Y-%m-%d %H:%M')} =====")
 
+    # Resilience: track all step outcomes, never let one failure kill the pipeline
+    all_steps: list[dict] = []
+    errors: list[str] = []
+
     # 0. Snapshot before search
     before = parse_raw_files()
     log(f"  スナップショット: {len(before)}件")
 
-    # 1. Search all sites
-    search_all_sites()
+    # 1. Search all sites (partial success OK)
+    try:
+        search_results = search_all_sites()
+        all_steps.extend(search_results)
+    except Exception as e:
+        errors.append(f"search_all_sites: {e}")
+        log(f"  ❌ 検索フェーズ全体エラー: {e} — 既存データで続行")
 
-    # 2. Diff properties
+    # 2. Diff properties (safe — pure computation)
     after = parse_raw_files()
     diff = diff_properties(before, after)
     log(f"  差分: 新規{len(diff['new'])}件, 消失{len(diff['removed'])}件")
 
-    # 3. Update first-seen registry (before reports so they can use it)
-    update_first_seen()
+    # 3. Update first-seen registry (non-critical)
+    try:
+        update_first_seen()
+        all_steps.append({"step": "first_seen", "ok": True})
+    except Exception as e:
+        errors.append(f"first_seen: {e}")
+        all_steps.append({"step": "first_seen", "ok": False})
+        log(f"  ⚠️ first_seen更新失敗: {e} — 続行")
 
-    # 4. Check dead URLs
-    url_report = patrol_dead_urls()
+    # 4. Check dead URLs (non-critical, can be slow)
+    url_report = {"total": 0, "dead": 0, "new_dead": 0}
+    try:
+        url_report = patrol_dead_urls()
+        all_steps.append({"step": "url_check", "ok": True})
+    except Exception as e:
+        errors.append(f"url_check: {e}")
+        all_steps.append({"step": "url_check", "ok": False})
+        log(f"  ⚠️ URLチェック失敗: {e} — 続行")
 
-    # 5. Generate reports
-    generate_reports()
+    # 5. Generate reports (partial success OK — per-city isolation)
+    try:
+        report_results = generate_reports()
+        all_steps.extend(report_results)
+    except Exception as e:
+        errors.append(f"generate_reports: {e}")
+        log(f"  ❌ レポート生成全体エラー: {e} — デプロイは試行")
 
-    # 5.5. Auto-flag high-score properties for inquiry pipeline
+    # 5.5. Auto-flag for inquiry pipeline (non-critical)
     try:
         from property_pipeline import auto_flag, generate_dashboard
         auto_flag()
         generate_dashboard()
+        all_steps.append({"step": "pipeline_flag", "ok": True})
         log("  Pipeline auto-flag 完了")
     except Exception as e:
-        log(f"  Pipeline auto-flag skipped: {e}")
+        all_steps.append({"step": "pipeline_flag", "ok": False})
+        log(f"  ⚠️ Pipeline auto-flag skipped: {e}")
 
-    # 6. Deploy
-    deploy()
+    # 6. Deploy (always attempt — even partial reports are better than stale)
+    try:
+        deploy()
+        all_steps.append({"step": "deploy", "ok": True})
+    except Exception as e:
+        errors.append(f"deploy: {e}")
+        all_steps.append({"step": "deploy", "ok": False})
+        log(f"  ❌ デプロイ失敗: {e}")
 
     elapsed = (datetime.now() - start).total_seconds()
-    log(f"===== 完了 ({elapsed:.0f}秒) =====")
 
-    # Write structured summary for Daily Digest
-    save_patrol_summary(start, elapsed, diff, url_report)
+    # Resilience summary
+    ok_count = sum(1 for s in all_steps if s["ok"])
+    fail_count = sum(1 for s in all_steps if not s["ok"])
+    failed_names = [s["step"] for s in all_steps if not s["ok"]]
 
-    # 7. LINE notification — disabled (Daily Digestに統合済み。単体通知は形骸化防止のため停止)
-    # send_line_if_new(diff)
+    if fail_count == 0:
+        log(f"===== 完了 ({elapsed:.0f}秒) 全{ok_count}ステップ成功 =====")
+    else:
+        log(f"===== 部分完了 ({elapsed:.0f}秒) {ok_count}/{ok_count + fail_count}成功, 失敗: {', '.join(failed_names)} =====")
+
+    # Write structured summary (always — even on partial failure)
+    save_patrol_summary(start, elapsed, diff, url_report, failed_steps=failed_names)
 
 
 if __name__ == "__main__":

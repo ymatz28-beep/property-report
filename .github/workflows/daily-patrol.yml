@@ -43,6 +43,8 @@ jobs:
 
       - name: Run daily patrol
         id: patrol
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: python run_daily_patrol.py
         timeout-minutes: 50
         # Partial results (some sites scraped) are better than none.

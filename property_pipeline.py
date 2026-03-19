@@ -20,11 +20,14 @@ Commands:
 
 from __future__ import annotations
 
+import base64
 import json
+import os
 import subprocess
 import sys
 from datetime import date, datetime
 from pathlib import Path
+from urllib.request import Request, urlopen
 
 import yaml
 
@@ -534,13 +537,37 @@ def _render_card(inq: dict) -> str:
 
 
 def _load_agent_memory() -> dict:
-    """inbox-zero/data/agent_memory.yaml を読み込み。"""
+    """inbox-zero/data/agent_memory.yaml を読み込み。
+
+    Local path first (works on dev machine), then GitHub API fallback (GHA).
+    """
+    # 1) Local path (sibling directory)
     mem_path = BASE.parent / "inbox-zero" / "data" / "agent_memory.yaml"
-    if not mem_path.exists():
+    if mem_path.exists():
+        with open(mem_path, encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+        return data.get("agents", {})
+
+    # 2) GitHub API fallback (for GHA — inbox-zero is a separate private repo)
+    token = os.environ.get("GH_PAT", "")
+    if not token:
+        print("[pipeline] agent_memory: local path not found and GH_PAT not set — skipping")
         return {}
-    with open(mem_path, encoding="utf-8") as f:
-        data = yaml.safe_load(f) or {}
-    return data.get("agents", {})
+    api_url = "https://api.github.com/repos/ymatz28-beep/inbox-zero/contents/data/agent_memory.yaml"
+    req = Request(api_url, headers={
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+    })
+    try:
+        with urlopen(req, timeout=15) as resp:
+            payload = json.loads(resp.read())
+        content = base64.b64decode(payload["content"]).decode("utf-8")
+        data = yaml.safe_load(content) or {}
+        print("[pipeline] agent_memory: fetched from GitHub API")
+        return data.get("agents", {})
+    except Exception as e:
+        print(f"[pipeline] agent_memory: GitHub API fetch failed — {e}")
+        return {}
 
 
 def _build_viewing_schedule(inquiries: list[dict], agent_memory: dict) -> str:

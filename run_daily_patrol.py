@@ -358,7 +358,7 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
     dead_count = url_report.get("new_dead", 0) + len(removed)
 
     summary = {
-        "date": start.strftime("%Y-%m-%d"),
+        "date": start.strftime("%Y-%m-%d %H:%M"),
         "total": diff["after_count"],
         "prev_total": diff["before_count"],
         "new_count": len(new),

@@ -122,8 +122,16 @@ def patrol_dead_urls() -> dict:
     dead_urls: list[str] = []
     new_dead: list[str] = []
     checked = 0
+    skipped_budget = 0
+    budget_seconds = 300  # 5min time budget — prevent unbounded growth
 
+    check_start = time.time()
     for url in urls_to_check:
+        if time.time() - check_start > budget_seconds:
+            skipped_budget = len(urls_to_check) - checked
+            log(f"  ⚠️ タイムバジェット超過 ({budget_seconds}s), 残り{skipped_budget}件スキップ")
+            break
+
         alive, code = check_url_alive(url)
         checked += 1
 
@@ -144,8 +152,8 @@ def patrol_dead_urls() -> dict:
     status_data["last_check"] = datetime.now().isoformat()
     STATUS_FILE.write_text(json.dumps(status_data, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    log(f"  完了: {len(dead_urls)} dead / {len(all_urls)} total ({len(new_dead)} new)")
-    return {"total": len(all_urls), "dead": len(dead_urls), "new_dead": len(new_dead)}
+    log(f"  完了: {len(dead_urls)} dead / {checked} checked ({len(new_dead)} new)")
+    return {"total": len(all_urls), "dead": len(dead_urls), "new_dead": len(new_dead), "skipped": skipped_budget}
 
 
 def parse_raw_files() -> dict[str, dict]:
@@ -240,25 +248,51 @@ def diff_properties(before: dict, after: dict) -> dict:
 
 
 def search_all_sites() -> list[dict]:
-    """Run all property searches. Returns list of step results for resilience tracking."""
-    log("=== 物件検索開始 ===")
+    """Run all property searches in parallel. Returns list of step results."""
+    log("=== 物件検索開始（並列） ===")
+    # All search scripts write to separate files — safe to parallelize
     steps = [
-        ("search_suumo.py", {"timeout": 600}),
-        ("search_multi_site.py", {}),
-        ("search_restate.py", {}),
-        ("search_ftakken.py", {}),
-        ("search_lifull.py", {"timeout": 120}),
+        ("search_suumo.py", 600),
+        ("search_multi_site.py", 600),
+        ("search_restate.py", 300),
+        ("search_ftakken.py", 180),
+        ("search_lifull.py", 300),
     ]
-    results = []
-    for script, kwargs in steps:
-        ok = run_script(script, **kwargs)
-        results.append({"step": script, "ok": ok})
-        if not ok:
-            log(f"  ⚠️ {script} 失敗 — 続行")
 
-    # Enrich maintenance fees (depends on search results but non-critical)
+    # Launch all in parallel
+    procs: dict[str, subprocess.Popen] = {}
+    for script, timeout in steps:
+        cmd = [sys.executable, script]
+        log(f"  Starting: {script}")
+        procs[script] = subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            text=True, cwd=str(BASE_DIR),
+        )
+
+    # Collect results with per-script timeouts
+    results = []
+    for script, timeout in steps:
+        proc = procs[script]
+        try:
+            stdout, stderr = proc.communicate(timeout=timeout)
+            ok = proc.returncode == 0
+            if not ok:
+                log(f"  ⚠️ {script} 失敗 (exit {proc.returncode}) — 続行")
+                if stderr:
+                    log(f"    stderr: {stderr.strip()[:200]}")
+            else:
+                lines = stdout.strip().split("\n")
+                for line in lines[-3:]:
+                    log(f"  {line}")
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            ok = False
+            log(f"  ⚠️ {script} タイムアウト ({timeout}s) — 続行")
+        results.append({"step": script, "ok": ok})
+
+    # Enrich maintenance fees (depends on search results — must be sequential)
     log("=== 管理費enrichment ===")
-    ok = run_script("enrich_maintenance.py")
+    ok = run_script("enrich_maintenance.py", timeout=300)
     results.append({"step": "enrich_maintenance.py", "ok": ok})
     return results
 

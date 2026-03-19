@@ -114,6 +114,7 @@ jobs:
             BODY="データ更新なし。30分後に自動リトライ予定。\nGHAログ: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
           SUBJECT="${ICON} 物件パトロール${STATUS} $(date +%m/%d)"
+          export BODY SUBJECT
           python3 -c "
           import smtplib
           from email.mime.text import MIMEText
@@ -126,7 +127,7 @@ jobs:
               s.login(os.environ['GMAIL_ADDRESS'], os.environ['GMAIL_APP_PASSWORD'])
               s.send_message(msg)
           print(f'Notification sent: {os.environ[\"SUBJECT\"]}')
-          " BODY="$BODY" SUBJECT="$SUBJECT"
+          "
 
   # Auto-retry: パトロール失敗+データcommitなし(完全失敗)の場合、30分後に再実行
   retry:

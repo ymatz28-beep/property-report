@@ -13,6 +13,7 @@ Commands:
   --viewing ID DATE     Schedule viewing + create action item
   --viewed ID [NOTES]   Record viewing result
   --decide ID go|pass   Record decision
+  --sync                Sync viewing/status from inbox-zero agent_memory
   --dashboard           Generate pipeline dashboard HTML
   --stats               Show pipeline statistics
 """
@@ -112,6 +113,149 @@ def _next_id(inquiries: list[dict]) -> str:
         except (IndexError, ValueError):
             pass
     return f"inq-{max_num + 1:03d}"
+
+
+# ---------------------------------------------------------------------------
+# Sync from agent memory (inbox-zero → inquiries.yaml)
+# ---------------------------------------------------------------------------
+
+
+def _name_match(inq_name: str, mem_name: str) -> bool:
+    """Fuzzy name match between inquiries.yaml and agent_memory."""
+    if not inq_name or not mem_name:
+        return False
+    # Exact match
+    if inq_name == mem_name:
+        return True
+    # One contains the other (handles partial names)
+    if mem_name in inq_name or inq_name in mem_name:
+        return True
+    # Normalize: remove spaces,　, unicode issues
+    norm = lambda s: s.replace(" ", "").replace("\u3000", "").replace("\xa0", "")
+    return norm(inq_name) == norm(mem_name)
+
+
+def _extract_viewing_date(text: str) -> str | None:
+    """Extract date from freeform text like '3/21(金) 10:00' → '2026-03-21'."""
+    import re
+    # Pattern: M/D or YYYY-MM-DD
+    m = re.search(r"(\d{4})-(\d{1,2})-(\d{1,2})", text)
+    if m:
+        return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+    m = re.search(r"(\d{1,2})/(\d{1,2})", text)
+    if m:
+        month, day = int(m.group(1)), int(m.group(2))
+        year = date.today().year
+        return f"{year}-{month:02d}-{day:02d}"
+    return None
+
+
+def _extract_viewing_time(text: str) -> str | None:
+    """Extract time from freeform text like '3/21(金) 10:00' → '10:00'."""
+    import re
+    m = re.search(r"(\d{1,2}:\d{2})", text)
+    return m.group(1) if m else None
+
+
+def sync_from_agent_memory() -> int:
+    """Sync viewing/discussion status from inbox-zero agent_memory to inquiries.yaml.
+
+    Reads agent_memory.yaml, matches properties by name to inquiries.yaml entries,
+    and updates status + agent + hard-filter results accordingly.
+    Only upgrades status (never downgrades).
+
+    Returns count of updates made.
+    """
+    agent_memory = _load_agent_memory()
+    if not agent_memory:
+        print("[sync] No agent memory found")
+        return 0
+
+    inquiries = load_inquiries()
+    existing_names = {inq.get("name", "") for inq in inquiries}
+    updates = 0
+
+    for email_addr, mem in agent_memory.items():
+        agent_name = mem.get("name", "")
+        confirmed = mem.get("confirmed", {})
+        properties = mem.get("properties", [])
+
+        for prop in properties:
+            if not isinstance(prop, dict):
+                continue
+
+            prop_name = prop.get("name", "")
+            prop_status = prop.get("status", "")
+            viewing_options = prop.get("viewing_options", "")
+
+            # Find matching inquiry by name
+            matched = False
+            for inq in inquiries:
+                if not _name_match(inq.get("name", ""), prop_name):
+                    continue
+                matched = True
+
+                # Determine target status from agent_memory property status text
+                target_status = None
+                status_text = prop_status.lower() if prop_status else ""
+                if "内覧確定" in prop_status or "内見確定" in prop_status:
+                    target_status = "viewing"
+                elif "内覧希望" in prop_status or "内見希望" in prop_status:
+                    target_status = "viewing"
+                elif "やり取り" in prop_status or "確認中" in prop_status or "絞り込み" in prop_status:
+                    target_status = "in_discussion"
+                elif "問い合わせ" in prop_status:
+                    target_status = "inquired"
+
+                if not target_status:
+                    continue
+
+                # Only upgrade status (never downgrade)
+                current_idx = STATUSES.index(inq.get("status", "flagged")) if inq.get("status", "flagged") in STATUSES else 0
+                target_idx = STATUSES.index(target_status)
+                if target_idx <= current_idx:
+                    continue
+
+                inq["status"] = target_status
+                inq["agent"] = agent_name
+                inq["updated"] = str(date.today())
+
+                # Extract viewing date/time if available
+                date_src = viewing_options or prop_status
+                if date_src and target_status == "viewing":
+                    vd = _extract_viewing_date(date_src)
+                    if vd:
+                        inq["viewing_date"] = vd
+                    vt = _extract_viewing_time(date_src)
+                    if vt:
+                        inq["viewing_time"] = vt
+
+                # Update hard filter results from confirmed conditions
+                if confirmed.get("pet_ok") is not None:
+                    if confirmed["pet_ok"] is True:
+                        inq["pet"] = "ok"
+                    elif confirmed["pet_ok"] is False:
+                        inq["pet"] = "ng"
+                if confirmed.get("short_term_ok") is not None and inq.get("short_term") is None:
+                    val = confirmed["short_term_ok"]
+                    if val is True:
+                        inq["short_term"] = "ok"
+                    elif val is False:
+                        inq["short_term"] = "ng"
+                    else:
+                        inq["short_term"] = str(val)
+
+                updates += 1
+                print(f"[sync] {inq['id']} {inq['name']} → {STATUS_LABELS.get(target_status, target_status)} (agent: {agent_name})")
+                break
+
+    if updates:
+        save_inquiries(inquiries)
+        print(f"[sync] {updates} inquiries updated from agent memory")
+    else:
+        print("[sync] No updates needed (all up to date)")
+
+    return updates
 
 
 # ---------------------------------------------------------------------------
@@ -844,6 +988,9 @@ def main() -> None:
         new_status = "decided" if decision == "go" else "passed"
         reason = " ".join(args[3:]) if len(args) > 3 else ""
         update_status(args[1], new_status, decision=decision, notes=reason)
+
+    elif cmd == "--sync":
+        sync_from_agent_memory()
 
     elif cmd == "--dashboard":
         path = generate_dashboard()

@@ -475,14 +475,31 @@ def main():
 
     # 5.5. Auto-flag for inquiry pipeline (non-critical)
     try:
-        from property_pipeline import auto_flag, generate_dashboard
+        from property_pipeline import auto_flag, generate_dashboard, sync_from_agent_memory
         auto_flag()
-        generate_dashboard()
         all_steps.append({"step": "pipeline_flag", "ok": True})
         log("  Pipeline auto-flag 完了")
     except Exception as e:
         all_steps.append({"step": "pipeline_flag", "ok": False})
         log(f"  ⚠️ Pipeline auto-flag skipped: {e}")
+
+    # 5.6. Sync from agent memory (inbox-zero → inquiries.yaml)
+    try:
+        count = sync_from_agent_memory()
+        all_steps.append({"step": "pipeline_sync", "ok": True})
+        log(f"  Pipeline sync完了 ({count} updates)")
+    except Exception as e:
+        all_steps.append({"step": "pipeline_sync", "ok": False})
+        log(f"  ⚠️ Pipeline sync skipped: {e}")
+
+    # 5.7. Regenerate dashboard (after flag + sync)
+    try:
+        generate_dashboard()
+        all_steps.append({"step": "pipeline_dashboard", "ok": True})
+        log("  Pipeline dashboard生成完了")
+    except Exception as e:
+        all_steps.append({"step": "pipeline_dashboard", "ok": False})
+        log(f"  ⚠️ Pipeline dashboard skipped: {e}")
 
     # 6. Deploy (always attempt — even partial reports are better than stale)
     try:

@@ -265,7 +265,7 @@ def generate_message(row: PropertyRow, city_key: str) -> str:
 
 def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
     """Build the full HTML page."""
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.now().strftime("%Y-%m-%d %H:%M")
     total = sum(len(v) for v in all_data.values())
 
     city_colors = {

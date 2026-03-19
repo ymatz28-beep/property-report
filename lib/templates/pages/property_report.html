@@ -147,22 +147,6 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
 .section h2::before { content:""; width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12); }
 .cond-list { margin:0; padding-left:18px; color:#d8e0f0; line-height:1.75; columns:2; column-gap:24px; }
 
-/* Tier Filter Bar */
-.tier-filter { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:14px; }
-.tier-filter-label { font-size:12px; color:var(--muted); font-weight:600; letter-spacing:.04em; }
-.tier-btn {
-  all:unset; cursor:pointer; font-size:12px; font-weight:600; padding:5px 12px;
-  border-radius:6px; border:1px solid rgba(255,255,255,.12); color:rgba(255,255,255,.5);
-  transition:all .2s; display:inline-flex; align-items:center; gap:6px;
-}
-.tier-btn.active { color:#fff; }
-.tier-btn.active[data-tier="tier-strong"] { background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.5); color:#22c55e; }
-.tier-btn.active[data-tier="tier-good"] { background:rgba(250,204,21,.14); border-color:rgba(250,204,21,.4); color:#facc15; }
-.tier-btn.active[data-tier="tier-conditional"] { background:rgba(251,146,60,.14); border-color:rgba(251,146,60,.4); color:#fb923c; }
-.tier-btn.active[data-tier="tier-pass"] { background:rgba(239,68,68,.14); border-color:rgba(239,68,68,.4); color:#ef4444; }
-.tier-btn .tier-count { font-size:10px; opacity:.7; }
-.tier-hidden { display:none !important; }
-
 /* Table */
 .table-shell { overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); -webkit-overflow-scrolling:touch; }
 table { width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }
@@ -442,6 +426,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
     <span class="fb-chip">掲載中 {{ patrol_summary.total }}件</span>
     {% if patrol_summary.new_count %}<span class="fb-chip fb-new">+{{ patrol_summary.new_count }} 新規</span>{% endif %}
     {% if patrol_summary.removed_count %}<span class="fb-chip fb-removed">-{{ patrol_summary.removed_count }} 終了</span>{% endif %}
+    {% if patrol_summary.failed_sources %}<span class="fb-chip" style="color:var(--warning)">⚠️ {{ patrol_summary.failed_sources | join(', ') }} 一時障害</span>{% endif %}
   </div>
   {% endif %}
 
@@ -475,13 +460,6 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   {# Property Table #}
   <section id="sec-table" class="section">
     <h2>Property Table</h2>
-    <div class="tier-filter" id="tierFilter">
-      <span class="tier-filter-label">表示:</span>
-      <button class="tier-btn active" data-tier="tier-strong">◆ 強く推奨 <span class="tier-count"></span></button>
-      <button class="tier-btn active" data-tier="tier-good">● 推奨 <span class="tier-count"></span></button>
-      <button class="tier-btn" data-tier="tier-conditional">◇ 条件付き <span class="tier-count"></span></button>
-      <button class="tier-btn" data-tier="tier-pass">○ 見送り <span class="tier-count"></span></button>
-    </div>
     <div class="table-shell">
       <table id="propertyTable">
         <thead>
@@ -721,41 +699,6 @@ new Chart(document.getElementById('priceChart'), {
   headers.forEach(h => {
     h.addEventListener('click', () => applySort(h.dataset.sort, h.dataset.type || 'string'));
   });
-})();
-
-// Tier filter: hide conditional/pass by default, toggle on click
-(() => {
-  const filterBar = document.getElementById('tierFilter');
-  if (!filterBar) return;
-  const tbody = document.querySelector('#propertyTable tbody');
-  const buttons = filterBar.querySelectorAll('.tier-btn');
-  const tiers = ['tier-strong', 'tier-good', 'tier-conditional', 'tier-pass'];
-
-  // Count items per tier and set counts
-  tiers.forEach(tier => {
-    const count = tbody.querySelectorAll('tr.' + tier).length;
-    const btn = filterBar.querySelector(`[data-tier="${tier}"] .tier-count`);
-    if (btn) btn.textContent = count + '件';
-  });
-
-  const applyFilter = () => {
-    const visible = new Set();
-    buttons.forEach(b => { if (b.classList.contains('active')) visible.add(b.dataset.tier); });
-    tbody.querySelectorAll('tr').forEach(row => {
-      const match = tiers.some(t => row.classList.contains(t) && visible.has(t));
-      row.classList.toggle('tier-hidden', !match);
-    });
-  };
-
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      btn.classList.toggle('active');
-      applyFilter();
-    });
-  });
-
-  // Apply default filter (conditional + pass hidden)
-  applyFilter();
 })();
 
 // Section jump nav: highlight active section on scroll

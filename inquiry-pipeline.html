@@ -99,6 +99,25 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
 .card-filters{display:flex;gap:12px;margin-top:8px;font-size:11px;color:#71717a}
 .card-meta{color:#52525b;font-size:10px;margin-top:6px}
 
+/* Schedule section */
+.schedule-section{margin:24px 0;padding:0}
+.schedule-header{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+.schedule-header h2{font-size:18px;font-weight:700}
+.schedule-counts{display:flex;gap:10px;font-size:11px}
+.schedule-cards{display:flex;flex-direction:column;gap:8px}
+.sched-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;transition:background .15s}
+.sched-card:hover{background:rgba(255,255,255,.08)}
+.sched-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sched-name{font-size:15px;font-weight:600;color:#f5f5f7}
+.sched-city{font-size:11px;color:#71717a;font-family:'JetBrains Mono',monospace}
+.sched-date{font-size:13px;color:#a78bfa;margin-bottom:4px}
+.sched-loc{font-size:12px;color:#71717a;margin-bottom:4px}
+.sched-agent{font-size:12px;color:#d4d4d8;margin-bottom:2px}
+.agent-title{font-size:10px;color:#71717a;margin-left:4px}
+.sched-contact{font-size:11px;color:#71717a;margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+.sched-filters{font-size:11px;color:#71717a;margin-top:6px}
+.sched-notes{font-size:11px;color:#a1a1aa;font-style:italic;margin-top:4px}
+
 /* Empty state */
 .empty{text-align:center;padding:60px 20px;color:#52525b}
 .empty h2{font-size:18px;color:#71717a;margin-bottom:8px}
@@ -129,7 +148,7 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   <div class="hero">
     <h1>Property Pipeline</h1>
     <div class="stats">
-      <div class="stat"><div class="stat-val">31</div><div class="stat-label">Total</div></div>
+      <div class="stat"><div class="stat-val">33</div><div class="stat-label">Total</div></div>
       <div class="stat"><div class="stat-val" style="color:#f97316">0</div><div class="stat-label">進行中</div></div>
       <div class="stat"><div class="stat-val" style="color:#a78bfa">0</div><div class="stat-label">内見</div></div>
       <div class="stat"><div class="stat-val" style="color:#22c55e">0</div><div class="stat-label">決定</div></div>
@@ -137,16 +156,18 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
     </div>
   </div>
 
-  <div class="section-nav"><div class="section-nav-inner"><a href="#" class="nav-tab active" onclick="showCity('all')" data-city="all">All <span class="tab-count">31</span></a><a href="#city-osaka" class="nav-tab" onclick="showCity('osaka')" data-city="osaka">大阪 <span class="tab-count">11</span></a><a href="#city-fukuoka" class="nav-tab" onclick="showCity('fukuoka')" data-city="fukuoka">福岡 <span class="tab-count">10</span></a><a href="#city-tokyo" class="nav-tab" onclick="showCity('tokyo')" data-city="tokyo">東京 <span class="tab-count">10</span></a></div></div>
+  
+
+  <div class="section-nav"><div class="section-nav-inner"><a href="#" class="nav-tab active" onclick="showCity('all')" data-city="all">All <span class="tab-count">33</span></a><a href="#city-osaka" class="nav-tab" onclick="showCity('osaka')" data-city="osaka">大阪 <span class="tab-count">13</span></a><a href="#city-fukuoka" class="nav-tab" onclick="showCity('fukuoka')" data-city="fukuoka">福岡 <span class="tab-count">10</span></a><a href="#city-tokyo" class="nav-tab" onclick="showCity('tokyo')" data-city="tokyo">東京 <span class="tab-count">10</span></a></div></div>
 
   
 <div class="city-section" id="city-osaka" data-city="osaka">
   <div class="city-header" style="border-left:3px solid #3b9eff">
     <h2>大阪</h2>
     <div class="city-stats">
-      <span>11件</span>
+      <span>13件</span>
       
-      <span style="color:#3b9eff">候補 11</span>
+      <span style="color:#3b9eff">候補 13</span>
     </div>
   </div>
   <div class="city-cards"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20101804/" target="_blank" rel="noopener" class="inq-card">
@@ -268,6 +289,23 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   
   <div class="card-meta">SUUMO / inq-006</div>
 </a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20472764/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">エステムプラザ心斎橋エグゼ</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">90pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,200万 / 40.94㎡ / 2LDK / 地下鉄堺筋線「長堀橋」徒歩2分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-032</div>
+</a>
 <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20465603/" target="_blank" rel="noopener" class="inq-card">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">ファインレジデンス福島野田The Garden</span>
@@ -335,6 +373,23 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-010</div>
+</a>
+<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20436547/" target="_blank" rel="noopener" class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">西道頓堀コーポ二号棟</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">85pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,890万 / 69.61㎡ / 3LDK / 地下鉄千日前線「西長堀」徒歩5分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-033</div>
 </a></div>
 </div>
 <div class="city-section" id="city-fukuoka" data-city="fukuoka">

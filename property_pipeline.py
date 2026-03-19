@@ -389,6 +389,131 @@ def _render_card(inq: dict) -> str:
 </a>'''
 
 
+def _load_agent_memory() -> dict:
+    """inbox-zero/data/agent_memory.yaml を読み込み。"""
+    mem_path = BASE.parent / "inbox-zero" / "data" / "agent_memory.yaml"
+    if not mem_path.exists():
+        return {}
+    with open(mem_path, encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+    return data.get("agents", {})
+
+
+def _build_viewing_schedule(inquiries: list[dict], agent_memory: dict) -> str:
+    """内覧スケジュールセクションのHTML生成。upcoming + 進行中案件を一覧化。"""
+    # agent_memory を名前でも引けるように逆引きmap作成
+    agent_by_name: dict[str, dict] = {}
+    for email, mem in agent_memory.items():
+        name = mem.get("name", "")
+        agent_by_name[name] = {**mem, "email": email}
+
+    # 進行中（viewing, in_discussion, inquired）を抽出
+    active = [
+        i for i in inquiries
+        if i.get("status") in ("viewing", "in_discussion", "inquired")
+    ]
+    if not active:
+        return ""
+
+    # viewing が先、次に in_discussion、最後に inquired
+    status_order = {"viewing": 0, "in_discussion": 1, "inquired": 2}
+    active.sort(key=lambda x: (status_order.get(x.get("status", ""), 9), x.get("viewing_date") or "9999"))
+
+    cards = []
+    for inq in active:
+        status = inq.get("status", "")
+        color = STATUS_COLORS.get(status, "#71717a")
+        label = STATUS_LABELS.get(status, status)
+        city = CITY_LABELS.get(inq.get("city", ""), "")
+
+        # Agent info from agent_memory
+        agent_name = inq.get("agent", "")
+        agent_info = agent_by_name.get(agent_name, {})
+        agent_company = agent_info.get("company", "")
+        agent_phone = ""
+        agent_email = agent_info.get("email", "")
+
+        # 担当者連絡先行
+        agent_line = ""
+        if agent_name:
+            parts = [f"<strong>{agent_name}</strong>"]
+            if agent_company:
+                parts.append(f"（{agent_company}）")
+            agent_line = f'<div class="sched-agent">👤 {"".join(parts)}</div>'
+            contact_parts = []
+            if agent_email:
+                contact_parts.append(agent_email)
+            if agent_phone:
+                contact_parts.append(agent_phone)
+            if contact_parts:
+                agent_line += f'<div class="sched-contact">{" / ".join(contact_parts)}</div>'
+
+        # 内覧日時
+        date_line = ""
+        if inq.get("viewing_date"):
+            vd = inq["viewing_date"]
+            vt = inq.get("viewing_time", "")
+            loc = inq.get("viewing_location", "")
+            time_str = f" {vt}" if vt else ""
+            date_line = f'<div class="sched-date">📅 {vd}{time_str}</div>'
+            if loc:
+                date_line += f'<div class="sched-loc">📍 {loc}</div>'
+        elif status == "in_discussion":
+            date_line = '<div class="sched-date" style="color:#f59e0b">⏳ 日程調整中</div>'
+        elif status == "inquired":
+            date_line = '<div class="sched-date" style="color:#71717a">📨 返信待ち</div>'
+
+        # ハードフィルター状態
+        pet_icon = {"ok": "✅", "ng": "❌", "可": "✅", "相談可": "🔶"}.get(
+            str(inq.get("pet", "")), "⏳"
+        )
+        st_val = inq.get("short_term")
+        if st_val is True or st_val == "ok":
+            st_icon = "✅"
+        elif st_val is False or st_val == "ng":
+            st_icon = "❌"
+        elif st_val and st_val != "null":
+            st_icon = "🔶"
+        else:
+            st_icon = "⏳"
+
+        notes = inq.get("notes", "")
+        notes_line = f'<div class="sched-notes">{notes}</div>' if notes else ""
+
+        cards.append(f'''<div class="sched-card" style="border-left:3px solid {color}">
+  <div class="sched-header">
+    <span class="sched-name">{inq.get("name", "?")}</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="status-pill" style="background:{color}">{label}</span>
+      <span class="sched-city">{city}</span>
+    </div>
+  </div>
+  {date_line}
+  {agent_line}
+  <div class="sched-filters">ペット {pet_icon}　短期賃貸 {st_icon}</div>
+  {notes_line}
+</div>''')
+
+    count_viewing = sum(1 for i in active if i.get("status") == "viewing")
+    count_discussion = sum(1 for i in active if i.get("status") == "in_discussion")
+    count_inquired = sum(1 for i in active if i.get("status") == "inquired")
+
+    return f'''
+<div class="schedule-section">
+  <div class="schedule-header">
+    <h2>内覧スケジュール / 進行中</h2>
+    <div class="schedule-counts">
+      {f'<span style="color:#a78bfa">内見 {count_viewing}</span>' if count_viewing else ''}
+      {f'<span style="color:#f97316">やり取り中 {count_discussion}</span>' if count_discussion else ''}
+      {f'<span style="color:#f59e0b">問い合わせ済 {count_inquired}</span>' if count_inquired else ''}
+    </div>
+  </div>
+  <div class="schedule-cards">
+    {"".join(cards)}
+  </div>
+</div>'''
+
+
 def generate_dashboard() -> Path:
     from generate_search_report_common import (
         global_nav_css,
@@ -398,6 +523,7 @@ def generate_dashboard() -> Path:
     )
 
     inquiries = load_inquiries()
+    agent_memory = _load_agent_memory()
 
     # Stats
     total = len(inquiries)
@@ -450,7 +576,7 @@ def generate_dashboard() -> Path:
 
         # Sort: active statuses first, then by score descending
         city_items.sort(
-            key=lambda x: (status_priority.get(x.get("status", ""), 9), -x.get("score", 0))
+            key=lambda x: (status_priority.get(x.get("status", ""), 9), -(x.get("score") or 0))
         )
 
         # City-level stats
@@ -524,6 +650,24 @@ body{{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-s
 .card-filters{{display:flex;gap:12px;margin-top:8px;font-size:11px;color:#71717a}}
 .card-meta{{color:#52525b;font-size:10px;margin-top:6px}}
 
+/* Schedule section */
+.schedule-section{{margin:24px 0;padding:0}}
+.schedule-header{{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}}
+.schedule-header h2{{font-size:18px;font-weight:700}}
+.schedule-counts{{display:flex;gap:10px;font-size:11px}}
+.schedule-cards{{display:flex;flex-direction:column;gap:8px}}
+.sched-card{{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;transition:background .15s}}
+.sched-card:hover{{background:rgba(255,255,255,.08)}}
+.sched-header{{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}}
+.sched-name{{font-size:15px;font-weight:600;color:#f5f5f7}}
+.sched-city{{font-size:11px;color:#71717a;font-family:'JetBrains Mono',monospace}}
+.sched-date{{font-size:13px;color:#a78bfa;margin-bottom:4px}}
+.sched-loc{{font-size:12px;color:#71717a;margin-bottom:4px}}
+.sched-agent{{font-size:12px;color:#d4d4d8;margin-bottom:2px}}
+.sched-contact{{font-size:11px;color:#71717a;margin-bottom:4px;font-family:'JetBrains Mono',monospace}}
+.sched-filters{{font-size:11px;color:#71717a;margin-top:6px}}
+.sched-notes{{font-size:11px;color:#a1a1aa;font-style:italic;margin-top:4px}}
+
 /* Empty state */
 .empty{{text-align:center;padding:60px 20px;color:#52525b}}
 .empty h2{{font-size:18px;color:#71717a;margin-bottom:8px}}
@@ -553,6 +697,8 @@ body{{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-s
       <div class="stat"><div class="stat-val" style="color:#ef4444">{by_status.get('passed', 0)}</div><div class="stat-label">見送り</div></div>
     </div>
   </div>
+
+  {_build_viewing_schedule(inquiries, agent_memory)}
 
   {section_nav}
 

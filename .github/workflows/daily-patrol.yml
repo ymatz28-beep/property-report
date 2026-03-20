@@ -68,8 +68,10 @@ jobs:
 
       - name: Deploy reports to gh-pages
         if: always() && steps.patrol.outcome != 'skipped'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          # Save output HTML before branch switch (exclude confidential files)
+          # Collect public HTML files (exclude confidential)
           mkdir -p /tmp/deploy-reports
           count=0
           for f in output/*.html; do
@@ -86,17 +88,17 @@ jobs:
           fi
           echo "Prepared $count HTML files for deploy"
 
-          # Fetch and switch to gh-pages
-          git fetch origin gh-pages:gh-pages
-          git stash --include-untracked || true
-          git checkout gh-pages
+          # Clone gh-pages into separate directory (avoids merge conflicts entirely)
+          git clone --single-branch --branch gh-pages --depth 1 \
+            "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" \
+            /tmp/gh-pages-deploy
+          cd /tmp/gh-pages-deploy
 
-          # Clean up stale non-HTML artifacts that leaked into gh-pages
-          for stale in __pycache__ .github lib data output; do
-            [ -e "$stale" ] && git rm -rf "$stale" 2>/dev/null && echo "Removed stale: $stale"
-          done
+          git config user.name "Property Report Bot"
+          git config user.email "noreply@github.com"
 
-          # Copy saved reports (only HTML files — no __pycache__ etc.)
+          # Replace all HTML with fresh copies
+          rm -f *.html
           cp /tmp/deploy-reports/*.html ./
 
           git add *.html

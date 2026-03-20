@@ -1,14 +1,80 @@
 # HANDOFF
 
-## [Constancy] 2026-03-19
+## [Constancy] 2026-03-20
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
 - [WARN] structural_reform: search_multi_site.py is 1022 lines (threshold: 500). Consider splitting.
 - [WARN] structural_reform: generate_search_report_common.py is 1171 lines (threshold: 500). Consider splitting.
 - [WARN] html_ui: Has gnav but missing hamburger toggle — mobile nav broken
-- [WARN] html_ui: Has gnav but missing hamburger toggle — mobile nav broken
-- [ERROR] git_uncommitted: Property Analyzer: 6 uncommitted file(s), oldest 435h ago (threshold: 24h). GHA runs on old code until pushed.
 
-## 最終更新: 2026-03-19（Session #72 — Resilience原則 + パイプラインレジリエント化 + ティアフィルタ）
+## 最終更新: 2026-03-20 Session #54
+
+## 完了済み（2026-03-20 内覧分析フル自動生成）
+
+### naiken-analysis.html フル自動生成化
+- **物件別投資分析 (`_naiken_invest_analysis`)**: 都市別㎡賃料ベースの想定賃料・表面利回り・実質CF・㎡単価相対評価・築年数リスクを自動算出
+- **メリット/リスク自動判定 (`_naiken_merits_risks`)**: ㎡単価・面積・ペット・耐震・築年数・管理費・短期賃貸を属性ベースで自動分類（メリット/リスク/要確認）
+- **物件別チェックリスト (`_naiken_checklist`)**: 築年数に応じた動的チェック項目生成（旧耐震は耐震診断追加等）
+- **担当者向け質問リスト (`_naiken_questions`)**: 管理規約・修繕・耐震等の質問を自動生成。担当者名付き
+- **共通確認事項セクション**: ハードフィルター（ペット/マンスリー）+ 投資判断チェック + 2拠点生活実用性
+- **アーカイブ機能**: 上書き前に `output/archive/naiken-{date}.html` に前版を自動保存
+- **デザイン刷新**: タグ（tag-blue/green/yellow）、invest-grid、verdict-caution、schedule-banner等の新CSSコンポーネント
+- **QA全38項目PASS**: データ整合性(4) + 出力品質(28: 構造/UI/データ正確性/旧データ排除) + アーカイブ(1) + パイプライン統合(5) + 冪等性(1) + プレースホルダー(1) + デプロイ(3: HTTP200+福岡版+大阪旧版排除) + 次回パトロールシミュレーション(2)
+- 出力277行（旧手動版420行と同等構造、コード生成で保守コスト削減）
+- **rebase競合解消**: GHA auto-patrol(`fda2d10`)との競合をstash+rebaseで解決。push成功(`f067cc6`)
+
+## 完了済み（2026-03-20 agent_memory連携 + GHAクロスリポアクセス）
+
+### agent_memory自動同期 (`185c549`)
+- **sync_from_agent_memory()**: inbox-zeroのagent_memory.yamlから物件問い合わせ状況を自動同期
+  - 物件名マッチでステータス自動アップグレード（flagged→in_discussion→viewing）
+  - フリーテキストから内覧日時を抽出
+  - ハードフィルタ結果（ペット可/民泊可）を確定条件として同期
+  - ステータスはアップグレードのみ、ダウングレードしない
+- **run_daily_patrol.py Step 5.6**: auto-flagとダッシュボード生成の間にsyncステップ追加
+- **inquiries.yaml更新**: 3物件を3/21内覧(viewing)に設定（アンピール天神東、クリオラベルヴィ呉服町、コスモ博多古門戸）
+- **naiken-analysis.html再生成**: 3/21福岡3物件内覧用分析レポート
+
+### GHAクロスリポアクセス (`830df2a`)
+- **_load_agent_memory() GitHub APIフォールバック**: ローカルパスが存在しない場合（GHA環境）、GitHub API経由でinbox-zeroリポのagent_memory.yamlを取得
+- **GH_PAT secret**: daily-patrol.ymlにGH_PAT環境変数追加（プライベートリポアクセス用）
+
+### gh-pagesデプロイGHAスタック解消
+- **run #23314418165**: 正常完了（33m14s）。スタックではなく長時間実行だった
+- **Pages build**: 成功（45s, `23315739603`）
+
+## 完了済み（2026-03-20 デプロイ修正 + ポートフォリオツール + テンプレート同期 + パイプライン改善）
+
+### gh-pagesデプロイ修正 (`22ea0f8`)
+- **デプロイ条件修正**: data_committed=true時のみ→パトロール実行時は常にデプロイ（HTMLのみ変更時のデプロイ漏れ防止）
+- **GHA Python deploy()スキップ**: GHA上では未認証clone失敗→workflowシェルステップでデプロイ
+- **git add *.html**: `git add -A`→`*.html`限定で__pycache__/lib/.githubのgh-pages混入防止
+- **既存staleアーティファクト除去**: gh-pages上の__pycache__/.github/lib/を除去
+
+### ポートフォリオツール・物件ドキュメント追加 (`648a213`)
+- **ポートフォリオ分析ツール追加**: property docs + patrol data更新
+
+### テンプレート同期 (`d7eefc6`)
+- **property_report.html**: canonical lib（Projects/lib）からテンプレート同期
+
+### パイプライン改善 (`2e8c4d4`)
+- **チサンマンション削除**: 自宅物件をパトロール対象から除外
+- **担当者肩書き表示追加**: 問い合わせ先の表示改善
+
+### 内覧スケジュール可視化 (`79de0a5`)
+- **内覧スケジュール可視化機能追加**: アクティブ物件6件追加
+- パイプラインでの内覧予定管理を強化
+
+### Projects Session #51 クロスリファレンス
+- **lib_sync_drift解消確認**: property-analyzer lib/ push(`5d4bddb`)済み、constancy drift WARN解消
+- **ルートリポsubproject track解除** (`9c5a370`): .gitignoreにproperty-report等8サブプロジェクト列挙。git_uncommitted 104→1
+- **全constancy WARN一掃**: git_uncommitted(93+→0)、lib_sync_drift(4→0)、notification SSoT(9→0)をProjects横断で解消
+- **gh-pagesデプロイ修正GHA実行**: `workflow_dispatch` 20:02 JST発火。デプロイ条件修正+staleアーティファクト除去の動作確認待ち
+
+### kaizen-agent側の関連変更（x-ref）
+- **#80 daily_digest.py分割** (`1c78c01`): 2755行→lib/digest/7モジュールに分割。property-analyzerのlib同期にdigest/追加必要
+- **#79 constancy lib_sync_drift拡張** (`969e9c2`): property-analyzer/lib/をドリフト検出対象に追加
+- **#78 lib/自己完結化**: lib/(renderer.py/design_tokens/テンプレート)をproperty-analyzerリポに直接コピー
+- **#77 GHA完了Gmail直接通知**: daily-patrol.ymlにSMTP通知ステップ追加済み
 
 ## 完了済み（2026-03-19 Pipeline構築 + Resilience原則 + パトロール最適化）
 
@@ -49,14 +115,22 @@
 - **Verification Before Done ステップ5** — push後のopen必須ルール追加。例外なし・指示不要
 - **原則の階層更新** — WWH(企画) → 3S(設計) → Constancy(検証) → Resilience(障害耐性) → Ritualize(運用)
 
+## 進行中 / 未完了
+- **lib/digest/ 同期未実施**: kaizen-agent側でdaily_digest.pyがlib/digest/パッケージに分割された(#80, `1c78c01`)。property-analyzerのlib/同期にdigest/パッケージ追加が必要
+- **Constancy structural_reform WARN 2件**: search_multi_site.py 1022行 / generate_search_report_common.py 1171行
+- **モバイルgnav hamburgerトグル未実装**: html_ui WARN
+
 ## Next Actions
-1. **Reply Assist統合テスト** — inbox-zero reply_assist.pyのproperty.yaml + agent_memory.yaml連携を実メールで検証
-2. **Daily Digest統合テスト** — 次回パトロール実行でfailed_steps表示がDigestに反映されるか確認
-3. **Constancy警告対応** — search_multi_site.py 1022行の分割検討、generate_search_report_common.py 1171行の分割検討
-4. **inquiries.yaml重複3組解消** — inq-007/008, inq-013/014, inq-029/030
-5. **pipeline_summary.json → Constancy検査連携** — stock-analyzerのpipeline死活をconstancy_checks.pyのdelivery_healthに追加
+1. **3/21福岡内覧 最終確認** — naiken-analysis.htmlフル自動生成済み。ブラウザ目視で投資分析数値・質問リストの妥当性を確認
+2. **Constancy警告対応** — search_multi_site.py 1022行の分割、generate_search_report_common.py 1171行の分割
+3. **lib/digest/同期対応** — kaizen-agent #80でdaily_digest.pyがlib/digest/に分割。property-analyzerのlib同期設定を更新
+4. **モバイルgnav修正** — hamburgerトグル未実装のWARN対応
+5. **inquiries.yaml重複3組解消** — inq-007/008, inq-013/014, inq-029/030
+6. **Reply Assist統合テスト** — inbox-zero reply_assist.pyのproperty.yaml + agent_memory.yaml連携を実メールで検証
+7. **改善アイデア: agent_memory双方向同期** — 現在はagent_memory→inquiries.yamlの片方向。内覧結果(viewed/decided/passed)をinquiries.yaml→agent_memoryに逆同期し、reply_assistが内覧済み情報を活用できるようにする
 
 ## Key Decisions
+- **gh-pagesデプロイ方針（2026-03-20）**: `git add *.html`限定（-A禁止）。Python deploy()はGHA上スキップ。デプロイ条件=パトロール実行時は常時
 - **ティアベースフィルタ閾値**: Green 80+, Yellow 65-79, Orange/Red 除外。MAX_YELLOW_FILL=20
 - **MAX_DISPLAY廃止**: フラット件数制限ではなくティアベースに完全移行
 - **検索並列化**: 5スクリプトは別ファイルに書き出すため並列安全。enrich_maintenance.pyのみ後続
@@ -79,6 +153,7 @@
 - **原則の階層（2026-03-19更新）**: WWH(企画) → 3S(設計) → Constancy(検証) → Resilience(障害耐性) → Ritualize(運用)
 - **GHAパトロールGmail直接通知（2026-03-18）**: Daily Digest SSoTの例外として、GHAワークフロー内からSMTP直接送信。理由: PC閉じてても通知が届く必要がある（Daily DigestはGHA側でも動くが、パトロール完了直後の即時通知はワークフロー内が最速）
 - **lib/リポ内包（2026-03-18）**: GHA上でlib.rendererが見つからない問題の根本対策として、lib/(renderer/design_tokens/templates)をproperty-reportリポに直接追加。sys.pathはローカル(親dir)とGHA(カレントdir)の両方を検索
+- **agent_memory連携方針（2026-03-20）**: inbox-zeroのagent_memory.yamlをSSoTとし、property_pipeline.pyがsyncで取り込む。ステータスはアップグレードのみ（ダウングレード禁止）。GHAではGitHub API+GH_PATでクロスリポアクセス
 - **マネタイズ戦略 不動産ドメイン（2026-03-18）**: property-analyzerの既存資産(11軸スコアリング+パトロール+民泊収益試算)を「Property Quick Calc」PWAとして収益化。Phase 2でエージェントチーム設計予定
 - **GHAスケジュール再有効化（2026-03-16）**: Daily Digest cron復旧。property patrol結果の自動配信再開
 - **inbox-patrol廃止（2026-03-16）**: 形骸化→削除。kaizen launchd簡素化
@@ -91,8 +166,7 @@
 - 特区民泊の新規受付は2026年5月29日終了
 
 ## ブロッカー / 注意事項
-- **特区民泊の新規受付は2026年5月29日で終了** → 残り約2.5ヶ月
-- #1 扇町の民泊可否が最重要の未確認事項
+- **特区民泊の新規受付は2026年5月29日で終了** → 残り約2ヶ月
 - athome全都市でCAPTCHA認証ブロック（解決不可）
 - DTI約61.7% → 個人追加融資困難。法人融資で対応
 - **GitHub Pagesキャッシュ**: max-age=600（10分）。デプロイ直後は404/古い版が出る
@@ -105,22 +179,17 @@
 - GitHub Pages: report-dashboard(gh-pages) / property-report(gh-pages) / trip-planner(main)
 
 ## History
-- 2026-03-19 Session#72: Pipeline構築+ティアフィルタ+Resilience原則+パトロール並列化+横展開(stock/kaizen)+Design Leverage Rule+open必須ルール
-- 2026-03-18 Projects横断MEMORY更新: downloads-router 3層ルーティング記述拡充(個人→Drive/Cisco→OneDrive/証券CSV→data-bridge、不動産キーワード自動判定)。tax_annual.yaml参照追加(wealth-strategy PL連携用)
-- 2026-03-18 GHA lib/欠落修正: lib/をリポに追加+sys.path両対応+jinja2追加。GHAレポート生成全滅の根本原因修正(`5d4bddb`)。パトロール再トリガー済み
-- 2026-03-18 GHAパトロールGmail通知: daily-patrol.ymlにSMTP直接通知追加(`4e8e594`)。✅完了/⚠️部分成功/❌失敗の3パターン。PC閉じてもスマホGmailに届く設計
-- 2026-03-18 Projects#50横断: マネタイズ5ドメイン戦略に不動産組込。Property Quick Calcとしてproperty-analyzer既存資産を収益化候補に。monetization-strategy.md作成
-- 2026-03-18 kaizen#72横断: lib同期drift修正(qa_output.py/renderer.py)。Digest夕方SPOTLIGHT/SIGNALS追加。CF Pages deploy-private修正。IMAP診断ログ追加
-- 2026-03-18 グランドデザインWWH再構築: Property Quick Calc設計にWWH適用+リスク対策追加。プロダクト優先順位変更(健康トラッカー#1→不動産即判定#2)。WWHフレームワークCLAUDE.md昇格
-- 2026-03-17 問い合わせ文面改善: 共通コンテキスト追加(エリア/予算/リノベ/不在期間)+ペット可/相談可の丁寧表現+2拠点生活「検討→実施」統一。property-reportデプロイ済み
-- 2026-03-17 kaizen constancy横断: github_actions_healthがリポ単位→ワークフロー単位に強化。連続失敗閾値で誤検知抑制
-- 2026-03-16 kaizen#69 Cloud完全移行横断: GHAスケジュール再有効化。Daily Digest cron停止(3/11以降)が解消
-- 2026-03-16 scripts#48横断: .gitignore `!data/patrol_summary.json` 追加（Cloud Tier 404修正）。daily-patrol.yml rebase修正
-- 2026-03-16 lib同期drift修正（kaizen側）
-- 2026-03-16 inbox-patrol廃止（形骸化）→ kaizen launchd簡素化
-- 2026-03-16 Phase 2: Cloud-Primary + lib統合 + GHAスケジュール
-- 2026-03-13 鮮度情報（first-seen）全ページ展開
-- 2026-03-13 CSS var --gnav-height / constancy github_actions_health
-- 2026-03-12 通知SSoT確立 / URL encoding修正
-- 2026-03-09 Gnav統一 / MAX_PER_CITY=10 厳選
-- 2026-03-07 gnav 2層構造 / 全11軸スコアリング完成
+| 日付 | サマリー |
+|------|----------|
+| 2026-03-20 #54 | QA全38項目PASS(データ整合性/出力品質/アーカイブ/パイプライン統合/冪等性/プレースホルダー/デプロイ/パトロールシミュ)。GHA auto-patrol rebase競合解消(`f067cc6`) |
+| 2026-03-20 #53 | naiken-analysis.htmlフル自動生成化: 投資分析+メリット/リスク+チェックリスト+質問リスト+共通確認+アーカイブ+デザイン刷新 |
+| 2026-03-20 #52 | agent_memory自動同期(`185c549`)+GHAクロスリポアクセス(`830df2a`)+GHAスタック解消(正常完了33m)+3/21福岡内覧3物件設定 |
+| 2026-03-20 #51 | gh-pagesデプロイ修正(`22ea0f8`)+ポートフォリオツール(`648a213`)+テンプレート同期(`d7eefc6`)+パイプライン改善(`2e8c4d4`)+内覧可視化(`79de0a5`)+Projects横断constancy一掃(lib_sync_drift解消) |
+| 2026-03-19 Session#72 | Pipeline構築+ティアフィルタ+Resilience原則+パトロール並列化+横展開(stock/kaizen)+Design Leverage Rule+open必須ルール |
+| 2026-03-18 x-ref | GHA lib/欠落修正(`5d4bddb`)+Gmail通知追加(`4e8e594`)+マネタイズ戦略+WWH再構築+downloads-router 3層ルーティング |
+| 2026-03-17 | 問い合わせ文面改善(共通コンテキスト+ペット丁寧表現+2拠点統一)+kaizen constancy WF単位強化 |
+| 2026-03-16 | Cloud完全移行横断+.gitignore修正+lib同期drift+inbox-patrol廃止+Cloud-Primary Phase 2 |
+| 2026-03-13 | 鮮度情報(first-seen)全ページ展開+CSS var --gnav-height+constancy github_actions_health |
+| 2026-03-12 | 通知SSoT確立+URL encoding修正 |
+| 2026-03-09 | Gnav統一+MAX_PER_CITY=10厳選 |
+| 2026-03-07 | gnav 2層構造+全11軸スコアリング完成 |

@@ -10,10 +10,10 @@
 /* ── Shared Gnav ── */
 .site-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; height: 52px;
+  padding: 0 24px; height: var(--gnav-height, 52px);
   background: rgba(22,24,31,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255,255,255,0.08);
-  position: sticky; top: 0; z-index: 100;
+  position: sticky; top: 0; z-index: var(--z-nav, 100);
 }
 .site-nav { display: flex; gap: 4px; }
 .site-nav a {
@@ -36,10 +36,10 @@
 .nav-toggle-label span::before { top: -6px; }
 .nav-toggle-label span::after { top: 6px; }
 @media (max-width: 640px) {
-  .nav-toggle-label { display: block; }
+  .nav-toggle-label { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
   .site-nav {
     display: none; flex-direction: column; gap: 0;
-    position: absolute; top: 52px; left: 0; right: 0; z-index: 200;
+    position: absolute; top: var(--gnav-height, 52px); left: 0; right: 0; z-index: var(--z-modal, 200);
     background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
     padding: 8px 0;
@@ -52,12 +52,13 @@
 }
 
     
-.gnav{position:sticky;top:52px;z-index:90;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav{position:sticky;top:var(--gnav-height,52px);z-index:var(--z-subnav,90);background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif;scrollbar-width:none}
 .gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
+.gnav::-webkit-scrollbar{display:none}
 .gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
 .gnav a:hover{color:#fff}
 .gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
-@media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+@media(max-width:640px){.gnav a{padding:10px 10px;font-size:10px;min-height:44px;display:inline-flex;align-items:center}}
 
     :root { --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; --green:#34d399; --red:#f87171; --yellow:#eab308; }
     * { box-sizing:border-box; margin:0; }
@@ -114,7 +115,7 @@
 <div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="minpaku-osaka.html">大阪</a><a href="minpaku-fukuoka.html">福岡</a><a href="minpaku-tokyo.html">東京</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html" class="cur">問い合わせ</a><a href="inquiry-pipeline.html">Pipeline</a></div></div>
 <div class="wrap">
   <h1>問い合わせメッセージ</h1>
-  <p class="subtitle">生成日: 2026-03-20 01:28 — スコア上位10件/都市 — 合計30件 — コピーして各サイトのフォームに貼り付け</p>
+  <p class="subtitle">生成日: 2026-03-20 03:05 — スコア上位10件/都市 — 合計30件 — コピーして各サイトのフォームに貼り付け</p>
 
   <div class="city-jump">
     <a href="#city-osaka" class="jump-btn" style="--jc:#3b9eff">大阪（10件）</a><a href="#city-fukuoka" class="jump-btn" style="--jc:#34d399">福岡（10件）</a><a href="#city-tokyo" class="jump-btn" style="--jc:#a78bfa">東京（10件）</a>

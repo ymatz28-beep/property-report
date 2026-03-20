@@ -129,6 +129,7 @@ def create_env(extra_dirs: list[Path] | None = None, scope: str = "public") -> E
         {"href": "https://iuma-private.pages.dev/intel/", "label": "Insight"},
         {"href": "https://iuma-private.pages.dev/wealth/dashboard.html", "label": "Wealth"},
         {"href": "https://iuma-private.pages.dev/action/", "label": "Action"},
+        {"href": "https://ymatz28-beep.github.io/self-insight/", "label": "Self-Insight"},
         {"href": "https://iuma-private.pages.dev/health/", "label": "Health"},
         {"href": "https://ymatz28-beep.github.io/property-report/", "label": "Property"},
         {"href": "https://ymatz28-beep.github.io/trip-planner/", "label": "Travel"},

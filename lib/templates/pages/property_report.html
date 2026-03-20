@@ -86,24 +86,24 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
   color:#e8fbff; font-size:12px; font-weight:600;
 }
 
-/* Page nav (cross-page navigation) */
-.page-nav {
+/* Sub-nav (cross-page navigation) */
+.gnav {
   position:sticky; top:var(--gnav-height, 52px); z-index:var(--z-subnav, 90);
   background:rgba(10,12,18,.92); backdrop-filter:blur(10px);
   border-bottom:1px solid rgba(255,255,255,.08);
   padding:0; display:flex; overflow-x:auto; white-space:nowrap;
   scrollbar-width:none;
 }
-.page-nav::-webkit-scrollbar { display:none; }
-.page-nav a {
+.gnav::-webkit-scrollbar { display:none; }
+.gnav a {
   display:inline-flex; align-items:center; padding:8px 14px;
   font-size:11px; font-weight:600; color:rgba(255,255,255,.5);
   text-decoration:none; letter-spacing:.04em; transition:color .2s;
 }
-.page-nav a:hover { color:#fff; }
-.page-nav a.cur { color:#fff; border-bottom:2px solid var(--accent, #3b9eff); }
+.gnav a:hover { color:#fff; }
+.gnav a.cur { color:#fff; border-bottom:2px solid var(--accent, #3b9eff); }
 @media (max-width:640px) {
-  .page-nav a { padding:10px 10px; font-size:10px; min-height:44px; }
+  .gnav a { padding:10px 10px; font-size:10px; min-height:44px; }
 }
 
 /* Section jump nav */
@@ -375,7 +375,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 
 {% block content %}
 {# Cross-page navigation #}
-<nav class="page-nav">
+<nav class="gnav">
   {% for page in nav_pages %}
   <a href="{{ page.href }}"{% if page.label == config.city_label or page.href == current_page %} class="cur"{% endif %}>{{ page.label }}</a>
   {% endfor %}

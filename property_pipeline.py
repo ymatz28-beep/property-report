@@ -1048,7 +1048,7 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 <title>内覧分析 — {title_city} {first_date}</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{{--bg:#0b0f16;--card:rgba(255,255,255,0.04);--line:rgba(255,255,255,0.10);--text:#edf3ff;--muted:#a9b3c6;--accent:#6ee7ff;--green:#34d399;--red:#f87171;--yellow:#eab308;--orange:#fb923c}}
+:root{{--bg:#0b0f16;--card:rgba(255,255,255,0.04);--line:rgba(255,255,255,0.10);--text:#edf3ff;--muted:#a9b3c6;--accent:#6ee7ff;--green:#34d399;--red:#f87171;--yellow:#eab308;--orange:#fb923c;--gnav-height:52px;--z-nav:100;--z-subnav:90;--z-modal:200}}
 *{{box-sizing:border-box;margin:0}}
 body{{font-family:'Inter','Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}}
 {site_header_css()}{global_nav_css()}

@@ -27,10 +27,10 @@ def site_header_css() -> str:
 /* ── Shared Gnav ── */
 .site-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; height: 52px;
+  padding: 0 24px; height: var(--gnav-height, 52px);
   background: rgba(22,24,31,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255,255,255,0.08);
-  position: sticky; top: 0; z-index: 100;
+  position: sticky; top: 0; z-index: var(--z-nav, 100);
 }
 .site-nav { display: flex; gap: 4px; }
 .site-nav a {
@@ -53,10 +53,10 @@ def site_header_css() -> str:
 .nav-toggle-label span::before { top: -6px; }
 .nav-toggle-label span::after { top: 6px; }
 @media (max-width: 640px) {
-  .nav-toggle-label { display: block; }
+  .nav-toggle-label { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
   .site-nav {
     display: none; flex-direction: column; gap: 0;
-    position: absolute; top: 52px; left: 0; right: 0; z-index: 200;
+    position: absolute; top: var(--gnav-height, 52px); left: 0; right: 0; z-index: var(--z-modal, 200);
     background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
     padding: 8px 0;
@@ -84,12 +84,13 @@ def site_header_html() -> str:
 
 def global_nav_css() -> str:
     return """
-.gnav{position:sticky;top:52px;z-index:90;background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif}
+.gnav{position:sticky;top:var(--gnav-height,52px);z-index:var(--z-subnav,90);background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif;scrollbar-width:none}
 .gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
+.gnav::-webkit-scrollbar{display:none}
 .gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
 .gnav a:hover{color:#fff}
 .gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
-@media(max-width:640px){.gnav a{padding:8px 10px;font-size:10px}}
+@media(max-width:640px){.gnav a{padding:10px 10px;font-size:10px;min-height:44px;display:inline-flex;align-items:center}}
 """
 
 
@@ -855,6 +856,7 @@ _NAV_PAGES = [
     {"href": "minpaku-tokyo.html", "label": "東京"},
     {"href": "naiken-analysis.html", "label": "内覧分析"},
     {"href": "inquiry-messages.html", "label": "問い合わせ"},
+    {"href": "inquiry-pipeline.html", "label": "Pipeline"},
 ]
 
 

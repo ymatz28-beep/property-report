@@ -216,24 +216,24 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
   color:#e8fbff; font-size:12px; font-weight:600;
 }
 
-/* Page nav (cross-page navigation) */
-.page-nav {
+/* Sub-nav (cross-page navigation) */
+.gnav {
   position:sticky; top:var(--gnav-height, 52px); z-index:var(--z-subnav, 90);
   background:rgba(10,12,18,.92); backdrop-filter:blur(10px);
   border-bottom:1px solid rgba(255,255,255,.08);
   padding:0; display:flex; overflow-x:auto; white-space:nowrap;
   scrollbar-width:none;
 }
-.page-nav::-webkit-scrollbar { display:none; }
-.page-nav a {
+.gnav::-webkit-scrollbar { display:none; }
+.gnav a {
   display:inline-flex; align-items:center; padding:8px 14px;
   font-size:11px; font-weight:600; color:rgba(255,255,255,.5);
   text-decoration:none; letter-spacing:.04em; transition:color .2s;
 }
-.page-nav a:hover { color:#fff; }
-.page-nav a.cur { color:#fff; border-bottom:2px solid var(--accent, #3b9eff); }
+.gnav a:hover { color:#fff; }
+.gnav a.cur { color:#fff; border-bottom:2px solid var(--accent, #3b9eff); }
 @media (max-width:640px) {
-  .page-nav a { padding:10px 10px; font-size:10px; min-height:44px; }
+  .gnav a { padding:10px 10px; font-size:10px; min-height:44px; }
 }
 
 /* Section jump nav */
@@ -535,7 +535,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 .nav-toggle-label span::before { top: -6px; }
 .nav-toggle-label span::after { top: 6px; }
 @media (max-width: 640px) {
-  .nav-toggle-label { display: block; }
+  .nav-toggle-label { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
   .site-nav {
     display: none; flex-direction: column; gap: 0;
     position: absolute; top: var(--gnav-height, 52px); left: 0; right: 0; z-index: var(--z-modal, 200);
@@ -570,13 +570,14 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   </nav>
 </header>
 
-<nav class="page-nav">
+<nav class="gnav">
   <a href="index.html">Hub</a>
   <a href="minpaku-osaka.html">大阪</a>
   <a href="minpaku-fukuoka.html" class="cur">福岡</a>
   <a href="minpaku-tokyo.html">東京</a>
   <a href="naiken-analysis.html">内覧分析</a>
   <a href="inquiry-messages.html">問い合わせ</a>
+  <a href="inquiry-pipeline.html">Pipeline</a>
 </nav>
 
 <div class="wrap">
@@ -617,9 +618,9 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   </section>
 
   <div class="freshness-bar">
-    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 03-19 21:16 (32分)</span>
-    <span class="fb-chip">掲載中 1091件</span>
-<span class="fb-chip fb-new">+6 新規</span><span class="fb-chip fb-removed">-3 終了</span>  </div>
+    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 03-20 00:55 処理32分</span>
+    <span class="fb-chip">掲載中 1103件</span>
+<span class="fb-chip fb-new">+79 新規</span><span class="fb-chip fb-removed">-67 終了</span>  </div>
 
   <section id="sec-stats" class="grid-4">
     <div class="card stat"><div class="label">総候補数</div><div class="value">32</div><div class="sub">重複排除後</div></div>
@@ -1328,9 +1329,9 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 
   <div class="footer">
     <div style="margin-bottom:8px">
-      <a href="index.html">Hub</a> &middot;       <a href="minpaku-osaka.html">大阪</a> &middot;       <a href="minpaku-fukuoka.html">福岡</a> &middot;       <a href="minpaku-tokyo.html">東京</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a>    </div>
+      <a href="index.html">Hub</a> &middot;       <a href="minpaku-osaka.html">大阪</a> &middot;       <a href="minpaku-fukuoka.html">福岡</a> &middot;       <a href="minpaku-tokyo.html">東京</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a> &middot;       <a href="inquiry-pipeline.html">Pipeline</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, athome, ftakken, restate (data/suumo_fukuoka_raw.txt + data/rakumachi_fukuoka_raw.txt, data/yahoo_fukuoka_raw.txt, data/athome_fukuoka_raw.txt, data/ftakken_fukuoka_raw.txt, data/restate_fukuoka_raw.txt)</div>
-    <div>Generated on 2026-03-20 01:28</div>
+    <div>Generated on 2026-03-20 11:20</div>
   </div>
 </div>
 

@@ -689,11 +689,170 @@ def _build_viewing_schedule(inquiries: list[dict], agent_memory: dict) -> str:
 </div>'''
 
 
+def _naiken_invest_analysis(p: dict, all_props: list[dict]) -> str:
+    """物件別の投資分析セクション（ルールベース）。"""
+    price = p.get("price", 0)
+    area = p.get("area", 0)
+    mgmt = p.get("management_fee", 0)
+    yr = p.get("year_built", 0)
+    city = p.get("city", "")
+
+    # 想定賃料: 都市別㎡単価ベース (福岡1800-2200, 大阪2000-2500, 東京2500-3200)
+    rent_per_sqm = {"fukuoka": (1800, 2200), "osaka": (2000, 2500), "tokyo": (2500, 3200)}
+    lo, hi = rent_per_sqm.get(city, (2000, 2500))
+    if yr and yr >= 2010:
+        lo, hi = int(lo * 1.1), int(hi * 1.1)  # 築浅プレミアム
+    rent_lo = int(area * lo / 10000) if area else 0
+    rent_hi = int(area * hi / 10000) if area else 0
+
+    # 表面利回り
+    yield_lo = round(rent_lo * 12 / price * 100, 1) if price else 0
+    yield_hi = round(rent_hi * 12 / price * 100, 1) if price else 0
+    yield_cls = "ok" if yield_hi >= 4.0 else ("" if yield_hi >= 3.0 else "warn")
+
+    # 実質CF
+    cf_lo = rent_lo - (mgmt // 10000) if mgmt else rent_lo
+    cf_hi = rent_hi - (mgmt // 10000) if mgmt else rent_hi
+
+    # ㎡単価の相対評価
+    sqm_prices = [pp["price"] / pp["area"] for pp in all_props if pp.get("price") and pp.get("area")]
+    my_sqm = price / area if price and area else 0
+    sqm_rank = "割安" if my_sqm <= min(sqm_prices) * 1.05 else ("高め" if my_sqm >= max(sqm_prices) * 0.95 else "中間")
+    sqm_cls = "ok" if sqm_rank == "割安" else ("warn" if sqm_rank == "高め" else "")
+
+    # 築年数リスク
+    age = datetime.now().year - yr if yr else 0
+    age_label = "低い" if age < 15 else ("中程度" if age < 30 else "高い（要修繕確認）")
+    age_cls = "ok" if age < 15 else ("" if age < 30 else "warn")
+
+    return f"""<div class="section-title">投資分析（概算）</div>
+<div class="invest-grid">
+<div class="invest-card"><div class="label">想定賃料（{CITY_LABELS.get(city, '')} {p.get('layout', '')} {area}㎡）</div><div class="num">{rent_lo}〜{rent_hi}万円/月</div></div>
+<div class="invest-card"><div class="label">表面利回り</div><div class="num {yield_cls}">{yield_lo}〜{yield_hi}%</div></div>
+<div class="invest-card"><div class="label">管理費込み実質CF</div><div class="num">{cf_lo}〜{cf_hi}万円/月</div></div>
+<div class="invest-card"><div class="label">㎡単価 vs 他物件</div><div class="num {sqm_cls}">{sqm_rank}</div></div>
+<div class="invest-card"><div class="label">築年数リスク</div><div class="num {age_cls}">{age_label}</div></div>
+</div>"""
+
+
+def _naiken_merits_risks(p: dict, all_props: list[dict]) -> str:
+    """物件別メリット/リスク（属性ベース自動判定）。"""
+    merits, risks, checks = [], [], []
+    price = p.get("price", 0)
+    area = p.get("area", 0)
+    yr = p.get("year_built", 0)
+    mgmt = p.get("management_fee", 0)
+    age = datetime.now().year - yr if yr else 0
+
+    # ㎡単価
+    sqm = price / area if price and area else 0
+    all_sqm = sorted(pp["price"] / pp["area"] for pp in all_props if pp.get("price") and pp.get("area"))
+    if sqm and sqm <= all_sqm[0] * 1.05:
+        merits.append(f"㎡単価最安（{sqm:.1f}万）")
+    elif sqm and sqm >= all_sqm[-1] * 0.95:
+        risks.append(f"㎡単価最高（{sqm:.1f}万）")
+
+    # 面積
+    all_areas = sorted(pp.get("area", 0) for pp in all_props)
+    if area >= all_areas[-1]:
+        merits.append(f"面積最大（{area}㎡）")
+    elif area <= all_areas[0]:
+        risks.append(f"面積最小（{area}㎡）")
+
+    # ペット
+    if p.get("pet") == "ok":
+        merits.append("ペット可確定")
+    elif p.get("pet") == "ng":
+        risks.append("ペット不可")
+    else:
+        checks.append("ペット可否の確認")
+
+    # 耐震
+    if yr and yr < 1981:
+        risks.append(f"旧耐震（{yr}年）")
+        checks.append("耐震診断の有無")
+    elif yr and yr <= 1985:
+        risks.append(f"旧耐震移行期（{yr}年・新耐震基準適用か要確認）")
+        checks.append("耐震診断の実施有無")
+    elif yr and yr >= 2000:
+        merits.append(f"新耐震（{yr}年）")
+
+    # 築年数
+    if age > 30:
+        risks.append(f"築{age}年（大規模修繕リスク）")
+        checks.append("大規模修繕の履歴と次回予定")
+    elif age < 10:
+        merits.append(f"築{age}年（築浅）")
+
+    # 管理費
+    all_mgmt = sorted(pp.get("management_fee", 0) for pp in all_props if pp.get("management_fee"))
+    if mgmt and all_mgmt and mgmt >= all_mgmt[-1]:
+        risks.append(f"管理費最高（{mgmt:,}円）")
+    elif mgmt and all_mgmt and mgmt <= all_mgmt[0]:
+        merits.append(f"管理費最安（{mgmt:,}円）")
+
+    # 短期賃貸
+    st = p.get("short_term")
+    if st and "OK" in str(st).upper():
+        merits.append("短期賃貸可")
+    elif not st:
+        checks.append("短期賃貸（マンスリー）可否の確認")
+
+    m = " / ".join(merits) if merits else "—"
+    r = " / ".join(risks) if risks else "—"
+    c = " / ".join(checks) if checks else "—"
+    return f"""<div class="section-title">メリット / リスク</div>
+<table><tr><th style="color:var(--green)">メリット</th><td>{m}</td></tr>
+<tr><th style="color:var(--red)">リスク</th><td>{r}</td></tr>
+<tr><th style="color:var(--yellow)">要確認</th><td>{c}</td></tr></table>"""
+
+
+def _naiken_checklist(p: dict) -> str:
+    """物件別の内覧チェックリスト（属性ベース）。"""
+    items = [
+        "<strong>ペット飼育条件の詳細（サイズ・頭数制限）</strong>",
+        "<strong>短期賃貸（マンスリー）活用の可否</strong>",
+        "管理規約で民泊条項の確認",
+    ]
+    yr = p.get("year_built", 0)
+    age = datetime.now().year - yr if yr else 0
+    if yr and yr <= 1985:
+        items.append("耐震診断の実施有無")
+    items.append("大規模修繕の履歴と次回予定")
+    items.append("修繕積立金の残高と値上げ予定")
+    if age > 20:
+        items.append(f"築{age}年 — 水回り・設備の状態（リフォーム要否）")
+    items.extend([
+        "日当たり・眺望・騒音",
+        "管理組合の運営状況（滞納・借入）",
+    ])
+    li = "\n".join(f"<li>{it}</li>" for it in items)
+    return f'<div class="section-title">内覧チェックリスト</div>\n<ul class="checklist">{li}</ul>'
+
+
+def _naiken_questions(p: dict, agent_name: str) -> str:
+    """物件別の質問リスト（担当者向け）。"""
+    qs = [
+        "管理規約で「住宅宿泊事業（民泊）」に関する規定はありますか？",
+        "不在時のマンスリー賃貸（1ヶ月以上の定期賃貸借）は管理規約上可能ですか？",
+        "大規模修繕の直近実施時期と次回予定は？",
+        "修繕積立金の値上げ予定はありますか？",
+    ]
+    yr = p.get("year_built", 0)
+    if yr and yr <= 1985:
+        qs.append(f"{yr}年築は新耐震基準適用ですか？ 耐震診断は実施済みですか？")
+    qs.append("管理組合の財務状況（借入金・滞納）は？")
+    label = f"（{agent_name}さんに確認）" if agent_name else ""
+    items = "\n".join(f'<div class="question"><strong>Q{i+1}.</strong> {q}</div>' for i, q in enumerate(qs))
+    return f'<div class="section-title">質問リスト{label}</div>\n{items}'
+
+
 def generate_naiken_analysis() -> Path | None:
     """Auto-generate naiken-analysis.html from viewing properties.
 
-    Reads inquiries.yaml for status=viewing properties, groups by viewing_date,
-    and generates a comparison + analysis page. Returns None if no viewing properties.
+    Full analysis: schedule, comparison, per-property investment analysis,
+    merits/risks, checklists, questions, and common verification items.
+    Archives previous version before overwriting.
     """
     from generate_search_report_common import (
         global_nav_css,
@@ -702,10 +861,24 @@ def generate_naiken_analysis() -> Path | None:
         site_header_html,
     )
 
+    out = OUTPUT / "naiken-analysis.html"
+
+    # Archive previous version before overwriting
+    if out.exists():
+        archive_dir = OUTPUT / "archive"
+        archive_dir.mkdir(exist_ok=True)
+        prev_content = out.read_text(encoding="utf-8")
+        # Use modification date for archive filename
+        import time
+        mtime = out.stat().st_mtime
+        archive_date = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
+        archive_path = archive_dir / f"naiken-{archive_date}.html"
+        if not archive_path.exists():
+            archive_path.write_text(prev_content, encoding="utf-8")
+
     inquiries = load_inquiries()
     viewing = [i for i in inquiries if i.get("status") == "viewing"]
     if not viewing:
-        # Generate placeholder
         html = f"""<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>内覧分析</title>
@@ -720,7 +893,6 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 <div class="wrap"><h1>内覧分析</h1>
 <p class="empty">現在、内覧予定の物件はありません。<br>物件パイプラインで「viewing」ステータスに進んだ物件がここに自動表示されます。</p>
 </div></body></html>"""
-        out = OUTPUT / "naiken-analysis.html"
         out.write_text(html, encoding="utf-8")
         return out
 
@@ -730,7 +902,7 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
         d = v.get("viewing_date", "未定")
         by_date.setdefault(d, []).append(v)
 
-    # Get agent info from agent_memory (dict keyed by email)
+    # Agent contacts from agent_memory
     agent_memory = _load_agent_memory()
     agent_contacts: dict[str, dict] = {}
     for email, ag in agent_memory.items():
@@ -742,10 +914,9 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
                 "email": email,
             }
 
-    # Generate sections for each viewing date
-    date_sections = []
+    # Build sections
+    property_sections = []
     for vdate, props in sorted(by_date.items()):
-        # Determine city label
         cities = set(CITY_LABELS.get(p.get("city", ""), p.get("city", "")) for p in props)
         city_str = "・".join(sorted(cities))
 
@@ -763,67 +934,110 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
                 parts.append(f"<br>TEL: <span style='font-family:JetBrains Mono,monospace'>{phone}</span>")
             agent_info_html += "担当: " + "".join(parts) + "<br>"
 
+        viewing_time = next((str(p["viewing_time"]) for p in props if p.get("viewing_time")), "")
+
         # Schedule banner
-        viewing_time = ""
-        for p in props:
-            t = p.get("viewing_time", "")
-            if t:
-                viewing_time = str(t)
-                break
-
-        schedule_html = f"""<div style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:20px;margin-bottom:24px">
-<h2 style="font-size:18px;margin-bottom:8px;color:#a78bfa">{vdate} 内覧スケジュール — {city_str} {len(props)}件</h2>
-<div style="font-size:14px;line-height:1.8">"""
+        schedule = f"""<div class="schedule-banner">
+<h2>{vdate} 内覧スケジュール — {city_str} {len(props)}件</h2>
+<div class="detail">"""
         if viewing_time:
-            schedule_html += f"<strong>{viewing_time}</strong> 集合<br>"
+            schedule += f"<strong>{viewing_time}</strong> 集合<br>"
         for idx, p in enumerate(props, 1):
-            schedule_html += f"{'→ ' if idx > 1 else ''}{idx}. {p['name']}<br>"
-        schedule_html += f"<br>{agent_info_html}</div></div>"
+            schedule += f"{'→ ' if idx > 1 else ''}{idx}. {p['name']}<br>"
+        schedule += f"<br>{agent_info_html}</div></div>"
+        property_sections.append(schedule)
 
-        # Comparison table
-        compare_cards = ""
+        # Per-property detailed analysis
         for idx, p in enumerate(props, 1):
             yr = p.get("year_built", "")
-            age = f"築{datetime.now().year - yr}年" if isinstance(yr, int) and yr else ""
+            age_str = f"築{datetime.now().year - yr}年" if isinstance(yr, int) and yr else ""
             sqm_price = round(p["price"] / p["area"], 1) if p.get("price") and p.get("area") else ""
-            pet_cls = "color:#34d399" if p.get("pet") == "ok" else "color:#a9b3c6"
             pet_label = {"ok": "可", "ng": "不可"}.get(str(p.get("pet", "")), str(p.get("pet", "未確認")))
+            pet_cls = "ok" if p.get("pet") == "ok" else ("warn" if p.get("pet") == "ng" else "neutral")
+            agent_name = p.get("agent", "")
 
-            compare_cards += f"""<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:12px">
-<h3 style="font-size:16px;margin-bottom:8px">{idx}. {p['name']}</h3>
-<table style="width:100%;border-collapse:collapse;font-size:13px">
-<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6;width:80px">価格</th><td style="padding:4px 8px;font-weight:700">{p.get('price', '?')}万円</td></tr>
-<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">面積</th><td style="padding:4px 8px">{p.get('area', '?')}㎡</td></tr>
-<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">間取り</th><td style="padding:4px 8px">{p.get('layout', '?')}</td></tr>
-<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">築年</th><td style="padding:4px 8px">{yr}年 {f'（{age}）' if age else ''}</td></tr>
-<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">駅</th><td style="padding:4px 8px">{p.get('station', '?')}</td></tr>
-<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">㎡単価</th><td style="padding:4px 8px;font-family:JetBrains Mono,monospace">{f'{sqm_price}万/㎡' if sqm_price else '?'}</td></tr>
-<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">管理費</th><td style="padding:4px 8px">{f'{p["management_fee"]:,}円/月' if p.get('management_fee') else '?'}</td></tr>
-<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">ペット</th><td style="padding:4px 8px;{pet_cls};font-weight:700">{pet_label}</td></tr>
-<tr><th style="text-align:left;padding:4px 8px;color:#a9b3c6">短期賃貸</th><td style="padding:4px 8px">{p.get('short_term') or '未確認'}</td></tr>
-</table></div>"""
+            # Tags
+            tags = [f'<span class="tag tag-blue">{p.get("price", "?")}万円</span>']
+            if p.get("pet") == "ok":
+                tags.append('<span class="tag tag-green">ペット可</span>')
+            if isinstance(yr, int) and yr <= 1985:
+                tags.append(f'<span class="tag tag-yellow">旧耐震({yr})</span>')
+            elif isinstance(yr, int) and yr >= 2000:
+                tags.append(f'<span class="tag tag-green">新耐震({yr})</span>')
+            if p.get("area", 0) >= 60:
+                tags.append(f'<span class="tag tag-green">{p["area"]}㎡（広い）</span>')
+            tags.append(f'<span class="tag tag-muted">{p.get("source", "")}</span>')
+            tags_html = "\n".join(tags)
 
-        # Checklist
-        checklist = """<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px;margin-top:16px">
-<h3 style="font-size:16px;margin-bottom:12px">共通チェック項目</h3>
-<ul style="font-size:13px;line-height:2;color:#a9b3c6;padding-left:20px">
-<li>ペット飼育可否（チワワ3kg）— 規約原本を確認</li>
-<li>短期賃貸（マンスリー1ヶ月以上）の可否 — 管理規約の該当条文</li>
-<li>管理費・修繕積立金の今後の値上げ予定</li>
-<li>大規模修繕の履歴と次回予定</li>
-<li>管理組合の運営状況・議事録</li>
-<li>周辺の騒音・日当たり・風通し</li>
-<li>駐車場・駐輪場の空き状況と費用</li>
-<li>インターネット回線（光回線対応か）</li>
-<li>法人名義での購入可否</li>
-</ul></div>"""
+            # Comparison annotation
+            areas = [pp.get("area", 0) for pp in props]
+            area_note = "（最大）" if p.get("area") == max(areas) else ("（最小）" if p.get("area") == min(areas) else "")
+            sqm_prices_all = [pp["price"] / pp["area"] for pp in props if pp.get("price") and pp.get("area")]
+            sqm_note = ""
+            sqm_cls = ""
+            if sqm_price:
+                if sqm_price <= min(sqm_prices_all) * 1.05:
+                    sqm_note = "（最安）"
+                    sqm_cls = "ok"
+                elif sqm_price >= max(sqm_prices_all) * 0.95:
+                    sqm_note = "（最高）"
 
-        date_sections.append(f"{schedule_html}\n{compare_cards}\n{checklist}")
+            section = f"""<div class="property">
+<h2>{idx}. {p['name']}</h2>
+<p class="sub">{CITY_LABELS.get(p.get('city', ''), '')} / {p.get('layout', '')} / {p.get('area', '?')}㎡ / {yr}年 / {p.get('station', '')}</p>
+<div>{tags_html}</div>
+<div class="section-title">物件概要</div>
+<table>
+<tr><th>価格</th><td class="val">{p.get('price', '?')}万円</td></tr>
+<tr><th>面積</th><td>{p.get('area', '?')}㎡{area_note}</td></tr>
+<tr><th>間取り</th><td>{p.get('layout', '?')}</td></tr>
+<tr><th>築年</th><td>{yr}年{'（' + age_str + '）' if age_str else ''}</td></tr>
+<tr><th>最寄駅</th><td>{p.get('station', '?')}</td></tr>
+<tr><th>管理費</th><td>{f'{p["management_fee"]:,}円/月' if p.get('management_fee') else '?'}</td></tr>
+<tr><th>㎡単価</th><td class="mono {sqm_cls}">{f'{sqm_price}万円/㎡{sqm_note}' if sqm_price else '?'}</td></tr>
+<tr><th>ペット</th><td class="{pet_cls}">{pet_label}</td></tr>
+<tr><th>短期賃貸</th><td>{p.get('short_term') or '<span class="neutral">未確認</span>'}</td></tr>
+<tr><th>ソース</th><td><a href="{p.get('url', '#')}" target="_blank">{p.get('source', '?')}</a></td></tr>
+</table>
+{_naiken_invest_analysis(p, props)}
+{_naiken_merits_risks(p, props)}
+{_naiken_checklist(p)}
+{_naiken_questions(p, agent_name)}
+</div>"""
+            property_sections.append(section)
+
+    # Common verification items
+    common = """<div class="property">
+<h2>共通確認事項（全物件）</h2>
+<div class="section-title">ハードフィルター（必須確認）</div>
+<ul class="checklist">
+<li><strong>ペット飼育（チワワ3kg）: 可否 + 具体的条件</strong></li>
+<li><strong>短期賃貸: マンスリー（1ヶ月以上の定期賃貸借）活用の可否</strong></li>
+</ul>
+<div class="verdict verdict-caution">
+<strong>判定基準:</strong><br>
+・ペット不可 → 即辞退<br>
+・マンスリー不可 → NG<br>
+・「民泊禁止」のみ → マンスリー可否を別途確認（マンスリーOKなら問題なし）
+</div>
+<div class="section-title">投資判断チェック</div>
+<ul class="checklist">
+<li>法人（iUMAプロパティマネジメント）購入の可否・融資条件</li>
+<li>特区民泊の申請可否（期限: 2026/5/29）</li>
+<li>値引き余地の確認</li>
+<li>引渡し時期の確認</li>
+<li>仲介手数料の確認（両手か片手か）</li>
+</ul>
+<div class="section-title">2拠点生活の実用性</div>
+<ul class="checklist">
+<li>空港アクセス（空港→物件）の所要時間</li>
+<li>スーパー・コンビニの近さ</li>
+<li>チワワの散歩ルート（公園・緑道）</li>
+<li>インターネット回線（光回線の導入状況）</li>
+</ul>
+</div>"""
 
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
-    all_sections = "\n".join(date_sections)
-
-    # Title: use first date's city
     first_props = list(by_date.values())[0]
     first_cities = set(CITY_LABELS.get(p.get("city", ""), "") for p in first_props)
     title_city = "・".join(sorted(c for c in first_cities if c))
@@ -834,22 +1048,47 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 <title>内覧分析 — {title_city} {first_date}</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{{--bg:#050507;--text:#f5f5f7;--muted:#a9b3c6}}
+:root{{--bg:#0b0f16;--card:rgba(255,255,255,0.04);--line:rgba(255,255,255,0.10);--text:#edf3ff;--muted:#a9b3c6;--accent:#6ee7ff;--green:#34d399;--red:#f87171;--yellow:#eab308;--orange:#fb923c}}
 *{{box-sizing:border-box;margin:0}}
 body{{font-family:'Inter','Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}}
 {site_header_css()}{global_nav_css()}
 .wrap{{max-width:900px;margin:0 auto;padding:24px 16px}}
-h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:4px}}
+h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 .meta{{color:var(--muted);font-size:12px;margin-bottom:24px}}
+.property{{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;margin-bottom:24px}}
+.property h2{{font-size:20px;font-weight:800;margin-bottom:4px}}
+.property .sub{{color:var(--muted);font-size:13px;margin-bottom:20px}}
+.tag{{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-right:6px;margin-bottom:6px}}
+.tag-red{{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}}
+.tag-green{{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3)}}
+.tag-yellow{{background:rgba(250,204,21,.15);color:var(--yellow);border:1px solid rgba(250,204,21,.3)}}
+.tag-blue{{background:rgba(110,231,255,.15);color:var(--accent);border:1px solid rgba(110,231,255,.3)}}
+.tag-muted{{background:rgba(169,179,198,.1);color:var(--muted);border:1px solid rgba(169,179,198,.2)}}
+table{{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}}
+th{{text-align:left;padding:8px 12px;color:var(--muted);font-weight:600;font-size:12px;border-bottom:1px solid var(--line)}}
+td{{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}}
+.val{{font-weight:700}}.warn{{color:var(--red);font-weight:700}}.ok{{color:var(--green);font-weight:700}}.neutral{{color:var(--muted)}}
+.mono{{font-family:'JetBrains Mono',monospace}}
+.section-title{{font-size:16px;font-weight:800;margin:24px 0 12px;padding-left:12px;border-left:3px solid var(--accent)}}
+.invest-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:16px 0}}
+.invest-card{{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;text-align:center}}
+.invest-card .label{{font-size:11px;color:var(--muted);margin-bottom:8px}}.invest-card .num{{font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace}}
+.checklist{{list-style:none;padding:0}}.checklist li{{padding:6px 0 6px 24px;position:relative;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}}
+.checklist li::before{{content:'☐';position:absolute;left:0;color:var(--muted)}}
+.question{{padding:8px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}}
+.schedule-banner{{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:20px;margin-bottom:24px}}
+.schedule-banner h2{{font-size:18px;color:#a78bfa;margin-bottom:8px}}.schedule-banner .detail{{font-size:14px;line-height:1.8}}
+.verdict{{padding:16px;border-radius:12px;margin:16px 0;font-size:13px;line-height:1.8}}
+.verdict-caution{{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2)}}
 </style></head><body>
 {site_header_html()}{global_nav_html("naiken-analysis.html")}
 <div class="wrap">
 <h1>内覧分析 — {title_city} {len(viewing)}物件</h1>
 <p class="meta">自動生成: {now_str} / {len(viewing)}件の内覧予定物件</p>
-{all_sections}
+{"".join(property_sections)}
+{common}
 </div></body></html>"""
 
-    out = OUTPUT / "naiken-analysis.html"
     out.write_text(html, encoding="utf-8")
     return out
 

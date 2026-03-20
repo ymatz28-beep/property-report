@@ -422,7 +422,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   {# Freshness Banner #}
   {% if patrol_summary and patrol_summary.date %}
   <div class="freshness-bar">
-    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: {{ patrol_summary.date[5:] }}{% if patrol_summary.elapsed_min %} ({{ patrol_summary.elapsed_min }}分){% endif %}</span>
+    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: {{ patrol_summary.date[5:] }}{% if patrol_summary.elapsed_min %} 処理{{ patrol_summary.elapsed_min }}分{% endif %}</span>
     <span class="fb-chip">掲載中 {{ patrol_summary.total }}件</span>
     {% if patrol_summary.new_count %}<span class="fb-chip fb-new">+{{ patrol_summary.new_count }} 新規</span>{% endif %}
     {% if patrol_summary.removed_count %}<span class="fb-chip fb-removed">-{{ patrol_summary.removed_count }} 終了</span>{% endif %}

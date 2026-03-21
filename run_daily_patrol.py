@@ -278,7 +278,7 @@ def search_all_sites() -> list[dict]:
         ("search_restate.py", 300),
         ("search_ftakken.py", 300),
         ("search_lifull.py", 300),
-        ("search_ittomono.py", 300),
+        ("search_ittomono.py", 600),
     ]
 
     import os as _os, signal as _sig

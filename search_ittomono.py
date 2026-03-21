@@ -422,10 +422,15 @@ def main():
     print(f"\u4e00\u68df\u3082\u306e\u7269\u4ef6\u691c\u7d22 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print(f"\u6761\u4ef6: {PRICE_MIN}\u4e07\u301c{PRICE_MAX}\u4e07 (1.5\u5104\u301c2\u5104\u5186)")
 
+    # In GHA, limit enrichment to avoid timeout (300s budget for entire script)
+    import os
+    is_ci = os.environ.get("CI") == "true" or os.environ.get("GITHUB_ACTIONS") == "true"
+    enrich_limit = 10 if is_ci else 30
+
     for city_key in ["osaka", "fukuoka", "tokyo"]:
         props = search_rakumachi_ittomono(city_key)
         if props:
-            enrich_layout_from_detail(props, max_fetches=30)
+            enrich_layout_from_detail(props, max_fetches=enrich_limit)
             out = save_results(props, city_key)
             print(f"  \u51fa\u529b: {out}")
         else:

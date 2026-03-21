@@ -209,7 +209,8 @@ def _parse_rakumachi_ittomono(html: str, city_key: str, dim_label: str, region: 
 
         prop = _extract_ittomono_fields(context, prop_url, prop_id, city_key, dim_label)
         if prop:
-            properties.append(prop)
+            if is_target_location(prop["location"], city_key):
+                properties.append(prop)
 
     return properties
 

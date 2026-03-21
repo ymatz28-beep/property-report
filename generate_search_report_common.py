@@ -103,6 +103,7 @@ def global_nav_html(current: str = "") -> str:
         ("naiken-analysis.html", "内覧分析"),
         ("inquiry-messages.html", "問い合わせ"),
         ("inquiry-pipeline.html", "Pipeline"),
+        ("ittomono.html", "一棟もの"),
     ]
     links = []
     for href, label in pages:
@@ -857,6 +858,7 @@ _NAV_PAGES = [
     {"href": "naiken-analysis.html", "label": "内覧分析"},
     {"href": "inquiry-messages.html", "label": "問い合わせ"},
     {"href": "inquiry-pipeline.html", "label": "Pipeline"},
+    {"href": "ittomono.html", "label": "一棟もの"},
 ]
 
 

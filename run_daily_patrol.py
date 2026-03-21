@@ -278,6 +278,7 @@ def search_all_sites() -> list[dict]:
         ("search_restate.py", 300),
         ("search_ftakken.py", 300),
         ("search_lifull.py", 300),
+        ("search_ittomono.py", 300),
     ]
 
     import os as _os, signal as _sig
@@ -326,6 +327,11 @@ def generate_reports() -> list[dict]:
         results.append({"step": script, "ok": ok})
         if not ok:
             log(f"  ⚠️ {script} 失敗 — 他都市は続行")
+    # Generate 一棟もの report
+    ok = run_script("generate_ittomono_report.py")
+    results.append({"step": "generate_ittomono_report.py", "ok": ok})
+    if not ok:
+        log("  ⚠️ generate_ittomono_report.py 失敗 — 続行")
     ok = run_script("generate_inquiry_messages.py")
     results.append({"step": "generate_inquiry_messages.py", "ok": ok})
     return results

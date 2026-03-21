@@ -76,6 +76,7 @@ class IttomonoRow:
     tier_class: str = ""
     tier_color: str = ""
     score_breakdown: dict[str, int] = field(default_factory=dict)
+    avg_sqm_per_unit: float | None = None
     detail_comment: str = ""
     bucket_label: str = "Other"
 
@@ -149,6 +150,10 @@ def _hydrate(row: IttomonoRow) -> None:
     # Yield
     m = re.search(r"(\d+(?:\.\d+)?)\s*%", row.yield_text)
     row.yield_pct = float(m.group(1)) if m else 0.0
+
+    # Average sqm per unit
+    if row.area_sqm and row.units_count and row.units_count > 0:
+        row.avg_sqm_per_unit = round(row.area_sqm / row.units_count, 1)
 
 
 # ============================================================
@@ -320,6 +325,26 @@ def _build_comment(row: IttomonoRow) -> str:
 # HTML Report Generation
 # ============================================================
 
+def _avg_sqm_cell(r: IttomonoRow) -> str:
+    """Build the avg ㎡/戸 cell with color coding and layout detail."""
+    parts = []
+    if r.avg_sqm_per_unit is not None:
+        val = r.avg_sqm_per_unit
+        if val >= 35:
+            color = "#22c55e"  # green — meets requirement
+        elif val >= 25:
+            color = "#facc15"  # yellow — borderline
+        else:
+            color = "#f87171"  # red — too small
+        parts.append(f'<span style="color:{color};font-weight:600">{val}㎡</span>')
+    else:
+        parts.append('<span style="color:var(--dim)">-</span>')
+    # Show layout_detail if available (e.g. "1K×6戸, 1LDK×6戸")
+    if r.layout_detail:
+        parts.append(f'<div class="layout-detail">{html.escape(r.layout_detail)}</div>')
+    return "".join(parts)
+
+
 CITY_LABELS = {"osaka": "大阪", "fukuoka": "福岡", "tokyo": "東京"}
 CITY_ACCENTS = {"osaka": "#6ee7ff", "fukuoka": "#ff6b6b", "tokyo": "#a78bfa"}
 
@@ -377,6 +402,7 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
           <td class="col-location">{html.escape(r.location)}</td>
           <td class="col-structure">{html.escape(r.structure or '-')}</td>
           <td class="col-units">{html.escape(r.units or '-')}</td>
+          <td class="col-avgm2">{_avg_sqm_cell(r)}</td>
           <td class="col-yield">{html.escape(r.yield_text or '-')}</td>
           <td class="col-built">{html.escape(r.built_text or '-')}</td>
           <td class="col-station">{html.escape(r.station_text or '-')}</td>
@@ -497,6 +523,8 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
     .col-location {{ max-width: 160px; }}
     .col-structure {{ white-space: nowrap; }}
     .col-units {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; }}
+    .col-avgm2 {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; min-width: 70px; }}
+    .col-avgm2 .layout-detail {{ font-size: 9px; color: var(--text-secondary); font-family: 'Noto Sans JP',sans-serif; margin-top: 2px; white-space: normal; line-height: 1.3; }}
     .col-yield {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; color: #34d399; }}
     .col-built {{ white-space: nowrap; }}
     .col-station {{ max-width: 200px; font-size: 11px; }}
@@ -622,6 +650,7 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
           <th data-sort="location">所在地</th>
           <th data-sort="structure">構造</th>
           <th data-sort="units">戸数</th>
+          <th data-sort="avgm2">㎡/戸</th>
           <th data-sort="yield">利回り</th>
           <th data-sort="built">築年</th>
           <th>駅</th>
@@ -681,6 +710,9 @@ document.querySelectorAll('th[data-sort]').forEach(function(th) {{
       }} else if (key === 'units') {{
         va = parseInt(a.querySelector('.col-units').textContent) || 0;
         vb = parseInt(b.querySelector('.col-units').textContent) || 0;
+      }} else if (key === 'avgm2') {{
+        va = parseFloat(a.querySelector('.col-avgm2').textContent) || 0;
+        vb = parseFloat(b.querySelector('.col-avgm2').textContent) || 0;
       }} else if (key === 'yield') {{
         va = parseFloat(a.querySelector('.col-yield').textContent) || 0;
         vb = parseFloat(b.querySelector('.col-yield').textContent) || 0;

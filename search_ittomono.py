@@ -330,6 +330,15 @@ def _extract_ittomono_fields(context: str, url: str, prop_id: str, city_key: str
     if not name:
         name = f"\u697d\u5f85\u4e00\u68df#{prop_id}"
 
+    # Layout detail (room breakdown) — extracted from listing context
+    layout_detail = ""
+    # Pattern: 1K×6戸, 1LDK×6戸 etc.
+    madori_matches = re.findall(
+        r"(\d[RKLDKS]+\s*[×xX]\s*\d+\s*(?:戸|室)?)", text
+    )
+    if madori_matches:
+        layout_detail = ", ".join(dict.fromkeys(m.strip() for m in madori_matches))
+
     return {
         "source": f"\u697d\u5f85({dim_label})",
         "name": name,
@@ -342,8 +351,33 @@ def _extract_ittomono_fields(context: str, url: str, prop_id: str, city_key: str
         "structure": structure,
         "units": units,
         "yield_text": yield_text,
+        "layout_detail": layout_detail,
         "url": url,
     }
+
+
+def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> None:
+    """Fetch detail pages to extract room layout for properties missing layout_detail."""
+    missing = [p for p in properties if not p.get("layout_detail")]
+    to_fetch = missing[:max_fetches]
+    if not to_fetch:
+        return
+    print(f"  間取り詳細取得中... ({len(to_fetch)}件)")
+    for i, prop in enumerate(to_fetch):
+        detail_html = fetch_page(prop["url"])
+        if not detail_html:
+            continue
+        # Extract room layout from detail page
+        madori_matches = re.findall(
+            r"(\d[RKLDKS]+\s*[×xX]\s*\d+\s*(?:戸|室)?)", detail_html
+        )
+        if madori_matches:
+            prop["layout_detail"] = ", ".join(dict.fromkeys(m.strip() for m in madori_matches))
+        if (i + 1) % 5 == 0:
+            print(f"    {i + 1}/{len(to_fetch)} done")
+        time.sleep(1.0)
+    enriched = sum(1 for p in to_fetch if p.get("layout_detail"))
+    print(f"  間取り詳細: {enriched}/{len(to_fetch)}件取得成功")
 
 
 def save_results(properties: list[dict], city_key: str) -> Path:
@@ -371,7 +405,7 @@ def save_results(properties: list[dict], city_key: str) -> Path:
             prop.get("structure", ""),
             prop.get("units", ""),
             prop.get("yield_text", ""),
-            "",  # layout_detail placeholder
+            prop.get("layout_detail", ""),
             "",  # pet placeholder
             "",  # brokerage placeholder
             prop["url"],
@@ -390,6 +424,7 @@ def main():
     for city_key in ["osaka", "fukuoka", "tokyo"]:
         props = search_rakumachi_ittomono(city_key)
         if props:
+            enrich_layout_from_detail(props, max_fetches=30)
             out = save_results(props, city_key)
             print(f"  \u51fa\u529b: {out}")
         else:

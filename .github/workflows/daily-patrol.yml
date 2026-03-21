@@ -119,34 +119,73 @@ jobs:
           GMAIL_NOTIFY_ADDRESS: ${{ secrets.GMAIL_NOTIFY_ADDRESS }}
           PATROL_OUTCOME: ${{ steps.patrol.outcome }}
           DATA_COMMITTED: ${{ steps.commit.outputs.data_committed }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPORT_URL: https://ymatz28-beep.github.io/property-report/
         run: |
-          if [ "$PATROL_OUTCOME" = "success" ] && [ "$DATA_COMMITTED" = "true" ]; then
-            ICON="✅"
-            STATUS="完了"
-            BODY="スクレイピング成功、データ更新+gh-pagesデプロイ済み。\nhttps://ymatz28-beep.github.io/property-report/"
-          elif [ "$DATA_COMMITTED" = "true" ]; then
-            ICON="⚠️"
-            STATUS="部分成功"
-            BODY="スクレイピングにエラーあり（部分データcommit済み）。\nGHAログを確認: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          else
-            ICON="❌"
-            STATUS="失敗"
-            BODY="データ更新なし。30分後に自動リトライ予定。\nGHAログ: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          fi
-          SUBJECT="${ICON} 物件パトロール${STATUS} $(date +%m/%d)"
-          export BODY SUBJECT
           python3 -c "
-          import smtplib
+          import smtplib, json, os
           from email.mime.text import MIMEText
-          import os
-          msg = MIMEText(os.environ['BODY'], 'plain', 'utf-8')
-          msg['Subject'] = os.environ['SUBJECT']
+          from pathlib import Path
+
+          outcome = os.environ['PATROL_OUTCOME']
+          committed = os.environ.get('DATA_COMMITTED', 'false') == 'true'
+          run_url = os.environ['RUN_URL']
+          report_url = os.environ['REPORT_URL']
+
+          # Read patrol_summary.json for granular failure info
+          summary_path = Path('data/patrol_summary.json')
+          failed_sources = []
+          failed_steps = []
+          total = 0
+          new_count = 0
+          if summary_path.exists():
+              s = json.loads(summary_path.read_text())
+              failed_sources = s.get('failed_sources', [])
+              failed_steps = s.get('failed_steps', [])
+              total = s.get('total', 0)
+              new_count = s.get('new_count', 0)
+
+          has_failures = bool(failed_sources or failed_steps)
+
+          # Determine status — failures override 'success' outcome
+          if not committed:
+              icon, status = '\u274c', '\u5931\u6557'
+          elif has_failures:
+              icon, status = '\u26a0\ufe0f', '\u90e8\u5206\u5931\u6557'
+          else:
+              icon, status = '\u2705', '\u5b8c\u4e86'
+
+          # Build body with specific failure details
+          lines = []
+          if has_failures:
+              if failed_steps:
+                  lines.append('\u25a0 \u5931\u6557\u30b9\u30c6\u30c3\u30d7: ' + ', '.join(failed_steps))
+              if failed_sources:
+                  lines.append('\u25a0 \u30bd\u30fc\u30b9\u969c\u5bb3: ' + ', '.join(failed_sources))
+              lines.append('')
+
+          if committed:
+              lines.append(f'\u7dcf\u4ef6\u6570: {total}\u4ef6 / \u65b0\u898f: {new_count}\u4ef6')
+              lines.append(report_url)
+          else:
+              lines.append('\u30c7\u30fc\u30bf\u66f4\u65b0\u306a\u3057\u300230\u5206\u5f8c\u306b\u81ea\u52d5\u30ea\u30c8\u30e9\u30a4\u4e88\u5b9a\u3002')
+
+          if has_failures or not committed:
+              lines.append(f'GHA\u30ed\u30b0: {run_url}')
+
+          from datetime import datetime
+          subject = f'{icon} \u7269\u4ef6\u30d1\u30c8\u30ed\u30fc\u30eb{status} {datetime.now().strftime(\"%m/%d\")}'
+          body = '\n'.join(lines)
+
+          msg = MIMEText(body, 'plain', 'utf-8')
+          msg['Subject'] = subject
           msg['From'] = os.environ['GMAIL_ADDRESS']
           msg['To'] = os.environ['GMAIL_NOTIFY_ADDRESS']
-          with smtplib.SMTP_SSL('smtp.gmail.com', 465) as s:
-              s.login(os.environ['GMAIL_ADDRESS'], os.environ['GMAIL_APP_PASSWORD'])
-              s.send_message(msg)
-          print(f'Notification sent: {os.environ[\"SUBJECT\"]}')
+          with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+              smtp.login(os.environ['GMAIL_ADDRESS'], os.environ['GMAIL_APP_PASSWORD'])
+              smtp.send_message(msg)
+          print(f'Notification sent: {subject}')
+          print(f'Body: {body}')
           "
 
   # Auto-retry: パトロール失敗+データcommitなし(完全失敗)の場合、30分後に再実行

@@ -266,7 +266,7 @@ def search_all_sites() -> list[dict]:
     # Phase 1: SUUMO first (heaviest — 17 wards + detail enrichment)
     # Running alone avoids CPU/network contention that causes timeouts
     log("=== 物件検索: SUUMO (先行) ===")
-    ok = run_script("search_suumo.py", timeout=900)
+    ok = run_script("search_suumo.py", timeout=1500)
     results.append({"step": "search_suumo.py", "ok": ok})
     if not ok:
         log("  ⚠️ search_suumo.py 失敗 — 他ソースで続行")
@@ -313,7 +313,7 @@ def search_all_sites() -> list[dict]:
 
     # Phase 3: Enrich maintenance fees (depends on search results)
     log("=== 管理費enrichment ===")
-    ok = run_script("enrich_maintenance.py", timeout=600)
+    ok = run_script("enrich_maintenance.py", timeout=900)
     results.append({"step": "enrich_maintenance.py", "ok": ok})
     return results
 

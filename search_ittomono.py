@@ -434,8 +434,13 @@ def main():
             out = save_results(props, city_key)
             print(f"  \u51fa\u529b: {out}")
         else:
-            save_results([], city_key)
-            print(f"  \u6761\u4ef6\u306b\u5408\u3046\u7269\u4ef6\u306a\u3057")
+            # 0件の場合、既存データファイルを保持（スクレイピング障害の可能性）
+            existing = DATA_DIR / f"ittomono_{city_key}_raw.txt"
+            if existing.exists():
+                print(f"  0\u4ef6\u2014\u65e2\u5b58\u30c7\u30fc\u30bf\u4fdd\u6301: {existing}")
+            else:
+                save_results([], city_key)
+                print(f"  \u6761\u4ef6\u306b\u5408\u3046\u7269\u4ef6\u306a\u3057")
 
 
 if __name__ == "__main__":

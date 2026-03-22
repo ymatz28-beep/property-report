@@ -16,7 +16,7 @@ env:
 jobs:
   patrol:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 70
     outputs:
       data_committed: ${{ steps.commit.outputs.data_committed }}
       patrol_failed: ${{ steps.patrol.outcome == 'failure' && 'true' || 'false' }}
@@ -47,7 +47,7 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: python run_daily_patrol.py
-        timeout-minutes: 50
+        timeout-minutes: 60
         # Partial results (some sites scraped) are better than none.
         # ConnectionResetError after 30+ min of scraping shouldn't discard earlier data.
         continue-on-error: true

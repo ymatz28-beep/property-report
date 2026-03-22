@@ -99,7 +99,7 @@ def _close(a: float, b: float, tol: float = 0.01) -> bool:
 def validate_analyzer_module(report: QAReport) -> None:
     """Validate the analyzer module's calculation logic with known inputs."""
     try:
-        sys.path.insert(0, str(Path(__file__).parent))
+        sys.path.insert(0, str(Path(__file__).parent / "archive" / "v1_analyzer"))
         from src.analyzer import (
             AnalysisResult,
             calc_loan_balance,

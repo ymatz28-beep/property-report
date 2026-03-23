@@ -254,25 +254,26 @@ def location_score(row: IttomonoRow) -> tuple[str, int]:
     return "Other", 0
 
 
+def cf_score(row: IttomonoRow) -> int:
+    """Cash flow scoring. CF+ properties get significant bonus."""
+    rev = row.revenue
+    if not rev or rev.verdict == "データ不足":
+        return 0
+    mcf = rev.monthly_cf
+    if mcf > 20:
+        return 20  # Strong CF
+    if mcf > 10:
+        return 15  # Good CF
+    if mcf > 0:
+        return 10  # Positive CF
+    if mcf > -10:
+        return 0   # Slightly negative
+    return -5      # Deep negative
+
+
 def score_row(row: IttomonoRow) -> None:
     """Calculate total score for a 一棟もの property."""
-    bucket, loc_sc = location_score(row)
-    row.bucket_label = bucket
-    breakdown = {
-        "price": price_score(row.price_man),
-        "structure": structure_score(row.structure),
-        "units": units_score(row.units_count),
-        "yield": yield_score(row.yield_pct),
-        "earthquake": earthquake_score_ittomono(row.built_year),
-        "station": station_score_ittomono(row.walk_min),
-        "location": loc_sc,
-    }
-    row.score_breakdown = breakdown
-    row.total_score = sum(breakdown.values())
-    row.tier_label, row.tier_class, row.tier_color = grade_tier(row.total_score)
-    row.detail_comment = _build_comment(row)
-
-    # Revenue analysis
+    # Revenue analysis first (needed for CF score)
     if row.price_man > 0 and row.yield_pct > 0:
         row.revenue = revenue_analyze(
             price_man=row.price_man,
@@ -283,6 +284,23 @@ def score_row(row: IttomonoRow) -> None:
             area_sqm=row.area_sqm,
         )
 
+    bucket, loc_sc = location_score(row)
+    row.bucket_label = bucket
+    breakdown = {
+        "price": price_score(row.price_man),
+        "structure": structure_score(row.structure),
+        "units": units_score(row.units_count),
+        "yield": yield_score(row.yield_pct),
+        "earthquake": earthquake_score_ittomono(row.built_year),
+        "station": station_score_ittomono(row.walk_min),
+        "location": loc_sc,
+        "cf": cf_score(row),
+    }
+    row.score_breakdown = breakdown
+    row.total_score = sum(breakdown.values())
+    row.tier_label, row.tier_class, row.tier_color = grade_tier(row.total_score)
+    row.detail_comment = _build_comment(row)
+
 
 def _build_comment(row: IttomonoRow) -> str:
     """Build detail comment for a 一棟もの property."""
@@ -290,6 +308,12 @@ def _build_comment(row: IttomonoRow) -> str:
     cautions = []
     b = row.score_breakdown
 
+    if b.get("cf", 0) >= 15:
+        mcf = row.revenue.monthly_cf if row.revenue else 0
+        strengths.append(f"CF+{mcf:.0f}万/月")
+    elif b.get("cf", 0) >= 10:
+        mcf = row.revenue.monthly_cf if row.revenue else 0
+        strengths.append(f"CF黒字+{mcf:.0f}万/月")
     if b.get("price", 0) >= 15:
         strengths.append("価格スイートスポット")
     elif b.get("price", 0) >= 10:
@@ -321,6 +345,11 @@ def _build_comment(row: IttomonoRow) -> str:
         cautions.append("利回り要精査")
     if b.get("earthquake", 0) == 0 and row.built_year:
         cautions.append("旧耐震基準")
+    if b.get("cf", 0) < 0:
+        mcf = row.revenue.monthly_cf if row.revenue else 0
+        cautions.append(f"CF赤字{mcf:+.0f}万/月")
+    elif b.get("cf", 0) == 0 and row.revenue and row.revenue.monthly_cf <= 0:
+        cautions.append("CF微赤字")
     if row.walk_min is None:
         cautions.append("駅距離不明")
     elif row.walk_min > 10:
@@ -492,7 +521,7 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
 
         b = r.score_breakdown
         pills = []
-        for label, key in [("価格", "price"), ("構造", "structure"), ("戸数", "units"),
+        for label, key in [("CF", "cf"), ("価格", "price"), ("構造", "structure"), ("戸数", "units"),
                            ("利回", "yield"), ("耐震", "earthquake"), ("駅距", "station"), ("立地", "location")]:
             val = b.get(key, 0)
             if val > 0:

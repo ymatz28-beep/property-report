@@ -223,9 +223,9 @@ def analyze(
     useful_life = _resolve_useful_life(structure)
     age = (CURRENT_YEAR - built_year) if built_year else 0
     if age >= useful_life:
-        remaining_life = max(1, int(useful_life * 0.20))
+        remaining_life = max(2, int(useful_life * 0.20))  # 最低2年（国税庁ルール）
     else:
-        remaining_life = max(1, int((useful_life - age) + age * 0.20))
+        remaining_life = max(2, int((useful_life - age) + age * 0.20))
     depreciation_annual = (price_man * p.building_ratio) / remaining_life
 
     result.useful_life = useful_life

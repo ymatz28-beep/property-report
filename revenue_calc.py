@@ -27,7 +27,7 @@ class InvestmentParams:
 
     # Financing
     down_payment_ratio: float = 0.20   # 頭金比率 (20%)
-    loan_rate_annual: float = 0.018    # ローン金利 年率 (1.8%)
+    loan_rate_annual: float = 0.0285   # ローン金利 年率 (2.85%)
     loan_years: int = 30               # ローン期間 (30年)
 
     # Operations

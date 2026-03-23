@@ -395,43 +395,62 @@ def _revenue_kpi(r: IttomonoRow) -> tuple[str, str]:
 
 
 def _revenue_block_html(r: IttomonoRow) -> str:
-    """Build the L2 revenue detail block for expanded card/table."""
+    """Build the L2 revenue detail block — waterfall breakdown format."""
     rev = r.revenue
     if not rev or rev.verdict == "データ不足":
         return ""
 
-    def _fmt_man(v: float) -> str:
+    def _f(v: float) -> str:
         if abs(v) >= 10000:
             return f"{v/10000:.2f}億"
         return f"{v:,.0f}万"
 
-    # CF verdict badge
+    p = rev.params
     vclass = {
         "高CF物件": "rv-high", "安定CF": "rv-stable",
         "薄利": "rv-thin", "CF赤字": "rv-red",
     }.get(rev.verdict, "rv-thin")
 
     payback = f"{rev.payback_years:.1f}年" if rev.payback_years != float("inf") else "∞"
-    tax_line = f"+{rev.tax_benefit:,.0f}万 節税" if rev.tax_benefit > 0 else f"{rev.taxable_income * rev.params.tax_rate:,.0f}万 税負担"
+
+    # CF color
+    mcf = rev.monthly_cf
+    cf_color = "#22c55e" if mcf > 30 else "#34d399" if mcf > 15 else "#facc15" if mcf > 0 else "#f87171"
+    cf_sign = "+" if rev.annual_cf >= 0 else ""
+
+    # Building price for depreciation breakdown
+    building_price = rev.price_man * p.building_ratio
 
     return f'''<div class="revenue-block">
       <div class="rv-header">
-        <span class="rv-title">収益分析</span>
+        <span class="rv-title">収益シミュレーション</span>
         <span class="rv-verdict {vclass}">{rev.verdict}</span>
-        <span class="rv-params">頭金{rev.params.down_payment_ratio*100:.0f}% / 金利{rev.params.loan_rate_annual*100:.1f}% / {rev.params.loan_years}年</span>
       </div>
-      <div class="rv-grid">
-        <div class="rv-item"><span class="rv-label">想定賃料</span><span class="rv-val">{_fmt_man(rev.gross_income)}/年</span></div>
-        <div class="rv-item"><span class="rv-label">NOI</span><span class="rv-val">{_fmt_man(rev.noi)}</span></div>
-        <div class="rv-item"><span class="rv-label">年間CF</span><span class="rv-val rv-cf">{"+" if rev.annual_cf >= 0 else ""}{_fmt_man(rev.annual_cf)}</span></div>
-        <div class="rv-item"><span class="rv-label">CCR</span><span class="rv-val">{rev.ccr_pct:.1f}%</span></div>
-        <div class="rv-item"><span class="rv-label">減価償却</span><span class="rv-val">{_fmt_man(rev.depreciation_annual)}/年</span></div>
-        <div class="rv-item"><span class="rv-label">回収期間</span><span class="rv-val">{payback}</span></div>
+      <div class="rv-assumptions">前提: 頭金{p.down_payment_ratio*100:.0f}% / 金利{p.loan_rate_annual*100:.1f}% / {p.loan_years}年 / 空室率{p.vacancy_rate*100:.0f}% / 経費率{p.opex_rate*100:.0f}%</div>
+
+      <div class="rv-section">
+        <div class="rv-section-title">収入 → キャッシュフロー</div>
+        <div class="rv-row"><span class="rv-desc">年間賃料収入</span><span class="rv-note">= 価格{_f(rev.price_man)} × 利回り{rev.yield_pct}%</span><span class="rv-amount">{_f(rev.gross_income)}</span></div>
+        <div class="rv-row rv-minus"><span class="rv-desc">空室損（{p.vacancy_rate*100:.0f}%）</span><span class="rv-note"></span><span class="rv-amount">-{_f(rev.vacancy_loss)}</span></div>
+        <div class="rv-row rv-minus"><span class="rv-desc">運営経費（管理・修繕・保険・税）</span><span class="rv-note">{p.opex_rate*100:.0f}%</span><span class="rv-amount">-{_f(rev.opex)}</span></div>
+        <div class="rv-row rv-subtotal"><span class="rv-desc">営業利益</span><span class="rv-note"></span><span class="rv-amount">{_f(rev.noi)}</span></div>
+        <div class="rv-row rv-minus"><span class="rv-desc">ローン返済</span><span class="rv-note">借入{_f(rev.loan_amount)} / {p.loan_years}年</span><span class="rv-amount">-{_f(rev.annual_debt_service)}</span></div>
+        <div class="rv-row rv-total"><span class="rv-desc">年間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:{cf_color}">{cf_sign}{_f(rev.annual_cf)}</span></div>
+        <div class="rv-row rv-highlight"><span class="rv-desc">月間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:{cf_color}">{cf_sign}{rev.monthly_cf:,.1f}万/月</span></div>
       </div>
-      <div class="rv-footer">
-        <span>税引後CF: {"+" if rev.after_tax_cf >= 0 else ""}{_fmt_man(rev.after_tax_cf)}/年</span>
-        <span>{tax_line}</span>
-        <span>残存耐用{rev.remaining_life}年</span>
+
+      <div class="rv-section">
+        <div class="rv-section-title">減価償却 → 節税効果</div>
+        <div class="rv-row"><span class="rv-desc">建物価格</span><span class="rv-note">= 取得価格 × 建物比率{p.building_ratio*100:.0f}%</span><span class="rv-amount">{_f(building_price)}</span></div>
+        <div class="rv-row"><span class="rv-desc">残存耐用年数</span><span class="rv-note">法定{rev.useful_life}年 − 築{rev.price_man and rev.built_year and (2026 - rev.built_year) or "?"}年</span><span class="rv-amount">{rev.remaining_life}年</span></div>
+        <div class="rv-row rv-subtotal"><span class="rv-desc">年間償却額</span><span class="rv-note">= {_f(building_price)} ÷ {rev.remaining_life}年</span><span class="rv-amount">{_f(rev.depreciation_annual)}</span></div>
+        {"<div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style=\"color:#22c55e\">+{0}万/年</span></div>".format(f"{rev.tax_benefit:,.0f}") if rev.tax_benefit > 0 else "<div class='rv-row'><span class='rv-desc'>税負担</span><span class='rv-note'>課税所得{0}万 × 税率{1:.0f}%</span><span class='rv-amount'>-{2}万</span></div>".format(f"{rev.taxable_income:,.0f}", p.tax_rate*100, f"{rev.taxable_income * p.tax_rate:,.0f}")}
+      </div>
+
+      <div class="rv-bottom">
+        <div class="rv-bottom-item"><span class="rv-bottom-label">税引後CF</span><span class="rv-bottom-val">{"+" if rev.after_tax_cf >= 0 else ""}{_f(rev.after_tax_cf)}/年</span></div>
+        <div class="rv-bottom-item"><span class="rv-bottom-label">実質利回り</span><span class="rv-bottom-val">{rev.net_yield_pct:.1f}%</span></div>
+        <div class="rv-bottom-item"><span class="rv-bottom-label">自己資金回収</span><span class="rv-bottom-val">{payback}</span></div>
       </div>
     </div>'''
 
@@ -728,7 +747,7 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
       border-top: 1px solid transparent;
     }}
     .card.open .card-detail {{
-      max-height: 600px; border-top-color: var(--border);
+      max-height: 900px; border-top-color: var(--border);
     }}
     .card-detail > * {{ padding: 0 16px; }}
     .card-detail > :first-child {{ padding-top: 12px; }}
@@ -744,17 +763,17 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
     .detail-breakdown {{ margin-bottom: 8px; }}
     .detail-comment {{ font-size: 12px; color: var(--text-secondary); line-height: 1.5; }}
 
-    /* ===== Revenue block (L2 expanded) ===== */
+    /* ===== Revenue block (waterfall breakdown) ===== */
     .revenue-block {{
       background: rgba(245,158,11,0.04); border: 1px solid rgba(245,158,11,0.12);
-      border-radius: 8px; padding: 12px 14px; margin-bottom: 10px;
+      border-radius: 8px; padding: 14px 16px; margin-bottom: 10px;
     }}
     .rv-header {{
-      display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
     }}
     .rv-title {{
-      font-size: 11px; font-weight: 700; color: var(--accent);
-      text-transform: uppercase; letter-spacing: 0.06em;
+      font-size: 12px; font-weight: 700; color: var(--accent);
+      letter-spacing: 0.04em;
     }}
     .rv-verdict {{
       font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
@@ -763,28 +782,49 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
     .rv-stable {{ background: rgba(52,211,153,0.15); color: #34d399; }}
     .rv-thin {{ background: rgba(250,204,21,0.15); color: var(--yellow); }}
     .rv-red {{ background: rgba(239,68,68,0.15); color: var(--red); }}
-    .rv-params {{
-      font-size: 10px; color: var(--muted); font-family: 'JetBrains Mono',monospace;
-      margin-left: auto;
+    .rv-assumptions {{
+      font-size: 10px; color: var(--muted); margin-bottom: 10px;
+      font-family: 'JetBrains Mono',monospace;
     }}
-    .rv-grid {{
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px;
+    .rv-section {{ margin-bottom: 10px; }}
+    .rv-section-title {{
+      font-size: 10px; font-weight: 700; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 4px; padding-bottom: 3px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }}
-    .rv-item {{ display: flex; flex-direction: column; }}
-    .rv-label {{ font-size: 10px; color: var(--muted); margin-bottom: 1px; }}
-    .rv-val {{
-      font-size: 13px; font-weight: 600; font-family: 'JetBrains Mono',monospace;
-      color: var(--text);
+    .rv-row {{
+      display: flex; align-items: baseline; padding: 3px 0; font-size: 12px;
     }}
-    .rv-cf {{ color: var(--accent); }}
-    .rv-footer {{
-      display: flex; gap: 12px; margin-top: 8px; padding-top: 6px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      font-size: 10px; color: var(--text-secondary); flex-wrap: wrap;
+    .rv-desc {{ flex: 1; color: var(--text); min-width: 0; }}
+    .rv-note {{ flex: 1; font-size: 10px; color: var(--muted); text-align: right; padding-right: 12px; font-family: 'JetBrains Mono',monospace; }}
+    .rv-amount {{
+      width: 90px; text-align: right; font-weight: 600;
+      font-family: 'JetBrains Mono',monospace; flex-shrink: 0;
     }}
+    .rv-minus .rv-amount {{ color: var(--text-secondary); }}
+    .rv-subtotal {{
+      border-top: 1px solid rgba(255,255,255,0.08); margin-top: 2px; padding-top: 4px;
+    }}
+    .rv-subtotal .rv-desc {{ font-weight: 600; }}
+    .rv-total {{
+      border-top: 1px solid rgba(255,255,255,0.12); margin-top: 2px; padding-top: 4px;
+    }}
+    .rv-total .rv-desc {{ font-weight: 700; }}
+    .rv-total .rv-amount {{ font-size: 14px; }}
+    .rv-highlight {{ padding: 4px 0; }}
+    .rv-highlight .rv-desc {{ font-weight: 600; color: var(--accent); }}
+    .rv-highlight .rv-amount {{ font-size: 14px; }}
+    .rv-bottom {{
+      display: flex; gap: 16px; margin-top: 8px; padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap;
+    }}
+    .rv-bottom-item {{ text-align: center; }}
+    .rv-bottom-label {{ font-size: 10px; color: var(--muted); display: block; }}
+    .rv-bottom-val {{ font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono',monospace; }}
     @media (max-width: 480px) {{
-      .rv-grid {{ grid-template-columns: repeat(2, 1fr); }}
-      .rv-params {{ margin-left: 0; }}
+      .rv-note {{ display: none; }}
+      .rv-amount {{ width: 80px; }}
     }}
 
     /* Revenue KPI in card */

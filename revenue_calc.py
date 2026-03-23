@@ -232,8 +232,8 @@ def analyze(
             # Short remaining life — banks may still lend 10-15 years
             loan_years = max(10, raw_term)
         else:
-            # Past useful life —築古物件: 10-15年が現実的
-            loan_years = 10
+            # Past useful life — 属性次第で最長15年可能
+            loan_years = 15
 
     down_payment = price_man * p.down_payment_ratio
     loan_amount = price_man * (1 - p.down_payment_ratio)

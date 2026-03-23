@@ -128,7 +128,12 @@ def parse_price_text(text: str) -> int:
 
 
 def search_rakumachi_ittomono(city_key: str) -> list[dict]:
-    """Search 楽待 for 一棟マンション (dim1001) + 一棟アパート (dim1002)."""
+    """Search 楽待 for 一棟マンション (dim1001) + 一棟アパート (dim1002).
+
+    Note: 一棟もの uses prefecture-wide search (no ward filter).
+    Unlike 区分マンション, investment whole-buildings at 1.5-2億 are rare in
+    premium wards, so we search the entire prefecture and filter by price only.
+    """
     config = AREA_CONFIGS[city_key]
     area_code = config["rakumachi_area"]
     region = config["rakumachi_region"]
@@ -158,6 +163,11 @@ def search_rakumachi_ittomono(city_key: str) -> list[dict]:
 
             page_props = _parse_rakumachi_ittomono(html, city_key, dim_label, region, dim_code)
             if not page_props:
+                # Log diagnostic info when 0 results from a page with content
+                if html and len(html) > 5000:
+                    import re as _re
+                    url_count = len(_re.findall(r'syuuekibukken/[^"]*?/\d{5,10}/', html))
+                    print(f"  [DIAG] HTML={len(html)}B, prop_urls={url_count}, parsed=0 — possible HTML structure change")
                 break
 
             all_properties.extend(page_props)
@@ -313,11 +323,19 @@ def _extract_ittomono_fields(context: str, url: str, prop_id: str, city_key: str
         if 1.0 <= yield_val <= 30.0:
             yield_text = f"{yield_val}%"
 
-    # Name
+    # Name — extract building name from context
+    # Rakumachi uses "1棟マンション" (ASCII 1) not "一棟" (kanji), handle both
     name = ""
+    # Blacklist: property type labels that are NOT names
+    _type_labels = {"1棟マンション", "1棟アパート", "一棟マンション", "一棟アパート",
+                    "マンション", "アパート"}
     name_patterns = [
-        r"\u4e00\u68df(?:\u30de\u30f3\u30b7\u30e7\u30f3|\u30a2\u30d1\u30fc\u30c8)\s+([^\s]{2,30})",
-        r"(?:^|\s)([^\s]{2,}(?:\u30de\u30f3\u30b7\u30e7\u30f3|\u30a2\u30d1\u30fc\u30c8|\u30cf\u30a4\u30c4|\u30b3\u30fc\u30dd|\u30ec\u30b8\u30c7\u30f3\u30b9|\u30d3\u30eb|\u8358))",
+        # "1棟マンション 物件名" or "一棟マンション 物件名"
+        r"[1一]棟(?:マンション|アパート)\s+([^\s]{2,30})",
+        # Standalone building names (ending in common suffixes)
+        r"(?:^|\s)([^\s]{3,}(?:ハイツ|コーポ|レジデンス|ビル|荘|パレス|ガーデン|テラス|プラザ|グランド|メゾン|フォレスト))",
+        # Katakana-heavy names (likely building names)
+        r"(?:^|\s)([ァ-ヶー]{3,}[^\s]*(?:マンション|アパート))",
     ]
     for pat in name_patterns:
         nm = re.search(pat, text)
@@ -325,11 +343,18 @@ def _extract_ittomono_fields(context: str, url: str, prop_id: str, city_key: str
             candidate = nm.group(1).strip()
             candidate = re.sub(r"^[})>\s]+", "", candidate)
             candidate = re.sub(r"[({<\s]+$", "", candidate)
-            if len(candidate) >= 2 and not candidate.startswith("\u304a\u6c17\u306b\u5165\u308a"):
+            if (len(candidate) >= 2
+                    and candidate not in _type_labels
+                    and not candidate.startswith("お気に入り")
+                    and not re.match(r"^\d{2}/\d{2}$", candidate)
+                    and not re.match(r"^\d+億", candidate)
+                    and not re.match(r"^\d[\d,]*万円?$", candidate)):
                 name = candidate[:40]
                 break
     if not name:
-        name = f"\u697d\u5f85\u4e00\u68df#{prop_id}"
+        # Fallback: use location shorthand for readability
+        loc_short = location.split("区")[-1].split("市")[-1][:10] if location else ""
+        name = f"楽待 {loc_short}#{prop_id[-4:]}" if loc_short else f"楽待#{prop_id}"
 
     # Layout detail (room breakdown) — extracted from listing context
     layout_detail = ""
@@ -431,16 +456,11 @@ def main():
         props = search_rakumachi_ittomono(city_key)
         if props:
             enrich_layout_from_detail(props, max_fetches=enrich_limit)
-            out = save_results(props, city_key)
-            print(f"  \u51fa\u529b: {out}")
-        else:
-            # 0件の場合、既存データファイルを保持（スクレイピング障害の可能性）
-            existing = DATA_DIR / f"ittomono_{city_key}_raw.txt"
-            if existing.exists():
-                print(f"  0\u4ef6\u2014\u65e2\u5b58\u30c7\u30fc\u30bf\u4fdd\u6301: {existing}")
-            else:
-                save_results([], city_key)
-                print(f"  \u6761\u4ef6\u306b\u5408\u3046\u7269\u4ef6\u306a\u3057")
+        # Always save: 0 results after filtering is a valid outcome (not a failure).
+        # 0-result protection only applies when fetch_page itself returns None
+        # (handled inside search_rakumachi_ittomono with early break).
+        out = save_results(props, city_key)
+        print(f"  \u51fa\u529b: {out} ({len(props)}\u4ef6)")
 
 
 if __name__ == "__main__":

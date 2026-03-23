@@ -44,6 +44,7 @@ from generate_search_report_common import (
     grade_tier,
     _NAV_PAGES,
 )
+from revenue_calc import analyze as revenue_analyze, RevenueAnalysis
 
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
@@ -79,6 +80,7 @@ class IttomonoRow:
     avg_sqm_per_unit: float | None = None
     detail_comment: str = ""
     bucket_label: str = "Other"
+    revenue: RevenueAnalysis | None = None
 
 
 def parse_data_file(data_path: Path, city_key: str) -> list[IttomonoRow]:
@@ -270,6 +272,17 @@ def score_row(row: IttomonoRow) -> None:
     row.tier_label, row.tier_class, row.tier_color = grade_tier(row.total_score)
     row.detail_comment = _build_comment(row)
 
+    # Revenue analysis
+    if row.price_man > 0 and row.yield_pct > 0:
+        row.revenue = revenue_analyze(
+            price_man=row.price_man,
+            yield_pct=row.yield_pct,
+            structure=row.structure or "",
+            built_year=row.built_year,
+            units_count=row.units_count,
+            area_sqm=row.area_sqm,
+        )
+
 
 def _build_comment(row: IttomonoRow) -> str:
     """Build detail comment for a 一棟もの property."""
@@ -349,8 +362,93 @@ CITY_LABELS = {"osaka": "大阪", "fukuoka": "福岡", "tokyo": "東京"}
 CITY_ACCENTS = {"osaka": "#6ee7ff", "fukuoka": "#ff6b6b", "tokyo": "#a78bfa"}
 
 
+def _revenue_kpi(r: IttomonoRow) -> tuple[str, str]:
+    """Return (net_yield_html, annual_cf_html) for card KPI row."""
+    rev = r.revenue
+    if not rev or rev.verdict == "データ不足":
+        return ('<span class="kpi-netyield">-</span>', '<span class="kpi-cf">-</span>')
+
+    # Net yield coloring
+    ny = rev.net_yield_pct
+    if ny >= 5:
+        ny_color = "#22c55e"
+    elif ny >= 3:
+        ny_color = "#facc15"
+    else:
+        ny_color = "#f87171"
+    ny_html = f'<span class="kpi-netyield" style="color:{ny_color}">実質{ny:.1f}%</span>'
+
+    # Monthly CF coloring
+    mcf = rev.monthly_cf
+    if mcf > 30:
+        cf_color = "#22c55e"
+    elif mcf > 15:
+        cf_color = "#34d399"
+    elif mcf > 0:
+        cf_color = "#facc15"
+    else:
+        cf_color = "#f87171"
+    sign = "+" if mcf >= 0 else ""
+    cf_html = f'<span class="kpi-cf" style="color:{cf_color}">CF{sign}{mcf:.1f}万/月</span>'
+
+    return ny_html, cf_html
+
+
+def _revenue_block_html(r: IttomonoRow) -> str:
+    """Build the L2 revenue detail block for expanded card/table."""
+    rev = r.revenue
+    if not rev or rev.verdict == "データ不足":
+        return ""
+
+    def _fmt_man(v: float) -> str:
+        if abs(v) >= 10000:
+            return f"{v/10000:.2f}億"
+        return f"{v:,.0f}万"
+
+    # CF verdict badge
+    vclass = {
+        "高CF物件": "rv-high", "安定CF": "rv-stable",
+        "薄利": "rv-thin", "CF赤字": "rv-red",
+    }.get(rev.verdict, "rv-thin")
+
+    payback = f"{rev.payback_years:.1f}年" if rev.payback_years != float("inf") else "∞"
+    tax_line = f"+{rev.tax_benefit:,.0f}万 節税" if rev.tax_benefit > 0 else f"{rev.taxable_income * rev.params.tax_rate:,.0f}万 税負担"
+
+    return f'''<div class="revenue-block">
+      <div class="rv-header">
+        <span class="rv-title">収益分析</span>
+        <span class="rv-verdict {vclass}">{rev.verdict}</span>
+        <span class="rv-params">頭金{rev.params.down_payment_ratio*100:.0f}% / 金利{rev.params.loan_rate_annual*100:.1f}% / {rev.params.loan_years}年</span>
+      </div>
+      <div class="rv-grid">
+        <div class="rv-item"><span class="rv-label">想定賃料</span><span class="rv-val">{_fmt_man(rev.gross_income)}/年</span></div>
+        <div class="rv-item"><span class="rv-label">NOI</span><span class="rv-val">{_fmt_man(rev.noi)}</span></div>
+        <div class="rv-item"><span class="rv-label">年間CF</span><span class="rv-val rv-cf">{"+" if rev.annual_cf >= 0 else ""}{_fmt_man(rev.annual_cf)}</span></div>
+        <div class="rv-item"><span class="rv-label">CCR</span><span class="rv-val">{rev.ccr_pct:.1f}%</span></div>
+        <div class="rv-item"><span class="rv-label">減価償却</span><span class="rv-val">{_fmt_man(rev.depreciation_annual)}/年</span></div>
+        <div class="rv-item"><span class="rv-label">回収期間</span><span class="rv-val">{payback}</span></div>
+      </div>
+      <div class="rv-footer">
+        <span>税引後CF: {"+" if rev.after_tax_cf >= 0 else ""}{_fmt_man(rev.after_tax_cf)}/年</span>
+        <span>{tax_line}</span>
+        <span>残存耐用{rev.remaining_life}年</span>
+      </div>
+    </div>'''
+
+
+def _verdict_label(tier_class: str) -> tuple[str, str]:
+    """Return (verdict_text, verdict_css_class) based on tier."""
+    if tier_class == "tier-strong":
+        return "買い候補", "verdict-buy"
+    elif tier_class == "tier-good":
+        return "要検討", "verdict-consider"
+    elif tier_class == "tier-conditional":
+        return "条件付き", "verdict-conditional"
+    return "見送り", "verdict-pass"
+
+
 def build_report_html(all_rows: list[IttomonoRow]) -> str:
-    """Build the 一棟もの HTML report (single page, all cities)."""
+    """Build the 一棟もの HTML report — card view (mobile) + table view (desktop)."""
     sorted_rows = sorted(all_rows, key=lambda r: (-r.total_score, r.price_man))
     first_seen = load_first_seen()
     today_iso = dt.date.today().isoformat()
@@ -364,14 +462,15 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
     avg_price = round(sum(r.price_man for r in sorted_rows) / total) if total > 0 else 0
     avg_yield = round(sum(r.yield_pct for r in sorted_rows if r.yield_pct > 0) / max(1, sum(1 for r in sorted_rows if r.yield_pct > 0)), 2) if total > 0 else 0
 
-    # Build table rows HTML
+    # Build card + table HTML
+    card_html = []
     table_html = []
     for idx, r in enumerate(sorted_rows, start=1):
         fs_display = _format_first_seen(r.url, first_seen)
         is_new = fs_display == "NEW"
         new_badge = '<span class="badge-new">NEW</span>' if is_new else f'<span class="fs-date">{fs_display}</span>' if fs_display else ''
+        verdict_text, verdict_class = _verdict_label(r.tier_class)
 
-        # Score breakdown pills
         b = r.score_breakdown
         pills = []
         for label, key in [("価格", "price"), ("構造", "structure"), ("戸数", "units"),
@@ -386,7 +485,63 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
 
         city_label = CITY_LABELS.get(r.city_key, r.city_key)
         city_accent = CITY_ACCENTS.get(r.city_key, "#3b9eff")
+        ny_html, cf_html = _revenue_kpi(r)
+        rv_block = _revenue_block_html(r)
 
+        # --- Card view item ---
+        card_html.append(f'''
+        <div class="card" data-city="{r.city_key}" data-score="{r.total_score}">
+          <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+            <div class="card-top">
+              <span class="card-rank">#{idx}</span>
+              <span class="score-badge" style="color:{r.tier_color};border-color:{r.tier_color}">{r.total_score}</span>
+              <span class="verdict {verdict_class}">{verdict_text}</span>
+              {new_badge}
+            </div>
+            <div class="card-title">
+              <a href="{html.escape(r.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">{html.escape(r.name)}</a>
+            </div>
+            <div class="card-kpi">
+              <span class="kpi-price">{html.escape(r.price_text)}</span>
+              <span class="kpi-yield">{html.escape(r.yield_text or '-')}</span>
+              {ny_html}
+              {cf_html}
+              <span class="kpi-units">{html.escape(r.units or '-')}</span>
+              <span class="kpi-struct">{html.escape(r.structure or '-')}</span>
+            </div>
+            <div class="card-meta">
+              <span class="city-tag" style="border-color:{city_accent};color:{city_accent}">{city_label}</span>
+              <span class="card-loc">{html.escape(r.location)}</span>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div class="card-detail">
+            <div class="detail-grid">
+              <div class="dg-item"><span class="dg-label">築年</span><span class="dg-val">{html.escape(r.built_text or '-')}</span></div>
+              <div class="dg-item"><span class="dg-label">駅</span><span class="dg-val">{html.escape(r.station_text or '-')}</span></div>
+              <div class="dg-item"><span class="dg-label">面積</span><span class="dg-val">{html.escape(r.area_text or '-')}</span></div>
+              <div class="dg-item"><span class="dg-label">㎡/戸</span><span class="dg-val">{_avg_sqm_cell(r)}</span></div>
+            </div>
+            {rv_block}
+            <div class="detail-breakdown">
+              <div class="breakdown-pills">{" ".join(pills)}</div>
+            </div>
+            <div class="detail-comment">{html.escape(r.detail_comment)}</div>
+          </div>
+        </div>''')
+
+        # --- Table: revenue cells ---
+        rev = r.revenue
+        if rev and rev.verdict != "データ不足":
+            tbl_netyield = f'<span style="color:{"#22c55e" if rev.net_yield_pct >= 5 else "#facc15" if rev.net_yield_pct >= 3 else "#f87171"}">{rev.net_yield_pct:.1f}%</span>'
+            mcf = rev.monthly_cf
+            cf_sign = "+" if mcf >= 0 else ""
+            tbl_cf = f'<span style="color:{"#22c55e" if mcf > 30 else "#34d399" if mcf > 15 else "#facc15" if mcf > 0 else "#f87171"}">{cf_sign}{mcf:.1f}万</span>'
+        else:
+            tbl_netyield = '<span style="color:var(--dim)">-</span>'
+            tbl_cf = '<span style="color:var(--dim)">-</span>'
+
+        # --- Table row ---
         table_html.append(f'''
         <tr class="prop-row" data-city="{r.city_key}" data-score="{r.total_score}">
           <td class="col-rank">{idx}</td>
@@ -404,11 +559,13 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
           <td class="col-units">{html.escape(r.units or '-')}</td>
           <td class="col-avgm2">{_avg_sqm_cell(r)}</td>
           <td class="col-yield">{html.escape(r.yield_text or '-')}</td>
+          <td class="col-netyield">{tbl_netyield}</td>
+          <td class="col-cf">{tbl_cf}</td>
           <td class="col-built">{html.escape(r.built_text or '-')}</td>
           <td class="col-station">{html.escape(r.station_text or '-')}</td>
           <td class="col-score">
             <div class="score-total" style="color:{r.tier_color}">{r.total_score}</div>
-            <div class="tier-badge {r.tier_class}">{r.tier_label}</div>
+            <div class="verdict {verdict_class}">{verdict_text}</div>
           </td>
           <td class="col-breakdown">
             <div class="breakdown-pills">{" ".join(pills)}</div>
@@ -417,35 +574,36 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
         </tr>''')
 
     # City filter buttons
-    filter_buttons = ['<button class="filter-btn active" data-city="all">全て</button>']
+    filter_buttons = ['<button class="filter-btn active" data-city="all">ALL</button>']
     for ck in ["osaka", "fukuoka", "tokyo"]:
         count = by_city.get(ck, 0)
         label = CITY_LABELS.get(ck, ck)
         accent = CITY_ACCENTS.get(ck, "#3b9eff")
         filter_buttons.append(f'<button class="filter-btn" data-city="{ck}" style="--btn-accent:{accent}">{label} ({count})</button>')
 
-    nav_pages_updated = list(_NAV_PAGES) + [{"href": "ittomono.html", "label": "一棟もの"}]
     nav_links = []
-    for p in nav_pages_updated:
+    for p in _NAV_PAGES:
         cls = ' class="cur"' if p["href"] == "ittomono.html" else ""
         nav_links.append(f'<a href="{p["href"]}"{cls}>{p["label"]}</a>')
-    gnav_html = f'<div class="gnav"><div class="gnav-inner">{"".join(nav_links)}</div></div>'
+    gnav_html_str = f'<div class="gnav"><div class="gnav-inner">{"".join(nav_links)}</div></div>'
 
     return f'''<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>一棟もの物件検索 | Property Report</title>
+  <title>\u4e00\u68df\u3082\u306e\u7269\u4ef6\u691c\u7d22 | Property Report</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {{
       --bg: #050507; --surface: rgba(255,255,255,0.035); --surface-hover: rgba(255,255,255,0.065);
+      --surface-2: rgba(255,255,255,0.05); --surface-3: rgba(255,255,255,0.07);
       --border: rgba(255,255,255,0.08); --border-hover: rgba(255,255,255,0.18);
       --text: #f5f5f7; --text-secondary: #a1a1aa; --muted: #71717a; --dim: #3f3f46;
       --accent: #f59e0b; --accent-rgb: 245,158,11;
+      --green: #22c55e; --yellow: #facc15; --orange: #fb923c; --red: #ef4444;
       --gnav-height: 52px; --z-nav: 100; --z-subnav: 90;
     }}
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
@@ -453,58 +611,189 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
       font-family: 'Inter','Noto Sans JP',system-ui,sans-serif;
       background: var(--bg); color: var(--text);
       min-height: 100vh; -webkit-font-smoothing: antialiased;
+      font-size: 14px;
     }}
     {site_header_css()}
     {global_nav_css()}
 
-    .page {{ max-width: 1400px; margin: 0 auto; padding: 0 24px; }}
+    .page {{ max-width: 1400px; margin: 0 auto; padding: 0 20px; }}
 
-    /* Hero */
-    .hero {{
-      padding: 32px 0 24px;
-      border-bottom: 1px solid var(--border);
-    }}
+    /* ===== Hero (compact) ===== */
+    .hero {{ padding: 24px 0 16px; }}
     .hero h1 {{
       font-size: clamp(20px, 2.5vw, 26px); font-weight: 700;
       background: linear-gradient(135deg, var(--accent), #fbbf24);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }}
-    .hero-sub {{ font-size: 13px; color: var(--text-secondary); margin-top: 6px; }}
+    .hero-sub {{ font-size: 13px; color: var(--text-secondary); margin-top: 4px; }}
 
-    /* Stats bar */
-    .stats-bar {{
-      display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 0;
-      border-bottom: 1px solid var(--border);
+    /* ===== Stats grid ===== */
+    .stats-grid {{
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 8px; padding: 12px 0 16px;
     }}
-    .stat-item {{ display: flex; flex-direction: column; gap: 2px; }}
-    .stat-label {{ font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }}
-    .stat-value {{ font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono',monospace; color: var(--accent); }}
+    .sg-item {{
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; text-align: center;
+    }}
+    .sg-label {{ font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }}
+    .sg-value {{ font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono',monospace; color: var(--accent); margin-top: 2px; }}
 
-    /* Filters */
-    .filter-bar {{ display: flex; gap: 8px; padding: 16px 0; flex-wrap: wrap; }}
+    /* ===== Toolbar: filters + view toggle ===== */
+    .toolbar {{
+      display: flex; align-items: center; gap: 8px; padding: 12px 0; flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 88px; z-index: var(--z-subnav);
+      background: var(--bg);
+    }}
     .filter-btn {{
       padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border);
-      background: transparent; color: var(--text-secondary); font-size: 12px; font-weight: 500;
+      background: transparent; color: var(--text-secondary); font-size: 13px; font-weight: 500;
       cursor: pointer; transition: all .2s;
     }}
     .filter-btn:hover {{ border-color: var(--border-hover); color: var(--text); }}
     .filter-btn.active {{
       background: rgba(var(--accent-rgb), 0.15); border-color: var(--accent); color: var(--accent);
     }}
-
-    /* Search conditions */
-    .conditions {{
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: 16px 20px; margin: 16px 0 0;
+    .view-toggle {{
+      margin-left: auto; display: flex; gap: 4px;
+      background: var(--surface); border-radius: 6px; padding: 2px;
     }}
-    .conditions h3 {{ font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }}
-    .conditions ul {{ list-style: none; }}
-    .conditions li {{ font-size: 12px; color: var(--text-secondary); padding: 3px 0; }}
-    .conditions li::before {{ content: "\\2022"; color: var(--accent); margin-right: 8px; }}
+    .vt-btn {{
+      padding: 5px 10px; border: none; border-radius: 4px; background: transparent;
+      color: var(--muted); font-size: 12px; cursor: pointer; transition: all .2s;
+    }}
+    .vt-btn.active {{ background: var(--surface-3); color: var(--text); }}
+    .vt-btn svg {{ width: 16px; height: 16px; vertical-align: middle; stroke: currentColor; fill: none; stroke-width: 2; }}
 
-    /* Table */
+    /* ===== Card view ===== */
+    .card-list {{ display: flex; flex-direction: column; gap: 8px; padding: 16px 0; }}
+    .card {{
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      overflow: hidden; transition: border-color .2s;
+    }}
+    .card:hover {{ border-color: var(--border-hover); }}
+    .card.hidden {{ display: none; }}
+    .card-head {{
+      padding: 14px 16px; cursor: pointer; position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }}
+    .card-top {{
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    }}
+    .card-rank {{ font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono',monospace; }}
+    .score-badge {{
+      font-size: 15px; font-weight: 700; font-family: 'JetBrains Mono',monospace;
+      border: 1.5px solid; border-radius: 6px; padding: 1px 8px; line-height: 1.3;
+    }}
+    .verdict {{
+      font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+      letter-spacing: 0.02em;
+    }}
+    .verdict-buy {{ background: rgba(34,197,94,0.15); color: var(--green); }}
+    .verdict-consider {{ background: rgba(250,204,21,0.15); color: var(--yellow); }}
+    .verdict-conditional {{ background: rgba(251,146,60,0.15); color: var(--orange); }}
+    .verdict-pass {{ background: rgba(239,68,68,0.15); color: var(--red); }}
+
+    .card-title {{ margin-bottom: 8px; }}
+    .card-title a {{
+      color: var(--text); text-decoration: none; font-weight: 600; font-size: 14px;
+      line-height: 1.4;
+    }}
+    .card-title a:hover {{ color: var(--accent); }}
+
+    .card-kpi {{
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;
+    }}
+    .card-kpi span {{ font-size: 13px; font-family: 'JetBrains Mono',monospace; }}
+    .kpi-price {{ color: #fbbf24; font-weight: 600; }}
+    .kpi-yield {{ color: #34d399; }}
+    .kpi-units {{ color: var(--text-secondary); }}
+    .kpi-struct {{ color: var(--text-secondary); }}
+
+    .card-meta {{
+      display: flex; align-items: center; gap: 6px;
+    }}
+    .card-loc {{ font-size: 12px; color: var(--text-secondary); }}
+
+    .chevron {{
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      width: 20px; height: 20px; stroke: var(--muted); fill: none; stroke-width: 2;
+      transition: transform .2s;
+    }}
+    .card.open .chevron {{ transform: translateY(-50%) rotate(180deg); }}
+
+    .card-detail {{
+      max-height: 0; overflow: hidden; transition: max-height .3s ease;
+      border-top: 1px solid transparent;
+    }}
+    .card.open .card-detail {{
+      max-height: 600px; border-top-color: var(--border);
+    }}
+    .card-detail > * {{ padding: 0 16px; }}
+    .card-detail > :first-child {{ padding-top: 12px; }}
+    .card-detail > :last-child {{ padding-bottom: 14px; }}
+
+    .detail-grid {{
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px;
+      margin-bottom: 10px;
+    }}
+    .dg-item {{ display: flex; justify-content: space-between; align-items: baseline; }}
+    .dg-label {{ font-size: 11px; color: var(--muted); }}
+    .dg-val {{ font-size: 13px; font-family: 'JetBrains Mono',monospace; }}
+    .detail-breakdown {{ margin-bottom: 8px; }}
+    .detail-comment {{ font-size: 12px; color: var(--text-secondary); line-height: 1.5; }}
+
+    /* ===== Revenue block (L2 expanded) ===== */
+    .revenue-block {{
+      background: rgba(245,158,11,0.04); border: 1px solid rgba(245,158,11,0.12);
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 10px;
+    }}
+    .rv-header {{
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+    }}
+    .rv-title {{
+      font-size: 11px; font-weight: 700; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }}
+    .rv-verdict {{
+      font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+    }}
+    .rv-high {{ background: rgba(34,197,94,0.15); color: var(--green); }}
+    .rv-stable {{ background: rgba(52,211,153,0.15); color: #34d399; }}
+    .rv-thin {{ background: rgba(250,204,21,0.15); color: var(--yellow); }}
+    .rv-red {{ background: rgba(239,68,68,0.15); color: var(--red); }}
+    .rv-params {{
+      font-size: 10px; color: var(--muted); font-family: 'JetBrains Mono',monospace;
+      margin-left: auto;
+    }}
+    .rv-grid {{
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px;
+    }}
+    .rv-item {{ display: flex; flex-direction: column; }}
+    .rv-label {{ font-size: 10px; color: var(--muted); margin-bottom: 1px; }}
+    .rv-val {{
+      font-size: 13px; font-weight: 600; font-family: 'JetBrains Mono',monospace;
+      color: var(--text);
+    }}
+    .rv-cf {{ color: var(--accent); }}
+    .rv-footer {{
+      display: flex; gap: 12px; margin-top: 8px; padding-top: 6px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 10px; color: var(--text-secondary); flex-wrap: wrap;
+    }}
+    @media (max-width: 480px) {{
+      .rv-grid {{ grid-template-columns: repeat(2, 1fr); }}
+      .rv-params {{ margin-left: 0; }}
+    }}
+
+    /* Revenue KPI in card */
+    .kpi-netyield {{ font-weight: 600; }}
+    .kpi-cf {{ font-weight: 600; }}
+
+    /* ===== Table view (desktop) ===== */
     .table-wrap {{ overflow-x: auto; margin-top: 16px; }}
-    table {{ width: 100%; border-collapse: collapse; font-size: 12px; }}
+    table {{ width: 100%; border-collapse: collapse; font-size: 13px; }}
     th {{
       text-align: left; padding: 10px 8px; font-size: 10px; font-weight: 600;
       color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
@@ -520,124 +809,112 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
     .col-name a {{ color: var(--text); text-decoration: none; font-weight: 500; }}
     .col-name a:hover {{ color: var(--accent); text-decoration: underline; }}
     .col-price {{ font-family: 'JetBrains Mono',monospace; white-space: nowrap; color: #fbbf24; font-weight: 600; }}
-    .col-location {{ max-width: 160px; }}
+    .col-location {{ max-width: 160px; font-size: 12px; }}
     .col-structure {{ white-space: nowrap; }}
     .col-units {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; }}
     .col-avgm2 {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; min-width: 70px; }}
-    .col-avgm2 .layout-detail {{ font-size: 9px; color: var(--text-secondary); font-family: 'Noto Sans JP',sans-serif; margin-top: 2px; white-space: normal; line-height: 1.3; }}
+    .col-avgm2 .layout-detail {{ font-size: 10px; color: var(--text-secondary); font-family: 'Noto Sans JP',sans-serif; margin-top: 2px; white-space: normal; line-height: 1.3; }}
     .col-yield {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; color: #34d399; }}
+    .col-netyield {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; }}
+    .col-cf {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; font-weight: 600; }}
     .col-built {{ white-space: nowrap; }}
-    .col-station {{ max-width: 200px; font-size: 11px; }}
+    .col-station {{ max-width: 200px; font-size: 12px; }}
     .col-score {{ text-align: center; }}
     .col-breakdown {{ min-width: 220px; }}
 
     .row-meta {{ display: flex; gap: 6px; margin-top: 4px; align-items: center; flex-wrap: wrap; }}
     .city-tag {{
-      font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 3px;
+      font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 3px;
       border: 1px solid; text-transform: uppercase; letter-spacing: 0.04em;
     }}
     .src-tag {{
-      font-size: 9px; color: var(--muted); padding: 1px 6px; border-radius: 3px;
+      font-size: 10px; color: var(--muted); padding: 1px 6px; border-radius: 3px;
       background: rgba(255,255,255,0.04);
     }}
     .badge-new {{
-      font-size: 9px; font-weight: 700; color: #22c55e; padding: 1px 6px;
-      border-radius: 3px; border: 1px solid #22c55e; animation: pulse 2s infinite;
+      font-size: 10px; font-weight: 700; color: var(--green); padding: 1px 6px;
+      border-radius: 3px; border: 1px solid var(--green); animation: pulse 2s infinite;
     }}
-    .fs-date {{ font-size: 9px; color: var(--dim); }}
+    .fs-date {{ font-size: 10px; color: var(--dim); }}
     @keyframes pulse {{ 0%,100%{{opacity:1}} 50%{{opacity:.6}} }}
 
     .score-total {{ font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono',monospace; }}
-    .tier-badge {{
-      font-size: 9px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
-      display: inline-block; margin-top: 2px;
-    }}
-    .tier-strong {{ background: rgba(34,197,94,0.15); color: #22c55e; }}
-    .tier-good {{ background: rgba(250,204,21,0.15); color: #facc15; }}
-    .tier-conditional {{ background: rgba(251,146,60,0.15); color: #fb923c; }}
-    .tier-pass {{ background: rgba(239,68,68,0.15); color: #ef4444; }}
+    .tier-badge,.tier-strong,.tier-good,.tier-conditional,.tier-pass {{ display: none; }}
 
     .breakdown-pills {{ display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 4px; }}
     .sc-pill {{
-      font-size: 9px; font-weight: 500; padding: 1px 5px; border-radius: 3px;
+      font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 3px;
       font-family: 'JetBrains Mono',monospace; white-space: nowrap;
     }}
     .sc-pos {{ background: rgba(34,197,94,0.12); color: #4ade80; }}
     .sc-neg {{ background: rgba(239,68,68,0.12); color: #f87171; }}
     .sc-zero {{ background: rgba(255,255,255,0.04); color: var(--dim); }}
-    .comment {{ font-size: 10px; color: var(--text-secondary); line-height: 1.4; }}
+    .comment {{ font-size: 12px; color: var(--text-secondary); line-height: 1.4; }}
 
     footer {{
       margin-top: 48px; padding: 24px 0 32px;
       border-top: 1px solid var(--border);
       display: flex; justify-content: space-between;
-      font-size: 10px; color: var(--dim);
+      font-size: 11px; color: var(--dim);
     }}
 
-    @media (max-width: 768px) {{
+    /* ===== Responsive ===== */
+    /* Mobile: card default, table hidden */
+    @media (max-width: 960px) {{
+      .table-wrap {{ display: none; }}
+      .card-list {{ display: flex; }}
+      .view-toggle {{ display: none; }}
+    }}
+    /* Desktop: table default, cards hidden */
+    @media (min-width: 961px) {{
+      .card-list {{ display: none; }}
+      .table-wrap {{ display: block; }}
+      body.view-cards .card-list {{ display: flex; }}
+      body.view-cards .table-wrap {{ display: none; }}
+      body.view-table .card-list {{ display: none; }}
+      body.view-table .table-wrap {{ display: block; }}
+    }}
+    @media (max-width: 640px) {{
       .page {{ padding: 0 12px; }}
-      .stats-bar {{ gap: 16px; }}
-      .stat-value {{ font-size: 15px; }}
-      .col-breakdown {{ min-width: 180px; }}
-      table {{ font-size: 11px; }}
+      .sg-value {{ font-size: 15px; }}
+      .toolbar {{ top: 88px; padding: 8px 0; }}
+      .card-head {{ padding: 12px 14px; }}
     }}
   </style>
 </head>
 <body>
 {site_header_html()}
-{gnav_html}
+{gnav_html_str}
 
 <div class="page">
   <div class="hero">
-    <h1>一棟もの物件検索</h1>
-    <div class="hero-sub">一棟マンション・一棟アパート | 楽待マルチエリア検索</div>
+    <h1>\u4e00\u68df\u3082\u306e\u7269\u4ef6\u691c\u7d22</h1>
+    <div class="hero-sub">\u4e00\u68df\u30de\u30f3\u30b7\u30e7\u30f3\u30fb\u4e00\u68df\u30a2\u30d1\u30fc\u30c8 | \u697d\u5f85 3\u90fd\u5e02\u691c\u7d22 | {dt.date.today().isoformat()}</div>
   </div>
 
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-label">Total Properties</div>
-      <div class="stat-value">{total}</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">Avg Price</div>
-      <div class="stat-value">{avg_price // 10000}億{avg_price % 10000}万</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">Avg Yield</div>
-      <div class="stat-value">{avg_yield}%</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">Osaka</div>
-      <div class="stat-value">{by_city.get("osaka", 0)}</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">Fukuoka</div>
-      <div class="stat-value">{by_city.get("fukuoka", 0)}</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">Tokyo</div>
-      <div class="stat-value">{by_city.get("tokyo", 0)}</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">Updated</div>
-      <div class="stat-value" style="font-size:13px">{dt.date.today().isoformat()}</div>
-    </div>
+  <div class="stats-grid">
+    <div class="sg-item"><div class="sg-label">Total</div><div class="sg-value">{total}</div></div>
+    <div class="sg-item"><div class="sg-label">Avg Price</div><div class="sg-value">{avg_price // 10000}.{avg_price % 10000 // 1000}\u5104</div></div>
+    <div class="sg-item"><div class="sg-label">Avg Yield</div><div class="sg-value">{avg_yield}%</div></div>
+    <div class="sg-item"><div class="sg-label">\u5927\u962a</div><div class="sg-value">{by_city.get("osaka", 0)}</div></div>
+    <div class="sg-item"><div class="sg-label">\u798f\u5ca1</div><div class="sg-value">{by_city.get("fukuoka", 0)}</div></div>
+    <div class="sg-item"><div class="sg-label">\u6771\u4eac</div><div class="sg-value">{by_city.get("tokyo", 0)}</div></div>
   </div>
 
-  <div class="filter-bar">
+  <div class="toolbar">
     {"".join(filter_buttons)}
+    <div class="view-toggle">
+      <button class="vt-btn" data-view="cards" title="Card view">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </button>
+      <button class="vt-btn active" data-view="table" title="Table view">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
   </div>
 
-  <div class="conditions">
-    <h3>Search Conditions</h3>
-    <ul>
-      <li>価格帯: 1.5億〜2億円</li>
-      <li>物件種別: 一棟マンション + 一棟アパート</li>
-      <li>データソース: 楽待 (rakumachi.jp)</li>
-      <li>エリア: 大阪（北区/西区/中央区等） / 福岡（博多区/中央区/南区） / 東京（渋谷区/新宿区/目黒区等）</li>
-      <li>築年数: フィルタなし（スコアリングで新耐震基準を加点）</li>
-      <li>スコアリング: 価格帯+構造(RC>S>木造)+戸数+利回り+耐震+駅距離+立地</li>
-    </ul>
+  <div class="card-list" id="card-list">
+    {"".join(card_html)}
   </div>
 
   <div class="table-wrap">
@@ -645,17 +922,19 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
       <thead>
         <tr>
           <th data-sort="rank">#</th>
-          <th data-sort="name">物件名</th>
-          <th data-sort="price">価格</th>
-          <th data-sort="location">所在地</th>
-          <th data-sort="structure">構造</th>
-          <th data-sort="units">戸数</th>
-          <th data-sort="avgm2">㎡/戸</th>
-          <th data-sort="yield">利回り</th>
-          <th data-sort="built">築年</th>
-          <th>駅</th>
+          <th data-sort="name">\u7269\u4ef6\u540d</th>
+          <th data-sort="price">\u4fa1\u683c</th>
+          <th data-sort="location">\u6240\u5728\u5730</th>
+          <th data-sort="structure">\u69cb\u9020</th>
+          <th data-sort="units">\u6238\u6570</th>
+          <th data-sort="avgm2">\u33a1/\u6238</th>
+          <th data-sort="yield">\u5229\u56de\u308a</th>
+          <th data-sort="netyield">\u5b9f\u8cea</th>
+          <th data-sort="cf">CF/\u6708</th>
+          <th data-sort="built">\u7bc9\u5e74</th>
+          <th>\u99c5</th>
           <th data-sort="score">Score</th>
-          <th>内訳・コメント</th>
+          <th>\u5185\u8a33</th>
         </tr>
       </thead>
       <tbody id="prop-tbody">
@@ -671,19 +950,29 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
 </div>
 
 <script>
-// City filter
+// City filter — works on both cards and table rows
 document.querySelectorAll('.filter-btn').forEach(function(btn) {{
   btn.addEventListener('click', function() {{
     document.querySelectorAll('.filter-btn').forEach(function(b) {{ b.classList.remove('active'); }});
     btn.classList.add('active');
     var city = btn.dataset.city;
-    document.querySelectorAll('.prop-row').forEach(function(row) {{
-      if (city === 'all' || row.dataset.city === city) {{
-        row.classList.remove('hidden');
+    document.querySelectorAll('.prop-row, .card').forEach(function(el) {{
+      if (city === 'all' || el.dataset.city === city) {{
+        el.classList.remove('hidden');
       }} else {{
-        row.classList.add('hidden');
+        el.classList.add('hidden');
       }}
     }});
+  }});
+}});
+
+// View toggle (desktop only)
+document.querySelectorAll('.vt-btn').forEach(function(btn) {{
+  btn.addEventListener('click', function() {{
+    document.querySelectorAll('.vt-btn').forEach(function(b) {{ b.classList.remove('active'); }});
+    btn.classList.add('active');
+    document.body.classList.remove('view-cards', 'view-table');
+    document.body.classList.add('view-' + btn.dataset.view);
   }});
 }});
 
@@ -716,6 +1005,12 @@ document.querySelectorAll('th[data-sort]').forEach(function(th) {{
       }} else if (key === 'yield') {{
         va = parseFloat(a.querySelector('.col-yield').textContent) || 0;
         vb = parseFloat(b.querySelector('.col-yield').textContent) || 0;
+      }} else if (key === 'netyield') {{
+        va = parseFloat(a.querySelector('.col-netyield').textContent) || 0;
+        vb = parseFloat(b.querySelector('.col-netyield').textContent) || 0;
+      }} else if (key === 'cf') {{
+        va = parseFloat(a.querySelector('.col-cf').textContent.replace(/[^\\d.-]/g,'')) || 0;
+        vb = parseFloat(b.querySelector('.col-cf').textContent.replace(/[^\\d.-]/g,'')) || 0;
       }} else if (key === 'built') {{
         va = parseInt(a.querySelector('.col-built').textContent) || 0;
         vb = parseInt(b.querySelector('.col-built').textContent) || 0;

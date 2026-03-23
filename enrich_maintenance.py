@@ -184,14 +184,19 @@ def enrich_athome(html: str) -> str:
         return "+".join(parts)
     return ""
 
-def enrich_file(filepath: Path) -> int:
-    """Enrich a raw data file with maintenance fees. Returns count of enriched rows."""
+def enrich_file(filepath: Path, budget_seconds: int = 120) -> int:
+    """Enrich a raw data file with maintenance fees. Returns count of enriched rows.
+
+    Time-budgeted: stops enriching after budget_seconds to prevent GHA timeout.
+    Incremental: skips already-enriched rows, so progress accumulates over runs.
+    """
     if not filepath.exists():
         return 0
 
     lines = filepath.read_text(encoding="utf-8").splitlines()
     updated = 0
     new_lines = []
+    start_time = time.time()
 
     for line in lines:
         if line.startswith("#") or not line.strip():
@@ -216,6 +221,11 @@ def enrich_file(filepath: Path) -> int:
 
         # Only enrich supported sources
         if source not in ("楽待", "カウカモ", "SUUMO", "Yahoo不動産", "athome", "福岡R不動産", "大阪R不動産", "東京R不動産"):
+            new_lines.append(line)
+            continue
+
+        # Time budget check — save progress and stop
+        if time.time() - start_time > budget_seconds:
             new_lines.append(line)
             continue
 
@@ -251,6 +261,10 @@ def enrich_file(filepath: Path) -> int:
             print(f"    → データなし")
 
         time.sleep(0.8)
+
+    elapsed = time.time() - start_time
+    if elapsed > budget_seconds:
+        print(f"  ⏱ タイムバジェット到達 ({budget_seconds}s) — 残りは次回enrichment")
 
     filepath.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
     return updated
@@ -386,22 +400,33 @@ def enrich_ftakken_file(filepath: Path) -> int:
 
 
 def main():
+    import os
     print("=== 管理費enrichment開始 ===\n")
+
+    # GHA: tighter budget per file to fit within 900s total
+    is_ci = os.environ.get("CI") == "true" or os.environ.get("GITHUB_ACTIONS") == "true"
+    per_file_budget = 60 if is_ci else 120
+    total_budget = 600 if is_ci else 1800
+    total_start = time.time()
 
     targets = sorted(DATA_DIR.glob("*_raw.txt"))
 
     total = 0
     for f in targets:
+        if time.time() - total_start > total_budget:
+            print(f"\n⏱ 全体タイムバジェット到達 ({total_budget}s) — 残りファイルは次回")
+            break
         if f.exists():
             print(f"\n--- {f.name} ---")
             if "ftakken" in f.name:
                 count = enrich_ftakken_file(f)
             else:
-                count = enrich_file(f)
+                count = enrich_file(f, budget_seconds=per_file_budget)
             total += count
             print(f"  → {count}件 enriched")
 
-    print(f"\n=== 完了: {total}件 enriched ===")
+    elapsed = time.time() - total_start
+    print(f"\n=== 完了: {total}件 enriched ({elapsed:.0f}s) ===")
 
 
 if __name__ == "__main__":

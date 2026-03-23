@@ -28,7 +28,7 @@ class InvestmentParams:
     # Financing
     down_payment_ratio: float = 0.20   # 頭金比率 (20%)
     loan_rate_annual: float = 0.0285   # ローン金利 年率 (2.85%)
-    loan_years: int = 30               # ローン期間 (30年)
+    loan_years: int = 0                # 0 = 自動算出（残存耐用年数ベース）
 
     # Operations
     vacancy_rate: float = 0.07         # 空室率 (7%)
@@ -83,6 +83,7 @@ class RevenueAnalysis:
     # --- Financing ---
     down_payment: float = 0.0          # 頭金 (万円)
     loan_amount: float = 0.0           # 借入額 (万円)
+    loan_years: int = 0                # 実際のローン期間 (年)
     annual_debt_service: float = 0.0   # 年間ローン返済 (万円)
 
     # --- Cash Flow ---
@@ -196,13 +197,51 @@ def analyze(
     result.noi = round(noi, 2)
     result.net_yield_pct = round(net_yield_pct, 2)
 
-    # ---- Financing ----
+    # ---- Depreciation (before financing — needed for loan term) ----
+    # 中古資産の耐用年数（国税庁 No.5404 簡便法）:
+    #   耐用年数超過: 法定耐用年数 × 20%（最低2年）
+    #   耐用年数以内: (法定 - 経過) + 経過 × 20%
+    useful_life = _resolve_useful_life(structure)
+    age = (CURRENT_YEAR - built_year) if built_year else 0
+    if age >= useful_life:
+        remaining_life = max(2, int(useful_life * 0.20))
+    else:
+        remaining_life = max(2, int((useful_life - age) + age * 0.20))
+    depreciation_annual = (price_man * p.building_ratio) / remaining_life
+
+    result.useful_life = useful_life
+    result.remaining_life = remaining_life
+    result.depreciation_annual = round(depreciation_annual, 2)
+
+    # ---- Financing (loan term = property-specific) ----
+    if p.loan_years > 0:
+        # Explicitly specified — use as-is
+        loan_years = p.loan_years
+    else:
+        # Auto: banks lend based on remaining useful life of the structure
+        # RC/SRC: max 法定47年 − 築年数, floor 10年 (some banks do築古RC)
+        # S造:    max 法定34年 − 築年数, floor 10年
+        # 木造:   max 法定22年 − 築年数, floor 10年
+        # Cap at 35 years (typical bank max)
+        raw_term = useful_life - age
+        if raw_term >= 25:
+            loan_years = min(35, raw_term)
+        elif raw_term >= 15:
+            loan_years = raw_term
+        elif raw_term >= 1:
+            # Short remaining life — banks may still lend 10-15 years
+            loan_years = max(10, raw_term)
+        else:
+            # Past useful life —築古物件: 10-15年が現実的
+            loan_years = 10
+
     down_payment = price_man * p.down_payment_ratio
     loan_amount = price_man * (1 - p.down_payment_ratio)
-    annual_debt_service = _pmt(p.loan_rate_annual, p.loan_years, loan_amount)
+    annual_debt_service = _pmt(p.loan_rate_annual, loan_years, loan_amount)
 
     result.down_payment = round(down_payment, 2)
     result.loan_amount = round(loan_amount, 2)
+    result.loan_years = loan_years
     result.annual_debt_service = round(annual_debt_service, 2)
 
     # ---- Cash Flow ----
@@ -215,22 +254,6 @@ def analyze(
     result.monthly_cf = round(monthly_cf, 2)
     result.ccr_pct = round(ccr_pct, 2)
     result.payback_years = round(payback_years, 1) if payback_years != float("inf") else float("inf")
-
-    # ---- Depreciation ----
-    # 中古資産の耐用年数（税法ルール）:
-    #   耐用年数超過: 法定耐用年数 × 20%
-    #   耐用年数以内: (法定 - 経過) + 経過 × 20%
-    useful_life = _resolve_useful_life(structure)
-    age = (CURRENT_YEAR - built_year) if built_year else 0
-    if age >= useful_life:
-        remaining_life = max(2, int(useful_life * 0.20))  # 最低2年（国税庁ルール）
-    else:
-        remaining_life = max(2, int((useful_life - age) + age * 0.20))
-    depreciation_annual = (price_man * p.building_ratio) / remaining_life
-
-    result.useful_life = useful_life
-    result.remaining_life = remaining_life
-    result.depreciation_annual = round(depreciation_annual, 2)
 
     # ---- Tax / After-Tax CF ----
     # Simplified model: interest portion of ADS is deductible.
@@ -297,7 +320,7 @@ def print_analysis(r: RevenueAnalysis) -> None:
         print(f"  敷地面積     : {r.area_sqm}㎡")
 
     print()
-    print(f"  【ローン条件】 頭金{p.down_payment_ratio*100:.0f}% / {p.loan_rate_annual*100:.1f}% / {p.loan_years}年")
+    print(f"  【ローン条件】 頭金{p.down_payment_ratio*100:.0f}% / {p.loan_rate_annual*100:.1f}% / {r.loan_years}年")
     print(sep)
     print(f"  頭金         : {_fmt(r.down_payment)}")
     print(f"  借入額       : {_fmt(r.loan_amount)}")

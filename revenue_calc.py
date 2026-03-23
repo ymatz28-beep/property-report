@@ -217,9 +217,15 @@ def analyze(
     result.payback_years = round(payback_years, 1) if payback_years != float("inf") else float("inf")
 
     # ---- Depreciation ----
+    # 中古資産の耐用年数（税法ルール）:
+    #   耐用年数超過: 法定耐用年数 × 20%
+    #   耐用年数以内: (法定 - 経過) + 経過 × 20%
     useful_life = _resolve_useful_life(structure)
     age = (CURRENT_YEAR - built_year) if built_year else 0
-    remaining_life = max(1, useful_life - age)
+    if age >= useful_life:
+        remaining_life = max(1, int(useful_life * 0.20))
+    else:
+        remaining_life = max(1, int((useful_life - age) + age * 0.20))
     depreciation_annual = (price_man * p.building_ratio) / remaining_life
 
     result.useful_life = useful_life

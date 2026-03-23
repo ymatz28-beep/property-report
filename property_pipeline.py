@@ -32,6 +32,8 @@ from urllib.request import Request, urlopen
 
 import yaml
 
+from revenue_calc import InvestmentParams, analyze as revenue_analyze
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -690,7 +692,7 @@ def _build_viewing_schedule(inquiries: list[dict], agent_memory: dict) -> str:
 
 
 def _naiken_invest_analysis(p: dict, all_props: list[dict]) -> str:
-    """物件別の投資分析セクション（ルールベース）。"""
+    """物件別の投資分析セクション — 収益シミュレーション waterfall 付き。"""
     price = p.get("price", 0)
     area = p.get("area", 0)
     mgmt = p.get("management_fee", 0)
@@ -705,14 +707,12 @@ def _naiken_invest_analysis(p: dict, all_props: list[dict]) -> str:
     rent_lo = int(area * lo / 10000) if area else 0
     rent_hi = int(area * hi / 10000) if area else 0
 
-    # 表面利回り
+    # 表面利回り (midpoint for simulation)
     yield_lo = round(rent_lo * 12 / price * 100, 1) if price else 0
     yield_hi = round(rent_hi * 12 / price * 100, 1) if price else 0
     yield_cls = "ok" if yield_hi >= 4.0 else ("" if yield_hi >= 3.0 else "warn")
-
-    # 実質CF
-    cf_lo = rent_lo - (mgmt // 10000) if mgmt else rent_lo
-    cf_hi = rent_hi - (mgmt // 10000) if mgmt else rent_hi
+    rent_mid = (rent_lo + rent_hi) / 2
+    yield_mid = round(rent_mid * 12 / price * 100, 2) if price else 0
 
     # ㎡単価の相対評価
     sqm_prices = [pp["price"] / pp["area"] for pp in all_props if pp.get("price") and pp.get("area")]
@@ -725,14 +725,98 @@ def _naiken_invest_analysis(p: dict, all_props: list[dict]) -> str:
     age_label = "低い" if age < 15 else ("中程度" if age < 30 else "高い（要修繕確認）")
     age_cls = "ok" if age < 15 else ("" if age < 30 else "warn")
 
-    return f"""<div class="section-title">投資分析（概算）</div>
+    # KPI grid (quick overview)
+    grid_html = f"""<div class="section-title">投資分析</div>
 <div class="invest-grid">
 <div class="invest-card"><div class="label">想定賃料（{CITY_LABELS.get(city, '')} {p.get('layout', '')} {area}㎡）</div><div class="num">{rent_lo}〜{rent_hi}万円/月</div></div>
 <div class="invest-card"><div class="label">表面利回り</div><div class="num {yield_cls}">{yield_lo}〜{yield_hi}%</div></div>
-<div class="invest-card"><div class="label">管理費込み実質CF</div><div class="num">{cf_lo}〜{cf_hi}万円/月</div></div>
 <div class="invest-card"><div class="label">㎡単価 vs 他物件</div><div class="num {sqm_cls}">{sqm_rank}</div></div>
 <div class="invest-card"><div class="label">築年数リスク</div><div class="num {age_cls}">{age_label}</div></div>
 </div>"""
+
+    # Revenue waterfall simulation
+    if not price or yield_mid <= 0:
+        return grid_html
+
+    # 区分マンション: RC構造を仮定、建物比率50%（区分は土地持分小さい）
+    params = InvestmentParams(
+        building_ratio=0.50,
+    )
+    rev = revenue_analyze(
+        price_man=price,
+        yield_pct=yield_mid,
+        structure="RC造",
+        built_year=yr if yr else None,
+        params=params,
+    )
+
+    if rev.verdict == "データ不足":
+        return grid_html
+
+    def _f(v: float) -> str:
+        if abs(v) >= 10000:
+            return f"{v/10000:.2f}億"
+        return f"{v:,.0f}万"
+
+    p_rv = rev.params
+    vclass = {
+        "高CF物件": "rv-high", "安定CF": "rv-stable",
+        "薄利": "rv-thin", "CF赤字": "rv-red",
+    }.get(rev.verdict, "rv-thin")
+
+    payback = f"{rev.payback_years:.1f}年" if rev.payback_years != float("inf") else "∞"
+
+    mcf = rev.monthly_cf
+    cf_color = "#22c55e" if mcf > 30 else "#34d399" if mcf > 15 else "#facc15" if mcf > 0 else "#f87171"
+    cf_sign = "+" if rev.annual_cf >= 0 else ""
+
+    building_price = rev.price_man * p_rv.building_ratio
+
+    # Management fee annotation
+    mgmt_note = ""
+    if mgmt:
+        mgmt_man = mgmt / 10000
+        cf_after_mgmt = rev.monthly_cf - mgmt_man
+        cf_after_color = "#34d399" if cf_after_mgmt > 0 else "#f87171"
+        cf_after_sign = "+" if cf_after_mgmt >= 0 else ""
+        mgmt_note = f"""<div class="rv-row rv-minus"><span class="rv-desc">管理費・修繕積立金</span><span class="rv-note">{mgmt:,}円/月</span><span class="rv-amount">-{mgmt_man:.1f}万/月</span></div>
+        <div class="rv-row rv-highlight"><span class="rv-desc">管理費込み月間CF</span><span class="rv-note"></span><span class="rv-amount" style="color:{cf_after_color}">{cf_after_sign}{cf_after_mgmt:.1f}万/月</span></div>"""
+
+    waterfall_html = f'''<div class="revenue-block">
+      <div class="rv-header">
+        <span class="rv-title">収益シミュレーション</span>
+        <span class="rv-verdict {vclass}">{rev.verdict}</span>
+      </div>
+      <div class="rv-assumptions">前提: 頭金{p_rv.down_payment_ratio*100:.0f}% / 金利{p_rv.loan_rate_annual*100:.1f}% / {rev.loan_years}年ローン / 空室率{p_rv.vacancy_rate*100:.0f}% / 経費率{p_rv.opex_rate*100:.0f}% / 建物比率{p_rv.building_ratio*100:.0f}%<br>想定賃料: {rent_lo}〜{rent_hi}万/月（中央値{rent_mid:.0f}万 → 利回り{yield_mid:.1f}%で試算）</div>
+
+      <div class="rv-section">
+        <div class="rv-section-title">収入 → キャッシュフロー</div>
+        <div class="rv-row"><span class="rv-desc">年間賃料収入</span><span class="rv-note">= 想定{rent_mid:.0f}万/月 × 12</span><span class="rv-amount">{_f(rev.gross_income)}</span></div>
+        <div class="rv-row rv-minus"><span class="rv-desc">空室損（{p_rv.vacancy_rate*100:.0f}%）</span><span class="rv-note"></span><span class="rv-amount">-{_f(rev.vacancy_loss)}</span></div>
+        <div class="rv-row rv-minus"><span class="rv-desc">運営経費（税・保険・修繕等）</span><span class="rv-note">{p_rv.opex_rate*100:.0f}%</span><span class="rv-amount">-{_f(rev.opex)}</span></div>
+        <div class="rv-row rv-subtotal"><span class="rv-desc">営業利益（NOI）</span><span class="rv-note"></span><span class="rv-amount">{_f(rev.noi)}</span></div>
+        <div class="rv-row rv-minus"><span class="rv-desc">ローン返済</span><span class="rv-note">借入{_f(rev.loan_amount)} / {rev.loan_years}年</span><span class="rv-amount">-{_f(rev.annual_debt_service)}</span></div>
+        <div class="rv-row rv-total"><span class="rv-desc">年間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:{cf_color}">{cf_sign}{_f(rev.annual_cf)}</span></div>
+        <div class="rv-row rv-highlight"><span class="rv-desc">月間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:{cf_color}">{cf_sign}{rev.monthly_cf:,.1f}万/月</span></div>
+        {mgmt_note}
+      </div>
+
+      <div class="rv-section">
+        <div class="rv-section-title">減価償却 → 節税効果</div>
+        <div class="rv-row"><span class="rv-desc">建物価格</span><span class="rv-note">= 取得価格 × 建物比率{p_rv.building_ratio*100:.0f}%</span><span class="rv-amount">{_f(building_price)}</span></div>
+        <div class="rv-row"><span class="rv-desc">残存耐用年数</span><span class="rv-note">法定{rev.useful_life}年 − 築{2026 - yr if yr else "?"}年</span><span class="rv-amount">{rev.remaining_life}年</span></div>
+        <div class="rv-row rv-subtotal"><span class="rv-desc">年間償却額</span><span class="rv-note">= {_f(building_price)} ÷ {rev.remaining_life}年</span><span class="rv-amount">{_f(rev.depreciation_annual)}</span></div>
+        {"<div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style=\"color:#22c55e\">+" + f"{rev.tax_benefit:,.0f}" + "万/年</span></div>" if rev.tax_benefit > 0 else "<div class='rv-row'><span class='rv-desc'>税負担</span><span class='rv-note'>課税所得" + f"{rev.taxable_income:,.0f}" + "万 × 税率" + f"{p_rv.tax_rate*100:.0f}" + "%</span><span class='rv-amount'>-" + f"{rev.taxable_income * p_rv.tax_rate:,.0f}" + "万</span></div>"}
+      </div>
+
+      <div class="rv-bottom">
+        <div class="rv-bottom-item"><span class="rv-bottom-label">税引後CF</span><span class="rv-bottom-val">{"+" if rev.after_tax_cf >= 0 else ""}{_f(rev.after_tax_cf)}/年</span></div>
+        <div class="rv-bottom-item"><span class="rv-bottom-label">実質利回り</span><span class="rv-bottom-val">{rev.net_yield_pct:.1f}%</span></div>
+        <div class="rv-bottom-item"><span class="rv-bottom-label">自己資金回収</span><span class="rv-bottom-val">{payback}</span></div>
+      </div>
+    </div>'''
+
+    return grid_html + waterfall_html
 
 
 def _naiken_merits_risks(p: dict, all_props: list[dict]) -> str:
@@ -877,7 +961,7 @@ def generate_naiken_analysis() -> Path | None:
             archive_path.write_text(prev_content, encoding="utf-8")
 
     inquiries = load_inquiries()
-    viewing = [i for i in inquiries if i.get("status") == "viewing"]
+    viewing = [i for i in inquiries if i.get("status") in ("viewing", "viewed")]
     if not viewing:
         html = f"""<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -1080,6 +1164,22 @@ td{{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .schedule-banner h2{{font-size:18px;color:#a78bfa;margin-bottom:8px}}.schedule-banner .detail{{font-size:14px;line-height:1.8}}
 .verdict{{padding:16px;border-radius:12px;margin:16px 0;font-size:13px;line-height:1.8}}
 .verdict-caution{{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2)}}
+.revenue-block{{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px;margin:20px 0}}
+.rv-header{{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}}
+.rv-title{{font-size:16px;font-weight:800}}.rv-verdict{{padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}}
+.rv-high{{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}}
+.rv-stable{{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)}}
+.rv-thin{{background:rgba(250,204,21,.15);color:#facc15;border:1px solid rgba(250,204,21,.3)}}
+.rv-red{{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)}}
+.rv-assumptions{{font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.6}}
+.rv-section{{margin-bottom:16px}}.rv-section-title{{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(110,231,255,.15)}}
+.rv-row{{display:flex;align-items:baseline;padding:4px 0;font-size:13px;gap:8px}}
+.rv-desc{{flex:1;min-width:0}}.rv-note{{flex:0 0 auto;font-size:11px;color:var(--muted)}}.rv-amount{{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;min-width:80px}}
+.rv-minus .rv-desc{{color:var(--muted)}}.rv-subtotal{{border-top:1px solid var(--line);padding-top:6px;margin-top:4px}}
+.rv-total{{border-top:2px solid var(--line);padding-top:8px;margin-top:4px;font-weight:800}}
+.rv-highlight{{background:rgba(110,231,255,.05);border-radius:8px;padding:8px;margin-top:4px}}
+.rv-bottom{{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}}
+.rv-bottom-item{{flex:1;text-align:center;min-width:100px}}.rv-bottom-label{{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}}.rv-bottom-val{{font-size:16px;font-weight:800;font-family:'JetBrains Mono',monospace}}
 </style></head><body>
 {site_header_html()}{global_nav_html("naiken-analysis.html")}
 <div class="wrap">

@@ -95,20 +95,10 @@ def global_nav_css() -> str:
 
 
 def global_nav_html(current: str = "") -> str:
-    pages = [
-        ("index.html", "Hub"),
-        ("minpaku-osaka.html", "大阪"),
-        ("minpaku-fukuoka.html", "福岡"),
-        ("minpaku-tokyo.html", "東京"),
-        ("naiken-analysis.html", "内覧分析"),
-        ("inquiry-messages.html", "問い合わせ"),
-        ("inquiry-pipeline.html", "Pipeline"),
-        ("ittomono.html", "一棟もの"),
-    ]
     links = []
-    for href, label in pages:
-        cls = ' class="cur"' if href == current else ""
-        links.append(f'<a href="{href}"{cls}>{label}</a>')
+    for p in _NAV_PAGES:
+        cls = ' class="cur"' if p["href"] == current else ""
+        links.append(f'<a href="{p["href"]}"{cls}>{p["label"]}</a>')
     return f'<div class="gnav"><div class="gnav-inner">{"".join(links)}</div></div>'
 
 

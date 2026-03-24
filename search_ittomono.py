@@ -36,6 +36,15 @@ PRICE_MIN = 15000  # 1.5億 = 15000万
 PRICE_MAX = 20000  # 2億 = 20000万
 
 # Area configs — same areas as existing patrol
+KENBIYA_REGIONS = {
+    "osaka": {"path": "k/osaka", "pref": "大阪府"},
+    "fukuoka": {"path": "f/fukuoka", "pref": "福岡県"},
+    "tokyo": {"path": "s/tokyo", "pref": "東京都"},
+}
+# Kenbiya price dropdown: closest to 15000 is 14000
+KENBIYA_PRICE_MIN = 14000
+KENBIYA_PRICE_MAX = 20000
+
 AREA_CONFIGS = {
     "osaka": {
         "label": "大阪",
@@ -103,11 +112,20 @@ def fetch_page(url: str, retries: int = 2) -> str | None:
 
 
 def is_target_location(location: str, city_key: str) -> bool:
-    """Check if property location matches target areas."""
+    """Check if property location matches target areas.
+
+    Ward matching requires the correct city prefix to avoid false positives
+    (e.g. 堺市西区 matching osaka's 西区 target).
+    """
     config = AREA_CONFIGS.get(city_key, {})
     wards = config.get("target_wards", [])
     areas = config.get("target_areas", [])
-    return any(w in location for w in wards) or any(a in location for a in areas)
+    # City prefixes for ward matching precision
+    city_prefixes = {"osaka": "大阪市", "fukuoka": "福岡市", "tokyo": "東京都"}
+    prefix = city_prefixes.get(city_key, "")
+    ward_match = any(f"{prefix}{w}" in location or (not prefix and w in location) for w in wards)
+    area_match = any(a in location for a in areas)
+    return ward_match or area_match
 
 
 def parse_price_text(text: str) -> int:
@@ -382,6 +400,190 @@ def _extract_ittomono_fields(context: str, url: str, prop_id: str, city_key: str
     }
 
 
+def search_kenbiya_ittomono(city_key: str) -> list[dict]:
+    """Search 健美家 for 一棟マンション (pp3) + 一棟アパート (pp2)."""
+    config = AREA_CONFIGS[city_key]
+    kb = KENBIYA_REGIONS[city_key]
+    print(f"\n=== 健美家 一棟もの ({config['label']}) 検索中... ===")
+
+    all_properties = []
+    for pp_code, pp_label in [("pp3", "一棟マンション"), ("pp2", "一棟アパート")]:
+        print(f"\n  --- {pp_label} ({pp_code}) ---")
+        page = 1
+        max_pages = 5
+
+        while page <= max_pages:
+            if page == 1:
+                url = f"https://www.kenbiya.com/{pp_code}/{kb['path']}/p1={KENBIYA_PRICE_MIN}/p2={KENBIYA_PRICE_MAX}/"
+            else:
+                url = f"https://www.kenbiya.com/{pp_code}/{kb['path']}/n-{page}/p1={KENBIYA_PRICE_MIN}/p2={KENBIYA_PRICE_MAX}/"
+
+            print(f"  Page {page}...")
+            html = fetch_page(url)
+            if not html:
+                break
+
+            page_props = _parse_kenbiya_listings(html, city_key, pp_label, kb["pref"])
+            if not page_props:
+                break
+
+            all_properties.extend(page_props)
+            print(f"  -> {len(page_props)}件取得 (累計: {len(all_properties)}件)")
+
+            # Check next page exists
+            if f"/n-{page + 1}/" not in html:
+                break
+            page += 1
+            time.sleep(1.5)
+
+    # Deduplicate by URL
+    seen_urls = set()
+    deduped = []
+    for p in all_properties:
+        if p["url"] not in seen_urls:
+            seen_urls.add(p["url"])
+            deduped.append(p)
+
+    dup_count = len(all_properties) - len(deduped)
+    if dup_count > 0:
+        print(f"  重複除外: {dup_count}件")
+    print(f"  健美家一棟もの {config['label']} 合計: {len(deduped)}件")
+    return deduped
+
+
+def _parse_kenbiya_listings(html: str, city_key: str, pp_label: str, pref: str) -> list[dict]:
+    """Parse 健美家 property listing HTML."""
+    properties = []
+
+    # Find property links: /pp{N}/.../re_{ID}/
+    prop_pattern = re.compile(r'href="(/pp\d/[^"]*?/re_(\w+)/)"')
+    seen_ids = set()
+
+    for match in prop_pattern.finditer(html):
+        prop_path = match.group(1)
+        prop_id = match.group(2)
+        if prop_id in seen_ids:
+            continue
+        # Skip PR/sponsor links
+        if "propPrClick" in prop_path:
+            continue
+        seen_ids.add(prop_id)
+
+        prop_url = "https://www.kenbiya.com" + prop_path
+
+        # Extract context around this link
+        start = max(0, match.start() - 500)
+        end = min(len(html), match.end() + 1500)
+        context = html[start:end]
+
+        prop = _extract_kenbiya_fields(context, prop_url, prop_id, city_key, pp_label, pref)
+        if prop:
+            if is_target_location(prop["location"], city_key):
+                properties.append(prop)
+
+    return properties
+
+
+def _extract_kenbiya_fields(context: str, url: str, prop_id: str, city_key: str, pp_label: str, pref: str) -> dict | None:
+    """Extract fields from 健美家 listing context."""
+    text = re.sub(r"<[^>]+>", " ", context)
+    text = re.sub(r"&nbsp;", " ", text)
+    text = re.sub(r"&[a-z]+;", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+
+    # Price: "1億5,500万円" or "1億5500万円"
+    price_match = re.search(r"(\d+)\s*億\s*(?:(\d[\d,]*)\s*万)?円", text)
+    if not price_match:
+        return None
+    oku = int(price_match.group(1))
+    man_part = price_match.group(2)
+    man = int(man_part.replace(",", "")) if man_part else 0
+    price_man = oku * 10000 + man
+
+    if price_man < KENBIYA_PRICE_MIN or price_man > KENBIYA_PRICE_MAX:
+        return None
+
+    man_remainder = price_man % 10000
+    if man_remainder > 0:
+        price_text = f"{oku}億{man_remainder}万円"
+    else:
+        price_text = f"{oku}億円"
+
+    # Location: 大阪府xxx or 福岡県xxx or 東京都xxx
+    loc_match = re.search(rf"({re.escape(pref)}[^\s,。、]{{2,20}})", text)
+    location = loc_match.group(1) if loc_match else ""
+    if not location:
+        return None
+
+    # Building area: 建:468.18m²
+    area_text = ""
+    area_match = re.search(r"建[:：]?\s*(\d[\d,.]*)\s*m", text)
+    if area_match:
+        area_text = area_match.group(1) + "m²"
+
+    # Land area: 土:134.37m²
+    land_match = re.search(r"土[:：]?\s*(\d[\d,.]*)\s*m", text)
+
+    # Year built: 1991年1月
+    year_match = re.search(r"(\d{4})年(?:\s*(\d{1,2})月)?", text)
+    built_text = year_match.group(0).strip() if year_match else ""
+
+    # Station: xxx駅 歩5分
+    station_text = ""
+    st_match = re.search(r"([^\s]+(?:駅)\s*歩\d+分)", text)
+    if st_match:
+        station_text = st_match.group(1)
+
+    # Structure + units: "6階建/5戸"
+    structure = ""
+    units = ""
+    struct_match = re.search(r"(\d+)階建(?:/(\d+)戸)?", text)
+    if struct_match:
+        structure = struct_match.group(1) + "階建"
+        if struct_match.group(2):
+            units = struct_match.group(2) + "戸"
+
+    # Yield: 5.00%
+    yield_text = ""
+    yield_match = re.search(r"(\d+(?:\.\d+)?)\s*[%％]", text)
+    if yield_match:
+        yield_val = float(yield_match.group(1))
+        if 1.0 <= yield_val <= 30.0:
+            yield_text = f"{yield_val}%"
+
+    # Name: heading / catch copy
+    name = ""
+    # Try to find a building-like name
+    name_patterns = [
+        r"([ァ-ヶー]{3,}[^\s]*(?:マンション|ハイツ|コーポ|ビル|レジデンス|荘|パレス|テラス))",
+        r"(?:^|\s)([^\s]{3,}(?:ハイツ|コーポ|ビル|荘|パレス|マンション|テラス|レジデンス))",
+    ]
+    for pat in name_patterns:
+        nm = re.search(pat, text)
+        if nm:
+            name = nm.group(1).strip()[:40]
+            break
+    if not name:
+        loc_short = location.replace(pref, "")[:10]
+        name = f"健美家 {loc_short}#{prop_id[-4:]}"
+
+    return {
+        "source": f"健美家({pp_label})",
+        "name": name,
+        "price_text": price_text,
+        "price_man": price_man,
+        "location": location,
+        "area_text": area_text,
+        "built_text": built_text,
+        "station_text": station_text,
+        "structure": structure,
+        "units": units,
+        "yield_text": yield_text,
+        "layout_detail": "",
+        "url": url,
+    }
+
+
 def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> None:
     """Fetch detail pages to extract room layout for properties missing layout_detail."""
     missing = [p for p in properties if not p.get("layout_detail")]
@@ -453,14 +655,19 @@ def main():
     enrich_limit = 10 if is_ci else 30
 
     for city_key in ["osaka", "fukuoka", "tokyo"]:
-        props = search_rakumachi_ittomono(city_key)
+        # Search both sources
+        rakumachi_props = search_rakumachi_ittomono(city_key)
+        kenbiya_props = search_kenbiya_ittomono(city_key)
+
+        # Merge and deduplicate (by location + price heuristic)
+        props = rakumachi_props + kenbiya_props
         if props:
-            enrich_layout_from_detail(props, max_fetches=enrich_limit)
-        # Always save: 0 results after filtering is a valid outcome (not a failure).
-        # 0-result protection only applies when fetch_page itself returns None
-        # (handled inside search_rakumachi_ittomono with early break).
+            enrich_layout_from_detail(
+                [p for p in props if p["source"].startswith("楽待")],
+                max_fetches=enrich_limit,
+            )
         out = save_results(props, city_key)
-        print(f"  \u51fa\u529b: {out} ({len(props)}\u4ef6)")
+        print(f"  出力: {out} ({len(props)}件 = 楽待{len(rakumachi_props)} + 健美家{len(kenbiya_props)})")
 
 
 if __name__ == "__main__":

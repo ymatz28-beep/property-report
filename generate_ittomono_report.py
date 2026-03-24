@@ -84,7 +84,12 @@ class IttomonoRow:
 
 
 def parse_data_file(data_path: Path, city_key: str) -> list[IttomonoRow]:
-    """Parse 14-column pipe-delimited data file for 一棟もの."""
+    """Parse pipe-delimited data file for 一棟もの.
+
+    Supports both formats:
+    - 15-column (score prepended): score|source|name|...|url
+    - 14-column (legacy): source|name|...|url
+    """
     rows = []
     if not data_path.exists():
         return rows
@@ -94,24 +99,32 @@ def parse_data_file(data_path: Path, city_key: str) -> list[IttomonoRow]:
         if not s or s.startswith("#"):
             continue
         parts = [p.strip() for p in s.split("|")]
-        if len(parts) < 14:
+
+        # Detect format: if first field is a number, it's the score column
+        if len(parts) >= 15 and parts[0].isdigit():
+            offset = 1  # skip score column
+        elif len(parts) >= 14:
+            offset = 0
+        else:
             continue
 
         row = IttomonoRow(
-            source=parts[0],
-            name=parts[1],
-            price_text=parts[2],
-            location=parts[3],
-            area_text=parts[4],
-            built_text=parts[5],
-            station_text=parts[6],
-            structure=parts[7],
-            units=parts[8],
-            yield_text=parts[9],
-            layout_detail=parts[10],
-            url=parts[13],
+            source=parts[offset],
+            name=parts[offset + 1],
+            price_text=parts[offset + 2],
+            location=parts[offset + 3],
+            area_text=parts[offset + 4],
+            built_text=parts[offset + 5],
+            station_text=parts[offset + 6],
+            structure=parts[offset + 7],
+            units=parts[offset + 8],
+            yield_text=parts[offset + 9],
+            layout_detail=parts[offset + 10],
+            url=parts[offset + 13],
             city_key=city_key,
         )
+        if offset == 1:
+            row.total_score = int(parts[0])
         _hydrate(row)
         rows.append(row)
     return rows

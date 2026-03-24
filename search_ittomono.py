@@ -584,6 +584,93 @@ def _extract_kenbiya_fields(context: str, url: str, prop_id: str, city_key: str,
     }
 
 
+def score_ittomono(prop: dict) -> int:
+    """Score 一棟もの property for investment potential (0-100).
+
+    Axes:
+      Yield (30): 7%+=30, 6-7=25, 5-6=20, 4-5=15, <4=5, unknown=10
+      Structure (20): RC/SRC=20, S造=15, 木造=5, unknown=8
+      Age (20): <10yr=20, 10-20=15, 20-30=10, 30-40=5, 40+=0
+      Units (15): 10+=15, 6-9=12, 3-5=8, 1-2=3, unknown=5
+      Station (15): ≤5min=15, 6-10=10, 11-15=5, >15/unknown=0
+    """
+    score = 0
+
+    # Yield
+    yt = prop.get("yield_text", "")
+    ym = re.search(r"([\d.]+)%", yt)
+    if ym:
+        yv = float(ym.group(1))
+        if yv >= 7:
+            score += 30
+        elif yv >= 6:
+            score += 25
+        elif yv >= 5:
+            score += 20
+        elif yv >= 4:
+            score += 15
+        else:
+            score += 5
+    else:
+        score += 10  # unknown
+
+    # Structure
+    st = prop.get("structure", "")
+    if "RC" in st or "SRC" in st:
+        score += 20
+    elif "S" in st:
+        score += 15
+    elif "木" in st:
+        score += 5
+    else:
+        score += 8
+
+    # Building age
+    bt = prop.get("built_text", "")
+    bm = re.search(r"(\d{4})年", bt)
+    if bm:
+        age = 2026 - int(bm.group(1))
+        if age < 10:
+            score += 20
+        elif age < 20:
+            score += 15
+        elif age < 30:
+            score += 10
+        elif age < 40:
+            score += 5
+    # 40+ or unknown = 0
+
+    # Units
+    ut = prop.get("units", "")
+    um = re.search(r"(\d+)", ut)
+    if um:
+        uv = int(um.group(1))
+        if uv >= 10:
+            score += 15
+        elif uv >= 6:
+            score += 12
+        elif uv >= 3:
+            score += 8
+        else:
+            score += 3
+    else:
+        score += 5
+
+    # Station access
+    stt = prop.get("station_text", "")
+    sm = re.search(r"(\d+)\s*分", stt)
+    if sm:
+        mins = int(sm.group(1))
+        if mins <= 5:
+            score += 15
+        elif mins <= 10:
+            score += 10
+        elif mins <= 15:
+            score += 5
+
+    return score
+
+
 def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> None:
     """Fetch detail pages to extract room layout for properties missing layout_detail."""
     missing = [p for p in properties if not p.get("layout_detail")]
@@ -609,20 +696,30 @@ def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> 
 
 
 def save_results(properties: list[dict], city_key: str) -> Path:
-    """Save results to pipe-delimited data file (14-column format for 一棟もの)."""
+    """Save results to pipe-delimited data file (15-column: score prepended).
+
+    Properties are scored, sorted by score desc, and only Green (70+) are saved.
+    """
     DATA_DIR.mkdir(exist_ok=True)
     out_path = DATA_DIR / f"ittomono_{city_key}_raw.txt"
 
+    # Score, sort, and keep top 20 with score >= 55
+    for p in properties:
+        p["score"] = score_ittomono(p)
+    properties.sort(key=lambda x: x["score"], reverse=True)
+    shortlist = [p for p in properties if p["score"] >= 55][:20]
+
     lines = [
-        f"## \u4e00\u68df\u3082\u306e\u691c\u7d22\u7d50\u679c - {AREA_CONFIGS[city_key]['label']}",
-        f"## \u6761\u4ef6: {PRICE_MIN}\u4e07\u301c{PRICE_MAX}\u4e07",
-        f"## \u53d6\u5f97\u65e5: {datetime.now().strftime('%Y-%m-%d')}",
-        f"## \u4ef6\u6570: {len(properties)}\u4ef6",
+        f"## 一棟もの検索結果 - {AREA_CONFIGS[city_key]['label']}",
+        f"## 条件: {PRICE_MIN}万〜{PRICE_MAX}万",
+        f"## 取得日: {datetime.now().strftime('%Y-%m-%d')}",
+        f"## 件数: {len(shortlist)}件 (全{len(properties)}件中スコア55+上位20)",
         "",
     ]
 
-    for prop in properties:
+    for prop in shortlist:
         line = "|".join([
+            str(prop["score"]),
             prop["source"],
             prop["name"],
             prop["price_text"],
@@ -667,7 +764,8 @@ def main():
                 max_fetches=enrich_limit,
             )
         out = save_results(props, city_key)
-        print(f"  出力: {out} ({len(props)}件 = 楽待{len(rakumachi_props)} + 健美家{len(kenbiya_props)})")
+        green_count = min(20, sum(1 for p in props if p.get("score", 0) >= 55))
+        print(f"  出力: {out} ({green_count}件厳選 / 全{len(props)}件 = 楽待{len(rakumachi_props)} + 健美家{len(kenbiya_props)})")
 
 
 if __name__ == "__main__":

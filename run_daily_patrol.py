@@ -5,6 +5,7 @@
 - 既存URLの生死チェック（掲載終了検出）
 - レポート再生成 + gh-pagesデプロイ
 - 差分サマリー通知
+- 失敗ステップの自動リトライ
 
 cron設定例:
   0 6 * * * cd ~/Documents/Projects/property-analyzer && python3 run_daily_patrol.py >> data/patrol.log 2>&1
@@ -30,26 +31,65 @@ HEADERS = {
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
 }
 
+# Human-readable labels: step_name -> (label, impact_when_failed)
+STEP_LABELS = {
+    "search_suumo.py": ("SUUMO物件検索", "SUUMO経由の新規物件が未検出"),
+    "search_multi_site.py": ("Yahoo不動産/楽待検索", "Yahoo/楽待の物件データが未更新"),
+    "search_restate.py": ("RE-STATE検索", "RE-STATEの物件データが未更新"),
+    "search_ftakken.py": ("F宅建検索", "F宅建の物件データが未更新"),
+    "search_lifull.py": ("LIFULL検索", "LIFULLの物件データが未更新"),
+    "search_ittomono.py": ("一棟もの検索", "一棟もの物件データが未更新"),
+    "enrich_maintenance.py": ("管理費データ取得", "管理費・修繕積立金が未更新"),
+    "generate_osaka_report.py": ("大阪レポート生成", "大阪レポートが古いまま"),
+    "generate_fukuoka_report.py": ("福岡レポート生成", "福岡レポートが古いまま"),
+    "generate_tokyo_report.py": ("東京レポート生成", "東京レポートが古いまま"),
+    "generate_ittomono_report.py": ("一棟ものレポート生成", "一棟ものレポートが古いまま"),
+    "generate_inquiry_messages.py": ("問い合わせ文面生成", "問い合わせ文面が未更新"),
+    "first_seen": ("初回検出日記録", "新規物件の初回検出日が未記録"),
+    "url_check": ("掲載終了チェック", "売却済み物件の検出が未実行"),
+    "pipeline_flag": ("自動フラグ付与", "高スコア物件の自動フラグが未実行"),
+    "pipeline_sync": ("Agent Memory同期", "問い合わせ状況の同期が未実行"),
+    "pipeline_dashboard": ("問い合わせダッシュボード", "問い合わせ管理画面が未更新"),
+    "naiken_analysis": ("内覧分析レポート", "内覧比較レポートが未更新"),
+    "deploy": ("デプロイ", "レポートが公開されていない"),
+}
+
 
 def log(msg: str) -> None:
     ts = datetime.now().strftime("%H:%M:%S")
     print(f"[{ts}] {msg}", flush=True)
 
 
-def run_script(name: str, args: list[str] | None = None, timeout: int = 180) -> bool:
-    """Run a Python script and return success status.
+def _read_stderr_tail(path: Path, max_chars: int = 500) -> str:
+    """Read last N chars of a stderr temp file."""
+    try:
+        content = path.read_text(encoding="utf-8", errors="replace")
+        return content[-max_chars:].strip() if content else ""
+    except Exception:
+        return ""
 
-    No pipes (DEVNULL for stdout/stderr) to guarantee timeout reliability.
-    Process group kill ensures the entire tree is cleaned up.
+
+def run_script(name: str, args: list[str] | None = None, timeout: int = 180) -> dict:
+    """Run a Python script and return detailed result.
+
+    Returns dict: ok, reason, stderr_tail, elapsed_sec, exit_code, timeout (if applicable)
+    Stderr captured to temp file (not pipe) to avoid deadlock while preserving diagnostics.
     """
     import os as _os, signal as _sig
     cmd = [sys.executable, name] + (args or [])
     log(f"  Running: {' '.join(cmd)}")
+
+    t0 = time.time()
+    stderr_path = DATA_DIR / f".stderr_{Path(name).stem}.tmp"
+
     try:
-        proc = subprocess.Popen(
-            cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            cwd=str(BASE_DIR), start_new_session=True,
-        )
+        with open(stderr_path, "w") as stderr_file:
+            proc = subprocess.Popen(
+                cmd, stdout=subprocess.DEVNULL, stderr=stderr_file,
+                cwd=str(BASE_DIR), start_new_session=True,
+            )
+        # Parent's fd closed; child retains its own copy via dup2
+
         try:
             proc.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
@@ -62,14 +102,28 @@ def run_script(name: str, args: list[str] | None = None, timeout: int = 180) -> 
             except subprocess.TimeoutExpired:
                 pass
             log(f"  [WARN] {name} timed out ({timeout}s)")
-            return False
+            return {"ok": False, "reason": "timeout",
+                    "stderr_tail": _read_stderr_tail(stderr_path),
+                    "elapsed_sec": round(time.time() - t0),
+                    "exit_code": -1, "timeout": timeout}
+
+        stderr_tail = _read_stderr_tail(stderr_path)
+        elapsed = round(time.time() - t0)
 
         if proc.returncode != 0:
             log(f"  [WARN] {name} exited with code {proc.returncode}")
-        return proc.returncode == 0
+            return {"ok": False, "reason": "error",
+                    "stderr_tail": stderr_tail,
+                    "elapsed_sec": elapsed, "exit_code": proc.returncode}
+
+        return {"ok": True, "reason": "", "stderr_tail": "",
+                "elapsed_sec": elapsed, "exit_code": 0}
     except Exception as e:
         log(f"  [ERROR] {name}: {e}")
-        return False
+        return {"ok": False, "reason": "crash", "stderr_tail": str(e),
+                "elapsed_sec": round(time.time() - t0), "exit_code": -2}
+    finally:
+        stderr_path.unlink(missing_ok=True)
 
 
 def check_url_alive(url: str) -> tuple[bool, int]:
@@ -260,15 +314,19 @@ def diff_properties(before: dict, after: dict) -> dict:
 
 
 def search_all_sites() -> list[dict]:
-    """Run searches: SUUMO first (heaviest), then rest in parallel."""
+    """Run searches: SUUMO first (heaviest), then rest in parallel.
+
+    Returns list of step result dicts with ok, reason, stderr_tail, etc.
+    """
+    import os as _os, signal as _sig
     results = []
 
     # Phase 1: SUUMO first (heaviest — 17 wards + detail enrichment)
     # Running alone avoids CPU/network contention that causes timeouts
     log("=== 物件検索: SUUMO (先行) ===")
-    ok = run_script("search_suumo.py", timeout=1500)
-    results.append({"step": "search_suumo.py", "ok": ok})
-    if not ok:
+    result = run_script("search_suumo.py", timeout=1500)
+    results.append({"step": "search_suumo.py", **result})
+    if not result["ok"]:
         log("  ⚠️ search_suumo.py 失敗 — 他ソースで続行")
 
     # Phase 2: Remaining scrapers in parallel (lighter, separate files)
@@ -281,23 +339,35 @@ def search_all_sites() -> list[dict]:
         ("search_ittomono.py", 600),
     ]
 
-    import os as _os, signal as _sig
-    procs: dict[str, subprocess.Popen] = {}
+    # Start all parallel processes with stderr capture
+    procs: dict[str, tuple[subprocess.Popen, Path, float]] = {}
     for script, _timeout in parallel_steps:
         cmd = [sys.executable, script]
         log(f"  Starting: {script}")
-        procs[script] = subprocess.Popen(
-            cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            cwd=str(BASE_DIR), start_new_session=True,
-        )
+        stderr_path = DATA_DIR / f".stderr_{Path(script).stem}.tmp"
+        with open(stderr_path, "w") as stderr_file:
+            proc = subprocess.Popen(
+                cmd, stdout=subprocess.DEVNULL, stderr=stderr_file,
+                cwd=str(BASE_DIR), start_new_session=True,
+            )
+        procs[script] = (proc, stderr_path, time.time())
 
+    # Wait for all parallel processes
     for script, timeout in parallel_steps:
-        proc = procs[script]
+        proc, stderr_path, t0 = procs[script]
         try:
             proc.wait(timeout=timeout)
+            elapsed = round(time.time() - t0)
             ok = proc.returncode == 0
             if not ok:
+                stderr_tail = _read_stderr_tail(stderr_path)
                 log(f"  ⚠️ {script} 失敗 (exit {proc.returncode}) — 続行")
+                results.append({"step": script, "ok": False, "reason": "error",
+                                "stderr_tail": stderr_tail, "elapsed_sec": elapsed,
+                                "exit_code": proc.returncode})
+            else:
+                results.append({"step": script, "ok": True, "reason": "",
+                                "stderr_tail": "", "elapsed_sec": elapsed, "exit_code": 0})
         except subprocess.TimeoutExpired:
             try:
                 _os.killpg(proc.pid, _sig.SIGKILL)
@@ -307,14 +377,19 @@ def search_all_sites() -> list[dict]:
                 proc.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 pass
-            ok = False
+            stderr_tail = _read_stderr_tail(stderr_path)
             log(f"  ⚠️ {script} タイムアウト ({timeout}s) — 続行")
-        results.append({"step": script, "ok": ok})
+            results.append({"step": script, "ok": False, "reason": "timeout",
+                            "stderr_tail": stderr_tail,
+                            "elapsed_sec": round(time.time() - t0),
+                            "exit_code": -1, "timeout": timeout})
+        finally:
+            stderr_path.unlink(missing_ok=True)
 
     # Phase 3: Enrich maintenance fees (depends on search results)
     log("=== 管理費enrichment ===")
-    ok = run_script("enrich_maintenance.py", timeout=900)
-    results.append({"step": "enrich_maintenance.py", "ok": ok})
+    result = run_script("enrich_maintenance.py", timeout=900)
+    results.append({"step": "enrich_maintenance.py", **result})
     return results
 
 
@@ -323,17 +398,17 @@ def generate_reports() -> list[dict]:
     log("=== レポート生成 ===")
     results = []
     for script in ["generate_osaka_report.py", "generate_fukuoka_report.py", "generate_tokyo_report.py"]:
-        ok = run_script(script)
-        results.append({"step": script, "ok": ok})
-        if not ok:
+        result = run_script(script)
+        results.append({"step": script, **result})
+        if not result["ok"]:
             log(f"  ⚠️ {script} 失敗 — 他都市は続行")
     # Generate 一棟もの report
-    ok = run_script("generate_ittomono_report.py")
-    results.append({"step": "generate_ittomono_report.py", "ok": ok})
-    if not ok:
+    result = run_script("generate_ittomono_report.py")
+    results.append({"step": "generate_ittomono_report.py", **result})
+    if not result["ok"]:
         log("  ⚠️ generate_ittomono_report.py 失敗 — 続行")
-    ok = run_script("generate_inquiry_messages.py")
-    results.append({"step": "generate_inquiry_messages.py", "ok": ok})
+    result = run_script("generate_inquiry_messages.py")
+    results.append({"step": "generate_inquiry_messages.py", **result})
     return results
 
 
@@ -357,11 +432,50 @@ def deploy() -> None:
         log("  デプロイ不要（変更なし）またはエラー")
 
 
-def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report: dict, failed_steps: list[str] | None = None) -> None:
-    """Save patrol summary as JSON (structured data for Daily Digest)."""
+def _build_failure_details(all_steps: list[dict]) -> list[dict]:
+    """Build human-readable failure details from step results."""
+    details = []
+    for s in all_steps:
+        if s.get("ok"):
+            continue
+        step = s["step"]
+        label, impact = STEP_LABELS.get(step, (step, "詳細不明"))
+        reason_key = s.get("reason", "error")
+
+        detail: dict = {
+            "step": step,
+            "label": label,
+            "impact": impact,
+            "stderr_tail": s.get("stderr_tail", ""),
+        }
+
+        if reason_key == "timeout":
+            timeout_sec = s.get("timeout", s.get("elapsed_sec", 0))
+            detail["reason"] = f"タイムアウト ({timeout_sec // 60}分超過)"
+        elif reason_key == "crash":
+            detail["reason"] = f"異常終了: {s.get('stderr_tail', '')[:100]}"
+        elif s.get("exit_code") and s["exit_code"] > 0:
+            detail["reason"] = f"エラー終了 (exit {s['exit_code']})"
+        else:
+            detail["reason"] = "エラー"
+
+        if s.get("retried"):
+            detail["retried"] = True
+
+        details.append(detail)
+    return details
+
+
+def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report: dict,
+                        all_steps: list[dict] | None = None) -> None:
+    """Save patrol summary as JSON (structured data for Daily Digest + notifications)."""
     new = diff["new"]
     removed = diff["removed"]
     dead_count = url_report.get("new_dead", 0) + len(removed)
+
+    all_steps = all_steps or []
+    failed_names = [s["step"] for s in all_steps if not s.get("ok")]
+    failure_details = _build_failure_details(all_steps)
 
     summary = {
         "date": start.strftime("%Y-%m-%d %H:%M"),
@@ -371,7 +485,10 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
         "removed_count": dead_count,
         "elapsed_min": round(elapsed / 60),
         "failed_sources": diff.get("failed_sources", []),
-        "failed_steps": failed_steps or [],
+        "failed_steps": failed_names,
+        "failure_details": failure_details,
+        "step_count": len(all_steps),
+        "ok_count": sum(1 for s in all_steps if s.get("ok")),
         "new_items": [
             {"name": p["name"], "price_text": p["price"],
              "price_man": int(p["price"].replace("万円", "").replace(",", "")),
@@ -384,6 +501,42 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
     summary_file = BASE_DIR / "data" / "patrol_summary.json"
     summary_file.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     log(f"  patrol_summary.json 保存 (total={summary['total']}, +{summary['new_count']}/-{summary['removed_count']})")
+
+
+def retry_failed_searches(search_results: list[dict], start_time: datetime,
+                          budget_min: int = 55) -> None:
+    """Retry failed search steps (timeout only) if time budget allows.
+
+    Mutates search_results in-place: updates the failed step's dict if retry succeeds.
+    """
+    elapsed_min = (datetime.now() - start_time).total_seconds() / 60
+    remaining_min = budget_min - elapsed_min
+
+    for r in search_results:
+        if r["ok"] or r.get("reason") != "timeout":
+            continue
+
+        step = r["step"]
+        original_timeout = r.get("timeout", 300)
+        # Retry with half timeout to limit total impact
+        retry_timeout = min(original_timeout // 2, int(remaining_min * 60) - 300)
+        if retry_timeout < 120:
+            label = STEP_LABELS.get(step, (step, ""))[0]
+            log(f"  ⏭️ {label} リトライスキップ（残り時間不足: {remaining_min:.0f}分）")
+            continue
+
+        label = STEP_LABELS.get(step, (step, ""))[0]
+        log(f"  🔄 {label} リトライ中 (timeout={retry_timeout}s)...")
+        result = run_script(step, timeout=retry_timeout)
+
+        if result["ok"]:
+            log(f"  ✅ {label} リトライ成功")
+            r.update(result)
+        else:
+            log(f"  ❌ {label} リトライも失敗")
+            r["retried"] = True  # Mark as retried-and-failed
+
+        remaining_min = (budget_min * 60 - (datetime.now() - start_time).total_seconds()) / 60
 
 
 def send_line_if_new(diff: dict) -> None:
@@ -440,12 +593,18 @@ def main():
     log(f"  スナップショット: {len(before)}件")
 
     # 1. Search all sites (partial success OK)
+    search_results: list[dict] = []
     try:
         search_results = search_all_sites()
         all_steps.extend(search_results)
     except Exception as e:
         errors.append(f"search_all_sites: {e}")
         log(f"  ❌ 検索フェーズ全体エラー: {e} — 既存データで続行")
+
+    # 1.5. Auto-retry failed search steps (timeout only, if time allows)
+    if any(not s["ok"] and s.get("reason") == "timeout" for s in search_results):
+        log("=== 失敗ステップ自動リトライ ===")
+        retry_failed_searches(search_results, start)
 
     # 2. Diff properties (safe — pure computation)
     after = parse_raw_files()
@@ -458,7 +617,8 @@ def main():
         all_steps.append({"step": "first_seen", "ok": True})
     except Exception as e:
         errors.append(f"first_seen: {e}")
-        all_steps.append({"step": "first_seen", "ok": False})
+        all_steps.append({"step": "first_seen", "ok": False, "reason": "crash",
+                          "stderr_tail": str(e)})
         log(f"  ⚠️ first_seen更新失敗: {e} — 続行")
 
     # 4. Check dead URLs (non-critical, can be slow)
@@ -468,7 +628,8 @@ def main():
         all_steps.append({"step": "url_check", "ok": True})
     except Exception as e:
         errors.append(f"url_check: {e}")
-        all_steps.append({"step": "url_check", "ok": False})
+        all_steps.append({"step": "url_check", "ok": False, "reason": "crash",
+                          "stderr_tail": str(e)})
         log(f"  ⚠️ URLチェック失敗: {e} — 続行")
 
     # 5. Generate reports (partial success OK — per-city isolation)
@@ -486,7 +647,8 @@ def main():
         all_steps.append({"step": "pipeline_flag", "ok": True})
         log("  Pipeline auto-flag 完了")
     except Exception as e:
-        all_steps.append({"step": "pipeline_flag", "ok": False})
+        all_steps.append({"step": "pipeline_flag", "ok": False, "reason": "crash",
+                          "stderr_tail": str(e)})
         log(f"  ⚠️ Pipeline auto-flag skipped: {e}")
 
     # 5.6. Sync from agent memory (inbox-zero → inquiries.yaml)
@@ -495,7 +657,8 @@ def main():
         all_steps.append({"step": "pipeline_sync", "ok": True})
         log(f"  Pipeline sync完了 ({count} updates)")
     except Exception as e:
-        all_steps.append({"step": "pipeline_sync", "ok": False})
+        all_steps.append({"step": "pipeline_sync", "ok": False, "reason": "crash",
+                          "stderr_tail": str(e)})
         log(f"  ⚠️ Pipeline sync skipped: {e}")
 
     # 5.7. Regenerate dashboard (after flag + sync)
@@ -504,7 +667,8 @@ def main():
         all_steps.append({"step": "pipeline_dashboard", "ok": True})
         log("  Pipeline dashboard生成完了")
     except Exception as e:
-        all_steps.append({"step": "pipeline_dashboard", "ok": False})
+        all_steps.append({"step": "pipeline_dashboard", "ok": False, "reason": "crash",
+                          "stderr_tail": str(e)})
         log(f"  ⚠️ Pipeline dashboard skipped: {e}")
 
     # 5.8. Regenerate naiken analysis (viewing properties → comparison page)
@@ -513,7 +677,8 @@ def main():
         all_steps.append({"step": "naiken_analysis", "ok": True})
         log("  内覧分析レポート生成完了")
     except Exception as e:
-        all_steps.append({"step": "naiken_analysis", "ok": False})
+        all_steps.append({"step": "naiken_analysis", "ok": False, "reason": "crash",
+                          "stderr_tail": str(e)})
         log(f"  ⚠️ 内覧分析レポート skipped: {e}")
 
     # 6. Deploy (always attempt — even partial reports are better than stale)
@@ -522,15 +687,16 @@ def main():
         all_steps.append({"step": "deploy", "ok": True})
     except Exception as e:
         errors.append(f"deploy: {e}")
-        all_steps.append({"step": "deploy", "ok": False})
+        all_steps.append({"step": "deploy", "ok": False, "reason": "crash",
+                          "stderr_tail": str(e)})
         log(f"  ❌ デプロイ失敗: {e}")
 
     elapsed = (datetime.now() - start).total_seconds()
 
     # Resilience summary
-    ok_count = sum(1 for s in all_steps if s["ok"])
-    fail_count = sum(1 for s in all_steps if not s["ok"])
-    failed_names = [s["step"] for s in all_steps if not s["ok"]]
+    ok_count = sum(1 for s in all_steps if s.get("ok"))
+    fail_count = sum(1 for s in all_steps if not s.get("ok"))
+    failed_names = [s["step"] for s in all_steps if not s.get("ok")]
 
     if fail_count == 0:
         log(f"===== 完了 ({elapsed:.0f}秒) 全{ok_count}ステップ成功 =====")
@@ -538,7 +704,7 @@ def main():
         log(f"===== 部分完了 ({elapsed:.0f}秒) {ok_count}/{ok_count + fail_count}成功, 失敗: {', '.join(failed_names)} =====")
 
     # Write structured summary (always — even on partial failure)
-    save_patrol_summary(start, elapsed, diff, url_report, failed_steps=failed_names)
+    save_patrol_summary(start, elapsed, diff, url_report, all_steps=all_steps)
 
 
 if __name__ == "__main__":

@@ -471,9 +471,9 @@ def _parse_kenbiya_listings(html: str, city_key: str, pp_label: str, pref: str) 
 
         prop_url = "https://www.kenbiya.com" + prop_path
 
-        # Extract context around this link
-        start = max(0, match.start() - 500)
-        end = min(len(html), match.end() + 1500)
+        # Extract context around this link (wide enough to capture all fields)
+        start = max(0, match.start() - 2000)
+        end = min(len(html), match.end() + 2000)
         context = html[start:end]
 
         prop = _extract_kenbiya_fields(context, prop_url, prop_id, city_key, pp_label, pref)
@@ -515,14 +515,25 @@ def _extract_kenbiya_fields(context: str, url: str, prop_id: str, city_key: str,
     if not location:
         return None
 
-    # Building area: 建:468.18m²
+    # Building area: 建:468.18m² / 延床面積468.18m²
     area_text = ""
-    area_match = re.search(r"建[:：]?\s*(\d[\d,.]*)\s*m", text)
+    # Try 建: marker first (most reliable)
+    area_match = re.search(r"建[:：]\s*(\d[\d,.]*)\s*m", text)
+    if not area_match:
+        # Try 延床面積 marker
+        area_match = re.search(r"延床[面積]*[:：]?\s*(\d[\d,.]*)\s*m", text)
     if area_match:
-        area_text = area_match.group(1) + "m²"
+        area_text = area_match.group(1).replace(",", "") + "m²"
 
     # Land area: 土:134.37m²
-    land_match = re.search(r"土[:：]?\s*(\d[\d,.]*)\s*m", text)
+    land_area_text = ""
+    land_match = re.search(r"土[:：]\s*(\d[\d,.]*)\s*m", text)
+    if land_match:
+        land_area_text = land_match.group(1).replace(",", "") + "m²"
+
+    # If no building area found but land area exists, use land with flag
+    if not area_text and land_match:
+        area_text = land_area_text + "(土地)"
 
     # Year built: 1991年1月
     year_match = re.search(r"(\d{4})年(?:\s*(\d{1,2})月)?", text)
@@ -543,13 +554,15 @@ def _extract_kenbiya_fields(context: str, url: str, prop_id: str, city_key: str,
         if struct_match.group(2):
             units = struct_match.group(2) + "戸"
 
-    # Yield: 5.00%
+    # Yield: 5.00% — cap at 15% (higher is almost certainly a scraping error)
     yield_text = ""
     yield_match = re.search(r"(\d+(?:\.\d+)?)\s*[%％]", text)
     if yield_match:
         yield_val = float(yield_match.group(1))
-        if 1.0 <= yield_val <= 30.0:
+        if 1.0 <= yield_val <= 15.0:
             yield_text = f"{yield_val}%"
+        elif yield_val > 15.0:
+            yield_text = ""  # Discard: likely scraping error (e.g. wrong % captured)
 
     # Name: heading / catch copy
     name = ""
@@ -696,7 +709,7 @@ def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> 
 
 
 def deduplicate_by_content(properties: list[dict]) -> list[dict]:
-    """Deduplicate by (normalized_location, price_text, area_text).
+    """Deduplicate by (normalized_location, price_man, area_numeric).
 
     健美家 lists the same property under multiple 区 with different URLs.
     URL-based dedup misses these — content signature catches them.
@@ -704,11 +717,15 @@ def deduplicate_by_content(properties: list[dict]) -> list[dict]:
     """
     seen: dict[tuple, dict] = {}
     for p in properties:
-        # Normalize: strip 丁目/番地/号 detail and whitespace
-        loc = re.sub(r"[\d０-９]+[丁番地号].*", "", p.get("location", "")).strip()
-        sig = (loc, p.get("price_text", ""), p.get("area_text", ""))
+        # Normalize location: strip to city+ward+町名 level
+        loc = re.sub(r"[\d０-９]+[-ー丁番地号].*", "", p.get("location", "")).strip()
+        # Use numeric price for comparison (text varies: "1億4,000万" vs "1億4000万")
+        price = p.get("price_man", 0)
+        # Extract numeric area for comparison ("295.46m²" → 295.46)
+        area_m = re.search(r"([\d.]+)", p.get("area_text", ""))
+        area_num = float(area_m.group(1)) if area_m else 0
+        sig = (loc, price, round(area_num, 0))
         if sig in seen:
-            # Keep the entry with the longer (more specific) address
             existing = seen[sig]
             if len(p.get("location", "")) > len(existing.get("location", "")):
                 seen[sig] = p

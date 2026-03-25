@@ -162,13 +162,24 @@ def _hydrate(row: IttomonoRow) -> None:
     m = re.search(r"(\d+)", row.units)
     row.units_count = int(m.group(1)) if m else 0
 
-    # Yield
+    # Yield — cap at 15% (higher is scraping error)
     m = re.search(r"(\d+(?:\.\d+)?)\s*%", row.yield_text)
-    row.yield_pct = float(m.group(1)) if m else 0.0
+    if m:
+        val = float(m.group(1))
+        if val <= 15.0:
+            row.yield_pct = val
+        else:
+            row.yield_pct = 0.0  # discard: scraping error
+            row.yield_text = ""  # clear display
+    else:
+        row.yield_pct = 0.0
 
-    # Average sqm per unit
+    # Average sqm per unit + land area flag
     if row.area_sqm and row.units_count and row.units_count > 0:
         row.avg_sqm_per_unit = round(row.area_sqm / row.units_count, 1)
+        # If avg < 15㎡/unit, almost certainly land area not building area
+        if row.avg_sqm_per_unit < 15.0 and "(土地)" not in row.area_text:
+            row.area_text = row.area_text + "(※土地面積の可能性)"
 
 
 # ============================================================
@@ -497,6 +508,15 @@ def _revenue_block_html(r: IttomonoRow) -> str:
     </div>'''
 
 
+def _monthly_rent_text(r) -> str:
+    """Estimate monthly rent from price × yield for card KPI display."""
+    if r.yield_pct > 0 and r.price_man > 0:
+        annual_rent = r.price_man * r.yield_pct / 100  # 万円/年
+        monthly = annual_rent / 12
+        return f'<span class="kpi-label">家賃</span>{monthly:.0f}万/月'
+    return '-'
+
+
 def _verdict_label(tier_class: str) -> tuple[str, str]:
     """Return (verdict_text, verdict_css_class) based on tier."""
     if tier_class == "tier-strong":
@@ -509,14 +529,16 @@ def _verdict_label(tier_class: str) -> tuple[str, str]:
 
 
 def _deduplicate_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
-    """Deduplicate by (normalized_location, price_text, area_text).
+    """Deduplicate by (normalized_location, price_man, area_numeric).
 
     Safety net: catches duplicates that slipped through search-time dedup.
     """
     seen: dict[tuple, IttomonoRow] = {}
     for r in rows:
-        loc = re.sub(r"[\d０-９]+[丁番地号].*", "", r.location).strip()
-        sig = (loc, r.price_text, r.area_text)
+        loc = re.sub(r"[\d０-９]+[-ー丁番地号].*", "", r.location).strip()
+        area_m = re.search(r"([\d.]+)", r.area_text)
+        area_num = float(area_m.group(1)) if area_m else 0
+        sig = (loc, r.price_man, round(area_num, 0))
         if sig in seen:
             existing = seen[sig]
             if len(r.location) > len(existing.location):
@@ -588,10 +610,12 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
             <div class="card-kpi">
               <span class="kpi-price">{html.escape(r.price_text)}</span>
               <span class="kpi-yield">{html.escape(r.yield_text or '-')}</span>
+              <span class="kpi-rent">{_monthly_rent_text(r)}</span>
               {ny_html}
               {cf_html}
               <span class="kpi-units">{html.escape(r.units or '-')}</span>
               <span class="kpi-struct">{html.escape(r.structure or '-')}</span>
+              <span class="kpi-area">{html.escape(r.area_text or '-')}</span>
             </div>
             <div class="card-meta">
               <span class="city-tag" style="border-color:{city_accent};color:{city_accent}">{city_label}</span>
@@ -793,6 +817,9 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
     .card-kpi span {{ font-size: 13px; font-family: 'JetBrains Mono',monospace; }}
     .kpi-price {{ color: #fbbf24; font-weight: 600; }}
     .kpi-yield {{ color: #34d399; }}
+    .kpi-rent {{ color: #60a5fa; }}
+    .kpi-rent .kpi-label {{ font-size: 10px; color: var(--muted); margin-right: 2px; font-family: 'Inter',sans-serif; }}
+    .kpi-area {{ color: var(--text-secondary); font-size: 12px !important; }}
     .kpi-units {{ color: var(--text-secondary); }}
     .kpi-struct {{ color: var(--text-secondary); }}
 

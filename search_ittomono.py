@@ -695,6 +695,32 @@ def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> 
     print(f"  間取り詳細: {enriched}/{len(to_fetch)}件取得成功")
 
 
+def deduplicate_by_content(properties: list[dict]) -> list[dict]:
+    """Deduplicate by (normalized_location, price_text, area_text).
+
+    健美家 lists the same property under multiple 区 with different URLs.
+    URL-based dedup misses these — content signature catches them.
+    When duplicates are found, keep the one with the most specific address.
+    """
+    seen: dict[tuple, dict] = {}
+    for p in properties:
+        # Normalize: strip 丁目/番地/号 detail and whitespace
+        loc = re.sub(r"[\d０-９]+[丁番地号].*", "", p.get("location", "")).strip()
+        sig = (loc, p.get("price_text", ""), p.get("area_text", ""))
+        if sig in seen:
+            # Keep the entry with the longer (more specific) address
+            existing = seen[sig]
+            if len(p.get("location", "")) > len(existing.get("location", "")):
+                seen[sig] = p
+        else:
+            seen[sig] = p
+    deduped = list(seen.values())
+    dup_count = len(properties) - len(deduped)
+    if dup_count > 0:
+        print(f"  コンテンツ重複除外: {dup_count}件 (同一物件・異なるURL)")
+    return deduped
+
+
 def save_results(properties: list[dict], city_key: str) -> Path:
     """Save results to pipe-delimited data file (15-column: score prepended).
 
@@ -702,6 +728,9 @@ def save_results(properties: list[dict], city_key: str) -> Path:
     """
     DATA_DIR.mkdir(exist_ok=True)
     out_path = DATA_DIR / f"ittomono_{city_key}_raw.txt"
+
+    # Content-based dedup (cross-source: same property, different URLs)
+    properties = deduplicate_by_content(properties)
 
     # Score, sort, and keep top 20 with score >= 55
     for p in properties:

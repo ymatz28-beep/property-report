@@ -120,7 +120,7 @@ def parse_data_file(data_path: Path, city_key: str) -> list[IttomonoRow]:
             units=parts[offset + 8],
             yield_text=parts[offset + 9],
             layout_detail=parts[offset + 10],
-            url=parts[offset + 13],
+            url=parts[-1],  # URL is always the last column
             city_key=city_key,
         )
         if offset == 1:
@@ -508,8 +508,31 @@ def _verdict_label(tier_class: str) -> tuple[str, str]:
     return "見送り", "verdict-pass"
 
 
+def _deduplicate_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
+    """Deduplicate by (normalized_location, price_text, area_text).
+
+    Safety net: catches duplicates that slipped through search-time dedup.
+    """
+    seen: dict[tuple, IttomonoRow] = {}
+    for r in rows:
+        loc = re.sub(r"[\d０-９]+[丁番地号].*", "", r.location).strip()
+        sig = (loc, r.price_text, r.area_text)
+        if sig in seen:
+            existing = seen[sig]
+            if len(r.location) > len(existing.location):
+                seen[sig] = r
+        else:
+            seen[sig] = r
+    deduped = list(seen.values())
+    dup_count = len(rows) - len(deduped)
+    if dup_count > 0:
+        print(f"  レポート側重複除外: {dup_count}件")
+    return deduped
+
+
 def build_report_html(all_rows: list[IttomonoRow]) -> str:
     """Build the 一棟もの HTML report — card view (mobile) + table view (desktop)."""
+    all_rows = _deduplicate_rows(all_rows)
     sorted_rows = sorted(all_rows, key=lambda r: (-r.total_score, r.price_man))
     first_seen = load_first_seen()
     today_iso = dt.date.today().isoformat()

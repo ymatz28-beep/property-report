@@ -528,19 +528,57 @@ def _verdict_label(tier_class: str) -> tuple[str, str]:
     return "見送り", "verdict-pass"
 
 
-def _deduplicate_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
-    """Deduplicate by (normalized_location, price_man, area_numeric).
+def _clean_name(name: str) -> str:
+    """Remove internal ID hashes from fallback names (e.g. '健美家 世田谷区#5gnu' → '世田谷区 (健美家)')."""
+    # Pattern: "{site} {location}#{4-char-id}"
+    m = re.match(r"(楽待|健美家)\s+(.+?)#[a-z0-9]{4}$", name)
+    if m:
+        loc = m.group(2).strip().rstrip("-ー／/")
+        return f"{loc} ({m.group(1)})"
+    # Remove trailing hash if present without site prefix
+    cleaned = re.sub(r"#[a-z0-9]{4,}$", "", name).strip()
+    return cleaned
 
-    Safety net: catches duplicates that slipped through search-time dedup.
+
+def _filter_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
+    """Remove obviously bad data before dedup and scoring."""
+    import datetime as _dt
+    current_year = _dt.date.today().year
+    filtered = []
+    for r in rows:
+        # units < 2: not an apartment building (likely a single unit or parsing error)
+        if r.units_count > 0 and r.units_count < 2:
+            print(f"  [FILTER] 戸数1戸除外: {r.name} ({r.price_text}, {r.units})")
+            continue
+        # Future completion: not yet built
+        if r.built_year and r.built_year > current_year:
+            print(f"  [FILTER] 未来竣工除外: {r.name} ({r.built_year}年竣工予定)")
+            continue
+        # Clean internal IDs from displayed names
+        r.name = _clean_name(r.name)
+        filtered.append(r)
+    removed = len(rows) - len(filtered)
+    if removed > 0:
+        print(f"  データ品質フィルタ: {removed}件除外")
+    return filtered
+
+
+def _deduplicate_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
+    """Deduplicate by (price_man, area_rounded, units_count).
+
+    Location-based keys fail when the same property is listed with different
+    address granularity (e.g. '世田谷区' vs '世田谷区赤堤1丁目').
+    Price + area + units is more stable across sources.
+    Prefer the row with longer (more specific) location data.
     """
     seen: dict[tuple, IttomonoRow] = {}
     for r in rows:
-        loc = re.sub(r"[\d０-９]+[-ー丁番地号].*", "", r.location).strip()
         area_m = re.search(r"([\d.]+)", r.area_text)
         area_num = float(area_m.group(1)) if area_m else 0
-        sig = (loc, r.price_man, round(area_num, 0))
+        sig = (r.price_man, round(area_num, 0), r.units_count)
         if sig in seen:
             existing = seen[sig]
+            # Keep the row with more specific location info
             if len(r.location) > len(existing.location):
                 seen[sig] = r
         else:
@@ -554,6 +592,7 @@ def _deduplicate_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
 
 def build_report_html(all_rows: list[IttomonoRow]) -> str:
     """Build the 一棟もの HTML report — card view (mobile) + table view (desktop)."""
+    all_rows = _filter_rows(all_rows)
     all_rows = _deduplicate_rows(all_rows)
     sorted_rows = sorted(all_rows, key=lambda r: (-r.total_score, r.price_man))
     first_seen = load_first_seen()

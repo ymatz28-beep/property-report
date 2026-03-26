@@ -447,18 +447,27 @@ def _verify_gh_pages_deploy(max_wait: int = 90) -> bool:
 
 
 def regenerate_reports() -> bool:
-    """レポート再生成"""
+    """レポート再生成 — venvのpythonを明示してjinja2を確保"""
     print("\n--- レポート再生成 ---")
-    try:
-        from generate_osaka_report import main as gen_osaka
-        from generate_fukuoka_report import main as gen_fukuoka
-        gen_osaka()
-        gen_fukuoka()
+    import shutil
+    # .venv/bin/python3 があればそちらを優先（system pythonにjinja2が入っていない場合の保護）
+    venv_py = BASE_DIR / ".venv/bin/python3"
+    python_bin = str(venv_py) if venv_py.exists() else shutil.which("python3") or "python3"
+
+    ok = True
+    for script in ["generate_osaka_report.py", "generate_fukuoka_report.py"]:
+        result = subprocess.run(
+            [python_bin, BASE_DIR / script],
+            capture_output=True,
+            text=True,
+            cwd=BASE_DIR,
+        )
+        if result.returncode != 0:
+            print(f"  {script} 失敗: {result.stderr.strip()[-200:]}")
+            ok = False
+    if ok:
         print("  レポート更新完了")
-        return True
-    except Exception as e:
-        print(f"  レポート更新エラー: {e}")
-        return False
+    return ok
 
 
 def main():

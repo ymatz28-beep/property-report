@@ -681,15 +681,40 @@ def main():
                           "stderr_tail": str(e)})
         log(f"  ⚠️ 内覧分析レポート skipped: {e}")
 
-    # 6. Deploy (always attempt — even partial reports are better than stale)
+    # 6. QA Gate — verify output HTML before deploy
     try:
-        deploy()
-        all_steps.append({"step": "deploy", "ok": True})
+        import sys as _sys
+        _sys.path.insert(0, str(BASE_DIR.parent / "lib"))
+        from qa_output import check_directory
+        qa_checked, qa_failed, qa_messages = check_directory(OUTPUT_DIR)
+        if qa_failed > 0:
+            log(f"  ❌ QA Gate FAILED ({qa_failed}件) — デプロイをブロック")
+            for m in qa_messages:
+                log(f"    {m}")
+            all_steps.append({"step": "qa_gate", "ok": False, "reason": "qa_failed",
+                              "stderr_tail": "; ".join(qa_messages[:3])})
+        else:
+            log(f"  ✓ QA Gate PASSED ({qa_checked}ファイル)")
+            all_steps.append({"step": "qa_gate", "ok": True})
     except Exception as e:
-        errors.append(f"deploy: {e}")
-        all_steps.append({"step": "deploy", "ok": False, "reason": "crash",
-                          "stderr_tail": str(e)})
-        log(f"  ❌ デプロイ失敗: {e}")
+        log(f"  ⚠️ QA Gate error (non-blocking): {e}")
+        all_steps.append({"step": "qa_gate", "ok": True})  # non-blocking if qa_output missing
+
+    # 7. Deploy (only if QA passed or QA unavailable)
+    qa_ok = next((s for s in all_steps if s["step"] == "qa_gate"), {}).get("ok", True)
+    if not qa_ok:
+        log("  ⏭ デプロイスキップ（QA失敗）")
+        all_steps.append({"step": "deploy", "ok": False, "reason": "qa_blocked",
+                          "stderr_tail": "QA Gate blocked deploy"})
+    else:
+        try:
+            deploy()
+            all_steps.append({"step": "deploy", "ok": True})
+        except Exception as e:
+            errors.append(f"deploy: {e}")
+            all_steps.append({"step": "deploy", "ok": False, "reason": "crash",
+                              "stderr_tail": str(e)})
+            log(f"  ❌ デプロイ失敗: {e}")
 
     elapsed = (datetime.now() - start).total_seconds()
 

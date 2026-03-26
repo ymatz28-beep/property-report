@@ -111,6 +111,77 @@ def fetch_page(url: str, retries: int = 2) -> str | None:
     return None
 
 
+# URL path district → 期待される日本語地名マッピング
+_TOKYO_WARD_MAP = {
+    "chiyoda-ku": "千代田区", "chuo-ku": "中央区", "minato-ku": "港区",
+    "shinjuku-ku": "新宿区", "bunkyo-ku": "文京区", "taito-ku": "台東区",
+    "sumida-ku": "墨田区", "koto-ku": "江東区", "shinagawa-ku": "品川区",
+    "meguro-ku": "目黒区", "ota-ku": "大田区", "setagaya-ku": "世田谷区",
+    "shibuya-ku": "渋谷区", "nakano-ku": "中野区", "suginami-ku": "杉並区",
+    "toshima-ku": "豊島区", "kita-ku": "北区", "arakawa-ku": "荒川区",
+    "itabashi-ku": "板橋区", "nerima-ku": "練馬区", "adachi-ku": "足立区",
+    "katsushika-ku": "葛飾区", "edogawa-ku": "江戸川区",
+    "musashino-shi": "武蔵野市", "mitaka-shi": "三鷹市", "hachioji-shi": "八王子市",
+    "tachikawa-shi": "立川市", "musashimurayama-shi": "武蔵村山市",
+    "kodaira-shi": "小平市", "chofu-shi": "調布市", "fuchu-shi": "府中市",
+    "hino-shi": "日野市", "higashimurayama-shi": "東村山市",
+    "kunitachi-shi": "国立市", "kokubunji-shi": "国分寺市",
+    "nishitokyo-shi": "西東京市",
+}
+_OSAKA_CITY_MAP = {
+    "osaka-shi": "大阪市", "sakai-shi": "堺市", "kadoma-shi": "門真市",
+    "higashiosaka-shi": "東大阪市", "toyonaka-shi": "豊中市",
+    "suita-shi": "吹田市", "neyagawa-shi": "寝屋川市",
+    "hirakata-shi": "枚方市", "takatsuki-shi": "高槻市",
+    "yao-shi": "八尾市", "matsubara-shi": "松原市",
+    "daito-shi": "大東市", "moriguchi-shi": "守口市",
+    "izumisano-shi": "泉佐野市", "habikino-shi": "羽曳野市",
+}
+_FUKUOKA_CITY_MAP = {
+    "fukuoka-shi": "福岡市", "kitakyushu-shi": "北九州市",
+    "kurume-shi": "久留米市", "kasuga-shi": "春日市",
+    "onojo-shi": "大野城市", "dazaifu-shi": "太宰府市",
+    "itoshima-shi": "糸島市", "munakata-shi": "宗像市",
+}
+_DISTRICT_MAPS = {
+    "tokyo": _TOKYO_WARD_MAP,
+    "osaka": _OSAKA_CITY_MAP,
+    "fukuoka": _FUKUOKA_CITY_MAP,
+}
+
+
+def _url_location_valid(url: str, location: str, city_key: str) -> bool:
+    """URLのdistrictパスと抽出locationが一致するか検証。
+
+    不一致 = クロスリスティング汚染の可能性。
+    判定不能（マップにないdistrict）の場合は通過させる（false negative許容）。
+    """
+    # URLからdistrictを抽出: /pp{N}/{region}/{district}/re_{id}/
+    m = re.search(r"/re_\w+/", url)
+    if not m:
+        return True  # URL解析不能 → 通過
+    # districtはre_の2〜3セグメント前
+    prefix = url[: m.start()]
+    seg = prefix.rstrip("/").split("/")
+
+    district_map = _DISTRICT_MAPS.get(city_key, {})
+
+    # osaka-shi/N の形式を考慮: 末尾が数字なら1つ前がdistrict
+    for i in range(len(seg) - 1, max(len(seg) - 4, -1), -1):
+        part = seg[i]
+        if part.isdigit():
+            continue
+        if part in district_map:
+            expected_jp = district_map[part]
+            if expected_jp not in location:
+                return False  # 汚染
+            return True
+        # osaka/tokyo/fukuoka 等の上位パスに達したら終了
+        if part in ("osaka", "tokyo", "fukuoka", "k", "s", "f", "pp1", "pp2", "pp3"):
+            return True
+    return True  # マップにないdistrict → 通過
+
+
 def is_target_location(location: str, city_key: str) -> bool:
     """Check if property location matches target areas.
 
@@ -494,7 +565,10 @@ def _parse_kenbiya_listings(html: str, city_key: str, pp_label: str, pref: str) 
         prop = _extract_kenbiya_fields(context, prop_url, prop_id, city_key, pp_label, pref)
         if prop:
             if is_target_location(prop["location"], city_key):
-                properties.append(prop)
+                if _url_location_valid(prop_url, prop["location"], city_key):
+                    properties.append(prop)
+                else:
+                    print(f"  [SKIP] URL/location不一致(汚染): {prop_id} URL={prop_url.split('/')[-3]} loc={prop['location']}")
 
     return properties
 

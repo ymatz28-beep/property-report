@@ -452,14 +452,23 @@ def search_kenbiya_ittomono(city_key: str) -> list[dict]:
 
 
 def _parse_kenbiya_listings(html: str, city_key: str, pp_label: str, pref: str) -> list[dict]:
-    """Parse 健美家 property listing HTML."""
+    """Parse 健美家 property listing HTML.
+
+    Context isolation: use the NEXT property URL as the end-boundary of each
+    property's context window. This prevents adjacent properties' data from
+    bleeding into each other (the ±2000 char window approach caused cross-listing
+    contamination where wrong price/yield/location were extracted).
+    """
     properties = []
 
     # Find property links: /pp{N}/.../re_{ID}/
     prop_pattern = re.compile(r'href="(/pp\d/[^"]*?/re_(\w+)/)"')
     seen_ids = set()
 
-    for match in prop_pattern.finditer(html):
+    # Pre-collect all matches to use next-match position as context boundary
+    all_matches = list(prop_pattern.finditer(html))
+
+    for i, match in enumerate(all_matches):
         prop_path = match.group(1)
         prop_id = match.group(2)
         if prop_id in seen_ids:
@@ -471,9 +480,15 @@ def _parse_kenbiya_listings(html: str, city_key: str, pp_label: str, pref: str) 
 
         prop_url = "https://www.kenbiya.com" + prop_path
 
-        # Extract context around this link (wide enough to capture all fields)
-        start = max(0, match.start() - 2000)
-        end = min(len(html), match.end() + 2000)
+        # Context: from 500 chars before this link up to the start of the NEXT
+        # property link (or 3000 chars after if this is the last property).
+        # Capping the look-ahead at next property start avoids data contamination
+        # from adjacent listings on the same search results page.
+        start = max(0, match.start() - 500)
+        if i + 1 < len(all_matches):
+            end = all_matches[i + 1].start()
+        else:
+            end = min(len(html), match.end() + 3000)
         context = html[start:end]
 
         prop = _extract_kenbiya_fields(context, prop_url, prop_id, city_key, pp_label, pref)

@@ -704,6 +704,7 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
           <td class="col-location">{html.escape(r.location)}</td>
           <td class="col-structure">{html.escape(r.structure or '-')}</td>
           <td class="col-units">{html.escape(r.units or '-')}</td>
+          <td class="col-area" style="font-family:'JetBrains Mono',monospace;white-space:nowrap">{html.escape(r.area_text or '-')}</td>
           <td class="col-avgm2">{_avg_sqm_cell(r)}</td>
           <td class="col-yield">{html.escape(r.yield_text or '-')}</td>
           <td class="col-netyield">{tbl_netyield}</td>
@@ -1100,6 +1101,7 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
           <th data-sort="location">\u6240\u5728\u5730</th>
           <th data-sort="structure">\u69cb\u9020</th>
           <th data-sort="units">\u6238\u6570</th>
+          <th data-sort="area">延床m²</th>
           <th data-sort="avgm2">\u33a1/\u6238</th>
           <th data-sort="yield">\u5229\u56de\u308a</th>
           <th data-sort="netyield">\u5b9f\u8cea</th>

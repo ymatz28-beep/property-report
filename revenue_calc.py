@@ -218,30 +218,12 @@ def analyze(
         # Explicitly specified — use as-is
         loan_years = p.loan_years
     else:
-        # Auto: estimate lendable term from remaining useful life, then apply
-        # structure-specific minimums (実際の融資実態に合わせた下限)
-        # RC/SRC: even築40年超 RC, banks often approve 20-25 years
-        # S造:   15年以上が現実的
-        # 木造:  10年が下限
-        # Cap at 35 years (typical bank max)
-        raw_term = useful_life - age
-        if raw_term >= 25:
-            loan_years = min(35, raw_term)
-        elif raw_term >= 15:
-            loan_years = raw_term
-        elif raw_term >= 1:
-            loan_years = raw_term
-        else:
-            loan_years = 0  # will apply floor below
-
-        # Structure-based minimum floors (more realistic than raw_term alone)
-        s_upper = structure.upper()
-        if "SRC" in s_upper or "RC" in s_upper or "鉄筋コンクリート" in s_upper:
-            loan_years = max(20, loan_years)
-        elif "S造" in s_upper or "S " in s_upper or "鉄骨" in s_upper:
-            loan_years = max(15, loan_years)
-        else:
-            loan_years = max(10, loan_years)
+        # Auto: 法人融資の現実的な年数
+        # 耐用年数超過物件でも法人なら最大15年融資可能
+        # 耐用年数内は残存年数ベース (上限35年)
+        # → max(15, min(35, remaining)) で統一
+        raw_term = max(0, useful_life - age)
+        loan_years = max(15, min(35, raw_term))
 
     down_payment = price_man * p.down_payment_ratio
     loan_amount = price_man * (1 - p.down_payment_ratio)

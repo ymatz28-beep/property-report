@@ -9,6 +9,7 @@ source|name|price|location|area|built|station|layout|pet|brokerage|maintenance|u
 
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -295,15 +296,24 @@ def scrape_ward(pref_slug: str, ward_slug: str, ward_name: str, enrich: bool = T
     if enrich and all_props:
         print(f"    詳細ページから管理費取得中... ({len(all_props)}件)")
         enriched_count = 0
-        for i, prop in enumerate(all_props):
-            detail = enrich_detail(prop["url"])
-            prop["maintenance"] = detail["maintenance"]
-            prop["pet"] = detail["pet"]
-            if detail["maintenance"]:
-                enriched_count += 1
-            if (i + 1) % 10 == 0:
-                print(f"      {i + 1}/{len(all_props)} 完了 (管理費: {enriched_count}件)")
-            time.sleep(1.0)  # Rate limiting for detail pages
+
+        def _fetch_detail(idx_prop):
+            idx, prop = idx_prop
+            time.sleep(idx * 0.2)  # stagger to avoid burst (0.2s * worker_count ≒ 1s effective)
+            return idx, enrich_detail(prop["url"])
+
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            futures = {executor.submit(_fetch_detail, (i, p)): i for i, p in enumerate(all_props)}
+            done = 0
+            for future in as_completed(futures):
+                idx, detail = future.result()
+                all_props[idx]["maintenance"] = detail["maintenance"]
+                all_props[idx]["pet"] = detail["pet"]
+                if detail["maintenance"]:
+                    enriched_count += 1
+                done += 1
+                if done % 10 == 0:
+                    print(f"      {done}/{len(all_props)} 完了 (管理費: {enriched_count}件)")
         print(f"    管理費取得: {enriched_count}/{len(all_props)}件")
 
     return all_props

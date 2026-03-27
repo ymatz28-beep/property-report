@@ -181,12 +181,12 @@ body {
 :root {
   --accent: #6ee7ff;
   --accent-rgb: 110,231,255;
-  --card: var(--surface);
-  --line: var(--border);
-  --muted: var(--text-secondary);
-  --success: var(--green);
-  --warn: var(--yellow);
-  --danger: var(--red);
+  --card: rgba(255,255,255,0.04);
+  --line: rgba(255,255,255,0.10);
+  --muted: #a9b3c6;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --danger: #ef4444;
   --radius: 12px;
   --shadow: 0 18px 60px rgba(0,0,0,0.45);
 }
@@ -207,13 +207,13 @@ body {
 }
 .kicker { color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-weight:700; font-size:12px; }
 h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:700; font-family:var(--font-body); }
-.hero-sub { color:var(--text-secondary); margin:0; max-width:860px; }
+.hero-sub { color:#d0d9eb; margin:0; max-width:860px; }
 .badge-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
 .badge {
   display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
   border:1px solid rgba(var(--accent-rgb),0.35);
   background:rgba(var(--accent-rgb),0.08);
-  color:var(--text); font-size:12px; font-weight:600;
+  color:#e8fbff; font-size:12px; font-weight:600;
 }
 
 /* Sub-nav (cross-page navigation) */
@@ -269,20 +269,20 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
 }
 .stat .label { color:var(--muted); font-size:12px; }
 .stat .value { font-size:clamp(18px, 3.5vw, 28px); font-weight:800; margin-top:6px; }
-.stat .sub { color:var(--text-secondary); font-size:12px; margin-top:4px; }
+.stat .sub { color:#cdd6e8; font-size:12px; margin-top:4px; }
 
 /* Sections */
 .section { margin-top:32px; border:1px solid var(--line); background:var(--card); border-radius:var(--radius); padding:18px; backdrop-filter: blur(10px); }
 .section h2 { margin:0 0 12px; font-size:18px; font-weight:800; letter-spacing:.02em; display:flex; align-items:center; gap:10px; }
 .section h2::before { content:""; width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12); }
-.cond-list { margin:0; padding-left:18px; color:var(--text); line-height:1.75; columns:2; column-gap:24px; }
+.cond-list { margin:0; padding-left:18px; color:#d8e0f0; line-height:1.75; columns:2; column-gap:24px; }
 
 /* Table */
 .table-shell { overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); -webkit-overflow-scrolling:touch; }
 table { width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }
 thead th {
   position:sticky; top:0; z-index:1;
-  background:rgba(12,17,26,.92); color:var(--text); font-size:12px;
+  background:rgba(12,17,26,.92); color:#dbe7fa; font-size:12px;
   text-align:left; padding:12px 10px; border-bottom:1px solid rgba(255,255,255,.08); white-space:nowrap;
 }
 thead th button { all:unset; cursor:pointer; color:inherit; font-weight:700; display:inline-flex; gap:6px; align-items:center; }
@@ -293,7 +293,7 @@ tbody tr:hover td { background:rgba(var(--accent-rgb),.06); }
 .tier-good td { box-shadow: inset 4px 0 0 rgba(250,204,21,.7); }
 .tier-conditional td { box-shadow: inset 4px 0 0 rgba(251,146,60,.7); }
 .tier-pass td { box-shadow: inset 4px 0 0 rgba(239,68,68,.7); }
-a { color:var(--text); text-decoration:none; }
+a { color:#eaf7ff; text-decoration:none; }
 a:hover { color:var(--accent); text-decoration:underline; }
 .name-col { max-width:130px; }
 .clamp2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
@@ -301,9 +301,9 @@ a:hover { color:var(--accent); text-decoration:underline; }
 
 /* Score pills */
 .sc-pill { display:inline-block; padding:1px 4px; border-radius:4px; font-size:10px; font-weight:700; margin:1px; line-height:1.3; }
-.sc-pos { background:rgba(52,211,153,.15); color:var(--green); }
-.sc-neg { background:rgba(248,113,113,.15); color:var(--red-light); }
-.sc-zero { background:rgba(107,114,128,.1); color:var(--text-muted); }
+.sc-pos { background:rgba(52,211,153,.15); color:#34d399; }
+.sc-neg { background:rgba(248,113,113,.15); color:#f87171; }
+.sc-zero { background:rgba(107,114,128,.1); color:#6b7280; }
 .breakdown-col { font-family:var(--font-mono); max-width:220px; }
 .breakdown-th { min-width:180px; }
 .breakdown-legend { font-size:9px; color:var(--muted); letter-spacing:0.5px; margin-top:2px; font-weight:400; }
@@ -321,8 +321,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   display:inline-block; margin-top:3px; font-size:10px; font-weight:700;
   padding:1px 6px; border-radius:999px; line-height:1.4;
 }
-.pet-ok { background:rgba(34,197,94,.15); color:var(--green); border:1px solid rgba(34,197,94,.3); }
-.pet-maybe { background:rgba(250,204,21,.12); color:var(--yellow); border:1px solid rgba(250,204,21,.25); }
+.pet-ok { background:rgba(34,197,94,.15); color:#34d399; border:1px solid rgba(34,197,94,.3); }
+.pet-maybe { background:rgba(250,204,21,.12); color:#facc15; border:1px solid rgba(250,204,21,.25); }
 
 /* Source tag */
 .source-tag {
@@ -334,7 +334,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 .first-seen-col { white-space:nowrap; font-size:12px; text-align:center; }
 .new-badge {
   display:inline-block; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:800;
-  background:rgba(59,130,246,.18); color:var(--blue); border:1px solid rgba(59,130,246,.35);
+  background:rgba(59,130,246,.18); color:#60a5fa; border:1px solid rgba(59,130,246,.35);
   letter-spacing:.04em;
 }
 .score-badge {
@@ -376,15 +376,15 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   border:1px solid color-mix(in oklab, var(--accent) 40%, white 8%);
   background:color-mix(in oklab, var(--accent) 14%, transparent);
 }
-.focus-score span { display:block; margin-top:4px; font-size:10px; color:var(--text); font-weight:700; }
+.focus-score span { display:block; margin-top:4px; font-size:10px; color:#dfe8f7; font-weight:700; }
 .chip-row { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
 .chip {
   display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700;
   padding:5px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.09);
-  background:rgba(255,255,255,.03); color:var(--text);
+  background:rgba(255,255,255,.03); color:#e6eefc;
 }
-.chip-penalty { border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.10); color:var(--red-light); }
-.focus-comment { margin:10px 0 0; color:var(--text-secondary); line-height:1.65; font-size:13px; }
+.chip-penalty { border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.10); color:#ffdada; }
+.focus-comment { margin:10px 0 0; color:#dbe4f4; line-height:1.65; font-size:13px; }
 .focus-meta { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:12px; }
 .focus-meta span { padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.06); background:rgba(255,255,255,.02); }
 
@@ -392,9 +392,9 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 .chart-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:14px; }
 .chart-col { display:grid; gap:14px; }
 .chart-card canvas { width:100%; max-height:360px; }
-.notes { margin:0; padding-left:18px; line-height:1.8; color:var(--text); }
+.notes { margin:0; padding-left:18px; line-height:1.8; color:#d9e2f3; }
 .footer { margin-top:32px; color:var(--muted); font-size:12px; text-align:center; }
-.footer a { color:var(--text); }
+.footer a { color:#cfeeff; }
 
 /* Collapsible sections for mobile */
 .collapsible-toggle {
@@ -486,7 +486,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 }
 .freshness-bar .fb-chip {
   display:inline-flex; align-items:center; gap:5px;
-  padding:7px 14px; white-space:nowrap; color:var(--text);
+  padding:7px 14px; white-space:nowrap; color:#d0d9eb;
   border-right:1px solid var(--line);
 }
 .freshness-bar .fb-chip:last-child { border-right:none; }
@@ -670,23 +670,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
           </tr>
         </thead>
         <tbody>
-          <tr class="tier-strong" data-index="1" data-name="サニーハウス谷町" data-location="大阪府大阪市中央区十二軒町6-28" data-layout="2LDK" data-tier="強く推奨" data-price="3498" data-area="54.88" data-score="99" data-year="1982" data-walk="4" data-firstseen="3/1">
+          <tr class="tier-strong" data-index="1" data-name="●ストークマンション長堀●" data-location="大阪府大阪市西区新町４-17-7" data-layout="2LDK" data-tier="強く推奨" data-price="3050" data-area="56.91" data-score="96" data-year="1982" data-walk="4" data-firstseen="3/1">
             <td>1</td>
-            <td class="first-seen-col">3/1</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20101804/" target="_blank" rel="noopener noreferrer">サニーハウス谷町</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>3,498万円</td>
-            <td>54.88㎡</td>
-            <td><div class="clamp2">大阪府大阪市中央区十二軒町6-28</div></td>
-            <td><div class="clamp2">地下鉄谷町線「谷町六丁目」徒歩4分</div></td>
-            <td class="year-col">1982年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費10,800円 + 修繕11,700円">22,500円</span><span class="maint-detail">管理10,800 + 修繕11,700</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+8</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-pos">リノ+3</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+15 耐震+15 駅距+15 立地+8 間取+10 ペト+10 管理+3 リノ+3 仲介+0 民泊+0">99</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="2" data-name="●ストークマンション長堀●" data-location="大阪府大阪市西区新町４-17-7" data-layout="2LDK" data-tier="強く推奨" data-price="3050" data-area="56.91" data-score="96" data-year="1982" data-walk="4" data-firstseen="3/1">
-            <td>2</td>
             <td class="first-seen-col">3/1</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener noreferrer">●ストークマンション長堀●</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,050万円</td>
@@ -700,8 +685,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+15 耐震+15 駅距+15 立地+5 間取+10 ペト+10 管理+3 リノ+3 仲介+0 民泊+0">96</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="3" data-name="サントピア九条" data-location="大阪府大阪市西区九条１" data-layout="2LDK" data-tier="強く推奨" data-price="1750" data-area="52.50" data-score="93" data-year="1981" data-walk="2" data-firstseen="3/1">
-            <td>3</td>
+          <tr class="tier-strong" data-index="2" data-name="サントピア九条" data-location="大阪府大阪市西区九条１" data-layout="2LDK" data-tier="強く推奨" data-price="1750" data-area="52.50" data-score="93" data-year="1981" data-walk="2" data-firstseen="3/1">
+            <td>2</td>
             <td class="first-seen-col">3/1</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener noreferrer">サントピア九条</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>1,750万円</td>
@@ -715,8 +700,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+15 耐震+15 駅距+15 立地+5 間取+10 ペト+10 管理+0 リノ+3 仲介+0 民泊+0">93</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="4" data-name="セレッソコート南堀江マルティア" data-location="大阪府大阪市西区南堀江３-4-9" data-layout="2LDK" data-tier="強く推奨" data-price="4380" data-area="53.00" data-score="93" data-year="2000" data-walk="4" data-firstseen="2/22">
-            <td>4</td>
+          <tr class="tier-strong" data-index="3" data-name="セレッソコート南堀江マルティア" data-location="大阪府大阪市西区南堀江３-4-9" data-layout="2LDK" data-tier="強く推奨" data-price="4380" data-area="53.00" data-score="93" data-year="2000" data-walk="4" data-firstseen="2/22">
+            <td>3</td>
             <td class="first-seen-col">2/22</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener noreferrer">セレッソコート南堀江マルティア</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,380万円</td>
@@ -745,8 +730,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+10 耐震+15 駅距+10 立地+12 間取+5 ペト+10 管理+7 リノ+3 仲介+0 民泊+0">92</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="6" data-name="ランズ南森町" data-location="大阪府大阪市北区東天満２" data-layout="1LDK" data-tier="強く推奨" data-price="3780" data-area="45.09" data-score="90" data-year="2005" data-walk="4" data-firstseen="3/18">
-            <td>6</td>
+          <tr class="tier-strong" data-index="5" data-name="ランズ南森町" data-location="大阪府大阪市北区東天満２" data-layout="1LDK" data-tier="強く推奨" data-price="3780" data-area="45.09" data-score="90" data-year="2005" data-walk="4" data-firstseen="3/18">
+            <td>5</td>
             <td class="first-seen-col">3/18</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20454080/" target="_blank" rel="noopener noreferrer">ランズ南森町</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,780万円</td>
@@ -760,8 +745,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+15 面積+10 耐震+15 駅距+15 立地+12 間取+5 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">90</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="7" data-name="エステムプラザ心斎橋エグゼ" data-location="大阪府大阪市中央区島之内１-15-14" data-layout="2LDK" data-tier="強く推奨" data-price="4200" data-area="40.94" data-score="90" data-year="2011" data-walk="2" data-firstseen="3/19">
-            <td>7</td>
+          <tr class="tier-strong" data-index="6" data-name="エステムプラザ心斎橋エグゼ" data-location="大阪府大阪市中央区島之内１-15-14" data-layout="2LDK" data-tier="強く推奨" data-price="4200" data-area="40.94" data-score="90" data-year="2011" data-walk="2" data-firstseen="3/19">
+            <td>6</td>
             <td class="first-seen-col">3/19</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20472764/" target="_blank" rel="noopener noreferrer">エステムプラザ心斎橋エグゼ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,200万円</td>
@@ -775,8 +760,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+10 耐震+15 駅距+15 立地+12 間取+10 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">90</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="8" data-name="西道頓堀コーポ" data-location="大阪府大阪市西区南堀江４" data-layout="3LDK" data-tier="強く推奨" data-price="3890" data-area="69.61" data-score="85" data-year="1974" data-walk="5" data-firstseen="NEW">
-            <td>8</td>
+          <tr class="tier-strong" data-index="7" data-name="西道頓堀コーポ" data-location="大阪府大阪市西区南堀江４" data-layout="3LDK" data-tier="強く推奨" data-price="3890" data-area="69.61" data-score="85" data-year="1974" data-walk="5" data-firstseen="NEW">
+            <td>7</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20503024/" target="_blank" rel="noopener noreferrer">西道頓堀コーポ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,890万円</td>
@@ -790,8 +775,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+15 面積+10 耐震+0 駅距+15 立地+15 間取+10 ペト+10 管理+7 リノ+3 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="9" data-name="ファインレジデンス福島野田 The Garden" data-location="大阪府大阪市福島区吉野４" data-layout="1LDK" data-tier="強く推奨" data-price="3900" data-area="40.07" data-score="85" data-year="2023" data-walk="7" data-firstseen="3/20">
-            <td>9</td>
+          <tr class="tier-strong" data-index="8" data-name="ファインレジデンス福島野田 The Garden" data-location="大阪府大阪市福島区吉野４" data-layout="1LDK" data-tier="強く推奨" data-price="3900" data-area="40.07" data-score="85" data-year="2023" data-walk="7" data-firstseen="3/20">
+            <td>8</td>
             <td class="first-seen-col">3/20</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20483828/" target="_blank" rel="noopener noreferrer">ファインレジデンス福島野田 The Garden</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,900万円</td>
@@ -805,8 +790,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+15 面積+10 耐震+15 駅距+10 立地+10 間取+5 ペト+10 管理+7 リノ+3 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="10" data-name="ファインレジデンス福島野田　The &nbsp;Garden" data-location="大阪府大阪市福島区吉野４-9-20" data-layout="1LDK" data-tier="強く推奨" data-price="3900" data-area="40.07" data-score="85" data-year="2023" data-walk="7" data-firstseen="3/19">
-            <td>10</td>
+          <tr class="tier-strong" data-index="9" data-name="ファインレジデンス福島野田　The &nbsp;Garden" data-location="大阪府大阪市福島区吉野４-9-20" data-layout="1LDK" data-tier="強く推奨" data-price="3900" data-area="40.07" data-score="85" data-year="2023" data-walk="7" data-firstseen="3/19">
+            <td>9</td>
             <td class="first-seen-col">3/19</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20468253/" target="_blank" rel="noopener noreferrer">ファインレジデンス福島野田　The &nbsp;Garden</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,900万円</td>
@@ -820,8 +805,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+15 面積+10 耐震+15 駅距+10 立地+10 間取+5 ペト+10 管理+7 リノ+3 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="11" data-name="ベル・アーバニティ同心" data-location="大阪府大阪市北区同心１" data-layout="2LDK" data-tier="強く推奨" data-price="4480" data-area="55.58" data-score="85" data-year="1996" data-walk="8" data-firstseen="2/22">
-            <td>11</td>
+          <tr class="tier-strong" data-index="10" data-name="ベル・アーバニティ同心" data-location="大阪府大阪市北区同心１" data-layout="2LDK" data-tier="強く推奨" data-price="4480" data-area="55.58" data-score="85" data-year="1996" data-walk="8" data-firstseen="2/22">
+            <td>10</td>
             <td class="first-seen-col">2/22</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20274808/" target="_blank" rel="noopener noreferrer">ベル・アーバニティ同心</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,480万円</td>
@@ -835,8 +820,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+15 耐震+15 駅距+10 立地+12 間取+10 ペト+10 管理+0 リノ+3 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="12" data-name="天神橋ホワイトハイツ" data-location="大阪府大阪市北区本庄東２-2-28" data-layout="2LDK" data-tier="強く推奨" data-price="2998" data-area="60.48" data-score="83" data-year="1978" data-walk="4" data-firstseen="3/1">
-            <td>12</td>
+          <tr class="tier-strong" data-index="11" data-name="天神橋ホワイトハイツ" data-location="大阪府大阪市北区本庄東２-2-28" data-layout="2LDK" data-tier="強く推奨" data-price="2998" data-area="60.48" data-score="83" data-year="1978" data-walk="4" data-firstseen="3/1">
+            <td>11</td>
             <td class="first-seen-col">3/1</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20323378/" target="_blank" rel="noopener noreferrer">天神橋ホワイトハイツ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>2,998万円</td>
@@ -850,8 +835,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+20 面積+10 耐震+0 駅距+15 立地+12 間取+10 ペト+10 管理+3 リノ+3 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="13" data-name="エスリード九条" data-location="大阪府大阪市西区九条２" data-layout="2LDK+S（納戸）" data-tier="強く推奨" data-price="4180" data-area="60.60" data-score="83" data-year="2004" data-walk="5" data-firstseen="3/17">
-            <td>13</td>
+          <tr class="tier-strong" data-index="12" data-name="エスリード九条" data-location="大阪府大阪市西区九条２" data-layout="2LDK+S（納戸）" data-tier="強く推奨" data-price="4180" data-area="60.60" data-score="83" data-year="2004" data-walk="5" data-firstseen="3/17">
+            <td>12</td>
             <td class="first-seen-col">3/17</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20446992/" target="_blank" rel="noopener noreferrer">エスリード九条</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,180万円</td>
@@ -865,8 +850,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+10 耐震+15 駅距+15 立地+5 間取+10 ペト+10 管理+5 リノ+3 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="14" data-name="アデレイド新福島" data-location="大阪府大阪市福島区福島４" data-layout="1LDK+S（納戸）" data-tier="強く推奨" data-price="4998" data-area="54.86" data-score="83" data-year="2012" data-walk="2" data-firstseen="NEW">
-            <td>14</td>
+          <tr class="tier-strong" data-index="13" data-name="アデレイド新福島" data-location="大阪府大阪市福島区福島４" data-layout="1LDK+S（納戸）" data-tier="強く推奨" data-price="4998" data-area="54.86" data-score="83" data-year="2012" data-walk="2" data-firstseen="NEW">
+            <td>13</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20414565/" target="_blank" rel="noopener noreferrer">アデレイド新福島</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,998万円</td>
@@ -880,8 +865,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+15 耐震+15 駅距+15 立地+10 間取+5 ペト+10 管理+0 リノ+3 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="15" data-name="◇JR「新福島」駅徒歩5分◇　アデレイド新福島【大阪…" data-location="大阪府大阪市福島区福島４" data-layout="1LDK+S（納戸）" data-tier="強く推奨" data-price="4998" data-area="54.86" data-score="83" data-year="2012" data-walk="5" data-firstseen="NEW">
-            <td>15</td>
+          <tr class="tier-strong" data-index="14" data-name="◇JR「新福島」駅徒歩5分◇　アデレイド新福島【大阪…" data-location="大阪府大阪市福島区福島４" data-layout="1LDK+S（納戸）" data-tier="強く推奨" data-price="4998" data-area="54.86" data-score="83" data-year="2012" data-walk="5" data-firstseen="NEW">
+            <td>14</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20375566/" target="_blank" rel="noopener noreferrer">◇JR「新福島」駅徒歩5分◇　アデレイド新福島【大阪…</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,998万円</td>
@@ -895,8 +880,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+15 耐震+15 駅距+15 立地+10 間取+5 ペト+10 管理+0 リノ+3 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="16" data-name="アデレイ新福島" data-location="大阪府大阪市福島区福島４" data-layout="1LDK+S（納戸）" data-tier="強く推奨" data-price="4998" data-area="54.86" data-score="83" data-year="2012" data-walk="5" data-firstseen="NEW">
-            <td>16</td>
+          <tr class="tier-strong" data-index="15" data-name="アデレイ新福島" data-location="大阪府大阪市福島区福島４" data-layout="1LDK+S（納戸）" data-tier="強く推奨" data-price="4998" data-area="54.86" data-score="83" data-year="2012" data-walk="5" data-firstseen="NEW">
+            <td>15</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20459074/" target="_blank" rel="noopener noreferrer">アデレイ新福島</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,998万円</td>
@@ -910,8 +895,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
             <td><span class="score-badge" style="--badge:#22c55e" title="予算+10 面積+15 耐震+15 駅距+15 立地+10 間取+5 ペト+10 管理+0 リノ+3 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#22c55e">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="17" data-name="グランドメゾン谷町四丁目" data-location="大阪府大阪市中央区内本町１" data-layout="1LDK" data-tier="強く推奨" data-price="4750" data-area="41.57" data-score="81" data-year="2024" data-walk="3" data-firstseen="3/1">
-            <td>17</td>
+          <tr class="tier-strong" data-index="16" data-name="グランドメゾン谷町四丁目" data-location="大阪府大阪市中央区内本町１" data-layout="1LDK" data-tier="強く推奨" data-price="4750" data-area="41.57" data-score="81" data-year="2024" data-walk="3" data-firstseen="3/1">
+            <td>16</td>
             <td class="first-seen-col">3/1</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/" target="_blank" rel="noopener noreferrer">グランドメゾン谷町四丁目</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,750万円</td>
@@ -1057,35 +1042,6 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
         <div class="focus-head">
           <div class="focus-rank">#1</div>
           <div>
-            <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20101804/" target="_blank" rel="noopener noreferrer">サニーハウス谷町</a></h3>
-            <p>3,498万円 / 54.88㎡ / 大阪府大阪市中央区十二軒町6-28</p>
-          </div>
-          <div class="focus-score" style="--accent:#22c55e">99<span>強く推奨</span></div>
-        </div>
-        <div class="chip-row">
-          <span class="chip ">予算 +20</span>
-          <span class="chip ">面積 +15</span>
-          <span class="chip ">耐震 +15</span>
-          <span class="chip ">駅 +15</span>
-          <span class="chip ">立地 +8</span>
-          <span class="chip ">間取り +10</span>
-          <span class="chip ">ペット +10</span>
-          <span class="chip ">管理費修繕 +3</span>
-          <span class="chip ">リノベ +3</span>
-          <span class="chip ">仲介 +0</span>
-          <span class="chip ">民泊規約 +0</span>
-        </div>
-        <p class="focus-comment">ペット相談可 / 予算適合 / 駅近 / 新耐震</p>
-        <div class="focus-meta">
-          <span>地下鉄谷町線「谷町六丁目」徒歩4分</span>
-          <span>1982年2月</span>
-          <span>2LDK</span>
-        </div>
-      </article>
-      <article class="focus-card">
-        <div class="focus-head">
-          <div class="focus-rank">#2</div>
-          <div>
             <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener noreferrer">●ストークマンション長堀●</a></h3>
             <p>3,050万円 / 56.91㎡ / 大阪府大阪市西区新町４-17-7</p>
           </div>
@@ -1113,7 +1069,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
       </article>
       <article class="focus-card">
         <div class="focus-head">
-          <div class="focus-rank">#3</div>
+          <div class="focus-rank">#2</div>
           <div>
             <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener noreferrer">サントピア九条</a></h3>
             <p>1,750万円 / 52.50㎡ / 大阪府大阪市西区九条１</p>
@@ -1142,7 +1098,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
       </article>
       <article class="focus-card">
         <div class="focus-head">
-          <div class="focus-rank">#4</div>
+          <div class="focus-rank">#3</div>
           <div>
             <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener noreferrer">セレッソコート南堀江マルティア</a></h3>
             <p>4,380万円 / 53.00㎡ / 大阪府大阪市西区南堀江３-4-9</p>
@@ -1171,7 +1127,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
       </article>
       <article class="focus-card">
         <div class="focus-head">
-          <div class="focus-rank">#5</div>
+          <div class="focus-rank">#4</div>
           <div>
             <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20437273/" target="_blank" rel="noopener noreferrer">梅田北セントポリア</a></h3>
             <p>2,280万円 / 40.04㎡ / 大阪府大阪市北区本庄西３</p>
@@ -1195,6 +1151,35 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
         <div class="focus-meta">
           <span>地下鉄堺筋線「天神橋筋六丁目」徒歩10分</span>
           <span>1982年9月</span>
+          <span>1LDK</span>
+        </div>
+      </article>
+      <article class="focus-card">
+        <div class="focus-head">
+          <div class="focus-rank">#5</div>
+          <div>
+            <h3><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20454080/" target="_blank" rel="noopener noreferrer">ランズ南森町</a></h3>
+            <p>3,780万円 / 45.09㎡ / 大阪府大阪市北区東天満２</p>
+          </div>
+          <div class="focus-score" style="--accent:#22c55e">90<span>強く推奨</span></div>
+        </div>
+        <div class="chip-row">
+          <span class="chip ">予算 +15</span>
+          <span class="chip ">面積 +10</span>
+          <span class="chip ">耐震 +15</span>
+          <span class="chip ">駅 +15</span>
+          <span class="chip ">立地 +12</span>
+          <span class="chip ">間取り +5</span>
+          <span class="chip ">ペット +10</span>
+          <span class="chip ">管理費修繕 +5</span>
+          <span class="chip ">リノベ +3</span>
+          <span class="chip ">仲介 +0</span>
+          <span class="chip ">民泊規約 +0</span>
+        </div>
+        <p class="focus-comment">ペット相談可 / 予算適合 / 駅近 / 観光導線が強い立地</p>
+        <div class="focus-meta">
+          <span>ＪＲ東西線「大阪天満宮」徒歩4分</span>
+          <span>2005年10月</span>
           <span>1LDK</span>
         </div>
       </article>
@@ -1236,7 +1221,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 const chartAccent = 'rgba(110,231,255, 1)';
 const chartAccentFill = 'rgba(110,231,255, 0.18)';
 const radarLabels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "管理費修繕", "リノベ余地", "仲介手数料", "民泊規約"];
-const radarDatasets = [{"label": "1. サニーハウス谷町", "data": [100, 100, 100, 100, 53, 100, 67, 30, 60, 0, 100], "borderWidth": 2}, {"label": "2. ●ストークマンション長堀●", "data": [100, 100, 100, 100, 33, 100, 67, 30, 60, 0, 100], "borderWidth": 2}, {"label": "3. サントピア九条", "data": [100, 100, 100, 100, 33, 100, 67, 0, 60, 0, 100], "borderWidth": 2}, {"label": "4. セレッソコート南堀江マルティア", "data": [50, 100, 100, 100, 100, 100, 67, 0, 60, 0, 100], "borderWidth": 2}, {"label": "5. 梅田北セントポリア", "data": [100, 67, 100, 67, 80, 50, 67, 70, 60, 0, 100], "borderWidth": 2}].map((d, i) => {
+const radarDatasets = [{"label": "1. ●ストークマンション長堀●", "data": [100, 100, 100, 100, 33, 100, 67, 30, 60, 0, 100], "borderWidth": 2}, {"label": "2. サントピア九条", "data": [100, 100, 100, 100, 33, 100, 67, 0, 60, 0, 100], "borderWidth": 2}, {"label": "3. セレッソコート南堀江マルティア", "data": [50, 100, 100, 100, 100, 100, 67, 0, 60, 0, 100], "borderWidth": 2}, {"label": "4. 梅田北セントポリア", "data": [100, 67, 100, 67, 80, 50, 67, 70, 60, 0, 100], "borderWidth": 2}, {"label": "5. ランズ南森町", "data": [75, 67, 100, 100, 80, 50, 67, 50, 60, 0, 100], "borderWidth": 2}].map((d, i) => {
   const hueShift = [0, 18, 35, 52, 70][i] || 0;
   const alpha = 0.14 + i * 0.03;
   return {

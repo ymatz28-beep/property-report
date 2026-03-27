@@ -127,6 +127,9 @@ _TOKYO_WARD_MAP = {
     "hino-shi": "日野市", "higashimurayama-shi": "東村山市",
     "kunitachi-shi": "国立市", "kokubunji-shi": "国分寺市",
     "nishitokyo-shi": "西東京市",
+    "hamura-shi": "羽村市", "akishima-shi": "昭島市", "fussa-shi": "福生市",
+    "ome-shi": "青梅市", "machida-shi": "町田市", "inagi-shi": "稲城市",
+    "komae-shi": "狛江市", "tama-shi": "多摩市", "hino-shi": "日野市",
 }
 _OSAKA_CITY_MAP = {
     "osaka-shi": "大阪市", "sakai-shi": "堺市", "kadoma-shi": "門真市",
@@ -136,6 +139,9 @@ _OSAKA_CITY_MAP = {
     "yao-shi": "八尾市", "matsubara-shi": "松原市",
     "daito-shi": "大東市", "moriguchi-shi": "守口市",
     "izumisano-shi": "泉佐野市", "habikino-shi": "羽曳野市",
+    "kishiwada-shi": "岸和田市", "ibaraki-shi": "茨木市",
+    "settsu-shi": "摂津市", "minoo-shi": "箕面市", "ikeda-shi": "池田市",
+    "fujiidera-shi": "藤井寺市", "kashiwara-shi": "柏原市",
 }
 _FUKUOKA_CITY_MAP = {
     "fukuoka-shi": "福岡市", "kitakyushu-shi": "北九州市",

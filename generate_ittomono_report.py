@@ -563,24 +563,40 @@ def _filter_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
     return filtered
 
 
+def _url_district_matches(url: str, location: str, city_key: str) -> bool:
+    """URLのdistrictとlocationが一致するか（search_ittomono._url_location_validの簡易版）。"""
+    import sys as _sys
+    _this_dir = Path(__file__).parent
+    if str(_this_dir) not in _sys.path:
+        _sys.path.insert(0, str(_this_dir))
+    try:
+        from search_ittomono import _url_location_valid
+        return _url_location_valid(url, location, city_key)
+    except Exception:
+        return True  # import失敗時は通過
+
+
 def _deduplicate_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
     """Deduplicate by (price_man, area_rounded, units_count).
 
-    Location-based keys fail when the same property is listed with different
-    address granularity (e.g. '世田谷区' vs '世田谷区赤堤1丁目').
-    Price + area + units is more stable across sources.
-    Prefer the row with longer (more specific) location data.
+    Priority: URL district matches location > more specific location text.
+    This ensures cross-listed properties use the entry whose URL path
+    matches the extracted location (not a mis-matched ward search page).
     """
     seen: dict[tuple, IttomonoRow] = {}
     for r in rows:
         area_m = re.search(r"([\d.]+)", r.area_text)
         area_num = float(area_m.group(1)) if area_m else 0
         sig = (r.price_man, round(area_num, 0), r.units_count)
+        url_ok = _url_district_matches(r.url, r.location, r.city_key)
         if sig in seen:
             existing = seen[sig]
-            # Keep the row with more specific location info
-            if len(r.location) > len(existing.location):
-                seen[sig] = r
+            existing_url_ok = _url_district_matches(existing.url, existing.location, existing.city_key)
+            # Prefer: URL-location matched entry > longer location text
+            if url_ok and not existing_url_ok:
+                seen[sig] = r  # new entry is better (URL matches)
+            elif url_ok == existing_url_ok and len(r.location) > len(existing.location):
+                seen[sig] = r  # same quality, longer location wins
         else:
             seen[sig] = r
     deduped = list(seen.values())

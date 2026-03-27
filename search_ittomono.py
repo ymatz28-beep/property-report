@@ -801,28 +801,67 @@ def score_ittomono(prop: dict) -> int:
     return score
 
 
+def _is_floors_only(structure: str) -> bool:
+    """True if structure has no material info (e.g. '3階建' but not 'RC造3階建')."""
+    if not structure:
+        return True
+    return not any(m in structure for m in ["RC", "SRC", "鉄骨", "木造", "S造"])
+
+
 def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> None:
-    """Fetch detail pages to extract room layout for properties missing layout_detail."""
-    missing = [p for p in properties if not p.get("layout_detail")]
+    """Fetch detail pages to extract room layout + building material.
+
+    Targets: properties missing layout_detail OR with floors-only structure
+    (e.g. '3階建' — material RC/木造/S造 only available on detail page).
+    """
+    missing = [p for p in properties if not p.get("layout_detail") or _is_floors_only(p.get("structure", ""))]
     to_fetch = missing[:max_fetches]
     if not to_fetch:
         return
-    print(f"  間取り詳細取得中... ({len(to_fetch)}件)")
+    print(f"  詳細取得中... ({len(to_fetch)}件: 間取り+構造材質)")
+    enriched_layout = 0
+    enriched_struct = 0
+
     for i, prop in enumerate(to_fetch):
         detail_html = fetch_page(prop["url"])
         if not detail_html:
             continue
-        # Extract room layout from detail page
-        madori_matches = re.findall(
-            r"(\d[RKLDKS]+\s*[×xX]\s*\d+\s*(?:戸|室)?)", detail_html
-        )
-        if madori_matches:
-            prop["layout_detail"] = ", ".join(dict.fromkeys(m.strip() for m in madori_matches))
+
+        # Room layout
+        if not prop.get("layout_detail"):
+            madori_matches = re.findall(
+                r"(\d[RKLDKS]+\s*[×xX]\s*\d+\s*(?:戸|室)?)", detail_html
+            )
+            if madori_matches:
+                prop["layout_detail"] = ", ".join(dict.fromkeys(m.strip() for m in madori_matches))
+                enriched_layout += 1
+
+        # Building material (RC/SRC/S造/木造) — only if currently floors-only
+        if _is_floors_only(prop.get("structure", "")):
+            mat_m = re.search(
+                r"(RC造|SRC造|鉄筋コンクリート造|鉄骨鉄筋コンクリート造|S造|鉄骨造|軽量鉄骨造|木造)\s*\d*階建?",
+                detail_html,
+            )
+            if mat_m:
+                raw = mat_m.group(1)
+                if "鉄骨鉄筋コンクリート" in raw or "SRC" in raw:
+                    mat = "SRC造"
+                elif "鉄筋コンクリート" in raw or raw == "RC造":
+                    mat = "RC造"
+                elif "鉄骨" in raw or raw in ("S造", "S造"):
+                    mat = "S造"
+                else:
+                    mat = raw  # 木造 etc.
+                # Append floors if we had that info
+                floors_m = re.search(r"(\d+)階建", prop.get("structure", ""))
+                prop["structure"] = f"{mat}{floors_m.group(0)}" if floors_m else mat
+                enriched_struct += 1
+
         if (i + 1) % 5 == 0:
             print(f"    {i + 1}/{len(to_fetch)} done")
         time.sleep(1.0)
-    enriched = sum(1 for p in to_fetch if p.get("layout_detail"))
-    print(f"  間取り詳細: {enriched}/{len(to_fetch)}件取得成功")
+
+    print(f"  詳細取得: 間取り{enriched_layout}件 / 構造材質{enriched_struct}件")
 
 
 def deduplicate_by_content(properties: list[dict]) -> list[dict]:
@@ -866,17 +905,21 @@ def save_results(properties: list[dict], city_key: str) -> Path:
     # Content-based dedup (cross-source: same property, different URLs)
     properties = deduplicate_by_content(properties)
 
-    # Score, sort, and keep top 20 with score >= 55
+    # Score, sort, and keep top 25 with score >= 40
+    # Threshold 40 (was 55) because pre-save scorer lacks price/location/CF axes
+    # that report-time scorer has. Old buildings (築40+) get 0 for age → drop to 48
+    # even with good station/units. Report scorer compensates with earthquake(+10)
+    # and location(+10), so pre-save should not over-filter.
     for p in properties:
         p["score"] = score_ittomono(p)
     properties.sort(key=lambda x: x["score"], reverse=True)
-    shortlist = [p for p in properties if p["score"] >= 55][:20]
+    shortlist = [p for p in properties if p["score"] >= 40][:25]
 
     lines = [
         f"## 一棟もの検索結果 - {AREA_CONFIGS[city_key]['label']}",
         f"## 条件: {PRICE_MIN}万〜{PRICE_MAX}万",
         f"## 取得日: {datetime.now().strftime('%Y-%m-%d')}",
-        f"## 件数: {len(shortlist)}件 (全{len(properties)}件中スコア55+上位20)",
+        f"## 件数: {len(shortlist)}件 (全{len(properties)}件中スコア40+上位25)",
         "",
     ]
 
@@ -922,12 +965,10 @@ def main():
         # Merge and deduplicate (by location + price heuristic)
         props = rakumachi_props + kenbiya_props
         if props:
-            enrich_layout_from_detail(
-                [p for p in props if p["source"].startswith("楽待")],
-                max_fetches=enrich_limit,
-            )
+            # Enrich all sources: layout (楽待) + structure material (健美家 floors-only)
+            enrich_layout_from_detail(props, max_fetches=enrich_limit)
         out = save_results(props, city_key)
-        green_count = min(20, sum(1 for p in props if p.get("score", 0) >= 55))
+        green_count = sum(1 for p in props if p.get("score", 0) >= 40)
         print(f"  出力: {out} ({green_count}件厳選 / 全{len(props)}件 = 楽待{len(rakumachi_props)} + 健美家{len(kenbiya_props)})")
 
 

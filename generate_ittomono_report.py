@@ -270,15 +270,23 @@ def station_score_ittomono(walk_min: int | None) -> int:
 
 
 def location_score(row: IttomonoRow) -> tuple[str, int]:
-    """Location scoring using existing city classifiers."""
+    """Location scoring using existing city classifiers.
+
+    For 一棟もの: outer wards return 0 not -5 (rental demand still exists in
+    peripheral areas — penalizing them distorts investment comparison).
+    """
     text = f"{row.location} {row.station_text} {row.name}"
     if row.city_key == "osaka":
-        return classify_location_osaka(text)
+        label, score = classify_location_osaka(text)
     elif row.city_key == "tokyo":
-        return classify_location_tokyo(text)
+        label, score = classify_location_tokyo(text)
+        if score < 0:
+            score = 0  # outer wards neutral for rental investment
     elif row.city_key == "fukuoka":
-        return classify_location_fukuoka(text)
-    return "Other", 0
+        label, score = classify_location_fukuoka(text)
+    else:
+        label, score = "Other", 0
+    return label, score
 
 
 def cf_score(row: IttomonoRow) -> int:

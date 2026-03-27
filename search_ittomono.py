@@ -298,7 +298,10 @@ def _parse_rakumachi_ittomono(html: str, city_key: str, dim_label: str, region: 
     )
     seen_ids = set()
 
-    for match in url_pattern.finditer(html):
+    # Pre-collect to use next-URL as end boundary (avoids previous property contamination)
+    all_matches = list(url_pattern.finditer(html))
+
+    for i, match in enumerate(all_matches):
         prop_url = match.group(1)
         prop_id = match.group(2)
         if prop_id in seen_ids:
@@ -308,8 +311,12 @@ def _parse_rakumachi_ittomono(html: str, city_key: str, dim_label: str, region: 
         if not prop_url.startswith("http"):
             prop_url = "https://www.rakumachi.jp" + prop_url
 
-        start = max(0, match.start() - 2000)
-        end = min(len(html), match.end() + 2000)
+        # Context: from this URL forward to the next property URL (no lookback)
+        start = match.start()
+        if i + 1 < len(all_matches):
+            end = all_matches[i + 1].start()
+        else:
+            end = min(len(html), match.end() + 3000)
         context = html[start:end]
 
         prop = _extract_ittomono_fields(context, prop_url, prop_id, city_key, dim_label)
@@ -557,11 +564,10 @@ def _parse_kenbiya_listings(html: str, city_key: str, pp_label: str, pref: str) 
 
         prop_url = "https://www.kenbiya.com" + prop_path
 
-        # Context: from 500 chars before this link up to the start of the NEXT
-        # property link (or 3000 chars after if this is the last property).
-        # Capping the look-ahead at next property start avoids data contamination
-        # from adjacent listings on the same search results page.
-        start = max(0, match.start() - 500)
+        # Context: from this URL forward to the start of the NEXT property URL.
+        # NO lookback: Kenbiya search pages put all property data AFTER the URL
+        # anchor. Any backward window would contaminate with previous property data.
+        start = match.start()
         if i + 1 < len(all_matches):
             end = all_matches[i + 1].start()
         else:
@@ -640,14 +646,30 @@ def _extract_kenbiya_fields(context: str, url: str, prop_id: str, city_key: str,
     if st_match:
         station_text = st_match.group(1)
 
-    # Structure + units: "6階建/5戸"
+    # Structure (material + floors) + units
+    # Search listing shows e.g. "2階建/10戸"; material appears inline: "木造2階建"
     structure = ""
     units = ""
-    struct_match = re.search(r"(\d+)階建(?:/(\d+)戸)?", text)
-    if struct_match:
-        structure = struct_match.group(1) + "階建"
-        if struct_match.group(2):
-            units = struct_match.group(2) + "戸"
+    # Try material+floors first (e.g. "木造2階建", "RC造3階建")
+    mat_floor_match = re.search(r"(RC造|SRC造|鉄筋コンクリート造|S造|鉄骨造|軽量鉄骨造|木造)\s*(\d+)階建", text)
+    if mat_floor_match:
+        structure = mat_floor_match.group(1) + mat_floor_match.group(2) + "階建"
+        # Look for units after this
+        units_m = re.search(r"(\d+)戸", text[mat_floor_match.end():mat_floor_match.end() + 50])
+        if units_m:
+            units = units_m.group(1) + "戸"
+    if not structure:
+        # Floors-only format: "2階建/10戸" or "2階建"
+        struct_match = re.search(r"(\d+)階建(?:/(\d+)戸)?", text)
+        if struct_match:
+            structure = struct_match.group(1) + "階建"
+            if struct_match.group(2):
+                units = struct_match.group(2) + "戸"
+    # Fallback: units from standalone pattern if not found above
+    if not units:
+        units_m = re.search(r"(\d+)戸", text)
+        if units_m:
+            units = units_m.group(1) + "戸"
 
     # Yield: 5.00% — cap at 15% (higher is almost certainly a scraping error)
     yield_text = ""
@@ -724,14 +746,14 @@ def score_ittomono(prop: dict) -> int:
 
     # Structure
     st = prop.get("structure", "")
-    if "RC" in st or "SRC" in st:
+    if "RC" in st or "SRC" in st or "鉄筋コンクリート" in st:
         score += 20
-    elif "S" in st:
+    elif "S造" in st or "鉄骨" in st:
         score += 15
-    elif "木" in st:
+    elif "木造" in st:
         score += 5
     else:
-        score += 8
+        score += 8  # floors-only or unknown → neutral
 
     # Building age
     bt = prop.get("built_text", "")

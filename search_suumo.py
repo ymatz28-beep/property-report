@@ -385,11 +385,15 @@ def save_results(properties: list[dict], city_key: str) -> Path:
 
 
 def main():
-    """Search all target cities."""
+    """Search target cities. Optional first arg: city key (osaka/fukuoka/tokyo)."""
+    import sys as _sys
+    target_cities = [_sys.argv[1]] if len(_sys.argv) > 1 and _sys.argv[1] in WARD_CONFIGS else ["osaka", "fukuoka", "tokyo"]
+
     print(f"SUUMO物件検索 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print(f"条件: {PRICE_MAX_MAN}万以下, {AREA_MIN}-{AREA_MAX}㎡")
+    print(f"対象都市: {', '.join(target_cities)}")
 
-    for city_key in ["osaka", "fukuoka", "tokyo"]:
+    for city_key in target_cities:
         props = search_suumo(city_key)
         if props:
             out = save_results(props, city_key)

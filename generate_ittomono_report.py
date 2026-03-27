@@ -153,9 +153,9 @@ def _hydrate(row: IttomonoRow) -> None:
     y = re.search(r"(\d{4})年", row.built_text)
     row.built_year = int(y.group(1)) if y else None
 
-    # Walk minutes
+    # Walk minutes — Kenbiya uses "歩N分", SUUMO/楽待 use "徒歩N分"
     if "バス" not in row.station_text:
-        m = re.search(r"徒歩\s*(\d+)\s*分", row.station_text)
+        m = re.search(r"(?:徒歩|歩)\s*(\d+)\s*分", row.station_text)
         row.walk_min = int(m.group(1)) if m else None
 
     # Units count
@@ -200,7 +200,7 @@ def price_score(price_man: int) -> int:
 
 
 def structure_score(structure: str) -> int:
-    """Building structure scoring. RC/SRC > S造 > 木造."""
+    """Building structure scoring. RC/SRC > S造 > 木造. Floors-only → neutral."""
     if not structure:
         return 0
     if "RC" in structure or "SRC" in structure or "鉄筋コンクリート" in structure:
@@ -209,6 +209,9 @@ def structure_score(structure: str) -> int:
         return 10
     if "木造" in structure:
         return 5
+    # Floors-only (e.g. "2階建") — material unknown, small neutral score
+    if re.search(r"\d+階建", structure):
+        return 3
     return 0
 
 

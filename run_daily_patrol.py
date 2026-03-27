@@ -33,8 +33,16 @@ HEADERS = {
 
 # Actionable fix suggestions: step_name -> reason_key -> fix text
 STEP_FIX: dict[str, dict[str, str]] = {
-    "search_suumo.py": {
-        "timeout": "詳細取得を並列化済み（2026-03-27修正）→ 次回から解消見込み",
+    "search_suumo.py (osaka)": {
+        "timeout": "SUUMO大阪タイムアウト。4区×詳細取得が遅延",
+        "default": "SUUMO側のブロック可能性。User-Agent or wait時間を見直す",
+    },
+    "search_suumo.py (fukuoka)": {
+        "timeout": "SUUMO福岡タイムアウト。3区×詳細取得が遅延",
+        "default": "SUUMO側のブロック可能性。User-Agent or wait時間を見直す",
+    },
+    "search_suumo.py (tokyo)": {
+        "timeout": "SUUMO東京タイムアウト。10区×詳細取得が遅延",
         "default": "SUUMO側のブロック可能性。User-Agent or wait時間を見直す",
     },
     "enrich_maintenance.py": {
@@ -53,7 +61,9 @@ STEP_FIX: dict[str, dict[str, str]] = {
 
 # Human-readable labels: step_name -> (label, impact_when_failed)
 STEP_LABELS = {
-    "search_suumo.py": ("SUUMO物件検索", "SUUMO経由の新規物件が未検出"),
+    "search_suumo.py (osaka)": ("SUUMO物件検索(大阪)", "SUUMO大阪の物件データが未更新"),
+    "search_suumo.py (fukuoka)": ("SUUMO物件検索(福岡)", "SUUMO福岡の物件データが未更新"),
+    "search_suumo.py (tokyo)": ("SUUMO物件検索(東京)", "SUUMO東京の物件データが未更新"),
     "search_multi_site.py": ("Yahoo不動産/楽待検索", "Yahoo/楽待の物件データが未更新"),
     "search_restate.py": ("RE-STATE検索", "RE-STATEの物件データが未更新"),
     "search_ftakken.py": ("F宅建検索", "F宅建の物件データが未更新"),
@@ -341,13 +351,61 @@ def search_all_sites() -> list[dict]:
     import os as _os, signal as _sig
     results = []
 
-    # Phase 1: SUUMO first (heaviest — 17 wards + detail enrichment)
-    # Running alone avoids CPU/network contention that causes timeouts
-    log("=== 物件検索: SUUMO (先行) ===")
-    result = run_script("search_suumo.py", timeout=1500)
-    results.append({"step": "search_suumo.py", **result})
-    if not result["ok"]:
-        log("  ⚠️ search_suumo.py 失敗 — 他ソースで続行")
+    # Phase 1: SUUMO — 3 cities in parallel (was sequential = 25min timeout risk)
+    # osaka(4区)+fukuoka(3区)+tokyo(10区) each under 10min → total ~10min
+    log("=== 物件検索: SUUMO (3都市並列) ===")
+    suumo_cities = [("osaka", 600), ("fukuoka", 500), ("tokyo", 900)]
+    suumo_procs: dict[str, tuple[subprocess.Popen, Path, float]] = {}
+    for city, _timeout in suumo_cities:
+        stderr_path = DATA_DIR / f".stderr_suumo_{city}.tmp"
+        cmd = [sys.executable, "search_suumo.py", city]
+        log(f"  Starting: search_suumo.py {city}")
+        with open(stderr_path, "w") as sf:
+            proc = subprocess.Popen(
+                cmd, stdout=subprocess.DEVNULL, stderr=sf,
+                cwd=str(BASE_DIR), start_new_session=True,
+            )
+        suumo_procs[city] = (proc, stderr_path, time.time())
+
+    import os as _os, signal as _sig
+    suumo_ok = True
+    for city, timeout in suumo_cities:
+        proc, stderr_path, t0 = suumo_procs[city]
+        step_name = f"search_suumo.py ({city})"
+        try:
+            proc.wait(timeout=timeout)
+            elapsed = round(time.time() - t0)
+            if proc.returncode == 0:
+                results.append({"step": step_name, "ok": True, "reason": "",
+                                "stderr_tail": "", "elapsed_sec": elapsed, "exit_code": 0})
+            else:
+                suumo_ok = False
+                stderr_tail = _read_stderr_tail(stderr_path)
+                log(f"  ⚠️ {step_name} 失敗 (exit {proc.returncode})")
+                results.append({"step": step_name, "ok": False, "reason": "error",
+                                "stderr_tail": stderr_tail, "elapsed_sec": elapsed,
+                                "exit_code": proc.returncode})
+        except subprocess.TimeoutExpired:
+            try:
+                _os.killpg(proc.pid, _sig.SIGKILL)
+            except OSError:
+                proc.kill()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pass
+            suumo_ok = False
+            stderr_tail = _read_stderr_tail(stderr_path)
+            log(f"  ⚠️ {step_name} タイムアウト ({timeout}s)")
+            results.append({"step": step_name, "ok": False, "reason": "timeout",
+                            "stderr_tail": stderr_tail,
+                            "elapsed_sec": round(time.time() - t0),
+                            "exit_code": -1, "timeout": timeout})
+        finally:
+            stderr_path.unlink(missing_ok=True)
+
+    if not suumo_ok:
+        log("  ⚠️ SUUMO 一部失敗 — 他ソースで続行")
 
     # Phase 2: Remaining scrapers in parallel (lighter, separate files)
     log("=== 物件検索: 他ソース（並列） ===")

@@ -12,7 +12,12 @@
 - [WARN] lib_sync_drift: lib/templates/pages/property_report.html ≠ property-analyzer/lib/templates/pages/property_report.html. GHA uses property-analyzer copy. Sync needed.
 
 ## Last Updated
-2026-03-26
+2026-03-27
+
+## Completed (一棟ものスクレイパー修正 + SUUMO並列化 + kaizen patrol step監視 2026-03-27)
+- **Before**: SUUMO detail fetchが逐次処理で25分超過タイムアウト、failed_steps: ['search_suumo.py', 'enrich_maintenance.py']が3/24から3日間継続。一棟ものスクレイパーのno-lookback parserでデータ汚染。GHA workflow conclusionがsuccess（continue-on-error）でもpatrol_summary.json内のfailed_stepsが検知されず隠蔽状態
+- **After**: SUUMO detail fetchを並列化してタイムアウト解消(`8a5060e`)。一棟ものスクレイパーのno-lookback parser修正+re-scrape(`f601fe9`,`a46d5c7`)。URL-match priority in dedup+district map拡張(`743a80a`)。物件パトロールメールにFix提案追加(`78917b2`)。kaizen-agentに`check_property_patrol_steps`追加→毎晩patrol_summary.jsonのfailed_stepsを読み取り、朝Digestに自動表示(kaizen-agent `732cf2f`)。GHA手動トリガー実行済み(Run ID: 23629990106)、修正後初回パトロール結果待ち
+- **Commits**: property-analyzer `8a5060e`(並列化), `f601fe9`(scraper修正), `a46d5c7`(re-scrape), `743a80a`(dedup+district), `78917b2`(Fix提案), kaizen-agent `732cf2f`(patrol step監視)
 
 ## Completed (一棟ものクロスリスティング汚染対策 + QAゲート追加 2026-03-26)
 - **Before**: 一棟ものレポートに他都市の物件が混入していた（東京19件+大阪門真市1件が汚染データ）。URL上は正しい都市だが実際の所在地が異なるクロスリスティング。また、デプロイ前のQAゲートがstock-analyzerにしかなく、property-analyzerは品質チェックなしで公開されていた
@@ -132,13 +137,13 @@
 - 3/19: Pipeline構築(property_pipeline.py 648行) / ティアベースフィルタ(Green全数+Yellow補充) / Resilience原則+パトロール並列化(30min→10min)
 
 ## In Progress / Next Actions
-1. **アンピール天神東 賃料相場調査完了 → 澤畠さんに回答** — 融資審査用の想定賃料を確定し、必要なら追加情報を返信
-2. **筑波銀行融資回答フォロー** — 3月末期限（残5日）。回答なければ澤畠さんに進捗確認
-3. **明朝Digest確認: PATROL ALERTSセクション表示検証** — AM3:00初回patrol実行後、翌朝Digestにpatrol結果が表示されるか確認（kaizen-agent側実装済み・未検証）
-4. **QA warn=103件の精査** — エラーは0件だが警告103件残存。ノイズか本物か未仕分け
-5. **inq-049 福岡薬院駅物件（score 99）精査** — ふれんず掲載、1986年築だが薬院駅3分の好立地。詳細調査・融資検討の優先候補
-6. **特区民泊候補物件の問い合わせ送付** — 期限5/29、残り約2ヶ月
-7. **SUUMOタイムアウト根本対策判断** — リトライでも恒常失敗なら都市分割(17区→2バッチ)実装
+1. **GHA手動トリガー結果確認（Run ID: 23629990106）** — SUUMO並列化修正後の初回パトロール。failed_stepsが空になるか確認。完了後`git pull`でローカル同期
+2. **アンピール天神東 賃料相場調査完了 → 澤畠さんに回答** — 融資審査用の想定賃料を確定し、必要なら追加情報を返信
+3. **筑波銀行融資回答フォロー** — 3月末期限（残4日）。回答なければ澤畠さんに進捗確認
+4. **明朝Digest確認: PATROL ALERTSセクション表示検証** — kaizen-agent `check_property_patrol_steps` 実装済み・未検証。朝Digestにpatrol結果が表示されるか確認
+5. **QA warn=103件の精査** — エラーは0件だが警告103件残存。ノイズか本物か未仕分け
+6. **inq-049 福岡薬院駅物件（score 99）精査** — ふれんず掲載、1986年築だが薬院駅3分の好立地。詳細調査・融資検討の優先候補
+7. **特区民泊候補物件の問い合わせ送付** — 期限5/29、残り約2ヶ月
 8. **GHA actions Node.js 24対応** — checkout@v4→v5, setup-python@v5→v6等（期限: 2026-06-02）
 9. **Constancy警告対応** — 巨大ファイル4件の分割検討(generate_ittomono_report.py 1239行等)
 10. **lib/digest/同期対応** — kaizen-agent #80でdaily_digest.pyがlib/digest/に分割。property-analyzerのlib同期設定を更新
@@ -215,6 +220,7 @@
 ## History
 | 日付 | サマリー |
 |------|----------|
+| 2026-03-27 | Before: SUUMO逐次処理で25分タイムアウト+failed_steps3日継続+隠蔽 → After: 並列化でタイムアウト解消+kaizen patrol step監視追加+GHA手動トリガー済み |
 | 2026-03-26 | Before: 一棟もの20件が他都市汚染データ混入+QAゲートなし → After: URL-location cross-validationで汚染排除+QAゲート4/4 PASS(`59b345b`,`0f2963e`) |
 | 2026-03-26 x-ref | Before: kaizen patrol 10日停止+patrolエラー3件+QAノイズ1041件+通知なし+QAゲートstock-analyzerのみ → After: patrol AM3:00復活+エラー3→0件+朝Digest自動通知+QAゲート全主要ページ横展開(kaizen `f395839`) |
 | 2026-03-25 | 筑波銀行にアンピール天神東405号室の融資照会メール送信(3,800万/65㎡/2LDK/2004年築RC)+新規物件4件追加(inq-046〜049)+賃料相場調査中 |
@@ -238,3 +244,4 @@
 | 2026-03-20 | GHA新deployスクリプト初回成功検証: /tmp別クローン方式でmerge conflict ゼロ |
 | 2026-03-20 | naiken-analysis.htmlフル自動生成化+QA全38項目PASS+GHA rebase競合解消 |
 | 2026-03-20 | agent_memory自動同期+GHAクロスリポアクセス+3/21福岡内覧3物件設定 |
+<!-- 20件制限: 2026-03-20以前はarchive参照 -->

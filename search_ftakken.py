@@ -31,9 +31,9 @@ PRICE_MAX = 5000  # 万円 (区分)
 AREA_MIN = 40
 AREA_MAX = 70
 
-# 一棟もの price range — 区分と同じ5000万上限に統一
-ITTOMONO_PRICE_MIN = 500    # 500万 (格安物件も対象)
-ITTOMONO_PRICE_MAX = 5000   # 5000万 (区分と同じ上限)
+# 一棟もの price range — 1.5億〜2億
+ITTOMONO_PRICE_MIN = 5000    # 5000万 (下限)
+ITTOMONO_PRICE_MAX = 20000   # 2億 (上限)
 # 戸建て price range (収益物件: 安く買って高く貸す)
 KODATE_PRICE_MIN = 500
 KODATE_PRICE_MAX = 10000

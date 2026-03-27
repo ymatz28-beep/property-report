@@ -31,11 +31,11 @@ PRICE_MAX = 5000  # 万円 (区分)
 AREA_MIN = 40
 AREA_MAX = 70
 
-# 一棟マンション price range (1.5億〜2億)
-ITTOMONO_PRICE_MIN = 15000
-ITTOMONO_PRICE_MAX = 20000
+# 一棟もの price range — 区分と同じ5000万上限に統一
+ITTOMONO_PRICE_MIN = 500    # 500万 (格安物件も対象)
+ITTOMONO_PRICE_MAX = 5000   # 5000万 (区分と同じ上限)
 # 戸建て price range (収益物件: 安く買って高く貸す)
-KODATE_PRICE_MIN = 1000
+KODATE_PRICE_MIN = 500
 KODATE_PRICE_MAX = 10000
 
 # ふれんず prefecture code for Fukuoka
@@ -386,6 +386,10 @@ def save_results(properties: list[dict], city_key: str) -> Path:
 
 def _parse_ittomono_block(block: str, prop_type: str, detail_urls: list[str], idx: int) -> dict | None:
     """Parse a single 一棟マンション/戸建て block from ふれんず."""
+    # Normalize full-width characters for regex matching
+    block = (block.replace("ＲＣ", "RC").replace("ＳＲＣ", "SRC")
+             .replace("Ｓ造", "S造").replace("　", " "))
+
     # Price (億 or 万円)
     price_man = 0
     price_text = ""
@@ -426,24 +430,35 @@ def _parse_ittomono_block(block: str, prop_type: str, detail_urls: list[str], id
     if not location:
         return None
 
-    # Building area (延床 or 建物) — for 一棟 / 戸建て
+    # Anchor to the LAST 所在地 in full_block (current property's details section)
+    # full_block = prev_desc + current_details, so rfind gets current property, not prev
+    loc_pos = block.rfind("所在地")
+    detail_block = block[loc_pos:] if loc_pos >= 0 else block
+
+    # Building area: ふれんず format = "建物延面積\tYY.YY㎡" (label before value)
     area_text = ""
     area_sqm = None
-    a_m = re.search(r"(?:延床面積|建物面積|建物)\s*(?:[\d.]+\s*坪/)?\s*(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", block)
+    a_m = re.search(r"建物延面積\s*(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", detail_block)
     if not a_m:
-        a_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", block)
+        a_m = re.search(r"(?:延床面積|建物面積)\s*(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", detail_block)
     if a_m:
         area_sqm = float(a_m.group(1))
-        area_text = f"{area_sqm}㎡"
+        if area_sqm >= 20:  # sanity: building < 20㎡ is not a real investment target
+            area_text = f"{area_sqm}㎡"
+        else:
+            area_sqm = None
 
-    # Land area (土地) — important for 戸建て
+    # Land area: "土地面積\t138.49㎡"
     land_text = ""
-    l_m = re.search(r"(?:土地面積|土地)\s*(?:[\d.]+\s*坪/)?\s*(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", block)
+    l_m = re.search(r"土地面積\s*(?:公簿)?\s*(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", detail_block)
     if l_m:
-        land_text = f"土地{l_m.group(1)}㎡"
+        land_sqm = float(l_m.group(1))
+        if land_sqm >= 10:
+            land_text = f"土地{land_sqm}㎡"
 
+    # Use detail_block (anchored to 所在地) for all remaining fields to avoid contamination
     # Station
-    station_m = re.search(r"交通\s*([^\n]+)", block)
+    station_m = re.search(r"交通\s*([^\n]+)", detail_block)
     station_text = ""
     if station_m:
         raw = station_m.group(1).strip().split("\n")[0]
@@ -451,69 +466,53 @@ def _parse_ittomono_block(block: str, prop_type: str, detail_urls: list[str], id
         station_text = w_m.group(1) if w_m else raw[:50]
 
     # Built year
-    b_m = re.search(r"築年月\s*(\d{4}).*?年\s*(\d{1,2})\s*月", block)
+    b_m = re.search(r"築年月\s*(\d{4}).*?年\s*(\d{1,2})\s*月", detail_block)
     if not b_m:
-        b_m = re.search(r"(\d{4})\s*年", block)
+        b_m = re.search(r"築年月\s*(\d{4})", detail_block)
     if b_m:
-        built_text = f"{b_m.group(1)}年{b_m.group(2)}月" if len(b_m.groups()) >= 2 and b_m.group(2) else f"{b_m.group(1)}年"
+        built_text = f"{b_m.group(1)}年{b_m.group(2)}月" if b_m.lastindex >= 2 and b_m.group(2) else f"{b_m.group(1)}年"
     else:
         built_text = ""
 
-    # Structure (構造) — RC, 木造, 鉄骨 etc.
+    # Structure — "建物構造\t軽量鉄骨" format
     structure = ""
-    s_m = re.search(r"構造\s*(RC造|SRC造|鉄筋コンクリート造|S造|鉄骨造|軽量鉄骨造|木造)(?:\s*(\d+)階建)?", block)
-    if not s_m:
-        s_m = re.search(r"(RC造|SRC造|鉄骨鉄筋コンクリート造|S造|鉄骨造|木造)\s*(\d+)階建", block)
+    s_m = re.search(r"(?:建物)?構造\s*(RC(?:造)?|SRC(?:造)?|鉄筋コンクリート(?:造)?|軽量鉄骨(?:造)?|S(?:造)?|鉄骨(?:造)?|木造|その他)", detail_block)
     if s_m:
         raw_s = s_m.group(1)
-        if "鉄骨鉄筋コンクリート" in raw_s or "SRC" in raw_s:
+        if "鉄骨鉄筋コンクリート" in raw_s or raw_s.startswith("SRC"):
             structure = "SRC造"
-        elif "鉄筋コンクリート" in raw_s or raw_s == "RC造":
+        elif "鉄筋コンクリート" in raw_s or raw_s.startswith("RC"):
             structure = "RC造"
-        elif "鉄骨" in raw_s:
+        elif "軽量鉄骨" in raw_s:
+            structure = "軽量鉄骨造"
+        elif "鉄骨" in raw_s or raw_s.startswith("S"):
             structure = "S造"
+        elif raw_s == "木造":
+            structure = "木造"
         else:
             structure = raw_s
-        if s_m.lastindex and s_m.lastindex >= 2 and s_m.group(2):
-            structure += f"{s_m.group(2)}階建"
+        fl_m = re.search(r"(\d+)階建", detail_block)
+        if fl_m:
+            structure += fl_m.group(0)
     else:
-        fl_m = re.search(r"(\d+)階建", block)
+        fl_m = re.search(r"(\d+)階建", detail_block)
         if fl_m:
             structure = fl_m.group(0)
 
-    # Units count (戸数)
+    # Units: listing page doesn't show 戸数; skip to avoid contamination
     units = ""
-    u_m = re.search(r"(?:戸数|総戸数)\s*(\d+)\s*戸", block)
-    if not u_m:
-        u_m = re.search(r"(\d+)\s*戸", block)
-    if u_m:
-        units = f"{u_m.group(1)}戸"
 
-    # Yield (利回り)
+    # Yield: "利回り" or "年利回り" in オーナーチェンジ notes
     yield_text = ""
-    y_m = re.search(r"(?:利回り|表面利回り)\s*([\d.]+)\s*[%％]", block)
-    if not y_m:
-        y_m = re.search(r"([\d.]+)\s*[%％]", block)
+    y_m = re.search(r"(?:表面利回り|年利回り|利回り)[：:\s]*([\d.]+)\s*[%％]", detail_block)
     if y_m:
         y_val = float(y_m.group(1))
         if 1.0 <= y_val <= 30.0:
             yield_text = f"{y_val}%"
 
-    # Name
-    name = ""
-    lines = block.strip().split("\n")
-    for line in lines:
-        line = line.strip()
-        if (len(line) >= 3
-                and not re.match(r"^\d", line)
-                and "万円" not in line and "㎡" not in line
-                and "所在地" not in line and "交通" not in line
-                and "築年月" not in line and "価格" not in line
-                and "閲覧" not in line and "お気に入り" not in line):
-            name = line[:40]
-            break
-    if not name:
-        name = f"ふれんず{prop_type} #{idx}"
+    # Name: ふれんず 一棟もの/戸建て rarely have distinct building names
+    # Primary: use street address from location as name
+    name = location or f"ふれんず{prop_type} #{idx}"
 
     # URL
     url = detail_urls[idx] if idx < len(detail_urls) else f"https://www.f-takken.com/freins/buy/mansion"
@@ -541,11 +540,9 @@ def _parse_ittomono_block(block: str, prop_type: str, detail_urls: list[str], id
 
 def _scrape_ittomono_page(page, items_url: str, price_min: int, price_max: int, prop_type: str) -> list[dict]:
     """Scrape 一棟もの / 戸建て listing page using Playwright."""
-    # Try with ward filter for Fukuoka core areas, then fall back to prefecture-wide
-    url = (f"{items_url}?limit=100"
-           f"&data_21={price_min}&data_22={price_max}")
-    for ward_code in FUKUOKA_WARDS.values():
-        url += f"&locate[]={ward_code}"
+    # Note: data_21 is NOT price_min — filter price client-side in _parse_ittomono_block
+    ward_params = "".join(f"&locate[]={code}" for code in FUKUOKA_WARDS.values())
+    url = f"{items_url}?limit=100{ward_params}"
 
     print(f"  {prop_type}: {url[:100]}")
     try:
@@ -583,8 +580,16 @@ def _scrape_ittomono_page(page, items_url: str, price_min: int, price_max: int, 
         for idx in range(1, len(blocks)):
             try:
                 block = blocks[idx]
-                prev_desc = blocks[idx - 1].split("\n")[-10:]
-                full_block = "\n".join(prev_desc) + "\n" + block
+                prev_desc_lines = blocks[idx - 1].split("\n")[-15:]
+                prev_desc = "\n".join(prev_desc_lines)
+                full_block = prev_desc + "\n" + block
+
+                # Type filter: check only prev_desc (the property's description)
+                # full_block also contains the NEXT property's description — don't use it for type check
+                if prop_type in ("一棟マンション", "一棟"):
+                    if not re.search(r"一棟売(?:アパート|マンション|ビル)", prev_desc):
+                        continue
+
                 prop = _parse_ittomono_block(full_block, prop_type, detail_urls, idx - 1)
                 if prop:
                     props.append(prop)
@@ -618,8 +623,9 @@ def search_ftakken_ittomono() -> tuple[list[dict], list[dict]]:
     """
     print("\n=== ふれんず 一棟もの・戸建て検索 ===")
 
-    ittomono_items_url = "https://www.f-takken.com/freins/buy/mansion/items"
-    kodate_items_url = "https://www.f-takken.com/freins/buy/detached/items"
+    # Confirmed correct endpoints via Playwright network probing
+    ittomono_items_url = "https://www.f-takken.com/freins/buy/other/area/items"
+    kodate_items_url = "https://www.f-takken.com/freins/buy/detached/area/items"
 
     ittomono_props: list[dict] = []
     kodate_props: list[dict] = []
@@ -665,7 +671,12 @@ def search_ftakken_ittomono() -> tuple[list[dict], list[dict]]:
 
     ittomono_props = _dedup(ittomono_props)
     kodate_props = _dedup(kodate_props)
-    print(f"  一棟マンション: {len(ittomono_props)}件 / 戸建て: {len(kodate_props)}件")
+
+    # Limit to top 25 (same as 区分 pre-filter) — sort by price asc
+    TOP_N = 25
+    ittomono_props = sorted(ittomono_props, key=lambda p: p["price_man"])[:TOP_N]
+    kodate_props = sorted(kodate_props, key=lambda p: p["price_man"])[:TOP_N]
+    print(f"  一棟マンション: {len(ittomono_props)}件 / 戸建て: {len(kodate_props)}件 (上位{TOP_N}件)")
     return ittomono_props, kodate_props
 
 

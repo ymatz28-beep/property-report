@@ -31,6 +31,26 @@ HEADERS = {
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
 }
 
+# Actionable fix suggestions: step_name -> reason_key -> fix text
+STEP_FIX: dict[str, dict[str, str]] = {
+    "search_suumo.py": {
+        "timeout": "詳細取得を並列化済み（2026-03-27修正）→ 次回から解消見込み",
+        "default": "SUUMO側のブロック可能性。User-Agent or wait時間を見直す",
+    },
+    "enrich_maintenance.py": {
+        "timeout": "設計上の仕様（600s budget制）。未取得分は翌日継続。アクション不要",
+        "default": "管理費ページのHTML構造変化の可能性。パーサー確認",
+    },
+    "search_multi_site.py": {
+        "timeout": "Yahoo/楽待スクレイプ負荷増。並列化 or 都市分割を検討",
+        "default": "サイト構造変化の可能性。セレクタ確認",
+    },
+    "generate_osaka_report.py": {"default": "レポートデータ不整合。手動で python3 generate_osaka_report.py を実行"},
+    "generate_fukuoka_report.py": {"default": "レポートデータ不整合。手動で python3 generate_fukuoka_report.py を実行"},
+    "generate_tokyo_report.py": {"default": "レポートデータ不整合。手動で python3 generate_tokyo_report.py を実行"},
+    "generate_ittomono_report.py": {"default": "一棟ものデータ不整合。手動で python3 generate_ittomono_report.py を実行"},
+}
+
 # Human-readable labels: step_name -> (label, impact_when_failed)
 STEP_LABELS = {
     "search_suumo.py": ("SUUMO物件検索", "SUUMO経由の新規物件が未検出"),
@@ -461,6 +481,9 @@ def _build_failure_details(all_steps: list[dict]) -> list[dict]:
 
         if s.get("retried"):
             detail["retried"] = True
+
+        fix_map = STEP_FIX.get(step, {})
+        detail["fix"] = fix_map.get(reason_key, fix_map.get("default", "エラーログを確認"))
 
         details.append(detail)
     return details

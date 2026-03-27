@@ -165,12 +165,15 @@ jobs:
                   label = d.get('label', d.get('step', '?'))
                   reason = d.get('reason', '\u4e0d\u660e')
                   impact = d.get('impact', '')
+                  fix = d.get('fix', '')
                   L.append(f'\u274c {label}')
                   L.append(f'   \u539f\u56e0: {reason}')
                   if impact:
                       L.append(f'   \u5f71\u97ff: {impact}')
+                  if fix:
+                      L.append(f'   \u2192 Fix: {fix}')
                   if d.get('retried'):
-                      L.append('   \u2192 \u30ea\u30c8\u30e9\u30a4\u6e08\u307f\u30fb\u518d\u5931\u6557')
+                      L.append('   (\u30ea\u30c8\u30e9\u30a4\u6e08\u307f\u30fb\u518d\u5931\u6557)')
                   tail = d.get('stderr_tail', '')
                   if tail:
                       last_line = tail.strip().split(NL)[-1][:80]

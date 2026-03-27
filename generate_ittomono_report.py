@@ -403,20 +403,29 @@ def _build_comment(row: IttomonoRow) -> str:
 # ============================================================
 
 def _avg_sqm_cell(r: IttomonoRow) -> str:
-    """Build the avg ㎡/戸 cell with color coding and layout detail."""
+    """Build the avg ㎡/戸 cell with total area and layout detail."""
     parts = []
     if r.avg_sqm_per_unit is not None:
         val = r.avg_sqm_per_unit
         if val >= 35:
-            color = "#22c55e"  # green — meets requirement
+            color = "#22c55e"
         elif val >= 25:
-            color = "#facc15"  # yellow — borderline
+            color = "#facc15"
         else:
-            color = "#f87171"  # red — too small
+            color = "#f87171"
         parts.append(f'<span style="color:{color};font-weight:600">{val}㎡</span>')
     else:
         parts.append('<span style="color:var(--dim)">-</span>')
-    # Show layout_detail if available (e.g. "1K×6戸, 1LDK×6戸")
+    # Total building area as small subscript (replaces the removed col-area column)
+    if r.area_sqm:
+        area_int = int(r.area_sqm)
+        flag = "(土)" if "(土地)" in r.area_text else ""
+        parts.append(f'<div class="area-sub">計{area_int}m²{flag}</div>')
+    elif r.area_text and r.area_text != "-":
+        # Fallback: show raw text truncated
+        short = re.sub(r"\.\d+", "", r.area_text)[:10]
+        parts.append(f'<div class="area-sub">{html.escape(short)}</div>')
+    # Layout detail (e.g. "1K×6戸, 1LDK×6戸")
     if r.layout_detail:
         parts.append(f'<div class="layout-detail">{html.escape(r.layout_detail)}</div>')
     return "".join(parts)
@@ -731,7 +740,6 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
           <td class="col-location">{html.escape(r.location)}</td>
           <td class="col-structure">{html.escape(r.structure or '-')}</td>
           <td class="col-units">{html.escape(r.units or '-')}</td>
-          <td class="col-area" style="font-family:'JetBrains Mono',monospace;white-space:nowrap">{html.escape(r.area_text or '-')}</td>
           <td class="col-avgm2">{_avg_sqm_cell(r)}</td>
           <td class="col-yield">{html.escape(r.yield_text or '-')}</td>
           <td class="col-netyield">{tbl_netyield}</td>
@@ -1014,6 +1022,7 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
     .col-structure {{ white-space: nowrap; }}
     .col-units {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; }}
     .col-avgm2 {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; min-width: 70px; }}
+    .col-avgm2 .area-sub {{ font-size: 10px; color: var(--text-secondary); font-family: 'JetBrains Mono',monospace; margin-top: 2px; }}
     .col-avgm2 .layout-detail {{ font-size: 10px; color: var(--text-secondary); font-family: 'Noto Sans JP',sans-serif; margin-top: 2px; white-space: normal; line-height: 1.3; }}
     .col-yield {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; color: #34d399; }}
     .col-netyield {{ white-space: nowrap; font-family: 'JetBrains Mono',monospace; }}
@@ -1128,7 +1137,6 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
           <th data-sort="location">\u6240\u5728\u5730</th>
           <th data-sort="structure">\u69cb\u9020</th>
           <th data-sort="units">\u6238\u6570</th>
-          <th data-sort="area">延床m²</th>
           <th data-sort="avgm2">\u33a1/\u6238</th>
           <th data-sort="yield">\u5229\u56de\u308a</th>
           <th data-sort="netyield">\u5b9f\u8cea</th>
@@ -1242,6 +1250,13 @@ def main():
         rows = parse_data_file(data_path, city_key)
         print(f"  {CITY_LABELS[city_key]}: {len(rows)}件")
         all_rows.extend(rows)
+
+    # ふれんず (一棟マンション) — Fukuoka only
+    ftakken_ittomono = DATA_DIR / "ftakken_ittomono_fukuoka_raw.txt"
+    if ftakken_ittomono.exists():
+        ft_rows = parse_data_file(ftakken_ittomono, "fukuoka")
+        print(f"  ふれんず(一棟マンション): {len(ft_rows)}件")
+        all_rows.extend(ft_rows)
 
     if not all_rows:
         print("  物件が0件 — データファイルを確認してください")

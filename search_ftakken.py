@@ -27,9 +27,24 @@ SEARCH_CONFIGS = {
     },
 }
 
-PRICE_MAX = 5000  # 万円
+PRICE_MAX = 5000  # 万円 (区分)
 AREA_MIN = 40
 AREA_MAX = 70
+
+# 一棟マンション price range (1.5億〜2億)
+ITTOMONO_PRICE_MIN = 15000
+ITTOMONO_PRICE_MAX = 20000
+# 戸建て price range (収益物件: 安く買って高く貸す)
+KODATE_PRICE_MIN = 1000
+KODATE_PRICE_MAX = 10000
+
+# ふれんず prefecture code for Fukuoka
+FUKUOKA_PREF_CODE = "40"
+FUKUOKA_WARDS = {
+    "博多区": "40132",
+    "中央区": "40133",
+    "南区": "40134",
+}
 
 
 def _parse_property_blocks(page_text: str, ward_name: str, detail_urls: list[str]) -> list[dict]:
@@ -369,15 +384,337 @@ def save_results(properties: list[dict], city_key: str) -> Path:
     return out_path
 
 
+def _parse_ittomono_block(block: str, prop_type: str, detail_urls: list[str], idx: int) -> dict | None:
+    """Parse a single 一棟マンション/戸建て block from ふれんず."""
+    # Price (億 or 万円)
+    price_man = 0
+    price_text = ""
+    p_oku = re.search(r"(\d+(?:\.\d+)?)\s*億\s*(?:(\d[\d,]*)\s*万)?円?", block)
+    p_man = re.search(r"価格\s+(\d[\d,]+)\s*万円", block)
+    if p_oku:
+        oku = int(float(p_oku.group(1)) * 10000)
+        man = int(p_oku.group(2).replace(",", "")) if p_oku.group(2) else 0
+        price_man = oku + man
+    elif p_man:
+        price_man = int(p_man.group(1).replace(",", ""))
+    else:
+        p_fallback = re.search(r"(\d[\d,]+)\s*万円", block)
+        if p_fallback:
+            price_man = int(p_fallback.group(1).replace(",", ""))
+    if price_man == 0:
+        return None
+    if price_man >= 10000:
+        o = price_man // 10000
+        m = price_man % 10000
+        price_text = f"{o}億{m}万円" if m else f"{o}億円"
+    else:
+        price_text = f"{price_man}万円"
+
+    # Price range filter
+    if prop_type in ("一棟マンション", "一棟"):
+        if price_man < ITTOMONO_PRICE_MIN or price_man > ITTOMONO_PRICE_MAX:
+            return None
+    else:  # 戸建て
+        if price_man < KODATE_PRICE_MIN or price_man > KODATE_PRICE_MAX:
+            return None
+
+    # Location
+    loc_m = re.search(r"所在地\s*([^\n\t]+?)(?:\s*mapを見る|\s*map|\t|\n)", block)
+    if not loc_m:
+        return None
+    location = loc_m.group(1).strip().split()[0] if loc_m.group(1).strip() else ""
+    if not location:
+        return None
+
+    # Building area (延床 or 建物) — for 一棟 / 戸建て
+    area_text = ""
+    area_sqm = None
+    a_m = re.search(r"(?:延床面積|建物面積|建物)\s*(?:[\d.]+\s*坪/)?\s*(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", block)
+    if not a_m:
+        a_m = re.search(r"(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", block)
+    if a_m:
+        area_sqm = float(a_m.group(1))
+        area_text = f"{area_sqm}㎡"
+
+    # Land area (土地) — important for 戸建て
+    land_text = ""
+    l_m = re.search(r"(?:土地面積|土地)\s*(?:[\d.]+\s*坪/)?\s*(\d+(?:\.\d+)?)\s*(?:m[²2]|㎡)", block)
+    if l_m:
+        land_text = f"土地{l_m.group(1)}㎡"
+
+    # Station
+    station_m = re.search(r"交通\s*([^\n]+)", block)
+    station_text = ""
+    if station_m:
+        raw = station_m.group(1).strip().split("\n")[0]
+        w_m = re.search(r"([^\s]+(?:駅|線)[^\n]*?徒歩\s*\d+\s*分)", raw)
+        station_text = w_m.group(1) if w_m else raw[:50]
+
+    # Built year
+    b_m = re.search(r"築年月\s*(\d{4}).*?年\s*(\d{1,2})\s*月", block)
+    if not b_m:
+        b_m = re.search(r"(\d{4})\s*年", block)
+    if b_m:
+        built_text = f"{b_m.group(1)}年{b_m.group(2)}月" if len(b_m.groups()) >= 2 and b_m.group(2) else f"{b_m.group(1)}年"
+    else:
+        built_text = ""
+
+    # Structure (構造) — RC, 木造, 鉄骨 etc.
+    structure = ""
+    s_m = re.search(r"構造\s*(RC造|SRC造|鉄筋コンクリート造|S造|鉄骨造|軽量鉄骨造|木造)(?:\s*(\d+)階建)?", block)
+    if not s_m:
+        s_m = re.search(r"(RC造|SRC造|鉄骨鉄筋コンクリート造|S造|鉄骨造|木造)\s*(\d+)階建", block)
+    if s_m:
+        raw_s = s_m.group(1)
+        if "鉄骨鉄筋コンクリート" in raw_s or "SRC" in raw_s:
+            structure = "SRC造"
+        elif "鉄筋コンクリート" in raw_s or raw_s == "RC造":
+            structure = "RC造"
+        elif "鉄骨" in raw_s:
+            structure = "S造"
+        else:
+            structure = raw_s
+        if s_m.lastindex and s_m.lastindex >= 2 and s_m.group(2):
+            structure += f"{s_m.group(2)}階建"
+    else:
+        fl_m = re.search(r"(\d+)階建", block)
+        if fl_m:
+            structure = fl_m.group(0)
+
+    # Units count (戸数)
+    units = ""
+    u_m = re.search(r"(?:戸数|総戸数)\s*(\d+)\s*戸", block)
+    if not u_m:
+        u_m = re.search(r"(\d+)\s*戸", block)
+    if u_m:
+        units = f"{u_m.group(1)}戸"
+
+    # Yield (利回り)
+    yield_text = ""
+    y_m = re.search(r"(?:利回り|表面利回り)\s*([\d.]+)\s*[%％]", block)
+    if not y_m:
+        y_m = re.search(r"([\d.]+)\s*[%％]", block)
+    if y_m:
+        y_val = float(y_m.group(1))
+        if 1.0 <= y_val <= 30.0:
+            yield_text = f"{y_val}%"
+
+    # Name
+    name = ""
+    lines = block.strip().split("\n")
+    for line in lines:
+        line = line.strip()
+        if (len(line) >= 3
+                and not re.match(r"^\d", line)
+                and "万円" not in line and "㎡" not in line
+                and "所在地" not in line and "交通" not in line
+                and "築年月" not in line and "価格" not in line
+                and "閲覧" not in line and "お気に入り" not in line):
+            name = line[:40]
+            break
+    if not name:
+        name = f"ふれんず{prop_type} #{idx}"
+
+    # URL
+    url = detail_urls[idx] if idx < len(detail_urls) else f"https://www.f-takken.com/freins/buy/mansion"
+
+    # Area display: prioritize building area; for 戸建て show both if available
+    if land_text and prop_type != "一棟マンション":
+        area_text = f"{area_text}/{land_text}" if area_text else land_text
+
+    return {
+        "source": f"ふれんず({prop_type})",
+        "name": name,
+        "price_text": price_text,
+        "price_man": price_man,
+        "location": location,
+        "area_text": area_text,
+        "built_text": built_text,
+        "station_text": station_text,
+        "structure": structure,
+        "units": units,
+        "yield_text": yield_text,
+        "layout_detail": "",
+        "url": url,
+    }
+
+
+def _scrape_ittomono_page(page, items_url: str, price_min: int, price_max: int, prop_type: str) -> list[dict]:
+    """Scrape 一棟もの / 戸建て listing page using Playwright."""
+    # Try with ward filter for Fukuoka core areas, then fall back to prefecture-wide
+    url = (f"{items_url}?limit=100"
+           f"&data_21={price_min}&data_22={price_max}")
+    for ward_code in FUKUOKA_WARDS.values():
+        url += f"&locate[]={ward_code}"
+
+    print(f"  {prop_type}: {url[:100]}")
+    try:
+        page.goto(url, timeout=60000, wait_until="domcontentloaded")
+        page.wait_for_load_state("networkidle", timeout=45000)
+        time.sleep(3)
+    except PlaywrightTimeout:
+        print(f"  [WARN] Timeout: {prop_type}")
+        return []
+
+    all_props = []
+    page_num = 1
+    max_pages = 5
+
+    while page_num <= max_pages:
+        page_text = page.inner_text("body") if page.query_selector("body") else ""
+        if not page_text or len(page_text) < 100:
+            break
+
+        property_items = page.query_selector_all('li.item.list-tpl[data-id]')
+        detail_urls = []
+        seen = set()
+        for item in property_items:
+            try:
+                bno = item.get_attribute("data-id") or ""
+                if bno and bno not in seen:
+                    seen.add(bno)
+                    detail_urls.append(f"https://www.f-takken.com/freins/items/{bno}")
+            except Exception:
+                continue
+
+        # Parse blocks
+        blocks = page_text.split("物件の詳細を見る")
+        props = []
+        for idx in range(1, len(blocks)):
+            try:
+                block = blocks[idx]
+                prev_desc = blocks[idx - 1].split("\n")[-10:]
+                full_block = "\n".join(prev_desc) + "\n" + block
+                prop = _parse_ittomono_block(full_block, prop_type, detail_urls, idx - 1)
+                if prop:
+                    props.append(prop)
+            except Exception:
+                continue
+
+        print(f"  Page {page_num}: {len(props)}件")
+        if not props:
+            break
+        all_props.extend(props)
+
+        next_btn = page.query_selector(f'a[href="#page-{page_num + 1}"]')
+        if not next_btn:
+            break
+        try:
+            next_btn.click()
+            time.sleep(2)
+            page.wait_for_load_state("networkidle", timeout=10000)
+            time.sleep(1)
+        except Exception:
+            break
+        page_num += 1
+
+    return all_props
+
+
+def search_ftakken_ittomono() -> tuple[list[dict], list[dict]]:
+    """Search ふれんず for 一棟マンション + 戸建て（収益物件）.
+
+    Returns (ittomono_list, kodate_list).
+    """
+    print("\n=== ふれんず 一棟もの・戸建て検索 ===")
+
+    ittomono_items_url = "https://www.f-takken.com/freins/buy/mansion/items"
+    kodate_items_url = "https://www.f-takken.com/freins/buy/detached/items"
+
+    ittomono_props: list[dict] = []
+    kodate_props: list[dict] = []
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(
+            headless=True,
+            args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
+        )
+        context = browser.new_context(
+            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+            viewport={"width": 1280, "height": 800},
+            locale="ja-JP",
+            timezone_id="Asia/Tokyo",
+        )
+        context.add_init_script(
+            "Object.defineProperty(navigator, 'webdriver', { get: () => undefined });"
+        )
+        page = context.new_page()
+
+        try:
+            ittomono_props = _scrape_ittomono_page(
+                page, ittomono_items_url, ITTOMONO_PRICE_MIN, ITTOMONO_PRICE_MAX, "一棟マンション"
+            )
+        except Exception as e:
+            print(f"  [ERROR] 一棟マンション: {e}")
+
+        time.sleep(2)
+
+        try:
+            kodate_props = _scrape_ittomono_page(
+                page, kodate_items_url, KODATE_PRICE_MIN, KODATE_PRICE_MAX, "戸建て"
+            )
+        except Exception as e:
+            print(f"  [ERROR] 戸建て: {e}")
+
+        browser.close()
+
+    # Dedup by URL
+    def _dedup(props: list[dict]) -> list[dict]:
+        seen: set[str] = set()
+        return [p for p in props if p["url"] not in seen and not seen.add(p["url"])]
+
+    ittomono_props = _dedup(ittomono_props)
+    kodate_props = _dedup(kodate_props)
+    print(f"  一棟マンション: {len(ittomono_props)}件 / 戸建て: {len(kodate_props)}件")
+    return ittomono_props, kodate_props
+
+
+def save_ittomono_results(properties: list[dict], prop_type: str) -> Path:
+    """Save 一棟もの/戸建て results in 15-column ittomono format."""
+    DATA_DIR.mkdir(exist_ok=True)
+    slug = "ittomono" if prop_type == "一棟マンション" else "kodate"
+    out_path = DATA_DIR / f"ftakken_{slug}_fukuoka_raw.txt"
+
+    price_range = f"{ITTOMONO_PRICE_MIN}万〜{ITTOMONO_PRICE_MAX}万" if prop_type == "一棟マンション" else f"{KODATE_PRICE_MIN}万〜{KODATE_PRICE_MAX}万"
+    lines = [
+        f"## ふれんず {prop_type} 検索結果 - 福岡",
+        f"## 条件: {price_range}",
+        f"## 取得日: {datetime.now().strftime('%Y-%m-%d')}",
+        f"## 件数: {len(properties)}件",
+        "",
+    ]
+    for prop in properties:
+        # 14-column format (no pre-score): source|name|price|location|area|built|station|structure|units|yield|layout_detail|pet|brokerage|url
+        line = "|".join([
+            prop["source"],
+            prop["name"],
+            prop["price_text"],
+            prop["location"],
+            prop["area_text"],
+            prop["built_text"],
+            prop["station_text"],
+            prop.get("structure", ""),
+            prop.get("units", ""),
+            prop.get("yield_text", ""),
+            prop.get("layout_detail", ""),
+            "",  # pet
+            "",  # brokerage
+            prop["url"],
+        ])
+        lines.append(line)
+
+    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return out_path
+
+
 def main():
     print(f"ふれんず物件検索 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     props = search_ftakken("fukuoka")
     if props:
         out = save_results(props, "fukuoka")
-        print(f"\n出力: {out}")
+        print(f"\n出力(区分): {out}")
     else:
         print("\n物件データが取得できませんでした")
-        # Save empty file to clear stale data
         DATA_DIR.mkdir(exist_ok=True)
         out_path = DATA_DIR / "ftakken_fukuoka_raw.txt"
         out_path.write_text(
@@ -387,6 +724,15 @@ def main():
             f"## 件数: 0件\n",
             encoding="utf-8",
         )
+
+    # 一棟もの + 戸建て
+    ittomono, kodate = search_ftakken_ittomono()
+    if ittomono:
+        out = save_ittomono_results(ittomono, "一棟マンション")
+        print(f"出力(一棟マンション): {out}")
+    if kodate:
+        out = save_ittomono_results(kodate, "戸建て")
+        print(f"出力(戸建て): {out}")
 
 
 if __name__ == "__main__":

@@ -461,16 +461,23 @@ def budget_score(price_man: int) -> int:
 
 
 def area_score(area_sqm: float | None) -> int:
+    """Area scoring for investment properties. Sweet spot = 40-60㎡ (1LDK-2LDK).
+
+    Smaller units (25-40㎡) are viable for short-term rental.
+    Larger units (70㎡+) have lower yield but appeal to families.
+    """
     if area_sqm is None:
         return 0
-    if 50 <= area_sqm < 60:
+    if 40 <= area_sqm < 60:
         return 15
-    if 40 <= area_sqm < 50:
-        return 10
+    if 25 <= area_sqm < 40:
+        return 10  # Studio/1K — short-term rental viable
     if 60 <= area_sqm < 70:
         return 10
-    if area_sqm > 70:
+    if area_sqm >= 70:
         return 5
+    if area_sqm < 25:
+        return -5  # Too small — limited use
     return 0
 
 
@@ -495,7 +502,7 @@ def station_score(walk_min: int | None) -> int:
         return -5
     if walk_min <= 20:
         return -15
-    return -25  # 20分超は民泊・居住ともに非現実的
+    return -15  # 20分超は厳しいが-25は過大ペナルティ
 
 
 def layout_score(layout: str) -> int:
@@ -543,7 +550,7 @@ def classify_location_fukuoka(text: str) -> tuple[str, int]:
     for label, score, kws in checks:
         if any(kw in cleaned for kw in kws):
             return label, score
-    return "Other", -5
+    return "Other", 0  # Unknown area — neutral (was -5, asymmetric with Osaka +5)
 
 
 def pet_score_for_row(row: PropertyRow) -> int:
@@ -702,7 +709,7 @@ def classify_location_tokyo(text: str) -> tuple[str, int]:
     for label, score, kws in checks:
         if any(kw in text for kw in kws):
             return label, score
-    return "Other", -5
+    return "Other", 0  # Unknown area — neutral (was -5)
 
 
 def score_row(row: PropertyRow, config: ReportConfig) -> None:

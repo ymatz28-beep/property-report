@@ -365,12 +365,31 @@ def main() -> None:
 
     first_seen = load_first_seen()
 
+    # Backfill: register new URLs in first_seen.json
+    import datetime as _dt
+    _today_iso = _dt.date.today().isoformat()
+    _backfilled = 0
+
     # Collect all ittomono/kodate for global filtering
     all_ittomono: list[IttomonoRow] = []
     all_kodate: list[IttomonoRow] = []
     for cfg in CITY_CONFIGS:
         all_ittomono.extend(_load_ittomono_by_city(cfg["key"]))
         all_kodate.extend(_load_kodate_by_city(cfg["key"]))
+
+    # Backfill first_seen for ittomono/kodate URLs
+    for r in all_ittomono:
+        if r.url and r.url not in first_seen:
+            first_seen[r.url] = _today_iso
+            _backfilled += 1
+    for r in all_kodate:
+        if r.url and r.url not in first_seen:
+            first_seen[r.url] = _today_iso
+            _backfilled += 1
+    if _backfilled:
+        _fs_path = Path("data") / "first_seen.json"
+        _fs_path.write_text(json.dumps(first_seen, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"  first_seen.json: {_backfilled}件バックフィル")
 
     # Filter & dedup ittomono globally
     if all_ittomono:

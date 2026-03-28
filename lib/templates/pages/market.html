@@ -331,28 +331,28 @@
             {% for prop in city.kubun.properties %}
             <tr data-score="{{ prop.total_score }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}" {% if prop.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
               <td class="score-cell" style="color:{% if prop.total_score >= 80 %}var(--green){% elif prop.total_score >= 65 %}var(--yellow){% else %}var(--orange, #ff6b35){% endif %}">{{ prop.total_score }}</td>
-              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% else %}{{ prop.first_seen | default("—") }}{% endif %}</td>
+              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
-              <td>{{ prop.layout | default("—") }}</td>
+              <td>{{ prop.layout or "—" }}</td>
               <td>{{ prop.station_text | default(prop.location) }}</td>
-              <td>{{ prop.built_text | default("—") }}</td>
-              <td class="price-cell">{{ prop.maintenance_fee_text | default("—") }}</td>
-              <td>{{ prop.pet_status | default("—") }}</td>
-              <td>{{ prop.yield_text | default("—") }}</td>
+              <td>{{ prop.built_text or "—" }}</td>
+              <td class="price-cell">{{ prop.maintenance_fee_text or "—" }}</td>
+              <td>{{ prop.pet_status or "—" }}</td>
+              <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
-              <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
+              <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
               <td colspan="13">
                 <div class="detail-grid">
-                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">{{ prop.revenue.net_yield }}%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:{% if prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.after_tax_monthly_cf }}万</span></div>
-                  <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">{{ prop.revenue.ccr }}%</span></div>
+                  <div class="detail-item"><span class="detail-label">CCR（自己資本利回り）</span><span class="detail-value">{{ prop.revenue.ccr }}%</span></div>
                   <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">{% if prop.revenue.payback_years %}{{ prop.revenue.payback_years }}年{% else %}∞{% endif %}</span></div>
                   <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">{{ prop.revenue.down_payment }}万</span></div>
                   <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">{{ prop.revenue.depreciation_annual }}万</span></div>
@@ -394,30 +394,30 @@
             {% for prop in city.ittomono.properties %}
             <tr data-score="{{ prop.total_score | default(0) }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}" {% if prop.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
               <td class="score-cell" style="color:{% if (prop.total_score | default(0)) >= 80 %}var(--green){% elif (prop.total_score | default(0)) >= 50 %}var(--yellow){% else %}var(--text-muted){% endif %}">{{ prop.total_score | default(0) }}</td>
-              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% else %}{{ prop.first_seen | default("—") }}{% endif %}</td>
+              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
-              <td>{{ prop.yield_text | default("—") }}</td>
+              <td>{{ prop.yield_text or "—" }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
-              <td>{{ prop.structure | default("—") }}</td>
-              <td>{{ prop.units_count | default("—") }}</td>
+              <td>{{ prop.structure or "—" }}</td>
+              <td>{{ prop.units_count or "—" }}</td>
               <td>{{ prop.station_text | default(prop.location) }}</td>
               {% if prop.revenue %}
               <td class="price-cell" style="color:{% if prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.after_tax_monthly_cf }}万</td>
               {% else %}
               <td>—</td>
               {% endif %}
-              <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
+              <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
               <td colspan="11">
                 <div class="detail-grid">
-                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">{{ prop.revenue.net_yield }}%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:{% if prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.after_tax_monthly_cf }}万</span></div>
-                  <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">{{ prop.revenue.ccr }}%</span></div>
+                  <div class="detail-item"><span class="detail-label">CCR（自己資本利回り）</span><span class="detail-value">{{ prop.revenue.ccr }}%</span></div>
                   <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">{% if prop.revenue.payback_years %}{{ prop.revenue.payback_years }}年{% else %}∞{% endif %}</span></div>
                   <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">{{ prop.revenue.down_payment }}万</span></div>
                   <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">{{ prop.revenue.depreciation_annual }}万</span></div>
@@ -455,15 +455,15 @@
             {% for prop in city.kodate.properties %}
             <tr data-score="{{ prop.total_score | default(0) }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}">
               <td class="score-cell">{{ prop.total_score | default(0) }}</td>
-              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% else %}{{ prop.first_seen | default("—") }}{% endif %}</td>
+              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
-              <td>{{ prop.structure | default("—") }}</td>
-              <td>{{ prop.built_text | default("—") }}</td>
+              <td>{{ prop.structure or "—" }}</td>
+              <td>{{ prop.built_text or "—" }}</td>
               <td>{{ prop.station_text | default(prop.location) }}</td>
-              <td>{{ prop.yield_text | default("—") }}</td>
-              <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
+              <td>{{ prop.yield_text or "—" }}</td>
+              <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% endfor %}
           </tbody>

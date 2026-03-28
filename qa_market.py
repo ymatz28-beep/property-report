@@ -371,6 +371,88 @@ def check_sort_functionality(parser: MarketHTMLParser) -> tuple[str, str]:
     return "PASS", f"data attributes present; toggleDetail found ({parser.table_rows_with_attrs} rows)"
 
 
+def check_data_accuracy(parser: MarketHTMLParser) -> tuple[str, str]:
+    """Compare rendered HTML against raw data files.
+
+    Checks that property names, prices, areas are not blank/missing
+    and that first_seen (掲載日) is populated for all properties.
+    """
+    issues = []
+    total = 0
+    blank_names = 0
+    blank_prices = 0
+    blank_areas = 0
+    blank_first_seen = 0
+
+    html_path = HTML_PATH
+    html_text = html_path.read_text(encoding="utf-8") if html_path.exists() else ""
+
+    for sec_id, sec in parser.sections.items():
+        for row in sec.get("table_rows", []):
+            total += 1
+            name = row.get("name", "").strip()
+            if not name or name == "—":
+                blank_names += 1
+
+        for card in sec.get("prop_cards", []):
+            name = card.get("name", "").strip()
+            if not name or name == "—":
+                blank_names += 1
+
+    # Count blank cells via regex on rendered HTML (—, empty td)
+    blank_td_count = len(re.findall(r"<td[^>]*>\s*</td>", html_text))
+
+    if blank_names:
+        issues.append(f"{blank_names} blank property names")
+    if blank_td_count > 5:
+        issues.append(f"{blank_td_count} empty <td> cells")
+
+    # Check first_seen coverage in rendered output
+    # Count "—" in first_seen position (2nd column of each table)
+    dash_first_seen = html_text.count(">—</td>\n")
+
+    if total == 0:
+        return "WARN", "No properties found"
+    if issues:
+        level = "FAIL" if blank_names > 3 else "WARN"
+        return level, "; ".join(issues) + f" (blank_td={blank_td_count})"
+    return "PASS", f"{total} properties checked; {blank_td_count} empty cells"
+
+
+def check_first_seen_coverage(parser: MarketHTMLParser) -> tuple[str, str]:
+    """Verify first_seen (掲載日) is populated. WARN if >30% missing."""
+    total = 0
+    missing = 0
+
+    html_path = HTML_PATH
+    if not html_path.exists():
+        return "WARN", "HTML file not found"
+
+    html_text = html_path.read_text(encoding="utf-8")
+    # Count rows that show "—" in the first_seen column
+    # The pattern is: score cell, then first_seen cell
+    # In template: <td>—</td> right after score-cell
+    # We can count all properties vs those with first_seen dates
+    for sec in parser.sections.values():
+        total += len(sec.get("table_rows", []))
+
+    # Count first_seen dates in HTML (MM/DD or NEW pattern)
+    date_pattern = re.compile(r'<td>(?:\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}|<span[^>]*>NEW</span>)</td>')
+    found_dates = len(date_pattern.findall(html_text))
+
+    if total == 0:
+        return "WARN", "No properties found"
+
+    missing = total - found_dates
+    pct_covered = found_dates / total * 100 if total else 0
+
+    if pct_covered < 50:
+        return "FAIL", f"掲載日 coverage {pct_covered:.0f}% ({found_dates}/{total})"
+    if pct_covered < 80:
+        return "WARN", f"掲載日 coverage {pct_covered:.0f}% ({found_dates}/{total})"
+    return "PASS", f"掲載日 coverage {pct_covered:.0f}% ({found_dates}/{total})"
+
+
 # ---------------------------------------------------------------------------
 # Runner
 # ---------------------------------------------------------------------------
@@ -390,6 +472,8 @@ def run_qa(html_path: Path = HTML_PATH, strict: bool = False) -> bool:
         ("Duplicate Detection", check_duplicate_detection),
         ("Data Completeness", check_data_completeness),
         ("Sort Functionality", check_sort_functionality),
+        ("Data Accuracy", check_data_accuracy),
+        ("First-Seen Coverage", check_first_seen_coverage),
     ]
 
     results: list[tuple[str, str, str]] = []

@@ -1,0 +1,57 @@
+name: Deploy to gh-pages on push
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'output/*.html'
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy HTML to gh-pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/deploy-reports
+          count=0
+          for f in output/*.html; do
+            [ ! -f "$f" ] && continue
+            fname=$(basename "$f")
+            [ "$fname" = "portfolio_dashboard.html" ] && continue
+            cp "$f" "/tmp/deploy-reports/$fname"
+            count=$((count + 1))
+          done
+
+          if [ "$count" -eq 0 ]; then
+            echo "No HTML files to deploy"
+            exit 0
+          fi
+          echo "Deploying $count HTML files"
+
+          git clone --single-branch --branch gh-pages --depth 1 \
+            "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" \
+            /tmp/gh-pages-deploy
+          cd /tmp/gh-pages-deploy
+
+          git config user.name "Property Report Bot"
+          git config user.email "noreply@github.com"
+
+          rm -f *.html
+          cp /tmp/deploy-reports/*.html ./
+
+          git add *.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-deploy from main $(date +%Y-%m-%d-%H%M)"
+            git push origin gh-pages
+            echo "gh-pages deployed"
+          else
+            echo "No changes to deploy"
+          fi

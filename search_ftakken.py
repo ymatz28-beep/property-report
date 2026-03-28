@@ -629,6 +629,64 @@ def _scrape_ittomono_page(page, items_url: str, price_min: int, price_max: int, 
     return all_props
 
 
+def _enrich_ftakken_detail(page, properties: list[dict]) -> None:
+    """Visit each ふれんず detail page to get accurate building name, units, station.
+
+    The listing page text-block parsing often contaminates data between adjacent
+    properties. Detail pages are the SSoT for building name and unit count.
+    """
+    print(f"  ふれんず詳細ページenrichment: {len(properties)}件")
+    enriched = 0
+    for i, prop in enumerate(properties):
+        url = prop.get("url", "")
+        if not url or "f-takken.com" not in url:
+            continue
+        try:
+            page.goto(url, timeout=20000)
+            page.wait_for_load_state("networkidle", timeout=15000)
+            time.sleep(1)
+            text = page.inner_text("body")
+        except Exception as e:
+            print(f"    [WARN] {prop['name'][:20]}: {e}")
+            time.sleep(1)
+            continue
+
+        changed = False
+
+        # Building name: "建物名" field on detail page
+        name_m = re.search(r"建物名\s+([^\n\t]+)", text)
+        if name_m:
+            real_name = name_m.group(1).strip()
+            if real_name and len(real_name) >= 2 and real_name != prop.get("name"):
+                prop["name"] = real_name
+                changed = True
+
+        # Total units: "総戸数" field
+        units_m = re.search(r"総戸数\s*(\d+)\s*戸", text)
+        if units_m:
+            prop["units"] = f"{units_m.group(1)}戸"
+            changed = True
+
+        # Station: more reliable from detail page
+        station_m = re.search(r"交通\s*([^\n]+)", text)
+        if station_m:
+            raw = station_m.group(1).strip().split("\n")[0]
+            w_m = re.search(r"([^\s]+(?:駅|線)[^\n]*?徒歩\s*\d+\s*分)", raw)
+            if w_m:
+                prop["station_text"] = w_m.group(1)
+                changed = True
+
+        if changed:
+            enriched += 1
+            print(f"    {prop['name'][:25]}")
+
+        if (i + 1) % 5 == 0:
+            print(f"    {i + 1}/{len(properties)} done")
+        time.sleep(0.5)
+
+    print(f"  ふれんず詳細: {enriched}件更新")
+
+
 def search_ftakken_ittomono() -> tuple[list[dict], list[dict]]:
     """Search ふれんず for 一棟マンション + 戸建て（収益物件）.
 
@@ -674,6 +732,11 @@ def search_ftakken_ittomono() -> tuple[list[dict], list[dict]]:
             )
         except Exception as e:
             print(f"  [ERROR] 戸建て: {e}")
+
+        # Enrich: visit detail pages to get accurate building name + units
+        all_ittomono = ittomono_props + kodate_props
+        if all_ittomono:
+            _enrich_ftakken_detail(page, all_ittomono)
 
         browser.close()
 

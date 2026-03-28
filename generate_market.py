@@ -179,8 +179,12 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
     d["walk_min_text"] = f"{int(row.walk_min)}分" if getattr(row, "walk_min", None) else "—"
     # Price per sqm
     if row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
-        ppsm = round(row.price_man * 10000 / row.area_sqm)
-        d["price_per_sqm"] = f"{ppsm:,.0f}円/㎡"
+        ppsm = row.price_man * 10000 / row.area_sqm
+        ppsm_man = ppsm / 10000
+        if ppsm_man >= 100:
+            d["price_per_sqm"] = f"{ppsm_man:.0f}万/㎡"
+        else:
+            d["price_per_sqm"] = f"{ppsm_man:.1f}万/㎡"
     else:
         d["price_per_sqm"] = "—"
 
@@ -249,8 +253,12 @@ def _ittomono_to_dict(row: IttomonoRow) -> dict:
     d["walk_min_text"] = f"{int(row.walk_min)}分" if getattr(row, "walk_min", None) else "—"
     # Price per sqm
     if row.price_man and row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
-        ppsm = round(row.price_man * 10000 / row.area_sqm)
-        d["price_per_sqm"] = f"{ppsm:,.0f}円/㎡"
+        ppsm = row.price_man * 10000 / row.area_sqm
+        ppsm_man = ppsm / 10000
+        if ppsm_man >= 100:
+            d["price_per_sqm"] = f"{ppsm_man:.0f}万/㎡"
+        else:
+            d["price_per_sqm"] = f"{ppsm_man:.1f}万/㎡"
     else:
         d["price_per_sqm"] = "—"
 

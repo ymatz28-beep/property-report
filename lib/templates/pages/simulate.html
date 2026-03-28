@@ -1,0 +1,530 @@
+{#
+  Simulate page — Interactive investment calculator.
+  DealCheck-inspired reverse calculator + revenue breakdown.
+  All calculation runs client-side in JavaScript.
+
+  Required context:
+    property_pages: list of {href, label}
+    property_current: str
+    nav_items: list
+    current_page: str
+#}
+{% extends "base.html" %}
+
+{% block title %}Simulate{% endblock %}
+
+{% block nav %}
+{{ super() }}
+{% include "components/property_nav.html" %}
+{% endblock %}
+
+{% block styles %}
+/* ── Simulate Page ── */
+
+.sim-hero {
+  background: linear-gradient(135deg, #1a1040, #1e1b4b, #1a1040);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-8);
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--border);
+}
+.sim-hero h1 { font-size: var(--fs-h1); font-weight: 700; margin-bottom: 4px; }
+.sim-hero .subtitle { color: var(--text-muted); font-size: 13px; }
+
+/* Layout */
+.sim-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Input panel */
+.sim-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  position: sticky;
+  top: 120px;
+}
+.sim-panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sim-section {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.sim-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.sim-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.sim-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.sim-row:last-child { margin-bottom: 0; }
+.sim-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  min-width: 90px;
+  flex-shrink: 0;
+}
+.sim-input {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--text);
+  text-align: right;
+  min-width: 0;
+}
+.sim-input:focus { outline: none; border-color: var(--accent); }
+.sim-unit {
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 28px;
+}
+.sim-select {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: var(--text);
+  font-family: var(--font-body);
+}
+.sim-select:focus { outline: none; border-color: var(--accent); }
+
+/* Results panel */
+.sim-results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Verdict card */
+.sim-verdict {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  text-align: center;
+}
+.sim-verdict-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.sim-verdict-value {
+  font-size: 36px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  line-height: 1.1;
+}
+.sim-verdict-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* KPI grid */
+.sim-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.sim-kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+.sim-kpi-card .label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.sim-kpi-card .value {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.sim-kpi-card .sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Breakdown table */
+.sim-breakdown {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.sim-breakdown-title {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sim-breakdown table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.sim-breakdown td {
+  padding: 8px 16px;
+  font-size: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.sim-breakdown td:first-child {
+  color: var(--text-secondary);
+}
+.sim-breakdown td:last-child {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+.sim-breakdown tr.total td {
+  font-weight: 700;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.sim-breakdown tr.section-header td {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-top: 14px;
+  border-bottom: none;
+}
+
+@media (max-width: 900px) {
+  .sim-layout { grid-template-columns: 1fr; }
+  .sim-panel { position: static; }
+  .sim-kpi-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .sim-hero { padding: var(--space-4); border-radius: var(--radius-md); margin-bottom: var(--space-4); }
+  .sim-hero h1 { font-size: 20px; }
+  .sim-kpi-grid { grid-template-columns: 1fr; }
+  .sim-kpi-card .value { font-size: 16px; }
+  .sim-verdict-value { font-size: 24px; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="sim-hero">
+    <h1>Simulate</h1>
+    <div class="subtitle">投資収支シミュレーター — リアルタイム試算</div>
+  </div>
+
+  <div class="sim-layout">
+    {# ── Input Panel ── #}
+    <div class="sim-panel">
+      <div class="sim-panel-title">Input Parameters</div>
+
+      <div class="sim-section">
+        <div class="sim-section-label">Property</div>
+        <div class="sim-row">
+          <span class="sim-label">購入価格</span>
+          <input type="number" class="sim-input" id="price" value="3500" step="100" oninput="calc()">
+          <span class="sim-unit">万円</span>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">表面利回り</span>
+          <input type="number" class="sim-input" id="yield" value="7.5" step="0.1" oninput="calc()">
+          <span class="sim-unit">%</span>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">構造</span>
+          <select class="sim-select" id="structure" onchange="calc()">
+            <option value="RC">RC造 / SRC造</option>
+            <option value="S">S造 / 鉄骨造</option>
+            <option value="木">木造</option>
+          </select>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">築年</span>
+          <input type="number" class="sim-input" id="builtYear" value="2000" step="1" oninput="calc()">
+          <span class="sim-unit">年</span>
+        </div>
+      </div>
+
+      <div class="sim-section">
+        <div class="sim-section-label">Financing</div>
+        <div class="sim-row">
+          <span class="sim-label">頭金比率</span>
+          <input type="number" class="sim-input" id="downRatio" value="20" step="5" oninput="calc()">
+          <span class="sim-unit">%</span>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">ローン金利</span>
+          <input type="number" class="sim-input" id="loanRate" value="2.85" step="0.05" oninput="calc()">
+          <span class="sim-unit">%</span>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">ローン期間</span>
+          <input type="number" class="sim-input" id="loanYears" value="0" step="1" oninput="calc()">
+          <span class="sim-unit">年</span>
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">0 = 自動算出（残存耐用年数ベース）</div>
+      </div>
+
+      <div class="sim-section">
+        <div class="sim-section-label">Operations</div>
+        <div class="sim-row">
+          <span class="sim-label">空室率</span>
+          <input type="number" class="sim-input" id="vacancy" value="7" step="1" oninput="calc()">
+          <span class="sim-unit">%</span>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">経費率</span>
+          <input type="number" class="sim-input" id="opex" value="20" step="1" oninput="calc()">
+          <span class="sim-unit">%</span>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">建物比率</span>
+          <input type="number" class="sim-input" id="buildRatio" value="60" step="5" oninput="calc()">
+          <span class="sim-unit">%</span>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">税率</span>
+          <input type="number" class="sim-input" id="taxRate" value="30" step="5" oninput="calc()">
+          <span class="sim-unit">%</span>
+        </div>
+      </div>
+    </div>
+
+    {# ── Results ── #}
+    <div class="sim-results">
+      {# Verdict #}
+      <div class="sim-verdict">
+        <div class="sim-verdict-label">Monthly Cash Flow (After Tax)</div>
+        <div class="sim-verdict-value" id="verdictCF">—</div>
+        <div class="sim-verdict-sub" id="verdictLabel">—</div>
+      </div>
+
+      {# KPI Grid #}
+      <div class="sim-kpi-grid">
+        <div class="sim-kpi-card">
+          <div class="label">NOI</div>
+          <div class="value" id="kpiNOI">—</div>
+          <div class="sub" id="kpiNetYield">—</div>
+        </div>
+        <div class="sim-kpi-card">
+          <div class="label">CCR</div>
+          <div class="value" id="kpiCCR">—</div>
+          <div class="sub" id="kpiPayback">—</div>
+        </div>
+        <div class="sim-kpi-card">
+          <div class="label">Tax Benefit</div>
+          <div class="value" id="kpiTax">—</div>
+          <div class="sub" id="kpiTaxSub">—</div>
+        </div>
+      </div>
+
+      {# Breakdown #}
+      <div class="sim-breakdown">
+        <div class="sim-breakdown-title">Revenue Breakdown</div>
+        <table>
+          <tbody>
+            <tr class="section-header"><td colspan="2">Income</td></tr>
+            <tr><td>年間賃料収入</td><td id="bGross">—</td></tr>
+            <tr><td>空室損</td><td id="bVacancy">—</td></tr>
+            <tr><td>実効収入</td><td id="bEffective">—</td></tr>
+            <tr><td>運営経費</td><td id="bOpex">—</td></tr>
+            <tr class="total"><td>NOI</td><td id="bNOI">—</td></tr>
+
+            <tr class="section-header"><td colspan="2">Financing</td></tr>
+            <tr><td>頭金</td><td id="bDown">—</td></tr>
+            <tr><td>借入額</td><td id="bLoan">—</td></tr>
+            <tr><td>ローン期間</td><td id="bLoanYears">—</td></tr>
+            <tr><td>年間返済額</td><td id="bADS">—</td></tr>
+
+            <tr class="section-header"><td colspan="2">Cash Flow</td></tr>
+            <tr><td>年間CF (税前)</td><td id="bAnnualCF">—</td></tr>
+            <tr><td>月間CF (税前)</td><td id="bMonthlyCF">—</td></tr>
+
+            <tr class="section-header"><td colspan="2">Tax & Depreciation</td></tr>
+            <tr><td>残存耐用年数</td><td id="bRemLife">—</td></tr>
+            <tr><td>年間償却費</td><td id="bDepr">—</td></tr>
+            <tr><td>課税所得</td><td id="bTaxable">—</td></tr>
+            <tr><td>節税効果</td><td id="bTaxBenefit">—</td></tr>
+            <tr class="total"><td>税引後年間CF</td><td id="bAfterTax">—</td></tr>
+            <tr class="total"><td>税引後月間CF</td><td id="bAfterTaxM">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const USEFUL_LIFE = { RC: 47, SRC: 47, S: 34, '木': 22 };
+const CUR_YEAR = 2026;
+
+function pmt(rateAnnual, nper, pv) {
+  if (rateAnnual === 0) return pv / nper;
+  const r = rateAnnual / 12;
+  const n = nper * 12;
+  const monthly = pv * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+  return monthly * 12;
+}
+
+function fmt(v, unit) {
+  unit = unit || '万円';
+  if (!isFinite(v)) return '∞';
+  return v.toLocaleString('ja-JP', {maximumFractionDigits: 1}) + ' ' + unit;
+}
+
+function calc() {
+  const price = parseFloat(document.getElementById('price').value) || 0;
+  const yieldPct = parseFloat(document.getElementById('yield').value) || 0;
+  const structure = document.getElementById('structure').value;
+  const builtYear = parseInt(document.getElementById('builtYear').value) || 0;
+  const downRatio = (parseFloat(document.getElementById('downRatio').value) || 0) / 100;
+  const loanRate = (parseFloat(document.getElementById('loanRate').value) || 0) / 100;
+  let loanYearsInput = parseInt(document.getElementById('loanYears').value) || 0;
+  const vacancy = (parseFloat(document.getElementById('vacancy').value) || 0) / 100;
+  const opexRate = (parseFloat(document.getElementById('opex').value) || 0) / 100;
+  const buildRatio = (parseFloat(document.getElementById('buildRatio').value) || 0) / 100;
+  const taxRate = (parseFloat(document.getElementById('taxRate').value) || 0) / 100;
+
+  if (price <= 0 || yieldPct <= 0) {
+    document.getElementById('verdictCF').textContent = '—';
+    document.getElementById('verdictLabel').textContent = 'データ不足';
+    return;
+  }
+
+  // Income
+  const gross = price * yieldPct / 100;
+  const vacLoss = gross * vacancy;
+  const effective = gross - vacLoss;
+  const opex = effective * opexRate;
+  const noi = effective - opex;
+  const netYield = noi / price * 100;
+
+  // Depreciation
+  const usefulLife = USEFUL_LIFE[structure] || 47;
+  const age = builtYear > 0 ? CUR_YEAR - builtYear : 0;
+  let remLife;
+  if (age >= usefulLife) {
+    remLife = Math.max(2, Math.floor(usefulLife * 0.20));
+  } else {
+    remLife = Math.max(2, Math.floor((usefulLife - age) + age * 0.20));
+  }
+  const deprAnnual = (price * buildRatio) / remLife;
+
+  // Financing
+  let loanYears;
+  if (loanYearsInput > 0) {
+    loanYears = loanYearsInput;
+  } else {
+    const rawTerm = Math.max(0, usefulLife - age);
+    loanYears = Math.max(15, Math.min(35, rawTerm));
+  }
+  const downPayment = price * downRatio;
+  const loanAmount = price * (1 - downRatio);
+  const ads = pmt(loanRate, loanYears, loanAmount);
+
+  // Cash flow
+  const annualCF = noi - ads;
+  const monthlyCF = annualCF / 12;
+  const ccr = downPayment > 0 ? (annualCF / downPayment * 100) : 0;
+  const payback = annualCF > 0 ? (downPayment / annualCF) : Infinity;
+
+  // Tax
+  const interestApprox = loanAmount * loanRate;
+  const taxableIncome = noi - interestApprox - deprAnnual;
+  let taxBenefit = 0, incomeTax = 0;
+  if (taxableIncome < 0) {
+    taxBenefit = Math.abs(taxableIncome) * taxRate;
+  } else {
+    incomeTax = taxableIncome * taxRate;
+  }
+  const afterTaxCF = annualCF - incomeTax + taxBenefit;
+  const afterTaxMonthly = afterTaxCF / 12;
+
+  // Verdict
+  let verdict, verdictColor;
+  if (afterTaxMonthly > 30) { verdict = '★★★ 高CF物件'; verdictColor = 'var(--green)'; }
+  else if (afterTaxMonthly > 15) { verdict = '★★ 安定CF'; verdictColor = 'var(--green)'; }
+  else if (afterTaxMonthly > 0) { verdict = '★ 薄利'; verdictColor = 'var(--yellow)'; }
+  else { verdict = '✗ CF赤字'; verdictColor = 'var(--red)'; }
+
+  // Update UI
+  const ve = document.getElementById('verdictCF');
+  ve.textContent = fmt(afterTaxMonthly) + '/月';
+  ve.style.color = verdictColor;
+  document.getElementById('verdictLabel').textContent = verdict;
+
+  // KPIs
+  document.getElementById('kpiNOI').textContent = fmt(noi);
+  document.getElementById('kpiNetYield').textContent = '実質利回り ' + netYield.toFixed(2) + '%';
+  document.getElementById('kpiCCR').textContent = ccr.toFixed(1) + '%';
+  document.getElementById('kpiPayback').textContent = isFinite(payback) ? '回収 ' + payback.toFixed(1) + '年' : '回収不可';
+  const taxEl = document.getElementById('kpiTax');
+  if (taxBenefit > 0) {
+    taxEl.textContent = '+' + fmt(taxBenefit);
+    taxEl.style.color = 'var(--green)';
+    document.getElementById('kpiTaxSub').textContent = '節税効果 (損失計上)';
+  } else {
+    taxEl.textContent = '-' + fmt(incomeTax);
+    taxEl.style.color = incomeTax > 0 ? 'var(--red)' : 'var(--text)';
+    document.getElementById('kpiTaxSub').textContent = '税負担';
+  }
+
+  // Breakdown
+  document.getElementById('bGross').textContent = fmt(gross);
+  document.getElementById('bVacancy').textContent = '-' + fmt(vacLoss);
+  document.getElementById('bEffective').textContent = fmt(effective);
+  document.getElementById('bOpex').textContent = '-' + fmt(opex);
+  document.getElementById('bNOI').textContent = fmt(noi);
+  document.getElementById('bDown').textContent = fmt(downPayment);
+  document.getElementById('bLoan').textContent = fmt(loanAmount);
+  document.getElementById('bLoanYears').textContent = loanYears + '年';
+  document.getElementById('bADS').textContent = fmt(ads);
+  document.getElementById('bAnnualCF').textContent = fmt(annualCF);
+  document.getElementById('bAnnualCF').style.color = annualCF >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('bMonthlyCF').textContent = fmt(monthlyCF);
+  document.getElementById('bMonthlyCF').style.color = monthlyCF >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('bRemLife').textContent = remLife + '年 (法定' + usefulLife + '年)';
+  document.getElementById('bDepr').textContent = fmt(deprAnnual);
+  document.getElementById('bTaxable').textContent = fmt(taxableIncome);
+  document.getElementById('bTaxBenefit').textContent = taxBenefit > 0 ? '+' + fmt(taxBenefit) : '—';
+  document.getElementById('bAfterTax').textContent = fmt(afterTaxCF);
+  document.getElementById('bAfterTax').style.color = afterTaxCF >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('bAfterTaxM').textContent = fmt(afterTaxMonthly);
+  document.getElementById('bAfterTaxM').style.color = afterTaxMonthly >= 0 ? 'var(--green)' : 'var(--red)';
+}
+
+document.addEventListener('DOMContentLoaded', calc);
+</script>
+{% endblock %}

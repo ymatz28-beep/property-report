@@ -14,12 +14,21 @@ from datetime import datetime
 from pathlib import Path
 
 import yaml
-from jinja2 import Environment, FileSystemLoader
 
 BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "properties.yaml"
 TEMPLATE_DIR = BASE_DIR / "templates"
 OUTPUT_DIR = BASE_DIR / "output"
+
+# Ensure lib is importable
+_LIB_PARENT = BASE_DIR.parent
+for p in [str(BASE_DIR), str(_LIB_PARENT)]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
+
+from generate_market import PROPERTY_PAGES
+from lib.renderer import create_env, PUBLIC_NAV
+from lib.styles.design_tokens import get_base_css, get_css_tokens, get_google_fonts_url
 
 
 def load_data() -> dict:
@@ -134,15 +143,27 @@ def enrich(data: dict) -> dict:
 
 
 def generate(data: dict) -> str:
-    env = Environment(
-        loader=FileSystemLoader(str(TEMPLATE_DIR)),
-        autoescape=False,
+    env = create_env(
+        extra_dirs=[BASE_DIR / "lib" / "templates"],
+        scope="public",
     )
     env.filters["comma"] = lambda v: f"{v:,.0f}" if v else "—"
     env.filters["yen"] = lambda v: f"¥{v:,.0f}" if v else "—"
     env.filters["pct"] = lambda v: f"{v:.1f}%" if v else "—"
-    template = env.get_template("portfolio_dashboard.html")
-    return template.render(**data)
+    template = env.get_template("pages/portfolio.html")
+    return template.render(
+        properties=data.get("properties", []),
+        sold=data.get("sold", []),
+        totals=data["totals"],
+        meta=data.get("meta", {}),
+        property_pages=PROPERTY_PAGES,
+        property_current="Portfolio",
+        nav_items=PUBLIC_NAV,
+        current_page="Property",
+        css_tokens=get_css_tokens(),
+        base_css=get_base_css(),
+        google_fonts_url=get_google_fonts_url(),
+    )
 
 
 def main():
@@ -155,7 +176,8 @@ def main():
     html = generate(data)
 
     OUTPUT_DIR.mkdir(exist_ok=True)
-    out_path = OUTPUT_DIR / "portfolio_dashboard.html"
+    # Write both new and legacy paths
+    out_path = OUTPUT_DIR / "portfolio.html"
     out_path.write_text(html, encoding="utf-8")
     print(f"[OK] Generated {out_path} ({len(html):,} bytes)")
 

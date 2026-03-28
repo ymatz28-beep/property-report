@@ -12,6 +12,7 @@ cron設定例:
 """
 
 import json
+import re
 import subprocess
 import sys
 import time
@@ -253,7 +254,13 @@ def patrol_dead_urls() -> dict:
 
 
 def parse_raw_files() -> dict[str, dict]:
-    """Parse all raw files. Returns {url: {name, price, location, source}}."""
+    """Parse all raw files. Returns {url: {name, price, location, source}}.
+
+    Handles two column layouts:
+    - Standard: source|name|price|location|...|url   (col 0 = text source label)
+    - Ittomono: score|source|name|price|location|...|url  (col 0 = numeric score)
+    Detection: if col 0 is a bare integer, it's a score prefix → shift by 1.
+    """
     properties = {}
     for f in DATA_DIR.glob("*_raw.txt"):
         source = f.stem.replace("_raw", "")
@@ -262,15 +269,32 @@ def parse_raw_files() -> dict[str, dict]:
             if not line or line.startswith("#"):
                 continue
             parts = line.split("|")
-            if len(parts) >= 4:
-                url = parts[-1].strip()
-                if url.startswith("http"):
-                    properties[url] = {
-                        "name": parts[1].strip() if len(parts) > 1 else "",
-                        "price": parts[2].strip() if len(parts) > 2 else "",
-                        "location": parts[3].strip() if len(parts) > 3 else "",
-                        "source": source,
-                    }
+            if len(parts) < 4:
+                continue
+            url = parts[-1].strip()
+            if not url.startswith("http"):
+                continue
+
+            # Detect score-prefixed format (ittomono_*_raw.txt):
+            # col 0 is a bare integer score like "75" or "83"
+            offset = 0
+            try:
+                int(parts[0].strip())
+                # col 0 is numeric → ittomono format with score prefix
+                offset = 1
+            except (ValueError, IndexError):
+                pass
+
+            name_idx = 1 + offset
+            price_idx = 2 + offset
+            loc_idx = 3 + offset
+
+            properties[url] = {
+                "name": parts[name_idx].strip() if len(parts) > name_idx else "",
+                "price": parts[price_idx].strip() if len(parts) > price_idx else "",
+                "location": parts[loc_idx].strip() if len(parts) > loc_idx else "",
+                "source": source,
+            }
     return properties
 
 
@@ -548,28 +572,59 @@ def _build_failure_details(all_steps: list[dict]) -> list[dict]:
 
 
 def _safe_price_man(price_text: str) -> int:
-    """Parse price text to 万円 int, returning 0 on failure."""
+    """Parse price text to 万円 int, returning 0 on failure.
+
+    Handles formats: "4190万円", "1億9760万円", "2億円"
+    """
     try:
-        return int(price_text.replace("万円", "").replace(",", "").strip())
+        text = price_text.replace(",", "").replace("円", "").strip()
+        # Handle 億+万 format: "1億9760万" → 19760
+        m = re.match(r"(\d+)億(\d+)万?", text)
+        if m:
+            return int(m.group(1)) * 10000 + int(m.group(2))
+        # Handle 億 only: "2億" → 20000
+        m = re.match(r"(\d+)億", text)
+        if m:
+            return int(m.group(1)) * 10000
+        # Handle 万 only: "4190万" → 4190
+        text = text.replace("万", "")
+        return int(text)
     except (ValueError, AttributeError):
         return 0
 
 
 def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report: dict,
                         all_steps: list[dict] | None = None) -> None:
-    """Save patrol summary as JSON (structured data for Daily Digest + notifications)."""
-    new = diff["new"]
-    removed = diff["removed"]
+    """Save patrol summary as JSON (structured data for Daily Digest + notifications).
+
+    Crash-safe: if new_items serialization fails, writes summary without items
+    rather than leaving a stale/missing patrol_summary.json.
+    """
+    new = diff.get("new", [])
+    removed = diff.get("removed", [])
     dead_count = url_report.get("new_dead", 0) + len(removed)
 
     all_steps = all_steps or []
     failed_names = [s["step"] for s in all_steps if not s.get("ok")]
     failure_details = _build_failure_details(all_steps)
 
+    # Build new_items safely — never let a single bad record kill the summary
+    new_items: list[dict] = []
+    for p in new:
+        try:
+            new_items.append({
+                "name": p.get("name", ""),
+                "price_text": p.get("price", ""),
+                "price_man": _safe_price_man(p.get("price", "")),
+                "source": p.get("source", ""),
+            })
+        except Exception:
+            pass  # skip malformed entries silently
+
     summary = {
         "date": start.strftime("%Y-%m-%d %H:%M"),
-        "total": diff["after_count"],
-        "prev_total": diff["before_count"],
+        "total": diff.get("after_count", 0),
+        "prev_total": diff.get("before_count", 0),
         "new_count": len(new),
         "removed_count": dead_count,
         "elapsed_min": round(elapsed / 60),
@@ -578,18 +633,27 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
         "failure_details": failure_details,
         "step_count": len(all_steps),
         "ok_count": sum(1 for s in all_steps if s.get("ok")),
-        "new_items": [
-            {"name": p["name"], "price_text": p["price"],
-             "price_man": _safe_price_man(p["price"]),
-             "source": p["source"]}
-            for p in new
-        ],
+        "new_items": new_items,
         "report_url": "https://ymatz28-beep.github.io/property-report/",
     }
 
     summary_file = BASE_DIR / "data" / "patrol_summary.json"
-    summary_file.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-    log(f"  patrol_summary.json 保存 (total={summary['total']}, +{summary['new_count']}/-{summary['removed_count']})")
+    try:
+        summary_file.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+        log(f"  patrol_summary.json 保存 (total={summary['total']}, +{summary['new_count']}/-{summary['removed_count']})")
+    except Exception as e:
+        # Last resort: write minimal summary so downstream consumers never see stale data
+        log(f"  ❌ patrol_summary.json 書き込みエラー: {e}")
+        minimal = {
+            "date": start.strftime("%Y-%m-%d %H:%M"),
+            "step_count": len(all_steps),
+            "ok_count": sum(1 for s in all_steps if s.get("ok")),
+            "elapsed_min": round(elapsed / 60),
+            "new_count": 0, "total": 0, "failed_steps": failed_names,
+            "failure_details": [], "new_items": [],
+            "error": str(e),
+        }
+        summary_file.write_text(json.dumps(minimal, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def retry_failed_searches(search_results: list[dict], start_time: datetime,
@@ -818,7 +882,25 @@ def main():
         log(f"===== 部分完了 ({elapsed:.0f}秒) {ok_count}/{ok_count + fail_count}成功, 失敗: {', '.join(failed_names)} =====")
 
     # Write structured summary (always — even on partial failure)
-    save_patrol_summary(start, elapsed, diff, url_report, all_steps=all_steps)
+    try:
+        save_patrol_summary(start, elapsed, diff, url_report, all_steps=all_steps)
+    except Exception as e:
+        log(f"  ❌ save_patrol_summary crashed: {e}")
+        # Emergency fallback: write minimal summary so downstream never sees stale data
+        try:
+            minimal = {
+                "date": start.strftime("%Y-%m-%d %H:%M"),
+                "step_count": len(all_steps),
+                "ok_count": sum(1 for s in all_steps if s.get("ok")),
+                "elapsed_min": round(elapsed / 60),
+                "new_count": 0, "total": 0, "failed_steps": [],
+                "failure_details": [], "new_items": [],
+                "error": f"save_patrol_summary crash: {e}",
+            }
+            (BASE_DIR / "data" / "patrol_summary.json").write_text(
+                json.dumps(minimal, ensure_ascii=False, indent=2), encoding="utf-8")
+        except Exception:
+            pass  # truly nothing we can do
 
 
 if __name__ == "__main__":

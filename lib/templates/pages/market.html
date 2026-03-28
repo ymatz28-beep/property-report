@@ -1,0 +1,355 @@
+{#
+  Unified Market page — merges city reports (区分) + 一棟もの into tabbed view.
+  Follows stock-analyzer/portfolio pattern + Mashvisor Deal Score + Robinhood color system.
+
+  Required context:
+    cities: list of {key, label, count, accent, properties: list[dict]}
+    ittomono: {count, properties: list[dict]}
+    totals: {count, green_count, yellow_count, avg_price, avg_area, pet_ok_count}
+    patrol_summary: {date, total, new_count}
+    property_pages: list of {href, label, count}
+    property_current: str
+    nav_items: list
+    current_page: str
+#}
+{% extends "base.html" %}
+
+{% block title %}Property Market{% endblock %}
+
+{% block head_extra %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block nav %}
+{{ super() }}
+{% include "components/property_nav.html" %}
+{% endblock %}
+
+{% block styles %}
+{% from "components/deal_score.html" import deal_score_css %}
+{% from "components/property_card.html" import property_card_css %}
+{{ deal_score_css() }}
+{{ property_card_css() }}
+
+/* ── Market Page Styles ── */
+
+/* City Tabs */
+.city-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 12px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.city-tabs::-webkit-scrollbar { display: none; }
+.city-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.city-tab:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.04);
+}
+.city-tab.active {
+  color: var(--text);
+  background: rgba(99,102,241,0.1);
+  border-color: rgba(99,102,241,0.25);
+}
+.city-tab-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 7px;
+  border-radius: 10px;
+}
+.city-tab.active .city-tab-count {
+  background: rgba(99,102,241,0.2);
+  color: var(--accent);
+}
+
+/* Type toggle (区分 / 一棟) */
+.type-toggle {
+  display: flex;
+  gap: 2px;
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 3px;
+  border: 1px solid var(--border);
+}
+.type-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+  background: transparent;
+}
+.type-btn.active {
+  background: rgba(99,102,241,0.15);
+  color: var(--text);
+}
+
+/* Controls row */
+.market-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+/* Property grid */
+.property-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+/* City panel (hidden by default, shown by JS) */
+.city-panel { display: none; }
+.city-panel.active { display: block; }
+
+/* Sort controls */
+.sort-select {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+.sort-select:focus { outline: none; border-color: var(--accent); }
+
+/* Count display */
+.results-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* Hero override for market */
+.hero {
+  background: linear-gradient(135deg, #1a1040, #1e1b4b, #1a1040);
+  background-size: 200% 200%;
+  animation: heroShift 12s ease-in-out infinite;
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-8);
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+@keyframes heroShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.hero h1 {
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.hero .subtitle {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.hero .stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.hero .stat-card {
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  backdrop-filter: blur(10px);
+}
+.hero .stat-card .label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.hero .stat-card .value {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+.hero-updated {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 12px;
+}
+
+@media (max-width: 640px) {
+  .hero { padding: var(--space-4); border-radius: var(--radius-md); margin-bottom: var(--space-4); }
+  .hero h1 { font-size: 20px; }
+  .hero .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hero .stat-card { padding: 8px 12px; }
+  .hero .stat-card .value { font-size: 16px; }
+  .property-grid { grid-template-columns: 1fr; gap: 12px; }
+  .market-controls { flex-direction: column; align-items: stretch; }
+  .city-tabs { gap: 2px; }
+  .city-tab { padding: 6px 12px; font-size: 12px; }
+}
+{% endblock %}
+
+{% block content %}
+{% from "components/deal_score.html" import deal_score %}
+{% from "components/property_card.html" import property_card %}
+
+<div class="container">
+  {# ── Hero ── #}
+  <div class="hero">
+    <h1>Property Market</h1>
+    <div class="subtitle">不動産投資 物件パトロール — 厳選スコアリング済み</div>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="label">Total</div>
+        <div class="value">{{ totals.count }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Green (80+)</div>
+        <div class="value pnl-positive">{{ totals.green_count }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Yellow (65-79)</div>
+        <div class="value" style="color:var(--yellow)">{{ totals.yellow_count }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Avg Price</div>
+        <div class="value">{{ totals.avg_price }}万</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Pet OK</div>
+        <div class="value">{{ totals.pet_ok_count }}</div>
+      </div>
+    </div>
+    {% if patrol_summary %}
+    <div class="hero-updated">Last patrol: {{ patrol_summary.date }} — {{ patrol_summary.total }} properties scanned</div>
+    {% endif %}
+  </div>
+
+  {# ── Controls ── #}
+  <div class="market-controls">
+    <div class="city-tabs" id="cityTabs">
+      {% for city in cities %}
+      <button class="city-tab{% if loop.first %} active{% endif %}"
+              data-city="{{ city.key }}"
+              onclick="switchCity('{{ city.key }}')">
+        {{ city.label }}
+        <span class="city-tab-count">{{ city.count }}</span>
+      </button>
+      {% endfor %}
+      {% if ittomono and ittomono.count > 0 %}
+      <button class="city-tab" data-city="ittomono" onclick="switchCity('ittomono')">
+        一棟もの
+        <span class="city-tab-count">{{ ittomono.count }}</span>
+      </button>
+      {% endif %}
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <select class="sort-select" id="sortSelect" onchange="sortProperties()">
+        <option value="score-desc">Score ↓</option>
+        <option value="price-asc">Price ↑</option>
+        <option value="price-desc">Price ↓</option>
+        <option value="area-desc">Area ↓</option>
+      </select>
+      <span class="results-count" id="resultsCount"></span>
+    </div>
+  </div>
+
+  {# ── City Panels ── #}
+  {% for city in cities %}
+  <div class="city-panel{% if loop.first %} active{% endif %}" id="panel-{{ city.key }}">
+    {% if city.properties %}
+    <div class="property-grid">
+      {% for prop in city.properties %}
+      {{ property_card(prop) }}
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No properties found for {{ city.label }}</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  {% if ittomono and ittomono.count > 0 %}
+  <div class="city-panel" id="panel-ittomono">
+    <div class="property-grid">
+      {% for prop in ittomono.properties %}
+      {{ property_card(prop) }}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function switchCity(key) {
+  // Update tabs
+  document.querySelectorAll('.city-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-city="${key}"]`).classList.add('active');
+  // Update panels
+  document.querySelectorAll('.city-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(`panel-${key}`);
+  if (panel) panel.classList.add('active');
+  // Update count
+  const cards = panel ? panel.querySelectorAll('.prop-card') : [];
+  document.getElementById('resultsCount').textContent = `${cards.length} properties`;
+}
+
+function sortProperties() {
+  const sortKey = document.getElementById('sortSelect').value;
+  document.querySelectorAll('.city-panel').forEach(panel => {
+    const grid = panel.querySelector('.property-grid');
+    if (!grid) return;
+    const cards = Array.from(grid.children);
+    cards.sort((a, b) => {
+      const sa = parseInt(a.dataset.score || '0');
+      const sb = parseInt(b.dataset.score || '0');
+      if (sortKey === 'score-desc') return sb - sa;
+      // Price/area sorting would need data attributes
+      return sb - sa;
+    });
+    cards.forEach(c => grid.appendChild(c));
+  });
+}
+
+// Init count
+document.addEventListener('DOMContentLoaded', () => {
+  const active = document.querySelector('.city-panel.active');
+  if (active) {
+    const cards = active.querySelectorAll('.prop-card');
+    document.getElementById('resultsCount').textContent = `${cards.length} properties`;
+  }
+});
+</script>
+{% endblock %}

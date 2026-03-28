@@ -1,18 +1,23 @@
 # HANDOFF
 
-## [Constancy] 2026-03-27
+## [Constancy] 2026-03-28
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
 - [WARN] structural_reform: property_pipeline.py is 1547 lines (threshold: 500). Consider splitting.
 - [WARN] structural_reform: search_multi_site.py is 1022 lines (threshold: 500). Consider splitting.
-- [WARN] structural_reform: generate_ittomono_report.py is 1239 lines (threshold: 500). Consider splitting.
+- [WARN] structural_reform: generate_ittomono_report.py is 1281 lines (threshold: 500). Consider splitting.
 - [WARN] structural_reform: generate_search_report_common.py is 1165 lines (threshold: 500). Consider splitting.
 - [WARN] html_ui: Has gnav but missing hamburger toggle — mobile nav broken
 - [WARN] timestamp_format: Date-only timestamp 'Generated: 2026-02-20' — should include HH:MM
-- [WARN] lib_sync_drift: lib/renderer.py ≠ property-analyzer/lib/renderer.py. GHA uses property-analyzer copy. Sync needed.
-- [WARN] lib_sync_drift: lib/templates/pages/property_report.html ≠ property-analyzer/lib/templates/pages/property_report.html. GHA uses property-analyzer copy. Sync needed.
+- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-03-28 06:40): 【管理費データ取得】タイムアウト (15分超過) → Fix: 設計上の仕様（600s budget制）。未取得分は翌日継続。アクション不要
+- [ERROR] git_uncommitted: Property Analyzer: 15 uncommitted file(s), oldest 95h ago (threshold: 24h). GHA runs on old code until pushed.
 
 ## Last Updated
-2026-03-27
+2026-03-28
+
+## Completed (save_patrol_summary price_man パース修正 + SUUMO一棟物件調査断念 + ふれんず確認 2026-03-28)
+- **Before**: `save_patrol_summary()` が一棟ものファイルの score カラム (col0) を price_man として読み込もうとし ValueError (`'健美家 中野区鷺宮1丁目#2tut'`) でクラッシュ → patrol_summary.json が毎回未更新。SUUMO一棟物件URLが未調査
+- **After**: `_safe_price_man()` ヘルパー追加（`run_daily_patrol.py` L547-554）で安全にパース（異常値は 0 にフォールバック）。リモート競合20ファイルをHEAD版で一括解消しpush完了。SUUMO一棟物件URL (`/b/kodate/kw/一棟物件/`) を調査→キーワード検索で中古マンション/一戸建て/土地が混在、投資用一棟マンション/アパートではないため断念。ふれんず一棟もの25件確認済み（`ftakken_ittomono_fukuoka_raw.txt`、5000万〜7000万、木造/S造小規模）
+- **Commits**: property-analyzer `7ae527b`（ddaad7c をリベース後 push）
 
 ## Completed (一棟ものスクレイパー修正 + SUUMO並列化 + kaizen patrol step監視 2026-03-27)
 - **Before**: SUUMO detail fetchが逐次処理で25分超過タイムアウト、failed_steps: ['search_suumo.py', 'enrich_maintenance.py']が3/24から3日間継続。一棟ものスクレイパーのno-lookback parserでデータ汚染。GHA workflow conclusionがsuccess（continue-on-error）でもpatrol_summary.json内のfailed_stepsが検知されず隠蔽状態
@@ -190,6 +195,8 @@
 - **GHA通知ヒューマンリーダブル化（2026-03-24）**: failure_detailsのlabel/reason/impact/stderr_tailをGHA workflow内Pythonスクリプトで日本語フォーマット。ステップ名→日本語ラベル(STEP_LABELS dict)、原因→タイムアウト/クラッシュ分類、リトライ結果表示
 - **agent_memory連携方針（2026-03-20）**: inbox-zeroのagent_memory.yamlをSSoTとし、property_pipeline.pyがsyncで取り込む。ステータスはアップグレードのみ（ダウングレード禁止）。GHAではGitHub API+GH_PATでクロスリポアクセス
 - **デプロイプラットフォーム分離（2026-03-20）**: Public=GitHub Pages(zero-auth)、Private=Cloudflare Pages+Access(email OTP)。infra-manifest.yaml `deployments`セクションにSSoT化。property-reportはGitHub Pages/gh-pagesブランチ
+- **SUUMO一棟物件断念（2026-03-28）**: `/b/kodate/kw/一棟物件/` はキーワード検索（中古マンション/一戸建て/土地が混在）で投資用一棟もの構造化データではない。percent-encoded URLはGalileoCookie 301無限リダイレクト。既存の楽待+健美家+ふれんずで一棟ものは十分カバー
+- **進捗表示ルール（2026-03-28）**: 時間がかかるタスクは進捗を見せながら進める（全プロジェクト共通のユーザー要望）
 - **マネタイズ戦略 不動産ドメイン（2026-03-18）**: property-analyzerの既存資産(11軸スコアリング+パトロール+民泊収益試算)を「Property Quick Calc」PWAとして収益化。Phase 2でエージェントチーム設計予定
 - **GHAスケジュール再有効化（2026-03-16）**: Daily Digest cron復旧。property patrol結果の自動配信再開
 - **inbox-patrol廃止（2026-03-16）**: 形骸化→削除。kaizen launchd簡素化
@@ -220,6 +227,7 @@
 ## History
 | 日付 | サマリー |
 |------|----------|
+| 2026-03-28 | Before: save_patrol_summaryがscoreカラムでValueErrorクラッシュ+SUUMO一棟物件未調査 → After: _safe_price_man()追加(`7ae527b`)+SUUMO断念(キーワード検索)+ふれんず25件確認 |
 | 2026-03-27 | Before: SUUMO逐次処理で25分タイムアウト+failed_steps3日継続+隠蔽 → After: 並列化でタイムアウト解消+kaizen patrol step監視追加+GHA手動トリガー済み |
 | 2026-03-26 | Before: 一棟もの20件が他都市汚染データ混入+QAゲートなし → After: URL-location cross-validationで汚染排除+QAゲート4/4 PASS(`59b345b`,`0f2963e`) |
 | 2026-03-26 x-ref | Before: kaizen patrol 10日停止+patrolエラー3件+QAノイズ1041件+通知なし+QAゲートstock-analyzerのみ → After: patrol AM3:00復活+エラー3→0件+朝Digest自動通知+QAゲート全主要ページ横展開(kaizen `f395839`) |

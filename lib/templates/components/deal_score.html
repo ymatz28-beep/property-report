@@ -1,0 +1,89 @@
+{#
+  Deal Score gauge component — Mashvisor-inspired 0-100 circular gauge.
+
+  Usage:
+    {% from "components/deal_score.html" import deal_score, deal_score_css %}
+    {{ deal_score_css() }}
+    {{ deal_score(85, size="lg") }}
+
+  Parameters:
+    score: int (0-100)
+    size: "sm" (40px), "md" (56px), "lg" (72px)
+    show_label: bool (show "Deal Score" below)
+#}
+
+{% macro deal_score_css() %}
+/* ── Deal Score Gauge ── */
+.deal-gauge {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.deal-gauge svg { transform: rotate(-90deg); }
+.deal-gauge-circle-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 4;
+}
+.deal-gauge-circle {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+.deal-gauge-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  line-height: 1;
+}
+.deal-gauge-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+/* Sizes */
+.deal-gauge--sm { width: 40px; height: 40px; }
+.deal-gauge--sm .deal-gauge-value { font-size: 12px; }
+.deal-gauge--md { width: 56px; height: 56px; }
+.deal-gauge--md .deal-gauge-value { font-size: 16px; }
+.deal-gauge--lg { width: 72px; height: 72px; }
+.deal-gauge--lg .deal-gauge-value { font-size: 20px; }
+/* Tier colors applied via inline style */
+{% endmacro %}
+
+
+{% macro deal_score(score, size="md", show_label=false) %}
+{% set radius = 18 %}
+{% set circumference = 2 * 3.14159 * radius %}
+{% set offset = circumference - (score / 100 * circumference) %}
+{% if score >= 80 %}
+  {% set color = "var(--green)" %}
+{% elif score >= 65 %}
+  {% set color = "var(--yellow)" %}
+{% elif score >= 50 %}
+  {% set color = "var(--orange, #ff6b35)" %}
+{% else %}
+  {% set color = "var(--red)" %}
+{% endif %}
+
+<div class="deal-gauge deal-gauge--{{ size }}">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="{{ radius }}"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="{{ radius }}"
+            stroke="{{ color }}"
+            stroke-dasharray="{{ circumference }}"
+            stroke-dashoffset="{{ offset }}"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:{{ color }}">{{ score }}</span>
+  {% if show_label %}
+  <span class="deal-gauge-label">Score</span>
+  {% endif %}
+</div>
+{% endmacro %}

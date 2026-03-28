@@ -1,0 +1,292 @@
+{#
+  Unified property card component.
+  Used across Market, Pipeline, and Simulate pages.
+
+  Usage:
+    {% from "components/property_card.html" import property_card, property_card_css %}
+    {{ property_card_css() }}
+    {{ property_card(prop) }}
+
+  prop dict expected fields:
+    name: str
+    price_text: str
+    area_text: str
+    location: str
+    station_text: str
+    layout: str
+    built_text: str
+    url: str
+    total_score: int
+    tier_label: str ("Green", "Yellow", "Orange", "Red")
+    tier_color: str (hex)
+    pet_status: str
+    minpaku_status: str
+    score_breakdown: dict (axis_name -> score)
+    source: str
+    maintenance_fee_text: str (optional)
+    first_seen: str (optional)
+    status: str (optional, for pipeline: "discovered", "inquired", etc.)
+#}
+
+{% macro property_card_css() %}
+/* ── Property Card ── */
+.prop-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0;
+  transition: transform 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+}
+.prop-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+.prop-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.prop-card-score { flex-shrink: 0; }
+.prop-card-title-block { flex: 1; min-width: 0; }
+.prop-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.prop-card-location {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.prop-card-tier {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.prop-card-body {
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+}
+.prop-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.prop-kpi-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.prop-kpi-value {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+/* Tags row */
+.prop-card-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 0 16px 12px;
+}
+.prop-tag {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid;
+}
+.prop-tag--pet {
+  color: var(--green);
+  border-color: rgba(34,197,94,0.3);
+  background: rgba(34,197,94,0.08);
+}
+.prop-tag--minpaku {
+  color: var(--blue);
+  border-color: rgba(59,130,246,0.3);
+  background: rgba(59,130,246,0.08);
+}
+.prop-tag--source {
+  color: var(--text-secondary);
+  border-color: var(--border);
+  background: rgba(255,255,255,0.03);
+}
+.prop-tag--new {
+  color: var(--accent2, #8b5cf6);
+  border-color: rgba(139,92,246,0.3);
+  background: rgba(139,92,246,0.08);
+}
+/* Score breakdown (expandable) */
+.prop-card-detail {
+  padding: 0 16px 16px;
+  display: none;
+}
+.prop-card.expanded .prop-card-detail { display: block; }
+.prop-card-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  font-size: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  transition: color 0.15s;
+}
+.prop-card-toggle:hover { color: var(--text); }
+.score-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 4px;
+}
+.score-axis {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  padding: 3px 0;
+}
+.score-axis-name { color: var(--text-secondary); }
+.score-axis-value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+/* Footer with link */
+.prop-card-footer {
+  padding: 8px 16px 12px;
+}
+.prop-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(99,102,241,0.08);
+  transition: background 0.15s;
+}
+.prop-card-link:hover {
+  background: rgba(99,102,241,0.16);
+}
+
+@media (max-width: 640px) {
+  .prop-card-header { padding: 12px 12px 8px; gap: 8px; }
+  .prop-card-body { padding: 8px 12px; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .prop-card-tags { padding: 0 12px 8px; }
+  .prop-card-name { font-size: 13px; }
+  .prop-kpi-value { font-size: 12px; }
+}
+{% endmacro %}
+
+
+{% macro property_card(prop, expandable=true) %}
+{% from "components/deal_score.html" import deal_score %}
+{% set score = prop.total_score | default(0) %}
+{% if score >= 80 %}
+  {% set tier_color = "var(--green)" %}
+  {% set tier_bg = "rgba(34,197,94,0.12)" %}
+  {% set tier = "Green" %}
+{% elif score >= 65 %}
+  {% set tier_color = "var(--yellow)" %}
+  {% set tier_bg = "rgba(234,179,8,0.12)" %}
+  {% set tier = "Yellow" %}
+{% else %}
+  {% set tier_color = "var(--orange, #ff6b35)" %}
+  {% set tier_bg = "rgba(255,107,53,0.12)" %}
+  {% set tier = "Orange" %}
+{% endif %}
+
+<div class="prop-card" data-score="{{ score }}">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      {{ deal_score(score, size="sm") }}
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="{{ prop.name }}">{{ prop.name }}</div>
+      <div class="prop-card-location">{{ prop.station_text | default(prop.location) }}</div>
+    </div>
+    <span class="prop-card-tier" style="color:{{ tier_color }};background:{{ tier_bg }}">
+      {{ tier }}
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">Price</span>
+      <span class="prop-kpi-value">{{ prop.price_text }}</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">Area</span>
+      <span class="prop-kpi-value">{{ prop.area_text }}</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">Layout</span>
+      <span class="prop-kpi-value">{{ prop.layout | default("—") }}</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">Built</span>
+      <span class="prop-kpi-value">{{ prop.built_text | default("—") }}</span>
+    </div>
+    {% if prop.maintenance_fee_text %}
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">Fee</span>
+      <span class="prop-kpi-value">{{ prop.maintenance_fee_text }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="prop-card-tags">
+    {% if prop.pet_status in ["可", "相談可"] %}
+    <span class="prop-tag prop-tag--pet">Pet {{ prop.pet_status }}</span>
+    {% endif %}
+    {% if prop.minpaku_status and "禁止" not in prop.minpaku_status and "不可" not in prop.minpaku_status %}
+    <span class="prop-tag prop-tag--minpaku">民泊 {{ prop.minpaku_status }}</span>
+    {% endif %}
+    <span class="prop-tag prop-tag--source">{{ prop.source }}</span>
+    {% if prop.first_seen and prop.is_new | default(false) %}
+    <span class="prop-tag prop-tag--new">NEW</span>
+    {% endif %}
+  </div>
+
+  {% if expandable and prop.score_breakdown %}
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded')">
+    ▸ Score Breakdown
+  </div>
+  <div class="prop-card-detail">
+    <div class="score-breakdown-grid">
+      {% for axis, val in prop.score_breakdown.items() %}
+      <div class="score-axis">
+        <span class="score-axis-name">{{ axis }}</span>
+        <span class="score-axis-value" style="color:{% if val > 0 %}var(--green){% elif val < 0 %}var(--red){% else %}var(--text-muted){% endif %}">
+          {% if val > 0 %}+{% endif %}{{ val }}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if prop.url %}
+  <div class="prop-card-footer">
+    <a href="{{ prop.url }}" target="_blank" rel="noopener" class="prop-card-link">
+      Details ↗
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}

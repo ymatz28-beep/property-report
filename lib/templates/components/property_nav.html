@@ -1,0 +1,89 @@
+{#
+  Property section navigation — sticky subnav below site-header.
+  Follows stock-analyzer/portfolio section nav pattern.
+
+  Expected context:
+    property_pages: list of {href, label, count (optional)}
+    property_current: str (label of current page)
+#}
+
+<style>
+/* ── Property Section Nav ── */
+.property-nav {
+  position: sticky;
+  top: var(--gnav-height, 52px);
+  z-index: var(--z-subnav, 90);
+  background: rgba(15,17,23,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.property-nav-inner {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  padding: 10px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.property-nav-inner::-webkit-scrollbar { display: none; }
+.property-nav-inner a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 6px;
+  transition: all .2s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.property-nav-inner a:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.065);
+}
+.property-nav-inner a.active {
+  color: var(--text);
+  background: rgba(99,102,241,0.15);
+}
+.property-nav-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: rgba(255,255,255,0.08);
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+}
+@media (max-width: 640px) {
+  .property-nav-inner {
+    justify-content: flex-start;
+    padding: 8px 12px;
+    gap: 2px;
+  }
+  .property-nav-inner a {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+}
+</style>
+
+{% if property_pages is defined and property_pages %}
+<nav class="property-nav">
+  <div class="property-nav-inner">
+    {% for page in property_pages %}
+    <a href="{{ page.href }}"
+       {% if page.label == property_current %} class="active"{% endif %}>
+      {{ page.label }}
+      {% if page.count is defined and page.count is not none %}
+      <span class="property-nav-count">{{ page.count }}</span>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+</nav>
+{% endif %}

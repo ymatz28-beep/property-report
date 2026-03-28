@@ -1,0 +1,432 @@
+{#
+  Pipeline page — Kanban-style inquiry tracking board.
+  Follows Linear/Trello pattern with status columns.
+
+  Required context:
+    columns: list of {key, label, color, count, items: list[dict]}
+    city_filter: list of {key, label, count}
+    stats: {total, active, viewed, passed, avg_score}
+    property_pages: list of {href, label}
+    property_current: str
+    nav_items: list
+    current_page: str
+#}
+{% extends "base.html" %}
+
+{% block title %}Pipeline{% endblock %}
+
+{% block nav %}
+{{ super() }}
+{% include "components/property_nav.html" %}
+{% endblock %}
+
+{% block styles %}
+{% from "components/deal_score.html" import deal_score_css %}
+{{ deal_score_css() }}
+
+/* ── Pipeline Page Styles ── */
+
+/* Hero compact */
+.pipeline-hero {
+  background: linear-gradient(135deg, #1a1040, #1e1b4b, #1a1040);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-8);
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--border);
+}
+.pipeline-hero h1 {
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.pipeline-hero .subtitle {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.pipeline-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.pipeline-stat {
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  backdrop-filter: blur(10px);
+}
+.pipeline-stat .label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.pipeline-stat .value {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+/* City filter chips */
+.city-chips {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.city-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.city-chip:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+.city-chip.active {
+  color: var(--text);
+  background: rgba(99,102,241,0.12);
+  border-color: rgba(99,102,241,0.3);
+}
+.city-chip-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+/* Kanban board */
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  min-height: 400px;
+}
+.kanban-col {
+  background: rgba(255,255,255,0.02);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.kanban-col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: inherit;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+.kanban-col-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.kanban-col-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.kanban-col-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.06);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.kanban-col-body {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Pipeline card (compact variant) */
+.pipe-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  transition: transform 0.12s, box-shadow 0.12s;
+  cursor: default;
+  border-left: 3px solid var(--pipe-accent, var(--border));
+}
+.pipe-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.pipe-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.pipe-card-info { flex: 1; min-width: 0; }
+.pipe-card-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.pipe-card-station {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pipe-card-kpis {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.pipe-kpi {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+.pipe-kpi strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.pipe-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+.pipe-card-tags {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+.pipe-tag {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+.pipe-tag--pet { color: var(--green); border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.08); }
+.pipe-tag--source { color: var(--text-secondary); border-color: var(--border); background: rgba(255,255,255,0.03); }
+.pipe-tag--city-osaka { color: #f472b6; border-color: rgba(244,114,182,0.3); background: rgba(244,114,182,0.08); }
+.pipe-tag--city-fukuoka { color: #38bdf8; border-color: rgba(56,189,248,0.3); background: rgba(56,189,248,0.08); }
+.pipe-tag--city-tokyo { color: #a78bfa; border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.08); }
+.pipe-card-link {
+  font-size: 10px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.pipe-card-link:hover { opacity: 1; }
+.pipe-card-notes {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  line-height: 1.4;
+}
+.pipe-card-agent {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.pipe-card-viewing {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--yellow);
+  margin-top: 4px;
+}
+.pipe-card--passed {
+  opacity: 0.5;
+}
+.pipe-card--passed .pipe-card-name {
+  text-decoration: line-through;
+}
+
+/* Empty column */
+.kanban-empty {
+  text-align: center;
+  padding: 24px 12px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .kanban {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .kanban-col-body {
+    max-height: 400px;
+  }
+}
+@media (max-width: 640px) {
+  .pipeline-hero { padding: var(--space-4); border-radius: var(--radius-md); margin-bottom: var(--space-4); }
+  .pipeline-hero h1 { font-size: 20px; }
+  .pipeline-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pipeline-stat .value { font-size: 16px; }
+  .city-chips { gap: 4px; }
+}
+{% endblock %}
+
+{% block content %}
+{% from "components/deal_score.html" import deal_score %}
+
+<div class="container">
+  {# ── Hero ── #}
+  <div class="pipeline-hero">
+    <h1>Pipeline</h1>
+    <div class="subtitle">物件問い合わせ・内覧トラッキング</div>
+    <div class="pipeline-stats">
+      <div class="pipeline-stat">
+        <div class="label">Total</div>
+        <div class="value">{{ stats.total }}</div>
+      </div>
+      <div class="pipeline-stat">
+        <div class="label">Active</div>
+        <div class="value pnl-positive">{{ stats.active }}</div>
+      </div>
+      <div class="pipeline-stat">
+        <div class="label">Viewed</div>
+        <div class="value" style="color:var(--yellow)">{{ stats.viewed }}</div>
+      </div>
+      <div class="pipeline-stat">
+        <div class="label">Passed</div>
+        <div class="value" style="color:var(--text-muted)">{{ stats.passed }}</div>
+      </div>
+      <div class="pipeline-stat">
+        <div class="label">Avg Score</div>
+        <div class="value">{{ stats.avg_score }}</div>
+      </div>
+    </div>
+  </div>
+
+  {# ── City Filter ── #}
+  <div class="city-chips" id="cityChips">
+    <button class="city-chip active" data-city="all" onclick="filterCity('all')">
+      ALL <span class="city-chip-count">{{ stats.total }}</span>
+    </button>
+    {% for cf in city_filter %}
+    <button class="city-chip" data-city="{{ cf.key }}" onclick="filterCity('{{ cf.key }}')">
+      {{ cf.label }} <span class="city-chip-count">{{ cf.count }}</span>
+    </button>
+    {% endfor %}
+  </div>
+
+  {# ── Kanban Board ── #}
+  <div class="kanban" id="kanbanBoard">
+    {% for col in columns %}
+    <div class="kanban-col" data-col="{{ col.key }}">
+      <div class="kanban-col-header">
+        <span class="kanban-col-title">
+          <span class="kanban-col-dot" style="background:{{ col.color }}"></span>
+          {{ col.label }}
+        </span>
+        <span class="kanban-col-count" data-col-count="{{ col.key }}">{{ col.count }}</span>
+      </div>
+      <div class="kanban-col-body">
+        {% if col.cards %}
+          {% for item in col.cards %}
+          <div class="pipe-card{% if item.status == 'passed' %} pipe-card--passed{% endif %}"
+               data-city="{{ item.city }}"
+               data-score="{{ item.score }}"
+               style="--pipe-accent: {{ col.color }}">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="{{ item.name }}">{{ item.name }}</div>
+                <div class="pipe-card-station">{{ item.station }}</div>
+              </div>
+              {{ deal_score(item.score, size="sm") }}
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>{{ item.price }}万</strong></span>
+              <span class="pipe-kpi">{{ item.area }}㎡</span>
+              <span class="pipe-kpi">{{ item.layout }}</span>
+              {% if item.year_built %}<span class="pipe-kpi">{{ item.year_built }}年</span>{% endif %}
+            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                {% if item.pet in ["可", "相談可", "ok"] %}
+                <span class="pipe-tag pipe-tag--pet">Pet</span>
+                {% endif %}
+                <span class="pipe-tag pipe-tag--city-{{ item.city }}">{{ item.city_label }}</span>
+                <span class="pipe-tag pipe-tag--source">{{ item.source }}</span>
+              </div>
+              {% if item.url %}
+              <a href="{{ item.url }}" target="_blank" rel="noopener" class="pipe-card-link">Details ↗</a>
+              {% endif %}
+            </div>
+            {% if item.agent %}
+            <div class="pipe-card-agent">担当: {{ item.agent }}</div>
+            {% endif %}
+            {% if item.viewing_date %}
+            <div class="pipe-card-viewing">内覧: {{ item.viewing_date }}</div>
+            {% endif %}
+            {% if item.notes %}
+            <div class="pipe-card-notes">{{ item.notes }}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="kanban-empty">No items</div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filterCity(city) {
+  // Update chips
+  document.querySelectorAll('.city-chip').forEach(c => c.classList.remove('active'));
+  document.querySelector(`[data-city="${city}"]`).classList.add('active');
+
+  // Filter cards
+  document.querySelectorAll('.pipe-card').forEach(card => {
+    if (city === 'all' || card.dataset.city === city) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  // Update column counts
+  document.querySelectorAll('.kanban-col').forEach(col => {
+    const visible = col.querySelectorAll('.pipe-card:not([style*="display: none"])').length;
+    const counter = col.querySelector('[data-col-count]');
+    if (counter) counter.textContent = visible;
+  });
+}
+</script>
+{% endblock %}

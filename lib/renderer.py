@@ -23,6 +23,30 @@ from lib.styles.design_tokens import get_base_css, get_css_tokens, get_google_fo
 
 TEMPLATE_DIR = Path(__file__).parent / "templates"
 
+# ---------------------------------------------------------------------------
+# Navigation SSoT — all gnav links are defined here, nowhere else
+# ---------------------------------------------------------------------------
+PUBLIC_NAV = [
+    {"href": "https://ymatz28-beep.github.io/report-dashboard/", "label": "Hub"},
+    {"href": "https://ymatz28-beep.github.io/property-report/", "label": "Property"},
+    {"href": "https://ymatz28-beep.github.io/trip-planner/", "label": "Travel"},
+]
+
+PRIVATE_NAV = [
+    {"href": "/stock/portfolio.html", "label": "Stock"},
+    {"href": "/stock/market-intel.html", "label": "Market Intel"},
+    {"href": "/intel/", "label": "Insight"},
+    {"href": "/wealth/dashboard.html", "label": "Wealth"},
+    {"href": "/action/", "label": "Action"},
+    {"href": "/cisco/", "label": "Cisco"},
+    {"href": "https://ymatz28-beep.github.io/self-insight/", "label": "Self-Insight"},
+    {"href": "/health/", "label": "Health"},
+    {"href": "https://ymatz28-beep.github.io/property-report/", "label": "Property"},
+    {"href": "https://ymatz28-beep.github.io/trip-planner/", "label": "Travel"},
+    {"href": "/newsletter/", "label": "Newsletter"},
+    {"href": "/bookmarks/", "label": "Bookmarks"},
+    {"href": "/sns/", "label": "SNS"},
+]
 
 # ---------------------------------------------------------------------------
 # Custom filters
@@ -77,6 +101,46 @@ def _json_safe(value: Any) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Nav HTML generator — use this instead of hardcoding nav in generators
+# ---------------------------------------------------------------------------
+
+_PRIVATE_DOMAIN = "https://iuma-private.pages.dev"
+
+
+def get_nav_html(
+    scope: str = "private",
+    current_page: str = "",
+    absolute: bool = False,
+) -> str:
+    """Generate canonical nav HTML from SSoT.
+
+    Args:
+        scope: "private" or "public" — selects nav item list.
+        current_page: Label or href of the active page (for aria-current).
+        absolute: If True, convert relative hrefs to absolute iuma-private URLs.
+                  Use for pages hosted outside iuma-private (e.g., GitHub Pages).
+    """
+    items = PRIVATE_NAV if scope == "private" else PUBLIC_NAV
+    links = []
+    for item in items:
+        href = item["href"]
+        if absolute and href.startswith("/"):
+            href = _PRIVATE_DOMAIN + href
+        label = item["label"]
+        aria = ' aria-current="page"' if label == current_page or href == current_page else ""
+        links.append(f'    <a href="{href}"{aria}>{label}</a>')
+
+    nav_links = "\n".join(links)
+    return f"""<header class="site-header">
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+  <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
+  <nav class="site-nav">
+{nav_links}
+  </nav>
+</header>"""
+
+
+# ---------------------------------------------------------------------------
 # Environment factory
 # ---------------------------------------------------------------------------
 
@@ -117,24 +181,7 @@ def create_env(extra_dirs: list[Path] | None = None, scope: str = "public") -> E
     env.globals["generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     # Global navigation — public pages must never expose private URLs
-    _public_nav = [
-        {"href": "https://ymatz28-beep.github.io/report-dashboard/", "label": "Hub"},
-        {"href": "https://ymatz28-beep.github.io/property-report/", "label": "Property"},
-        {"href": "https://ymatz28-beep.github.io/trip-planner/", "label": "Travel"},
-    ]
-    # Private first (investment → ops), then Public (property → travel)
-    _private_nav = [
-        {"href": "https://iuma-private.pages.dev/stock/portfolio.html", "label": "Stock"},
-        {"href": "https://iuma-private.pages.dev/stock/market-intel.html", "label": "Market Intel"},
-        {"href": "https://iuma-private.pages.dev/intel/", "label": "Insight"},
-        {"href": "https://iuma-private.pages.dev/wealth/dashboard.html", "label": "Wealth"},
-        {"href": "https://iuma-private.pages.dev/action/", "label": "Action"},
-        {"href": "https://ymatz28-beep.github.io/self-insight/", "label": "Self-Insight"},
-        {"href": "https://iuma-private.pages.dev/health/", "label": "Health"},
-        {"href": "https://ymatz28-beep.github.io/property-report/", "label": "Property"},
-        {"href": "https://ymatz28-beep.github.io/trip-planner/", "label": "Travel"},
-    ]
-    env.globals["nav_items"] = _private_nav if scope == "private" else _public_nav
+    env.globals["nav_items"] = PRIVATE_NAV if scope == "private" else PUBLIC_NAV
     env.globals["site_brand"] = ""
     env.globals["current_page"] = ""
 

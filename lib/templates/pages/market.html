@@ -45,11 +45,56 @@
 }
 .city-tab.active .city-tab-count { background: rgba(99,102,241,0.2); color: var(--accent); }
 
+/* Sticky controls bar */
+.market-controls-sticky {
+  position: sticky;
+  top: calc(var(--gnav-height, 52px) + 36px);
+  z-index: calc(var(--z-subnav, 90) - 1);
+  background: var(--bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0;
+  margin: 0 calc(-1 * var(--space-4, 16px));
+  padding-left: var(--space-4, 16px);
+  padding-right: var(--space-4, 16px);
+}
 /* Controls row */
 .market-controls {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+  gap: 12px; flex-wrap: wrap;
 }
+/* Section jump nav (区分/一棟/戸建て) */
+.type-jump {
+  display: flex; gap: 6px; justify-content: center; margin-top: 8px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.type-jump::-webkit-scrollbar { display: none; }
+.type-jump-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 600; padding: 5px 14px;
+  border-radius: 20px; white-space: nowrap;
+  color: var(--text-secondary); text-decoration: none;
+  border: 1px solid transparent; background: transparent;
+  cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+}
+.type-jump-btn:hover {
+  color: var(--text); background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
+}
+.type-jump-btn.active {
+  color: var(--accent); border-color: rgba(99,102,241,0.3);
+  background: rgba(99,102,241,0.08);
+}
+.type-jump-count {
+  font-family: var(--font-mono); font-size: 10px;
+  background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 8px;
+}
+.type-jump-btn.active .type-jump-count {
+  background: rgba(99,102,241,0.15); color: var(--accent);
+}
+/* scroll-margin for section anchors */
+.type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 80px); }
 
 /* View toggle */
 .view-toggle { display: flex; gap: 2px; background: var(--surface); border-radius: 6px; padding: 2px; border: 1px solid var(--border); }
@@ -138,10 +183,14 @@
   .hero .stat-card .value { font-size: 16px; }
   .property-grid { grid-template-columns: 1fr; gap: 12px; }
   .market-controls { flex-direction: column; align-items: stretch; }
+  .market-controls-sticky { margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
   .city-tabs { gap: 2px; }
   .city-tab { padding: 6px 12px; font-size: 12px; }
+  .type-jump { justify-content: flex-start; }
+  .type-jump-btn { font-size: 11px; padding: 4px 10px; }
   .prop-table { font-size: 11px; }
   .prop-table th, .prop-table td { padding: 6px 6px; }
+  .type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 100px); }
 }
 {% endblock %}
 
@@ -185,29 +234,47 @@
     {% endif %}
   </div>
 
-  {# ── Controls ── #}
-  <div class="market-controls">
-    <div class="city-tabs" id="cityTabs">
-      {% for city in cities %}
-      <button class="city-tab{% if loop.first %} active{% endif %}"
-              data-city="{{ city.key }}" onclick="switchCity('{{ city.key }}')">
-        {{ city.label }}
-        <span class="city-tab-count">{{ city.count }}</span>
-      </button>
-      {% endfor %}
-    </div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <div class="view-toggle">
-        <button class="view-btn active" onclick="setView('grid')">Grid</button>
-        <button class="view-btn" onclick="setView('list')">List</button>
+  {# ── Sticky Controls ── #}
+  <div class="market-controls-sticky">
+    <div class="market-controls">
+      <div class="city-tabs" id="cityTabs">
+        {% for city in cities %}
+        <button class="city-tab{% if loop.first %} active{% endif %}"
+                data-city="{{ city.key }}"
+                data-kubun="{{ city.kubun.count }}"
+                data-ittomono="{{ city.ittomono.count }}"
+                data-kodate="{{ city.kodate.count }}"
+                onclick="switchCity('{{ city.key }}')">
+          {{ city.label }}
+          <span class="city-tab-count">{{ city.count }}</span>
+        </button>
+        {% endfor %}
       </div>
-      <select class="sort-select" id="sortSelect" onchange="sortProperties()">
-        <option value="score-desc">Score ↓</option>
-        <option value="price-asc">Price ↑</option>
-        <option value="price-desc">Price ↓</option>
-        <option value="area-desc">Area ↓</option>
-      </select>
-      <span class="results-count" id="resultsCount"></span>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div class="view-toggle">
+          <button class="view-btn active" onclick="setView('grid')">Grid</button>
+          <button class="view-btn" onclick="setView('list')">List</button>
+        </div>
+        <select class="sort-select" id="sortSelect" onchange="sortProperties()">
+          <option value="score-desc">Score ↓</option>
+          <option value="price-asc">Price ↑</option>
+          <option value="price-desc">Price ↓</option>
+          <option value="area-desc">Area ↓</option>
+        </select>
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+    </div>
+    {# Section jump nav #}
+    <div class="type-jump" id="typeJump">
+      <button class="type-jump-btn active" data-type="kubun" onclick="jumpToType('kubun')">
+        区分 <span class="type-jump-count" id="jumpKubunCount">0</span>
+      </button>
+      <button class="type-jump-btn" data-type="ittomono" onclick="jumpToType('ittomono')">
+        一棟 <span class="type-jump-count" id="jumpIttomonoCount">0</span>
+      </button>
+      <button class="type-jump-btn" data-type="kodate" onclick="jumpToType('kodate')">
+        戸建 <span class="type-jump-count" id="jumpKodateCount">0</span>
+      </button>
     </div>
   </div>
 
@@ -217,7 +284,7 @@
 
     {# ── 区分 Section ── #}
     {% if city.kubun.count > 0 %}
-    <div class="type-section">
+    <div class="type-section" id="{{ city.key }}-kubun" data-type="kubun">
       <div class="type-header">
         <span class="type-label">区分マンション</span>
         <span class="type-count">{{ city.kubun.count }}</span>
@@ -257,7 +324,7 @@
 
     {# ── 一棟もの Section ── #}
     {% if city.ittomono.count > 0 %}
-    <div class="type-section">
+    <div class="type-section" id="{{ city.key }}-ittomono" data-type="ittomono">
       <div class="type-header">
         <span class="type-label">一棟もの</span>
         <span class="type-count">{{ city.ittomono.count }}</span>
@@ -301,7 +368,7 @@
 
     {# ── 戸建て Section ── #}
     {% if city.kodate.count > 0 %}
-    <div class="type-section">
+    <div class="type-section" id="{{ city.key }}-kodate" data-type="kodate">
       <div class="type-header">
         <span class="type-label">戸建て</span>
         <span class="type-count">{{ city.kodate.count }}</span>
@@ -345,14 +412,55 @@
 {% block scripts %}
 <script>
 let currentView = 'grid';
+let currentCity = '{{ cities[0].key if cities else "" }}';
+
+function getActiveCity() {
+  const tab = document.querySelector('.city-tab.active');
+  return tab ? tab.dataset.city : currentCity;
+}
 
 function switchCity(key) {
+  currentCity = key;
   document.querySelectorAll('.city-tab').forEach(t => t.classList.remove('active'));
   document.querySelector(`[data-city="${key}"]`).classList.add('active');
   document.querySelectorAll('.city-panel').forEach(p => p.classList.remove('active'));
   const panel = document.getElementById(`panel-${key}`);
   if (panel) panel.classList.add('active');
+  updateTypeJump();
   updateCount();
+  // Scroll to top of panel
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateTypeJump() {
+  const tab = document.querySelector('.city-tab.active');
+  if (!tab) return;
+  document.getElementById('jumpKubunCount').textContent = tab.dataset.kubun || '0';
+  document.getElementById('jumpIttomonoCount').textContent = tab.dataset.ittomono || '0';
+  document.getElementById('jumpKodateCount').textContent = tab.dataset.kodate || '0';
+
+  // Show/hide buttons based on count
+  document.querySelectorAll('.type-jump-btn').forEach(btn => {
+    const type = btn.dataset.type;
+    const count = parseInt(tab.dataset[type] || '0');
+    btn.style.display = count > 0 ? '' : 'none';
+  });
+
+  // Reset active state to first visible button
+  const visibleBtns = Array.from(document.querySelectorAll('.type-jump-btn')).filter(b => b.style.display !== 'none');
+  document.querySelectorAll('.type-jump-btn').forEach(b => b.classList.remove('active'));
+  if (visibleBtns.length > 0) visibleBtns[0].classList.add('active');
+}
+
+function jumpToType(type) {
+  const city = getActiveCity();
+  const section = document.getElementById(`${city}-${type}`);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelectorAll('.type-jump-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector(`.type-jump-btn[data-type="${type}"]`);
+    if (btn) btn.classList.add('active');
+  }
 }
 
 function setView(view) {
@@ -403,6 +511,25 @@ function updateCount() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', updateCount);
+// Intersection Observer for type-jump auto-active
+const typeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const type = entry.target.dataset.type;
+      if (type) {
+        document.querySelectorAll('.type-jump-btn').forEach(b => b.classList.remove('active'));
+        const btn = document.querySelector(`.type-jump-btn[data-type="${type}"]`);
+        if (btn && btn.style.display !== 'none') btn.classList.add('active');
+      }
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateTypeJump();
+  updateCount();
+  // Observe all type sections
+  document.querySelectorAll('.type-section[data-type]').forEach(s => typeObserver.observe(s));
+});
 </script>
 {% endblock %}

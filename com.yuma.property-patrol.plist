@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.yuma.property-patrol</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/yumatejima/Documents/Projects/property-analyzer/.venv/bin/python</string>
+        <string>/Users/yumatejima/Documents/Projects/property-analyzer/run_daily_patrol.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/yumatejima/Documents/Projects/property-analyzer</string>
+
+    <!-- Every 24h + RunAtLoad: PC wake → immediate catch-up -->
+    <key>StartInterval</key>
+    <integer>86400</integer>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/property_patrol.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/property_patrol.err</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
+    </dict>
+</dict>
+</plist>

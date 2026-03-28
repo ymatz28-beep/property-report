@@ -252,8 +252,8 @@
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <div class="view-toggle">
-          <button class="view-btn active" onclick="setView('grid')">グリッド</button>
-          <button class="view-btn" onclick="setView('list')">リスト</button>
+          <button class="view-btn" onclick="setView('grid')">グリッド</button>
+          <button class="view-btn active" onclick="setView('list')">リスト</button>
         </div>
         <select class="sort-select" id="sortSelect" onchange="sortProperties()">
           <option value="score-desc">スコア ↓</option>
@@ -289,17 +289,17 @@
         <span class="type-label">区分マンション</span>
         <span class="type-count">{{ city.kubun.count }}</span>
       </div>
-      <div class="property-grid active" data-view="grid">
+      <div class="property-grid" data-view="grid" style="display:none">
         {% for prop in city.kubun.properties %}
         {{ property_card(prop) }}
         {% endfor %}
       </div>
-      <div class="property-list" data-view="list">
+      <div class="property-list active" data-view="list">
         <table class="prop-table">
           <thead>
             <tr>
               <th>スコア</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>最寄駅</th><th>築年</th><th>管理費</th><th>ペット</th><th>利回り</th><th>CF/月</th>
+              <th>間取り</th><th>最寄駅</th><th>築年</th><th>管理費</th><th>ペット</th><th>利回り</th><th>CF/月</th><th>判定</th>
               <th>徒歩</th><th>㎡単価</th>
             </tr>
           </thead>
@@ -317,6 +317,7 @@
               <td>{{ prop.pet_status | default("—") }}</td>
               <td>{{ prop.yield_text | default("—") }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
+              <td>{% if prop.revenue %}{{ prop.revenue.verdict }}{% else %}—{% endif %}</td>
               <td>{{ prop.walk_min_text | default("—") }}</td>
               <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
             </tr>
@@ -334,12 +335,12 @@
         <span class="type-label">一棟もの</span>
         <span class="type-count">{{ city.ittomono.count }}</span>
       </div>
-      <div class="property-grid active" data-view="grid">
+      <div class="property-grid" data-view="grid" style="display:none">
         {% for prop in city.ittomono.properties %}
         {{ property_card(prop) }}
         {% endfor %}
       </div>
-      <div class="property-list" data-view="list">
+      <div class="property-list active" data-view="list">
         <table class="prop-table">
           <thead>
             <tr>
@@ -381,12 +382,12 @@
         <span class="type-label">戸建て</span>
         <span class="type-count">{{ city.kodate.count }}</span>
       </div>
-      <div class="property-grid active" data-view="grid">
+      <div class="property-grid" data-view="grid" style="display:none">
         {% for prop in city.kodate.properties %}
         {{ property_card(prop) }}
         {% endfor %}
       </div>
-      <div class="property-list" data-view="list">
+      <div class="property-list active" data-view="list">
         <table class="prop-table">
           <thead>
             <tr><th>スコア</th><th>物件名</th><th>価格</th><th>面積</th><th>構造</th><th>築年</th><th>利回り</th><th>徒歩</th><th>㎡単価</th></tr>
@@ -421,7 +422,7 @@
 
 {% block scripts %}
 <script>
-let currentView = 'grid';
+let currentView = 'list';
 let currentCity = '{{ cities[0].key if cities else "" }}';
 
 function getActiveCity() {

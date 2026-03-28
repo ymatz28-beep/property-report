@@ -308,10 +308,11 @@ def _parse_ftakken_fee(text: str) -> str:
     return ""
 
 
-def enrich_ftakken_file(filepath: Path) -> int:
+def enrich_ftakken_file(filepath: Path, max_pages: int = 60) -> int:
     """Enrich ふれんず properties by visiting detail pages with Playwright.
 
     Requires a browser session via listing page first (detail pages return 403 without cookies).
+    Incremental: skips already-enriched rows. max_pages limits per-run to prevent timeout.
     """
     if not filepath.exists():
         return 0
@@ -347,7 +348,12 @@ def enrich_ftakken_file(filepath: Path) -> int:
     if not to_enrich:
         return 0
 
-    print(f"  ふれんず enrichment: {len(to_enrich)}件の詳細ページを巡回")
+    # Limit per run (incremental — next run picks up remaining)
+    if len(to_enrich) > max_pages:
+        print(f"  ふれんず enrichment: {len(to_enrich)}件中 先頭{max_pages}件を処理（残りは次回）")
+        to_enrich = to_enrich[:max_pages]
+    else:
+        print(f"  ふれんず enrichment: {len(to_enrich)}件の詳細ページを巡回")
 
     updated = 0
     with sync_playwright() as p:

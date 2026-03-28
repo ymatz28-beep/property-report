@@ -547,6 +547,14 @@ def _build_failure_details(all_steps: list[dict]) -> list[dict]:
     return details
 
 
+def _safe_price_man(price_text: str) -> int:
+    """Parse price text to 万円 int, returning 0 on failure."""
+    try:
+        return int(price_text.replace("万円", "").replace(",", "").strip())
+    except (ValueError, AttributeError):
+        return 0
+
+
 def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report: dict,
                         all_steps: list[dict] | None = None) -> None:
     """Save patrol summary as JSON (structured data for Daily Digest + notifications)."""
@@ -572,7 +580,7 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
         "ok_count": sum(1 for s in all_steps if s.get("ok")),
         "new_items": [
             {"name": p["name"], "price_text": p["price"],
-             "price_man": int(p["price"].replace("万円", "").replace(",", "")),
+             "price_man": _safe_price_man(p["price"]),
              "source": p["source"]}
             for p in new
         ],

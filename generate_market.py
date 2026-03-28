@@ -168,6 +168,14 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict) -> dict:
             d["is_new"] = False
     else:
         d["is_new"] = False
+    # Walk minutes
+    d["walk_min_text"] = f"{int(row.walk_min)}分" if getattr(row, "walk_min", None) else "—"
+    # Price per sqm
+    if row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
+        ppsm = round(row.price_man * 10000 / row.area_sqm)
+        d["price_per_sqm"] = f"{ppsm:,.0f}円/㎡"
+    else:
+        d["price_per_sqm"] = "—"
     return d
 
 
@@ -194,6 +202,15 @@ def _ittomono_to_dict(row: IttomonoRow) -> dict:
 
     if row.yield_pct:
         d["yield_text"] = f"{row.yield_pct:.1f}%"
+
+    # Walk minutes
+    d["walk_min_text"] = f"{int(row.walk_min)}分" if getattr(row, "walk_min", None) else "—"
+    # Price per sqm
+    if row.price_man and row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
+        ppsm = round(row.price_man * 10000 / row.area_sqm)
+        d["price_per_sqm"] = f"{ppsm:,.0f}円/㎡"
+    else:
+        d["price_per_sqm"] = "—"
 
     # Revenue analysis
     if row.price_man and row.yield_pct and row.price_man > 0 and row.yield_pct > 0:

@@ -157,12 +157,7 @@ def parse_listing_page(html: str) -> list[dict]:
             area_val = float(area_m.group(1))
             if area_val < AREA_MIN or area_val > AREA_MAX:
                 continue
-            # Get full text including 坪 etc.
-            area_full_m = re.search(r'専有面積</dt>\s*<dd[^>]*>(.+?)</dd>', card, re.DOTALL)
-            if area_full_m:
-                area_text = re.sub(r'<[^>]+>', '', area_full_m.group(1)).strip()
-            else:
-                area_text = f"{area_val}m2"
+            area_text = f"{area_val}㎡"
 
         # Layout
         layout = ""

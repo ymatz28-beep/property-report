@@ -201,11 +201,11 @@
 <div class="container">
   {# ── Hero ── #}
   <div class="hero">
-    <h1>Property Market</h1>
+    <h1>物件マーケット</h1>
     <div class="subtitle">不動産投資 物件パトロール — 厳選スコアリング済み</div>
     <div class="stats">
       <div class="stat-card">
-        <div class="label">Total</div>
+        <div class="label">合計</div>
         <div class="value">{{ totals.count }}</div>
       </div>
       <div class="stat-card">
@@ -221,16 +221,16 @@
         <div class="value">{{ totals.kodate_count }}</div>
       </div>
       <div class="stat-card">
-        <div class="label">Avg Price</div>
+        <div class="label">平均価格</div>
         <div class="value">{{ totals.avg_price }}万</div>
       </div>
       <div class="stat-card">
-        <div class="label">Pet OK</div>
+        <div class="label">ペット可</div>
         <div class="value">{{ totals.pet_ok_count }}</div>
       </div>
     </div>
     {% if patrol_summary %}
-    <div class="hero-updated">Last patrol: {{ patrol_summary.date }} — {{ patrol_summary.total }} properties scanned</div>
+    <div class="hero-updated">最終巡回: {{ patrol_summary.date }} — {{ patrol_summary.total }}件スキャン</div>
     {% endif %}
   </div>
 
@@ -252,14 +252,14 @@
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <div class="view-toggle">
-          <button class="view-btn active" onclick="setView('grid')">Grid</button>
-          <button class="view-btn" onclick="setView('list')">List</button>
+          <button class="view-btn active" onclick="setView('grid')">グリッド</button>
+          <button class="view-btn" onclick="setView('list')">リスト</button>
         </div>
         <select class="sort-select" id="sortSelect" onchange="sortProperties()">
-          <option value="score-desc">Score ↓</option>
-          <option value="price-asc">Price ↑</option>
-          <option value="price-desc">Price ↓</option>
-          <option value="area-desc">Area ↓</option>
+          <option value="score-desc">スコア ↓</option>
+          <option value="price-asc">価格 ↑</option>
+          <option value="price-desc">価格 ↓</option>
+          <option value="area-desc">面積 ↓</option>
         </select>
         <span class="results-count" id="resultsCount"></span>
       </div>
@@ -298,8 +298,9 @@
         <table class="prop-table">
           <thead>
             <tr>
-              <th>Score</th><th>Name</th><th>Price</th><th>Area</th>
-              <th>Layout</th><th>Station</th><th>Built</th><th>Fee</th><th>Pet</th>
+              <th>スコア</th><th>物件名</th><th>価格</th><th>面積</th>
+              <th>間取り</th><th>最寄駅</th><th>築年</th><th>管理費</th><th>ペット</th><th>利回り</th><th>CF/月</th>
+              <th>徒歩</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -314,6 +315,10 @@
               <td>{{ prop.built_text | default("—") }}</td>
               <td class="price-cell">{{ prop.maintenance_fee_text | default("—") }}</td>
               <td>{{ prop.pet_status | default("—") }}</td>
+              <td>{{ prop.yield_text | default("—") }}</td>
+              <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
+              <td>{{ prop.walk_min_text | default("—") }}</td>
+              <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -338,8 +343,9 @@
         <table class="prop-table">
           <thead>
             <tr>
-              <th>Score</th><th>Name</th><th>Price</th><th>Yield</th><th>Area</th>
-              <th>Structure</th><th>Units</th><th>CF/月</th><th>Verdict</th>
+              <th>スコア</th><th>物件名</th><th>価格</th><th>利回り</th><th>面積</th>
+              <th>構造</th><th>戸数</th><th>CF/月</th><th>判定</th>
+              <th>徒歩</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -358,6 +364,8 @@
               {% else %}
               <td>—</td><td>—</td>
               {% endif %}
+              <td>{{ prop.walk_min_text | default("—") }}</td>
+              <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -381,7 +389,7 @@
       <div class="property-list" data-view="list">
         <table class="prop-table">
           <thead>
-            <tr><th>Score</th><th>Name</th><th>Price</th><th>Area</th><th>Structure</th><th>Built</th><th>Yield</th></tr>
+            <tr><th>スコア</th><th>物件名</th><th>価格</th><th>面積</th><th>構造</th><th>築年</th><th>利回り</th><th>徒歩</th><th>㎡単価</th></tr>
           </thead>
           <tbody>
             {% for prop in city.kodate.properties %}
@@ -393,6 +401,8 @@
               <td>{{ prop.structure | default("—") }}</td>
               <td>{{ prop.built_text | default("—") }}</td>
               <td>{{ prop.yield_text | default("—") }}</td>
+              <td>{{ prop.walk_min_text | default("—") }}</td>
+              <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -402,7 +412,7 @@
     {% endif %}
 
     {% if city.kubun.count == 0 and city.ittomono.count == 0 and city.kodate.count == 0 %}
-    <div class="empty-state">No properties found for {{ city.label }}</div>
+    <div class="empty-state">{{ city.label }}の物件なし</div>
     {% endif %}
   </div>
   {% endfor %}
@@ -507,7 +517,7 @@ function updateCount() {
   const panel = document.querySelector('.city-panel.active');
   if (panel) {
     const cards = panel.querySelectorAll('.prop-card');
-    document.getElementById('resultsCount').textContent = `${cards.length} properties`;
+    document.getElementById('resultsCount').textContent = `${cards.length}件`;
   }
 }
 

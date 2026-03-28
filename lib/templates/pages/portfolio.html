@@ -229,30 +229,30 @@
     <div class="subtitle">保有物件一覧 — {{ meta.data_source }}</div>
     <div class="port-stats">
       <div class="port-stat">
-        <div class="label">Properties</div>
+        <div class="label">物件数</div>
         <div class="value">{{ totals.count }}</div>
         <div class="sub">個人{{ totals.personal }} / 法人{{ totals.corporate }}</div>
       </div>
       <div class="port-stat">
-        <div class="label">Total Assets</div>
+        <div class="label">総資産額</div>
         <div class="value">{{ (totals.total_price / 10000) | int }}万</div>
       </div>
       <div class="port-stat">
-        <div class="label">Monthly Rent</div>
+        <div class="label">月額賃料</div>
         <div class="value pnl-positive">¥{{ "{:,.0f}".format(totals.monthly_rent_total) }}</div>
       </div>
       <div class="port-stat">
-        <div class="label">Monthly CF</div>
+        <div class="label">月間CF</div>
         <div class="value {% if totals.monthly_cf_total >= 0 %}pnl-positive{% else %}pnl-negative{% endif %}">
           ¥{{ "{:,.0f}".format(totals.monthly_cf_total) }}
         </div>
       </div>
       <div class="port-stat">
-        <div class="label">Annual Depreciation</div>
+        <div class="label">年間償却</div>
         <div class="value">¥{{ "{:,.0f}".format(totals.annual_depreciation_total) }}</div>
       </div>
       <div class="port-stat">
-        <div class="label">Tax Savings</div>
+        <div class="label">節税効果</div>
         <div class="value pnl-positive">¥{{ "{:,.0f}".format(totals.annual_tax_savings_total) }}</div>
       </div>
     </div>
@@ -340,7 +340,7 @@
   {# ── Sold Properties ── #}
   {% if sold %}
   <div class="sold-section">
-    <div class="sold-title">Sold Properties</div>
+    <div class="sold-title">売却済み物件</div>
     <div class="sold-grid">
       {% for s in sold %}
       <div class="sold-card">

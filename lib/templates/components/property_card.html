@@ -241,44 +241,56 @@
 
   <div class="prop-card-body">
     <div class="prop-kpi">
-      <span class="prop-kpi-label">Price</span>
+      <span class="prop-kpi-label">価格</span>
       <span class="prop-kpi-value">{{ prop.price_text }}</span>
     </div>
     {% if prop.yield_text %}
     <div class="prop-kpi">
-      <span class="prop-kpi-label">Yield</span>
+      <span class="prop-kpi-label">利回り</span>
       <span class="prop-kpi-value">{{ prop.yield_text }}</span>
     </div>
     {% endif %}
     <div class="prop-kpi">
-      <span class="prop-kpi-label">Area</span>
+      <span class="prop-kpi-label">面積</span>
       <span class="prop-kpi-value">{{ prop.area_text }}</span>
     </div>
     {% if prop.layout %}
     <div class="prop-kpi">
-      <span class="prop-kpi-label">Layout</span>
+      <span class="prop-kpi-label">間取り</span>
       <span class="prop-kpi-value">{{ prop.layout }}</span>
     </div>
     {% endif %}
     {% if prop.structure %}
     <div class="prop-kpi">
-      <span class="prop-kpi-label">Structure</span>
+      <span class="prop-kpi-label">構造</span>
       <span class="prop-kpi-value">{{ prop.structure }}</span>
     </div>
     {% endif %}
     {% if prop.units_count %}
     <div class="prop-kpi">
-      <span class="prop-kpi-label">Units</span>
+      <span class="prop-kpi-label">戸数</span>
       <span class="prop-kpi-value">{{ prop.units_count }}戸</span>
     </div>
     {% endif %}
     <div class="prop-kpi">
-      <span class="prop-kpi-label">Built</span>
+      <span class="prop-kpi-label">築年</span>
       <span class="prop-kpi-value">{{ prop.built_text | default("—") }}</span>
     </div>
+    {% if prop.walk_min is defined and prop.walk_min %}
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">徒歩</span>
+      <span class="prop-kpi-value">{{ prop.walk_min }}分</span>
+    </div>
+    {% endif %}
+    {% if prop.price_per_sqm is defined and prop.price_per_sqm and prop.price_per_sqm != "—" %}
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">{{ prop.price_per_sqm }}</span>
+    </div>
+    {% endif %}
     {% if prop.maintenance_fee_text %}
     <div class="prop-kpi">
-      <span class="prop-kpi-label">Fee</span>
+      <span class="prop-kpi-label">管理費</span>
       <span class="prop-kpi-value">{{ prop.maintenance_fee_text }}</span>
     </div>
     {% endif %}
@@ -354,7 +366,7 @@
   {# Score Breakdown (expandable) #}
   {% if expandable and prop.score_breakdown %}
   <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
-    ▸ Score Breakdown
+    ▸ スコア内訳
   </div>
   <div class="prop-card-score-detail">
     <div class="score-breakdown-grid">
@@ -373,7 +385,7 @@
   {% if prop.url %}
   <div class="prop-card-footer">
     <a href="{{ prop.url }}" target="_blank" rel="noopener" class="prop-card-link">
-      Details ↗
+      詳細 ↗
     </a>
   </div>
   {% endif %}

@@ -426,7 +426,10 @@ def _parse_ittomono_block(block: str, prop_type: str, detail_urls: list[str], id
     loc_m = re.search(r"所在地\s*([^\n\t]+?)(?:\s*mapを見る|\s*map|\t|\n)", block)
     if not loc_m:
         return None
-    location = loc_m.group(1).strip().split()[0] if loc_m.group(1).strip() else ""
+    loc_raw = loc_m.group(1).strip()
+    loc_parts = loc_raw.split()
+    location = loc_parts[0] if loc_parts else loc_raw
+    building_name_ittomono = " ".join(loc_parts[1:]) if len(loc_parts) > 1 else ""
     if not location:
         return None
 
@@ -510,9 +513,19 @@ def _parse_ittomono_block(block: str, prop_type: str, detail_urls: list[str], id
         if 1.0 <= y_val <= 30.0:
             yield_text = f"{y_val}%"
 
-    # Name: ふれんず 一棟もの/戸建て rarely have distinct building names
-    # Primary: use street address from location as name
-    name = location or f"ふれんず{prop_type} #{idx}"
+    # Name: use building name from location line if present;
+    # otherwise format as "{区/エリア名} {構造}" for readability
+    if building_name_ittomono:
+        name = building_name_ittomono
+    else:
+        # Extract ward/area from address: "福岡市南区警弥郷１丁目" → "南区警弥郷"
+        area_m = re.search(r"福岡市([^市区町村]+区\S+?)(?:[\d０-９]|丁目|番|号|$)", location)
+        if area_m:
+            area_label = area_m.group(1)
+        else:
+            # Fallback: just take everything after 市 or use last 2 chars of address
+            area_label = re.sub(r"^福岡市", "", location)[:10]
+        name = f"{area_label} {structure}" if structure else area_label or f"ふれんず{prop_type} #{idx}"
 
     # URL
     url = detail_urls[idx] if idx < len(detail_urls) else f"https://www.f-takken.com/freins/buy/mansion"

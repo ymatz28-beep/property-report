@@ -307,23 +307,23 @@
     <div class="subtitle">物件問い合わせ・内覧トラッキング</div>
     <div class="pipeline-stats">
       <div class="pipeline-stat">
-        <div class="label">Total</div>
+        <div class="label">合計</div>
         <div class="value">{{ stats.total }}</div>
       </div>
       <div class="pipeline-stat">
-        <div class="label">Active</div>
+        <div class="label">検討中</div>
         <div class="value pnl-positive">{{ stats.active }}</div>
       </div>
       <div class="pipeline-stat">
-        <div class="label">Viewed</div>
+        <div class="label">内覧済</div>
         <div class="value" style="color:var(--yellow)">{{ stats.viewed }}</div>
       </div>
       <div class="pipeline-stat">
-        <div class="label">Passed</div>
+        <div class="label">見送り</div>
         <div class="value" style="color:var(--text-muted)">{{ stats.passed }}</div>
       </div>
       <div class="pipeline-stat">
-        <div class="label">Avg Score</div>
+        <div class="label">平均スコア</div>
         <div class="value">{{ stats.avg_score }}</div>
       </div>
     </div>
@@ -332,7 +332,7 @@
   {# ── City Filter ── #}
   <div class="city-chips" id="cityChips">
     <button class="city-chip active" data-city="all" onclick="filterCity('all')">
-      ALL <span class="city-chip-count">{{ stats.total }}</span>
+      全て <span class="city-chip-count">{{ stats.total }}</span>
     </button>
     {% for cf in city_filter %}
     <button class="city-chip" data-city="{{ cf.key }}" onclick="filterCity('{{ cf.key }}')">
@@ -381,7 +381,7 @@
                 <span class="pipe-tag pipe-tag--source">{{ item.source }}</span>
               </div>
               {% if item.url %}
-              <a href="{{ item.url }}" target="_blank" rel="noopener" class="pipe-card-link">Details ↗</a>
+              <a href="{{ item.url }}" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
               {% endif %}
             </div>
             {% if item.agent %}
@@ -396,7 +396,7 @@
           </div>
           {% endfor %}
         {% else %}
-          <div class="kanban-empty">No items</div>
+          <div class="kanban-empty">なし</div>
         {% endif %}
       </div>
     </div>

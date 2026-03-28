@@ -1,9 +1,7 @@
 """Unified Market page generator.
 
-Merges 3 city reports (区分) + 一棟もの into a single tabbed Market page.
-Uses new Jinja2 templates with iUMA design system.
-Replaces: generate_osaka_report.py, generate_fukuoka_report.py,
-          generate_tokyo_report.py, generate_ittomono_report.py (for output only).
+Structure: City tabs → within each city: 区分 / 一棟もの / 戸建て
+Each property includes investment analysis (score breakdown, revenue calc).
 """
 from __future__ import annotations
 
@@ -12,9 +10,8 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
-# Ensure lib is importable
 _PROJECT_ROOT = Path(__file__).resolve().parent
-_LIB_PARENT = _PROJECT_ROOT.parent  # ~/Documents/Projects
+_LIB_PARENT = _PROJECT_ROOT.parent
 for p in [str(_PROJECT_ROOT), str(_LIB_PARENT)]:
     if p not in sys.path:
         sys.path.insert(0, p)
@@ -23,8 +20,6 @@ from generate_search_report_common import (
     ReportConfig,
     PropertyRow,
     dedupe_properties,
-    grade_tier,
-    hydrate_parsed_fields,
     load_first_seen,
     load_sold_urls,
     parse_data_file,
@@ -32,13 +27,12 @@ from generate_search_report_common import (
 )
 from generate_ittomono_report import (
     IttomonoRow,
-    build_report_html as _ittomono_build_unused,
-    main as _ittomono_main_unused,
     parse_data_file as ittomono_parse,
     score_row as ittomono_score_row,
     _filter_rows as ittomono_filter,
     _deduplicate_rows as ittomono_dedup,
 )
+from revenue_calc import analyze as revenue_analyze
 from lib.renderer import create_env, PUBLIC_NAV
 from lib.styles.design_tokens import get_base_css, get_css_tokens, get_google_fonts_url
 
@@ -54,23 +48,6 @@ PROPERTY_PAGES = [
     {"href": "simulate.html", "label": "Simulate"},
     {"href": "portfolio.html", "label": "Portfolio"},
 ]
-
-
-# ---------------------------------------------------------------------------
-# City configs (extracted from individual generators)
-# ---------------------------------------------------------------------------
-def _find_extra_paths(city_key: str) -> list[Path]:
-    paths = []
-    for prefix in ["rakumachi", "yahoo", "athome", "cowcamo", "ftakken"]:
-        p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
-        if p.exists():
-            paths.append(p)
-    for prefix in ["restate", "lifull"]:
-        p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
-        if p.exists():
-            paths.append(p)
-    return paths
-
 
 CITY_CONFIGS: list[dict] = [
     {
@@ -93,12 +70,6 @@ CITY_CONFIGS: list[dict] = [
     },
 ]
 
-
-# ---------------------------------------------------------------------------
-# Load & score city properties (区分)
-# ---------------------------------------------------------------------------
-
-# OC / pet / minpaku filter keywords (from generate_search_report_common)
 _OC_KEYWORDS = [
     "オーナーチェンジ", "賃貸中", "利回り", "投資顧問", "投資物件",
     "家賃", "月額賃料", "年間収入", "年間賃料",
@@ -111,11 +82,28 @@ TIER_YELLOW = 65
 MAX_YELLOW_FILL = 20
 
 
-def _load_city(cfg: dict) -> list[PropertyRow]:
-    """Load, dedupe, filter, score properties for one city."""
+# ---------------------------------------------------------------------------
+# Extra data source discovery
+# ---------------------------------------------------------------------------
+def _find_extra_paths(city_key: str) -> list[Path]:
+    paths = []
+    for prefix in ["rakumachi", "yahoo", "athome", "cowcamo", "ftakken"]:
+        p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
+        if p.exists():
+            paths.append(p)
+    for prefix in ["restate", "lifull"]:
+        p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
+        if p.exists():
+            paths.append(p)
+    return paths
+
+
+# ---------------------------------------------------------------------------
+# Load 区分 (condominium units)
+# ---------------------------------------------------------------------------
+def _load_kubun(cfg: dict) -> list[PropertyRow]:
     data_path = cfg["data_path"]
     if not data_path.exists():
-        print(f"  [SKIP] {cfg['label']}: {data_path} not found")
         return []
 
     rows = parse_data_file(data_path)
@@ -124,7 +112,6 @@ def _load_city(cfg: dict) -> list[PropertyRow]:
             rows.extend(parse_data_file(extra))
 
     if cfg.get("include_osaka_r"):
-        # Import inline to avoid circular
         try:
             from generate_search_report_common import parse_osaka_r_rows, OSAKA_R_ROWS
             rows.extend(parse_osaka_r_rows(OSAKA_R_ROWS))
@@ -133,7 +120,6 @@ def _load_city(cfg: dict) -> list[PropertyRow]:
 
     rows, _ = dedupe_properties(rows)
 
-    # Filters
     sold = load_sold_urls()
     rows = [r for r in rows if r.url.rstrip("/") + "/" not in sold]
 
@@ -145,22 +131,15 @@ def _load_city(cfg: dict) -> list[PropertyRow]:
     rows = [r for r in rows if r.pet_status != "不可" and "ペット不可" not in f"{r.pet_status} {r.name} {r.raw_line}" and "ペット飼育不可" not in f"{r.pet_status} {r.name} {r.raw_line}"]
     rows = [r for r in rows if "民泊禁止" not in f"{r.minpaku_status} {r.name} {r.raw_line}" and "民泊不可" not in f"{r.minpaku_status} {r.name} {r.raw_line}"]
 
-    # Score
     config = ReportConfig(
-        city_key=cfg["key"],
-        city_label=cfg["label"],
-        accent="#6366f1",
-        accent_rgb="99,102,241",
-        data_path=data_path,
-        output_path=OUTPUT_DIR / "market.html",
-        hero_conditions=[],
-        search_condition_bullets=[],
-        investor_notes=[],
+        city_key=cfg["key"], city_label=cfg["label"],
+        accent="#6366f1", accent_rgb="99,102,241",
+        data_path=data_path, output_path=OUTPUT_DIR / "market.html",
+        hero_conditions=[], search_condition_bullets=[], investor_notes=[],
     )
     for row in rows:
         score_row(row, config)
 
-    # Tier filter
     rows = [r for r in rows if r.total_score >= TIER_YELLOW]
     rows.sort(key=lambda r: -r.total_score)
 
@@ -172,18 +151,16 @@ def _load_city(cfg: dict) -> list[PropertyRow]:
         slots = MAX_YELLOW_FILL - len(green)
         rows = green + yellow[:slots]
 
-    print(f"  {cfg['label']}: {len(rows)} properties (green={len(green)}, yellow={len(yellow)})")
     return rows
 
 
-def _row_to_dict(row: PropertyRow, first_seen: dict) -> dict:
-    """Convert PropertyRow to template-friendly dict."""
+def _kubun_to_dict(row: PropertyRow, first_seen: dict) -> dict:
     d = asdict(row)
+    d["prop_type"] = "kubun"
     fs = first_seen.get(row.url, "")
     d["first_seen"] = fs
-    # Mark as new if first seen within 3 days
     if fs:
-        from datetime import datetime, timedelta
+        from datetime import datetime
         try:
             fs_date = datetime.strptime(fs[:10], "%Y-%m-%d")
             d["is_new"] = (datetime.now() - fs_date).days <= 3
@@ -195,52 +172,84 @@ def _row_to_dict(row: PropertyRow, first_seen: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Load ittomono properties
+# Load 一棟もの (whole buildings)
 # ---------------------------------------------------------------------------
-def _load_ittomono() -> list[dict]:
-    """Load and score ittomono properties across all cities."""
-    all_rows: list[IttomonoRow] = []
-    for city_key in ["osaka", "fukuoka", "tokyo"]:
-        for prefix in ["ittomono", "rakumachi", "ftakken_ittomono"]:
-            p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
-            if p.exists():
-                parsed = ittomono_parse(p, city_key)
-                all_rows.extend(parsed)
+def _load_ittomono_by_city(city_key: str) -> list[IttomonoRow]:
+    rows: list[IttomonoRow] = []
+    for prefix in ["ittomono", "rakumachi", "ftakken_ittomono"]:
+        p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
+        if p.exists():
+            rows.extend(ittomono_parse(p, city_key))
+    return rows
 
-    if not all_rows:
-        return []
 
-    all_rows = ittomono_filter(all_rows)
-    all_rows = ittomono_dedup(all_rows)
+def _ittomono_to_dict(row: IttomonoRow) -> dict:
+    d = asdict(row)
+    d["prop_type"] = "ittomono"
+    d["maintenance_fee_text"] = ""
+    d["pet_status"] = ""
+    d["minpaku_status"] = ""
+    d["first_seen"] = ""
+    d["is_new"] = False
 
-    for row in all_rows:
-        ittomono_score_row(row)
+    if row.yield_pct:
+        d["yield_text"] = f"{row.yield_pct:.1f}%"
 
-    # Top scored, filter low
-    all_rows = [r for r in all_rows if r.total_score >= 40]
-    all_rows.sort(key=lambda r: -r.total_score)
-    all_rows = all_rows[:30]  # Top 30
+    # Revenue analysis
+    if row.price_man and row.yield_pct and row.price_man > 0 and row.yield_pct > 0:
+        try:
+            ra = revenue_analyze(
+                price_man=row.price_man,
+                yield_pct=row.yield_pct,
+                structure=row.structure or "RC造",
+                built_year=row.built_year,
+                units_count=row.units_count or 0,
+                area_sqm=row.area_sqm,
+            )
+            d["revenue"] = {
+                "noi": round(ra.noi, 1),
+                "net_yield": round(ra.net_yield_pct, 2),
+                "monthly_cf": round(ra.monthly_cf, 1),
+                "after_tax_monthly_cf": round(ra.after_tax_cf / 12, 1),
+                "ccr": round(ra.ccr_pct, 1),
+                "payback_years": round(ra.payback_years, 1) if ra.payback_years != float("inf") else None,
+                "depreciation_annual": round(ra.depreciation_annual, 1),
+                "tax_benefit": round(ra.tax_benefit, 1),
+                "verdict": ra.verdict,
+                "down_payment": round(ra.down_payment, 1),
+                "loan_amount": round(ra.loan_amount, 1),
+                "loan_years": ra.loan_years,
+                "annual_debt_service": round(ra.annual_debt_service, 1),
+            }
+        except Exception:
+            d["revenue"] = None
+    else:
+        d["revenue"] = None
 
-    result = []
-    for row in all_rows:
-        d = asdict(row)
-        # Map ittomono fields to unified card format
-        d["maintenance_fee_text"] = ""
-        d["pet_status"] = ""
-        d["minpaku_status"] = ""
-        d["first_seen"] = ""
-        d["is_new"] = False
-        # Yield as extra KPI
-        if row.yield_pct:
-            d["yield_text"] = f"{row.yield_pct:.1f}%"
-        result.append(d)
-
-    print(f"  一棟もの: {len(result)} properties")
-    return result
+    return d
 
 
 # ---------------------------------------------------------------------------
-# Load patrol summary
+# Load 戸建て (detached houses)
+# ---------------------------------------------------------------------------
+def _load_kodate_by_city(city_key: str) -> list[IttomonoRow]:
+    """Load kodate data — uses ittomono parser since format is similar."""
+    rows: list[IttomonoRow] = []
+    for prefix in ["ftakken_kodate"]:
+        p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
+        if p.exists():
+            rows.extend(ittomono_parse(p, city_key))
+    return rows
+
+
+def _kodate_to_dict(row: IttomonoRow) -> dict:
+    d = _ittomono_to_dict(row)
+    d["prop_type"] = "kodate"
+    return d
+
+
+# ---------------------------------------------------------------------------
+# Patrol summary
 # ---------------------------------------------------------------------------
 def _load_patrol_summary() -> dict | None:
     p = DATA_DIR / "patrol_summary.json"
@@ -260,50 +269,82 @@ def main() -> None:
 
     first_seen = load_first_seen()
 
-    # Load all cities
+    # Collect all ittomono/kodate for global filtering
+    all_ittomono: list[IttomonoRow] = []
+    all_kodate: list[IttomonoRow] = []
+    for cfg in CITY_CONFIGS:
+        all_ittomono.extend(_load_ittomono_by_city(cfg["key"]))
+        all_kodate.extend(_load_kodate_by_city(cfg["key"]))
+
+    # Filter & dedup ittomono globally
+    if all_ittomono:
+        all_ittomono = ittomono_filter(all_ittomono)
+        all_ittomono = ittomono_dedup(all_ittomono)
+        for row in all_ittomono:
+            ittomono_score_row(row)
+        all_ittomono = [r for r in all_ittomono if r.total_score >= 40]
+        all_ittomono.sort(key=lambda r: -r.total_score)
+
+    # Filter & dedup kodate globally (lighter scoring)
+    if all_kodate:
+        all_kodate = ittomono_dedup(all_kodate)
+        for row in all_kodate:
+            ittomono_score_row(row)
+        all_kodate = [r for r in all_kodate if r.total_score >= 30]
+        all_kodate.sort(key=lambda r: -r.total_score)
+
+    # Build city data
     cities = []
-    all_count = 0
-    all_green = 0
-    all_yellow = 0
+    total_kubun = 0
+    total_ittomono = 0
+    total_kodate = 0
     all_prices = []
     all_areas = []
     pet_ok = 0
 
     for cfg in CITY_CONFIGS:
-        rows = _load_city(cfg)
-        props = [_row_to_dict(r, first_seen) for r in rows]
-        green = sum(1 for r in rows if r.total_score >= TIER_GREEN)
-        yellow = len(rows) - green
+        # 区分
+        kubun_rows = _load_kubun(cfg)
+        kubun_props = [_kubun_to_dict(r, first_seen) for r in kubun_rows]
+
+        # 一棟もの (city subset)
+        city_ittomono = [r for r in all_ittomono if r.city_key == cfg["key"]]
+        ittomono_props = [_ittomono_to_dict(r) for r in city_ittomono[:15]]
+
+        # 戸建て (city subset)
+        city_kodate = [r for r in all_kodate if r.city_key == cfg["key"]]
+        kodate_props = [_kodate_to_dict(r) for r in city_kodate[:10]]
+
+        city_total = len(kubun_props) + len(ittomono_props) + len(kodate_props)
+
         cities.append({
             "key": cfg["key"],
             "label": cfg["label"],
-            "count": len(props),
-            "properties": props,
+            "count": city_total,
+            "kubun": {"count": len(kubun_props), "properties": kubun_props},
+            "ittomono": {"count": len(ittomono_props), "properties": ittomono_props},
+            "kodate": {"count": len(kodate_props), "properties": kodate_props},
         })
-        all_count += len(props)
-        all_green += green
-        all_yellow += yellow
-        all_prices.extend(r.price_man for r in rows if r.price_man > 0)
-        all_areas.extend(r.area_sqm for r in rows if r.area_sqm)
-        pet_ok += sum(1 for r in rows if r.pet_status in ("可", "相談可"))
 
-    # Load ittomono
-    ittomono_props = _load_ittomono()
-    ittomono_data = {
-        "count": len(ittomono_props),
-        "properties": ittomono_props,
-    }
+        total_kubun += len(kubun_props)
+        total_ittomono += len(ittomono_props)
+        total_kodate += len(kodate_props)
+        all_prices.extend(r.price_man for r in kubun_rows if r.price_man > 0)
+        all_areas.extend(r.area_sqm for r in kubun_rows if r.area_sqm)
+        pet_ok += sum(1 for r in kubun_rows if r.pet_status in ("可", "相談可"))
+
+        print(f"  {cfg['label']}: 区分{len(kubun_props)} + 一棟{len(ittomono_props)} + 戸建{len(kodate_props)}")
 
     # Totals
+    total_count = total_kubun + total_ittomono + total_kodate
     avg_price = int(sum(all_prices) / len(all_prices)) if all_prices else 0
-    avg_area = round(sum(all_areas) / len(all_areas), 1) if all_areas else 0
 
     totals = {
-        "count": all_count,
-        "green_count": all_green,
-        "yellow_count": all_yellow,
+        "count": total_count,
+        "kubun_count": total_kubun,
+        "ittomono_count": total_ittomono,
+        "kodate_count": total_kodate,
         "avg_price": avg_price,
-        "avg_area": avg_area,
         "pet_ok_count": pet_ok,
     }
 
@@ -318,7 +359,6 @@ def main() -> None:
     template = env.get_template("pages/market.html")
     html = template.render(
         cities=cities,
-        ittomono=ittomono_data,
         totals=totals,
         patrol_summary=patrol_summary,
         property_pages=PROPERTY_PAGES,
@@ -334,10 +374,6 @@ def main() -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html, encoding="utf-8")
     print(f"Generated: {out} ({len(html) // 1024}KB)")
-
-    # Also keep legacy city reports for backward compat during transition
-    # (patrol still references them)
-
     return out
 
 

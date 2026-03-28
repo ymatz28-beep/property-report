@@ -128,12 +128,26 @@
   border-color: rgba(139,92,246,0.3);
   background: rgba(139,92,246,0.08);
 }
-/* Score breakdown (expandable) */
-.prop-card-detail {
+/* Expandable sections */
+.prop-card-detail, .prop-card-score-detail {
   padding: 0 16px 16px;
   display: none;
 }
 .prop-card.expanded .prop-card-detail { display: block; }
+.prop-card.show-score .prop-card-score-detail { display: block; }
+/* Revenue grid inside card */
+.revenue-detail-inner .revenue-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;
+  background: rgba(255,255,255,0.02); border-radius: var(--radius-sm);
+  padding: 12px;
+}
+.revenue-kpi { display: flex; flex-direction: column; gap: 1px; }
+.revenue-kpi-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+.revenue-kpi-value { font-size: 13px; font-weight: 700; font-family: var(--font-mono); }
+.revenue-verdict {
+  grid-column: 1 / -1; text-align: center; font-size: 12px; font-weight: 700;
+  padding: 6px; border-radius: 6px; margin-top: 4px;
+}
 .prop-card-toggle {
   display: flex;
   align-items: center;
@@ -211,7 +225,7 @@
   {% set tier = "Orange" %}
 {% endif %}
 
-<div class="prop-card" data-score="{{ score }}">
+<div class="prop-card" data-score="{{ score }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}">
   <div class="prop-card-header">
     <div class="prop-card-score">
       {{ deal_score(score, size="sm") }}
@@ -230,14 +244,34 @@
       <span class="prop-kpi-label">Price</span>
       <span class="prop-kpi-value">{{ prop.price_text }}</span>
     </div>
+    {% if prop.yield_text %}
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">Yield</span>
+      <span class="prop-kpi-value">{{ prop.yield_text }}</span>
+    </div>
+    {% endif %}
     <div class="prop-kpi">
       <span class="prop-kpi-label">Area</span>
       <span class="prop-kpi-value">{{ prop.area_text }}</span>
     </div>
+    {% if prop.layout %}
     <div class="prop-kpi">
       <span class="prop-kpi-label">Layout</span>
-      <span class="prop-kpi-value">{{ prop.layout | default("—") }}</span>
+      <span class="prop-kpi-value">{{ prop.layout }}</span>
     </div>
+    {% endif %}
+    {% if prop.structure %}
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">Structure</span>
+      <span class="prop-kpi-value">{{ prop.structure }}</span>
+    </div>
+    {% endif %}
+    {% if prop.units_count %}
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">Units</span>
+      <span class="prop-kpi-value">{{ prop.units_count }}戸</span>
+    </div>
+    {% endif %}
     <div class="prop-kpi">
       <span class="prop-kpi-label">Built</span>
       <span class="prop-kpi-value">{{ prop.built_text | default("—") }}</span>
@@ -257,17 +291,72 @@
     {% if prop.minpaku_status and "禁止" not in prop.minpaku_status and "不可" not in prop.minpaku_status %}
     <span class="prop-tag prop-tag--minpaku">民泊 {{ prop.minpaku_status }}</span>
     {% endif %}
+    {% if prop.source %}
     <span class="prop-tag prop-tag--source">{{ prop.source }}</span>
+    {% endif %}
     {% if prop.first_seen and prop.is_new | default(false) %}
     <span class="prop-tag prop-tag--new">NEW</span>
     {% endif %}
   </div>
 
+  {# Revenue Analysis (expandable) #}
+  {% if expandable and prop.revenue %}
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI</span>
+        <span class="revenue-kpi-value">{{ prop.revenue.noi }}万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">{{ prop.revenue.net_yield }}%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:{% if prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.after_tax_monthly_cf }}万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR</span>
+        <span class="revenue-kpi-value">{{ prop.revenue.ccr }}%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">{% if prop.revenue.payback_years %}{{ prop.revenue.payback_years }}年{% else %}∞{% endif %}</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">{{ prop.revenue.down_payment }}万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">{{ prop.revenue.depreciation_annual }}万</span>
+      </div>
+      {% if prop.revenue.tax_benefit > 0 %}
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+{{ prop.revenue.tax_benefit }}万</span>
+      </div>
+      {% endif %}
+      <div class="revenue-verdict" style="background:{% if prop.revenue.verdict == '高CF物件' %}rgba(34,197,94,0.1);color:var(--green){% elif prop.revenue.verdict == '安定CF' %}rgba(34,197,94,0.08);color:var(--green){% elif prop.revenue.verdict == '薄利' %}rgba(234,179,8,0.1);color:var(--yellow){% else %}rgba(239,68,68,0.1);color:var(--red){% endif %}">
+        {{ prop.revenue.verdict }}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# Score Breakdown (expandable) #}
   {% if expandable and prop.score_breakdown %}
-  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded')">
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
     ▸ Score Breakdown
   </div>
-  <div class="prop-card-detail">
+  <div class="prop-card-score-detail">
     <div class="score-breakdown-grid">
       {% for axis, val in prop.score_breakdown.items() %}
       <div class="score-axis">

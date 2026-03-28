@@ -243,14 +243,27 @@ def _load_ittomono_by_city(city_key: str) -> list[IttomonoRow]:
     return rows
 
 
-def _ittomono_to_dict(row: IttomonoRow) -> dict:
+def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: dict | None = None) -> dict:
     d = asdict(row)
     d["prop_type"] = "ittomono"
     d["maintenance_fee_text"] = ""
     d["pet_status"] = ""
     d["minpaku_status"] = ""
-    d["first_seen"] = ""
-    d["is_new"] = False
+    # Freshness (first_seen)
+    fs_date = ""
+    is_new = False
+    if first_seen and row.url:
+        fs_date = first_seen.get(row.url, "")
+    if fs_date:
+        import datetime as _dt
+        try:
+            fs_d = _dt.date.fromisoformat(fs_date)
+            age_days = (_dt.date.today() - fs_d).days
+            is_new = age_days <= 7
+        except Exception:
+            pass
+    d["first_seen"] = fs_date
+    d["is_new"] = is_new
 
     if row.yield_pct:
         d["yield_text"] = f"{row.yield_pct:.1f}%"
@@ -268,12 +281,22 @@ def _ittomono_to_dict(row: IttomonoRow) -> dict:
     else:
         d["price_per_sqm"] = "—"
 
-    # Revenue analysis
-    if row.price_man and row.yield_pct and row.price_man > 0 and row.yield_pct > 0:
+    # Revenue analysis — estimate yield from area if missing
+    yield_pct = row.yield_pct
+    if (not yield_pct or yield_pct <= 0) and row.price_man and row.price_man > 0:
+        # Estimate yield: rent_per_sqm × area × 12 / price
+        area = row.area_sqm or 0
+        units = row.units_count or 1
+        if area > 0:
+            rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
+            annual_rent = rent_per_sqm * area * 12 / 10000  # 万円
+            yield_pct = (annual_rent / row.price_man) * 100
+            d["yield_text"] = f"≈{yield_pct:.1f}%"
+    if row.price_man and yield_pct and row.price_man > 0 and yield_pct > 0:
         try:
             ra = revenue_analyze(
                 price_man=row.price_man,
-                yield_pct=row.yield_pct,
+                yield_pct=yield_pct,
                 structure=row.structure or "RC造",
                 built_year=row.built_year,
                 units_count=row.units_count or 0,
@@ -315,8 +338,8 @@ def _load_kodate_by_city(city_key: str) -> list[IttomonoRow]:
     return rows
 
 
-def _kodate_to_dict(row: IttomonoRow) -> dict:
-    d = _ittomono_to_dict(row)
+def _kodate_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: dict | None = None) -> dict:
+    d = _ittomono_to_dict(row, city_key=city_key, first_seen=first_seen)
     d["prop_type"] = "kodate"
     return d
 
@@ -382,11 +405,11 @@ def main() -> None:
 
         # 一棟もの (city subset)
         city_ittomono = [r for r in all_ittomono if r.city_key == cfg["key"]]
-        ittomono_props = [_ittomono_to_dict(r) for r in city_ittomono[:15]]
+        ittomono_props = [_ittomono_to_dict(r, city_key=cfg["key"], first_seen=first_seen) for r in city_ittomono[:15]]
 
         # 戸建て (city subset)
         city_kodate = [r for r in all_kodate if r.city_key == cfg["key"]]
-        kodate_props = [_kodate_to_dict(r) for r in city_kodate[:10]]
+        kodate_props = [_kodate_to_dict(r, city_key=cfg["key"], first_seen=first_seen) for r in city_kodate[:10]]
 
         city_total = len(kubun_props) + len(ittomono_props) + len(kodate_props)
 

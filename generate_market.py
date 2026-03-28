@@ -154,7 +154,14 @@ def _load_kubun(cfg: dict) -> list[PropertyRow]:
     return rows
 
 
-def _kubun_to_dict(row: PropertyRow, first_seen: dict) -> dict:
+_ESTIMATED_RENT_PER_SQM: dict[str, int] = {
+    "osaka": 2800,    # 大阪: ㎡あたり月額賃料（円）
+    "fukuoka": 2400,  # 福岡
+    "tokyo": 3200,    # 東京
+}
+
+
+def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> dict:
     d = asdict(row)
     d["prop_type"] = "kubun"
     fs = first_seen.get(row.url, "")
@@ -176,6 +183,41 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict) -> dict:
         d["price_per_sqm"] = f"{ppsm:,.0f}円/㎡"
     else:
         d["price_per_sqm"] = "—"
+
+    # Revenue analysis for kubun (estimate yield from market rent)
+    d["revenue"] = None
+    if row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
+        rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
+        annual_rent = rent_per_sqm * row.area_sqm * 12 / 10000  # 万円
+        est_yield = (annual_rent / row.price_man) * 100
+        d["yield_text"] = f"{est_yield:.1f}%"
+        try:
+            ra = revenue_analyze(
+                price_man=row.price_man,
+                yield_pct=est_yield,
+                structure=row.layout or "RC造",  # kubun = mostly RC
+                built_year=row.built_year,
+                units_count=1,
+                area_sqm=row.area_sqm,
+            )
+            d["revenue"] = {
+                "noi": round(ra.noi, 1),
+                "net_yield": round(ra.net_yield_pct, 2),
+                "monthly_cf": round(ra.monthly_cf, 1),
+                "after_tax_monthly_cf": round(ra.after_tax_cf / 12, 1),
+                "ccr": round(ra.ccr_pct, 1),
+                "payback_years": round(ra.payback_years, 1) if ra.payback_years != float("inf") else None,
+                "depreciation_annual": round(ra.depreciation_annual, 1),
+                "tax_benefit": round(ra.tax_benefit, 1),
+                "verdict": ra.verdict,
+                "down_payment": round(ra.down_payment, 1),
+                "loan_amount": round(ra.loan_amount, 1),
+                "loan_years": ra.loan_years,
+                "annual_debt_service": round(ra.annual_debt_service, 1),
+            }
+        except Exception:
+            pass
+
     return d
 
 
@@ -322,7 +364,7 @@ def main() -> None:
     for cfg in CITY_CONFIGS:
         # 区分
         kubun_rows = _load_kubun(cfg)
-        kubun_props = [_kubun_to_dict(r, first_seen) for r in kubun_rows]
+        kubun_props = [_kubun_to_dict(r, first_seen, city_key=cfg["key"]) for r in kubun_rows]
 
         # 一棟もの (city subset)
         city_ittomono = [r for r in all_ittomono if r.city_key == cfg["key"]]

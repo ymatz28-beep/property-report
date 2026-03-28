@@ -338,6 +338,9 @@ def parse_osaka_r_rows(lines: Iterable[str]) -> list[PropertyRow]:
 def hydrate_parsed_fields(row: PropertyRow) -> None:
     row.price_man = parse_price_man(row.price_text)
     row.area_sqm = parse_area_sqm(row.area_text)
+    # Normalize area_text: "55.04m2（16.64坪）（壁芯）" → "55.04㎡"
+    if row.area_sqm:
+        row.area_text = f"{row.area_sqm}㎡"
     row.built_year, row.built_month = parse_built(row.built_text)
     row.walk_min = parse_walk_minutes(row.station_text)
     row.maintenance_fee = parse_maintenance_fee(row.maintenance_fee_text)

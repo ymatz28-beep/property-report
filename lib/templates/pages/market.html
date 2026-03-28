@@ -299,8 +299,8 @@
           <thead>
             <tr>
               <th>スコア</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>最寄駅</th><th>築年</th><th>管理費</th><th>ペット</th><th>利回り</th><th>CF/月</th><th>判定</th>
-              <th>徒歩</th><th>㎡単価</th>
+              <th>間取り</th><th>最寄駅</th><th>築年</th><th>管理費+修繕</th><th>ペット</th><th>利回り</th><th>CF/月</th>
+              <th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -317,8 +317,6 @@
               <td>{{ prop.pet_status | default("—") }}</td>
               <td>{{ prop.yield_text | default("—") }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
-              <td>{% if prop.revenue %}{{ prop.revenue.verdict }}{% else %}—{% endif %}</td>
-              <td>{{ prop.walk_min_text | default("—") }}</td>
               <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
             </tr>
             {% endfor %}
@@ -345,8 +343,8 @@
           <thead>
             <tr>
               <th>スコア</th><th>物件名</th><th>価格</th><th>利回り</th><th>面積</th>
-              <th>構造</th><th>戸数</th><th>CF/月</th><th>判定</th>
-              <th>徒歩</th><th>㎡単価</th>
+              <th>構造</th><th>戸数</th><th>最寄駅</th><th>CF/月</th>
+              <th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -359,13 +357,12 @@
               <td class="area-cell">{{ prop.area_text }}</td>
               <td>{{ prop.structure | default("—") }}</td>
               <td>{{ prop.units_count | default("—") }}</td>
+              <td>{{ prop.station_text | default(prop.location) }}</td>
               {% if prop.revenue %}
               <td class="price-cell" style="color:{% if prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.after_tax_monthly_cf }}万</td>
-              <td>{{ prop.revenue.verdict }}</td>
               {% else %}
-              <td>—</td><td>—</td>
+              <td>—</td>
               {% endif %}
-              <td>{{ prop.walk_min_text | default("—") }}</td>
               <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
             </tr>
             {% endfor %}
@@ -390,7 +387,7 @@
       <div class="property-list active" data-view="list">
         <table class="prop-table">
           <thead>
-            <tr><th>スコア</th><th>物件名</th><th>価格</th><th>面積</th><th>構造</th><th>築年</th><th>利回り</th><th>徒歩</th><th>㎡単価</th></tr>
+            <tr><th>スコア</th><th>物件名</th><th>価格</th><th>面積</th><th>構造</th><th>築年</th><th>最寄駅</th><th>利回り</th><th>㎡単価</th></tr>
           </thead>
           <tbody>
             {% for prop in city.kodate.properties %}
@@ -401,8 +398,8 @@
               <td class="area-cell">{{ prop.area_text }}</td>
               <td>{{ prop.structure | default("—") }}</td>
               <td>{{ prop.built_text | default("—") }}</td>
+              <td>{{ prop.station_text | default(prop.location) }}</td>
               <td>{{ prop.yield_text | default("—") }}</td>
-              <td>{{ prop.walk_min_text | default("—") }}</td>
               <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
             </tr>
             {% endfor %}

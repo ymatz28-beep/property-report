@@ -188,6 +188,12 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
     else:
         d["price_per_sqm"] = "—"
 
+    # Format maintenance fee as total yen
+    if row.maintenance_fee > 0:
+        d["maintenance_fee_text"] = f"{row.maintenance_fee:,}円"
+    else:
+        d["maintenance_fee_text"] = ""
+
     # Revenue analysis for kubun (estimate yield from market rent)
     d["revenue"] = None
     if row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:

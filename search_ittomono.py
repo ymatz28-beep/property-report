@@ -808,17 +808,85 @@ def _is_floors_only(structure: str) -> bool:
     return not any(m in structure for m in ["RC", "SRC", "鉄骨", "木造", "S造"])
 
 
-def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> None:
-    """Fetch detail pages to extract room layout + building material.
+def _is_fallback_name(name: str) -> bool:
+    """Check if the name is a scraper-generated fallback (address-based, not building name)."""
+    if not name:
+        return True
+    # Explicit fallback patterns: "楽待 xxx#xxxx", "健美家 xxx#xxxx"
+    if re.match(r"^(楽待|健美家)\s", name):
+        return True
+    # Address-only: starts with 市/区 or prefecture pattern
+    if re.match(r"^(福岡市|大阪市|東京都|神奈川県|埼玉県|千葉県)", name):
+        return True
+    # Generic labels that aren't building names
+    generic = {"投資用マンション", "一棟売マンション", "一棟売りマンション",
+                "一棟マンション", "一棟アパート", "収益マンション", "収益物件"}
+    if name in generic:
+        return True
+    return False
 
-    Targets: properties missing layout_detail OR with floors-only structure
-    (e.g. '3階建' — material RC/木造/S造 only available on detail page).
+
+def _extract_building_name_from_detail(html: str, source: str) -> str:
+    """Extract building name from detail page HTML.
+
+    Rakumachi: <h1> tag contains building name directly.
+    Kenbiya: <h2> heading contains building name.
     """
-    missing = [p for p in properties if not p.get("layout_detail") or _is_floors_only(p.get("structure", ""))]
-    to_fetch = missing[:max_fetches]
+    if "rakumachi" in source or "楽待" in source:
+        # Rakumachi: building name is in <h1>
+        m = re.search(r"<h1[^>]*>([^<]+)</h1>", html)
+        if m:
+            name = m.group(1).strip()
+            # Filter out generic page titles
+            if name and len(name) >= 2 and "楽待" not in name and "物件一覧" not in name:
+                return name[:50]
+
+    if "kenbiya" in source or "健美家" in source:
+        # Kenbiya: building name often in <h2> or page title
+        # Try <title> first: "物件名 - 健美家"
+        title_m = re.search(r"<title[^>]*>([^<]+)</title>", html)
+        if title_m:
+            title = title_m.group(1).strip()
+            # Remove site suffix: "ホワイトシャトー大橋 壱番館 - 健美家(けんびや)"
+            title = re.sub(r"\s*[-–—|]\s*健美家.*$", "", title)
+            title = re.sub(r"\s*[-–—|]\s*けんびや.*$", "", title)
+            if title and len(title) >= 2 and "健美家" not in title and "物件一覧" not in title:
+                return title[:50]
+        # Fallback: <h2>
+        h2_m = re.search(r"<h2[^>]*>([^<]+)</h2>", html)
+        if h2_m:
+            name = h2_m.group(1).strip()
+            if name and len(name) >= 2:
+                return name[:50]
+
+    return ""
+
+
+def enrich_from_detail(properties: list[dict], max_fetches: int = 30) -> None:
+    """Fetch detail pages to extract: building name, room layout, building material.
+
+    ALL properties are candidates for name enrichment (fallback names → real names).
+    Layout/structure enrichment targets properties missing that data.
+    """
+    # Prioritize: properties needing name enrichment first, then layout/structure
+    needs_name = [p for p in properties if _is_fallback_name(p.get("name", ""))]
+    needs_layout = [p for p in properties if not p.get("layout_detail") or _is_floors_only(p.get("structure", ""))]
+
+    # Build unique fetch list (name-needing first, then layout-needing, deduped)
+    seen_urls: set[str] = set()
+    to_fetch: list[dict] = []
+    for p in needs_name + needs_layout:
+        if p["url"] not in seen_urls and len(to_fetch) < max_fetches:
+            seen_urls.add(p["url"])
+            to_fetch.append(p)
+
     if not to_fetch:
         return
-    print(f"  詳細取得中... ({len(to_fetch)}件: 間取り+構造材質)")
+
+    name_needs = sum(1 for p in to_fetch if _is_fallback_name(p.get("name", "")))
+    layout_needs = sum(1 for p in to_fetch if not p.get("layout_detail") or _is_floors_only(p.get("structure", "")))
+    print(f"  詳細取得中... ({len(to_fetch)}件: 物件名{name_needs} + 間取り/構造{layout_needs})")
+    enriched_name = 0
     enriched_layout = 0
     enriched_struct = 0
 
@@ -826,6 +894,13 @@ def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> 
         detail_html = fetch_page(prop["url"])
         if not detail_html:
             continue
+
+        # Building name (from detail page title/heading)
+        if _is_fallback_name(prop.get("name", "")):
+            real_name = _extract_building_name_from_detail(detail_html, prop.get("source", ""))
+            if real_name:
+                prop["name"] = real_name
+                enriched_name += 1
 
         # Room layout
         if not prop.get("layout_detail"):
@@ -852,7 +927,6 @@ def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> 
                     mat = "S造"
                 else:
                     mat = raw  # 木造 etc.
-                # Append floors if we had that info
                 floors_m = re.search(r"(\d+)階建", prop.get("structure", ""))
                 prop["structure"] = f"{mat}{floors_m.group(0)}" if floors_m else mat
                 enriched_struct += 1
@@ -861,7 +935,7 @@ def enrich_layout_from_detail(properties: list[dict], max_fetches: int = 30) -> 
             print(f"    {i + 1}/{len(to_fetch)} done")
         time.sleep(1.0)
 
-    print(f"  詳細取得: 間取り{enriched_layout}件 / 構造材質{enriched_struct}件")
+    print(f"  詳細取得: 物件名{enriched_name}件 / 間取り{enriched_layout}件 / 構造材質{enriched_struct}件")
 
 
 def deduplicate_by_content(properties: list[dict]) -> list[dict]:
@@ -965,8 +1039,8 @@ def main():
         # Merge and deduplicate (by location + price heuristic)
         props = rakumachi_props + kenbiya_props
         if props:
-            # Enrich all sources: layout (楽待) + structure material (健美家 floors-only)
-            enrich_layout_from_detail(props, max_fetches=enrich_limit)
+            # Enrich all sources: building name + layout + structure material
+            enrich_from_detail(props, max_fetches=enrich_limit)
         out = save_results(props, city_key)
         green_count = sum(1 for p in props if p.get("score", 0) >= 40)
         print(f"  出力: {out} ({green_count}件厳選 / 全{len(props)}件 = 楽待{len(rakumachi_props)} + 健美家{len(kenbiya_props)})")

@@ -547,10 +547,10 @@ def classify_location_fukuoka(text: str) -> tuple[str, int]:
 
 
 def pet_score_for_row(row: PropertyRow) -> int:
-    """Pet scoring: 可=15, 相談可=10, unknown=-15, 不可=-5 (but hard-filtered).
+    """Pet scoring: 可=15, 相談可=10, 不可=-5, unknown=-5(ほぼ不可+要確認フラグ).
 
-    Most Japanese condos default to no-pets, so unknown pet status is treated
-    as a strong negative to prevent unconfirmed properties from ranking high.
+    Unknown pet status = probably 不可 (most properties without explicit pet info
+    don't allow pets). Score same as 不可, but flag for confirmation at inquiry.
     """
     text = f"{row.pet_status} {row.name} {row.minpaku_status}"
     # Check 不可 BEFORE 可 to avoid false positives
@@ -560,7 +560,7 @@ def pet_score_for_row(row: PropertyRow) -> int:
         return 15
     if "ペット相談" in text or row.pet_status == "相談可":
         return 10
-    return -15
+    return -5  # Unknown = probably 不可 + flagged for inquiry confirmation
 
 
 def maintenance_fee_score(fee: int) -> int:

@@ -173,6 +173,30 @@
 .hero .stat-card .value { font-size: 20px; font-weight: 700; font-family: var(--font-mono); margin-top: 2px; }
 .hero-updated { font-size: 10px; color: var(--text-muted); margin-top: 12px; }
 
+/* Expandable detail row */
+.prop-table tr.detail-row { display: none; }
+.prop-table tr.detail-row.open { display: table-row; }
+.prop-table tr.detail-row > td {
+  padding: 10px 10px 14px; background: rgba(99,102,241,0.03);
+  border-bottom: 1px solid rgba(99,102,241,0.08);
+}
+.detail-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px 16px;
+}
+.detail-item { display: flex; flex-direction: column; }
+.detail-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; }
+.detail-value { font-size: 12px; font-weight: 600; font-family: var(--font-mono); margin-top: 1px; }
+.detail-verdict {
+  display: inline-block; font-size: 11px; font-weight: 600;
+  padding: 2px 10px; border-radius: 10px; margin-top: 4px;
+}
+.prop-table tr[data-expandable] { cursor: pointer; }
+.prop-table tr[data-expandable] .name-cell::before {
+  content: "▸ "; font-size: 10px; color: var(--text-muted); transition: transform 0.15s;
+}
+.prop-table tr[data-expandable].expanded .name-cell::before { content: "▾ "; }
+
 .empty-state { text-align: center; padding: 32px 24px; color: var(--text-muted); font-size: 13px; }
 
 @media (max-width: 640px) {
@@ -305,9 +329,9 @@
           </thead>
           <tbody>
             {% for prop in city.kubun.properties %}
-            <tr data-score="{{ prop.total_score }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}">
+            <tr data-score="{{ prop.total_score }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}" {% if prop.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
               <td class="score-cell" style="color:{% if prop.total_score >= 80 %}var(--green){% elif prop.total_score >= 65 %}var(--yellow){% else %}var(--orange, #ff6b35){% endif %}">{{ prop.total_score }}</td>
-              <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}">{{ prop.name }}</a></td>
+              <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
               <td>{{ prop.layout | default("—") }}</td>
@@ -319,6 +343,24 @@
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
               <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
             </tr>
+            {% if prop.revenue %}
+            <tr class="detail-row">
+              <td colspan="12">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">{{ prop.revenue.net_yield }}%</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:{% if prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.after_tax_monthly_cf }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">{{ prop.revenue.ccr }}%</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">{% if prop.revenue.payback_years %}{{ prop.revenue.payback_years }}年{% else %}∞{% endif %}</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">{{ prop.revenue.down_payment }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">{{ prop.revenue.depreciation_annual }}万</span></div>
+                  {% if prop.revenue.tax_benefit > 0 %}<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+{{ prop.revenue.tax_benefit }}万</span></div>{% endif %}
+                </div>
+                <div class="detail-verdict" style="background:{% if prop.revenue.verdict == '高CF物件' %}rgba(34,197,94,0.1);color:var(--green){% elif prop.revenue.verdict == '安定CF' %}rgba(34,197,94,0.08);color:var(--green){% elif prop.revenue.verdict == '薄利' %}rgba(234,179,8,0.1);color:var(--yellow){% else %}rgba(239,68,68,0.1);color:var(--red){% endif %}">{{ prop.revenue.verdict }}</div>
+              </td>
+            </tr>
+            {% endif %}
             {% endfor %}
           </tbody>
         </table>
@@ -349,9 +391,9 @@
           </thead>
           <tbody>
             {% for prop in city.ittomono.properties %}
-            <tr data-score="{{ prop.total_score | default(0) }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}">
+            <tr data-score="{{ prop.total_score | default(0) }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}" {% if prop.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
               <td class="score-cell" style="color:{% if (prop.total_score | default(0)) >= 80 %}var(--green){% elif (prop.total_score | default(0)) >= 50 %}var(--yellow){% else %}var(--text-muted){% endif %}">{{ prop.total_score | default(0) }}</td>
-              <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}">{{ prop.name }}</a></td>
+              <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td>{{ prop.yield_text | default("—") }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
@@ -365,6 +407,24 @@
               {% endif %}
               <td class="price-cell">{{ prop.price_per_sqm | default("—") }}</td>
             </tr>
+            {% if prop.revenue %}
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">{{ prop.revenue.net_yield }}%</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:{% if prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.after_tax_monthly_cf }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">{{ prop.revenue.ccr }}%</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">{% if prop.revenue.payback_years %}{{ prop.revenue.payback_years }}年{% else %}∞{% endif %}</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">{{ prop.revenue.down_payment }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">{{ prop.revenue.depreciation_annual }}万</span></div>
+                  {% if prop.revenue.tax_benefit > 0 %}<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+{{ prop.revenue.tax_benefit }}万</span></div>{% endif %}
+                </div>
+                <div class="detail-verdict" style="background:{% if prop.revenue.verdict == '高CF物件' %}rgba(34,197,94,0.1);color:var(--green){% elif prop.revenue.verdict == '安定CF' %}rgba(34,197,94,0.08);color:var(--green){% elif prop.revenue.verdict == '薄利' %}rgba(234,179,8,0.1);color:var(--yellow){% else %}rgba(239,68,68,0.1);color:var(--red){% endif %}">{{ prop.revenue.verdict }}</div>
+              </td>
+            </tr>
+            {% endif %}
             {% endfor %}
           </tbody>
         </table>
@@ -487,6 +547,14 @@ function setView(view) {
   });
 }
 
+function toggleDetail(tr) {
+  const detail = tr.nextElementSibling;
+  if (detail && detail.classList.contains('detail-row')) {
+    detail.classList.toggle('open');
+    tr.classList.toggle('expanded');
+  }
+}
+
 function sortProperties() {
   const sortKey = document.getElementById('sortSelect').value;
   const panel = document.querySelector('.city-panel.active');
@@ -509,9 +577,20 @@ function sortProperties() {
 
   if (currentView === 'list') {
     panel.querySelectorAll('.prop-table tbody').forEach(tbody => {
-      const rows = Array.from(tbody.querySelectorAll('tr'));
-      rows.sort(compareFn);
-      rows.forEach(r => tbody.appendChild(r));
+      // Group parent rows with their detail rows, sort by parent, re-append
+      const groups = [];
+      const rows = Array.from(tbody.children);
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i].classList.contains('detail-row')) continue;
+        const group = [rows[i]];
+        if (i + 1 < rows.length && rows[i + 1].classList.contains('detail-row')) {
+          group.push(rows[i + 1]);
+          i++;
+        }
+        groups.push(group);
+      }
+      groups.sort((a, b) => compareFn(a[0], b[0]));
+      groups.forEach(g => g.forEach(r => tbody.appendChild(r)));
     });
   } else {
     panel.querySelectorAll('.property-grid').forEach(grid => {

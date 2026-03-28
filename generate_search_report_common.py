@@ -236,12 +236,36 @@ def extract_search_meta(data_path: Path) -> dict[str, str]:
 
 
 _STATION_NAME_RE = re.compile(r"(?:駅」?|バス停)\s*徒歩[約]?\s*\d+分")
+# Name is ONLY station/access info — no real building name embedded
+_STATION_ONLY_RE = re.compile(
+    r"^[\s☆◆◇●■★▲▼※♪\u3000]*"  # leading decorations
+    r"(?:(?:JR|西鉄|地下鉄|福岡市|東海道|九州|鹿児島|博多南|篠栗|香椎|東武|東急|京王|小田急|"
+    r"都営|東京メトロ|ＪＲ|ゆりかもめ)?"
+    r"[\u4e00-\u9fff\uff08\uff09\u300c\u300d（）「」\w]*"
+    r"(?:駅|バス停)[\s「」]*徒歩[約]?\s*\d+分[！!]?"
+    r"[\s,、]*)+$"
+)
+
+
+def _has_building_name(name: str) -> bool:
+    """Check if name contains a real building/mansion name (katakana or known suffixes)."""
+    # 3+ consecutive katakana chars = likely a building name
+    if re.search(r"[\u30A0-\u30FF]{3,}", name):
+        return True
+    # Known building name suffixes in kanji
+    if re.search(r"[\u4e00-\u9fff](?:荘|館|邸|苑|棟|号棟)", name):
+        return True
+    return False
 
 
 def _fix_station_name_property(row: "PropertyRow") -> None:
-    """If the name field is a station access description (ftakken scraper artifact),
-    replace it with '{区/市名} {layout}' fallback per UIラベル日本語化ルール."""
+    """If the name field is ONLY a station access description (ftakken scraper artifact),
+    replace it with '{区/市名} {layout}' fallback per UIラベル日本語化ルール.
+    Skip if a real building name (katakana 3+ chars) is embedded."""
     if not _STATION_NAME_RE.search(row.name):
+        return
+    # If name contains a real building name, keep it
+    if _has_building_name(row.name):
         return
     loc = row.location.strip()
     area_m = re.search(r"([\u4e00-\u9fff]{2,6}[区市町村])", loc)

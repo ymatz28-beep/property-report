@@ -572,14 +572,27 @@ def _clean_name(name: str) -> str:
 _STATION_NAME_PATTERN = re.compile(r"(?:駅」?|バス停)\s*徒歩[約]?\s*\d+分")
 
 
+def _has_building_name_ittomono(name: str) -> bool:
+    """Check if name contains a real building/mansion name."""
+    # 3+ consecutive katakana = likely a building name
+    if re.search(r"[\u30A0-\u30FF]{3,}", name):
+        return True
+    # Known building suffixes in kanji
+    if re.search(r"[\u4e00-\u9fff](?:荘|館|邸|苑|棟|号棟)", name):
+        return True
+    return False
+
+
 def _fix_station_name(r: "IttomonoRow") -> str:
-    """If the name field contains a station/bus-stop text instead of a property name,
-    replace it with a human-readable fallback: '{区/市名} {構造}' or just location prefix."""
+    """If the name field is ONLY a station/bus-stop text (no real building name),
+    replace it with a human-readable fallback: '{区/市名} {構造}'."""
     if not _STATION_NAME_PATTERN.search(r.name):
         return r.name  # name looks fine
-    # Extract ward/city name from location (first Japanese address segment)
+    # If name contains a real building name, keep it
+    if _has_building_name_ittomono(r.name):
+        return r.name
+    # Extract ward/city name from location
     loc = r.location.strip()
-    # Try to get '○○区' or '○○市' prefix from location
     area_m = re.search(r"([\u4e00-\u9fff]{2,6}[区市町村])", loc)
     area_label = area_m.group(1) if area_m else loc[:6] if loc else "物件"
     struct = r.structure if r.structure else ""

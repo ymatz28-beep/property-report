@@ -236,7 +236,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
 # ---------------------------------------------------------------------------
 def _load_ittomono_by_city(city_key: str) -> list[IttomonoRow]:
     rows: list[IttomonoRow] = []
-    for prefix in ["ittomono", "rakumachi", "ftakken_ittomono"]:
+    for prefix in ["ittomono", "rakumachi_ittomono", "ftakken_ittomono"]:
         p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
         if p.exists():
             rows.extend(ittomono_parse(p, city_key))
@@ -308,7 +308,7 @@ def _ittomono_to_dict(row: IttomonoRow) -> dict:
 def _load_kodate_by_city(city_key: str) -> list[IttomonoRow]:
     """Load kodate data — uses ittomono parser since format is similar."""
     rows: list[IttomonoRow] = []
-    for prefix in ["ftakken_kodate"]:
+    for prefix in ["ftakken_kodate", "rakumachi_kodate"]:
         p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
         if p.exists():
             rows.extend(ittomono_parse(p, city_key))
@@ -358,12 +358,12 @@ def main() -> None:
         all_ittomono = [r for r in all_ittomono if r.total_score >= 40]
         all_ittomono.sort(key=lambda r: -r.total_score)
 
-    # Filter & dedup kodate globally (lighter scoring)
+    # Filter & dedup kodate globally (lighter scoring, skip units filter)
     if all_kodate:
         all_kodate = ittomono_dedup(all_kodate)
         for row in all_kodate:
             ittomono_score_row(row)
-        all_kodate = [r for r in all_kodate if r.total_score >= 30]
+        all_kodate = [r for r in all_kodate if r.total_score >= 20]
         all_kodate.sort(key=lambda r: -r.total_score)
 
     # Build city data

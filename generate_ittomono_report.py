@@ -187,15 +187,24 @@ def _hydrate(row: IttomonoRow) -> None:
 # ============================================================
 
 def price_score(price_man: int) -> int:
-    """Price scoring for 1.5億〜2億 range. Sweet spot = 1.6〜1.8億."""
+    """Price scoring for investment properties across all price ranges."""
+    # High range: 1.5億〜2億 (original sweet spot)
     if 16000 <= price_man <= 18000:
         return 15  # Sweet spot
     if 15000 <= price_man <= 20000:
         return 10  # Within range
     if 14000 <= price_man < 15000:
-        return 5  # Slightly below
+        return 5
     if 20000 < price_man <= 22000:
-        return 5  # Slightly above
+        return 5
+    # Mid range: 5000万〜1.5億 (cash flow oriented)
+    if 5000 <= price_man <= 10000:
+        return 10  # Accessible price, good leverage
+    if 10000 < price_man < 14000:
+        return 7  # Mid-high
+    # Low range: under 5000万 (high yield / cash buy)
+    if 3000 <= price_man < 5000:
+        return 5
     return 0
 
 

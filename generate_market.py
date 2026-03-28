@@ -470,6 +470,14 @@ def main() -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html, encoding="utf-8")
     print(f"Generated: {out} ({len(html) // 1024}KB)")
+
+    # --- QA gate (warn-only; deploy step should call qa_market.py --strict) ---
+    try:
+        from qa_market import run_qa
+        run_qa(out, strict=False)
+    except Exception as _qa_err:
+        print(f"[QA] skipped ({_qa_err})")
+
     return out
 
 

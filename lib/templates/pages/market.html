@@ -305,7 +305,7 @@
           </thead>
           <tbody>
             {% for prop in city.kubun.properties %}
-            <tr data-score="{{ prop.total_score }}">
+            <tr data-score="{{ prop.total_score }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}">
               <td class="score-cell" style="color:{% if prop.total_score >= 80 %}var(--green){% elif prop.total_score >= 65 %}var(--yellow){% else %}var(--orange, #ff6b35){% endif %}">{{ prop.total_score }}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
@@ -349,7 +349,7 @@
           </thead>
           <tbody>
             {% for prop in city.ittomono.properties %}
-            <tr data-score="{{ prop.total_score | default(0) }}">
+            <tr data-score="{{ prop.total_score | default(0) }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}">
               <td class="score-cell" style="color:{% if (prop.total_score | default(0)) >= 80 %}var(--green){% elif (prop.total_score | default(0)) >= 50 %}var(--yellow){% else %}var(--text-muted){% endif %}">{{ prop.total_score | default(0) }}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
@@ -391,7 +391,7 @@
           </thead>
           <tbody>
             {% for prop in city.kodate.properties %}
-            <tr data-score="{{ prop.total_score | default(0) }}">
+            <tr data-score="{{ prop.total_score | default(0) }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}">
               <td class="score-cell">{{ prop.total_score | default(0) }}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
@@ -491,24 +491,35 @@ function sortProperties() {
   const sortKey = document.getElementById('sortSelect').value;
   const panel = document.querySelector('.city-panel.active');
   if (!panel) return;
-  panel.querySelectorAll('.property-grid').forEach(grid => {
-    const cards = Array.from(grid.children);
-    cards.sort((a, b) => {
-      const sa = parseInt(a.dataset.score || '0');
-      const sb = parseInt(b.dataset.score || '0');
-      const pa = parseInt(a.dataset.price || '0');
-      const pb = parseInt(b.dataset.price || '0');
-      const aa = parseFloat(a.dataset.area || '0');
-      const ab = parseFloat(b.dataset.area || '0');
-      switch (sortKey) {
-        case 'price-asc': return pa - pb;
-        case 'price-desc': return pb - pa;
-        case 'area-desc': return ab - aa;
-        default: return sb - sa;
-      }
+
+  function compareFn(a, b) {
+    const sa = parseInt(a.dataset.score || '0');
+    const sb = parseInt(b.dataset.score || '0');
+    const pa = parseInt(a.dataset.price || '0');
+    const pb = parseInt(b.dataset.price || '0');
+    const aa = parseFloat(a.dataset.area || '0');
+    const ab = parseFloat(b.dataset.area || '0');
+    switch (sortKey) {
+      case 'price-asc': return pa - pb;
+      case 'price-desc': return pb - pa;
+      case 'area-desc': return ab - aa;
+      default: return sb - sa;
+    }
+  }
+
+  if (currentView === 'list') {
+    panel.querySelectorAll('.prop-table tbody').forEach(tbody => {
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      rows.sort(compareFn);
+      rows.forEach(r => tbody.appendChild(r));
     });
-    cards.forEach(c => grid.appendChild(c));
-  });
+  } else {
+    panel.querySelectorAll('.property-grid').forEach(grid => {
+      const cards = Array.from(grid.children);
+      cards.sort(compareFn);
+      cards.forEach(c => grid.appendChild(c));
+    });
+  }
 }
 
 function updateCount() {

@@ -569,6 +569,34 @@ def _clean_name(name: str) -> str:
     return cleaned
 
 
+_STATION_NAME_PATTERN = re.compile(r"(?:駅」?|バス停)\s*徒歩[約]?\s*\d+分")
+
+
+def _fix_station_name(r: "IttomonoRow") -> str:
+    """If the name field contains a station/bus-stop text instead of a property name,
+    replace it with a human-readable fallback: '{区/市名} {構造}' or just location prefix."""
+    if not _STATION_NAME_PATTERN.search(r.name):
+        return r.name  # name looks fine
+    # Extract ward/city name from location (first Japanese address segment)
+    loc = r.location.strip()
+    # Try to get '○○区' or '○○市' prefix from location
+    area_m = re.search(r"([\u4e00-\u9fff]{2,6}[区市町村])", loc)
+    area_label = area_m.group(1) if area_m else loc[:6] if loc else "物件"
+    struct = r.structure if r.structure else ""
+    struct_short = ""
+    if "RC" in struct or "鉄筋コンクリート" in struct:
+        struct_short = "RC"
+    elif "SRC" in struct:
+        struct_short = "SRC"
+    elif "S造" in struct or "鉄骨" in struct:
+        struct_short = "S造"
+    elif "木造" in struct:
+        struct_short = "木造"
+    fallback = f"{area_label} {struct_short}".strip() if struct_short else area_label
+    print(f"  [FIX] 駅名→物件名修正: '{r.name}' → '{fallback}'")
+    return fallback
+
+
 def _filter_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
     """Remove obviously bad data before dedup and scoring."""
     import datetime as _dt
@@ -583,6 +611,8 @@ def _filter_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
         if r.built_year and r.built_year > current_year:
             print(f"  [FILTER] 未来竣工除外: {r.name} ({r.built_year}年竣工予定)")
             continue
+        # Fix station text used as property name (ftakken scraper artifact)
+        r.name = _fix_station_name(r)
         # Clean internal IDs from displayed names
         r.name = _clean_name(r.name)
         filtered.append(r)

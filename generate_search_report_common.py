@@ -235,6 +235,23 @@ def extract_search_meta(data_path: Path) -> dict[str, str]:
     return meta
 
 
+_STATION_NAME_RE = re.compile(r"(?:駅」?|バス停)\s*徒歩[約]?\s*\d+分")
+
+
+def _fix_station_name_property(row: "PropertyRow") -> None:
+    """If the name field is a station access description (ftakken scraper artifact),
+    replace it with '{区/市名} {layout}' fallback per UIラベル日本語化ルール."""
+    if not _STATION_NAME_RE.search(row.name):
+        return
+    loc = row.location.strip()
+    area_m = re.search(r"([\u4e00-\u9fff]{2,6}[区市町村])", loc)
+    area_label = area_m.group(1) if area_m else loc[:6] if loc else "物件"
+    layout = row.layout.strip() if hasattr(row, "layout") and row.layout else ""
+    fallback = f"{area_label} {layout}".strip() if layout else area_label
+    print(f"  [FIX] 駅名→物件名修正(区分): '{row.name}' → '{fallback}'")
+    row.name = fallback
+
+
 def parse_data_file(data_path: Path, default_source: str = "SUUMO") -> list[PropertyRow]:
     rows: list[PropertyRow] = []
     for line in data_path.read_text(encoding="utf-8").splitlines():
@@ -306,6 +323,7 @@ def parse_data_file(data_path: Path, default_source: str = "SUUMO") -> list[Prop
             )
         else:
             continue
+        _fix_station_name_property(row)
         hydrate_parsed_fields(row)
         rows.append(row)
     return rows
@@ -368,18 +386,30 @@ def _row_data_richness(row: PropertyRow) -> int:
     return score
 
 
+def _normalize_location(location: str) -> str:
+    """Normalize location string for dedup (strip whitespace, common punctuation variants)."""
+    s = re.sub(r"[\s　]+", "", location)
+    # Normalize full-width numbers to half-width
+    s = s.translate(str.maketrans("０１２３４５６７８９", "0123456789"))
+    return s
+
+
 def dedupe_properties(rows: list[PropertyRow]) -> tuple[list[PropertyRow], int]:
     seen: dict[tuple, int] = {}  # key -> index in out
     out: list[PropertyRow] = []
     dup_count = 0
     for row in rows:
         norm = _normalize_name(row.name)
+        loc_norm = _normalize_location(row.location)
         key_physical = (norm, row.area_sqm)
         key_name_price = (row.name, row.price_man)
+        # Third key: same address + same price = same property even if names differ (cross-listings)
+        key_loc_price = (loc_norm, row.price_man) if loc_norm and row.price_man > 0 else None
         # Use sentinel-based lookup to avoid 0-index truthiness bug
         idx_phys = seen.get(key_physical)
         idx_name = seen.get(key_name_price)
-        existing_idx = idx_phys if idx_phys is not None else idx_name
+        idx_loc = seen.get(key_loc_price) if key_loc_price is not None else None
+        existing_idx = idx_phys if idx_phys is not None else (idx_name if idx_name is not None else idx_loc)
         if existing_idx is not None:
             # Prefer the row with richer data (maintenance fee, pet status, etc.)
             existing = out[existing_idx]
@@ -390,6 +420,8 @@ def dedupe_properties(rows: list[PropertyRow]) -> tuple[list[PropertyRow], int]:
         idx = len(out)
         seen[key_physical] = idx
         seen[key_name_price] = idx
+        if key_loc_price is not None:
+            seen[key_loc_price] = idx
         out.append(row)
     return out, dup_count
 

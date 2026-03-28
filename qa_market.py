@@ -492,6 +492,42 @@ def run_qa(html_path: Path = HTML_PATH, strict: bool = False) -> bool:
     return ok
 
 
+def run_qa_for_kaizen(html_path: Path = HTML_PATH) -> list[dict]:
+    """Return QA results as Kaizen-compatible findings list.
+
+    Called by kaizen-agent product_quality checks for integrated QA.
+    """
+    if not html_path.exists():
+        return [{"check": "qa_market", "severity": "error",
+                 "file": "Property Market", "project": "property-analyzer",
+                 "message": f"{html_path} not found"}]
+
+    parser = _parse_html(html_path)
+    checks = [
+        ("feature_parity", check_feature_parity),
+        ("revenue_coverage", check_revenue_coverage),
+        ("name_quality", check_name_quality),
+        ("duplicate_detection", check_duplicate_detection),
+        ("data_completeness", check_data_completeness),
+        ("sort_functionality", check_sort_functionality),
+        ("data_accuracy", check_data_accuracy),
+        ("first_seen_coverage", check_first_seen_coverage),
+    ]
+
+    findings = []
+    for name, fn in checks:
+        level, msg = fn(parser)
+        if level != "PASS":
+            findings.append({
+                "check": f"qa_market_{name}",
+                "severity": "error" if level == "FAIL" else "warn",
+                "file": "Property Market",
+                "project": "property-analyzer",
+                "message": msg,
+            })
+    return findings
+
+
 def main() -> None:
     strict = "--strict" in sys.argv
     ok = run_qa(strict=strict)

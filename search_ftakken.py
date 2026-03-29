@@ -161,19 +161,33 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
     else:
         layout = layout_m.group(1)
 
-    # Property name: use building name from location, or first descriptive line
+    # Property name: use building name from location line.
+    # Fallback: scan block lines for a proper building name (reject catchphrases).
+    # Note: _enrich_ftakken_detail() will overwrite this with the authoritative
+    # 建物名 field from the detail page, fixing any remaining catchphrase names.
+    _CATCHPHRASE_CHARS = set("。♪！「」★☆◆◇■▲●")
     name = building_name
     if not name:
         lines = block.strip().split("\n")
         for line in lines:
             line = line.strip()
-            if (len(line) >= 3 and not line.startswith("中古") and not line.startswith("新築")
-                    and "万円" not in line and "㎡" not in line and "坪" not in line
-                    and "閲覧回数" not in line and "所在地" not in line
-                    and "交通" not in line and "築年月" not in line
-                    and "チェック" not in line and "お気に入り" not in line):
-                name = line[:50]
-                break
+            # Skip empty lines and obvious non-name content
+            if len(line) < 3:
+                continue
+            if (line.startswith("中古") or line.startswith("新築")
+                    or "万円" in line or "㎡" in line or "坪" in line
+                    or "閲覧回数" in line or "所在地" in line
+                    or "交通" in line or "築年月" in line
+                    or "チェック" in line or "お気に入り" in line):
+                continue
+            # Reject lines that look like catchphrases (contain special chars or multiple 、)
+            if any(c in line for c in _CATCHPHRASE_CHARS):
+                continue
+            if line.count("、") >= 2:
+                continue
+            # Accept: likely a building name (e.g. "コーポラス東光 413")
+            name = line[:50]
+            break
     if not name:
         name = f"ふれんず物件({ward_name})"
 
@@ -334,16 +348,21 @@ def search_ftakken(city_key: str = "fukuoka") -> list[dict]:
                 print(f"    [ERROR] {ward_name}: {e}")
             time.sleep(2)
 
-        browser.close()
+        # Deduplicate before enrichment (avoid visiting same detail page twice)
+        seen_urls: set[str] = set()
+        unique: list[dict] = []
+        for prop in all_properties:
+            url = prop["url"]
+            if url not in seen_urls:
+                seen_urls.add(url)
+                unique.append(prop)
 
-    # Deduplicate by URL
-    seen_urls = set()
-    unique = []
-    for prop in all_properties:
-        url = prop["url"]
-        if url not in seen_urls:
-            seen_urls.add(url)
-            unique.append(prop)
+        # Enrich: visit detail pages to get accurate building name
+        # This fixes catchphrase names from the listing page text
+        if unique:
+            _enrich_ftakken_detail(page, unique)
+
+        browser.close()
 
     print(f"\n  ふれんず 合計: {len(unique)}件 (重複除去前: {len(all_properties)}件)")
     return unique

@@ -31,6 +31,10 @@ PRICE_MAX = 5000  # 万円 (区分)
 AREA_MIN = 40
 AREA_MAX = 70
 
+# 格安区分 (budget tier): 1000万以下, 面積制限緩和, OC含む
+BUDGET_PRICE_MAX = 1000
+BUDGET_AREA_MIN = 15
+
 # 一棟もの price range — 1.5億〜2億
 ITTOMONO_PRICE_MIN = 5000    # 5000万 (下限)
 ITTOMONO_PRICE_MAX = 20000   # 2億 (上限)
@@ -47,7 +51,9 @@ FUKUOKA_WARDS = {
 }
 
 
-def _parse_property_blocks(page_text: str, ward_name: str, detail_urls: list[str]) -> list[dict]:
+def _parse_property_blocks(page_text: str, ward_name: str, detail_urls: list[str],
+                           *, price_max: int | None = None, area_min: int | None = None,
+                           area_max: int | None = None) -> list[dict]:
     """Parse structured property listing text from f-takken items page.
 
     The text structure is:
@@ -73,7 +79,8 @@ def _parse_property_blocks(page_text: str, ward_name: str, detail_urls: list[str
             prev_desc = blocks[idx - 1].split("\n")[-10:]  # Last 10 lines = description
             full_block = "\n".join(prev_desc) + "\n" + block
 
-            prop = _parse_single_block(full_block, ward_name, detail_urls, idx - 1)
+            prop = _parse_single_block(full_block, ward_name, detail_urls, idx - 1,
+                                       price_max=price_max, area_min=area_min, area_max=area_max)
             if prop:
                 properties.append(prop)
         except Exception:
@@ -82,8 +89,14 @@ def _parse_property_blocks(page_text: str, ward_name: str, detail_urls: list[str
     return properties
 
 
-def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx: int) -> dict | None:
+def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx: int,
+                        *, price_max: int | None = None, area_min: int | None = None,
+                        area_max: int | None = None) -> dict | None:
     """Parse a single property block text."""
+    _price_max = price_max if price_max is not None else PRICE_MAX
+    _area_min = area_min if area_min is not None else AREA_MIN
+    _area_max = area_max if area_max is not None else AREA_MAX
+
     # Price - match "価格\t1,980万円" or "価格\t320万円" etc.
     price_m = re.search(r"価格\s+(\d[\d,]+)\s*万円", block)
     if not price_m:
@@ -97,7 +110,7 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
     except ValueError:
         return None
 
-    if price_man > PRICE_MAX or price_man <= 100:
+    if price_man > _price_max or price_man <= 100:
         return None
 
     # Area (専有面積)
@@ -108,7 +121,7 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
         return None
 
     area_val = float(area_m.group(1))
-    if area_val < AREA_MIN or area_val > AREA_MAX:
+    if area_val < _area_min or area_val > _area_max:
         return None
     area_text = f"{area_val}㎡"
 
@@ -240,13 +253,18 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
     }
 
 
-def scrape_ward(page, items_url: str, ward_code: str, ward_name: str) -> list[dict]:
+def scrape_ward(page, items_url: str, ward_code: str, ward_name: str,
+                *, price_max: int | None = None, area_min: int | None = None,
+                area_max: int | None = None, include_oc: bool = False) -> list[dict]:
     """Scrape property listings for a specific ward."""
-    # Use the items URL with limit=100 and price/area filters
+    _price_max = price_max if price_max is not None else PRICE_MAX
+    _area_min = area_min if area_min is not None else AREA_MIN
+    _area_max = area_max if area_max is not None else AREA_MAX
     # data_22=price upper, data_30=area min, data_31=area max, data_409=1 exclude owner-change
     url = (f"{items_url}?locate[]={ward_code}&limit=100"
-           f"&data_22={PRICE_MAX}&data_30={AREA_MIN}&data_31={AREA_MAX}"
-           f"&data_409=1")
+           f"&data_22={_price_max}&data_30={_area_min}&data_31={_area_max}")
+    if not include_oc:
+        url += "&data_409=1"
     print(f"  {ward_name} ({url})")
 
     try:
@@ -281,7 +299,8 @@ def scrape_ward(page, items_url: str, ward_code: str, ward_name: str) -> list[di
                 continue
 
         # Parse property blocks
-        properties = _parse_property_blocks(page_text, ward_name, detail_urls)
+        properties = _parse_property_blocks(page_text, ward_name, detail_urls,
+                                            price_max=price_max, area_min=area_min, area_max=area_max)
         print(f"    Page {page_num}: {len(properties)}件 (detail URLs: {len(detail_urls)})")
 
         if not properties:
@@ -813,6 +832,103 @@ def save_ittomono_results(properties: list[dict], prop_type: str) -> Path:
     return out_path
 
 
+def search_ftakken_budget(city_key: str = "fukuoka") -> list[dict]:
+    """Search f-takken.com for budget properties (≤1000万, OC included)."""
+    config = SEARCH_CONFIGS.get(city_key)
+    if not config:
+        print(f"No config for {city_key}")
+        return []
+
+    print(f"\n=== ふれんず 格安区分 ({config['label']}) 検索中... ===")
+
+    all_properties = []
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(
+            headless=True,
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--no-sandbox",
+            ],
+        )
+        context = browser.new_context(
+            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+            viewport={"width": 1280, "height": 800},
+            locale="ja-JP",
+            timezone_id="Asia/Tokyo",
+        )
+        context.add_init_script(
+            "Object.defineProperty(navigator, 'webdriver', { get: () => undefined });"
+        )
+        page = context.new_page()
+
+        for ward_name, ward_code in config["wards"].items():
+            try:
+                props = scrape_ward(
+                    page, config["items_url"], ward_code, ward_name,
+                    price_max=BUDGET_PRICE_MAX, area_min=BUDGET_AREA_MIN,
+                    area_max=AREA_MAX, include_oc=True,
+                )
+                all_properties.extend(props)
+                print(f"    → 合計 {len(props)}件")
+            except Exception as e:
+                print(f"    [ERROR] {ward_name}: {e}")
+            time.sleep(2)
+
+        # Deduplicate
+        seen_urls: set[str] = set()
+        unique: list[dict] = []
+        for prop in all_properties:
+            url = prop["url"]
+            if url not in seen_urls:
+                seen_urls.add(url)
+                unique.append(prop)
+
+        # Enrich
+        if unique:
+            _enrich_ftakken_detail(page, unique)
+
+        browser.close()
+
+    print(f"\n  格安区分 合計: {len(unique)}件 (重複除去前: {len(all_properties)}件)")
+    return unique
+
+
+def save_budget_results(properties: list[dict], city_key: str = "fukuoka") -> Path:
+    """Save budget results to pipe-delimited data file."""
+    DATA_DIR.mkdir(exist_ok=True)
+    out_path = DATA_DIR / f"ftakken_{city_key}_budget_raw.txt"
+
+    config = SEARCH_CONFIGS[city_key]
+    lines = [
+        f"## ふれんず 格安区分 - {config['label']}",
+        f"## 条件: {BUDGET_PRICE_MAX}万以下, {BUDGET_AREA_MIN}㎡〜, OC含む",
+        f"## 取得日: {datetime.now().strftime('%Y-%m-%d')}",
+        f"## 件数: {len(properties)}件",
+        "",
+    ]
+
+    for prop in properties:
+        line = "|".join([
+            prop["source"],
+            prop["name"],
+            prop["price_text"],
+            prop["location"],
+            prop["area_text"],
+            prop["built_text"],
+            prop["station_text"],
+            prop["layout"],
+            prop["pet"],
+            prop["brokerage"],
+            prop.get("maintenance", ""),
+            prop["url"],
+        ])
+        lines.append(line)
+
+    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return out_path
+
+
 def main():
     print(f"ふれんず物件検索 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     props = search_ftakken("fukuoka")
@@ -839,6 +955,12 @@ def main():
     if kodate:
         out = save_ittomono_results(kodate, "戸建て")
         print(f"出力(戸建て): {out}")
+
+    # 格安区分 (budget tier)
+    budget = search_ftakken_budget("fukuoka")
+    if budget:
+        out = save_budget_results(budget, "fukuoka")
+        print(f"出力(格安区分): {out}")
 
 
 if __name__ == "__main__":

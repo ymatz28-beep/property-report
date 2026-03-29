@@ -89,6 +89,10 @@ TIER_GREEN = 80
 TIER_YELLOW = 65
 MAX_YELLOW_FILL = 20
 
+# Budget tier: lower thresholds (CF-focused, smaller properties)
+BUDGET_TIER_MIN = 40
+BUDGET_MAX_ITEMS = 25
+
 
 # ---------------------------------------------------------------------------
 # Extra data source discovery
@@ -160,6 +164,33 @@ def _load_kubun(cfg: dict) -> list[PropertyRow]:
         rows = green + yellow[:slots]
 
     return rows
+
+
+def _load_budget(city_key: str) -> list[PropertyRow]:
+    """Load budget properties (≤1000万, OC included) — CF-focused investment."""
+    p = DATA_DIR / f"ftakken_{city_key}_budget_raw.txt"
+    if not p.exists():
+        return []
+
+    rows = parse_data_file(p)
+    rows, _ = dedupe_properties(rows)
+
+    sold = load_sold_urls()
+    rows = [r for r in rows if r.url.rstrip("/") + "/" not in sold]
+
+    # Budget tier: don't filter OC or pet (CF-focused)
+    config = ReportConfig(
+        city_key=city_key, city_label=city_key,
+        accent="#6366f1", accent_rgb="99,102,241",
+        data_path=p, output_path=OUTPUT_DIR / "market.html",
+        hero_conditions=[], search_condition_bullets=[], investor_notes=[],
+    )
+    for row in rows:
+        score_row(row, config)
+
+    rows = [r for r in rows if r.total_score >= BUDGET_TIER_MIN]
+    rows.sort(key=lambda r: -r.total_score)
+    return rows[:BUDGET_MAX_ITEMS]
 
 
 _ESTIMATED_RENT_PER_SQM: dict[str, int] = {
@@ -421,6 +452,7 @@ def main() -> None:
     total_kubun = 0
     total_ittomono = 0
     total_kodate = 0
+    total_budget = 0
     all_prices = []
     all_areas = []
     pet_ok = 0
@@ -438,7 +470,11 @@ def main() -> None:
         city_kodate = [r for r in all_kodate if r.city_key == cfg["key"]]
         kodate_props = [_kodate_to_dict(r, city_key=cfg["key"], first_seen=first_seen) for r in city_kodate[:10]]
 
-        city_total = len(kubun_props) + len(ittomono_props) + len(kodate_props)
+        # 格安区分 (budget tier — Fukuoka only)
+        budget_rows = _load_budget(cfg["key"])
+        budget_props = [_kubun_to_dict(r, first_seen, city_key=cfg["key"]) for r in budget_rows]
+
+        city_total = len(kubun_props) + len(ittomono_props) + len(kodate_props) + len(budget_props)
 
         cities.append({
             "key": cfg["key"],
@@ -447,19 +483,22 @@ def main() -> None:
             "kubun": {"count": len(kubun_props), "properties": kubun_props},
             "ittomono": {"count": len(ittomono_props), "properties": ittomono_props},
             "kodate": {"count": len(kodate_props), "properties": kodate_props},
+            "budget": {"count": len(budget_props), "properties": budget_props},
         })
 
         total_kubun += len(kubun_props)
         total_ittomono += len(ittomono_props)
         total_kodate += len(kodate_props)
+        total_budget += len(budget_props)
         all_prices.extend(r.price_man for r in kubun_rows if r.price_man > 0)
         all_areas.extend(r.area_sqm for r in kubun_rows if r.area_sqm)
         pet_ok += sum(1 for r in kubun_rows if r.pet_status in ("可", "相談可"))
 
-        print(f"  {cfg['label']}: 区分{len(kubun_props)} + 一棟{len(ittomono_props)} + 戸建{len(kodate_props)}")
+        budget_str = f" + 格安{len(budget_props)}" if budget_props else ""
+        print(f"  {cfg['label']}: 区分{len(kubun_props)} + 一棟{len(ittomono_props)} + 戸建{len(kodate_props)}{budget_str}")
 
     # Totals
-    total_count = total_kubun + total_ittomono + total_kodate
+    total_count = total_kubun + total_ittomono + total_kodate + total_budget
     avg_price = int(sum(all_prices) / len(all_prices)) if all_prices else 0
 
     totals = {
@@ -467,6 +506,7 @@ def main() -> None:
         "kubun_count": total_kubun,
         "ittomono_count": total_ittomono,
         "kodate_count": total_kodate,
+        "budget_count": total_budget,
         "avg_price": avg_price,
         "pet_ok_count": pet_ok,
     }

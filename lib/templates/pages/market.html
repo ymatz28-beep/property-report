@@ -6,8 +6,9 @@
     cities: list of {key, label, count,
       kubun: {count, properties},
       ittomono: {count, properties},
-      kodate: {count, properties}}
-    totals: {count, kubun_count, ittomono_count, kodate_count, avg_price, pet_ok_count}
+      kodate: {count, properties},
+      budget: {count, properties}}
+    totals: {count, kubun_count, ittomono_count, kodate_count, budget_count, avg_price, pet_ok_count}
     patrol_summary: {date, total, new_count}
     property_pages, property_current, nav_items, current_page
 #}
@@ -257,6 +258,12 @@
         <div class="label">戸建</div>
         <div class="value">{{ totals.kodate_count }}</div>
       </div>
+      {% if totals.budget_count %}
+      <div class="stat-card">
+        <div class="label">格安</div>
+        <div class="value">{{ totals.budget_count }}</div>
+      </div>
+      {% endif %}
       <div class="stat-card">
         <div class="label">平均価格</div>
         <div class="value">{{ totals.avg_price }}万</div>
@@ -281,6 +288,7 @@
                 data-kubun="{{ city.kubun.count }}"
                 data-ittomono="{{ city.ittomono.count }}"
                 data-kodate="{{ city.kodate.count }}"
+                data-budget="{{ city.budget.count }}"
                 onclick="switchCity('{{ city.key }}')">
           {{ city.label }}
           <span class="city-tab-count">{{ city.count }}</span>
@@ -311,6 +319,9 @@
       </button>
       <button class="type-jump-btn" data-type="kodate" onclick="jumpToType('kodate')">
         戸建 <span class="type-jump-count" id="jumpKodateCount">0</span>
+      </button>
+      <button class="type-jump-btn" data-type="budget" onclick="jumpToType('budget')">
+        格安区分 <span class="type-jump-count" id="jumpBudgetCount">0</span>
       </button>
     </div>
   </div>
@@ -485,7 +496,70 @@
     </div>
     {% endif %}
 
-    {% if city.kubun.count == 0 and city.ittomono.count == 0 and city.kodate.count == 0 %}
+    {# ── 格安区分 Section ── #}
+    {% if city.budget.count > 0 %}
+    <div class="type-section" id="{{ city.key }}-budget" data-type="budget">
+      <div class="type-header">
+        <span class="type-label">格安区分（1000万以下・OC含む）</span>
+        <span class="type-count">{{ city.budget.count }}</span>
+      </div>
+      <div class="property-grid" data-view="grid" style="display:none">
+        {% for prop in city.budget.properties %}
+        {{ property_card(prop) }}
+        {% endfor %}
+      </div>
+      <div class="property-list active" data-view="list">
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
+              <th>間取り</th><th>最寄駅</th><th>築年</th><th>管理費+修繕</th><th>ペット</th><th>利回り</th><th>CF/月</th>
+              <th>㎡単価</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for prop in city.budget.properties %}
+            <tr data-score="{{ prop.total_score }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}" {% if prop.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
+              <td class="score-cell" style="color:{% if prop.total_score >= 80 %}var(--green){% elif prop.total_score >= 65 %}var(--yellow){% else %}var(--orange, #ff6b35){% endif %}">{{ prop.total_score }}</td>
+              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
+              <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
+              <td class="price-cell">{{ prop.price_text }}</td>
+              <td class="area-cell">{{ prop.area_text }}</td>
+              <td>{{ prop.layout or "—" }}</td>
+              <td>{{ prop.station_text | default(prop.location) }}</td>
+              <td>{{ prop.built_text or "—" }}</td>
+              <td class="price-cell">{{ prop.maintenance_fee_text or "—" }}</td>
+              <td>{{ prop.pet_status or "—" }}</td>
+              <td>{{ prop.yield_text or "—" }}</td>
+              <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
+              <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
+            </tr>
+            {% if prop.revenue %}
+            <tr class="detail-row">
+              <td colspan="13">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">{{ prop.revenue.net_yield }}%</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:{% if prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.after_tax_monthly_cf }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">CCR（自己資本利回り）</span><span class="detail-value">{{ prop.revenue.ccr }}%</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">{% if prop.revenue.payback_years %}{{ prop.revenue.payback_years }}年{% else %}∞{% endif %}</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">{{ prop.revenue.down_payment }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">{{ prop.revenue.depreciation_annual }}万</span></div>
+                  {% if prop.revenue.tax_benefit > 0 %}<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+{{ prop.revenue.tax_benefit }}万</span></div>{% endif %}
+                </div>
+                <div class="detail-verdict" style="background:{% if prop.revenue.verdict == '高CF物件' %}rgba(34,197,94,0.1);color:var(--green){% elif prop.revenue.verdict == '安定CF' %}rgba(34,197,94,0.08);color:var(--green){% elif prop.revenue.verdict == '薄利' %}rgba(234,179,8,0.1);color:var(--yellow){% else %}rgba(239,68,68,0.1);color:var(--red){% endif %}">{{ prop.revenue.verdict }}</div>
+              </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if city.kubun.count == 0 and city.ittomono.count == 0 and city.kodate.count == 0 and city.budget.count == 0 %}
     <div class="empty-state">{{ city.label }}の物件なし</div>
     {% endif %}
   </div>
@@ -522,6 +596,7 @@ function updateTypeJump() {
   document.getElementById('jumpKubunCount').textContent = tab.dataset.kubun || '0';
   document.getElementById('jumpIttomonoCount').textContent = tab.dataset.ittomono || '0';
   document.getElementById('jumpKodateCount').textContent = tab.dataset.kodate || '0';
+  document.getElementById('jumpBudgetCount').textContent = tab.dataset.budget || '0';
 
   // Show/hide buttons based on count
   document.querySelectorAll('.type-jump-btn').forEach(btn => {

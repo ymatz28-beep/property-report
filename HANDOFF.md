@@ -1,9 +1,40 @@
 # HANDOFF
 
+## [Constancy] 2026-03-29
+- [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
+- [WARN] html_ui: Has gnav but missing hamburger toggle — mobile nav broken
+- [WARN] timestamp_format: Date-only timestamp 'Generated: 2026-02-20' — should include HH:MM
+- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-03-29 06:35): 【F宅建検索】タイムアウト (5分超過) → Fix: エラーログを確認
+- [WARN] blank_cells: ダッシュ「—」106個 (閾値20) — データ欠損の可能性
+- [WARN] numeric_outliers: 利回り: 異常値 3件 — 26.5>20, 22.9>20, 22.9>20
+- [ERROR] property_name_quality: 駅名が物件名になっている: 2件 — ['「東武練馬」駅徒歩2分！2020年築RC造１棟マンション！', '「東武練馬」駅徒歩2分！2020年築RC造１棟マンション！']
+- [WARN] qa_market_duplicate_detection: 8 duplicate (price, area) pairs: [(('3900', '40.07'), ['osaka-kubun', 'osaka-kubun']), (('4900', '46.01'), ['fukuoka-kubun', 'fukuoka-kubun']), (('3180', '52.98'), ['fukuoka-kubun', 'fukuoka-kubun'])]
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 6.5% (11/169件)。パイプライン変換バグの可能性。例: 4480.0万円/45.62㎡; 18880.0万円/271.58㎡; 4780.0万円/64.15㎡; 2580.0万円/46.86㎡; 17304.0万円/314.59㎡
+
 ## Last Updated
-2026-03-28
+2026-03-29
 
 <!-- [Constancy] 2026-03-28: WARN hardcoded_data(91行inline) / structural_reform(4ファイル500行超) / html_ui(hamburger未実装) / timestamp_format(HH:MM欠落) / property_patrol_steps(管理費タイムアウト=設計仕様) / ERROR git_uncommitted(15files, 95h) -->
+
+## Completed (kaizen Visual Regression チェック追加 2026-03-29 x-ref)
+- **Before**: HTMLレポートのレイアウト崩れ（モバイル水平オーバーフロー、JS errors、空白ページ等）を検知する仕組みがなく、目視頼み。CSSや構造変更でUIが壊れても気づけなかった
+- **After**: Playwright headless Chromiumで全HTMLをmobile(375px)+desktop(1440px)でレンダリングし5項目チェック（JSコンソールエラー/水平オーバーフロー/空白ページ/必須要素欠落/fixed要素重なり）。初回実行で7件検出→偽陽性4件修正（critical_selectorsを`table`→`content`に拡張: `.card,.kpi,.metric,ul,ol,section`追加）→実問題3件に絞り込み: Asset Dashboard/FIRE Strategy/Property Marketのモバイル水平オーバーフロー
+- **Commits**: kaizen-agent `208f292`（visual_regression.py新規+patrol.py+common.py更新、3ファイル204行追加）
+
+## Completed (ふれんず物件名詳細取得 + 管理費/修繕分離 + 表示改善 2026-03-28)
+- **Before**: ふれんず区分物件の物件名が住所表示のまま（「福岡市南区塩原3丁目」「福岡市南区中尾2丁目」等）。管理費と修繕積立金が合算表示。㎡単価が「535,934円/㎡」のような冗長表示。ふれんず一棟ものに詳細ページenrichmentなし
+- **After**: 物件名を詳細ページから取得し正式名称表示（「ホワイトシャトー大橋 壱番館」「Ｄ－ｒｏｏｍ中尾 弐番館」等）。管理費+修繕積立金を分離取得（60件enriched）。㎡単価を万円表示に簡略化（535,934円/㎡→53.6万/㎡）。ふれんず一棟にも詳細ページenrichment追加+エルフ藤修正
+- **Commits**: property-analyzer `c7e06f7`(物件名取得+リスト改善), `6653e9d`(㎡単価簡略化), `9996b8c`(一棟enrichment+エルフ藤), `6f2ae0b`(管理費+修繕分離)
+
+## Completed (main→gh-pages自動デプロイworkflow追加 + ライブページ物件名修正 2026-03-28)
+- **Before**: `main`へのpushで完了報告していたが、GitHub Pagesは`gh-pages`ブランチからデプロイする設計のため、ライブページに変更が反映されず毎回「治ってない」が再発。手動でgh-pagesにデプロイする必要があった
+- **After**: `deploy-on-push.yml`を新規作成し、`main`への`output/*.html`変更push時にGHAが自動でgh-pagesにデプロイする恒久対策を実装。ライブページでシティパレス21・ホワイトシャトー大橋・Ｄ－ｒｏｏｍ中尾の物件名が正しく表示されることをcurl+open目視で確認。gh-pagesへの手動デプロイ(`e653048`)も実施
+- **Commits**: property-analyzer `056b90b`(workflow), gh-pages `e653048`(手動デプロイ)
+
+## Completed (kaizen auto_fix_patrol Phase 1.7 動作確認 + GHA正常稼働確認 2026-03-28 x-ref)
+- **Before**: kaizen patrolが問題を検知するだけで手動修復が必要だった。output_drift(market-intel.html古い)、git_uncommitted(property-analyzer未push)が毎回手作業。GHAリポ名がproperty-analyzerと誤認(正: property-report)
+- **After**: auto_fix_patrol.py Phase 1.7が自動修復実行: output_drift→market-intel.html再生成、git_uncommitted→property-analyzer auto-commit+push(`9fc9bfb`)。4 fixed / 0 failed / 3 skipped。GHA Daily Property Patrol success確認(3/27 21:39, Run 23668652488)。リポ名 property-report を確認
+- **Commits**: property-analyzer `9fc9bfb`(auto: kaizen patrol sync), kaizen-agent `1159ee3`(Phase 1.7テスト+lib sync)
 
 ## Completed (infra-manifest leader-digest sleep-resilient化 + xbookmarks script path修正 2026-03-28 x-ref)
 - **Before**: leader-digestが`StartCalendarInterval`（07:00/12:00/17:30固定）でPC sleep中に実行漏れ。xbookmarksのinfra-manifest scriptパスが旧`run_pipeline.sh`のまま
@@ -64,15 +95,14 @@
 ## In Progress / Next Actions
 1. **アンピール天神東 賃料相場調査完了 → 澤畠さんに回答** — 融資審査用の想定賃料を確定し、必要なら追加情報を返信
 2. **筑波銀行融資回答フォロー** — 3月末期限（残2日）。回答なければ澤畠さんに進捗確認
-3. **未コミットファイルpush**: generate_simulate.py, lib/templates/pages/simulate.html, output/simulate.html が未追跡。Constancy git_uncommitted警告(15ファイル, 95h経過)
+3. **未コミットファイルpush**: property_card.html, market.html, pipeline.html, portfolio.html, output/index.html が変更済み未commit。com.yuma.property-patrol.plist が未追跡
 4. **QA warn=102件の精査** — patrol_alerts: error 1件(stock-analyzer), warn 102件, total 205件。property関連はproperty_patrol_steps 2件(管理費タイムアウト=設計仕様)。ノイズか本物か未仕分け
 5. **inq-049 福岡薬院駅物件（score 99）精査** — ふれんず掲載、1986年築だが薬院駅3分の好立地。詳細調査・融資検討の優先候補
 6. **特区民泊候補物件の問い合わせ送付** — 期限5/29、残り約2ヶ月
 7. **GHA actions Node.js 24対応** — checkout@v4→v5, setup-python@v5→v6等（期限: 2026-06-02）
 8. **Constancy警告対応** — 巨大ファイル4件の分割検討(property_pipeline.py 1547行, generate_ittomono_report.py 1281行, generate_search_report_common.py 1165行, search_multi_site.py 1022行) + mobile nav hamburger未実装 + timestamp HH:MM未対応
-9. **lib/digest/同期対応** — kaizen-agent #80でdaily_digest.pyがlib/digest/に分割。property-analyzerのlib同期設定を更新
-10. **inquiries.yaml重複3組解消** — inq-007/008, inq-013/014, inq-029/030
-11. **改善アイデア: 融資照会テンプレート自動生成** — inquiries.yamlの物件データ+賃料相場自動調査から、銀行向け融資照会メールのドラフトを自動生成
+9. **inquiries.yaml重複3組解消** — inq-007/008, inq-013/014, inq-029/030
+10. **改善アイデア: 融資照会テンプレート自動生成** — inquiries.yamlの物件データ+賃料相場自動調査から、銀行向け融資照会メールのドラフトを自動生成
 
 ### 継続中（外部待ち）
 - **澤畠さん（筑波銀行）融資回答待ち** — 3/24にアンピール天神東405号室の融資照会メール送信済み。売主3月末期限で急ぎ
@@ -116,6 +146,7 @@
 - **agent_memory連携方針（2026-03-20）**: inbox-zeroのagent_memory.yamlをSSoTとし、property_pipeline.pyがsyncで取り込む。ステータスはアップグレードのみ（ダウングレード禁止）。GHAではGitHub API+GH_PATでクロスリポアクセス
 - **デプロイプラットフォーム分離（2026-03-20）**: Public=GitHub Pages(zero-auth)、Private=Cloudflare Pages+Access(email OTP)。infra-manifest.yaml `deployments`セクションにSSoT化。property-reportはGitHub Pages/gh-pagesブランチ
 - **SUUMO一棟物件断念（2026-03-28）**: `/b/kodate/kw/一棟物件/` はキーワード検索（中古マンション/一戸建て/土地が混在）で投資用一棟もの構造化データではない。percent-encoded URLはGalileoCookie 301無限リダイレクト。既存の楽待+健美家+ふれんずで一棟ものは十分カバー
+- **main→gh-pages自動デプロイ（2026-03-28）**: `deploy-on-push.yml`でoutput/*.html変更時に自動デプロイ。根本原因: `main` push ≠ デプロイだったため毎回反映漏れが発生。daily-patrol.ymlのデプロイステップはそのまま残す（既存+追加の2系統）
 - **進捗表示ルール（2026-03-28）**: 時間がかかるタスクは進捗を見せながら進める（全プロジェクト共通のユーザー要望）
 - **マネタイズ戦略 不動産ドメイン（2026-03-18）**: property-analyzerの既存資産(11軸スコアリング+パトロール+民泊収益試算)を「Property Quick Calc」PWAとして収益化。Phase 2でエージェントチーム設計予定
 - **GHAスケジュール再有効化（2026-03-16）**: Daily Digest cron復旧。property patrol結果の自動配信再開
@@ -145,6 +176,10 @@
 - GitHub Pages: report-dashboard(gh-pages) / property-report(gh-pages) / trip-planner(main)
 
 ## History（最新20件）
+- 2026-03-29 x-ref: Before: UIレイアウト崩れ検知なし(目視頼み) → After: Playwright visual regression追加、偽陽性7→3件に修正(kaizen `208f292`)
+- 2026-03-28: Before: ふれんず物件名が住所表示+管理費合算+㎡単価冗長 → After: 詳細ページから正式名称取得+管理費分離(60件)+万円表示(`c7e06f7`,`6f2ae0b`)
+- 2026-03-28: Before: main push≠デプロイで毎回ライブ反映漏れ → After: deploy-on-push.yml追加で自動デプロイ恒久化(`056b90b`)
+- 2026-03-28 x-ref: Before: patrol検知→手動修復+GHAリポ名誤認 → After: auto_fix_patrol Phase 1.7自動修復(4 fixed/0 failed)+GHA success確認(`9fc9bfb`)
 - 2026-03-28 x-ref: Before: leader-digest固定時刻でsleep漏れ+xbookmarks旧パス → After: StartInterval 3h化+.py修正(scripts `4744eac`)
 - 2026-03-28: Before: Market/Simulate/Portfolio未実装+セクションナビ4パターン重複 → After: 統一3ページ(`7f7ca72`,`29e8534`)+sticky nav(`4bf703d`)+section_navコンポーネント横展開(`825a8df`)
 - 2026-03-28 x-ref: Before: patrol_alerts内訳未精査+QAインフラ横断確認なし → After: 調査完了、property警告2件=設計仕様、auto-fix同期正常、QA3層連動確認
@@ -161,9 +196,4 @@
 - 2026-03-24 x-ref: Before: patrol false positive 33件 → After: nav_python_files SSoT移行反映で偽陽性解消
 - 2026-03-23: Before: ittomono.html未更新(3/22のまま)+gnav二重表示 → After: 再デプロイ(`49c39fc`)+gnav解消+モバイルQA
 - 2026-03-23: Before: 内覧分析にCFシミュレーションなし → After: 収益ウォーターフォール統合(CF/減価償却/節税/verdict)
-- 2026-03-23 x-ref: Before: constancy_checks単一ファイル → After: 分割+violation_tracker(14日escalation)
-- 2026-03-22: Before: IPv4 SSL接続失敗+SUUMO 0件上書き → After: cert生成スクリプト(`566c668`)+上書き防止+タイムアウト増加(`44c6c78`)
-- 2026-03-22: Before: gnav Newsletter欠落+整合性チェックなし → After: renderer.py SSoT+gnav_consistency実装+2C原則確立
-- 2026-03-21: Before: デプロイ構成未ドキュメント化 → After: infra-manifest.yaml deploymentsセクション追加
-- 2026-03-21: Before: パトロール安定性未確認 → After: 3回連続success、Gmail通知正常
-<!-- 20件制限: 2026-03-21以前はarchive参照 -->
+<!-- 20件制限: 2026-03-23以前はarchive参照 -->

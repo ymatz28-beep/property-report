@@ -46,7 +46,6 @@ PROPERTY_PAGES = [
     {"href": "market.html", "label": "Market"},
     {"href": "pipeline.html", "label": "Pipeline"},
     {"href": "simulate.html", "label": "Simulate"},
-    {"href": "portfolio.html", "label": "Portfolio"},
 ]
 
 CITY_CONFIGS: list[dict] = [

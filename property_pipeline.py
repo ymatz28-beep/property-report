@@ -1160,6 +1160,7 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 .tag-blue{{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.3)}}
 .tag-muted{{background:rgba(169,179,198,.1);color:var(--muted);border:1px solid rgba(169,179,198,.2)}}
 table{{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}}
+@media(max-width:640px){{table{{font-size:13px}}th{{white-space:nowrap;width:70px;min-width:70px}}td{{word-break:break-word}}}}
 th{{text-align:left;padding:8px 12px;color:var(--muted);font-weight:600;font-size:12px;border-bottom:1px solid var(--line)}}
 td{{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .val{{font-weight:700}}.warn{{color:var(--red);font-weight:700}}.ok{{color:var(--green);font-weight:700}}.neutral{{color:var(--muted)}}

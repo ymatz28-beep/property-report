@@ -502,44 +502,58 @@ body {
 }
 
 /* List view */
-.property-list { display: none; }
+.property-list { display: none; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .property-list.active { display: block; }
 .property-grid.active { display: grid; }
 
-.prop-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.prop-table { width: 100%; min-width: 1100px; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
 .prop-table th {
   text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 700;
   color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
   border-bottom: 1px solid var(--border); position: sticky; top: 0;
-  background: var(--bg);
+  background: var(--bg); white-space: nowrap;
 }
-.prop-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+/* Column widths for kubun (13 cols) */
+.prop-table th:nth-child(1) { width: 50px; }  /* スコア */
+.prop-table th:nth-child(2) { width: 80px; }  /* 掲載日 */
+.prop-table th:nth-child(3) { width: 180px; } /* 物件名 */
+.prop-table th:nth-child(4) { width: 75px; }  /* 価格 */
+.prop-table th:nth-child(5) { width: 55px; }  /* 面積 */
+.prop-table th:nth-child(6) { width: 50px; }  /* 間取り */
+.prop-table th:nth-child(7) { width: 160px; } /* 最寄駅 */
+.prop-table th:nth-child(8) { width: 55px; }  /* 築年 */
+.prop-table th:nth-child(9) { width: 80px; }  /* 管理費 */
+.prop-table th:nth-child(10) { width: 45px; } /* ペット */
+.prop-table th:nth-child(11) { width: 55px; } /* 利回り */
+.prop-table th:nth-child(12) { width: 65px; } /* CF/月 */
+.prop-table th:nth-child(13) { width: 70px; } /* ㎡単価 */
+
+.prop-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); overflow: hidden; text-overflow: ellipsis; }
 .prop-table tr:hover { background: rgba(255,255,255,0.02); }
-.prop-table .name-cell { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prop-table .name-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prop-table .score-cell { font-family: var(--font-mono); font-weight: 700; }
-.prop-table .price-cell { font-family: var(--font-mono); font-weight: 600; text-align: right; }
-.prop-table .area-cell { font-family: var(--font-mono); text-align: right; }
+.prop-table .price-cell { font-family: var(--font-mono); font-weight: 600; text-align: right; white-space: nowrap; }
+.prop-table .area-cell { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
 .prop-table a { color: var(--accent); text-decoration: none; }
 .prop-table a:hover { text-decoration: underline; }
 
-/* Hero */
+/* Hero — compact inline bar */
 .hero {
-  background: linear-gradient(135deg, #1a1040, #1e1b4b, #1a1040);
-  background-size: 200% 200%; animation: heroShift 12s ease-in-out infinite;
-  border-radius: var(--radius-xl); padding: var(--space-6) var(--space-8);
-  margin-bottom: var(--space-6); border: 1px solid var(--border);
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  background: var(--surface); border-radius: var(--radius-md);
+  padding: 12px 20px; margin-bottom: var(--space-4);
+  border: 1px solid var(--border);
 }
-@keyframes heroShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-.hero h1 { font-size: var(--fs-h1); font-weight: 700; margin-bottom: 4px; }
-.hero .subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; }
-.hero .stats { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero h1 { font-size: 16px; font-weight: 700; white-space: nowrap; }
+.hero .subtitle { display: none; }
+.hero .stats { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 .hero .stat-card {
-  background: rgba(255,255,255,0.05); border-radius: var(--radius-sm);
-  padding: 10px 16px; backdrop-filter: blur(10px);
+  display: flex; align-items: baseline; gap: 4px; padding: 0;
+  background: none;
 }
-.hero .stat-card .label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
-.hero .stat-card .value { font-size: 20px; font-weight: 700; font-family: var(--font-mono); margin-top: 2px; }
-.hero-updated { font-size: 10px; color: var(--text-muted); margin-top: 12px; }
+.hero .stat-card .label { font-size: 10px; color: var(--text-muted); }
+.hero .stat-card .value { font-size: 14px; font-weight: 700; font-family: var(--font-mono); }
+.hero-updated { font-size: 10px; color: var(--text-muted); margin-left: auto; }
 
 /* Expandable detail row */
 .prop-table tr.detail-row { display: none; }
@@ -568,11 +582,10 @@ body {
 .empty-state { text-align: center; padding: 32px 24px; color: var(--text-muted); font-size: 13px; }
 
 @media (max-width: 640px) {
-  .hero { padding: var(--space-4); border-radius: var(--radius-md); margin-bottom: var(--space-4); }
-  .hero h1 { font-size: 20px; }
-  .hero .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .hero .stat-card { padding: 8px 12px; }
-  .hero .stat-card .value { font-size: 16px; }
+  .hero { padding: 10px 14px; gap: 8px; }
+  .hero h1 { font-size: 14px; }
+  .hero .stats { gap: 8px; }
+  .hero .stat-card .value { font-size: 13px; }
   .property-grid { grid-template-columns: 1fr; gap: 12px; }
   .market-controls { flex-direction: column; align-items: stretch; }
   .market-controls-sticky { margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
@@ -580,7 +593,7 @@ body {
   .city-tab { padding: 6px 12px; font-size: 12px; }
   .type-jump { justify-content: flex-start; }
   .type-jump-btn { font-size: 11px; padding: 4px 10px; }
-  .prop-table { font-size: 11px; }
+  .prop-table { font-size: 11px; min-width: 900px; }
   .prop-table th, .prop-table td { padding: 6px 6px; }
   .type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 100px); }
 }
@@ -39124,7 +39137,7 @@ body {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-03-29 10:58</div>
+  <div style="margin-top:4px;">Generated at 2026-03-29 11:26</div>
 </footer>
 <script>
 let currentView = 'list';

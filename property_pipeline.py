@@ -1041,14 +1041,23 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
             yr = p.get("year_built", "")
             age_str = f"築{datetime.now().year - yr}年" if isinstance(yr, int) and yr else ""
             sqm_price = round(p["price"] / p["area"], 1) if p.get("price") and p.get("area") else ""
-            pet_label = {"ok": "可", "ng": "不可"}.get(str(p.get("pet", "")), str(p.get("pet", "未確認")))
-            pet_cls = "ok" if p.get("pet") == "ok" else ("warn" if p.get("pet") == "ng" else "neutral")
+            pet_raw = str(p.get("pet", ""))
+            if pet_raw == "ok":
+                pet_label = "可 ✅"
+                pet_cls = "ok"
+            elif pet_raw == "ng":
+                continue  # ペット不可は掲載しない
+            else:
+                pet_label = "⚠️ 未確認"
+                pet_cls = "warn"
             agent_name = p.get("agent", "")
 
             # Tags
             tags = [f'<span class="tag tag-blue">{p.get("price", "?")}万円</span>']
-            if p.get("pet") == "ok":
+            if pet_raw == "ok":
                 tags.append('<span class="tag tag-green">ペット可</span>')
+            else:
+                tags.append('<span class="tag tag-yellow">⚠️ ペット未確認</span>')
             if isinstance(yr, int) and yr < 1981:
                 tags.append(f'<span class="tag tag-red">旧耐震({yr})</span>')
             elif isinstance(yr, int) and yr == 1981:

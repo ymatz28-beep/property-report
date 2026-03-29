@@ -19,6 +19,7 @@ for p in [str(_PROJECT_ROOT), str(_LIB_PARENT)]:
 from generate_search_report_common import (
     ReportConfig,
     PropertyRow,
+    _clean_station_text,
     dedupe_properties,
     load_first_seen,
     load_sold_urls,
@@ -323,6 +324,9 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
             pass
     d["first_seen"] = fs_date
     d["is_new"] = is_new
+
+    # Clean station text (remove route names)
+    d["station_text"] = _clean_station_text(row.station_text)
 
     if row.yield_pct:
         d["yield_text"] = f"{row.yield_pct:.1f}%"

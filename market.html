@@ -546,10 +546,14 @@ body {
 .prop-table tr.detail-row > td {
   padding: 10px 10px 14px; background: rgba(99,102,241,0.03);
   border-bottom: 1px solid rgba(99,102,241,0.08);
+  white-space: normal;
 }
 .detail-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  display: grid; grid-template-columns: repeat(4, 1fr);
   gap: 8px 16px;
+}
+@media (max-width: 640px) {
+  .detail-grid { grid-template-columns: repeat(2, 1fr); }
 }
 .detail-item { display: flex; flex-direction: column; }
 .detail-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; }
@@ -9267,7 +9271,7 @@ body {
               <td>RC造6階建</td>
               <td>6</td>
               <td>日本橋 歩7分</td>
-              <td class="price-cell">59.3万</td>
+              <td class="price-cell">83.3万</td>
               <td class="price-cell" style="color:var(--green)">2.2万</td>
               <td class="price-cell">94.4万/㎡</td>
             </tr>
@@ -9275,7 +9279,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">59.3万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">83.3万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">744.0万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.72%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.8万</span></div>
@@ -9299,7 +9303,7 @@ body {
               <td>S造4階建</td>
               <td>15</td>
               <td>天神橋筋六丁目 歩8分</td>
-              <td class="price-cell">82.7万</td>
+              <td class="price-cell">72.0万</td>
               <td class="price-cell" style="color:var(--red)">-1.1万</td>
               <td class="price-cell">47.4万/㎡</td>
             </tr>
@@ -9307,7 +9311,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">82.7万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">72.0万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">642.7万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.59%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-23.0万</span></div>
@@ -9395,7 +9399,7 @@ body {
               <td>S造6階建</td>
               <td>6</td>
               <td>谷町六丁目 歩7分</td>
-              <td class="price-cell">67.9万</td>
+              <td class="price-cell">50.5万</td>
               <td class="price-cell" style="color:var(--red)">-25.7万</td>
               <td class="price-cell">63.1万/㎡</td>
             </tr>
@@ -9403,7 +9407,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">67.9万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">50.5万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">450.8万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.95%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-46.1万</span></div>
@@ -29600,7 +29604,7 @@ body {
               <td>軽量鉄骨造</td>
               <td>5</td>
               <td>高宮 徒歩4分</td>
-              <td class="price-cell">34.0万</td>
+              <td class="price-cell">29.6万</td>
               <td class="price-cell" style="color:var(--red)">-1.5万</td>
               <td class="price-cell">39.5万/㎡</td>
             </tr>
@@ -29608,7 +29612,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">34.0万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">29.6万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">264.6万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.72%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-8.6万</span></div>
@@ -29632,7 +29636,7 @@ body {
               <td>RC造</td>
               <td>21</td>
               <td>西鉄平尾 徒歩7分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">58.8万</td>
               <td class="price-cell" style="color:var(--red)">-12.3万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29640,7 +29644,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">58.8万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">525.0万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.46%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-20.6万</span></div>
@@ -29664,7 +29668,7 @@ body {
               <td>RC造</td>
               <td>16</td>
               <td>六本松 徒歩10分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">61.3万</td>
               <td class="price-cell" style="color:var(--red)">-5.1万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29672,7 +29676,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">61.3万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">547.1万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.76%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-6.3万</span></div>
@@ -29696,7 +29700,7 @@ body {
               <td>鉄骨造</td>
               <td>22</td>
               <td>西新 徒歩7分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">72.9万</td>
               <td class="price-cell" style="color:var(--green)">11.6万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29704,7 +29708,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">72.9万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">650.6万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.91%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.9万</span></div>
@@ -29728,7 +29732,7 @@ body {
               <td>木造</td>
               <td>9</td>
               <td>箱崎宮前 徒歩6分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">52.8万</td>
               <td class="price-cell" style="color:var(--green)">10.7万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29736,7 +29740,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">52.8万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">471.0万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">6.75%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.1万</span></div>
@@ -29760,7 +29764,7 @@ body {
               <td>鉄骨造</td>
               <td>14</td>
               <td>箱崎九大前 徒歩5分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">46.6万</td>
               <td class="price-cell" style="color:var(--green)">5.4万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29768,7 +29772,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">46.6万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">415.8万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.29%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-8.3万</span></div>
@@ -29792,7 +29796,7 @@ body {
               <td>RC造</td>
               <td>17</td>
               <td>箱崎宮前 徒歩5分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">81.0万</td>
               <td class="price-cell" style="color:var(--red)">-5.2万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29800,7 +29804,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">81.0万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">723.5万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.57%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-10.8万</span></div>
@@ -29824,7 +29828,7 @@ body {
               <td>RC造</td>
               <td>9</td>
               <td>大橋 徒歩11分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">66.6万</td>
               <td class="price-cell" style="color:var(--green)">4.6万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29832,7 +29836,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">66.6万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">594.4万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.1%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">5.9万</span></div>
@@ -29856,7 +29860,7 @@ body {
               <td>RC造</td>
               <td>9</td>
               <td>笹原 徒歩6分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">39.0万</td>
               <td class="price-cell" style="color:var(--red)">-2.1万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29864,7 +29868,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">39.0万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">348.2万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.8%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-3.8万</span></div>
@@ -29888,7 +29892,7 @@ body {
               <td>木造</td>
               <td>9</td>
               <td>博多 徒歩13分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">48.6万</td>
               <td class="price-cell" style="color:var(--red)">-11.3万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29896,7 +29900,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">48.6万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">433.9万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.54%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-16.1万</span></div>
@@ -29920,7 +29924,7 @@ body {
               <td>RC造5階建</td>
               <td>24</td>
               <td>大橋 歩9分</td>
-              <td class="price-cell">141.6万</td>
+              <td class="price-cell">103.1万</td>
               <td class="price-cell" style="color:var(--red)">-25.6万</td>
               <td class="price-cell">33.5万/㎡</td>
             </tr>
@@ -29928,7 +29932,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">141.6万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">103.1万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">920.3万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.66%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-31.3万</span></div>
@@ -29952,7 +29956,7 @@ body {
               <td>RC造</td>
               <td>12</td>
               <td>井尻 徒歩2分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">37.4万</td>
               <td class="price-cell" style="color:var(--red)">-9.7万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29960,7 +29964,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">37.4万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">333.9万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.46%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-13.1万</span></div>
@@ -29984,7 +29988,7 @@ body {
               <td>RC造</td>
               <td>14</td>
               <td>周船寺 徒歩5分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">50.2万</td>
               <td class="price-cell" style="color:var(--red)">-9.2万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -29992,7 +29996,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">50.2万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">448.5万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.1%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-10.7万</span></div>
@@ -30016,7 +30020,7 @@ body {
               <td>RC造</td>
               <td>12</td>
               <td>別府 徒歩12分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">43.2万</td>
               <td class="price-cell" style="color:var(--red)">-6.1万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -30024,7 +30028,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">43.2万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">385.7万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.33%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-7.4万</span></div>
@@ -30048,7 +30052,7 @@ body {
               <td>木造</td>
               <td>10</td>
               <td>笹原 徒歩3分</td>
-              <td class="price-cell">—</td>
+              <td class="price-cell">29.4万</td>
               <td class="price-cell" style="color:var(--green)">9.6万</td>
               <td class="price-cell">—</td>
             </tr>
@@ -30056,7 +30060,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">29.4万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">262.3万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.25%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.5万</span></div>
@@ -44447,7 +44451,7 @@ body {
               <td>2階建</td>
               <td>10</td>
               <td>大塚・帝京大学 歩9分</td>
-              <td class="price-cell">68.2万</td>
+              <td class="price-cell">136.6万</td>
               <td class="price-cell" style="color:var(--green)">39.8万</td>
               <td class="price-cell">69.9万/㎡</td>
             </tr>
@@ -44455,7 +44459,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">68.2万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">136.6万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">1219.4万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">8.18%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">56.7万</span></div>
@@ -44479,7 +44483,7 @@ body {
               <td>3階建</td>
               <td>12</td>
               <td>ときわ台 歩9分</td>
-              <td class="price-cell">81.5万</td>
+              <td class="price-cell">115.5万</td>
               <td class="price-cell" style="color:var(--green)">19.4万</td>
               <td class="price-cell">77.8万/㎡</td>
             </tr>
@@ -44487,7 +44491,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">81.5万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">115.5万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">1031.2万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.21%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">26.3万</span></div>
@@ -44511,7 +44515,7 @@ body {
               <td>3階建</td>
               <td>9</td>
               <td>桜台 歩5分</td>
-              <td class="price-cell">60.8万</td>
+              <td class="price-cell">76.5万</td>
               <td class="price-cell" style="color:var(--green)">4.4万</td>
               <td class="price-cell">87.8万/㎡</td>
             </tr>
@@ -44519,7 +44523,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">60.8万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">76.5万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">683.4万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.09%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">6.6万</span></div>
@@ -44543,7 +44547,7 @@ body {
               <td>S造3階建</td>
               <td>12</td>
               <td>鶯谷 歩7分</td>
-              <td class="price-cell">52.8万</td>
+              <td class="price-cell">72.5万</td>
               <td class="price-cell" style="color:var(--red)">-4.0万</td>
               <td class="price-cell">106万/㎡</td>
             </tr>
@@ -44551,7 +44555,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 15年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">52.8万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">72.5万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">647.3万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.72%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-41.2万</span></div>
@@ -44575,7 +44579,7 @@ body {
               <td>2階建</td>
               <td>12</td>
               <td>桜台 歩4分</td>
-              <td class="price-cell">91.5万</td>
+              <td class="price-cell">86.1万</td>
               <td class="price-cell" style="color:var(--green)">4.3万</td>
               <td class="price-cell">69.6万/㎡</td>
             </tr>
@@ -44583,7 +44587,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">91.5万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">86.1万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">768.4万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.86%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">4.1万</span></div>
@@ -44607,7 +44611,7 @@ body {
               <td>3階建</td>
               <td>10</td>
               <td>中野坂上 歩6分</td>
-              <td class="price-cell">50.1万</td>
+              <td class="price-cell">68.4万</td>
               <td class="price-cell" style="color:var(--red)">-3.8万</td>
               <td class="price-cell">105万/㎡</td>
             </tr>
@@ -44615,7 +44619,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 28年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">50.1万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">68.4万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">610.5万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.73%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.8万</span></div>
@@ -44639,7 +44643,7 @@ body {
               <td>2階建</td>
               <td>10</td>
               <td>西永福 歩8分</td>
-              <td class="price-cell">57.4万</td>
+              <td class="price-cell">71.4万</td>
               <td class="price-cell" style="color:var(--green)">4.4万</td>
               <td class="price-cell">89.7万/㎡</td>
             </tr>
@@ -44647,7 +44651,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">57.4万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">71.4万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">637.2万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.96%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">4.6万</span></div>
@@ -44671,7 +44675,7 @@ body {
               <td>RC造3階建</td>
               <td>9</td>
               <td>西大井 歩9分</td>
-              <td class="price-cell">69.3万</td>
+              <td class="price-cell">77.8万</td>
               <td class="price-cell" style="color:var(--red)">-12.4万</td>
               <td class="price-cell">92.3万/㎡</td>
             </tr>
@@ -44679,7 +44683,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 25年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">69.3万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">77.8万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">694.9万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.47%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-16.7万</span></div>
@@ -44703,7 +44707,7 @@ body {
               <td>3階建</td>
               <td>9</td>
               <td>新桜台 歩4分</td>
-              <td class="price-cell">56.2万</td>
+              <td class="price-cell">73.8万</td>
               <td class="price-cell" style="color:var(--green)">7.1万</td>
               <td class="price-cell">84.0万/㎡</td>
             </tr>
@@ -44711,7 +44715,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">56.2万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">73.8万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">658.9万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.46%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">10.4万</span></div>
@@ -44735,7 +44739,7 @@ body {
               <td>2階建</td>
               <td>14</td>
               <td>新中野 歩5分</td>
-              <td class="price-cell">53.7万</td>
+              <td class="price-cell">75.0万</td>
               <td class="price-cell" style="color:var(--red)">-2.5万</td>
               <td class="price-cell">119万/㎡</td>
             </tr>
@@ -44743,7 +44747,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">53.7万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">75.0万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">669.6万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.35%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-4.4万</span></div>
@@ -44767,7 +44771,7 @@ body {
               <td>4階建</td>
               <td>8</td>
               <td>高島平 歩9分</td>
-              <td class="price-cell">56.3万</td>
+              <td class="price-cell">68.8万</td>
               <td class="price-cell" style="color:var(--green)">1.0万</td>
               <td class="price-cell">93.8万/㎡</td>
             </tr>
@@ -44775,7 +44779,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">56.3万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">68.8万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">613.8万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.72%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.4万</span></div>
@@ -44799,7 +44803,7 @@ body {
               <td>3階建</td>
               <td>15</td>
               <td>王子 歩18分</td>
-              <td class="price-cell">59.1万</td>
+              <td class="price-cell">89.2万</td>
               <td class="price-cell" style="color:var(--green)">9.7万</td>
               <td class="price-cell">96.5万/㎡</td>
             </tr>
@@ -44807,7 +44811,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">59.1万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">89.2万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">796.4万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.46%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">12.6万</span></div>
@@ -44831,7 +44835,7 @@ body {
               <td>2階建</td>
               <td>12</td>
               <td>都立家政 歩3分</td>
-              <td class="price-cell">39.8万</td>
+              <td class="price-cell">61.1万</td>
               <td class="price-cell" style="color:var(--red)">-0.1万</td>
               <td class="price-cell">126万/㎡</td>
             </tr>
@@ -44839,7 +44843,7 @@ body {
               <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">2.85% / 35年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">39.8万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">61.1万/月</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">545.5万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.5%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-1.5万</span></div>
@@ -44954,7 +44958,7 @@ body {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-03-29 17:35</div>
+  <div style="margin-top:4px;">Generated at 2026-03-29 17:48</div>
 </footer>
 <script>
 let currentView = 'list';

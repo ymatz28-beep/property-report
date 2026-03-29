@@ -46,11 +46,11 @@
 }
 .city-tab.active .city-tab-count { background: rgba(99,102,241,0.2); color: var(--accent); }
 
-/* Sticky controls bar */
+/* Sticky controls bar — below site-header(52) + gnav(36) + property-nav(40) */
 .market-controls-sticky {
   position: sticky;
-  top: calc(var(--gnav-height, 52px) + 36px);
-  z-index: calc(var(--z-subnav, 90) - 1);
+  top: calc(var(--gnav-height, 52px) + 36px + 40px);
+  z-index: calc(var(--z-subnav, 90) - 2);
   background: var(--bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -94,8 +94,8 @@
 .type-jump-btn.active .type-jump-count {
   background: rgba(99,102,241,0.15); color: var(--accent);
 }
-/* scroll-margin for section anchors */
-.type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 80px); }
+/* scroll-margin for section anchors — account for all 4 sticky bars */
+.type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 40px + 100px); }
 
 /* View toggle */
 .view-toggle { display: flex; gap: 2px; background: var(--surface); border-radius: 6px; padding: 2px; border: 1px solid var(--border); }
@@ -230,7 +230,7 @@
   .type-jump-btn { font-size: 11px; padding: 4px 10px; }
   .prop-table { font-size: 11px; min-width: 1000px; }
   .prop-table th, .prop-table td { padding: 6px 6px; }
-  .type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 100px); }
+  .type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 40px + 120px); }
 }
 {% endblock %}
 

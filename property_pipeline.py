@@ -699,13 +699,18 @@ def _naiken_invest_analysis(p: dict, all_props: list[dict]) -> str:
     yr = p.get("year_built", 0)
     city = p.get("city", "")
 
-    # 想定賃料: 都市別㎡単価ベース (福岡1800-2200, 大阪2000-2500, 東京2500-3200)
-    rent_per_sqm = {"fukuoka": (1800, 2200), "osaka": (2000, 2500), "tokyo": (2500, 3200)}
-    lo, hi = rent_per_sqm.get(city, (2000, 2500))
-    if yr and yr >= 2010:
-        lo, hi = int(lo * 1.1), int(hi * 1.1)  # 築浅プレミアム
-    rent_lo = int(area * lo / 10000) if area else 0
-    rent_hi = int(area * hi / 10000) if area else 0
+    # 想定賃料: rent_estimateがあればそれを優先、なければ都市別㎡単価ベース
+    rent_override = p.get("rent_estimate")
+    if rent_override:
+        rent_lo = int(rent_override)
+        rent_hi = int(rent_override) + 1
+    else:
+        rent_per_sqm = {"fukuoka": (1800, 2200), "osaka": (2000, 2500), "tokyo": (2500, 3200)}
+        lo, hi = rent_per_sqm.get(city, (2000, 2500))
+        if yr and yr >= 2010:
+            lo, hi = int(lo * 1.1), int(hi * 1.1)  # 築浅プレミアム
+        rent_lo = int(area * lo / 10000) if area else 0
+        rent_hi = int(area * hi / 10000) if area else 0
 
     # 表面利回り (midpoint for simulation)
     yield_lo = round(rent_lo * 12 / price * 100, 1) if price else 0

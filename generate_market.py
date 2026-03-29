@@ -180,8 +180,9 @@ def _load_budget(city_key: str) -> list[PropertyRow]:
     sold = load_sold_urls()
     rows = [r for r in rows if r.url.rstrip("/") + "/" not in sold]
 
-    # Budget tier: don't filter OC or pet (CF-focused), but exclude 木造
+    # Budget tier: don't filter OC or pet (CF-focused), but exclude 木造 and 30㎡未満
     rows = [r for r in rows if r.structure != "木造"]
+    rows = [r for r in rows if r.area_sqm is None or r.area_sqm >= 30]
     config = ReportConfig(
         city_key=city_key, city_label=city_key,
         accent="#6366f1", accent_rgb="99,102,241",
@@ -492,6 +493,9 @@ def main() -> None:
         # 格安区分 (budget tier — Fukuoka only)
         budget_rows = _load_budget(cfg["key"])
         budget_props = [_kubun_to_dict(r, first_seen, city_key=cfg["key"]) for r in budget_rows]
+        # CF赤字フィルタ: マイナスCFは投資対象外
+        budget_props = [p for p in budget_props
+                        if p.get("revenue") and p["revenue"].get("monthly_cf", 0) >= 0]
 
         city_total = len(kubun_props) + len(ittomono_props) + len(kodate_props) + len(budget_props)
 

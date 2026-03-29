@@ -139,29 +139,25 @@
 .property-list.active { display: block; }
 .property-grid.active { display: grid; }
 
-.prop-table { width: 100%; min-width: 1200px; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+.prop-table { width: 100%; min-width: 800px; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
 .prop-table th {
   text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 700;
   color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
   border-bottom: 1px solid var(--border); position: sticky; top: 0;
   background: var(--bg); white-space: nowrap;
 }
-/* Column widths for kubun (15 cols) */
+/* Column widths (10 cols: スコア/掲載日/物件名/価格/面積/間取り/最寄駅/ペット/利回り/CF月) */
 .prop-table th:nth-child(1) { width: 45px; }  /* スコア */
-.prop-table th:nth-child(2) { width: 70px; }  /* 掲載日 */
-.prop-table th:nth-child(3) { width: 160px; } /* 物件名 */
-.prop-table th:nth-child(4) { width: 65px; }  /* 価格 */
-.prop-table th:nth-child(5) { width: 50px; }  /* 面積 */
-.prop-table th:nth-child(6) { width: 45px; }  /* 間取り */
-.prop-table th:nth-child(7) { width: 50px; }  /* 構造 */
-.prop-table th:nth-child(8) { width: 140px; } /* 最寄駅 */
-.prop-table th:nth-child(9) { width: 50px; }  /* 築年 */
-.prop-table th:nth-child(10) { width: 70px; } /* 管理費 */
-.prop-table th:nth-child(11) { width: 40px; } /* ペット */
-.prop-table th:nth-child(12) { width: 50px; } /* 利回り */
-.prop-table th:nth-child(13) { width: 55px; } /* 想定家賃 */
-.prop-table th:nth-child(14) { width: 55px; } /* CF/月 */
-.prop-table th:nth-child(15) { width: 60px; } /* ㎡単価 */
+.prop-table th:nth-child(2) { width: 78px; }  /* 掲載日 */
+.prop-table th:nth-child(3) { width: auto; }  /* 物件名 — 残りスペースを使う */
+.prop-table th:nth-child(4) { width: 72px; }  /* 価格 */
+.prop-table th:nth-child(5) { width: 55px; }  /* 面積 */
+.prop-table th:nth-child(6) { width: 48px; }  /* 間取り */
+.prop-table th:nth-child(7) { width: 120px; } /* 最寄駅 */
+.prop-table th:nth-child(8) { width: 42px; }  /* ペット/OC */
+.prop-table th:nth-child(9) { width: 52px; }  /* 利回り */
+.prop-table th:nth-child(10) { width: 60px; } /* CF/月 */
+.station-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px; }
 
 .prop-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); overflow: hidden; text-overflow: ellipsis; }
 .prop-table tr:hover { background: rgba(255,255,255,0.02); }
@@ -228,7 +224,7 @@
   .city-tab { padding: 6px 12px; font-size: 12px; }
   .type-jump { justify-content: flex-start; }
   .type-jump-btn { font-size: 11px; padding: 4px 10px; }
-  .prop-table { font-size: 11px; min-width: 1000px; }
+  .prop-table { font-size: 11px; min-width: 640px; }
   .prop-table th, .prop-table td { padding: 6px 6px; }
   .type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 40px + 120px); }
 }
@@ -349,8 +345,7 @@
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>築年</th><th>管理費+修繕</th><th>ペット</th><th>利回り</th><th>想定家賃</th><th>CF/月</th>
-              <th>㎡単価</th>
+              <th>間取り</th><th>最寄駅</th><th>ペット</th><th>利回り</th><th>CF/月</th>
             </tr>
           </thead>
           <tbody>
@@ -362,23 +357,20 @@
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
               <td>{{ prop.layout or "—" }}</td>
-              <td>{{ prop.structure or "—" }}</td>
-              <td>{{ prop.station_text | default(prop.location) }}</td>
-              <td>{{ prop.built_text or "—" }}</td>
-              <td class="price-cell">{{ prop.maintenance_fee_text or "—" }}</td>
+              <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td>{{ prop.pet_status or "—" }}</td>
               <td>{{ prop.yield_text or "—" }}</td>
-              <td class="price-cell">{{ prop.est_monthly_rent or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
-              <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
-              <td colspan="15">
+              <td colspan="10">
                 <div class="detail-grid">
-                  <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">構造判定</span><span class="detail-value">{{ prop.revenue.structure_used }}</span></div>
+                  <div class="detail-item"><span class="detail-label">構造 / 築年</span><span class="detail-value">{{ prop.revenue.structure_used }} / {{ prop.built_text or "—" }}</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">{{ prop.maintenance_fee_text or "—" }}</span></div>
+                  <div class="detail-item"><span class="detail-label">㎡単価</span><span class="detail-value">{{ prop.price_per_sqm or "—" }}</span></div>
                   <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">{{ prop.revenue.est_monthly_rent }}/月</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年 / 頭金20%</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">{{ prop.revenue.net_yield }}%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>
@@ -525,8 +517,7 @@
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>築年</th><th>管理費+修繕</th><th>OC</th><th>ペット</th><th>利回り</th><th>想定家賃</th><th>CF/月</th>
-              <th>㎡単価</th>
+              <th>間取り</th><th>最寄駅</th><th>OC</th><th>利回り</th><th>CF/月</th>
             </tr>
           </thead>
           <tbody>
@@ -538,24 +529,21 @@
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
               <td>{{ prop.layout or "—" }}</td>
-              <td>{{ prop.structure or "—" }}</td>
-              <td>{{ prop.station_text | default(prop.location) }}</td>
-              <td>{{ prop.built_text or "—" }}</td>
-              <td class="price-cell">{{ prop.maintenance_fee_text or "—" }}</td>
+              <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}—{% endif %}</td>
-              <td>{{ prop.pet_status or "—" }}</td>
               <td>{{ prop.yield_text or "—" }}</td>
-              <td class="price-cell">{{ prop.est_monthly_rent or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
-              <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
-              <td colspan="16">
+              <td colspan="10">
                 <div class="detail-grid">
-                  <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年 / 頭金20%</span></div>
-                  <div class="detail-item"><span class="detail-label">構造判定</span><span class="detail-value">{{ prop.revenue.structure_used }}</span></div>
+                  <div class="detail-item"><span class="detail-label">構造 / 築年</span><span class="detail-value">{{ prop.revenue.structure_used }} / {{ prop.built_text or "—" }}</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">{{ prop.maintenance_fee_text or "—" }}</span></div>
+                  <div class="detail-item"><span class="detail-label">ペット</span><span class="detail-value">{{ prop.pet_status or "—" }}</span></div>
+                  <div class="detail-item"><span class="detail-label">㎡単価</span><span class="detail-value">{{ prop.price_per_sqm or "—" }}</span></div>
                   <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">{{ prop.revenue.est_monthly_rent }}/月</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年 / 頭金20%</span></div>
                   <div class="detail-item"><span class="detail-label">NOI（税引前利益）</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">{{ prop.revenue.net_yield }}%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>

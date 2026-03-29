@@ -82,6 +82,25 @@ STATUS_COLORS = {
 
 CITY_LABELS = {"osaka": "大阪", "fukuoka": "福岡", "tokyo": "東京"}
 
+
+def _clean_station(station: str) -> str:
+    """駅名を簡略表示: 路線名プレフィックスと「駅」サフィックスを除去。
+    例: "福岡市七隈線渡辺通駅 徒歩8分" → "渡辺通 徒歩8分"
+        "JR博多駅 徒歩5分" → "博多 徒歩5分"
+    """
+    if not station:
+        return station
+    # Remove railway line prefixes (e.g. "福岡市七隈線", "JR鹿児島本線", "西鉄天神大牟田線")
+    import re as _re
+    cleaned = _re.sub(r"[^\s　]+線", "", station).strip()
+    if not cleaned:
+        cleaned = station  # fallback if entire string was a line name
+    # Remove trailing "駅" from station name token (preserve walk-time part)
+    # e.g. "渡辺通駅 徒歩8分" → "渡辺通 徒歩8分"
+    cleaned = _re.sub(r"([^\s　]+)駅(\s|　|$)", r"\1\2", cleaned)
+    return cleaned.strip()
+
+
 # ---------------------------------------------------------------------------
 # Data I/O
 # ---------------------------------------------------------------------------
@@ -528,7 +547,7 @@ def _render_card(inq: dict) -> str:
       <span class="card-score">{inq.get('score', '?')}pt</span>
     </div>
   </div>
-  <div class="card-detail">{price} / {area} / {inq.get('layout', '?')} / {inq.get('station', '?')}</div>
+  <div class="card-detail">{price} / {area} / {inq.get('layout', '?')} / {_clean_station(inq.get('station', '?'))}</div>
   <div class="card-filters">
     <span>ペット {pet_icon}</span>
     <span>短期賃貸 {st_icon}</span>
@@ -792,7 +811,7 @@ def _naiken_invest_analysis(p: dict, all_props: list[dict]) -> str:
         <span class="rv-title">収益シミュレーション</span>
         <span class="rv-verdict {vclass}">{rev.verdict}</span>
       </div>
-      <div class="rv-assumptions">前提: 頭金{p_rv.down_payment_ratio*100:.0f}% / 金利{p_rv.loan_rate_annual*100:.1f}% / {rev.loan_years}年ローン / 空室率{p_rv.vacancy_rate*100:.0f}% / 経費率{p_rv.opex_rate*100:.0f}% / 建物比率{p_rv.building_ratio*100:.0f}%<br>想定賃料: {rent_lo}〜{rent_hi}万/月（中央値{rent_mid:.0f}万 → 利回り{yield_mid:.1f}%で試算）</div>
+      <div class="rv-assumptions">前提: 頭金{p_rv.down_payment_ratio*100:.0f}% / 金利{p_rv.loan_rate_annual*100:.2f}% / {rev.loan_years}年ローン / 空室率{p_rv.vacancy_rate*100:.0f}% / 経費率{p_rv.opex_rate*100:.0f}% / 建物比率{p_rv.building_ratio*100:.0f}%<br>想定賃料: {rent_lo}〜{rent_hi}万/月（中央値{rent_mid:.0f}万 → 利回り{yield_mid:.1f}%で試算）</div>
 
       <div class="rv-section">
         <div class="rv-section-title">収入 → キャッシュフロー</div>
@@ -1093,7 +1112,7 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 
             section = f"""<div class="property">
 <h2>{idx}. {p['name']}</h2>
-<p class="sub">{CITY_LABELS.get(p.get('city', ''), '')} / {p.get('layout', '')} / {p.get('area', '?')}㎡ / {yr}年 / {p.get('station', '')}</p>
+<p class="sub">{CITY_LABELS.get(p.get('city', ''), '')} / {p.get('layout', '')} / {p.get('area', '?')}㎡ / {yr}年 / {_clean_station(p.get('station', ''))}</p>
 <div>{tags_html}</div>
 <div class="section-title">物件概要</div>
 <table>
@@ -1101,7 +1120,7 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 <tr><th>面積</th><td>{p.get('area', '?')}㎡{area_note}</td></tr>
 <tr><th>間取り</th><td>{p.get('layout', '?')}</td></tr>
 <tr><th>築年</th><td>{yr}年{'（' + age_str + '）' if age_str else ''}</td></tr>
-<tr><th>最寄駅</th><td>{p.get('station', '?')}</td></tr>
+<tr><th>最寄駅</th><td>{_clean_station(p.get('station', '?'))}</td></tr>
 <tr><th>管理費</th><td>{f'{p["management_fee"]:,}円/月' if p.get('management_fee') else '?'}</td></tr>
 <tr><th>㎡単価</th><td class="mono {sqm_cls}">{f'{sqm_price}万円/㎡{sqm_note}' if sqm_price else '?'}</td></tr>
 <tr><th>ペット</th><td class="{pet_cls}">{pet_label}</td></tr>

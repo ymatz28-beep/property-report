@@ -405,6 +405,9 @@ def hydrate_parsed_fields(row: PropertyRow) -> None:
     row.built_year, row.built_month = parse_built(row.built_text)
     row.walk_min = parse_walk_minutes(row.station_text)
     row.maintenance_fee = parse_maintenance_fee(row.maintenance_fee_text)
+    # Normalize layout: "ワンルーム" → "1R"
+    if row.layout and "ワンルーム" in row.layout:
+        row.layout = row.layout.replace("ワンルーム", "1R")
 
 
 def _normalize_name(name: str) -> str:
@@ -1131,6 +1134,11 @@ def generate_report(config: ReportConfig) -> Path:
     deduped = [r for r in deduped if not _is_minpaku_ng(r)]
     minpaku_ng_count = before_minpaku - len(deduped)
 
+    # 20㎡台フィルタ: 面積30㎡未満は投資対象外
+    before_small = len(deduped)
+    deduped = [r for r in deduped if r.area_sqm is None or r.area_sqm >= 30]
+    small_area_count = before_small - len(deduped)
+
     for row in deduped:
         score_row(row, config)
 
@@ -1163,6 +1171,7 @@ def generate_report(config: ReportConfig) -> Path:
     meta["oc_removed"] = str(oc_count)
     meta["pet_ng_removed"] = str(pet_ng_count)
     meta["minpaku_ng_removed"] = str(minpaku_ng_count)
+    meta["small_area_removed"] = str(small_area_count)
     meta["quality_filtered"] = str(quality_filtered)
     meta["top_n_trimmed"] = str(top_n_trimmed)
     html_text = build_report_html(config, deduped, meta, raw_count=raw_count, duplicate_count=duplicate_count)
@@ -1176,6 +1185,8 @@ def generate_report(config: ReportConfig) -> Path:
         print(f"  Removed {pet_ng_count} pet-NG properties")
     if minpaku_ng_count > 0:
         print(f"  Removed {minpaku_ng_count} minpaku-NG properties")
+    if small_area_count > 0:
+        print(f"  Removed {small_area_count} small-area (< 30㎡) properties")
     if quality_filtered > 0:
         print(f"  Removed {quality_filtered} low-score (< {TIER_YELLOW}) properties")
     if top_n_trimmed > 0:

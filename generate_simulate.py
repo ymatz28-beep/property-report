@@ -14,7 +14,7 @@ for p in [str(_PROJECT_ROOT), str(_LIB_PARENT)]:
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from generate_market import PROPERTY_PAGES
+from generate_market import PROPERTY_PAGES, GNAV_PAGES
 from lib.renderer import create_env, PUBLIC_NAV
 from lib.styles.design_tokens import get_base_css, get_css_tokens, get_google_fonts_url
 
@@ -33,6 +33,8 @@ def main() -> Path:
     html = template.render(
         property_pages=PROPERTY_PAGES,
         property_current="Simulate",
+        gnav_pages=GNAV_PAGES,
+        gnav_current="",
         nav_items=PUBLIC_NAV,
         current_page="Property",
         css_tokens=get_css_tokens(),

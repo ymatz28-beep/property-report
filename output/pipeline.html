@@ -557,12 +557,65 @@ body {
   </nav>
 </header>
 
+<style>
+.gnav {
+  position: sticky;
+  top: var(--gnav-height, 52px);
+  z-index: 95;
+  background: rgba(10,12,18,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0;
+  font-family: var(--font-display, 'Inter','Noto Sans JP',sans-serif);
+}
+.gnav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 16px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.gnav a {
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.gnav a:hover { color: #fff; }
+.gnav a.cur { color: #fff; border-bottom: 2px solid #3b9eff; }
+@media (max-width: 640px) {
+  .gnav a { padding: 10px 10px; font-size: 10px; min-height: 44px; display: inline-flex; align-items: center; }
+}
+@media (max-width: 375px) {
+  .gnav-inner { padding: 0 8px; }
+  .gnav a { padding: 10px 8px; font-size: 9px; }
+}
+</style>
+
+<div class="gnav">
+  <div class="gnav-inner">
+    <a href="index.html">Hub</a>
+    <a href="market.html">Market</a>
+    <a href="naiken-analysis.html">内覧分析</a>
+    <a href="inquiry-messages.html">問い合わせ</a>
+    <a href="inquiry-pipeline.html" class="cur">Pipeline</a>
+  </div>
+</div>
+
 
 <style>
 /* ── Property Section Nav ── */
 .property-nav {
   position: sticky;
-  top: var(--gnav-height, 52px);
+  top: calc(var(--gnav-height, 52px) + var(--gnav-sub-height, 36px));
   z-index: var(--z-subnav, 90);
   background: rgba(15,17,23,0.92);
   backdrop-filter: blur(12px);
@@ -648,11 +701,11 @@ body {
     <div class="pipeline-stats">
       <div class="pipeline-stat">
         <div class="label">合計</div>
-        <div class="value">60</div>
+        <div class="value">68</div>
       </div>
       <div class="pipeline-stat">
         <div class="label">検討中</div>
-        <div class="value pnl-positive">58</div>
+        <div class="value pnl-positive">66</div>
       </div>
       <div class="pipeline-stat">
         <div class="label">内覧済</div>
@@ -664,23 +717,23 @@ body {
       </div>
       <div class="pipeline-stat">
         <div class="label">平均スコア</div>
-        <div class="value">85</div>
+        <div class="value">86</div>
       </div>
     </div>
   </div>
 
   <div class="city-chips" id="cityChips">
     <button class="city-chip active" data-city="all" onclick="filterCity('all')">
-      全て <span class="city-chip-count">60</span>
+      全て <span class="city-chip-count">68</span>
     </button>
     <button class="city-chip" data-city="fukuoka" onclick="filterCity('fukuoka')">
-      福岡 <span class="city-chip-count">18</span>
+      福岡 <span class="city-chip-count">21</span>
     </button>
     <button class="city-chip" data-city="osaka" onclick="filterCity('osaka')">
-      大阪 <span class="city-chip-count">17</span>
+      大阪 <span class="city-chip-count">21</span>
     </button>
     <button class="city-chip" data-city="tokyo" onclick="filterCity('tokyo')">
-      東京 <span class="city-chip-count">25</span>
+      東京 <span class="city-chip-count">26</span>
     </button>
   </div>
 
@@ -691,7 +744,7 @@ body {
           <span class="kanban-col-dot" style="background:var(--accent, #6366f1)"></span>
           発見
         </span>
-        <span class="kanban-col-count" data-col-count="flagged">54</span>
+        <span class="kanban-col-count" data-col-count="flagged">62</span>
       </div>
       <div class="kanban-col-body">
           <div class="pipe-card"
@@ -768,6 +821,78 @@ body {
           </div>
           <div class="pipe-card"
                data-city="fukuoka"
+               data-score="103"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="サングレート薬院駅ロイヤルウィン">サングレート薬院駅ロイヤルウィン</div>
+                <div class="pipe-card-station">西鉄天神大牟田線「薬院」徒歩5分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="-3.3929171999999994"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">103</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>4980万</strong></span>
+              <span class="pipe-kpi">55.72㎡</span>
+              <span class="pipe-kpi">2LDK</span>
+<span class="pipe-kpi">2003年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--pet">Pet</span>
+                <span class="pipe-tag pipe-tag--city-fukuoka">福岡</span>
+                <span class="pipe-tag pipe-tag--source">SUUMO</span>
+              </div>
+              <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
+               data-city="fukuoka"
+               data-score="103"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="福岡市中央区 2LDK">福岡市中央区 2LDK</div>
+                <div class="pipe-card-station">西鉄天神大牟田線薬院駅 徒歩5分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="-3.3929171999999994"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">103</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>4980万</strong></span>
+              <span class="pipe-kpi">55.72㎡</span>
+              <span class="pipe-kpi">2LDK</span>
+<span class="pipe-kpi">2000年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--pet">Pet</span>
+                <span class="pipe-tag pipe-tag--city-fukuoka">福岡</span>
+                <span class="pipe-tag pipe-tag--source">ふれんず</span>
+              </div>
+              <a href="https://www.f-takken.com/freins/items/99819148" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
+               data-city="fukuoka"
                data-score="100"
                style="--pipe-accent: var(--accent, #6366f1)">
             <div class="pipe-card-top">
@@ -839,6 +964,41 @@ body {
             </div>
           </div>
           <div class="pipe-card"
+               data-city="fukuoka"
+               data-score="100"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="「祇園4分、博多8分、そして中洲は徒歩圏。」都心を使いこなす2LDK">「祇園4分、博多8分、そして中洲は徒歩圏。」都心を使いこなす2LDK</div>
+                <div class="pipe-card-station">福岡市空港線祇園駅 徒歩4分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="0.0"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">100</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>3180万</strong></span>
+              <span class="pipe-kpi">52.98㎡</span>
+              <span class="pipe-kpi">2LDK</span>
+<span class="pipe-kpi">1999年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--city-fukuoka">福岡</span>
+                <span class="pipe-tag pipe-tag--source">ふれんず</span>
+              </div>
+              <a href="https://www.f-takken.com/freins/items/99810838" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
                data-city="osaka"
                data-score="99"
                style="--pipe-accent: var(--accent, #6366f1)">
@@ -880,7 +1040,7 @@ body {
                style="--pipe-accent: var(--accent, #6366f1)">
             <div class="pipe-card-top">
               <div class="pipe-card-info">
-                <div class="pipe-card-name" title="福岡市七隈線薬院駅 徒歩3分">福岡市七隈線薬院駅 徒歩3分</div>
+                <div class="pipe-card-name" title="福岡市七隈線薬院駅 徒歩3分（2026年2月リフォーム完了）">福岡市七隈線薬院駅 徒歩3分（2026年2月リフォーム完了）</div>
                 <div class="pipe-card-station">西鉄天神大牟田線薬院駅 徒歩3分</div>
               </div>
               
@@ -909,42 +1069,7 @@ body {
               </div>
               <a href="https://www.f-takken.com/freins/items/99795327" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
             </div>
-          </div>
-          <div class="pipe-card"
-               data-city="fukuoka"
-               data-score="99"
-               style="--pipe-accent: var(--accent, #6366f1)">
-            <div class="pipe-card-top">
-              <div class="pipe-card-info">
-                <div class="pipe-card-name" title="駅近、ペット可、生活環境充実！2026年2月リフォーム完了の1SLDKマンション！オートロック・エレ">駅近、ペット可、生活環境充実！2026年2月リフォーム完了の1SLDKマンション！オートロック・エレ</div>
-                <div class="pipe-card-station">福岡市七隈線薬院駅 徒歩3分</div>
-              </div>
-              
-<div class="deal-gauge deal-gauge--sm">
-  <svg viewBox="0 0 40 40" width="100%" height="100%">
-    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
-    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
-            stroke="var(--green)"
-            stroke-dasharray="113.09724"
-            stroke-dashoffset="1.1309724000000045"/>
-  </svg>
-  <span class="deal-gauge-value" style="color:var(--green)">99</span>
-</div>
-
-            </div>
-            <div class="pipe-card-kpis">
-              <span class="pipe-kpi"><strong>3099万</strong></span>
-              <span class="pipe-kpi">47.29㎡</span>
-              <span class="pipe-kpi">1SLDK</span>
-<span class="pipe-kpi">1986年</span>            </div>
-            <div class="pipe-card-meta">
-              <div class="pipe-card-tags">
-                <span class="pipe-tag pipe-tag--pet">Pet</span>
-                <span class="pipe-tag pipe-tag--city-fukuoka">福岡</span>
-                <span class="pipe-tag pipe-tag--source">ふれんず</span>
-              </div>
-              <a href="https://www.f-takken.com/freins/items/99798361" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
-            </div>
+            <div class="pipe-card-notes">重複統合(旧inq-014): 同一物件の別掲載URL https://www.f-takken.com/freins/items/99798361 / 2026年2月リフォーム完了、オートロック・エレベーターあり</div>
           </div>
           <div class="pipe-card"
                data-city="fukuoka"
@@ -1128,6 +1253,77 @@ body {
           </div>
           <div class="pipe-card"
                data-city="osaka"
+               data-score="98"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="ビーバードルチェ阿波座">ビーバードルチェ阿波座</div>
+                <div class="pipe-card-station">地下鉄中央線「九条」徒歩8分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="2.261944800000009"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">98</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>3100万</strong></span>
+              <span class="pipe-kpi">54.4㎡</span>
+              <span class="pipe-kpi">2LDK</span>
+<span class="pipe-kpi">1988年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--pet">Pet</span>
+                <span class="pipe-tag pipe-tag--city-osaka">大阪</span>
+                <span class="pipe-tag pipe-tag--source">SUUMO</span>
+              </div>
+              <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78620843/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
+               data-city="fukuoka"
+               data-score="98"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="103大稲マンション 706">103大稲マンション 706</div>
+                <div class="pipe-card-station">福岡市七隈線薬院大通駅 徒歩1分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="2.261944800000009"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">98</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>1950万</strong></span>
+              <span class="pipe-kpi">55.62㎡</span>
+              <span class="pipe-kpi">2LDK</span>
+<span class="pipe-kpi">1984年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--city-fukuoka">福岡</span>
+                <span class="pipe-tag pipe-tag--source">ふれんず</span>
+              </div>
+              <a href="https://www.f-takken.com/freins/items/99791987" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
+               data-city="osaka"
                data-score="96"
                style="--pipe-accent: var(--accent, #6366f1)">
             <div class="pipe-card-top">
@@ -1196,6 +1392,42 @@ body {
                 <span class="pipe-tag pipe-tag--source">ふれんず</span>
               </div>
               <a href="https://www.f-takken.com/freins/items/99798395" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
+               data-city="osaka"
+               data-score="95"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="ランズ南森町">ランズ南森町</div>
+                <div class="pipe-card-station">ＪＲ東西線「大阪天満宮」徒歩4分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="5.6548620000000085"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">95</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>3780万</strong></span>
+              <span class="pipe-kpi">45.09㎡</span>
+              <span class="pipe-kpi">1LDK</span>
+<span class="pipe-kpi">2005年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--pet">Pet</span>
+                <span class="pipe-tag pipe-tag--city-osaka">大阪</span>
+                <span class="pipe-tag pipe-tag--source">SUUMO</span>
+              </div>
+              <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20465323/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
             </div>
           </div>
           <div class="pipe-card"
@@ -1596,11 +1828,117 @@ body {
           </div>
           <div class="pipe-card"
                data-city="osaka"
+               data-score="86"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="ストークマンション野田阪神">ストークマンション野田阪神</div>
+                <div class="pipe-card-station">ＪＲ東西線「海老江」徒歩4分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="15.833613600000007"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">86</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>3499万</strong></span>
+              <span class="pipe-kpi">54.32㎡</span>
+              <span class="pipe-kpi">2LDK</span>
+<span class="pipe-kpi">1984年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--city-osaka">大阪</span>
+                <span class="pipe-tag pipe-tag--source">SUUMO</span>
+              </div>
+              <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20375130/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
+               data-city="osaka"
+               data-score="86"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="グランドメゾン谷町四丁目">グランドメゾン谷町四丁目</div>
+                <div class="pipe-card-station">地下鉄谷町線「谷町四丁目」徒歩3分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="15.833613600000007"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">86</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>4750万</strong></span>
+              <span class="pipe-kpi">41.57㎡</span>
+              <span class="pipe-kpi">1LDK</span>
+<span class="pipe-kpi">2024年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--pet">Pet</span>
+                <span class="pipe-tag pipe-tag--city-osaka">大阪</span>
+                <span class="pipe-tag pipe-tag--source">SUUMO</span>
+              </div>
+              <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
+               data-city="tokyo"
+               data-score="86"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="ベルディ早稲田東">ベルディ早稲田東</div>
+                <div class="pipe-card-station">東京メトロ有楽町線 「江戸川橋」駅 徒歩4分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="15.833613600000007"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">86</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>4880万</strong></span>
+              <span class="pipe-kpi">48.96㎡</span>
+              <span class="pipe-kpi">2LDK</span>
+<span class="pipe-kpi">1985年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--city-tokyo">東京</span>
+                <span class="pipe-tag pipe-tag--source">Yahoo不動産</span>
+              </div>
+              <a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024759467/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
+               data-city="osaka"
                data-score="85"
                style="--pipe-accent: var(--accent, #6366f1)">
             <div class="pipe-card-top">
               <div class="pipe-card-info">
-                <div class="pipe-card-name" title="ファインレジデンス福島野田The Garden">ファインレジデンス福島野田The Garden</div>
+                <div class="pipe-card-name" title="ファインレジデンス福島野田 The Garden">ファインレジデンス福島野田 The Garden</div>
                 <div class="pipe-card-station">ＪＲ大阪環状線「野田」徒歩7分</div>
               </div>
               
@@ -1629,42 +1967,7 @@ body {
               </div>
               <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20465603/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
             </div>
-          </div>
-          <div class="pipe-card"
-               data-city="osaka"
-               data-score="85"
-               style="--pipe-accent: var(--accent, #6366f1)">
-            <div class="pipe-card-top">
-              <div class="pipe-card-info">
-                <div class="pipe-card-name" title="ファインレジデンス福島野田　The &nbsp;Garden">ファインレジデンス福島野田　The &nbsp;Garden</div>
-                <div class="pipe-card-station">ＪＲ大阪環状線「野田」徒歩7分</div>
-              </div>
-              
-<div class="deal-gauge deal-gauge--sm">
-  <svg viewBox="0 0 40 40" width="100%" height="100%">
-    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
-    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
-            stroke="var(--green)"
-            stroke-dasharray="113.09724"
-            stroke-dashoffset="16.964585999999997"/>
-  </svg>
-  <span class="deal-gauge-value" style="color:var(--green)">85</span>
-</div>
-
-            </div>
-            <div class="pipe-card-kpis">
-              <span class="pipe-kpi"><strong>3800万</strong></span>
-              <span class="pipe-kpi">40.07㎡</span>
-              <span class="pipe-kpi">1LDK</span>
-<span class="pipe-kpi">2023年</span>            </div>
-            <div class="pipe-card-meta">
-              <div class="pipe-card-tags">
-                <span class="pipe-tag pipe-tag--pet">Pet</span>
-                <span class="pipe-tag pipe-tag--city-osaka">大阪</span>
-                <span class="pipe-tag pipe-tag--source">SUUMO</span>
-              </div>
-              <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20468253/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
-            </div>
+            <div class="pipe-card-notes">重複統合(旧inq-008): 同一物件の別掲載URL https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20468253/</div>
           </div>
           <div class="pipe-card"
                data-city="osaka"
@@ -1883,6 +2186,42 @@ body {
             </div>
           </div>
           <div class="pipe-card"
+               data-city="osaka"
+               data-score="85"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="ベル・アーバニティ同心">ベル・アーバニティ同心</div>
+                <div class="pipe-card-station">ＪＲ東西線「大阪天満宮」徒歩10分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="16.964585999999997"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">85</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>4480万</strong></span>
+              <span class="pipe-kpi">55.58㎡</span>
+              <span class="pipe-kpi">2LDK</span>
+<span class="pipe-kpi">1996年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--pet">Pet</span>
+                <span class="pipe-tag pipe-tag--city-osaka">大阪</span>
+                <span class="pipe-tag pipe-tag--source">SUUMO</span>
+              </div>
+              <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20280326/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
                data-city="tokyo"
                data-score="83"
                style="--pipe-accent: var(--accent, #6366f1)">
@@ -1952,6 +2291,41 @@ body {
                 <span class="pipe-tag pipe-tag--source">SUUMO</span>
               </div>
               <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
+            </div>
+          </div>
+          <div class="pipe-card"
+               data-city="tokyo"
+               data-score="83"
+               style="--pipe-accent: var(--accent, #6366f1)">
+            <div class="pipe-card-top">
+              <div class="pipe-card-info">
+                <div class="pipe-card-name" title="グリーンパーク市ヶ谷柳町">グリーンパーク市ヶ谷柳町</div>
+                <div class="pipe-card-station">都営大江戸線「牛込柳町」徒歩1分</div>
+              </div>
+              
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="19.226530800000006"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">83</span>
+</div>
+
+            </div>
+            <div class="pipe-card-kpis">
+              <span class="pipe-kpi"><strong>4380万</strong></span>
+              <span class="pipe-kpi">40.94㎡</span>
+              <span class="pipe-kpi">1LDK</span>
+<span class="pipe-kpi">1987年</span>            </div>
+            <div class="pipe-card-meta">
+              <div class="pipe-card-tags">
+                <span class="pipe-tag pipe-tag--city-tokyo">東京</span>
+                <span class="pipe-tag pipe-tag--source">SUUMO</span>
+              </div>
+              <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20130053/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
             </div>
           </div>
           <div class="pipe-card"
@@ -2316,7 +2690,7 @@ body {
                style="--pipe-accent: var(--accent, #6366f1)">
             <div class="pipe-card-top">
               <div class="pipe-card-info">
-                <div class="pipe-card-name" title="ヴィラロイヤル東中野">ヴィラロイヤル東中野</div>
+                <div class="pipe-card-name" title="ヴィラロイヤル東中野 706号室">ヴィラロイヤル東中野 706号室</div>
                 <div class="pipe-card-station">ＪＲ中央線「東中野」徒歩7分</div>
               </div>
               
@@ -2345,42 +2719,7 @@ body {
               </div>
               <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79163699/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
             </div>
-          </div>
-          <div class="pipe-card"
-               data-city="tokyo"
-               data-score="68"
-               style="--pipe-accent: var(--accent, #6366f1)">
-            <div class="pipe-card-top">
-              <div class="pipe-card-info">
-                <div class="pipe-card-name" title="ヴィラロイヤル東中野 706号室">ヴィラロイヤル東中野 706号室</div>
-                <div class="pipe-card-station">ＪＲ中央線「東中野」徒歩7分</div>
-              </div>
-              
-<div class="deal-gauge deal-gauge--sm">
-  <svg viewBox="0 0 40 40" width="100%" height="100%">
-    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
-    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
-            stroke="var(--yellow)"
-            stroke-dasharray="113.09724"
-            stroke-dashoffset="36.19111679999999"/>
-  </svg>
-  <span class="deal-gauge-value" style="color:var(--yellow)">68</span>
-</div>
-
-            </div>
-            <div class="pipe-card-kpis">
-              <span class="pipe-kpi"><strong>3500万</strong></span>
-              <span class="pipe-kpi">62.94㎡</span>
-              <span class="pipe-kpi">2LDK</span>
-<span class="pipe-kpi">1969年</span>            </div>
-            <div class="pipe-card-meta">
-              <div class="pipe-card-tags">
-                <span class="pipe-tag pipe-tag--pet">Pet</span>
-                <span class="pipe-tag pipe-tag--city-tokyo">東京</span>
-                <span class="pipe-tag pipe-tag--source">SUUMO</span>
-              </div>
-              <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79140949/" target="_blank" rel="noopener" class="pipe-card-link">詳細 ↗</a>
-            </div>
+            <div class="pipe-card-notes">重複統合(旧inq-030): 706号室が明示された別掲載URL https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79140949/</div>
           </div>
           <div class="pipe-card"
                data-city="tokyo"
@@ -2925,7 +3264,7 @@ body {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-03-28 15:59</div>
+  <div style="margin-top:4px;">Generated at 2026-03-29 10:59</div>
 </footer>
 <script>
 function filterCity(city) {

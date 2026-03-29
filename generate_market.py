@@ -48,6 +48,15 @@ PROPERTY_PAGES = [
     {"href": "simulate.html", "label": "Simulate"},
 ]
 
+# Gnav: page-level navigation within property section (SSoT)
+GNAV_PAGES = [
+    {"href": "index.html", "label": "Hub"},
+    {"href": "market.html", "label": "Market"},
+    {"href": "naiken-analysis.html", "label": "内覧分析"},
+    {"href": "inquiry-messages.html", "label": "問い合わせ"},
+    {"href": "inquiry-pipeline.html", "label": "Pipeline"},
+]
+
 CITY_CONFIGS: list[dict] = [
     {
         "key": "osaka",
@@ -477,6 +486,8 @@ def main() -> None:
         patrol_summary=patrol_summary,
         property_pages=PROPERTY_PAGES,
         property_current="Market",
+        gnav_pages=GNAV_PAGES,
+        gnav_current="Market",
         nav_items=PUBLIC_NAV,
         current_page="Property",
         css_tokens=get_css_tokens(),

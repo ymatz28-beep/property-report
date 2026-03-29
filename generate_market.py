@@ -204,9 +204,16 @@ _ESTIMATED_RENT_PER_SQM: dict[str, int] = {
 }
 
 
+def _is_oc_row(row: PropertyRow) -> bool:
+    """Check if a property row is owner-change (OC)."""
+    text = f"{row.name} {row.station_text} {row.minpaku_status} {row.location} {row.raw_line}"
+    return any(kw in text for kw in _OC_KEYWORDS)
+
+
 def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> dict:
     d = asdict(row)
     d["prop_type"] = "kubun"
+    d["is_oc"] = _is_oc_row(row)
     fs = first_seen.get(row.url, "")
     d["first_seen"] = fs
     if fs:

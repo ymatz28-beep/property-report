@@ -512,7 +512,7 @@
     {% if city.budget.count > 0 %}
     <div class="type-section" id="{{ city.key }}-budget" data-type="budget">
       <div class="type-header">
-        <span class="type-label">格安区分（1000万以下・OC含む）</span>
+        <span class="type-label">格安区分（1000万以下・CF重視）</span>
         <span class="type-count">{{ city.budget.count }}</span>
       </div>
       <div class="property-grid" data-view="grid" style="display:none">
@@ -525,7 +525,7 @@
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>築年</th><th>管理費+修繕</th><th>ペット</th><th>利回り</th><th>想定家賃</th><th>CF/月</th>
+              <th>間取り</th><th>構造</th><th>最寄駅</th><th>築年</th><th>管理費+修繕</th><th>OC</th><th>ペット</th><th>利回り</th><th>想定家賃</th><th>CF/月</th>
               <th>㎡単価</th>
             </tr>
           </thead>
@@ -542,6 +542,7 @@
               <td>{{ prop.station_text | default(prop.location) }}</td>
               <td>{{ prop.built_text or "—" }}</td>
               <td class="price-cell">{{ prop.maintenance_fee_text or "—" }}</td>
+              <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}—{% endif %}</td>
               <td>{{ prop.pet_status or "—" }}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell">{{ prop.est_monthly_rent or "—" }}</td>
@@ -550,7 +551,7 @@
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
-              <td colspan="15">
+              <td colspan="16">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">ローン条件</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年 / 頭金20%</span></div>
                   <div class="detail-item"><span class="detail-label">構造判定</span><span class="detail-value">{{ prop.revenue.structure_used }}</span></div>

@@ -155,6 +155,7 @@ class PropertyRow:
     tier_color: str = ""
     detail_comment: str = ""
     pet_score: int = 0
+    structure: str = ""  # RC造, SRC造, S造, 木造, etc.
 
 
 def parse_price_man(text: str) -> int:
@@ -343,6 +344,24 @@ def parse_data_file(data_path: Path, default_source: str = "SUUMO") -> list[Prop
                 brokerage_text=parts[9],
                 maintenance_fee_text=parts[10],
                 url=parts[11],
+                raw_line=s,
+            )
+        elif len(parts) == 13:
+            # 13-col: source|name|price|location|area|built|station|layout|pet|brokerage|maintenance|url|structure
+            row = PropertyRow(
+                source=parts[0] or default_source,
+                name=parts[1],
+                price_text=parts[2],
+                location=parts[3],
+                area_text=parts[4],
+                built_text=parts[5],
+                station_text=parts[6],
+                layout=parts[7],
+                pet_status=parts[8],
+                brokerage_text=parts[9],
+                maintenance_fee_text=parts[10],
+                url=parts[11],
+                structure=parts[12],
                 raw_line=s,
             )
         else:

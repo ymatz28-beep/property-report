@@ -250,6 +250,7 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
         "brokerage": "",
         "maintenance": maintenance,
         "url": url,
+        "structure": "",  # populated by _enrich_ftakken_detail
     }
 
 
@@ -415,6 +416,7 @@ def save_results(properties: list[dict], city_key: str) -> Path:
             prop["brokerage"],
             prop.get("maintenance", ""),
             prop["url"],
+            prop.get("structure", ""),
         ])
         lines.append(line)
 
@@ -714,6 +716,28 @@ def _enrich_ftakken_detail(page, properties: list[dict]) -> None:
                 prop["station_text"] = w_m.group(1)
                 changed = True
 
+        # Structure: "建物構造" or "構造" field on detail page
+        if not prop.get("structure"):
+            struct_m = re.search(
+                r"(?:建物)?構造\s*((?:鉄骨)?鉄筋コンクリート(?:造)?|SRC(?:造)?|RC(?:造)?|軽量鉄骨(?:造)?|鉄骨(?:造)?|S(?:造)?|木造|その他)",
+                text,
+            )
+            if struct_m:
+                raw_s = struct_m.group(1)
+                if "鉄骨鉄筋コンクリート" in raw_s or raw_s.startswith("SRC"):
+                    prop["structure"] = "SRC造"
+                elif "鉄筋コンクリート" in raw_s or raw_s.startswith("RC"):
+                    prop["structure"] = "RC造"
+                elif "軽量鉄骨" in raw_s:
+                    prop["structure"] = "軽量鉄骨造"
+                elif "鉄骨" in raw_s or raw_s == "S造" or raw_s == "S":
+                    prop["structure"] = "S造"
+                elif raw_s == "木造":
+                    prop["structure"] = "木造"
+                else:
+                    prop["structure"] = raw_s
+                changed = True
+
         if changed:
             enriched += 1
             print(f"    {prop['name'][:25]}")
@@ -922,6 +946,7 @@ def save_budget_results(properties: list[dict], city_key: str = "fukuoka") -> Pa
             prop["brokerage"],
             prop.get("maintenance", ""),
             prop["url"],
+            prop.get("structure", ""),
         ])
         lines.append(line)
 

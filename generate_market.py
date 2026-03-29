@@ -142,6 +142,8 @@ def _load_kubun(cfg: dict) -> list[PropertyRow]:
     rows = [r for r in rows if not _is_oc(r)]
     rows = [r for r in rows if r.pet_status != "不可" and "ペット不可" not in f"{r.pet_status} {r.name} {r.raw_line}" and "ペット飼育不可" not in f"{r.pet_status} {r.name} {r.raw_line}"]
     rows = [r for r in rows if "民泊禁止" not in f"{r.minpaku_status} {r.name} {r.raw_line}" and "民泊不可" not in f"{r.minpaku_status} {r.name} {r.raw_line}"]
+    # Exclude wooden structures (木造は値段がつかない)
+    rows = [r for r in rows if r.structure != "木造"]
 
     config = ReportConfig(
         city_key=cfg["key"], city_label=cfg["label"],
@@ -178,7 +180,8 @@ def _load_budget(city_key: str) -> list[PropertyRow]:
     sold = load_sold_urls()
     rows = [r for r in rows if r.url.rstrip("/") + "/" not in sold]
 
-    # Budget tier: don't filter OC or pet (CF-focused)
+    # Budget tier: don't filter OC or pet (CF-focused), but exclude 木造
+    rows = [r for r in rows if r.structure != "木造"]
     config = ReportConfig(
         city_key=city_key, city_label=city_key,
         accent="#6366f1", accent_rgb="99,102,241",
@@ -235,16 +238,20 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
 
     # Revenue analysis for kubun (estimate yield from market rent)
     d["revenue"] = None
+    d["est_monthly_rent"] = ""
     if row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
         rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
-        annual_rent = rent_per_sqm * row.area_sqm * 12 / 10000  # 万円
+        monthly_rent = rent_per_sqm * row.area_sqm  # 円
+        annual_rent = monthly_rent * 12 / 10000  # 万円
         est_yield = (annual_rent / row.price_man) * 100
         d["yield_text"] = f"{est_yield:.1f}%"
+        d["est_monthly_rent"] = f"{monthly_rent / 10000:.1f}万" if monthly_rent >= 10000 else f"{int(monthly_rent):,}円"
+        structure_for_calc = row.structure or "RC造"
         try:
             ra = revenue_analyze(
                 price_man=row.price_man,
                 yield_pct=est_yield,
-                structure=row.layout or "RC造",  # kubun = mostly RC
+                structure=structure_for_calc,
                 built_year=row.built_year,
                 units_count=1,
                 area_sqm=row.area_sqm,
@@ -262,7 +269,10 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
                 "down_payment": round(ra.down_payment, 1),
                 "loan_amount": round(ra.loan_amount, 1),
                 "loan_years": ra.loan_years,
+                "loan_rate": ra.params.loan_rate_annual * 100,
                 "annual_debt_service": round(ra.annual_debt_service, 1),
+                "est_monthly_rent": d["est_monthly_rent"],
+                "structure_used": structure_for_calc,
             }
         except Exception:
             pass
@@ -320,11 +330,17 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
     else:
         d["price_per_sqm"] = "—"
 
+    # Estimated monthly rent
+    d["est_monthly_rent"] = ""
+    area = row.area_sqm or 0
+    if row.price_man and row.price_man > 0 and area > 0:
+        rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
+        monthly_rent = rent_per_sqm * area
+        d["est_monthly_rent"] = f"{monthly_rent / 10000:.1f}万" if monthly_rent >= 10000 else f"{int(monthly_rent):,}円"
+
     # Revenue analysis — estimate yield from area if missing
     yield_pct = row.yield_pct
     if (not yield_pct or yield_pct <= 0) and row.price_man and row.price_man > 0:
-        # Estimate yield: rent_per_sqm × area × 12 / price
-        area = row.area_sqm or 0
         units = row.units_count or 1
         if area > 0:
             rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
@@ -354,7 +370,10 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
                 "down_payment": round(ra.down_payment, 1),
                 "loan_amount": round(ra.loan_amount, 1),
                 "loan_years": ra.loan_years,
+                "loan_rate": ra.params.loan_rate_annual * 100,
                 "annual_debt_service": round(ra.annual_debt_service, 1),
+                "est_monthly_rent": d["est_monthly_rent"],
+                "structure_used": row.structure or "RC造",
             }
         except Exception:
             d["revenue"] = None

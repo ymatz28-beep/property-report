@@ -139,27 +139,18 @@
 .property-list.active { display: block; }
 .property-grid.active { display: grid; }
 
-.prop-table { width: 100%; min-width: 800px; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+.prop-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .prop-table th {
   text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 700;
   color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
   border-bottom: 1px solid var(--border); position: sticky; top: 0;
   background: var(--bg); white-space: nowrap;
 }
-/* Column widths (10 cols: スコア/掲載日/物件名/価格/面積/間取り/最寄駅/ペット/利回り/CF月) */
-.prop-table th:nth-child(1) { width: 45px; }  /* スコア */
-.prop-table th:nth-child(2) { width: 78px; }  /* 掲載日 */
-.prop-table th:nth-child(3) { width: auto; }  /* 物件名 — 残りスペースを使う */
-.prop-table th:nth-child(4) { width: 72px; }  /* 価格 */
-.prop-table th:nth-child(5) { width: 55px; }  /* 面積 */
-.prop-table th:nth-child(6) { width: 48px; }  /* 間取り */
-.prop-table th:nth-child(7) { width: 120px; } /* 最寄駅 */
-.prop-table th:nth-child(8) { width: 42px; }  /* ペット/OC */
-.prop-table th:nth-child(9) { width: 52px; }  /* 利回り */
-.prop-table th:nth-child(10) { width: 60px; } /* CF/月 */
-.station-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px; }
+/* Compact cells */
+.prop-table .score-cell { white-space: nowrap; }
+.station-cell { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.prop-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); overflow: hidden; text-overflow: ellipsis; }
+.prop-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); white-space: nowrap; }
 .prop-table tr:hover { background: rgba(255,255,255,0.02); }
 .prop-table .name-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prop-table .score-cell { font-family: var(--font-mono); font-weight: 700; }
@@ -224,7 +215,7 @@
   .city-tab { padding: 6px 12px; font-size: 12px; }
   .type-jump { justify-content: flex-start; }
   .type-jump-btn { font-size: 11px; padding: 4px 10px; }
-  .prop-table { font-size: 11px; min-width: 640px; }
+  .prop-table { font-size: 11px; }
   .prop-table th, .prop-table td { padding: 6px 6px; }
   .type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 40px + 120px); }
 }

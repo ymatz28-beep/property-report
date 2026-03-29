@@ -144,6 +144,8 @@ def _load_kubun(cfg: dict) -> list[PropertyRow]:
     rows = [r for r in rows if "民泊禁止" not in f"{r.minpaku_status} {r.name} {r.raw_line}" and "民泊不可" not in f"{r.minpaku_status} {r.name} {r.raw_line}"]
     # Exclude wooden structures (木造は値段がつかない)
     rows = [r for r in rows if r.structure != "木造"]
+    # 30㎡未満除外 (投資対象外)
+    rows = [r for r in rows if r.area_sqm is None or r.area_sqm >= 30]
 
     config = ReportConfig(
         city_key=cfg["key"], city_label=cfg["label"],

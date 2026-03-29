@@ -1027,9 +1027,16 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
                 "email": email,
             }
 
-    # Build sections
+    # Build sections — separate current (most recent date) vs archive (older dates)
+    sorted_dates = sorted(by_date.keys(), reverse=True)  # newest first
+    latest_date = sorted_dates[0] if sorted_dates else None
+    archive_dates = sorted_dates[1:] if len(sorted_dates) > 1 else []
+
     property_sections = []
-    for vdate, props in sorted(by_date.items()):
+    archive_sections = []
+
+    def _build_date_sections(vdate: str, props: list[dict], target: list[str]) -> None:
+        """Build HTML sections for a given viewing date and append to target list."""
         cities = set(CITY_LABELS.get(p.get("city", ""), p.get("city", "")) for p in props)
         city_str = "・".join(sorted(cities))
 
@@ -1058,7 +1065,7 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
         for idx, p in enumerate(props, 1):
             schedule += f"{'→ ' if idx > 1 else ''}{idx}. {p['name']}<br>"
         schedule += f"<br>{agent_info_html}</div></div>"
-        property_sections.append(schedule)
+        target.append(schedule)
 
         # Per-property detailed analysis
         for idx, p in enumerate(props, 1):
@@ -1127,12 +1134,22 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 <tr><th>短期賃貸</th><td>{p.get('short_term') or '<span class="neutral">未確認</span>'}</td></tr>
 <tr><th>ソース</th><td><a href="{p.get('url', '#')}" target="_blank">{p.get('source', '?')}</a></td></tr>
 </table>
+<details class="collapsible-section"><summary class="collapsible-trigger">収益分析 ▸</summary>
 {_naiken_invest_analysis(p, props)}
+</details>
 {_naiken_merits_risks(p, props)}
 {_naiken_checklist(p)}
 {_naiken_questions(p, agent_name)}
 </div>"""
-            property_sections.append(section)
+            target.append(section)
+
+    # Build current (latest date) sections
+    if latest_date:
+        _build_date_sections(latest_date, by_date[latest_date], property_sections)
+
+    # Build archive sections (older dates)
+    for adate in sorted(archive_dates, reverse=True):
+        _build_date_sections(adate, by_date[adate], archive_sections)
 
     # Common verification items
     common = """<div class="property">
@@ -1166,14 +1183,13 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 </div>"""
 
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
-    first_props = list(by_date.values())[0]
-    first_cities = set(CITY_LABELS.get(p.get("city", ""), "") for p in first_props)
-    title_city = "・".join(sorted(c for c in first_cities if c))
-    first_date = sorted(by_date.keys())[0]
+    latest_props = by_date[latest_date] if latest_date else list(by_date.values())[0]
+    latest_cities = set(CITY_LABELS.get(p.get("city", ""), "") for p in latest_props)
+    title_city = "・".join(sorted(c for c in latest_cities if c))
 
     html = f"""<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>内覧分析 — {title_city} {first_date}</title>
+<title>内覧分析 — {title_city} {latest_date}</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{{--bg:#0f1117;--surface:#1a1d27;--card:rgba(255,255,255,0.035);--border:#2d3348;--line:rgba(255,255,255,0.08);--text:#e4e4e7;--text-secondary:#9ca3af;--muted:#7c8293;--accent:#6366f1;--blue:#3b82f6;--green:#22c55e;--red:#ef4444;--yellow:#eab308;--orange:#ff6b35;--gold:#c9a84c;--gnav-height:52px;--z-nav:100;--z-subnav:90;--z-modal:200;--font-display:'Inter','Noto Sans JP',sans-serif;--font-mono:'JetBrains Mono',monospace}}
@@ -1220,6 +1236,14 @@ td{{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .rv-section{{margin-bottom:16px}}.rv-section-title{{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(201,168,76,.2)}}
 .rv-row{{display:flex;align-items:baseline;padding:4px 0;font-size:13px;gap:8px}}
 .rv-desc{{flex:1;min-width:0}}.rv-note{{flex:0 0 auto;font-size:11px;color:var(--muted)}}.rv-amount{{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;min-width:80px}}
+.collapsible-section{{margin:16px 0}}
+.collapsible-trigger{{cursor:pointer;font-size:16px;font-weight:800;padding:12px;border-left:3px solid var(--gold);color:var(--text);list-style:none;user-select:none}}
+.collapsible-trigger::-webkit-details-marker{{display:none}}
+details[open] .collapsible-trigger{{color:var(--text)}}
+details[open] .collapsible-trigger::after{{content:'';}}
+.archive-header{{font-size:18px;font-weight:800;color:var(--muted);margin:40px 0 16px;padding:12px 0;border-top:2px solid var(--line);border-bottom:1px solid var(--line)}}
+.archive-header span{{font-size:13px;font-weight:500;margin-left:8px}}
+.archive-section .property{{opacity:0.7}}
 .rv-minus .rv-desc{{color:var(--muted)}}.rv-subtotal{{border-top:1px solid var(--line);padding-top:6px;margin-top:4px}}
 .rv-total{{border-top:2px solid var(--line);padding-top:8px;margin-top:4px;font-weight:800}}
 .rv-highlight{{background:rgba(201,168,76,.06);border-radius:8px;padding:8px;margin-top:4px}}
@@ -1232,6 +1256,7 @@ td{{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}}
 <p class="meta">自動生成: {now_str} / {len(viewing)}件の内覧予定物件</p>
 {"".join(property_sections)}
 {common}
+{'<div class="archive-header">過去の内見<span>（' + str(len(archive_sections)) + '件）</span></div><div class="archive-section">' + "".join(archive_sections) + '</div>' if archive_sections else ''}
 </div></body></html>"""
 
     out.write_text(html, encoding="utf-8")

@@ -851,14 +851,19 @@ def _naiken_merits_risks(p: dict, all_props: list[dict]) -> str:
     else:
         checks.append("ペット可否の確認")
 
-    # 耐震
+    # 耐震（1981年6月以降 = 新耐震基準）
     if yr and yr < 1981:
         risks.append(f"旧耐震（{yr}年）")
         checks.append("耐震診断の有無")
-    elif yr and yr <= 1985:
-        risks.append(f"旧耐震移行期（{yr}年・新耐震基準適用か要確認）")
-        checks.append("耐震診断の実施有無")
-    elif yr and yr >= 2000:
+    elif yr and yr == 1981:
+        # 1981年は月で判定（月不明なら保守的に旧耐震）
+        built_month = p.get("built_month")
+        if built_month and built_month >= 6:
+            merits.append(f"新耐震（{yr}年{built_month}月）")
+        else:
+            risks.append(f"旧耐震（{yr}年・新耐震基準適用か要確認）")
+            checks.append("耐震診断の有無")
+    elif yr and yr > 1981:
         merits.append(f"新耐震（{yr}年）")
 
     # 築年数
@@ -1044,9 +1049,15 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
             tags = [f'<span class="tag tag-blue">{p.get("price", "?")}万円</span>']
             if p.get("pet") == "ok":
                 tags.append('<span class="tag tag-green">ペット可</span>')
-            if isinstance(yr, int) and yr <= 1985:
-                tags.append(f'<span class="tag tag-yellow">旧耐震({yr})</span>')
-            elif isinstance(yr, int) and yr >= 2000:
+            if isinstance(yr, int) and yr < 1981:
+                tags.append(f'<span class="tag tag-red">旧耐震({yr})</span>')
+            elif isinstance(yr, int) and yr == 1981:
+                built_month = p.get("built_month")
+                if built_month and built_month >= 6:
+                    tags.append(f'<span class="tag tag-green">新耐震({yr})</span>')
+                else:
+                    tags.append(f'<span class="tag tag-yellow">旧耐震({yr})</span>')
+            elif isinstance(yr, int) and yr > 1981:
                 tags.append(f'<span class="tag tag-green">新耐震({yr})</span>')
             if p.get("area", 0) >= 60:
                 tags.append(f'<span class="tag tag-green">{p["area"]}㎡（広い）</span>')
@@ -1132,7 +1143,7 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 <title>内覧分析 — {title_city} {first_date}</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{{--bg:#0b0f16;--card:rgba(255,255,255,0.04);--line:rgba(255,255,255,0.10);--text:#edf3ff;--muted:#a9b3c6;--accent:#6ee7ff;--green:#34d399;--red:#f87171;--yellow:#eab308;--orange:#fb923c;--gnav-height:52px;--z-nav:100;--z-subnav:90;--z-modal:200}}
+:root{{--bg:#0f1117;--surface:#1a1d27;--card:rgba(255,255,255,0.035);--border:#2d3348;--line:rgba(255,255,255,0.08);--text:#e4e4e7;--text-secondary:#9ca3af;--muted:#7c8293;--accent:#6366f1;--blue:#3b82f6;--green:#22c55e;--red:#ef4444;--yellow:#eab308;--orange:#ff6b35;--gold:#c9a84c;--gnav-height:52px;--z-nav:100;--z-subnav:90;--z-modal:200;--font-display:'Inter','Noto Sans JP',sans-serif;--font-mono:'JetBrains Mono',monospace}}
 *{{box-sizing:border-box;margin:0}}
 body{{font-family:'Inter','Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}}
 {site_header_css()}{global_nav_css()}
@@ -1146,22 +1157,22 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 .tag-red{{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}}
 .tag-green{{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3)}}
 .tag-yellow{{background:rgba(250,204,21,.15);color:var(--yellow);border:1px solid rgba(250,204,21,.3)}}
-.tag-blue{{background:rgba(110,231,255,.15);color:var(--accent);border:1px solid rgba(110,231,255,.3)}}
+.tag-blue{{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.3)}}
 .tag-muted{{background:rgba(169,179,198,.1);color:var(--muted);border:1px solid rgba(169,179,198,.2)}}
 table{{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}}
 th{{text-align:left;padding:8px 12px;color:var(--muted);font-weight:600;font-size:12px;border-bottom:1px solid var(--line)}}
 td{{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .val{{font-weight:700}}.warn{{color:var(--red);font-weight:700}}.ok{{color:var(--green);font-weight:700}}.neutral{{color:var(--muted)}}
 .mono{{font-family:'JetBrains Mono',monospace}}
-.section-title{{font-size:16px;font-weight:800;margin:24px 0 12px;padding-left:12px;border-left:3px solid var(--accent)}}
+.section-title{{font-size:16px;font-weight:800;margin:24px 0 12px;padding-left:12px;border-left:3px solid var(--gold)}}
 .invest-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:16px 0}}
 .invest-card{{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;text-align:center}}
 .invest-card .label{{font-size:11px;color:var(--muted);margin-bottom:8px}}.invest-card .num{{font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace}}
 .checklist{{list-style:none;padding:0}}.checklist li{{padding:6px 0 6px 24px;position:relative;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .checklist li::before{{content:'☐';position:absolute;left:0;color:var(--muted)}}
 .question{{padding:8px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}}
-.schedule-banner{{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:20px;margin-bottom:24px}}
-.schedule-banner h2{{font-size:18px;color:#a78bfa;margin-bottom:8px}}.schedule-banner .detail{{font-size:14px;line-height:1.8}}
+.schedule-banner{{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:20px;margin-bottom:24px}}
+.schedule-banner h2{{font-size:18px;color:var(--gold);margin-bottom:8px}}.schedule-banner .detail{{font-size:14px;line-height:1.8}}
 .verdict{{padding:16px;border-radius:12px;margin:16px 0;font-size:13px;line-height:1.8}}
 .verdict-caution{{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2)}}
 .revenue-block{{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px;margin:20px 0}}
@@ -1172,12 +1183,12 @@ td{{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .rv-thin{{background:rgba(250,204,21,.15);color:#facc15;border:1px solid rgba(250,204,21,.3)}}
 .rv-red{{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)}}
 .rv-assumptions{{font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.6}}
-.rv-section{{margin-bottom:16px}}.rv-section-title{{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(110,231,255,.15)}}
+.rv-section{{margin-bottom:16px}}.rv-section-title{{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(201,168,76,.2)}}
 .rv-row{{display:flex;align-items:baseline;padding:4px 0;font-size:13px;gap:8px}}
 .rv-desc{{flex:1;min-width:0}}.rv-note{{flex:0 0 auto;font-size:11px;color:var(--muted)}}.rv-amount{{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;min-width:80px}}
 .rv-minus .rv-desc{{color:var(--muted)}}.rv-subtotal{{border-top:1px solid var(--line);padding-top:6px;margin-top:4px}}
 .rv-total{{border-top:2px solid var(--line);padding-top:8px;margin-top:4px;font-weight:800}}
-.rv-highlight{{background:rgba(110,231,255,.05);border-radius:8px;padding:8px;margin-top:4px}}
+.rv-highlight{{background:rgba(201,168,76,.06);border-radius:8px;padding:8px;margin-top:4px}}
 .rv-bottom{{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}}
 .rv-bottom-item{{flex:1;text-align:center;min-width:100px}}.rv-bottom-label{{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}}.rv-bottom-val{{font-size:16px;font-weight:800;font-family:'JetBrains Mono',monospace}}
 </style></head><body>

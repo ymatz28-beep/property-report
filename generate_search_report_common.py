@@ -396,6 +396,38 @@ def parse_osaka_r_rows(lines: Iterable[str]) -> list[PropertyRow]:
     return rows
 
 
+def _clean_station_text(text: str) -> str:
+    """Clean station text: remove route names, keep station name + walk time.
+
+    Examples:
+      "地下鉄堺筋線「天神橋筋六丁目」徒歩10分" → "天神橋筋六丁目 徒歩10分"
+      "ＪＲ東西線「大阪天満宮」徒歩4分" → "大阪天満宮 徒歩4分"
+      "博多駅 徒歩5分" → "博多 徒歩5分"
+    """
+    if not text:
+        return text
+    # Extract station name from 「」brackets
+    m = re.search(r"「(.+?)」", text)
+    if m:
+        station = m.group(1)
+        # Remove trailing 駅
+        station = re.sub(r"駅$", "", station)
+        # Extract walk time
+        walk = re.search(r"(徒歩\s*\d+\s*分)", text)
+        bus = re.search(r"(バス\s*\d+\s*分)", text)
+        suffix = walk.group(1) if walk else (bus.group(1) if bus else "")
+        return f"{station} {suffix}".strip()
+    # No brackets — try to strip route prefix (e.g. "西鉄天神大牟田線高宮駅 徒歩12分")
+    # Pattern: route-name + station-name + 駅 + walk
+    m2 = re.search(r"線(.+?)駅\s*(徒歩\s*\d+\s*分|バス\s*\d+\s*分)?", text)
+    if m2:
+        station = m2.group(1)
+        suffix = m2.group(2) or ""
+        return f"{station} {suffix}".strip()
+    # Fallback: just remove 駅
+    return re.sub(r"駅(\s)", r"\1", text)
+
+
 def hydrate_parsed_fields(row: PropertyRow) -> None:
     row.price_man = parse_price_man(row.price_text)
     row.area_sqm = parse_area_sqm(row.area_text)
@@ -404,6 +436,8 @@ def hydrate_parsed_fields(row: PropertyRow) -> None:
         row.area_text = f"{row.area_sqm}㎡"
     row.built_year, row.built_month = parse_built(row.built_text)
     row.walk_min = parse_walk_minutes(row.station_text)
+    # Clean station text: "地下鉄堺筋線「天神橋筋六丁目」徒歩10分" → "天神橋筋六丁目 徒歩10分"
+    row.station_text = _clean_station_text(row.station_text)
     row.maintenance_fee = parse_maintenance_fee(row.maintenance_fee_text)
     # Normalize layout: "ワンルーム" → "1R"
     if row.layout and "ワンルーム" in row.layout:

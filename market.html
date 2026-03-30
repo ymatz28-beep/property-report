@@ -522,9 +522,11 @@ body {
 .prop-table a { color: var(--accent); text-decoration: none; }
 .prop-table a:hover { text-decoration: underline; }
 
-/* Budget table — compact date & station columns */
-[data-type="budget"] .date-cell { max-width: 52px; overflow: hidden; text-overflow: ellipsis; font-size: 10px; padding: 6px 4px; }
-[data-type="budget"] .station-cell { max-width: 100px; white-space: normal; word-break: break-all; line-height: 1.3; padding: 6px 4px; }
+/* Compact date & station columns for dense tables */
+[data-type="budget"] .date-cell,
+[data-type="kubun"] .date-cell { max-width: 52px; overflow: hidden; text-overflow: ellipsis; font-size: 10px; padding: 6px 4px; }
+[data-type="budget"] .station-cell,
+[data-type="kubun"] .station-cell { max-width: 100px; white-space: normal; word-break: break-all; line-height: 1.3; padding: 6px 4px; }
 
 /* Hero — compact inline bar */
 .hero {
@@ -4654,26 +4656,29 @@ body {
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>ペット</th><th>利回り</th><th>CF/月</th><th>㎡単価</th>
+              <th>間取り</th><th>構造</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
             <tr data-score="95" data-price="3100" data-area="54.4" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">95</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="date-cell"><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78620843/" target="_blank" rel="noopener" title="ビーバードルチェ阿波座" onclick="event.stopPropagation()">ビーバードルチェ阿波座</a></td>
               <td class="price-cell">3100万円</td>
               <td class="area-cell">54.4㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="九条 徒歩8分">九条 徒歩8分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.9万<br><span style="font-size:9px;color:var(--text-muted)">西区 2376円/㎡</span></td>
               <td>5.0%</td>
               <td class="price-cell" style="color:var(--red)">-5.5万</td>
               <td class="price-cell">57.0万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">17,290円</span></div>
                   <div class="detail-item"><span class="detail-label">相場西区<span style="font-size:9px;opacity:0.7"> (2376円/㎡)</span></span><span class="detail-value">12.9万/月</span></div>
@@ -4693,20 +4698,23 @@ body {
             </tr>
             <tr data-score="94" data-price="2280" data-area="40.04" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">94</td>
-              <td>2026-03-17</td>
+              <td class="date-cell">2026-03-17</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20437273/" target="_blank" rel="noopener" title="梅田北セントポリア" onclick="event.stopPropagation()">梅田北セントポリア</a></td>
               <td class="price-cell">2280万円</td>
               <td class="area-cell">40.04㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="天神橋筋六丁目 徒歩10分">天神橋筋六丁目 徒歩10分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">8.3万<br><span style="font-size:9px;color:var(--text-muted)">北区 2080円/㎡</span></td>
               <td>4.4%</td>
               <td class="price-cell" style="color:var(--red)">-3.7万</td>
               <td class="price-cell">56.9万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">12,120円</span></div>
                   <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">8.3万/月</span></div>
@@ -4726,20 +4734,23 @@ body {
             </tr>
             <tr data-score="92" data-price="3780" data-area="45.09" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">92</td>
-              <td>2026-03-19</td>
+              <td class="date-cell">2026-03-19</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20465323/" target="_blank" rel="noopener" title="ランズ南森町" onclick="event.stopPropagation()">ランズ南森町</a></td>
               <td class="price-cell">3780万円</td>
               <td class="area-cell">45.09㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="大阪天満宮 徒歩4分">大阪天満宮 徒歩4分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.8万<br><span style="font-size:9px;color:var(--text-muted)">北区 2624円/㎡</span></td>
               <td>3.8%</td>
               <td class="price-cell" style="color:var(--red)">-3.5万</td>
               <td class="price-cell">83.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">16,910円</span></div>
                   <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2624円/㎡)</span></span><span class="detail-value">11.8万/月</span></div>
@@ -4759,20 +4770,23 @@ body {
             </tr>
             <tr data-score="92" data-price="4200" data-area="40.94" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">92</td>
-              <td>2026-03-19</td>
+              <td class="date-cell">2026-03-19</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20472764/" target="_blank" rel="noopener" title="エステムプラザ心斎橋エグゼ" onclick="event.stopPropagation()">エステムプラザ心斎橋エグゼ</a></td>
               <td class="price-cell">4200万円</td>
               <td class="area-cell">40.94㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="長堀橋 徒歩2分">長堀橋 徒歩2分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.8万<br><span style="font-size:9px;color:var(--text-muted)">中央区 3128円/㎡</span></td>
               <td>3.7%</td>
               <td class="price-cell" style="color:var(--red)">-2.5万</td>
               <td class="price-cell">103万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">17,780円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (3128円/㎡)</span></span><span class="detail-value">12.8万/月</span></div>
@@ -4792,20 +4806,23 @@ body {
             </tr>
             <tr data-score="90" data-price="4380" data-area="53.0" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">90</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener" title="セレッソコート南堀江マルティア" onclick="event.stopPropagation()">セレッソコート南堀江マルティア</a></td>
               <td class="price-cell">4380万円</td>
               <td class="area-cell">53.0㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="桜川 徒歩4分">桜川 徒歩4分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.3万<br><span style="font-size:9px;color:var(--text-muted)">西区 2706円/㎡</span></td>
               <td>3.9%</td>
               <td class="price-cell" style="color:var(--red)">-6.0万</td>
               <td class="price-cell">82.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">29,800円</span></div>
                   <div class="detail-item"><span class="detail-label">相場西区<span style="font-size:9px;opacity:0.7"> (2706円/㎡)</span></span><span class="detail-value">14.3万/月</span></div>
@@ -4825,20 +4842,23 @@ body {
             </tr>
             <tr data-score="88" data-price="3050" data-area="56.91" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener" title="●ストークマンション長堀●" onclick="event.stopPropagation()">●ストークマンション長堀●</a></td>
               <td class="price-cell">3050万円</td>
               <td class="area-cell">56.91㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="西長堀 徒歩4分">西長堀 徒歩4分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.2万<br><span style="font-size:9px;color:var(--text-muted)">西区 2145円/㎡</span></td>
               <td>4.8%</td>
               <td class="price-cell" style="color:var(--red)">-4.4万</td>
               <td class="price-cell">53.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">22,500円</span></div>
                   <div class="detail-item"><span class="detail-label">相場西区<span style="font-size:9px;opacity:0.7"> (2145円/㎡)</span></span><span class="detail-value">12.2万/月</span></div>
@@ -4858,20 +4878,23 @@ body {
             </tr>
             <tr data-score="87" data-price="3900" data-area="40.07" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td>2026-03-18</td>
+              <td class="date-cell">2026-03-18</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20465603/" target="_blank" rel="noopener" title="ファインレジデンス福島野田The Garden" onclick="event.stopPropagation()">ファインレジデンス福島野田The Garden</a></td>
               <td class="price-cell">3900万円</td>
               <td class="area-cell">40.07㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="野田 徒歩7分">野田 徒歩7分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.0万<br><span style="font-size:9px;color:var(--text-muted)">福島区 3000円/㎡</span></td>
               <td>3.7%</td>
               <td class="price-cell" style="color:var(--red)">-1.9万</td>
               <td class="price-cell">97.3万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">11,620円</span></div>
                   <div class="detail-item"><span class="detail-label">相場福島区<span style="font-size:9px;opacity:0.7"> (3000円/㎡)</span></span><span class="detail-value">12.0万/月</span></div>
@@ -4891,20 +4914,23 @@ body {
             </tr>
             <tr data-score="85" data-price="1750" data-area="52.5" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener" title="サントピア九条" onclick="event.stopPropagation()">サントピア九条</a></td>
               <td class="price-cell">1750万円</td>
               <td class="area-cell">52.5㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="九条 徒歩2分">九条 徒歩2分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.3万<br><span style="font-size:9px;color:var(--text-muted)">西区 2145円/㎡</span></td>
               <td>7.7%</td>
               <td class="price-cell" style="color:var(--red)">-0.3万</td>
               <td class="price-cell">33.3万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">27,300円</span></div>
                   <div class="detail-item"><span class="detail-label">相場西区<span style="font-size:9px;opacity:0.7"> (2145円/㎡)</span></span><span class="detail-value">11.3万/月</span></div>
@@ -4924,20 +4950,23 @@ body {
             </tr>
             <tr data-score="83" data-price="4750" data-area="41.57" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/" target="_blank" rel="noopener" title="グランドメゾン谷町四丁目" onclick="event.stopPropagation()">グランドメゾン谷町四丁目</a></td>
               <td class="price-cell">4750万円</td>
               <td class="area-cell">41.57㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="谷町四丁目 徒歩3分">谷町四丁目 徒歩3分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.1万<br><span style="font-size:9px;color:var(--text-muted)">中央区 3400円/㎡</span></td>
               <td>3.6%</td>
               <td class="price-cell" style="color:var(--red)">-2.7万</td>
               <td class="price-cell">114万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">16,608円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (3400円/㎡)</span></span><span class="detail-value">14.1万/月</span></div>
@@ -4957,7 +4986,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3499" data-area="54.32" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>2026-03-05</td>
+              <td class="date-cell">2026-03-05</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20375130/" target="_blank" rel="noopener" title="ストークマンション野田阪神" onclick="event.stopPropagation()">ストークマンション野田阪神</a></td>
               <td class="price-cell">3499万円</td>
               <td class="area-cell">54.32㎡</td>
@@ -4965,12 +4994,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="海老江 徒歩4分">海老江 徒歩4分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.6万<br><span style="font-size:9px;color:var(--text-muted)">福島区 1950円/㎡</span></td>
               <td>3.6%</td>
               <td class="price-cell" style="color:var(--red)">-7.6万</td>
               <td class="price-cell">64.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">23,320円</span></div>
                   <div class="detail-item"><span class="detail-label">相場福島区<span style="font-size:9px;opacity:0.7"> (1950円/㎡)</span></span><span class="detail-value">10.6万/月</span></div>
@@ -4990,20 +5022,23 @@ body {
             </tr>
             <tr data-score="82" data-price="2480" data-area="45.0" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td>2026-03-24</td>
+              <td class="date-cell">2026-03-24</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20509455/" target="_blank" rel="noopener" title="ローレルハイツ北天満2号棟" onclick="event.stopPropagation()">ローレルハイツ北天満2号棟</a></td>
               <td class="price-cell">2480万円</td>
               <td class="area-cell">45.0㎡</td>
               <td>2DK</td>
               <td>—</td>
               <td class="station-cell" title="天満 徒歩5分">天満 徒歩5分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.4万<br><span style="font-size:9px;color:var(--text-muted)">北区 2080円/㎡</span></td>
               <td>4.5%</td>
               <td class="price-cell" style="color:var(--red)">-3.1万</td>
               <td class="price-cell">55.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">8,400円</span></div>
                   <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">9.4万/月</span></div>
@@ -5023,7 +5058,7 @@ body {
             </tr>
             <tr data-score="82" data-price="3480" data-area="52.53" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="date-cell"><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20543747/" target="_blank" rel="noopener" title="ノバカネイチ扇町" onclick="event.stopPropagation()">ノバカネイチ扇町</a></td>
               <td class="price-cell">3480万円</td>
               <td class="area-cell">52.53㎡</td>
@@ -5031,12 +5066,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="天神橋筋六丁目 徒歩3分">天神橋筋六丁目 徒歩3分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.9万<br><span style="font-size:9px;color:var(--text-muted)">北区 2080円/㎡</span></td>
               <td>3.8%</td>
               <td class="price-cell" style="color:var(--red)">-7.3万</td>
               <td class="price-cell">66.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">25,150円</span></div>
                   <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">10.9万/月</span></div>
@@ -5056,20 +5094,23 @@ body {
             </tr>
             <tr data-score="82" data-price="4480" data-area="55.58" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20274808/" target="_blank" rel="noopener" title="ベル・アーバニティ同心" onclick="event.stopPropagation()">ベル・アーバニティ同心</a></td>
               <td class="price-cell">4480万円</td>
               <td class="area-cell">55.58㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="大阪天満宮 徒歩8分">大阪天満宮 徒歩8分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.6万<br><span style="font-size:9px;color:var(--text-muted)">北区 2624円/㎡</span></td>
               <td>3.9%</td>
               <td class="price-cell" style="color:var(--red)">-9.1万</td>
               <td class="price-cell">80.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">27,500円</span></div>
                   <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2624円/㎡)</span></span><span class="detail-value">14.6万/月</span></div>
@@ -5089,20 +5130,23 @@ body {
             </tr>
             <tr data-score="82" data-price="4998" data-area="46.4" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td>2026-03-18</td>
+              <td class="date-cell">2026-03-18</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20414985/" target="_blank" rel="noopener" title="ジーニス大阪ＷＥＳＴ" onclick="event.stopPropagation()">ジーニス大阪ＷＥＳＴ</a></td>
               <td class="price-cell">4998万円</td>
               <td class="area-cell">46.4㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="南森町 徒歩7分">南森町 徒歩7分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.2万<br><span style="font-size:9px;color:var(--text-muted)">北区 2624円/㎡</span></td>
               <td>2.9%</td>
               <td class="price-cell" style="color:var(--red)">-7.3万</td>
               <td class="price-cell">108万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">19,980円</span></div>
                   <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2624円/㎡)</span></span><span class="detail-value">12.2万/月</span></div>
@@ -5122,20 +5166,23 @@ body {
             </tr>
             <tr data-score="82" data-price="3890" data-area="69.61" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td>2026-03-17</td>
+              <td class="date-cell">2026-03-17</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20436547/" target="_blank" rel="noopener" title="西道頓堀コーポ二号棟" onclick="event.stopPropagation()">西道頓堀コーポ二号棟</a></td>
               <td class="price-cell">3890万円</td>
               <td class="area-cell">69.61㎡</td>
               <td>3LDK</td>
               <td>—</td>
               <td class="station-cell" title="西長堀 徒歩5分">西長堀 徒歩5分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.9万<br><span style="font-size:9px;color:var(--text-muted)">西区 2145円/㎡</span></td>
               <td>4.6%</td>
               <td class="price-cell" style="color:var(--red)">-4.8万</td>
               <td class="price-cell">55.9万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">15,000円</span></div>
                   <div class="detail-item"><span class="detail-label">相場西区<span style="font-size:9px;opacity:0.7"> (2145円/㎡)</span></span><span class="detail-value">14.9万/月</span></div>
@@ -5155,20 +5202,23 @@ body {
             </tr>
             <tr data-score="82" data-price="4380" data-area="45.51" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20245135/" target="_blank" rel="noopener" title="アルス心斎橋ＵＮＡＧＩＤＡＮＩ" onclick="event.stopPropagation()">アルス心斎橋ＵＮＡＧＩＤＡＮＩ</a></td>
               <td class="price-cell">4380万円</td>
               <td class="area-cell">45.51㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="心斎橋 徒歩6分">心斎橋 徒歩6分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.7万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2788円/㎡</span></td>
               <td>3.5%</td>
               <td class="price-cell" style="color:var(--red)">-5.0万</td>
               <td class="price-cell">96.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">18,100円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2788円/㎡)</span></span><span class="detail-value">12.7万/月</span></div>
@@ -5188,20 +5238,23 @@ body {
             </tr>
             <tr data-score="82" data-price="4100" data-area="40.07" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td>2026-03-19</td>
+              <td class="date-cell">2026-03-19</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20468253/" target="_blank" rel="noopener" title="ファインレジデンス福島野田　The &nbsp;Garden" onclick="event.stopPropagation()">ファインレジデンス福島野田　The &nbsp;Garden</a></td>
               <td class="price-cell">4100万円</td>
               <td class="area-cell">40.07㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="野田 徒歩7分">野田 徒歩7分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.0万<br><span style="font-size:9px;color:var(--text-muted)">福島区 3000円/㎡</span></td>
               <td>3.5%</td>
               <td class="price-cell" style="color:var(--red)">-2.4万</td>
               <td class="price-cell">102万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">11,620円</span></div>
                   <div class="detail-item"><span class="detail-label">相場福島区<span style="font-size:9px;opacity:0.7"> (3000円/㎡)</span></span><span class="detail-value">12.0万/月</span></div>
@@ -5221,20 +5274,23 @@ body {
             </tr>
             <tr data-score="80" data-price="2998" data-area="60.48" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20323378/" target="_blank" rel="noopener" title="天神橋ホワイトハイツ" onclick="event.stopPropagation()">天神橋ホワイトハイツ</a></td>
               <td class="price-cell">2998万円</td>
               <td class="area-cell">60.48㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="天神橋筋六丁目 徒歩4分">天神橋筋六丁目 徒歩4分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.6万<br><span style="font-size:9px;color:var(--text-muted)">北区 2080円/㎡</span></td>
               <td>5.0%</td>
               <td class="price-cell" style="color:var(--red)">-3.1万</td>
               <td class="price-cell">49.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">21,430円</span></div>
                   <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">12.6万/月</span></div>
@@ -5254,20 +5310,23 @@ body {
             </tr>
             <tr data-score="80" data-price="3780" data-area="55.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20197143/" target="_blank" rel="noopener" title="リーガル豊崎" onclick="event.stopPropagation()">リーガル豊崎</a></td>
               <td class="price-cell">3780万円</td>
               <td class="area-cell">55.75㎡</td>
               <td>3LDK</td>
               <td>—</td>
               <td class="station-cell" title="中津 徒歩12分">中津 徒歩12分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.6万<br><span style="font-size:9px;color:var(--text-muted)">北区 2624円/㎡</span></td>
               <td>4.6%</td>
               <td class="price-cell" style="color:var(--red)">-5.7万</td>
               <td class="price-cell">67.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">25,240円</span></div>
                   <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2624円/㎡)</span></span><span class="detail-value">14.6万/月</span></div>
@@ -5287,20 +5346,23 @@ body {
             </tr>
             <tr data-score="80" data-price="4998" data-area="54.86" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>2026-03-26</td>
+              <td class="date-cell">2026-03-26</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20414565/" target="_blank" rel="noopener" title="アデレイド新福島" onclick="event.stopPropagation()">アデレイド新福島</a></td>
               <td class="price-cell">4998万円</td>
               <td class="area-cell">54.86㎡</td>
               <td>1LDK+S（納戸）</td>
               <td>—</td>
               <td class="station-cell" title="新福島 徒歩2分">新福島 徒歩2分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">15.1万<br><span style="font-size:9px;color:var(--text-muted)">福島区 2760円/㎡</span></td>
               <td>3.6%</td>
               <td class="price-cell" style="color:var(--red)">-2.7万</td>
               <td class="price-cell">91.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">25,230円</span></div>
                   <div class="detail-item"><span class="detail-label">相場福島区<span style="font-size:9px;opacity:0.7"> (2760円/㎡)</span></span><span class="detail-value">15.1万/月</span></div>
@@ -17367,26 +17429,29 @@ body {
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>ペット</th><th>利回り</th><th>CF/月</th><th>㎡単価</th>
+              <th>間取り</th><th>構造</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
             <tr data-score="110" data-price="1499" data-area="41.78" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">110</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99339192" target="_blank" rel="noopener" title="第一プリンスビル" onclick="event.stopPropagation()">第一プリンスビル</a></td>
               <td class="price-cell">1499万円</td>
               <td class="area-cell">41.78㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="祇園 徒歩7分">祇園 徒歩7分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.0万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>7.2%</td>
               <td class="price-cell" style="color:var(--red)">-1.2万</td>
               <td class="price-cell">35.9万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">17,730円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2160円/㎡)</span></span><span class="detail-value">9.0万/月</span></div>
@@ -17406,20 +17471,23 @@ body {
             </tr>
             <tr data-score="103" data-price="1900" data-area="62.91" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">103</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99358163" target="_blank" rel="noopener" title="博多ニッコーハイツ 5階" onclick="event.stopPropagation()">博多ニッコーハイツ 5階</a></td>
               <td class="price-cell">1900万円</td>
               <td class="area-cell">62.91㎡</td>
               <td>3LDK</td>
               <td>—</td>
               <td class="station-cell" title="東比恵 徒歩8分">東比恵 徒歩8分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">13.6万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>8.6%</td>
               <td class="price-cell" style="color:var(--red)">-0.6万</td>
               <td class="price-cell">30.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">20,810円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2160円/㎡)</span></span><span class="detail-value">13.6万/月</span></div>
@@ -17439,20 +17507,23 @@ body {
             </tr>
             <tr data-score="102" data-price="4480" data-area="58.3" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">102</td>
-              <td>2026-03-20</td>
+              <td class="date-cell">2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20400394/" target="_blank" rel="noopener" title="ヒューマインド博多駅東ネクスタイル" onclick="event.stopPropagation()">ヒューマインド博多駅東ネクスタイル</a></td>
               <td class="price-cell">4480万円</td>
               <td class="area-cell">58.3㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="東比恵 徒歩5分">東比恵 徒歩5分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.3万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2460円/㎡</span></td>
               <td>3.8%</td>
               <td class="price-cell" style="color:var(--red)">-4.0万</td>
               <td class="price-cell">76.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">13,300円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2460円/㎡)</span></span><span class="detail-value">14.3万/月</span></div>
@@ -17472,20 +17543,23 @@ body {
             </tr>
             <tr data-score="101" data-price="3082" data-area="47.29" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">101</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99773040" target="_blank" rel="noopener" title="ニューライフ薬院 603" onclick="event.stopPropagation()">ニューライフ薬院 603</a></td>
               <td class="price-cell">3082万円</td>
               <td class="area-cell">47.29㎡</td>
               <td>1SLDK</td>
               <td>—</td>
               <td class="station-cell" title="薬院 徒歩3分">薬院 徒歩3分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.8万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>3.8%</td>
               <td class="price-cell" style="color:var(--red)">-5.8万</td>
               <td class="price-cell">65.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">20,930円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">9.8万/月</span></div>
@@ -17505,20 +17579,23 @@ body {
             </tr>
             <tr data-score="101" data-price="3099" data-area="47.29" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">101</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99775027" target="_blank" rel="noopener" title="福岡市中央区 1SLDK" onclick="event.stopPropagation()">福岡市中央区 1SLDK</a></td>
               <td class="price-cell">3099万円</td>
               <td class="area-cell">47.29㎡</td>
               <td>1SLDK</td>
               <td>—</td>
               <td class="station-cell" title="薬院 徒歩3分">薬院 徒歩3分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.9万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2304円/㎡</span></td>
               <td>4.2%</td>
               <td class="price-cell" style="color:var(--red)">-6.4万</td>
               <td class="price-cell">65.5万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">24,490円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2304円/㎡)</span></span><span class="detail-value">10.9万/月</span></div>
@@ -17538,20 +17615,23 @@ body {
             </tr>
             <tr data-score="100" data-price="4900" data-area="46.01" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">100</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/" target="_blank" rel="noopener" title="オープンレジデンシア天神今泉" onclick="event.stopPropagation()">オープンレジデンシア天神今泉</a></td>
               <td class="price-cell">4900万円</td>
               <td class="area-cell">46.01㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="薬院大通 徒歩6分">薬院大通 徒歩6分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.7万<br><span style="font-size:9px;color:var(--text-muted)">中央区 3200円/㎡</span></td>
               <td>3.6%</td>
               <td class="price-cell" style="color:var(--red)">-2.6万</td>
               <td class="price-cell">106万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">8,800円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (3200円/㎡)</span></span><span class="detail-value">14.7万/月</span></div>
@@ -17571,20 +17651,23 @@ body {
             </tr>
             <tr data-score="100" data-price="4980" data-area="55.72" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">100</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="date-cell"><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/" target="_blank" rel="noopener" title="サングレート薬院駅ロイヤルウィン" onclick="event.stopPropagation()">サングレート薬院駅ロイヤルウィン</a></td>
               <td class="price-cell">4980万円</td>
               <td class="area-cell">55.72㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="薬院 徒歩5分">薬院 徒歩5分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.6万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2624円/㎡</span></td>
               <td>3.5%</td>
               <td class="price-cell" style="color:var(--red)">-6.0万</td>
               <td class="price-cell">89.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">12,810円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2624円/㎡)</span></span><span class="detail-value">14.6万/月</span></div>
@@ -17604,20 +17687,23 @@ body {
             </tr>
             <tr data-score="95" data-price="1950" data-area="55.04" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">95</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/" target="_blank" rel="noopener" title="ロワールマンション西公園2" onclick="event.stopPropagation()">ロワールマンション西公園2</a></td>
               <td class="price-cell">1950万円</td>
               <td class="area-cell">55.04㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="大濠公園 徒歩15分">大濠公園 徒歩15分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.4万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>7.0%</td>
               <td class="price-cell" style="color:var(--red)">-1.3万</td>
               <td class="price-cell">35.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">14,500円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">11.4万/月</span></div>
@@ -17637,20 +17723,23 @@ body {
             </tr>
             <tr data-score="95" data-price="2737" data-area="62.32" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">95</td>
-              <td>2026-03-20</td>
+              <td class="date-cell">2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20370839/" target="_blank" rel="noopener" title="大名サンハイツ" onclick="event.stopPropagation()">大名サンハイツ</a></td>
               <td class="price-cell">2737万円</td>
               <td class="area-cell">62.32㎡</td>
               <td>3LDK</td>
               <td>—</td>
               <td class="station-cell" title="赤坂 徒歩6分">赤坂 徒歩6分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">13.0万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>5.7%</td>
               <td class="price-cell" style="color:var(--red)">-2.9万</td>
               <td class="price-cell">43.9万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">18,100円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">13.0万/月</span></div>
@@ -17670,20 +17759,23 @@ body {
             </tr>
             <tr data-score="95" data-price="4380" data-area="44.58" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">95</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79085867/" target="_blank" rel="noopener" title="クリオ渡辺通アーバンマークス" onclick="event.stopPropagation()">クリオ渡辺通アーバンマークス</a></td>
               <td class="price-cell">4380万円</td>
               <td class="area-cell">44.58㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="渡辺通 徒歩9分">渡辺通 徒歩9分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.3万<br><span style="font-size:9px;color:var(--text-muted)">中央区 3200円/㎡</span></td>
               <td>3.9%</td>
               <td class="price-cell" style="color:var(--red)">-1.8万</td>
               <td class="price-cell">98.3万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">8,470円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (3200円/㎡)</span></span><span class="detail-value">14.3万/月</span></div>
@@ -17703,7 +17795,7 @@ body {
             </tr>
             <tr data-score="95" data-price="1950" data-area="55.62" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">95</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99791987" target="_blank" rel="noopener" title="103大稲マンション 706" onclick="event.stopPropagation()">103大稲マンション 706</a></td>
               <td class="price-cell">1950万円</td>
               <td class="area-cell">55.62㎡</td>
@@ -17711,12 +17803,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="薬院大通 徒歩1分">薬院大通 徒歩1分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.6万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>7.1%</td>
               <td class="price-cell" style="color:var(--red)">-1.3万</td>
               <td class="price-cell">35.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">14,500円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">11.6万/月</span></div>
@@ -17736,20 +17831,23 @@ body {
             </tr>
             <tr data-score="93" data-price="4280" data-area="45.0" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">93</td>
-              <td>2026-03-19</td>
+              <td class="date-cell">2026-03-19</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99813399" target="_blank" rel="noopener" title="イニシアイオ大名" onclick="event.stopPropagation()">イニシアイオ大名</a></td>
               <td class="price-cell">4280万円</td>
               <td class="area-cell">45.0㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="赤坂 徒歩5分">赤坂 徒歩5分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.4万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2304円/㎡</span></td>
               <td>2.9%</td>
               <td class="price-cell" style="color:var(--red)">-12.5万</td>
               <td class="price-cell">95.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">24,600円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2304円/㎡)</span></span><span class="detail-value">10.4万/月</span></div>
@@ -17769,20 +17867,23 @@ body {
             </tr>
             <tr data-score="92" data-price="2899" data-area="59.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">92</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99783423" target="_blank" rel="noopener" title="KBCマンションユーハイム博多南" onclick="event.stopPropagation()">KBCマンションユーハイム博多南</a></td>
               <td class="price-cell">2899万円</td>
               <td class="area-cell">59.75㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="竹下 徒歩9分">竹下 徒歩9分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.9万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>5.3%</td>
               <td class="price-cell" style="color:var(--red)">-4.7万</td>
               <td class="price-cell">48.5万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">13,270円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2160円/㎡)</span></span><span class="detail-value">12.9万/月</span></div>
@@ -17802,20 +17903,23 @@ body {
             </tr>
             <tr data-score="92" data-price="2978" data-area="40.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">92</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="date-cell"><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99818434" target="_blank" rel="noopener" title="クレアウォーターマーク" onclick="event.stopPropagation()">クレアウォーターマーク</a></td>
               <td class="price-cell">2978万円</td>
               <td class="area-cell">40.75㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="呉服町 徒歩13分">呉服町 徒歩13分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">8.8万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>3.5%</td>
               <td class="price-cell" style="color:var(--red)">-7.4万</td>
               <td class="price-cell">73.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">14,270円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2160円/㎡)</span></span><span class="detail-value">8.8万/月</span></div>
@@ -17835,7 +17939,7 @@ body {
             </tr>
             <tr data-score="91" data-price="3140" data-area="56.22" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">91</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99790375" target="_blank" rel="noopener" title="シティマンション薬院 303" onclick="event.stopPropagation()">シティマンション薬院 303</a></td>
               <td class="price-cell">3140万円</td>
               <td class="area-cell">56.22㎡</td>
@@ -17843,12 +17947,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="薬院大通 徒歩4分">薬院大通 徒歩4分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.7万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>4.5%</td>
               <td class="price-cell" style="color:var(--red)">-5.4万</td>
               <td class="price-cell">55.9万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">20,030円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">11.7万/月</span></div>
@@ -17868,20 +17975,23 @@ body {
             </tr>
             <tr data-score="90" data-price="4499" data-area="54.49" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">90</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79063957/" target="_blank" rel="noopener" title="コスモ博多古門戸" onclick="event.stopPropagation()">コスモ博多古門戸</a></td>
               <td class="price-cell">4499万円</td>
               <td class="area-cell">54.49㎡</td>
               <td>1LDK+S（納戸）</td>
               <td>—</td>
               <td class="station-cell" title="中洲川端 徒歩9分">中洲川端 徒歩9分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">13.4万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2460円/㎡</span></td>
               <td>3.6%</td>
               <td class="price-cell" style="color:var(--red)">-5.3万</td>
               <td class="price-cell">82.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">18,200円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2460円/㎡)</span></span><span class="detail-value">13.4万/月</span></div>
@@ -17901,7 +18011,7 @@ body {
             </tr>
             <tr data-score="90" data-price="2500" data-area="56.36" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">90</td>
-              <td>2026-03-19</td>
+              <td class="date-cell">2026-03-19</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99813943" target="_blank" rel="noopener" title="チサンマンション第一博多" onclick="event.stopPropagation()">チサンマンション第一博多</a></td>
               <td class="price-cell">2500万円</td>
               <td class="area-cell">56.36㎡</td>
@@ -17909,12 +18019,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="博多 徒歩6分">博多 徒歩6分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.2万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>5.8%</td>
               <td class="price-cell" style="color:var(--red)">-3.4万</td>
               <td class="price-cell">44.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">17,750円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2160円/㎡)</span></span><span class="detail-value">12.2万/月</span></div>
@@ -17934,7 +18047,7 @@ body {
             </tr>
             <tr data-score="90" data-price="3490" data-area="56.7" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">90</td>
-              <td>2026-02-27</td>
+              <td class="date-cell">2026-02-27</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99806230" target="_blank" rel="noopener" title="シャンボール舞鶴" onclick="event.stopPropagation()">シャンボール舞鶴</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">56.7㎡</td>
@@ -17942,12 +18055,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="赤坂 徒歩3分">赤坂 徒歩3分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.8万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>4.1%</td>
               <td class="price-cell" style="color:var(--red)">-6.9万</td>
               <td class="price-cell">61.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">15,030円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">11.8万/月</span></div>
@@ -17967,20 +18083,23 @@ body {
             </tr>
             <tr data-score="90" data-price="4280" data-area="65.61" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">90</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99782845" target="_blank" rel="noopener" title="アートウィル赤坂" onclick="event.stopPropagation()">アートウィル赤坂</a></td>
               <td class="price-cell">4280万円</td>
               <td class="area-cell">65.61㎡</td>
               <td>3LDK</td>
               <td>—</td>
               <td class="station-cell" title="桜坂 徒歩9分">桜坂 徒歩9分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">17.2万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2624円/㎡</span></td>
               <td>4.8%</td>
               <td class="price-cell" style="color:var(--red)">-2.4万</td>
               <td class="price-cell">65.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">16,500円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2624円/㎡)</span></span><span class="detail-value">17.2万/月</span></div>
@@ -18000,7 +18119,7 @@ body {
             </tr>
             <tr data-score="88" data-price="3490" data-area="50.03" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
-              <td>2026-03-20</td>
+              <td class="date-cell">2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20476501/" target="_blank" rel="noopener" title="プレスタイル博多ＮＯＲＴＨ" onclick="event.stopPropagation()">プレスタイル博多ＮＯＲＴＨ</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">50.03㎡</td>
@@ -18008,12 +18127,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="博多 徒歩11分">博多 徒歩11分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">13.8万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2760円/㎡</span></td>
               <td>4.7%</td>
               <td class="price-cell" style="color:var(--red)">-0.4万</td>
               <td class="price-cell">69.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">8,900円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2760円/㎡)</span></span><span class="detail-value">13.8万/月</span></div>
@@ -18033,7 +18155,7 @@ body {
             </tr>
             <tr data-score="88" data-price="3280" data-area="65.31" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78355670/" target="_blank" rel="noopener" title="ライオンズマンション薬院第５" onclick="event.stopPropagation()">ライオンズマンション薬院第５</a></td>
               <td class="price-cell">3280万円</td>
               <td class="area-cell">65.31㎡</td>
@@ -18041,12 +18163,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="薬院大通 徒歩3分">薬院大通 徒歩3分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">13.6万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>5.0%</td>
               <td class="price-cell" style="color:var(--red)">-4.5万</td>
               <td class="price-cell">50.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">19,690円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">13.6万/月</span></div>
@@ -18066,7 +18191,7 @@ body {
             </tr>
             <tr data-score="88" data-price="2880" data-area="48.8" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
-              <td>2026-03-02</td>
+              <td class="date-cell">2026-03-02</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99807292" target="_blank" rel="noopener" title="シティマンション薬院Ⅱ 304" onclick="event.stopPropagation()">シティマンション薬院Ⅱ 304</a></td>
               <td class="price-cell">2880万円</td>
               <td class="area-cell">48.8㎡</td>
@@ -18074,12 +18199,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="薬院 徒歩4分">薬院 徒歩4分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.2万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2304円/㎡</span></td>
               <td>4.7%</td>
               <td class="price-cell" style="color:var(--red)">-5.4万</td>
               <td class="price-cell">59.0万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">29,700円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2304円/㎡)</span></span><span class="detail-value">11.2万/月</span></div>
@@ -18099,20 +18227,23 @@ body {
             </tr>
             <tr data-score="88" data-price="3180" data-area="60.87" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99800747" target="_blank" rel="noopener" title="リーベスト大橋" onclick="event.stopPropagation()">リーベスト大橋</a></td>
               <td class="price-cell">3180万円</td>
               <td class="area-cell">60.87㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="大橋 徒歩5分">大橋 徒歩5分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.5万<br><span style="font-size:9px;color:var(--text-muted)">南区 1728円/㎡</span></td>
               <td>4.0%</td>
               <td class="price-cell" style="color:var(--red)">-6.9万</td>
               <td class="price-cell">52.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">24,860円</span></div>
                   <div class="detail-item"><span class="detail-label">相場南区<span style="font-size:9px;opacity:0.7"> (1728円/㎡)</span></span><span class="detail-value">10.5万/月</span></div>
@@ -18132,7 +18263,7 @@ body {
             </tr>
             <tr data-score="87" data-price="2390" data-area="42.82" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20269655/" target="_blank" rel="noopener" title="東峰マンション博多駅東" onclick="event.stopPropagation()">東峰マンション博多駅東</a></td>
               <td class="price-cell">2390万円</td>
               <td class="area-cell">42.82㎡</td>
@@ -18140,12 +18271,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="東比恵 徒歩7分">東比恵 徒歩7分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">8.3万<br><span style="font-size:9px;color:var(--text-muted)">博多区 1950円/㎡</span></td>
               <td>4.2%</td>
               <td class="price-cell" style="color:var(--red)">-4.8万</td>
               <td class="price-cell">55.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">14,090円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (1950円/㎡)</span></span><span class="detail-value">8.3万/月</span></div>
@@ -18165,20 +18299,23 @@ body {
             </tr>
             <tr data-score="87" data-price="2480" data-area="40.63" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20310107/" target="_blank" rel="noopener" title="プレイスポットしんばしビル本館" onclick="event.stopPropagation()">プレイスポットしんばしビル本館</a></td>
               <td class="price-cell">2480万円</td>
               <td class="area-cell">40.63㎡</td>
               <td>1DK</td>
               <td>—</td>
               <td class="station-cell" title="櫛田神社前 徒歩2分">櫛田神社前 徒歩2分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">7.9万<br><span style="font-size:9px;color:var(--text-muted)">博多区 1950円/㎡</span></td>
               <td>3.8%</td>
               <td class="price-cell" style="color:var(--red)">-3.9万</td>
               <td class="price-cell">61.0万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">12,675円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (1950円/㎡)</span></span><span class="detail-value">7.9万/月</span></div>
@@ -18198,20 +18335,23 @@ body {
             </tr>
             <tr data-score="87" data-price="3190" data-area="57.72" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td>2026-03-20</td>
+              <td class="date-cell">2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20382660/" target="_blank" rel="noopener" title="アメックス博多筑紫通り" onclick="event.stopPropagation()">アメックス博多筑紫通り</a></td>
               <td class="price-cell">3190万円</td>
               <td class="area-cell">57.72㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="竹下 徒歩9分">竹下 徒歩9分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">15.9万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2760円/㎡</span></td>
               <td>6.0%</td>
               <td class="price-cell" style="color:var(--green)">1.5万</td>
               <td class="price-cell">55.3万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">12,100円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2760円/㎡)</span></span><span class="detail-value">15.9万/月</span></div>
@@ -18231,7 +18371,7 @@ body {
             </tr>
             <tr data-score="87" data-price="1980" data-area="42.82" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99722218" target="_blank" rel="noopener" title="東峰マンション博多駅・東 604" onclick="event.stopPropagation()">東峰マンション博多駅・東 604</a></td>
               <td class="price-cell">1980万円</td>
               <td class="area-cell">42.82㎡</td>
@@ -18239,12 +18379,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="東比恵 徒歩8分">東比恵 徒歩8分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.2万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>5.6%</td>
               <td class="price-cell" style="color:var(--red)">-3.1万</td>
               <td class="price-cell">46.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">14,090円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2160円/㎡)</span></span><span class="detail-value">9.2万/月</span></div>
@@ -18264,20 +18407,23 @@ body {
             </tr>
             <tr data-score="87" data-price="2480" data-area="50.17" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td>2026-03-17</td>
+              <td class="date-cell">2026-03-17</td>
               <td class="name-cell"><a href="https://www.realfukuokaestate.jp/estate.php?n=25812" target="_blank" rel="noopener" title="暮らしを企てる" onclick="event.stopPropagation()">暮らしを企てる</a></td>
               <td class="price-cell">2480万円</td>
               <td class="area-cell">50.17㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="大橋 徒歩7分">大橋 徒歩7分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">7.8万<br><span style="font-size:9px;color:var(--text-muted)">南区 1560円/㎡</span></td>
               <td>3.8%</td>
               <td class="price-cell" style="color:var(--red)">-5.0万</td>
               <td class="price-cell">49.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">13,200円</span></div>
                   <div class="detail-item"><span class="detail-label">相場南区<span style="font-size:9px;opacity:0.7"> (1560円/㎡)</span></span><span class="detail-value">7.8万/月</span></div>
@@ -18297,7 +18443,7 @@ body {
             </tr>
             <tr data-score="86" data-price="3300" data-area="52.8" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">86</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99799411" target="_blank" rel="noopener" title="福岡市中央区 2LDK" onclick="event.stopPropagation()">福岡市中央区 2LDK</a></td>
               <td class="price-cell">3300万円</td>
               <td class="area-cell">52.8㎡</td>
@@ -18305,12 +18451,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="薬院 徒歩6分">薬院 徒歩6分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.0万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>4.0%</td>
               <td class="price-cell" style="color:var(--red)">-5.9万</td>
               <td class="price-cell">62.5万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">20,900円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">11.0万/月</span></div>
@@ -18330,7 +18479,7 @@ body {
             </tr>
             <tr data-score="85" data-price="2000" data-area="43.82" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td>2026-03-20</td>
+              <td class="date-cell">2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20407977/" target="_blank" rel="noopener" title="シティマンション薬院" onclick="event.stopPropagation()">シティマンション薬院</a></td>
               <td class="price-cell">2000万円</td>
               <td class="area-cell">43.82㎡</td>
@@ -18338,12 +18487,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="薬院大通 徒歩3分">薬院大通 徒歩3分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.1万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>5.5%</td>
               <td class="price-cell" style="color:var(--red)">-2.7万</td>
               <td class="price-cell">45.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">10,290円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">9.1万/月</span></div>
@@ -18363,7 +18515,7 @@ body {
             </tr>
             <tr data-score="85" data-price="4980" data-area="60.87" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td>2026-03-20</td>
+              <td class="date-cell">2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20350288/" target="_blank" rel="noopener" title="コモダスパッソ天神" onclick="event.stopPropagation()">コモダスパッソ天神</a></td>
               <td class="price-cell">4980万円</td>
               <td class="area-cell">60.87㎡</td>
@@ -18371,12 +18523,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="天神南 徒歩3分">天神南 徒歩3分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">16.0万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2624円/㎡</span></td>
               <td>3.8%</td>
               <td class="price-cell" style="color:var(--red)">-7.0万</td>
               <td class="price-cell">81.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">8,400円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2624円/㎡)</span></span><span class="detail-value">16.0万/月</span></div>
@@ -18396,7 +18551,7 @@ body {
             </tr>
             <tr data-score="85" data-price="990" data-area="46.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99781409" target="_blank" rel="noopener" title="トピレック博多" onclick="event.stopPropagation()">トピレック博多</a></td>
               <td class="price-cell">990万円</td>
               <td class="area-cell">46.75㎡</td>
@@ -18404,12 +18559,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="竹下 徒歩15分">竹下 徒歩15分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.1万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>12.2%</td>
               <td class="price-cell" style="color:var(--green)">1.2万</td>
               <td class="price-cell">21.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">11,200円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2160円/㎡)</span></span><span class="detail-value">10.1万/月</span></div>
@@ -18429,7 +18587,7 @@ body {
             </tr>
             <tr data-score="85" data-price="1999" data-area="50.38" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99748728" target="_blank" rel="noopener" title="■事務所使用可■リフォーム物件■博多駅徒歩7分" onclick="event.stopPropagation()">■事務所使用可■リフォーム物件■博多駅徒歩7分</a></td>
               <td class="price-cell">1999万円</td>
               <td class="area-cell">50.38㎡</td>
@@ -18437,12 +18595,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="博多 徒歩7分">博多 徒歩7分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.9万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>6.5%</td>
               <td class="price-cell" style="color:var(--red)">-2.5万</td>
               <td class="price-cell">39.7万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">16,710円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2160円/㎡)</span></span><span class="detail-value">10.9万/月</span></div>
@@ -18462,7 +18623,7 @@ body {
             </tr>
             <tr data-score="85" data-price="3980" data-area="67.46" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99752336" target="_blank" rel="noopener" title="ツインタワー博多駅前 ３０２" onclick="event.stopPropagation()">ツインタワー博多駅前 ３０２</a></td>
               <td class="price-cell">3980万円</td>
               <td class="area-cell">67.46㎡</td>
@@ -18470,12 +18631,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="博多 徒歩8分">博多 徒歩8分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">20.2万<br><span style="font-size:9px;color:var(--text-muted)">博多区 3000円/㎡</span></td>
               <td>6.1%</td>
               <td class="price-cell" style="color:var(--green)">2.1万</td>
               <td class="price-cell">59.0万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">9,800円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (3000円/㎡)</span></span><span class="detail-value">20.2万/月</span></div>
@@ -18495,7 +18659,7 @@ body {
             </tr>
             <tr data-score="85" data-price="2398" data-area="67.8" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99805653" target="_blank" rel="noopener" title="Asobi+ エクセレンス天神" onclick="event.stopPropagation()">Asobi+ エクセレンス天神</a></td>
               <td class="price-cell">2398万円</td>
               <td class="area-cell">67.8㎡</td>
@@ -18503,12 +18667,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="天神 徒歩10分">天神 徒歩10分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">15.6万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2304円/㎡</span></td>
               <td>7.8%</td>
               <td class="price-cell" style="color:var(--red)">-1.6万</td>
               <td class="price-cell">35.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">17,180円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2304円/㎡)</span></span><span class="detail-value">15.6万/月</span></div>
@@ -18528,7 +18695,7 @@ body {
             </tr>
             <tr data-score="85" data-price="2890" data-area="58.91" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99768458" target="_blank" rel="noopener" title="福岡市中央区 1LDK" onclick="event.stopPropagation()">福岡市中央区 1LDK</a></td>
               <td class="price-cell">2890万円</td>
               <td class="area-cell">58.91㎡</td>
@@ -18536,12 +18703,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="西鉄福岡（天神） 徒歩6分">西鉄福岡（天神） 徒歩6分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.3万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>5.1%</td>
               <td class="price-cell" style="color:var(--red)">-4.7万</td>
               <td class="price-cell">49.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">19,184円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">12.3万/月</span></div>
@@ -18561,20 +18731,23 @@ body {
             </tr>
             <tr data-score="83" data-price="2140" data-area="66.15" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78948574/" target="_blank" rel="noopener" title="ＧＳハイム博多" onclick="event.stopPropagation()">ＧＳハイム博多</a></td>
               <td class="price-cell">2140万円</td>
               <td class="area-cell">66.15㎡</td>
               <td>3LDK</td>
               <td>—</td>
               <td class="station-cell" title="博多 徒歩10分">博多 徒歩10分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.9万<br><span style="font-size:9px;color:var(--text-muted)">博多区 1950円/㎡</span></td>
               <td>7.2%</td>
               <td class="price-cell" style="color:var(--red)">-0.6万</td>
               <td class="price-cell">32.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">21,900円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (1950円/㎡)</span></span><span class="detail-value">12.9万/月</span></div>
@@ -18594,7 +18767,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3490" data-area="69.16" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>2026-03-20</td>
+              <td class="date-cell">2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20450108/" target="_blank" rel="noopener" title="藤和コープソシエ薬院" onclick="event.stopPropagation()">藤和コープソシエ薬院</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">69.16㎡</td>
@@ -18602,12 +18775,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="薬院 徒歩9分">薬院 徒歩9分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.4万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>4.9%</td>
               <td class="price-cell" style="color:var(--red)">-5.6万</td>
               <td class="price-cell">50.5万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">15,030円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">14.4万/月</span></div>
@@ -18627,7 +18803,7 @@ body {
             </tr>
             <tr data-score="83" data-price="2380" data-area="47.79" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>2026-03-20</td>
+              <td class="date-cell">2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20354638/" target="_blank" rel="noopener" title="ライオンズマンション南薬院" onclick="event.stopPropagation()">ライオンズマンション南薬院</a></td>
               <td class="price-cell">2380万円</td>
               <td class="area-cell">47.79㎡</td>
@@ -18635,12 +18811,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="薬院 徒歩5分">薬院 徒歩5分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.9万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>5.0%</td>
               <td class="price-cell" style="color:var(--red)">-3.5万</td>
               <td class="price-cell">49.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">29,280円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">9.9万/月</span></div>
@@ -18660,7 +18839,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3150" data-area="56.22" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79117354/" target="_blank" rel="noopener" title="シティマンション薬院" onclick="event.stopPropagation()">シティマンション薬院</a></td>
               <td class="price-cell">3150万円</td>
               <td class="area-cell">56.22㎡</td>
@@ -18668,12 +18847,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="薬院大通 徒歩3分">薬院大通 徒歩3分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.7万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>4.5%</td>
               <td class="price-cell" style="color:var(--red)">-5.7万</td>
               <td class="price-cell">56.0万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">32,040円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">11.7万/月</span></div>
@@ -18693,7 +18875,7 @@ body {
             </tr>
             <tr data-score="83" data-price="1999" data-area="40.97" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99800235" target="_blank" rel="noopener" title="ステイツ天神東 201" onclick="event.stopPropagation()">ステイツ天神東 201</a></td>
               <td class="price-cell">1999万円</td>
               <td class="area-cell">40.97㎡</td>
@@ -18701,12 +18883,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="中洲川端 徒歩10分">中洲川端 徒歩10分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">8.0万<br><span style="font-size:9px;color:var(--text-muted)">博多区 1950円/㎡</span></td>
               <td>4.8%</td>
               <td class="price-cell" style="color:var(--red)">-3.3万</td>
               <td class="price-cell">48.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">22,600円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (1950円/㎡)</span></span><span class="detail-value">8.0万/月</span></div>
@@ -18726,20 +18911,23 @@ body {
             </tr>
             <tr data-score="83" data-price="2188" data-area="69.71" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>2026-03-02</td>
+              <td class="date-cell">2026-03-02</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99770725" target="_blank" rel="noopener" title="ローズマンション第２博多 1308" onclick="event.stopPropagation()">ローズマンション第２博多 1308</a></td>
               <td class="price-cell">2188万円</td>
               <td class="area-cell">69.71㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="博多 徒歩16分">博多 徒歩16分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">13.6万<br><span style="font-size:9px;color:var(--text-muted)">博多区 1950円/㎡</span></td>
               <td>7.5%</td>
               <td class="price-cell" style="color:var(--red)">-0.7万</td>
               <td class="price-cell">31.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">20,400円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (1950円/㎡)</span></span><span class="detail-value">13.6万/月</span></div>
@@ -18759,7 +18947,7 @@ body {
             </tr>
             <tr data-score="83" data-price="2280" data-area="53.28" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99752757" target="_blank" rel="noopener" title="皐月マンション奈良屋 302" onclick="event.stopPropagation()">皐月マンション奈良屋 302</a></td>
               <td class="price-cell">2280万円</td>
               <td class="area-cell">53.28㎡</td>
@@ -18767,12 +18955,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="中洲川端 徒歩11分">中洲川端 徒歩11分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.4万<br><span style="font-size:9px;color:var(--text-muted)">博多区 1950円/㎡</span></td>
               <td>5.5%</td>
               <td class="price-cell" style="color:var(--red)">-2.9万</td>
               <td class="price-cell">42.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">18,400円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (1950円/㎡)</span></span><span class="detail-value">10.4万/月</span></div>
@@ -18792,7 +18983,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3490" data-area="68.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99795724" target="_blank" rel="noopener" title="日商岩井今泉マンション 210" onclick="event.stopPropagation()">日商岩井今泉マンション 210</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">68.75㎡</td>
@@ -18800,12 +18991,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="西鉄福岡（天神） 徒歩8分">西鉄福岡（天神） 徒歩8分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">15.8万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2304円/㎡</span></td>
               <td>5.4%</td>
               <td class="price-cell" style="color:var(--red)">-6.1万</td>
               <td class="price-cell">50.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">20,700円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2304円/㎡)</span></span><span class="detail-value">15.8万/月</span></div>
@@ -18825,7 +19019,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3750" data-area="46.8" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>2026-03-19</td>
+              <td class="date-cell">2026-03-19</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99815483" target="_blank" rel="noopener" title="ステイツ天神 205" onclick="event.stopPropagation()">ステイツ天神 205</a></td>
               <td class="price-cell">3750万円</td>
               <td class="area-cell">46.8㎡</td>
@@ -18833,12 +19027,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="薬院大通 徒歩9分">薬院大通 徒歩9分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.7万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>3.1%</td>
               <td class="price-cell" style="color:var(--red)">-8.6万</td>
               <td class="price-cell">80.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">24,870円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">9.7万/月</span></div>
@@ -18858,20 +19055,23 @@ body {
             </tr>
             <tr data-score="81" data-price="4399" data-area="65.32" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">81</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20033456/" target="_blank" rel="noopener" title="リファレンス天神南" onclick="event.stopPropagation()">リファレンス天神南</a></td>
               <td class="price-cell">4399万円</td>
               <td class="area-cell">65.32㎡</td>
               <td>3LDK</td>
               <td>—</td>
               <td class="station-cell" title="渡辺通 徒歩13分">渡辺通 徒歩13分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">17.1万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2624円/㎡</span></td>
               <td>4.7%</td>
               <td class="price-cell" style="color:var(--red)">-3.5万</td>
               <td class="price-cell">67.3万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">21,130円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2624円/㎡)</span></span><span class="detail-value">17.1万/月</span></div>
@@ -18891,7 +19091,7 @@ body {
             </tr>
             <tr data-score="80" data-price="3490" data-area="50.12" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20260636/" target="_blank" rel="noopener" title="アルファシオサウスフォンテ" onclick="event.stopPropagation()">アルファシオサウスフォンテ</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">50.12㎡</td>
@@ -18899,12 +19099,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="南福岡 徒歩3分">南福岡 徒歩3分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">15.0万<br><span style="font-size:9px;color:var(--text-muted)">博多区 3000円/㎡</span></td>
               <td>5.2%</td>
               <td class="price-cell" style="color:var(--green)">0.7万</td>
               <td class="price-cell">69.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">9,500円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (3000円/㎡)</span></span><span class="detail-value">15.0万/月</span></div>
@@ -18924,7 +19127,7 @@ body {
             </tr>
             <tr data-score="80" data-price="3180" data-area="52.98" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>2026-03-20</td>
+              <td class="date-cell">2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20372579/" target="_blank" rel="noopener" title="チサンマンション祇園" onclick="event.stopPropagation()">チサンマンション祇園</a></td>
               <td class="price-cell">3180万円</td>
               <td class="area-cell">52.98㎡</td>
@@ -18932,12 +19135,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="祇園 徒歩4分">祇園 徒歩4分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.3万<br><span style="font-size:9px;color:var(--text-muted)">博多区 1950円/㎡</span></td>
               <td>3.9%</td>
               <td class="price-cell" style="color:var(--red)">-5.4万</td>
               <td class="price-cell">60.0万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">17,150円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (1950円/㎡)</span></span><span class="detail-value">10.3万/月</span></div>
@@ -18957,20 +19163,23 @@ body {
             </tr>
             <tr data-score="80" data-price="3490" data-area="69.66" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78908195/" target="_blank" rel="noopener" title="コスモテール吉塚" onclick="event.stopPropagation()">コスモテール吉塚</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">69.66㎡</td>
               <td>3LDK</td>
               <td>—</td>
               <td class="station-cell" title="吉塚 徒歩8分">吉塚 徒歩8分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">15.0万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>5.2%</td>
               <td class="price-cell" style="color:var(--red)">-6.2万</td>
               <td class="price-cell">50.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">19,030円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2160円/㎡)</span></span><span class="detail-value">15.0万/月</span></div>
@@ -18990,20 +19199,23 @@ body {
             </tr>
             <tr data-score="80" data-price="4699" data-area="53.04" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20163293/" target="_blank" rel="noopener" title="アルファライフ博多" onclick="event.stopPropagation()">アルファライフ博多</a></td>
               <td class="price-cell">4699万円</td>
               <td class="area-cell">53.04㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="博多 徒歩14分">博多 徒歩14分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.6万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2760円/㎡</span></td>
               <td>3.7%</td>
               <td class="price-cell" style="color:var(--red)">-2.6万</td>
               <td class="price-cell">88.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">11,300円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2760円/㎡)</span></span><span class="detail-value">14.6万/月</span></div>
@@ -19023,7 +19235,7 @@ body {
             </tr>
             <tr data-score="80" data-price="2100" data-area="63.3" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78138910/" target="_blank" rel="noopener" title="ダイナコート赤坂南" onclick="event.stopPropagation()">ダイナコート赤坂南</a></td>
               <td class="price-cell">2100万円</td>
               <td class="area-cell">63.3㎡</td>
@@ -19031,12 +19243,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="桜坂 徒歩5分">桜坂 徒歩5分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.6万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2304円/㎡</span></td>
               <td>8.3%</td>
               <td class="price-cell" style="color:var(--red)">-0.7万</td>
               <td class="price-cell">33.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">29,900円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2304円/㎡)</span></span><span class="detail-value">14.6万/月</span></div>
@@ -19056,7 +19271,7 @@ body {
             </tr>
             <tr data-score="80" data-price="1698" data-area="58.32" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99757514" target="_blank" rel="noopener" title="高宮ハウスII 102" onclick="event.stopPropagation()">高宮ハウスII 102</a></td>
               <td class="price-cell">1698万円</td>
               <td class="area-cell">58.32㎡</td>
@@ -19064,12 +19279,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="西鉄平尾 徒歩9分">西鉄平尾 徒歩9分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.1万<br><span style="font-size:9px;color:var(--text-muted)">南区 1560円/㎡</span></td>
               <td>6.4%</td>
               <td class="price-cell" style="color:var(--red)">-1.6万</td>
               <td class="price-cell">29.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">18,080円</span></div>
                   <div class="detail-item"><span class="detail-label">相場南区<span style="font-size:9px;opacity:0.7"> (1560円/㎡)</span></span><span class="detail-value">9.1万/月</span></div>
@@ -19089,7 +19307,7 @@ body {
             </tr>
             <tr data-score="80" data-price="2380" data-area="40.63" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99758573" target="_blank" rel="noopener" title="プレイスポットしんばしビル本館 905" onclick="event.stopPropagation()">プレイスポットしんばしビル本館 905</a></td>
               <td class="price-cell">2380万円</td>
               <td class="area-cell">40.63㎡</td>
@@ -19097,12 +19315,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="櫛田神社前 徒歩2分">櫛田神社前 徒歩2分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.0万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2460円/㎡</span></td>
               <td>5.0%</td>
               <td class="price-cell" style="color:var(--red)">-3.7万</td>
               <td class="price-cell">58.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">29,480円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (2460円/㎡)</span></span><span class="detail-value">10.0万/月</span></div>
@@ -19122,20 +19343,23 @@ body {
             </tr>
             <tr data-score="80" data-price="3350" data-area="47.04" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99798084" target="_blank" rel="noopener" title="詳細エリアを選択" onclick="event.stopPropagation()">詳細エリアを選択</a></td>
               <td class="price-cell">3350万円</td>
               <td class="area-cell">47.04㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="博多 徒歩13分">博多 徒歩13分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.1万<br><span style="font-size:9px;color:var(--text-muted)">博多区 3000円/㎡</span></td>
               <td>5.1%</td>
               <td class="price-cell" style="color:var(--green)">0.4万</td>
               <td class="price-cell">71.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">12,800円</span></div>
                   <div class="detail-item"><span class="detail-label">相場博多区<span style="font-size:9px;opacity:0.7"> (3000円/㎡)</span></span><span class="detail-value">14.1万/月</span></div>
@@ -19155,20 +19379,23 @@ body {
             </tr>
             <tr data-score="80" data-price="3080" data-area="56.72" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99720200" target="_blank" rel="noopener" title="ライオンズマンション大名 1003" onclick="event.stopPropagation()">ライオンズマンション大名 1003</a></td>
               <td class="price-cell">3080万円</td>
               <td class="area-cell">56.72㎡</td>
               <td>3DK</td>
               <td>—</td>
               <td class="station-cell" title="赤坂 徒歩10分">赤坂 徒歩10分</td>
+              <td>—</td>
               <td>可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.8万<br><span style="font-size:9px;color:var(--text-muted)">中央区 2080円/㎡</span></td>
               <td>4.6%</td>
               <td class="price-cell" style="color:var(--red)">-3.8万</td>
               <td class="price-cell">54.3万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">17,750円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">11.8万/月</span></div>
@@ -19188,20 +19415,23 @@ body {
             </tr>
             <tr data-score="80" data-price="4390" data-area="65.32" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99803592" target="_blank" rel="noopener" title="福岡市中央区 3LDK" onclick="event.stopPropagation()">福岡市中央区 3LDK</a></td>
               <td class="price-cell">4390万円</td>
               <td class="area-cell">65.32㎡</td>
               <td>3LDK</td>
               <td>—</td>
               <td class="station-cell" title="渡辺通 徒歩13分">渡辺通 徒歩13分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">20.9万<br><span style="font-size:9px;color:var(--text-muted)">中央区 3200円/㎡</span></td>
               <td>5.7%</td>
               <td class="price-cell" style="color:var(--green)">1.9万</td>
               <td class="price-cell">67.2万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">14,400円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (3200円/㎡)</span></span><span class="detail-value">20.9万/月</span></div>
@@ -30163,26 +30393,29 @@ body {
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>ペット</th><th>利回り</th><th>CF/月</th><th>㎡単価</th>
+              <th>間取り</th><th>構造</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
             <tr data-score="93" data-price="3980" data-area="44.54" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">93</td>
-              <td>2026-03-22</td>
+              <td class="date-cell">2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20429198/" target="_blank" rel="noopener" title="スターハイツ台東" onclick="event.stopPropagation()">スターハイツ台東</a></td>
               <td class="price-cell">3980万円</td>
               <td class="area-cell">44.54㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="新御徒町 徒歩6分">新御徒町 徒歩6分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.0万<br><span style="font-size:9px;color:var(--text-muted)">台東区 2015円/㎡</span></td>
               <td>2.7%</td>
               <td class="price-cell" style="color:var(--red)">-9.4万</td>
               <td class="price-cell">89.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">24,344円</span></div>
                   <div class="detail-item"><span class="detail-label">相場台東区<span style="font-size:9px;opacity:0.7"> (2015円/㎡)</span></span><span class="detail-value">9.0万/月</span></div>
@@ -30202,20 +30435,23 @@ body {
             </tr>
             <tr data-score="85" data-price="4180" data-area="40.15" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td>2026-03-25</td>
+              <td class="date-cell">2026-03-25</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" rel="noopener" title="メゾンニシムラ" onclick="event.stopPropagation()">メゾンニシムラ</a></td>
               <td class="price-cell">4180万円</td>
               <td class="area-cell">40.15㎡</td>
               <td>1R</td>
               <td>—</td>
               <td class="station-cell" title="浅草 徒歩8分">浅草 徒歩8分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.0万<br><span style="font-size:9px;color:var(--text-muted)">台東区 2232円/㎡</span></td>
               <td>2.6%</td>
               <td class="price-cell" style="color:var(--red)">-11.6万</td>
               <td class="price-cell">104万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">14,294円</span></div>
                   <div class="detail-item"><span class="detail-label">相場台東区<span style="font-size:9px;opacity:0.7"> (2232円/㎡)</span></span><span class="detail-value">9.0万/月</span></div>
@@ -30235,20 +30471,23 @@ body {
             </tr>
             <tr data-score="83" data-price="3480" data-area="47.3" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20020844/" target="_blank" rel="noopener" title="ニックハイム向島百花園" onclick="event.stopPropagation()">ニックハイム向島百花園</a></td>
               <td class="price-cell">3480万円</td>
               <td class="area-cell">47.3㎡</td>
               <td>2LDK</td>
               <td>—</td>
               <td class="station-cell" title="東向島 徒歩10分">東向島 徒歩10分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.4万<br><span style="font-size:9px;color:var(--text-muted)">墨田区 2405円/㎡</span></td>
               <td>3.9%</td>
               <td class="price-cell" style="color:var(--red)">-6.4万</td>
               <td class="price-cell">73.6万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">23,500円</span></div>
                   <div class="detail-item"><span class="detail-label">相場墨田区<span style="font-size:9px;opacity:0.7"> (2405円/㎡)</span></span><span class="detail-value">11.4万/月</span></div>
@@ -30268,7 +30507,7 @@ body {
             </tr>
             <tr data-score="80" data-price="4380" data-area="40.94" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td>2026-03-22</td>
+              <td class="date-cell">2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20130053/" target="_blank" rel="noopener" title="グリーンパーク市ヶ谷柳町" onclick="event.stopPropagation()">グリーンパーク市ヶ谷柳町</a></td>
               <td class="price-cell">4380万円</td>
               <td class="area-cell">40.94㎡</td>
@@ -30276,12 +30515,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="牛込柳町 徒歩1分">牛込柳町 徒歩1分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.8万<br><span style="font-size:9px;color:var(--text-muted)">新宿区 2880円/㎡</span></td>
               <td>3.2%</td>
               <td class="price-cell" style="color:var(--red)">-10.9万</td>
               <td class="price-cell">107万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">19,000円</span></div>
                   <div class="detail-item"><span class="detail-label">相場新宿区<span style="font-size:9px;opacity:0.7"> (2880円/㎡)</span></span><span class="detail-value">11.8万/月</span></div>
@@ -30301,20 +30543,23 @@ body {
             </tr>
             <tr data-score="80" data-price="4980" data-area="41.4" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="date-cell"><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20521952/" target="_blank" rel="noopener" title="ＧＥＮＯＶＩＡ鐘ヶ淵" onclick="event.stopPropagation()">ＧＥＮＯＶＩＡ鐘ヶ淵</a></td>
               <td class="price-cell">4980万円</td>
               <td class="area-cell">41.4㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="鐘ヶ淵 徒歩3分">鐘ヶ淵 徒歩3分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">15.3万<br><span style="font-size:9px;color:var(--text-muted)">墨田区 3700円/㎡</span></td>
               <td>3.7%</td>
               <td class="price-cell" style="color:var(--red)">-2.5万</td>
               <td class="price-cell">120万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">8,400円</span></div>
                   <div class="detail-item"><span class="detail-label">相場墨田区<span style="font-size:9px;opacity:0.7"> (3700円/㎡)</span></span><span class="detail-value">15.3万/月</span></div>
@@ -30334,7 +30579,7 @@ body {
             </tr>
             <tr data-score="78" data-price="4790" data-area="50.96" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">78</td>
-              <td>2026-03-22</td>
+              <td class="date-cell">2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20376620/" target="_blank" rel="noopener" title="上野ロイヤルハイツ" onclick="event.stopPropagation()">上野ロイヤルハイツ</a></td>
               <td class="price-cell">4790万円</td>
               <td class="area-cell">50.96㎡</td>
@@ -30342,12 +30587,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="入谷 徒歩1分">入谷 徒歩1分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.3万<br><span style="font-size:9px;color:var(--text-muted)">台東区 2015円/㎡</span></td>
               <td>2.6%</td>
               <td class="price-cell" style="color:var(--red)">-11.6万</td>
               <td class="price-cell">94.0万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">20,660円</span></div>
                   <div class="detail-item"><span class="detail-label">相場台東区<span style="font-size:9px;opacity:0.7"> (2015円/㎡)</span></span><span class="detail-value">10.3万/月</span></div>
@@ -30367,7 +30615,7 @@ body {
             </tr>
             <tr data-score="78" data-price="3888" data-area="46.62" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">78</td>
-              <td>2026-03-22</td>
+              <td class="date-cell">2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20474788/" target="_blank" rel="noopener" title="グランドパレス沼袋 306号" onclick="event.stopPropagation()">グランドパレス沼袋 306号</a></td>
               <td class="price-cell">3888万円</td>
               <td class="area-cell">46.62㎡</td>
@@ -30375,12 +30623,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="沼袋 徒歩2分">沼袋 徒歩2分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.9万<br><span style="font-size:9px;color:var(--text-muted)">中野区 2340円/㎡</span></td>
               <td>3.4%</td>
               <td class="price-cell" style="color:var(--red)">-8.1万</td>
               <td class="price-cell">83.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">22,342円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中野区<span style="font-size:9px;opacity:0.7"> (2340円/㎡)</span></span><span class="detail-value">10.9万/月</span></div>
@@ -30400,20 +30651,23 @@ body {
             </tr>
             <tr data-score="77" data-price="3680" data-area="50.6" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">77</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20220965/" target="_blank" rel="noopener" title="マイステージ野方" onclick="event.stopPropagation()">マイステージ野方</a></td>
               <td class="price-cell">3680万円</td>
               <td class="area-cell">50.6㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="野方 徒歩3分">野方 徒歩3分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">14.9万<br><span style="font-size:9px;color:var(--text-muted)">中野区 2952円/㎡</span></td>
               <td>4.9%</td>
               <td class="price-cell" style="color:var(--red)">-3.5万</td>
               <td class="price-cell">72.7万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">43,520円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中野区<span style="font-size:9px;opacity:0.7"> (2952円/㎡)</span></span><span class="detail-value">14.9万/月</span></div>
@@ -30433,20 +30687,23 @@ body {
             </tr>
             <tr data-score="77" data-price="3980" data-area="42.0" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">77</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="date-cell"><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_20507595/" target="_blank" rel="noopener" title="スターパレス北品川" onclick="event.stopPropagation()">スターパレス北品川</a></td>
               <td class="price-cell">3980万円</td>
               <td class="area-cell">42.0㎡</td>
               <td>2DK</td>
               <td>—</td>
               <td class="station-cell" title="北品川 徒歩5分">北品川 徒歩5分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.9万<br><span style="font-size:9px;color:var(--text-muted)">品川区 2592円/㎡</span></td>
               <td>3.3%</td>
               <td class="price-cell" style="color:var(--red)">-10.7万</td>
               <td class="price-cell">94.8万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">34,500円</span></div>
                   <div class="detail-item"><span class="detail-label">相場品川区<span style="font-size:9px;opacity:0.7"> (2592円/㎡)</span></span><span class="detail-value">10.9万/月</span></div>
@@ -30466,7 +30723,7 @@ body {
             </tr>
             <tr data-score="77" data-price="4880" data-area="48.96" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">77</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="date-cell"><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024759467/" target="_blank" rel="noopener" title="ベルディ早稲田東" onclick="event.stopPropagation()">ベルディ早稲田東</a></td>
               <td class="price-cell">4880万円</td>
               <td class="area-cell">48.96㎡</td>
@@ -30474,12 +30731,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="江戸川橋 徒歩4分">江戸川橋 徒歩4分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">12.7万<br><span style="font-size:9px;color:var(--text-muted)">新宿区 2600円/㎡</span></td>
               <td>3.1%</td>
               <td class="price-cell" style="color:var(--red)">-12.0万</td>
               <td class="price-cell">99.7万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">—</span></div>
                   <div class="detail-item"><span class="detail-label">相場新宿区<span style="font-size:9px;opacity:0.7"> (2600円/㎡)</span></span><span class="detail-value">12.7万/月</span></div>
@@ -30499,20 +30759,23 @@ body {
             </tr>
             <tr data-score="75" data-price="2980" data-area="46.28" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">75</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78515092/" target="_blank" rel="noopener" title="大江戸コーポ" onclick="event.stopPropagation()">大江戸コーポ</a></td>
               <td class="price-cell">2980万円</td>
               <td class="area-cell">46.28㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="中野坂上 徒歩1分">中野坂上 徒歩1分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.8万<br><span style="font-size:9px;color:var(--text-muted)">中野区 2340円/㎡</span></td>
               <td>4.4%</td>
               <td class="price-cell" style="color:var(--red)">-4.0万</td>
               <td class="price-cell">64.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">28,000円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中野区<span style="font-size:9px;opacity:0.7"> (2340円/㎡)</span></span><span class="detail-value">10.8万/月</span></div>
@@ -30532,7 +30795,7 @@ body {
             </tr>
             <tr data-score="73" data-price="4990" data-area="43.02" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">73</td>
-              <td>2026-03-22</td>
+              <td class="date-cell">2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20351435/" target="_blank" rel="noopener" title="ヘブン鳥越" onclick="event.stopPropagation()">ヘブン鳥越</a></td>
               <td class="price-cell">4990万円</td>
               <td class="area-cell">43.02㎡</td>
@@ -30540,12 +30803,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="浅草橋 徒歩8分">浅草橋 徒歩8分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.6万<br><span style="font-size:9px;color:var(--text-muted)">台東区 2232円/㎡</span></td>
               <td>2.3%</td>
               <td class="price-cell" style="color:var(--red)">-15.5万</td>
               <td class="price-cell">116万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">18,200円</span></div>
                   <div class="detail-item"><span class="detail-label">相場台東区<span style="font-size:9px;opacity:0.7"> (2232円/㎡)</span></span><span class="detail-value">9.6万/月</span></div>
@@ -30565,7 +30831,7 @@ body {
             </tr>
             <tr data-score="72" data-price="3150" data-area="59.4" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">72</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78764639/" target="_blank" rel="noopener" title="キャニオンマンション上鷺宮" onclick="event.stopPropagation()">キャニオンマンション上鷺宮</a></td>
               <td class="price-cell">3150万円</td>
               <td class="area-cell">59.4㎡</td>
@@ -30573,12 +30839,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="富士見台 徒歩3分">富士見台 徒歩3分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">13.9万<br><span style="font-size:9px;color:var(--text-muted)">中野区 2340円/㎡</span></td>
               <td>5.3%</td>
               <td class="price-cell" style="color:var(--red)">-2.9万</td>
               <td class="price-cell">53.0万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">14,000円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中野区<span style="font-size:9px;opacity:0.7"> (2340円/㎡)</span></span><span class="detail-value">13.9万/月</span></div>
@@ -30598,7 +30867,7 @@ body {
             </tr>
             <tr data-score="72" data-price="3499" data-area="49.23" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">72</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20255704/" target="_blank" rel="noopener" title="エクセルシィオール五條" onclick="event.stopPropagation()">エクセルシィオール五條</a></td>
               <td class="price-cell">3499万円</td>
               <td class="area-cell">49.23㎡</td>
@@ -30606,12 +30875,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="中野新橋 徒歩4分">中野新橋 徒歩4分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.5万<br><span style="font-size:9px;color:var(--text-muted)">中野区 2340円/㎡</span></td>
               <td>4.0%</td>
               <td class="price-cell" style="color:var(--red)">-5.9万</td>
               <td class="price-cell">71.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">14,620円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中野区<span style="font-size:9px;opacity:0.7"> (2340円/㎡)</span></span><span class="detail-value">11.5万/月</span></div>
@@ -30631,20 +30903,23 @@ body {
             </tr>
             <tr data-score="70" data-price="4290" data-area="56.7" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">70</td>
-              <td>2026-03-22</td>
+              <td class="date-cell">2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20347986/" target="_blank" rel="noopener" title="沼袋コーポラス" onclick="event.stopPropagation()">沼袋コーポラス</a></td>
               <td class="price-cell">4290万円</td>
               <td class="area-cell">56.7㎡</td>
               <td>3LDK</td>
               <td>—</td>
               <td class="station-cell" title="沼袋 徒歩4分">沼袋 徒歩4分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">13.3万<br><span style="font-size:9px;color:var(--text-muted)">中野区 2340円/㎡</span></td>
               <td>3.7%</td>
               <td class="price-cell" style="color:var(--red)">-6.9万</td>
               <td class="price-cell">75.7万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">26,000円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中野区<span style="font-size:9px;opacity:0.7"> (2340円/㎡)</span></span><span class="detail-value">13.3万/月</span></div>
@@ -30664,20 +30939,23 @@ body {
             </tr>
             <tr data-score="68" data-price="3880" data-area="47.07" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">68</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20335958/" target="_blank" rel="noopener" title="大塚キャノンハイツ" onclick="event.stopPropagation()">大塚キャノンハイツ</a></td>
               <td class="price-cell">3880万円</td>
               <td class="area-cell">47.07㎡</td>
               <td>2DK</td>
               <td>—</td>
               <td class="station-cell" title="大塚 徒歩9分">大塚 徒歩9分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.6万<br><span style="font-size:9px;color:var(--text-muted)">豊島区 2470円/㎡</span></td>
               <td>3.6%</td>
               <td class="price-cell" style="color:var(--red)">-6.5万</td>
               <td class="price-cell">82.4万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">24,750円</span></div>
                   <div class="detail-item"><span class="detail-label">相場豊島区<span style="font-size:9px;opacity:0.7"> (2470円/㎡)</span></span><span class="detail-value">11.6万/月</span></div>
@@ -30697,20 +30975,23 @@ body {
             </tr>
             <tr data-score="68" data-price="4590" data-area="40.16" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">68</td>
-              <td>2026-03-22</td>
+              <td class="date-cell">2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20353679/" target="_blank" rel="noopener" title="Refays-ms（リファイズエムエス）" onclick="event.stopPropagation()">Refays-ms（リファイズエムエス）</a></td>
               <td class="price-cell">4590万円</td>
               <td class="area-cell">40.16㎡</td>
               <td>1LDK</td>
               <td>—</td>
               <td class="station-cell" title="南千住 徒歩8分">南千住 徒歩8分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.5万<br><span style="font-size:9px;color:var(--text-muted)">台東区 2852円/㎡</span></td>
               <td>3.0%</td>
               <td class="price-cell" style="color:var(--red)">-4.8万</td>
               <td class="price-cell">114万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">21,010円</span></div>
                   <div class="detail-item"><span class="detail-label">相場台東区<span style="font-size:9px;opacity:0.7"> (2852円/㎡)</span></span><span class="detail-value">11.5万/月</span></div>
@@ -30730,7 +31011,7 @@ body {
             </tr>
             <tr data-score="68" data-price="2680" data-area="45.36" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">68</td>
-              <td>2026-03-22</td>
+              <td class="date-cell">2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20452632/" target="_blank" rel="noopener" title="京成サンコーポ浅草" onclick="event.stopPropagation()">京成サンコーポ浅草</a></td>
               <td class="price-cell">2680万円</td>
               <td class="area-cell">45.36㎡</td>
@@ -30738,12 +31019,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="田原町 徒歩5分">田原町 徒歩5分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.1万<br><span style="font-size:9px;color:var(--text-muted)">台東区 2015円/㎡</span></td>
               <td>4.1%</td>
               <td class="price-cell" style="color:var(--red)">-3.9万</td>
               <td class="price-cell">59.1万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">27,670円</span></div>
                   <div class="detail-item"><span class="detail-label">相場台東区<span style="font-size:9px;opacity:0.7"> (2015円/㎡)</span></span><span class="detail-value">9.1万/月</span></div>
@@ -30763,20 +31047,23 @@ body {
             </tr>
             <tr data-score="68" data-price="2700" data-area="41.52" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">68</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="date-cell"><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20494298/" target="_blank" rel="noopener" title="日商岩井上高田マンション" onclick="event.stopPropagation()">日商岩井上高田マンション</a></td>
               <td class="price-cell">2700万円</td>
               <td class="area-cell">41.52㎡</td>
               <td>1R</td>
               <td>—</td>
               <td class="station-cell" title="東中野 徒歩6分">東中野 徒歩6分</td>
+              <td>—</td>
               <td>相談可</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">9.7万<br><span style="font-size:9px;color:var(--text-muted)">中野区 2340円/㎡</span></td>
               <td>4.3%</td>
               <td class="price-cell" style="color:var(--red)">-3.7万</td>
               <td class="price-cell">65.0万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">21,200円</span></div>
                   <div class="detail-item"><span class="detail-label">相場中野区<span style="font-size:9px;opacity:0.7"> (2340円/㎡)</span></span><span class="detail-value">9.7万/月</span></div>
@@ -30796,7 +31083,7 @@ body {
             </tr>
             <tr data-score="67" data-price="4780" data-area="44.47" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">67</td>
-              <td>2026-03-22</td>
+              <td class="date-cell">2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_20341356/" target="_blank" rel="noopener" title="サンロイヤル五反田" onclick="event.stopPropagation()">サンロイヤル五反田</a></td>
               <td class="price-cell">4780万円</td>
               <td class="area-cell">44.47㎡</td>
@@ -30804,12 +31091,15 @@ body {
               <td>—</td>
               <td class="station-cell" title="五反田 徒歩5分">五反田 徒歩5分</td>
               <td>—</td>
+              <td>—</td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">10.4万<br><span style="font-size:9px;color:var(--text-muted)">品川区 2340円/㎡</span></td>
               <td>2.6%</td>
               <td class="price-cell" style="color:var(--red)">-11.5万</td>
               <td class="price-cell">107万/㎡</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="15">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">28,460円</span></div>
                   <div class="detail-item"><span class="detail-label">相場品川区<span style="font-size:9px;opacity:0.7"> (2340円/㎡)</span></span><span class="detail-value">10.4万/月</span></div>
@@ -33918,7 +34208,7 @@ body {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-03-30 14:04</div>
+  <div style="margin-top:4px;">Generated at 2026-03-30 14:17</div>
 </footer>
 <script>
 let currentView = 'list';

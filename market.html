@@ -840,33 +840,36 @@ body {
       <div class="city-tabs" id="cityTabs">
         <button class="city-tab active"
                 data-city="osaka"
+                data-profitable="2"
                 data-kubun="20"
                 data-ittomono="7"
                 data-kodate="0"
                 data-budget="0"
                 onclick="switchCity('osaka')">
           大阪
-          <span class="city-tab-count">27</span>
+          <span class="city-tab-count">29</span>
         </button>
         <button class="city-tab"
                 data-city="fukuoka"
+                data-profitable="18"
                 data-kubun="25"
                 data-ittomono="15"
                 data-kodate="10"
                 data-budget="10"
                 onclick="switchCity('fukuoka')">
           福岡
-          <span class="city-tab-count">60</span>
+          <span class="city-tab-count">78</span>
         </button>
         <button class="city-tab"
                 data-city="tokyo"
+                data-profitable="9"
                 data-kubun="20"
                 data-ittomono="15"
                 data-kodate="0"
                 data-budget="0"
                 onclick="switchCity('tokyo')">
           東京
-          <span class="city-tab-count">35</span>
+          <span class="city-tab-count">44</span>
         </button>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
@@ -884,7 +887,10 @@ body {
       </div>
     </div>
     <div class="type-jump" id="typeJump">
-      <button class="type-jump-btn active" data-type="kubun" onclick="jumpToType('kubun')">
+      <button class="type-jump-btn active" data-type="profitable" onclick="jumpToType('profitable')" style="border-color:rgba(34,197,94,0.4);color:var(--green)">
+        収益 <span class="type-jump-count" id="jumpProfitableCount">0</span>
+      </button>
+      <button class="type-jump-btn" data-type="kubun" onclick="jumpToType('kubun')">
         区分 <span class="type-jump-count" id="jumpKubunCount">0</span>
       </button>
       <button class="type-jump-btn" data-type="ittomono" onclick="jumpToType('ittomono')">
@@ -899,839 +905,81 @@ body {
     </div>
   </div>
 
-  <div class="type-section profitable-section" id="profitable-section" data-type="profitable" style="margin-bottom:24px">
-    <div class="type-header" style="background:linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04)); border-color:rgba(34,197,94,0.3)">
-      <span class="type-label" style="color:var(--green)">収益物件</span>
-      <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">29</span>
-      <span style="font-size:11px;color:var(--text-muted);margin-left:8px">CF > 0 / 手出し↑順 / 種別横断</span>
-    </div>
-    <div class="property-list active" data-view="list">
-      <table class="prop-table" data-type="profitable">
-        <thead>
-          <tr>
-            <th>都市</th><th>種別</th><th>物件名</th><th>価格</th><th>面積</th>
-            <th>利回り</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th><th>回収年</th><th>ローン</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="75" data-price="580">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
-            <td><a href="https://www.f-takken.com/freins/items/99665480" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">第一大楠マンション 305</a></td>
-            <td class="price-cell" style="white-space:nowrap">580万</td>
-            <td>55㎡</td>
-            <td>11.1%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">0.1万</td>
-            <td class="price-cell" style="white-space:nowrap">156.6万</td>
-            <td>0.4%</td>
-            <td>252.6年</td>
-            <td style="font-size:11px">2.85%/20年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">雑餉隈 徒歩5分</span></div>
-                <div class="detail-item"><span class="detail-label">実家賃</span><span class="detail-value">5.5万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">31.1万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">116.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">40.6万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">30.5万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">0.1万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="63" data-price="590">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
-            <td><a href="https://www.f-takken.com/freins/items/99813072" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">スカイマンション南福岡</a></td>
-            <td class="price-cell" style="white-space:nowrap">590万</td>
-            <td>63㎡</td>
-            <td>27.6%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">4.7万</td>
-            <td class="price-cell" style="white-space:nowrap">159.3万</td>
-            <td>50.1%</td>
-            <td>2.0年</td>
-            <td style="font-size:11px">2.85%/20年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">春日 徒歩7分</span></div>
-                <div class="detail-item"><span class="detail-label">相場博多区</span><span class="detail-value">13.6万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">110.7万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">118.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">41.3万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">31.0万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">6.7万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="25" data-price="748">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-            <td><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/5/re_43493925xe/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">早良区野芥</a></td>
-            <td class="price-cell" style="white-space:nowrap">748万</td>
-            <td>75㎡</td>
-            <td>9.6%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">0.7万</td>
-            <td class="price-cell" style="white-space:nowrap">202.0万</td>
-            <td>2.2%</td>
-            <td>45.2年</td>
-            <td style="font-size:11px">2.85%/15年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">野芥 徒歩21分</span></div>
-                <div class="detail-item"><span class="detail-label">相場早良区</span><span class="detail-value">11.1万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">53.5万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">149.6万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">52.4万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">49.1万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">0.4万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="77" data-price="850">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
-            <td><a href="https://www.f-takken.com/freins/items/99804693" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">第3シャトー高宮 101</a></td>
-            <td class="price-cell" style="white-space:nowrap">850万</td>
-            <td>68㎡</td>
-            <td>9.9%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">0.7万</td>
-            <td class="price-cell" style="white-space:nowrap">229.5万</td>
-            <td>6.1%</td>
-            <td>16.4年</td>
-            <td style="font-size:11px">2.85%/20年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">西鉄平尾 徒歩10分</span></div>
-                <div class="detail-item"><span class="detail-label">実家賃</span><span class="detail-value">7.0万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">58.6万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">170.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">59.5万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">44.6万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.2万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="20" data-price="950">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-            <td><a href="https://www.f-takken.com/freins/items/99801780" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">中央区六本松 木造</a></td>
-            <td class="price-cell" style="white-space:nowrap">950万</td>
-            <td>25㎡</td>
-            <td>≈6.5%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">1.6万</td>
-            <td class="price-cell" style="white-space:nowrap">256.5万</td>
-            <td>-6.4%</td>
-            <td>∞</td>
-            <td style="font-size:11px">2.85%/15年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">六本松 徒歩5分</span></div>
-                <div class="detail-item"><span class="detail-label">相場中央区</span><span class="detail-value">5.1万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">45.9万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">190.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">66.5万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">62.3万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-1.4万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="100" data-price="1000">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
-            <td><a href="https://www.f-takken.com/freins/items/99781409" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">トピレック博多</a></td>
-            <td class="price-cell" style="white-space:nowrap">1000万</td>
-            <td>47㎡</td>
-            <td>13.8%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">3.0万</td>
-            <td class="price-cell" style="white-space:nowrap">270.0万</td>
-            <td>20.0%</td>
-            <td>5.0年</td>
-            <td style="font-size:11px">2.85%/21年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">SRC造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">竹下 徒歩15分</span></div>
-                <div class="detail-item"><span class="detail-label">相場博多区</span><span class="detail-value">11.5万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">104.6万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">200.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">70.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">50.7万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">4.5万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="20" data-price="1100">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-            <td><a href="https://www.f-takken.com/freins/items/99723575" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">中央区輝国 木造</a></td>
-            <td class="price-cell" style="white-space:nowrap">1100万</td>
-            <td>119㎡</td>
-            <td>6.5%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">1.8万</td>
-            <td class="price-cell" style="white-space:nowrap">297.0万</td>
-            <td>-6.5%</td>
-            <td>∞</td>
-            <td style="font-size:11px">2.85%/15年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">六本松 徒歩13分</span></div>
-                <div class="detail-item"><span class="detail-label">相場中央区</span><span class="detail-value">24.8万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">52.9万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">220.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">77.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">72.2万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-1.6万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="25" data-price="1450">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-            <td><a href="https://www.f-takken.com/freins/items/99781425" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">南区柏原 木造</a></td>
-            <td class="price-cell" style="white-space:nowrap">1450万</td>
-            <td>80㎡</td>
-            <td>≈11.5%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">5.6万</td>
-            <td class="price-cell" style="white-space:nowrap">391.5万</td>
-            <td>7.3%</td>
-            <td>13.6年</td>
-            <td style="font-size:11px">2.85%/15年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">吉塚 徒歩7分</span></div>
-                <div class="detail-item"><span class="detail-label">相場南区</span><span class="detail-value">13.9万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">123.9万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">290.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">101.5万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">95.1万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">2.4万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="60" data-price="1700">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-            <td><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/1/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">博多区博多駅南3丁目</a></td>
-            <td class="price-cell" style="white-space:nowrap">1700万</td>
-            <td>—</td>
-            <td>5.0%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">0.2万</td>
-            <td class="price-cell" style="white-space:nowrap">459.0万</td>
-            <td>0.4%</td>
-            <td>239.4年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">東比恵 徒歩12分</span></div>
-                <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">63.4万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">340.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">119.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">61.5万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">0.2万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="85" data-price="1750">
-            <td style="font-size:11px">大阪</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">区分</span></td>
-            <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">サントピア九条</a></td>
-            <td class="price-cell" style="white-space:nowrap">1750万</td>
-            <td>52㎡</td>
-            <td>7.7%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">0.6万</td>
-            <td class="price-cell" style="white-space:nowrap">472.5万</td>
-            <td>-1.9%</td>
-            <td>∞</td>
-            <td style="font-size:11px">2.85%/20年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">九条 徒歩2分</span></div>
-                <div class="detail-item"><span class="detail-label">相場西区</span><span class="detail-value">11.3万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">82.9万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">350.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">122.5万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">91.9万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-0.8万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="103" data-price="1900">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">区分</span></td>
-            <td><a href="https://www.f-takken.com/freins/items/99358163" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">博多ニッコーハイツ 5階</a></td>
-            <td class="price-cell" style="white-space:nowrap">1900万</td>
-            <td>63㎡</td>
-            <td>8.6%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">1.1万</td>
-            <td class="price-cell" style="white-space:nowrap">513.0万</td>
-            <td>2.9%</td>
-            <td>34.8年</td>
-            <td style="font-size:11px">2.85%/20年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">東比恵 徒歩8分</span></div>
-                <div class="detail-item"><span class="detail-label">相場博多区</span><span class="detail-value">13.6万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">114.5万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">380.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">133.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">99.8万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.2万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="95" data-price="1950">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">区分</span></td>
-            <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">ロワールマンション西公園2</a></td>
-            <td class="price-cell" style="white-space:nowrap">1950万</td>
-            <td>55㎡</td>
-            <td>7.0%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">0.7万</td>
-            <td class="price-cell" style="white-space:nowrap">526.5万</td>
-            <td>-0.4%</td>
-            <td>∞</td>
-            <td style="font-size:11px">2.85%/20年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">大濠公園 徒歩15分</span></div>
-                <div class="detail-item"><span class="detail-label">相場中央区</span><span class="detail-value">11.4万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">100.1万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">390.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">136.5万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">102.4万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-0.2万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="95" data-price="1950">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">区分</span></td>
-            <td><a href="https://www.f-takken.com/freins/items/99791987" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">103大稲マンション 706</a></td>
-            <td class="price-cell" style="white-space:nowrap">1950万</td>
-            <td>56㎡</td>
-            <td>7.1%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">0.7万</td>
-            <td class="price-cell" style="white-space:nowrap">526.5万</td>
-            <td>-0.2%</td>
-            <td>∞</td>
-            <td style="font-size:11px">2.85%/20年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">薬院大通 徒歩1分</span></div>
-                <div class="detail-item"><span class="detail-label">相場中央区</span><span class="detail-value">11.6万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">101.4万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">390.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">136.5万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">102.4万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-0.1万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="25" data-price="2100">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-            <td><a href="https://www.f-takken.com/freins/items/99694165" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">南区柏原 木造</a></td>
-            <td class="price-cell" style="white-space:nowrap">2100万</td>
-            <td>40㎡</td>
-            <td>≈3.6%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">0.9万</td>
-            <td class="price-cell" style="white-space:nowrap">567.0万</td>
-            <td>-14.3%</td>
-            <td>∞</td>
-            <td style="font-size:11px">2.85%/15年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">吉塚 徒歩8分</span></div>
-                <div class="detail-item"><span class="detail-label">相場南区</span><span class="detail-value">6.3万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">56.4万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">420.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">147.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">137.8万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-6.8万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="72" data-price="3150">
-            <td style="font-size:11px">東京</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">区分</span></td>
-            <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78764639/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">キャニオンマンション上鷺宮</a></td>
-            <td class="price-cell" style="white-space:nowrap">3150万</td>
-            <td>59㎡</td>
-            <td>5.3%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">0.6万</td>
-            <td class="price-cell" style="white-space:nowrap">850.5万</td>
-            <td>-4.7%</td>
-            <td>∞</td>
-            <td style="font-size:11px">2.85%/20年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">富士見台 徒歩3分</span></div>
-                <div class="detail-item"><span class="detail-label">相場中野区</span><span class="detail-value">13.9万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">125.9万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">630.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">220.5万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">165.4万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-3.3万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="65" data-price="5000">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3569603/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">サンバレー井尻</a></td>
-            <td class="price-cell" style="white-space:nowrap">5000万</td>
-            <td>—</td>
-            <td>7.0%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">9.6万</td>
-            <td class="price-cell" style="white-space:nowrap">1350.0万</td>
-            <td>-4.9%</td>
-            <td>∞</td>
-            <td style="font-size:11px">2.85%/15年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">笹原 徒歩3分</span></div>
-                <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">262.3万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">1000.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">350.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">328.0万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.5万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="72" data-price="6980">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3531933/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">東区アパート（箱崎宮前）</a></td>
-            <td class="price-cell" style="white-space:nowrap">6980万</td>
-            <td>—</td>
-            <td>9.1%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">10.7万</td>
-            <td class="price-cell" style="white-space:nowrap">1884.6万</td>
-            <td>0.7%</td>
-            <td>144.0年</td>
-            <td style="font-size:11px">2.85%/15年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">箱崎宮前 徒歩6分</span></div>
-                <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">471.0万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">1396.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">488.6万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">457.9万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.1万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="70" data-price="7860">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3499456/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">箱崎4丁目一棟売マンション</a></td>
-            <td class="price-cell" style="white-space:nowrap">7860万</td>
-            <td>—</td>
-            <td>7.1%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">5.4万</td>
-            <td class="price-cell" style="white-space:nowrap">2122.2万</td>
-            <td>-4.7%</td>
-            <td>∞</td>
-            <td style="font-size:11px">2.85%/15年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">鉄骨造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">箱崎九大前 徒歩5分</span></div>
-                <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">415.8万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">1572.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">550.2万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">515.7万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-8.3万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="72" data-price="11000">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3506635/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">早良区西新 鉄骨22戸</a></td>
-            <td class="price-cell" style="white-space:nowrap">1.1億</td>
-            <td>—</td>
-            <td>8.0%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">11.6万</td>
-            <td class="price-cell" style="white-space:nowrap">2970.0万</td>
-            <td>-2.4%</td>
-            <td>∞</td>
-            <td style="font-size:11px">2.85%/15年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">鉄骨造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">西新 徒歩7分</span></div>
-                <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">650.6万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">2200.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">770.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">721.7万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.9万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="67" data-price="14500">
-            <td style="font-size:11px">福岡</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3574994/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">シャトレ熊西(PHOENIX大橋南)</a></td>
-            <td class="price-cell" style="white-space:nowrap">1.4億</td>
-            <td>—</td>
-            <td>5.5%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">4.6万</td>
-            <td class="price-cell" style="white-space:nowrap">3915.0万</td>
-            <td>1.8%</td>
-            <td>55.7年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">大橋 徒歩11分</span></div>
-                <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">594.4万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">2900.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1015.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">524.1万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">5.9万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="70" data-price="14760">
-            <td style="font-size:11px">東京</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.kenbiya.com/pp2/s/tokyo/nerima-ku/re_4396036zvl/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">練馬区桜台1-32 (健美家)</a></td>
-            <td class="price-cell" style="white-space:nowrap">1.5億</td>
-            <td>176㎡</td>
-            <td>6.0%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">7.1万</td>
-            <td class="price-cell" style="white-space:nowrap">3985.2万</td>
-            <td>3.1%</td>
-            <td>31.8年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">3階建</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">新桜台 歩4分</span></div>
-                <div class="detail-item"><span class="detail-label">相場練馬区</span><span class="detail-value">54.5万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">658.9万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">2952.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1033.2万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">533.5万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">10.4万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="83" data-price="14900">
-            <td style="font-size:11px">東京</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.kenbiya.com/pp2/s/tokyo/hachioji-shi/re_4397873uhg/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">八王子市大塚424 (健美家)</a></td>
-            <td class="price-cell" style="white-space:nowrap">1.5億</td>
-            <td>213㎡</td>
-            <td>11.0%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">39.8万</td>
-            <td class="price-cell" style="white-space:nowrap">4023.0万</td>
-            <td>16.9%</td>
-            <td>5.9年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">2階建</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">大塚・帝京大学 歩9分</span></div>
-                <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">68.2万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">1219.4万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">2980.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1043.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">538.6万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">56.7万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="73" data-price="16100">
-            <td style="font-size:11px">東京</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.kenbiya.com/pp2/s/tokyo/suginami-ku/re_4388850orv/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">杉並区浜田山1-29 (健美家)</a></td>
-            <td class="price-cell" style="white-space:nowrap">1.6億</td>
-            <td>180㎡</td>
-            <td>5.3%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">4.4万</td>
-            <td class="price-cell" style="white-space:nowrap">4347.0万</td>
-            <td>1.3%</td>
-            <td>78.6年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">2階建</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">西永福 歩8分</span></div>
-                <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">52.8万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">637.2万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3220.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1127.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">582.0万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">4.6万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="70" data-price="16500">
-            <td style="font-size:11px">東京</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.kenbiya.com/pp3/s/tokyo/itabashi-ku/re_4391333tyb/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">板橋区高島平2丁目 (健美家)</a></td>
-            <td class="price-cell" style="white-space:nowrap">1.6億</td>
-            <td>176㎡</td>
-            <td>5.0%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">1.0万</td>
-            <td class="price-cell" style="white-space:nowrap">4455.0万</td>
-            <td>0.4%</td>
-            <td>256.3年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">4階建</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">高島平 歩9分</span></div>
-                <div class="detail-item"><span class="detail-label">相場板橋区</span><span class="detail-value">59.8万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">613.8万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3300.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1155.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">596.4万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.4万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="75" data-price="16700">
-            <td style="font-size:11px">東京</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.kenbiya.com/pp2/s/tokyo/nerima-ku/re_4392294is1/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">練馬区豊玉北3丁目2 (健美家)</a></td>
-            <td class="price-cell" style="white-space:nowrap">1.7億</td>
-            <td>190㎡</td>
-            <td>5.5%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">4.4万</td>
-            <td class="price-cell" style="white-space:nowrap">4509.0万</td>
-            <td>1.8%</td>
-            <td>56.6年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">3階建</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">桜台 歩5分</span></div>
-                <div class="detail-item"><span class="detail-label">相場練馬区</span><span class="detail-value">58.9万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">683.4万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3340.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1169.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">603.6万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">6.6万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="70" data-price="17840">
-            <td style="font-size:11px">東京</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.kenbiya.com/pp2/s/tokyo/kita-ku/re_4388955xu0/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">北区豊島7丁目 (健美家)</a></td>
-            <td class="price-cell" style="white-space:nowrap">1.8億</td>
-            <td>185㎡</td>
-            <td>6.0%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">9.7万</td>
-            <td class="price-cell" style="white-space:nowrap">4816.8万</td>
-            <td>3.1%</td>
-            <td>31.8年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">3階建</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">王子 歩18分</span></div>
-                <div class="detail-item"><span class="detail-label">相場北区</span><span class="detail-value">59.1万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">796.4万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3568.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1248.8万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">644.9万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">12.6万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="83" data-price="19800">
-            <td style="font-size:11px">東京</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.kenbiya.com/pp2/s/tokyo/itabashi-ku/re_43864079ef/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">板橋区前野町2丁目 (健美家)</a></td>
-            <td class="price-cell" style="white-space:nowrap">2.0億</td>
-            <td>255㎡</td>
-            <td>7.0%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">19.4万</td>
-            <td class="price-cell" style="white-space:nowrap">5346.0万</td>
-            <td>5.9%</td>
-            <td>16.9年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">3階建</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">ときわ台 歩9分</span></div>
-                <div class="detail-item"><span class="detail-label">相場板橋区</span><span class="detail-value">86.6万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">1031.2万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3960.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1386.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">715.7万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">26.3万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="73" data-price="19900">
-            <td style="font-size:11px">東京</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.kenbiya.com/pp2/s/tokyo/nerima-ku/re_43946322gw/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">練馬区桜台一丁目34 (健美家)</a></td>
-            <td class="price-cell" style="white-space:nowrap">2.0億</td>
-            <td>286㎡</td>
-            <td>5.2%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">4.3万</td>
-            <td class="price-cell" style="white-space:nowrap">5373.0万</td>
-            <td>0.9%</td>
-            <td>109.4年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">2階建</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">桜台 歩4分</span></div>
-                <div class="detail-item"><span class="detail-label">相場練馬区</span><span class="detail-value">81.6万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">768.4万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3980.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1393.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">719.3万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">4.1万</span></div>
-              </div>
-            </td>
-          </tr>
-          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
-              data-score="77" data-price="20000">
-            <td style="font-size:11px">大阪</td>
-            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
-            <td><a href="https://www.kenbiya.com/pp3/k/osaka/osaka-shi/1/re_4367882fca/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">大阪市中央区瓦屋町　マンション（民泊運営中）</a></td>
-            <td class="price-cell" style="white-space:nowrap">2.0億</td>
-            <td>212㎡</td>
-            <td>5.0%</td>
-            <td class="price-cell" style="color:var(--green);font-weight:600">2.2万</td>
-            <td class="price-cell" style="white-space:nowrap">5400.0万</td>
-            <td>0.4%</td>
-            <td>256.3年</td>
-            <td style="font-size:11px">2.85%/35年</td>
-          </tr>
-          <tr class="detail-row">
-            <td colspan="11">
-              <div class="detail-grid">
-                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造6階建</span></div>
-                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">日本橋 歩7分</span></div>
-                <div class="detail-item"><span class="detail-label">相場中央区</span><span class="detail-value">72.0万/月</span></div>
-                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">744.0万</span></div>
-                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">4000.0万</span></div>
-                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1400.0万</span></div>
-                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">722.9万</span></div>
-                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.8万</span></div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
   <div class="city-panel active" id="panel-osaka">
+
+    <div class="type-section" id="osaka-profitable" data-type="profitable">
+      <div class="type-header" style="background:linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04)); border-color:rgba(34,197,94,0.3)">
+        <span class="type-label" style="color:var(--green)">収益物件</span>
+        <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">2</span>
+        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">CF > 0 / 手出し↑順 / 種別横断</span>
+      </div>
+      <div class="property-list active" data-view="list">
+        <table class="prop-table" data-type="profitable">
+          <thead>
+            <tr>
+              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th>
+              <th>利回り</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th><th>回収年</th><th>ローン</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="85" data-price="1750">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">区分</span></td>
+              <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">サントピア九条</a></td>
+              <td class="price-cell" style="white-space:nowrap">1750万</td>
+              <td>52㎡</td>
+              <td>7.7%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">0.6万</td>
+              <td class="price-cell" style="white-space:nowrap">472.5万</td>
+              <td>-1.9%</td>
+              <td>∞</td>
+              <td style="font-size:11px">2.85%/20年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">九条 徒歩2分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場西区</span><span class="detail-value">11.3万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">82.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">350.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">122.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">91.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-0.8万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="77" data-price="20000">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.kenbiya.com/pp3/k/osaka/osaka-shi/1/re_4367882fca/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">大阪市中央区瓦屋町　マンション（民泊運営中）</a></td>
+              <td class="price-cell" style="white-space:nowrap">2.0億</td>
+              <td>212㎡</td>
+              <td>5.0%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">2.2万</td>
+              <td class="price-cell" style="white-space:nowrap">5400.0万</td>
+              <td>0.4%</td>
+              <td>256.3年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造6階建</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">日本橋 歩7分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場中央区</span><span class="detail-value">72.0万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">744.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">4000.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1400.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">722.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.8万</span></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
     <div class="type-section" id="osaka-kubun" data-type="kubun">
       <div class="type-header">
@@ -7719,6 +6967,512 @@ body {
 
   </div>
   <div class="city-panel" id="panel-fukuoka">
+
+    <div class="type-section" id="fukuoka-profitable" data-type="profitable">
+      <div class="type-header" style="background:linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04)); border-color:rgba(34,197,94,0.3)">
+        <span class="type-label" style="color:var(--green)">収益物件</span>
+        <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">18</span>
+        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">CF > 0 / 手出し↑順 / 種別横断</span>
+      </div>
+      <div class="property-list active" data-view="list">
+        <table class="prop-table" data-type="profitable">
+          <thead>
+            <tr>
+              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th>
+              <th>利回り</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th><th>回収年</th><th>ローン</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="75" data-price="580">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
+              <td><a href="https://www.f-takken.com/freins/items/99665480" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">第一大楠マンション 305</a></td>
+              <td class="price-cell" style="white-space:nowrap">580万</td>
+              <td>55㎡</td>
+              <td>11.1%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">0.1万</td>
+              <td class="price-cell" style="white-space:nowrap">156.6万</td>
+              <td>0.4%</td>
+              <td>252.6年</td>
+              <td style="font-size:11px">2.85%/20年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">雑餉隈 徒歩5分</span></div>
+                  <div class="detail-item"><span class="detail-label">実家賃</span><span class="detail-value">5.5万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">31.1万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">116.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">40.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">30.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">0.1万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="63" data-price="590">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
+              <td><a href="https://www.f-takken.com/freins/items/99813072" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">スカイマンション南福岡</a></td>
+              <td class="price-cell" style="white-space:nowrap">590万</td>
+              <td>63㎡</td>
+              <td>27.6%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">4.7万</td>
+              <td class="price-cell" style="white-space:nowrap">159.3万</td>
+              <td>50.1%</td>
+              <td>2.0年</td>
+              <td style="font-size:11px">2.85%/20年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">春日 徒歩7分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場博多区</span><span class="detail-value">13.6万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">110.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">118.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">41.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">31.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">6.7万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="25" data-price="748">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
+              <td><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/5/re_43493925xe/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">早良区野芥</a></td>
+              <td class="price-cell" style="white-space:nowrap">748万</td>
+              <td>75㎡</td>
+              <td>9.6%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">0.7万</td>
+              <td class="price-cell" style="white-space:nowrap">202.0万</td>
+              <td>2.2%</td>
+              <td>45.2年</td>
+              <td style="font-size:11px">2.85%/15年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">野芥 徒歩21分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場早良区</span><span class="detail-value">11.1万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">53.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">149.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">52.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">49.1万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">0.4万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="77" data-price="850">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
+              <td><a href="https://www.f-takken.com/freins/items/99804693" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">第3シャトー高宮 101</a></td>
+              <td class="price-cell" style="white-space:nowrap">850万</td>
+              <td>68㎡</td>
+              <td>9.9%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">0.7万</td>
+              <td class="price-cell" style="white-space:nowrap">229.5万</td>
+              <td>6.1%</td>
+              <td>16.4年</td>
+              <td style="font-size:11px">2.85%/20年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">西鉄平尾 徒歩10分</span></div>
+                  <div class="detail-item"><span class="detail-label">実家賃</span><span class="detail-value">7.0万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">58.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">170.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">59.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">44.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.2万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="20" data-price="950">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
+              <td><a href="https://www.f-takken.com/freins/items/99801780" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">中央区六本松 木造</a></td>
+              <td class="price-cell" style="white-space:nowrap">950万</td>
+              <td>25㎡</td>
+              <td>≈6.5%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.6万</td>
+              <td class="price-cell" style="white-space:nowrap">256.5万</td>
+              <td>-6.4%</td>
+              <td>∞</td>
+              <td style="font-size:11px">2.85%/15年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">六本松 徒歩5分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場中央区</span><span class="detail-value">5.1万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">45.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">190.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">66.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">62.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-1.4万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="100" data-price="1000">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
+              <td><a href="https://www.f-takken.com/freins/items/99781409" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">トピレック博多</a></td>
+              <td class="price-cell" style="white-space:nowrap">1000万</td>
+              <td>47㎡</td>
+              <td>13.8%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">3.0万</td>
+              <td class="price-cell" style="white-space:nowrap">270.0万</td>
+              <td>20.0%</td>
+              <td>5.0年</td>
+              <td style="font-size:11px">2.85%/21年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">SRC造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">竹下 徒歩15分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場博多区</span><span class="detail-value">11.5万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">104.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">200.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">70.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">50.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">4.5万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="20" data-price="1100">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
+              <td><a href="https://www.f-takken.com/freins/items/99723575" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">中央区輝国 木造</a></td>
+              <td class="price-cell" style="white-space:nowrap">1100万</td>
+              <td>119㎡</td>
+              <td>6.5%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.8万</td>
+              <td class="price-cell" style="white-space:nowrap">297.0万</td>
+              <td>-6.5%</td>
+              <td>∞</td>
+              <td style="font-size:11px">2.85%/15年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">六本松 徒歩13分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場中央区</span><span class="detail-value">24.8万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">52.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">220.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">77.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">72.2万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-1.6万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="25" data-price="1450">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
+              <td><a href="https://www.f-takken.com/freins/items/99781425" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">南区柏原 木造</a></td>
+              <td class="price-cell" style="white-space:nowrap">1450万</td>
+              <td>80㎡</td>
+              <td>≈11.5%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">5.6万</td>
+              <td class="price-cell" style="white-space:nowrap">391.5万</td>
+              <td>7.3%</td>
+              <td>13.6年</td>
+              <td style="font-size:11px">2.85%/15年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">吉塚 徒歩7分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場南区</span><span class="detail-value">13.9万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">123.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">290.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">101.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">95.1万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">2.4万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="60" data-price="1700">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
+              <td><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/1/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">博多区博多駅南3丁目</a></td>
+              <td class="price-cell" style="white-space:nowrap">1700万</td>
+              <td>—</td>
+              <td>5.0%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">0.2万</td>
+              <td class="price-cell" style="white-space:nowrap">459.0万</td>
+              <td>0.4%</td>
+              <td>239.4年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">東比恵 徒歩12分</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">63.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">340.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">119.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">61.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">0.2万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="103" data-price="1900">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">区分</span></td>
+              <td><a href="https://www.f-takken.com/freins/items/99358163" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">博多ニッコーハイツ 5階</a></td>
+              <td class="price-cell" style="white-space:nowrap">1900万</td>
+              <td>63㎡</td>
+              <td>8.6%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.1万</td>
+              <td class="price-cell" style="white-space:nowrap">513.0万</td>
+              <td>2.9%</td>
+              <td>34.8年</td>
+              <td style="font-size:11px">2.85%/20年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">東比恵 徒歩8分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場博多区</span><span class="detail-value">13.6万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">114.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">380.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">133.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">99.8万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.2万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="95" data-price="1950">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">区分</span></td>
+              <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">ロワールマンション西公園2</a></td>
+              <td class="price-cell" style="white-space:nowrap">1950万</td>
+              <td>55㎡</td>
+              <td>7.0%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">0.7万</td>
+              <td class="price-cell" style="white-space:nowrap">526.5万</td>
+              <td>-0.4%</td>
+              <td>∞</td>
+              <td style="font-size:11px">2.85%/20年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">大濠公園 徒歩15分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場中央区</span><span class="detail-value">11.4万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">100.1万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">390.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">136.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">102.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-0.2万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="95" data-price="1950">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">区分</span></td>
+              <td><a href="https://www.f-takken.com/freins/items/99791987" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">103大稲マンション 706</a></td>
+              <td class="price-cell" style="white-space:nowrap">1950万</td>
+              <td>56㎡</td>
+              <td>7.1%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">0.7万</td>
+              <td class="price-cell" style="white-space:nowrap">526.5万</td>
+              <td>-0.2%</td>
+              <td>∞</td>
+              <td style="font-size:11px">2.85%/20年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">薬院大通 徒歩1分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場中央区</span><span class="detail-value">11.6万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">101.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">390.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">136.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">102.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-0.1万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="25" data-price="2100">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
+              <td><a href="https://www.f-takken.com/freins/items/99694165" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">南区柏原 木造</a></td>
+              <td class="price-cell" style="white-space:nowrap">2100万</td>
+              <td>40㎡</td>
+              <td>≈3.6%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">0.9万</td>
+              <td class="price-cell" style="white-space:nowrap">567.0万</td>
+              <td>-14.3%</td>
+              <td>∞</td>
+              <td style="font-size:11px">2.85%/15年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">吉塚 徒歩8分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場南区</span><span class="detail-value">6.3万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">56.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">420.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">147.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">137.8万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-6.8万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="65" data-price="5000">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3569603/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">サンバレー井尻</a></td>
+              <td class="price-cell" style="white-space:nowrap">5000万</td>
+              <td>—</td>
+              <td>7.0%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">9.6万</td>
+              <td class="price-cell" style="white-space:nowrap">1350.0万</td>
+              <td>-4.9%</td>
+              <td>∞</td>
+              <td style="font-size:11px">2.85%/15年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">笹原 徒歩3分</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">262.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">1000.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">350.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">328.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.5万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="72" data-price="6980">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3531933/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">東区アパート（箱崎宮前）</a></td>
+              <td class="price-cell" style="white-space:nowrap">6980万</td>
+              <td>—</td>
+              <td>9.1%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">10.7万</td>
+              <td class="price-cell" style="white-space:nowrap">1884.6万</td>
+              <td>0.7%</td>
+              <td>144.0年</td>
+              <td style="font-size:11px">2.85%/15年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">箱崎宮前 徒歩6分</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">471.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">1396.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">488.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">457.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.1万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="70" data-price="7860">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3499456/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">箱崎4丁目一棟売マンション</a></td>
+              <td class="price-cell" style="white-space:nowrap">7860万</td>
+              <td>—</td>
+              <td>7.1%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">5.4万</td>
+              <td class="price-cell" style="white-space:nowrap">2122.2万</td>
+              <td>-4.7%</td>
+              <td>∞</td>
+              <td style="font-size:11px">2.85%/15年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">鉄骨造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">箱崎九大前 徒歩5分</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">415.8万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">1572.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">550.2万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">515.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-8.3万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="72" data-price="11000">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3506635/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">早良区西新 鉄骨22戸</a></td>
+              <td class="price-cell" style="white-space:nowrap">1.1億</td>
+              <td>—</td>
+              <td>8.0%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">11.6万</td>
+              <td class="price-cell" style="white-space:nowrap">2970.0万</td>
+              <td>-2.4%</td>
+              <td>∞</td>
+              <td style="font-size:11px">2.85%/15年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">鉄骨造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">西新 徒歩7分</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">650.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">2200.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">770.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">721.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.9万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="67" data-price="14500">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3574994/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">シャトレ熊西(PHOENIX大橋南)</a></td>
+              <td class="price-cell" style="white-space:nowrap">1.4億</td>
+              <td>—</td>
+              <td>5.5%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">4.6万</td>
+              <td class="price-cell" style="white-space:nowrap">3915.0万</td>
+              <td>1.8%</td>
+              <td>55.7年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">大橋 徒歩11分</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">594.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">2900.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1015.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">524.1万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">5.9万</span></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
     <div class="type-section" id="fukuoka-kubun" data-type="kubun">
       <div class="type-header">
@@ -20530,6 +20284,269 @@ body {
   </div>
   <div class="city-panel" id="panel-tokyo">
 
+    <div class="type-section" id="tokyo-profitable" data-type="profitable">
+      <div class="type-header" style="background:linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04)); border-color:rgba(34,197,94,0.3)">
+        <span class="type-label" style="color:var(--green)">収益物件</span>
+        <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">9</span>
+        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">CF > 0 / 手出し↑順 / 種別横断</span>
+      </div>
+      <div class="property-list active" data-view="list">
+        <table class="prop-table" data-type="profitable">
+          <thead>
+            <tr>
+              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th>
+              <th>利回り</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th><th>回収年</th><th>ローン</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="72" data-price="3150">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">区分</span></td>
+              <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78764639/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">キャニオンマンション上鷺宮</a></td>
+              <td class="price-cell" style="white-space:nowrap">3150万</td>
+              <td>59㎡</td>
+              <td>5.3%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">0.6万</td>
+              <td class="price-cell" style="white-space:nowrap">850.5万</td>
+              <td>-4.7%</td>
+              <td>∞</td>
+              <td style="font-size:11px">2.85%/20年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">富士見台 徒歩3分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場中野区</span><span class="detail-value">13.9万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">125.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">630.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">220.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">165.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-3.3万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="70" data-price="14760">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.kenbiya.com/pp2/s/tokyo/nerima-ku/re_4396036zvl/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">練馬区桜台1-32 (健美家)</a></td>
+              <td class="price-cell" style="white-space:nowrap">1.5億</td>
+              <td>176㎡</td>
+              <td>6.0%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">7.1万</td>
+              <td class="price-cell" style="white-space:nowrap">3985.2万</td>
+              <td>3.1%</td>
+              <td>31.8年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">3階建</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">新桜台 歩4分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場練馬区</span><span class="detail-value">54.5万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">658.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">2952.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1033.2万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">533.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">10.4万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="83" data-price="14900">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.kenbiya.com/pp2/s/tokyo/hachioji-shi/re_4397873uhg/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">八王子市大塚424 (健美家)</a></td>
+              <td class="price-cell" style="white-space:nowrap">1.5億</td>
+              <td>213㎡</td>
+              <td>11.0%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">39.8万</td>
+              <td class="price-cell" style="white-space:nowrap">4023.0万</td>
+              <td>16.9%</td>
+              <td>5.9年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">2階建</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">大塚・帝京大学 歩9分</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">68.2万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">1219.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">2980.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1043.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">538.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">56.7万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="73" data-price="16100">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.kenbiya.com/pp2/s/tokyo/suginami-ku/re_4388850orv/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">杉並区浜田山1-29 (健美家)</a></td>
+              <td class="price-cell" style="white-space:nowrap">1.6億</td>
+              <td>180㎡</td>
+              <td>5.3%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">4.4万</td>
+              <td class="price-cell" style="white-space:nowrap">4347.0万</td>
+              <td>1.3%</td>
+              <td>78.6年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">2階建</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">西永福 歩8分</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">52.8万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">637.2万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3220.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1127.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">582.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">4.6万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="70" data-price="16500">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.kenbiya.com/pp3/s/tokyo/itabashi-ku/re_4391333tyb/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">板橋区高島平2丁目 (健美家)</a></td>
+              <td class="price-cell" style="white-space:nowrap">1.6億</td>
+              <td>176㎡</td>
+              <td>5.0%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.0万</td>
+              <td class="price-cell" style="white-space:nowrap">4455.0万</td>
+              <td>0.4%</td>
+              <td>256.3年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">4階建</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">高島平 歩9分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場板橋区</span><span class="detail-value">59.8万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">613.8万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3300.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1155.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">596.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.4万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="75" data-price="16700">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.kenbiya.com/pp2/s/tokyo/nerima-ku/re_4392294is1/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">練馬区豊玉北3丁目2 (健美家)</a></td>
+              <td class="price-cell" style="white-space:nowrap">1.7億</td>
+              <td>190㎡</td>
+              <td>5.5%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">4.4万</td>
+              <td class="price-cell" style="white-space:nowrap">4509.0万</td>
+              <td>1.8%</td>
+              <td>56.6年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">3階建</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">桜台 歩5分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場練馬区</span><span class="detail-value">58.9万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">683.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3340.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1169.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">603.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">6.6万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="70" data-price="17840">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.kenbiya.com/pp2/s/tokyo/kita-ku/re_4388955xu0/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">北区豊島7丁目 (健美家)</a></td>
+              <td class="price-cell" style="white-space:nowrap">1.8億</td>
+              <td>185㎡</td>
+              <td>6.0%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">9.7万</td>
+              <td class="price-cell" style="white-space:nowrap">4816.8万</td>
+              <td>3.1%</td>
+              <td>31.8年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">3階建</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">王子 歩18分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場北区</span><span class="detail-value">59.1万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">796.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3568.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1248.8万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">644.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">12.6万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="83" data-price="19800">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.kenbiya.com/pp2/s/tokyo/itabashi-ku/re_43864079ef/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">板橋区前野町2丁目 (健美家)</a></td>
+              <td class="price-cell" style="white-space:nowrap">2.0億</td>
+              <td>255㎡</td>
+              <td>7.0%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">19.4万</td>
+              <td class="price-cell" style="white-space:nowrap">5346.0万</td>
+              <td>5.9%</td>
+              <td>16.9年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">3階建</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">ときわ台 歩9分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場板橋区</span><span class="detail-value">86.6万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">1031.2万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3960.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1386.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">715.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">26.3万</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+                data-score="73" data-price="19900">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(168,85,247,0.15);color:#a855f7">一棟</span></td>
+              <td><a href="https://www.kenbiya.com/pp2/s/tokyo/nerima-ku/re_43946322gw/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">練馬区桜台一丁目34 (健美家)</a></td>
+              <td class="price-cell" style="white-space:nowrap">2.0億</td>
+              <td>286㎡</td>
+              <td>5.2%</td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">4.3万</td>
+              <td class="price-cell" style="white-space:nowrap">5373.0万</td>
+              <td>0.9%</td>
+              <td>109.4年</td>
+              <td style="font-size:11px">2.85%/35年</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="10">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">2階建</span></div>
+                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">桜台 歩4分</span></div>
+                  <div class="detail-item"><span class="detail-label">相場練馬区</span><span class="detail-value">81.6万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">768.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">3980.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">1393.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">719.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">4.1万</span></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <div class="type-section" id="tokyo-kubun" data-type="kubun">
       <div class="type-header">
         <span class="type-label">区分マンション</span>
@@ -28139,7 +28156,7 @@ body {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-03-30 16:25</div>
+  <div style="margin-top:4px;">Generated at 2026-03-30 16:29</div>
 </footer>
 <script>
 let currentView = 'list';
@@ -28166,6 +28183,7 @@ function switchCity(key) {
 function updateTypeJump() {
   const tab = document.querySelector('.city-tab.active');
   if (!tab) return;
+  document.getElementById('jumpProfitableCount').textContent = tab.dataset.profitable || '0';
   document.getElementById('jumpKubunCount').textContent = tab.dataset.kubun || '0';
   document.getElementById('jumpIttomonoCount').textContent = tab.dataset.ittomono || '0';
   document.getElementById('jumpKodateCount').textContent = tab.dataset.kodate || '0';

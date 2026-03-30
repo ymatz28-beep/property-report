@@ -29,6 +29,7 @@ class InvestmentParams:
     down_payment_ratio: float = 0.20   # 頭金比率 (20%)
     loan_rate_annual: float = 0.0285   # ローン金利 年率 (2.85%)
     loan_years: int = 0                # 0 = 自動算出（残存耐用年数ベース）
+    min_loan_years: int = 15           # 自動算出時のフロア（一棟15年、区分20年）
 
     # Operations
     vacancy_rate: float = 0.07         # 空室率 (7%)
@@ -235,11 +236,11 @@ def analyze(
         loan_years = p.loan_years
     else:
         # Auto: 法人融資の現実的な年数
-        # 耐用年数超過物件でも法人なら最大15年融資可能
+        # 区分: min_loan_years=20（澤畠さん交渉ベース）
+        # 一棟: min_loan_years=15（デフォルト）
         # 耐用年数内は残存年数ベース (上限35年)
-        # → max(15, min(35, remaining)) で統一
         raw_term = max(0, useful_life - age)
-        loan_years = max(15, min(35, raw_term))
+        loan_years = max(p.min_loan_years, min(35, raw_term))
 
     down_payment = price_man * p.down_payment_ratio
     acquisition_cost = price_man * p.acquisition_cost_rate

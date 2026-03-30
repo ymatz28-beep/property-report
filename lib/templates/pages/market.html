@@ -345,6 +345,7 @@
           <span><b style="color:var(--text)">CCR</b> = 年間CF ÷ 初期資金 × 100</span>
           <span><b style="color:var(--text)">初期資金</b> = 頭金20% + 諸費用7%</span>
           <span><b style="color:var(--text)">諸費用</b> = 仲介3%+登記2%+取得税+印紙+司法書士</span>
+          <span><b style="color:var(--text)">ローン</b> = 最低20年（澤畠さん交渉ベース）/ CF(15年)=15年ストレステスト</span>
           <span><b style="color:var(--text)">相場{区名}</b> = 区別㎡単価×面積（築年齢割引適用・SUUMO/アットホーム2025年データ）</span>
         </div>
       </div>
@@ -353,7 +354,7 @@
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>ペット</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF/月(20年)</th><th>㎡単価</th>
+              <th>間取り</th><th>構造</th><th>最寄駅</th><th>ペット</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF(15年)</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -371,7 +372,7 @@
               <td class="price-cell">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}</span>{% else %}—{% endif %}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
-              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_20y is defined and prop.revenue.cf_20y is not none %}<span style="color:{% if prop.revenue.cf_20y > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.cf_20y }}万</span>{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_stress is defined and prop.revenue.cf_stress is not none %}<span style="color:{% if prop.revenue.cf_stress > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ prop.revenue.cf_stress }}万</span>{% else %}—{% endif %}</td>
               <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
@@ -380,7 +381,7 @@
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">{{ prop.maintenance_fee_text or "—" }}</span></div>
                   <div class="detail-item"><span class="detail-label">{{ prop.revenue.rent_source or "想定家賃" }}{% if prop.revenue.rent_per_sqm %}<span style="font-size:9px;opacity:0.7"> ({{ prop.revenue.rent_per_sqm }}円/㎡)</span>{% endif %}</span><span class="detail-value">{{ prop.revenue.est_monthly_rent }}/月</span></div>
-                  <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年{% if prop.revenue.cf_20y is defined and prop.revenue.cf_20y is not none %} <span style="font-size:9px;opacity:0.7">(20年交渉中)</span>{% endif %}</span></div>
+                  <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年{% if prop.revenue.cf_stress is defined and prop.revenue.cf_stress is not none %} <span style="font-size:9px;opacity:0.7">({{ prop.revenue.stress_years }}年: {{ prop.revenue.cf_stress }}万)</span>{% endif %}</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">{{ prop.revenue.net_yield }}%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>
@@ -529,6 +530,7 @@
           <span><b style="color:var(--text)">CCR</b> = 年間CF ÷ 初期資金 × 100</span>
           <span><b style="color:var(--text)">初期資金</b> = 頭金20% + 諸費用7%</span>
           <span><b style="color:var(--text)">諸費用</b> = 仲介3%+登記2%+取得税+印紙+司法書士</span>
+          <span><b style="color:var(--text)">ローン</b> = 最低20年（澤畠さん交渉ベース）/ CF(15年)=15年ストレステスト</span>
           <span><b style="color:var(--text)">実家賃</b> = OC物件の実際の賃料</span>
           <span><b style="color:var(--text)">相場{区名}</b> = 区別㎡単価×面積（築年齢割引適用・SUUMO/アットホーム2025年データ）</span>
         </div>
@@ -538,7 +540,7 @@
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造/築年</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF/月(20年)</th><th>㎡単価</th>
+              <th>間取り</th><th>構造/築年</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF(15年)</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -558,7 +560,7 @@
               <td class="price-cell" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}{% if prop.rent_per_sqm %} {{ prop.rent_per_sqm }}円/㎡{% endif %}</span>{% else %}—{% endif %}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
-              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_20y is defined and prop.revenue.cf_20y is not none %}<span style="color:{% if prop.revenue.cf_20y > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.cf_20y }}万</span>{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_stress is defined and prop.revenue.cf_stress is not none %}<span style="color:{% if prop.revenue.cf_stress > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.cf_stress }}万</span>{% else %}—{% endif %}</td>
               <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
@@ -567,7 +569,7 @@
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">{{ prop.maintenance_fee_text or "—" }}</span></div>
                   <div class="detail-item"><span class="detail-label">{{ prop.revenue.rent_source or "想定家賃" }}{% if prop.revenue.rent_per_sqm %}<span style="font-size:9px;opacity:0.7"> ({{ prop.revenue.rent_per_sqm }}円/㎡)</span>{% endif %}</span><span class="detail-value">{{ prop.revenue.est_monthly_rent }}/月</span></div>
-                  <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年{% if prop.revenue.cf_20y is defined and prop.revenue.cf_20y is not none %} <span style="font-size:9px;opacity:0.7">(20年交渉中)</span>{% endif %}</span></div>
+                  <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年{% if prop.revenue.cf_stress is defined and prop.revenue.cf_stress is not none %} <span style="font-size:9px;opacity:0.7">({{ prop.revenue.stress_years }}年: {{ prop.revenue.cf_stress }}万)</span>{% endif %}</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
                   <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">{{ prop.revenue.net_yield }}%</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>

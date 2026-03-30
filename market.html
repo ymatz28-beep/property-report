@@ -851,14 +851,14 @@ body {
         </button>
         <button class="city-tab"
                 data-city="fukuoka"
-                data-profitable="6"
+                data-profitable="24"
                 data-kubun="25"
                 data-ittomono="15"
                 data-kodate="10"
                 data-budget="10"
                 onclick="switchCity('fukuoka')">
           福岡
-          <span class="city-tab-count">66</span>
+          <span class="city-tab-count">84</span>
         </button>
         <button class="city-tab"
                 data-city="tokyo"
@@ -6897,7 +6897,7 @@ body {
     <div class="type-section" id="fukuoka-profitable" data-type="profitable">
       <div class="type-header" style="background:linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04)); border-color:rgba(34,197,94,0.3)">
         <span class="type-label" style="color:var(--green)">収益物件</span>
-        <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">6</span>
+        <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">24</span>
         <span style="font-size:11px;color:var(--text-muted);margin-left:8px">CF > 0 / CCR↓順 / 種別横断</span>
       </div>
       <div class="property-list active" data-view="list">
@@ -6905,10 +6905,70 @@ body {
           <thead>
             <tr>
               <th>種別</th><th>物件名</th><th>価格</th><th>面積</th><th>築年</th><th>最寄駅</th>
-              <th>想定家賃</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th>
+              <th>OC</th><th>家賃</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th>
             </tr>
           </thead>
           <tbody>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="52" data-price="340">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3574887/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">ライオンズプラザ博多駅南</a></td>
+              <td class="price-cell" style="white-space:nowrap">340万</td>
+              <td>84㎡</td>
+              <td style="font-size:11px">1982年<span style="opacity:0.6">(築44)</span></td>
+              <td class="station-cell"></td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">13.2万<br><span style="font-size:9px;color:var(--text-muted)">相場</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">6.0万</td>
+              <td class="price-cell" style="white-space:nowrap">91.8万</td>
+              <td style="font-weight:600">78.7%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">46.4%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">117.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">68.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">23.8万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">17.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">8.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">1.3年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="62" data-price="340">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3576836/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">ロマネスク天神第２</a></td>
+              <td class="price-cell" style="white-space:nowrap">340万</td>
+              <td>53㎡</td>
+              <td style="font-size:11px">1991年<span style="opacity:0.6">(築35)</span></td>
+              <td class="station-cell"></td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">9.2万<br><span style="font-size:9px;color:var(--text-muted)">相場</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">3.8万</td>
+              <td class="price-cell" style="white-space:nowrap">91.8万</td>
+              <td style="font-weight:600">49.1%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">32.4%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">81.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">68.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">23.8万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">17.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">5.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">2.0年</span></div>
+                </div>
+              </td>
+            </tr>
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="63" data-price="590">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
@@ -6917,23 +6977,55 @@ body {
               <td>63㎡</td>
               <td style="font-size:11px">1990年<span style="opacity:0.6">(築36)</span></td>
               <td class="station-cell">春日 徒歩7分</td>
-              <td class="price-cell" style="white-space:nowrap">13.6万</td>
+              <td><span style="font-size:10px;color:var(--text-muted)">空</span></td>
+              <td class="price-cell" style="white-space:nowrap">13.6万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
               <td class="price-cell" style="color:var(--green);font-weight:600">4.7万</td>
               <td class="price-cell" style="white-space:nowrap">159.3万</td>
               <td style="font-weight:600">35.5%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="10">
+              <td colspan="11">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">RC造</span></div>
                   <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">27.6%</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">110.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">23,886円</span></div>
                   <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">118.0万</span></div>
                   <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">41.3万</span></div>
                   <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
                   <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">31.0万</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">6.7万</span></div>
                   <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">2.8年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="52" data-price="190">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3563869/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">博多駅前ビル</a></td>
+              <td class="price-cell" style="white-space:nowrap">190万</td>
+              <td>16㎡</td>
+              <td style="font-size:11px">1987年<span style="opacity:0.6">(築39)</span></td>
+              <td class="station-cell">西新 徒歩10分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">3.8万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.4万</td>
+              <td class="price-cell" style="white-space:nowrap">51.3万</td>
+              <td style="font-weight:600">33.6%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">23.9%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">33.8万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">38.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">13.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">10.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">2.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">3.0年</span></div>
                 </div>
               </td>
             </tr>
@@ -6945,23 +7037,55 @@ body {
               <td>80㎡</td>
               <td style="font-size:11px">1986年<span style="opacity:0.6">(築40)</span></td>
               <td class="station-cell">吉塚 徒歩7分</td>
-              <td class="price-cell" style="white-space:nowrap">13.9万</td>
+              <td><span style="font-size:10px;color:var(--text-muted)">空</span></td>
+              <td class="price-cell" style="white-space:nowrap">13.9万<br><span style="font-size:9px;color:var(--text-muted)">相場南区</span></td>
               <td class="price-cell" style="color:var(--green);font-weight:600">5.6万</td>
               <td class="price-cell" style="white-space:nowrap">391.5万</td>
               <td style="font-weight:600">17.1%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="10">
+              <td colspan="11">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
                   <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">≈11.5%</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">123.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
                   <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">290.0万</span></div>
                   <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">101.5万</span></div>
                   <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 15年</span></div>
                   <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">95.1万</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">2.4万</span></div>
                   <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">5.9年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="52" data-price="340">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3569222/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">パークアソシア</a></td>
+              <td class="price-cell" style="white-space:nowrap">340万</td>
+              <td>18㎡</td>
+              <td style="font-size:11px">1986年<span style="opacity:0.6">(築40)</span></td>
+              <td class="station-cell">◎博多駅徒歩７分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">3.9万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.1万</td>
+              <td class="price-cell" style="white-space:nowrap">91.8万</td>
+              <td style="font-weight:600">14.3%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">13.9%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">35.1万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">68.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">23.8万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">17.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">7.0年</span></div>
                 </div>
               </td>
             </tr>
@@ -6973,23 +7097,145 @@ body {
               <td>47㎡</td>
               <td style="font-size:11px">2000年<span style="opacity:0.6">(築26)</span></td>
               <td class="station-cell">竹下 徒歩15分</td>
-              <td class="price-cell" style="white-space:nowrap">11.5万</td>
+              <td><span style="font-size:10px;color:var(--text-muted)">空</span></td>
+              <td class="price-cell" style="white-space:nowrap">11.5万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
               <td class="price-cell" style="color:var(--green);font-weight:600">3.0万</td>
               <td class="price-cell" style="white-space:nowrap">270.0万</td>
               <td style="font-weight:600">13.5%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="10">
+              <td colspan="11">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">SRC造</span></div>
                   <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">13.8%</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">104.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">11,200円</span></div>
                   <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">200.0万</span></div>
                   <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">70.0万</span></div>
                   <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 21年</span></div>
                   <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">50.7万</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">4.5万</span></div>
                   <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">7.4年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="72" data-price="490">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3561398/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">ピュアドームグラース天神</a></td>
+              <td class="price-cell" style="white-space:nowrap">490万</td>
+              <td>26㎡</td>
+              <td style="font-size:11px">1991年<span style="opacity:0.6">(築35)</span></td>
+              <td class="station-cell">千代県庁口 徒歩5分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">5.6万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.5万</td>
+              <td class="price-cell" style="white-space:nowrap">132.3万</td>
+              <td style="font-weight:600">13.2%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">13.8%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">50.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">98.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">34.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">25.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">2.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">7.6年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="55" data-price="425">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3576819/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">秀和警固レジデンス</a></td>
+              <td class="price-cell" style="white-space:nowrap">425万</td>
+              <td>21㎡</td>
+              <td style="font-size:11px">1990年<span style="opacity:0.6">(築36)</span></td>
+              <td class="station-cell">薬院 徒歩5分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">4.7万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.2万</td>
+              <td class="price-cell" style="white-space:nowrap">114.8万</td>
+              <td style="font-weight:600">12.6%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">13.4%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">42.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">85.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">29.8万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">22.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">7.9年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="57" data-price="980">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3569999/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">博多・天神へのアクセスが良く便利です。</a></td>
+              <td class="price-cell" style="white-space:nowrap">980万</td>
+              <td>64㎡</td>
+              <td style="font-size:11px">1991年<span style="opacity:0.6">(築35)</span></td>
+              <td class="station-cell"></td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">11.0万<br><span style="font-size:9px;color:var(--text-muted)">相場南区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">2.8万</td>
+              <td class="price-cell" style="white-space:nowrap">264.6万</td>
+              <td style="font-weight:600">12.6%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">13.5%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">98.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">196.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">68.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">51.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">3.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">7.9年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="55" data-price="500">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3553007/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">【価格改定・2部屋バルク】リッシュハウス伊都アマルフィ</a></td>
+              <td class="price-cell" style="white-space:nowrap">500万</td>
+              <td>21㎡</td>
+              <td style="font-size:11px">1988年<span style="opacity:0.6">(築38)</span></td>
+              <td class="station-cell">薬院大通駅徒歩4分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">4.8万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.1万</td>
+              <td class="price-cell" style="white-space:nowrap">135.0万</td>
+              <td style="font-weight:600">9.4%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">11.5%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">42.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">100.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">35.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">26.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">10.7年</span></div>
                 </div>
               </td>
             </tr>
@@ -7001,17 +7247,19 @@ body {
               <td>25㎡</td>
               <td style="font-size:11px">1971年<span style="opacity:0.6">(築55)</span></td>
               <td class="station-cell">六本松 徒歩5分</td>
-              <td class="price-cell" style="white-space:nowrap">5.1万</td>
+              <td><span style="font-size:10px;color:var(--text-muted)">空</span></td>
+              <td class="price-cell" style="white-space:nowrap">5.1万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
               <td class="price-cell" style="color:var(--green);font-weight:600">1.6万</td>
               <td class="price-cell" style="white-space:nowrap">256.5万</td>
               <td style="font-weight:600">7.4%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="10">
+              <td colspan="11">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
                   <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">≈6.5%</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">45.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
                   <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">190.0万</span></div>
                   <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">66.5万</span></div>
                   <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 15年</span></div>
@@ -7029,23 +7277,295 @@ body {
               <td>119㎡</td>
               <td style="font-size:11px">1958年<span style="opacity:0.6">(築68)</span></td>
               <td class="station-cell">六本松 徒歩13分</td>
-              <td class="price-cell" style="white-space:nowrap">24.8万</td>
+              <td><span style="font-size:10px;color:var(--text-muted)">空</span></td>
+              <td class="price-cell" style="white-space:nowrap">24.8万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
               <td class="price-cell" style="color:var(--green);font-weight:600">1.8万</td>
               <td class="price-cell" style="white-space:nowrap">297.0万</td>
               <td style="font-weight:600">7.4%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="10">
+              <td colspan="11">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">木造</span></div>
                   <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">6.5%</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">52.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
                   <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">220.0万</span></div>
                   <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">77.0万</span></div>
                   <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 15年</span></div>
                   <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">72.2万</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-1.6万</span></div>
                   <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">13.6年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="55" data-price="1200">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3552413/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">エステート・モア別府</a></td>
+              <td class="price-cell" style="white-space:nowrap">1200万</td>
+              <td>45㎡</td>
+              <td style="font-size:11px">1986年<span style="opacity:0.6">(築40)</span></td>
+              <td class="station-cell">西鉄平尾 徒歩14分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">9.8万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.7万</td>
+              <td class="price-cell" style="white-space:nowrap">324.0万</td>
+              <td style="font-weight:600">6.5%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">9.8%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">87.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">240.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">84.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">63.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">2.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">15.5年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="70" data-price="2880">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3563980/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">ファミリータイプ！高層階・南向き・眺望良好</a></td>
+              <td class="price-cell" style="white-space:nowrap">2880万</td>
+              <td>60㎡</td>
+              <td style="font-size:11px">2017年<span style="opacity:0.6">(築9)</span></td>
+              <td class="station-cell">薬院 徒歩5分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">19.3万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">4.1万</td>
+              <td class="price-cell" style="white-space:nowrap">777.6万</td>
+              <td style="font-weight:600">6.3%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">8.0%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">171.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">576.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">201.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 35年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">104.1万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">5.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">15.8年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="64" data-price="1050">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3558882/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">エステート・モア博多グランB棟</a></td>
+              <td class="price-cell" style="white-space:nowrap">1050万</td>
+              <td>41㎡</td>
+              <td style="font-size:11px">1990年<span style="opacity:0.6">(築36)</span></td>
+              <td class="station-cell">賃貸中で家賃収入が見込める区分マンション。呉服町駅徒歩10分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">8.8万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.5万</td>
+              <td class="price-cell" style="white-space:nowrap">283.5万</td>
+              <td style="font-weight:600">6.3%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">10.1%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">78.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">210.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">73.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">55.1万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">2.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">15.9年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="52" data-price="1850">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3571016/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">ロマネスク城南第２</a></td>
+              <td class="price-cell" style="white-space:nowrap">1850万</td>
+              <td>63㎡</td>
+              <td style="font-size:11px">1979年<span style="opacity:0.6">(築47)</span></td>
+              <td class="station-cell">博多 徒歩9分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">12.3万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">2.4万</td>
+              <td class="price-cell" style="white-space:nowrap">499.5万</td>
+              <td style="font-weight:600">5.8%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">8.0%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">109.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">370.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">129.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">97.2万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">17.1年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="55" data-price="980">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3561374/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">【2021築RC×1LDK・浅香通沿いに佇むお洒落な物件！】</a></td>
+              <td class="price-cell" style="white-space:nowrap">980万</td>
+              <td>19㎡</td>
+              <td style="font-size:11px">2025年<span style="opacity:0.6">(築1)</span></td>
+              <td class="station-cell">薬院 徒歩8分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">6.2万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.2万</td>
+              <td class="price-cell" style="white-space:nowrap">264.6万</td>
+              <td style="font-weight:600">5.3%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">7.6%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">55.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">196.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">68.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 35年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">35.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">18.8年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="55" data-price="1750">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3555795/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">フォルム姪浜</a></td>
+              <td class="price-cell" style="white-space:nowrap">1750万</td>
+              <td>37㎡</td>
+              <td style="font-size:11px">2026年<span style="opacity:0.6">(築0)</span></td>
+              <td class="station-cell">博多 徒歩11分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">11.1万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">2.1万</td>
+              <td class="price-cell" style="white-space:nowrap">472.5万</td>
+              <td style="font-weight:600">5.3%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">7.6%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">99.2万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">350.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">122.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 35年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">63.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">3.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">19.0年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="52" data-price="1000">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3555276/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">南博多パールシャトー</a></td>
+              <td class="price-cell" style="white-space:nowrap">1000万</td>
+              <td>34㎡</td>
+              <td style="font-size:11px">1980年<span style="opacity:0.6">(築46)</span></td>
+              <td class="station-cell">博多 徒歩10分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">6.6万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.1万</td>
+              <td class="price-cell" style="white-space:nowrap">270.0万</td>
+              <td style="font-weight:600">5.0%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">7.9%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">59.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">200.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">70.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">52.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">0.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">19.8年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="52" data-price="2350">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3566986/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">【弊社売主物件・空室につき居住可能】ピュアドーム博多21</a></td>
+              <td class="price-cell" style="white-space:nowrap">2350万</td>
+              <td>77㎡</td>
+              <td style="font-size:11px">1981年<span style="opacity:0.6">(築45)</span></td>
+              <td class="station-cell">博多エリアの賃貸中区分マンション。櫛田神社前駅徒歩5分・祇園駅徒歩8分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">15.1万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">2.1万</td>
+              <td class="price-cell" style="white-space:nowrap">634.5万</td>
+              <td style="font-weight:600">4.0%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">7.7%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">134.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">470.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">164.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">123.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">0.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">25.1年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="55" data-price="1560">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3553616/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">福岡市中央区</a></td>
+              <td class="price-cell" style="white-space:nowrap">1560万</td>
+              <td>37㎡</td>
+              <td style="font-size:11px">2006年<span style="opacity:0.6">(築20)</span></td>
+              <td class="station-cell">渡辺通 徒歩14分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">10.1万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.4万</td>
+              <td class="price-cell" style="white-space:nowrap">421.2万</td>
+              <td style="font-weight:600">4.0%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">7.8%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">90.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">312.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">109.2万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 27年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">66.3万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">2.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">25.1年</span></div>
                 </div>
               </td>
             </tr>
@@ -7057,23 +7577,55 @@ body {
               <td>63㎡</td>
               <td style="font-size:11px">1989年<span style="opacity:0.6">(築37)</span></td>
               <td class="station-cell">東比恵 徒歩8分</td>
-              <td class="price-cell" style="white-space:nowrap">13.6万</td>
+              <td><span style="font-size:10px;color:var(--text-muted)">空</span></td>
+              <td class="price-cell" style="white-space:nowrap">13.6万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
               <td class="price-cell" style="color:var(--green);font-weight:600">1.1万</td>
               <td class="price-cell" style="white-space:nowrap">513.0万</td>
               <td style="font-weight:600">2.6%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="10">
+              <td colspan="11">
                 <div class="detail-grid">
-                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">SRC造</span></div>
                   <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">8.6%</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">114.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">20,810円</span></div>
                   <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">380.0万</span></div>
                   <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">133.0万</span></div>
                   <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
                   <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">99.8万</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.2万</span></div>
                   <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">38.0年</span></div>
+                </div>
+              </td>
+            </tr>
+            <tr data-expandable onclick="toggleDetail(this)"
+                data-score="50" data-price="2820">
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">利回り区分</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3570974/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">シティマンション薬院</a></td>
+              <td class="price-cell" style="white-space:nowrap">2820万</td>
+              <td>66㎡</td>
+              <td style="font-size:11px">1979年<span style="opacity:0.6">(築47)</span></td>
+              <td class="station-cell">西鉄平尾 徒歩6分</td>
+              <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
+              <td class="price-cell" style="white-space:nowrap">13.7万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
+              <td class="price-cell" style="color:var(--green);font-weight:600">1.1万</td>
+              <td class="price-cell" style="white-space:nowrap">761.4万</td>
+              <td style="font-weight:600">1.7%</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="11">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">5.8%</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">122.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
+                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">564.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">197.4万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">148.1万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-2.2万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">58.6年</span></div>
                 </div>
               </td>
             </tr>
@@ -7130,6 +7682,10 @@ body {
     <div class="prop-kpi">
       <span class="prop-kpi-label">間取り</span>
       <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">構造</span>
+      <span class="prop-kpi-value">SRC造</span>
     </div>
     <div class="prop-kpi">
       <span class="prop-kpi-label">築年</span>
@@ -7320,6 +7876,10 @@ body {
     <div class="prop-kpi">
       <span class="prop-kpi-label">間取り</span>
       <span class="prop-kpi-value">3LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">構造</span>
+      <span class="prop-kpi-value">SRC造</span>
     </div>
     <div class="prop-kpi">
       <span class="prop-kpi-label">築年</span>
@@ -11856,7 +12416,7 @@ body {
               <td class="price-cell">1499万円</td>
               <td class="area-cell">41.78㎡</td>
               <td class="layout-cell">2LDK</td>
-              <td>—</td>
+              <td>SRC造</td>
               <td class="station-cell" title="祇園 徒歩7分">祇園 徒歩7分</td>
               <td>可</td>
               <td class="price-cell">9.0万<br><span style="font-size:9px;color:var(--text-muted)">博多区</span></td>
@@ -11891,7 +12451,7 @@ body {
               <td class="price-cell">1900万円</td>
               <td class="area-cell">62.91㎡</td>
               <td class="layout-cell">3LDK</td>
-              <td>—</td>
+              <td>SRC造</td>
               <td class="station-cell" title="東比恵 徒歩8分">東比恵 徒歩8分</td>
               <td>可</td>
               <td class="price-cell">13.6万<br><span style="font-size:9px;color:var(--text-muted)">博多区</span></td>
@@ -12735,6 +13295,178 @@ body {
         <span class="type-count">15</span>
       </div>
       <div class="property-grid" data-view="grid" style="display:none">
+        
+<div class="prop-card" data-score="87" data-price="6980" data-area="321.44">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="14.702641200000002"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">87</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="福岡市東区">福岡市東区</div>
+      <div class="prop-card-location">箱崎宮前駅徒歩6分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">6980万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">9.1%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">321.44㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">構造</span>
+      <span class="prop-kpi-value">木造2階建</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">戸数</span>
+      <span class="prop-kpi-value">9戸</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">2006年</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">21.7万/㎡</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--source">楽待(一棟アパート)</span>
+    <span class="prop-tag prop-tag--new">NEW</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">471.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">6.75%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">1.1万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">10.7万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">6.8%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">14.6年</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">1396.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">698.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+115.8万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(234,179,8,0.1);color:var(--yellow)">
+        薄利
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">price</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">structure</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">units</span>
+        <span class="score-axis-value" style="color:var(--green)">
++7
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">yield</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">cf</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3531933/show.html" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
         
 <div class="prop-card" data-score="80" data-price="5600" data-area="141.66">
   <div class="prop-card-header">
@@ -14588,6 +15320,178 @@ body {
 </div>
 
         
+<div class="prop-card" data-score="67" data-price="6000" data-area="330.14">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--yellow)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="37.32208919999999"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--yellow)">67</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="Esperanza">Esperanza</div>
+      <div class="prop-card-location">笹原 徒歩10分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--yellow);background:rgba(234,179,8,0.12)">
+      Yellow
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">6000万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">7.9%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">330.14㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">構造</span>
+      <span class="prop-kpi-value">RC造4階建</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">戸数</span>
+      <span class="prop-kpi-value">9戸</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1984年12月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">18.2万/㎡</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--source">楽待(一棟アパート)</span>
+    <span class="prop-tag prop-tag--new">NEW</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">352.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">5.87%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-3.5万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-1.9万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-1.4%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">1200.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">276.9万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+18.4万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">price</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">structure</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">units</span>
+        <span class="score-axis-value" style="color:var(--green)">
++7
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">yield</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">cf</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3525088/show.html" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+        
 <div class="prop-card" data-score="65" data-price="19760" data-area="590.02">
   <div class="prop-card-header">
     <div class="prop-card-score">
@@ -14927,342 +15831,6 @@ body {
   </div>
 </div>
 
-        
-<div class="prop-card" data-score="65" data-price="8800" data-area="None">
-  <div class="prop-card-header">
-    <div class="prop-card-score">
-      
-<div class="deal-gauge deal-gauge--sm">
-  <svg viewBox="0 0 40 40" width="100%" height="100%">
-    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
-    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
-            stroke="var(--yellow)"
-            stroke-dasharray="113.09724"
-            stroke-dashoffset="39.584034"/>
-  </svg>
-  <span class="deal-gauge-value" style="color:var(--yellow)">65</span>
-</div>
-
-    </div>
-    <div class="prop-card-title-block">
-      <div class="prop-card-name" title="西区周船寺RC">西区周船寺RC</div>
-      <div class="prop-card-location">周船寺 徒歩5分</div>
-    </div>
-    <span class="prop-card-tier" style="color:var(--yellow);background:rgba(234,179,8,0.12)">
-      Yellow
-    </span>
-  </div>
-
-  <div class="prop-card-body">
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">価格</span>
-      <span class="prop-kpi-value">8800万円</span>
-    </div>
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">利回り</span>
-      <span class="prop-kpi-value">6.8%</span>
-    </div>
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">面積</span>
-      <span class="prop-kpi-value">—</span>
-    </div>
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">構造</span>
-      <span class="prop-kpi-value">RC造</span>
-    </div>
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">戸数</span>
-      <span class="prop-kpi-value">14戸</span>
-    </div>
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">築年</span>
-      <span class="prop-kpi-value">1989年</span>
-    </div>
-  </div>
-
-  <div class="prop-card-tags">
-    <span class="prop-tag prop-tag--source">楽待(一棟マンション)</span>
-    <span class="prop-tag prop-tag--new">NEW</span>
-  </div>
-
-  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
-    ▸ 投資分析
-  </div>
-  <div class="prop-card-detail revenue-detail-inner">
-    <div class="revenue-grid">
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">NOI（営業純利益）</span>
-        <span class="revenue-kpi-value">448.5万</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">実質利回り</span>
-        <span class="revenue-kpi-value">5.1%</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">月間CF (税前)</span>
-        <span class="revenue-kpi-value" style="color:var(--red)">-10.7万</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">月間CF (税後)</span>
-        <span class="revenue-kpi-value" style="color:var(--red)">-9.2万</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
-        <span class="revenue-kpi-value">-4.6%</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">回収年数</span>
-        <span class="revenue-kpi-value">∞</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">頭金</span>
-        <span class="revenue-kpi-value">1760.0万</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">年間償却</span>
-        <span class="revenue-kpi-value">310.6万</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">節税効果</span>
-        <span class="revenue-kpi-value" style="color:var(--green)">+18.8万</span>
-      </div>
-      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
-        CF赤字
-      </div>
-    </div>
-  </div>
-
-  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
-    ▸ スコア内訳
-  </div>
-  <div class="prop-card-score-detail">
-    <div class="score-breakdown-grid">
-      <div class="score-axis">
-        <span class="score-axis-name">price</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+10
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">structure</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+15
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">units</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+10
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">yield</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+10
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">earthquake</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+10
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">station</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+15
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">location</span>
-        <span class="score-axis-value" style="color:var(--text-muted)">
-0
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">cf</span>
-        <span class="score-axis-value" style="color:var(--red)">
--5
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <div class="prop-card-footer">
-    <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3558564/show.html" target="_blank" rel="noopener" class="prop-card-link">
-      詳細 ↗
-    </a>
-  </div>
-</div>
-
-        
-<div class="prop-card" data-score="65" data-price="7230" data-area="None">
-  <div class="prop-card-header">
-    <div class="prop-card-score">
-      
-<div class="deal-gauge deal-gauge--sm">
-  <svg viewBox="0 0 40 40" width="100%" height="100%">
-    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
-    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
-            stroke="var(--yellow)"
-            stroke-dasharray="113.09724"
-            stroke-dashoffset="39.584034"/>
-  </svg>
-  <span class="deal-gauge-value" style="color:var(--yellow)">65</span>
-</div>
-
-    </div>
-    <div class="prop-card-title-block">
-      <div class="prop-card-name" title="ウェルス田島">ウェルス田島</div>
-      <div class="prop-card-location">別府 徒歩12分</div>
-    </div>
-    <span class="prop-card-tier" style="color:var(--yellow);background:rgba(234,179,8,0.12)">
-      Yellow
-    </span>
-  </div>
-
-  <div class="prop-card-body">
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">価格</span>
-      <span class="prop-kpi-value">7230万円</span>
-    </div>
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">利回り</span>
-      <span class="prop-kpi-value">7.2%</span>
-    </div>
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">面積</span>
-      <span class="prop-kpi-value">—</span>
-    </div>
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">構造</span>
-      <span class="prop-kpi-value">RC造</span>
-    </div>
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">戸数</span>
-      <span class="prop-kpi-value">12戸</span>
-    </div>
-    <div class="prop-kpi">
-      <span class="prop-kpi-label">築年</span>
-      <span class="prop-kpi-value">1988年</span>
-    </div>
-  </div>
-
-  <div class="prop-card-tags">
-    <span class="prop-tag prop-tag--source">楽待(一棟マンション)</span>
-    <span class="prop-tag prop-tag--new">NEW</span>
-  </div>
-
-  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
-    ▸ 投資分析
-  </div>
-  <div class="prop-card-detail revenue-detail-inner">
-    <div class="revenue-grid">
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">NOI（営業純利益）</span>
-        <span class="revenue-kpi-value">385.7万</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">実質利回り</span>
-        <span class="revenue-kpi-value">5.33%</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">月間CF (税前)</span>
-        <span class="revenue-kpi-value" style="color:var(--red)">-7.4万</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">月間CF (税後)</span>
-        <span class="revenue-kpi-value" style="color:var(--red)">-6.1万</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
-        <span class="revenue-kpi-value">-3.8%</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">回収年数</span>
-        <span class="revenue-kpi-value">∞</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">頭金</span>
-        <span class="revenue-kpi-value">1446.0万</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">年間償却</span>
-        <span class="revenue-kpi-value">271.1万</span>
-      </div>
-      <div class="revenue-kpi">
-        <span class="revenue-kpi-label">節税効果</span>
-        <span class="revenue-kpi-value" style="color:var(--green)">+15.1万</span>
-      </div>
-      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
-        CF赤字
-      </div>
-    </div>
-  </div>
-
-  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
-    ▸ スコア内訳
-  </div>
-  <div class="prop-card-score-detail">
-    <div class="score-breakdown-grid">
-      <div class="score-axis">
-        <span class="score-axis-name">price</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+10
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">structure</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+15
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">units</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+10
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">yield</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+15
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">earthquake</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+10
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">station</span>
-        <span class="score-axis-value" style="color:var(--green)">
-+5
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">location</span>
-        <span class="score-axis-value" style="color:var(--text-muted)">
-0
-        </span>
-      </div>
-      <div class="score-axis">
-        <span class="score-axis-name">cf</span>
-        <span class="score-axis-value" style="color:var(--text-muted)">
-0
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <div class="prop-card-footer">
-    <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3532120/show.html" target="_blank" rel="noopener" class="prop-card-link">
-      詳細 ↗
-    </a>
-  </div>
-</div>
-
       </div>
       <div class="property-list active" data-view="list">
         <table class="prop-table">
@@ -15274,6 +15842,38 @@ body {
             </tr>
           </thead>
           <tbody>
+            <tr data-score="87" data-price="6980" data-area="321.44" data-expandable onclick="toggleDetail(this)">
+              <td class="score-cell" style="color:var(--green)">87</td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3531933/show.html" target="_blank" rel="noopener" title="福岡市東区" onclick="event.stopPropagation()">福岡市東区</a></td>
+              <td class="price-cell">6980万円</td>
+              <td>9.1%</td>
+              <td class="area-cell">321.44㎡</td>
+              <td>木造2階建</td>
+              <td>9</td>
+              <td>箱崎宮前駅徒歩6分</td>
+              <td class="price-cell">71.0万</td>
+              <td class="price-cell" style="color:var(--green)">10.7万</td>
+              <td class="price-cell">21.7万/㎡</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="12">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">71.0万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">471.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">6.75%</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">1.1万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--green)">10.7万</span></div>
+                  <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">6.8%</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">14.6年</span></div>
+                  <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1884.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">457.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">698.0万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+115.8万</span></div>                </div>
+                <div class="detail-verdict" style="background:rgba(234,179,8,0.1);color:var(--yellow)">薄利</div>
+              </td>
+            </tr>
             <tr data-score="80" data-price="5600" data-area="141.66" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
               <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
@@ -15626,6 +16226,38 @@ body {
                 <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
               </td>
             </tr>
+            <tr data-score="67" data-price="6000" data-area="330.14" data-expandable onclick="toggleDetail(this)">
+              <td class="score-cell" style="color:var(--yellow)">67</td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3525088/show.html" target="_blank" rel="noopener" title="Esperanza" onclick="event.stopPropagation()">Esperanza</a></td>
+              <td class="price-cell">6000万円</td>
+              <td>7.9%</td>
+              <td class="area-cell">330.14㎡</td>
+              <td>RC造4階建</td>
+              <td>9</td>
+              <td>笹原 徒歩10分</td>
+              <td class="price-cell">64.4万</td>
+              <td class="price-cell" style="color:var(--red)">-1.9万</td>
+              <td class="price-cell">18.2万/㎡</td>
+            </tr>
+            <tr class="detail-row">
+              <td colspan="12">
+                <div class="detail-grid">
+                  <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                  <div class="detail-item"><span class="detail-label">相場博多区</span><span class="detail-value">64.4万/月</span></div>
+                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">352.2万</span></div>
+                  <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.87%</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-3.5万</span></div>
+                  <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-1.9万</span></div>
+                  <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-1.4%</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                  <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1620.0万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">393.6万</span></div>
+                  <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">276.9万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+18.4万</span></div>                </div>
+                <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+              </td>
+            </tr>
             <tr data-score="65" data-price="19760" data-area="590.02" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">65</td>
               <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
@@ -15687,70 +16319,6 @@ body {
                   <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">490.7万</span></div>
                   <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">299.2万</span></div>
 <div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+40.8万</span></div>                </div>
-                <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
-              </td>
-            </tr>
-            <tr data-score="65" data-price="8800" data-area="None" data-expandable onclick="toggleDetail(this)">
-              <td class="score-cell" style="color:var(--yellow)">65</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
-              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3558564/show.html" target="_blank" rel="noopener" title="西区周船寺RC" onclick="event.stopPropagation()">西区周船寺RC</a></td>
-              <td class="price-cell">8800万円</td>
-              <td>6.8%</td>
-              <td class="area-cell">—</td>
-              <td>RC造</td>
-              <td>14</td>
-              <td>周船寺 徒歩5分</td>
-              <td class="price-cell">—</td>
-              <td class="price-cell" style="color:var(--red)">-9.2万</td>
-              <td class="price-cell">—</td>
-            </tr>
-            <tr class="detail-row">
-              <td colspan="12">
-                <div class="detail-grid">
-                  <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
-                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">448.5万</span></div>
-                  <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.1%</span></div>
-                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-10.7万</span></div>
-                  <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-9.2万</span></div>
-                  <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-4.6%</span></div>
-                  <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
-                  <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">2376.0万</span></div>
-                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">577.3万</span></div>
-                  <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">310.6万</span></div>
-<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+18.8万</span></div>                </div>
-                <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
-              </td>
-            </tr>
-            <tr data-score="65" data-price="7230" data-area="None" data-expandable onclick="toggleDetail(this)">
-              <td class="score-cell" style="color:var(--yellow)">65</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
-              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3532120/show.html" target="_blank" rel="noopener" title="ウェルス田島" onclick="event.stopPropagation()">ウェルス田島</a></td>
-              <td class="price-cell">7230万円</td>
-              <td>7.2%</td>
-              <td class="area-cell">—</td>
-              <td>RC造</td>
-              <td>12</td>
-              <td>別府 徒歩12分</td>
-              <td class="price-cell">—</td>
-              <td class="price-cell" style="color:var(--red)">-6.1万</td>
-              <td class="price-cell">—</td>
-            </tr>
-            <tr class="detail-row">
-              <td colspan="12">
-                <div class="detail-grid">
-                  <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
-                  <div class="detail-item"><span class="detail-label">想定家賃</span><span class="detail-value">/月</span></div>
-                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">385.7万</span></div>
-                  <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">5.33%</span></div>
-                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-7.4万</span></div>
-                  <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-6.1万</span></div>
-                  <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-3.8%</span></div>
-                  <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
-                  <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1952.1万</span></div>
-                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">474.3万</span></div>
-                  <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">271.1万</span></div>
-<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+15.1万</span></div>                </div>
                 <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
               </td>
             </tr>
@@ -27510,7 +28078,7 @@ body {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-03-30 17:49</div>
+  <div style="margin-top:4px;">Generated at 2026-03-30 18:09</div>
 </footer>
 <script>
 let currentView = 'list';

@@ -437,7 +437,7 @@ def check_first_seen_coverage(parser: MarketHTMLParser) -> tuple[str, str]:
         total += len(sec.get("table_rows", []))
 
     # Count first_seen dates in HTML (MM/DD or NEW pattern)
-    date_pattern = re.compile(r'<td>(?:\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}|<span[^>]*>NEW</span>)</td>')
+    date_pattern = re.compile(r'<td[^>]*>(?:\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}|<span[^>]*>NEW</span>)</td>')
     found_dates = len(date_pattern.findall(html_text))
 
     if total == 0:

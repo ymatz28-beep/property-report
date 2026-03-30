@@ -369,7 +369,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
         mkt_annual = mkt_monthly * 12 / 10000  # 万円
         d["rent_per_sqm"] = mkt_per_sqm
         d["market_rent"] = f"{mkt_monthly / 10000:.1f}万" if mkt_monthly >= 10000 else f"{int(mkt_monthly):,}円"
-        d["market_rent_label"] = f"相場{ward}" if ward else "相場"
+        d["market_rent_label"] = ward if ward else ""
 
         # OC: extract actual rent
         oc_annual_man, oc_yield = _extract_oc_rent(row) if d["is_oc"] else (0, 0)
@@ -391,7 +391,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
             monthly_rent = mkt_monthly
             annual_rent = mkt_annual
             est_yield = (annual_rent / row.price_man) * 100
-            d["rent_source"] = d["market_rent_label"]
+            d["rent_source"] = f"相場{d['market_rent_label']}" if d["market_rent_label"] else "相場"
             d["est_monthly_rent"] = d["market_rent"]
 
         d["yield_text"] = f"{est_yield:.1f}%"

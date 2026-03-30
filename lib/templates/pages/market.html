@@ -155,6 +155,10 @@
 .prop-table a { color: var(--accent); text-decoration: none; }
 .prop-table a:hover { text-decoration: underline; }
 
+/* Budget table — compact date & station columns */
+[data-type="budget"] .date-cell { max-width: 52px; overflow: hidden; text-overflow: ellipsis; font-size: 10px; padding: 6px 4px; }
+[data-type="budget"] .station-cell { max-width: 72px; overflow: hidden; text-overflow: ellipsis; padding: 6px 4px; }
+
 /* Hero — compact inline bar */
 .hero {
   display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
@@ -522,7 +526,7 @@
             {% for prop in city.budget.properties %}
             <tr data-score="{{ prop.total_score }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}" {% if prop.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
               <td class="score-cell" style="color:{% if prop.total_score >= 80 %}var(--green){% elif prop.total_score >= 65 %}var(--yellow){% else %}var(--orange, #ff6b35){% endif %}">{{ prop.total_score }}</td>
-              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
+              <td class="date-cell">{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>

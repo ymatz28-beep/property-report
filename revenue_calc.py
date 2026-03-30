@@ -258,13 +258,12 @@ def analyze(
     # ---- Cash Flow ----
     annual_cf = noi - annual_debt_service
     monthly_cf = annual_cf / 12
-    ccr_pct = (annual_cf / total_equity * 100) if total_equity > 0 else 0.0
-    payback_years = (total_equity / annual_cf) if annual_cf > 0 else float("inf")
+    # CCR / payback are set after tax calculation (use after_tax_cf)
+    ccr_pct = 0.0  # placeholder, updated below
+    payback_years = float("inf")  # placeholder, updated below
 
     result.annual_cf = round(annual_cf, 2)
     result.monthly_cf = round(monthly_cf, 2)
-    result.ccr_pct = round(ccr_pct, 2)
-    result.payback_years = round(payback_years, 1) if payback_years != float("inf") else float("inf")
 
     # ---- Tax / After-Tax CF ----
     # Simplified model: interest portion of ADS is deductible.
@@ -284,9 +283,15 @@ def analyze(
 
     after_tax_cf = annual_cf - income_tax_due + tax_benefit
 
+    # CCR / payback based on after-tax CF (tax benefit included)
+    ccr_pct = (after_tax_cf / total_equity * 100) if total_equity > 0 else 0.0
+    payback_years = (total_equity / after_tax_cf) if after_tax_cf > 0 else float("inf")
+
     result.taxable_income = round(taxable_income, 2)
     result.tax_benefit = round(tax_benefit, 2)
     result.after_tax_cf = round(after_tax_cf, 2)
+    result.ccr_pct = round(ccr_pct, 2)
+    result.payback_years = round(payback_years, 1) if payback_years != float("inf") else float("inf")
 
     # ---- Verdict ----
     if monthly_cf > 30:

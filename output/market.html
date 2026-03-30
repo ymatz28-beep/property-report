@@ -509,15 +509,13 @@ body {
 .prop-table { border-collapse: collapse; font-size: 12px; }
 .prop-table th {
   text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 700;
-  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px;
+  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
   border-bottom: 1px solid var(--border); position: sticky; top: 0;
-  background: var(--bg); white-space: nowrap; padding: 6px 6px;
+  background: var(--bg); white-space: nowrap;
 }
-.prop-table td { padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,0.03); white-space: nowrap; }
+.prop-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); white-space: nowrap; }
 .prop-table tr:hover { background: rgba(255,255,255,0.02); }
-.prop-table .name-cell { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.prop-table .station-cell { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.prop-table .date-cell { max-width: 56px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
+.prop-table .name-cell { white-space: nowrap; }
 .prop-table .score-cell { font-family: var(--font-mono); font-weight: 700; }
 .prop-table .price-cell { font-family: var(--font-mono); font-weight: 600; text-align: right; white-space: nowrap; }
 .prop-table .area-cell { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
@@ -4658,7 +4656,7 @@ body {
           <tbody>
             <tr data-score="95" data-price="3100" data-area="54.4" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">95</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78620843/" target="_blank" rel="noopener" title="ビーバードルチェ阿波座" onclick="event.stopPropagation()">ビーバードルチェ阿波座</a></td>
               <td class="price-cell">3100万円</td>
               <td class="area-cell">54.4㎡</td>
@@ -4691,7 +4689,7 @@ body {
             </tr>
             <tr data-score="94" data-price="2280" data-area="40.04" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">94</td>
-              <td class="date-cell">2026-03-17</td>
+              <td>2026-03-17</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20437273/" target="_blank" rel="noopener" title="梅田北セントポリア" onclick="event.stopPropagation()">梅田北セントポリア</a></td>
               <td class="price-cell">2280万円</td>
               <td class="area-cell">40.04㎡</td>
@@ -4724,7 +4722,7 @@ body {
             </tr>
             <tr data-score="92" data-price="3780" data-area="45.09" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">92</td>
-              <td class="date-cell">2026-03-19</td>
+              <td>2026-03-19</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20465323/" target="_blank" rel="noopener" title="ランズ南森町" onclick="event.stopPropagation()">ランズ南森町</a></td>
               <td class="price-cell">3780万円</td>
               <td class="area-cell">45.09㎡</td>
@@ -4757,7 +4755,7 @@ body {
             </tr>
             <tr data-score="92" data-price="4200" data-area="40.94" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">92</td>
-              <td class="date-cell">2026-03-19</td>
+              <td>2026-03-19</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20472764/" target="_blank" rel="noopener" title="エステムプラザ心斎橋エグゼ" onclick="event.stopPropagation()">エステムプラザ心斎橋エグゼ</a></td>
               <td class="price-cell">4200万円</td>
               <td class="area-cell">40.94㎡</td>
@@ -4790,7 +4788,7 @@ body {
             </tr>
             <tr data-score="90" data-price="4380" data-area="53.0" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">90</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener" title="セレッソコート南堀江マルティア" onclick="event.stopPropagation()">セレッソコート南堀江マルティア</a></td>
               <td class="price-cell">4380万円</td>
               <td class="area-cell">53.0㎡</td>
@@ -4823,7 +4821,7 @@ body {
             </tr>
             <tr data-score="88" data-price="3050" data-area="56.91" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener" title="●ストークマンション長堀●" onclick="event.stopPropagation()">●ストークマンション長堀●</a></td>
               <td class="price-cell">3050万円</td>
               <td class="area-cell">56.91㎡</td>
@@ -4856,7 +4854,7 @@ body {
             </tr>
             <tr data-score="87" data-price="3900" data-area="40.07" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td class="date-cell">2026-03-18</td>
+              <td>2026-03-18</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20465603/" target="_blank" rel="noopener" title="ファインレジデンス福島野田The Garden" onclick="event.stopPropagation()">ファインレジデンス福島野田The Garden</a></td>
               <td class="price-cell">3900万円</td>
               <td class="area-cell">40.07㎡</td>
@@ -4889,7 +4887,7 @@ body {
             </tr>
             <tr data-score="85" data-price="1750" data-area="52.5" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener" title="サントピア九条" onclick="event.stopPropagation()">サントピア九条</a></td>
               <td class="price-cell">1750万円</td>
               <td class="area-cell">52.5㎡</td>
@@ -4922,7 +4920,7 @@ body {
             </tr>
             <tr data-score="83" data-price="4750" data-area="41.57" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/" target="_blank" rel="noopener" title="グランドメゾン谷町四丁目" onclick="event.stopPropagation()">グランドメゾン谷町四丁目</a></td>
               <td class="price-cell">4750万円</td>
               <td class="area-cell">41.57㎡</td>
@@ -4955,7 +4953,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3499" data-area="54.32" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">2026-03-05</td>
+              <td>2026-03-05</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20375130/" target="_blank" rel="noopener" title="ストークマンション野田阪神" onclick="event.stopPropagation()">ストークマンション野田阪神</a></td>
               <td class="price-cell">3499万円</td>
               <td class="area-cell">54.32㎡</td>
@@ -4988,7 +4986,7 @@ body {
             </tr>
             <tr data-score="82" data-price="2480" data-area="45.0" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td class="date-cell">2026-03-24</td>
+              <td>2026-03-24</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20509455/" target="_blank" rel="noopener" title="ローレルハイツ北天満2号棟" onclick="event.stopPropagation()">ローレルハイツ北天満2号棟</a></td>
               <td class="price-cell">2480万円</td>
               <td class="area-cell">45.0㎡</td>
@@ -5021,7 +5019,7 @@ body {
             </tr>
             <tr data-score="82" data-price="3480" data-area="52.53" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20543747/" target="_blank" rel="noopener" title="ノバカネイチ扇町" onclick="event.stopPropagation()">ノバカネイチ扇町</a></td>
               <td class="price-cell">3480万円</td>
               <td class="area-cell">52.53㎡</td>
@@ -5054,7 +5052,7 @@ body {
             </tr>
             <tr data-score="82" data-price="4480" data-area="55.58" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20274808/" target="_blank" rel="noopener" title="ベル・アーバニティ同心" onclick="event.stopPropagation()">ベル・アーバニティ同心</a></td>
               <td class="price-cell">4480万円</td>
               <td class="area-cell">55.58㎡</td>
@@ -5087,7 +5085,7 @@ body {
             </tr>
             <tr data-score="82" data-price="4998" data-area="46.4" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td class="date-cell">2026-03-18</td>
+              <td>2026-03-18</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20414985/" target="_blank" rel="noopener" title="ジーニス大阪ＷＥＳＴ" onclick="event.stopPropagation()">ジーニス大阪ＷＥＳＴ</a></td>
               <td class="price-cell">4998万円</td>
               <td class="area-cell">46.4㎡</td>
@@ -5120,7 +5118,7 @@ body {
             </tr>
             <tr data-score="82" data-price="3890" data-area="69.61" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td class="date-cell">2026-03-17</td>
+              <td>2026-03-17</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20436547/" target="_blank" rel="noopener" title="西道頓堀コーポ二号棟" onclick="event.stopPropagation()">西道頓堀コーポ二号棟</a></td>
               <td class="price-cell">3890万円</td>
               <td class="area-cell">69.61㎡</td>
@@ -5153,7 +5151,7 @@ body {
             </tr>
             <tr data-score="82" data-price="4380" data-area="45.51" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20245135/" target="_blank" rel="noopener" title="アルス心斎橋ＵＮＡＧＩＤＡＮＩ" onclick="event.stopPropagation()">アルス心斎橋ＵＮＡＧＩＤＡＮＩ</a></td>
               <td class="price-cell">4380万円</td>
               <td class="area-cell">45.51㎡</td>
@@ -5186,7 +5184,7 @@ body {
             </tr>
             <tr data-score="82" data-price="4100" data-area="40.07" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
-              <td class="date-cell">2026-03-19</td>
+              <td>2026-03-19</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20468253/" target="_blank" rel="noopener" title="ファインレジデンス福島野田　The &nbsp;Garden" onclick="event.stopPropagation()">ファインレジデンス福島野田　The &nbsp;Garden</a></td>
               <td class="price-cell">4100万円</td>
               <td class="area-cell">40.07㎡</td>
@@ -5219,7 +5217,7 @@ body {
             </tr>
             <tr data-score="80" data-price="2998" data-area="60.48" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20323378/" target="_blank" rel="noopener" title="天神橋ホワイトハイツ" onclick="event.stopPropagation()">天神橋ホワイトハイツ</a></td>
               <td class="price-cell">2998万円</td>
               <td class="area-cell">60.48㎡</td>
@@ -5252,7 +5250,7 @@ body {
             </tr>
             <tr data-score="80" data-price="3780" data-area="55.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20197143/" target="_blank" rel="noopener" title="リーガル豊崎" onclick="event.stopPropagation()">リーガル豊崎</a></td>
               <td class="price-cell">3780万円</td>
               <td class="area-cell">55.75㎡</td>
@@ -5285,7 +5283,7 @@ body {
             </tr>
             <tr data-score="80" data-price="4998" data-area="54.86" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">2026-03-26</td>
+              <td>2026-03-26</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20414565/" target="_blank" rel="noopener" title="アデレイド新福島" onclick="event.stopPropagation()">アデレイド新福島</a></td>
               <td class="price-cell">4998万円</td>
               <td class="area-cell">54.86㎡</td>
@@ -6544,14 +6542,14 @@ body {
           <tbody>
             <tr data-score="77" data-price="20000" data-area="211.86" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">77</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp3/k/osaka/osaka-shi/1/re_4367882fca/" target="_blank" rel="noopener" title="大阪市中央区瓦屋町　マンション（民泊運営中）" onclick="event.stopPropagation()">大阪市中央区瓦屋町　マンション（民泊運営中）</a></td>
               <td class="price-cell">2億円</td>
               <td>5.0%</td>
               <td class="area-cell">211.86m²</td>
               <td>RC造6階建</td>
               <td>6</td>
-              <td class="station-cell" title="日本橋 歩7分">日本橋 歩7分</td>
+              <td>日本橋 歩7分</td>
               <td class="price-cell">72.0万</td>
               <td class="price-cell" style="color:var(--green)">2.2万</td>
               <td class="price-cell">94.4万/㎡</td>
@@ -6576,14 +6574,14 @@ body {
             </tr>
             <tr data-score="64" data-price="14000" data-area="295.46" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">64</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp3/k/osaka/osaka-shi/2/re_4344951s3v/" target="_blank" rel="noopener" title="第ニ八杉ビルメディパーク" onclick="event.stopPropagation()">第ニ八杉ビルメディパーク</a></td>
               <td class="price-cell">1億4000万円</td>
               <td>6.2%</td>
               <td class="area-cell">295.46m²</td>
               <td>S造4階建</td>
               <td>15</td>
-              <td class="station-cell" title="天神橋筋六丁目 歩8分">天神橋筋六丁目 歩8分</td>
+              <td>天神橋筋六丁目 歩8分</td>
               <td class="price-cell">68.1万</td>
               <td class="price-cell" style="color:var(--red)">-1.1万</td>
               <td class="price-cell">47.4万/㎡</td>
@@ -6608,14 +6606,14 @@ body {
             </tr>
             <tr data-score="58" data-price="17000" data-area="260.57" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">58</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp3/k/osaka/osaka-shi/1/re_4392353o9a/" target="_blank" rel="noopener" title="大阪市中央区1棟マンション" onclick="event.stopPropagation()">大阪市中央区1棟マンション</a></td>
               <td class="price-cell">1億7000万円</td>
               <td>≈4.1%</td>
               <td class="area-cell">260.57m²</td>
               <td>RC造5階建</td>
               <td>5</td>
-              <td class="station-cell" title="谷町九丁目 歩5分">谷町九丁目 歩5分</td>
+              <td>谷町九丁目 歩5分</td>
               <td class="price-cell">57.6万</td>
               <td class="price-cell" style="color:var(--red)">-24.9万</td>
               <td class="price-cell">65.2万/㎡</td>
@@ -6640,14 +6638,14 @@ body {
             </tr>
             <tr data-score="57" data-price="18000" data-area="278.24" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">57</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp3/k/osaka/osaka-shi/7/re_436549376q/" target="_blank" rel="noopener" title="大阪市福島区鷺洲1丁目 Funhouse" onclick="event.stopPropagation()">大阪市福島区鷺洲1丁目 Funhouse</a></td>
               <td class="price-cell">1億8000万円</td>
               <td>≈3.6%</td>
               <td class="area-cell">278.24m²</td>
               <td>S造4階建</td>
               <td>7</td>
-              <td class="station-cell" title="野田 歩4分">野田 歩4分</td>
+              <td>野田 歩4分</td>
               <td class="price-cell">54.3万</td>
               <td class="price-cell" style="color:var(--red)">-14.9万</td>
               <td class="price-cell">64.7万/㎡</td>
@@ -6672,14 +6670,14 @@ body {
             </tr>
             <tr data-score="53" data-price="15300" data-area="242.59" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">53</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp3/k/osaka/osaka-shi/1/re_4354088nzr/" target="_blank" rel="noopener" title="クローバーハウス" onclick="event.stopPropagation()">クローバーハウス</a></td>
               <td class="price-cell">1億5300万円</td>
               <td>4.0%</td>
               <td class="area-cell">242.59m²</td>
               <td>S造6階建</td>
               <td>6</td>
-              <td class="station-cell" title="谷町六丁目 歩7分">谷町六丁目 歩7分</td>
+              <td>谷町六丁目 歩7分</td>
               <td class="price-cell">67.6万</td>
               <td class="price-cell" style="color:var(--red)">-25.7万</td>
               <td class="price-cell">63.1万/㎡</td>
@@ -6704,14 +6702,14 @@ body {
             </tr>
             <tr data-score="48" data-price="18500" data-area="321.11" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--text-muted)">48</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp3/k/osaka/osaka-shi/1/re_4382579g8s/" target="_blank" rel="noopener" title="大阪市中央区1棟マンション" onclick="event.stopPropagation()">大阪市中央区1棟マンション</a></td>
               <td class="price-cell">1億8500万円</td>
               <td>≈4.6%</td>
               <td class="area-cell">321.11m²</td>
               <td>S造5階建</td>
               <td>14</td>
-              <td class="station-cell" title="谷町六丁目 歩9分">谷町六丁目 歩9分</td>
+              <td>谷町六丁目 歩9分</td>
               <td class="price-cell">71.0万</td>
               <td class="price-cell" style="color:var(--red)">-7.4万</td>
               <td class="price-cell">57.6万/㎡</td>
@@ -6736,14 +6734,14 @@ body {
             </tr>
             <tr data-score="43" data-price="14800" data-area="165.49" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--text-muted)">43</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp3/k/osaka/osaka-shi/4/re_4352999vvq/" target="_blank" rel="noopener" title="北堀江2丁目空ビル" onclick="event.stopPropagation()">北堀江2丁目空ビル</a></td>
               <td class="price-cell">1億4800万円</td>
               <td>≈2.9%</td>
               <td class="area-cell">165.49m²</td>
               <td>3階建</td>
               <td>3</td>
-              <td class="station-cell" title="西大橋 歩2分">西大橋 歩2分</td>
+              <td>西大橋 歩2分</td>
               <td class="price-cell">35.5万</td>
               <td class="price-cell" style="color:var(--red)">-29.3万</td>
               <td class="price-cell">89.4万/㎡</td>
@@ -17371,7 +17369,7 @@ body {
           <tbody>
             <tr data-score="110" data-price="1499" data-area="41.78" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">110</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99339192" target="_blank" rel="noopener" title="第一プリンスビル" onclick="event.stopPropagation()">第一プリンスビル</a></td>
               <td class="price-cell">1499万円</td>
               <td class="area-cell">41.78㎡</td>
@@ -17404,7 +17402,7 @@ body {
             </tr>
             <tr data-score="103" data-price="1900" data-area="62.91" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">103</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99358163" target="_blank" rel="noopener" title="博多ニッコーハイツ 5階" onclick="event.stopPropagation()">博多ニッコーハイツ 5階</a></td>
               <td class="price-cell">1900万円</td>
               <td class="area-cell">62.91㎡</td>
@@ -17437,7 +17435,7 @@ body {
             </tr>
             <tr data-score="102" data-price="4480" data-area="58.3" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">102</td>
-              <td class="date-cell">2026-03-20</td>
+              <td>2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20400394/" target="_blank" rel="noopener" title="ヒューマインド博多駅東ネクスタイル" onclick="event.stopPropagation()">ヒューマインド博多駅東ネクスタイル</a></td>
               <td class="price-cell">4480万円</td>
               <td class="area-cell">58.3㎡</td>
@@ -17470,7 +17468,7 @@ body {
             </tr>
             <tr data-score="101" data-price="3082" data-area="47.29" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">101</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99773040" target="_blank" rel="noopener" title="ニューライフ薬院 603" onclick="event.stopPropagation()">ニューライフ薬院 603</a></td>
               <td class="price-cell">3082万円</td>
               <td class="area-cell">47.29㎡</td>
@@ -17503,7 +17501,7 @@ body {
             </tr>
             <tr data-score="101" data-price="3099" data-area="47.29" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">101</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99775027" target="_blank" rel="noopener" title="福岡市中央区 1SLDK" onclick="event.stopPropagation()">福岡市中央区 1SLDK</a></td>
               <td class="price-cell">3099万円</td>
               <td class="area-cell">47.29㎡</td>
@@ -17536,7 +17534,7 @@ body {
             </tr>
             <tr data-score="100" data-price="4900" data-area="46.01" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">100</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/" target="_blank" rel="noopener" title="オープンレジデンシア天神今泉" onclick="event.stopPropagation()">オープンレジデンシア天神今泉</a></td>
               <td class="price-cell">4900万円</td>
               <td class="area-cell">46.01㎡</td>
@@ -17569,7 +17567,7 @@ body {
             </tr>
             <tr data-score="100" data-price="4980" data-area="55.72" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">100</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/" target="_blank" rel="noopener" title="サングレート薬院駅ロイヤルウィン" onclick="event.stopPropagation()">サングレート薬院駅ロイヤルウィン</a></td>
               <td class="price-cell">4980万円</td>
               <td class="area-cell">55.72㎡</td>
@@ -17602,7 +17600,7 @@ body {
             </tr>
             <tr data-score="95" data-price="1950" data-area="55.04" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">95</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/" target="_blank" rel="noopener" title="ロワールマンション西公園2" onclick="event.stopPropagation()">ロワールマンション西公園2</a></td>
               <td class="price-cell">1950万円</td>
               <td class="area-cell">55.04㎡</td>
@@ -17635,7 +17633,7 @@ body {
             </tr>
             <tr data-score="95" data-price="2737" data-area="62.32" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">95</td>
-              <td class="date-cell">2026-03-20</td>
+              <td>2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20370839/" target="_blank" rel="noopener" title="大名サンハイツ" onclick="event.stopPropagation()">大名サンハイツ</a></td>
               <td class="price-cell">2737万円</td>
               <td class="area-cell">62.32㎡</td>
@@ -17668,7 +17666,7 @@ body {
             </tr>
             <tr data-score="95" data-price="4380" data-area="44.58" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">95</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79085867/" target="_blank" rel="noopener" title="クリオ渡辺通アーバンマークス" onclick="event.stopPropagation()">クリオ渡辺通アーバンマークス</a></td>
               <td class="price-cell">4380万円</td>
               <td class="area-cell">44.58㎡</td>
@@ -17701,7 +17699,7 @@ body {
             </tr>
             <tr data-score="95" data-price="1950" data-area="55.62" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">95</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99791987" target="_blank" rel="noopener" title="103大稲マンション 706" onclick="event.stopPropagation()">103大稲マンション 706</a></td>
               <td class="price-cell">1950万円</td>
               <td class="area-cell">55.62㎡</td>
@@ -17734,7 +17732,7 @@ body {
             </tr>
             <tr data-score="93" data-price="4280" data-area="45.0" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">93</td>
-              <td class="date-cell">2026-03-19</td>
+              <td>2026-03-19</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99813399" target="_blank" rel="noopener" title="イニシアイオ大名" onclick="event.stopPropagation()">イニシアイオ大名</a></td>
               <td class="price-cell">4280万円</td>
               <td class="area-cell">45.0㎡</td>
@@ -17767,7 +17765,7 @@ body {
             </tr>
             <tr data-score="92" data-price="2899" data-area="59.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">92</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99783423" target="_blank" rel="noopener" title="KBCマンションユーハイム博多南" onclick="event.stopPropagation()">KBCマンションユーハイム博多南</a></td>
               <td class="price-cell">2899万円</td>
               <td class="area-cell">59.75㎡</td>
@@ -17800,7 +17798,7 @@ body {
             </tr>
             <tr data-score="92" data-price="2978" data-area="40.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">92</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99818434" target="_blank" rel="noopener" title="クレアウォーターマーク" onclick="event.stopPropagation()">クレアウォーターマーク</a></td>
               <td class="price-cell">2978万円</td>
               <td class="area-cell">40.75㎡</td>
@@ -17833,7 +17831,7 @@ body {
             </tr>
             <tr data-score="91" data-price="3140" data-area="56.22" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">91</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99790375" target="_blank" rel="noopener" title="シティマンション薬院 303" onclick="event.stopPropagation()">シティマンション薬院 303</a></td>
               <td class="price-cell">3140万円</td>
               <td class="area-cell">56.22㎡</td>
@@ -17866,7 +17864,7 @@ body {
             </tr>
             <tr data-score="90" data-price="4499" data-area="54.49" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">90</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79063957/" target="_blank" rel="noopener" title="コスモ博多古門戸" onclick="event.stopPropagation()">コスモ博多古門戸</a></td>
               <td class="price-cell">4499万円</td>
               <td class="area-cell">54.49㎡</td>
@@ -17899,7 +17897,7 @@ body {
             </tr>
             <tr data-score="90" data-price="2500" data-area="56.36" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">90</td>
-              <td class="date-cell">2026-03-19</td>
+              <td>2026-03-19</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99813943" target="_blank" rel="noopener" title="チサンマンション第一博多" onclick="event.stopPropagation()">チサンマンション第一博多</a></td>
               <td class="price-cell">2500万円</td>
               <td class="area-cell">56.36㎡</td>
@@ -17932,7 +17930,7 @@ body {
             </tr>
             <tr data-score="90" data-price="3490" data-area="56.7" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">90</td>
-              <td class="date-cell">2026-02-27</td>
+              <td>2026-02-27</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99806230" target="_blank" rel="noopener" title="シャンボール舞鶴" onclick="event.stopPropagation()">シャンボール舞鶴</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">56.7㎡</td>
@@ -17965,7 +17963,7 @@ body {
             </tr>
             <tr data-score="90" data-price="4280" data-area="65.61" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">90</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99782845" target="_blank" rel="noopener" title="アートウィル赤坂" onclick="event.stopPropagation()">アートウィル赤坂</a></td>
               <td class="price-cell">4280万円</td>
               <td class="area-cell">65.61㎡</td>
@@ -17998,7 +17996,7 @@ body {
             </tr>
             <tr data-score="88" data-price="3490" data-area="50.03" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
-              <td class="date-cell">2026-03-20</td>
+              <td>2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20476501/" target="_blank" rel="noopener" title="プレスタイル博多ＮＯＲＴＨ" onclick="event.stopPropagation()">プレスタイル博多ＮＯＲＴＨ</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">50.03㎡</td>
@@ -18031,7 +18029,7 @@ body {
             </tr>
             <tr data-score="88" data-price="3280" data-area="65.31" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78355670/" target="_blank" rel="noopener" title="ライオンズマンション薬院第５" onclick="event.stopPropagation()">ライオンズマンション薬院第５</a></td>
               <td class="price-cell">3280万円</td>
               <td class="area-cell">65.31㎡</td>
@@ -18064,7 +18062,7 @@ body {
             </tr>
             <tr data-score="88" data-price="2880" data-area="48.8" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
-              <td class="date-cell">2026-03-02</td>
+              <td>2026-03-02</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99807292" target="_blank" rel="noopener" title="シティマンション薬院Ⅱ 304" onclick="event.stopPropagation()">シティマンション薬院Ⅱ 304</a></td>
               <td class="price-cell">2880万円</td>
               <td class="area-cell">48.8㎡</td>
@@ -18097,7 +18095,7 @@ body {
             </tr>
             <tr data-score="88" data-price="3180" data-area="60.87" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99800747" target="_blank" rel="noopener" title="リーベスト大橋" onclick="event.stopPropagation()">リーベスト大橋</a></td>
               <td class="price-cell">3180万円</td>
               <td class="area-cell">60.87㎡</td>
@@ -18130,7 +18128,7 @@ body {
             </tr>
             <tr data-score="87" data-price="2390" data-area="42.82" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20269655/" target="_blank" rel="noopener" title="東峰マンション博多駅東" onclick="event.stopPropagation()">東峰マンション博多駅東</a></td>
               <td class="price-cell">2390万円</td>
               <td class="area-cell">42.82㎡</td>
@@ -18163,7 +18161,7 @@ body {
             </tr>
             <tr data-score="87" data-price="2480" data-area="40.63" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20310107/" target="_blank" rel="noopener" title="プレイスポットしんばしビル本館" onclick="event.stopPropagation()">プレイスポットしんばしビル本館</a></td>
               <td class="price-cell">2480万円</td>
               <td class="area-cell">40.63㎡</td>
@@ -18196,7 +18194,7 @@ body {
             </tr>
             <tr data-score="87" data-price="3190" data-area="57.72" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td class="date-cell">2026-03-20</td>
+              <td>2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20382660/" target="_blank" rel="noopener" title="アメックス博多筑紫通り" onclick="event.stopPropagation()">アメックス博多筑紫通り</a></td>
               <td class="price-cell">3190万円</td>
               <td class="area-cell">57.72㎡</td>
@@ -18229,7 +18227,7 @@ body {
             </tr>
             <tr data-score="87" data-price="1980" data-area="42.82" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99722218" target="_blank" rel="noopener" title="東峰マンション博多駅・東 604" onclick="event.stopPropagation()">東峰マンション博多駅・東 604</a></td>
               <td class="price-cell">1980万円</td>
               <td class="area-cell">42.82㎡</td>
@@ -18262,7 +18260,7 @@ body {
             </tr>
             <tr data-score="87" data-price="2480" data-area="50.17" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">87</td>
-              <td class="date-cell">2026-03-17</td>
+              <td>2026-03-17</td>
               <td class="name-cell"><a href="https://www.realfukuokaestate.jp/estate.php?n=25812" target="_blank" rel="noopener" title="暮らしを企てる" onclick="event.stopPropagation()">暮らしを企てる</a></td>
               <td class="price-cell">2480万円</td>
               <td class="area-cell">50.17㎡</td>
@@ -18295,7 +18293,7 @@ body {
             </tr>
             <tr data-score="86" data-price="3300" data-area="52.8" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">86</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99799411" target="_blank" rel="noopener" title="福岡市中央区 2LDK" onclick="event.stopPropagation()">福岡市中央区 2LDK</a></td>
               <td class="price-cell">3300万円</td>
               <td class="area-cell">52.8㎡</td>
@@ -18328,7 +18326,7 @@ body {
             </tr>
             <tr data-score="85" data-price="2000" data-area="43.82" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td class="date-cell">2026-03-20</td>
+              <td>2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20407977/" target="_blank" rel="noopener" title="シティマンション薬院" onclick="event.stopPropagation()">シティマンション薬院</a></td>
               <td class="price-cell">2000万円</td>
               <td class="area-cell">43.82㎡</td>
@@ -18361,7 +18359,7 @@ body {
             </tr>
             <tr data-score="85" data-price="4980" data-area="60.87" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td class="date-cell">2026-03-20</td>
+              <td>2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20350288/" target="_blank" rel="noopener" title="コモダスパッソ天神" onclick="event.stopPropagation()">コモダスパッソ天神</a></td>
               <td class="price-cell">4980万円</td>
               <td class="area-cell">60.87㎡</td>
@@ -18394,7 +18392,7 @@ body {
             </tr>
             <tr data-score="85" data-price="990" data-area="46.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99781409" target="_blank" rel="noopener" title="トピレック博多" onclick="event.stopPropagation()">トピレック博多</a></td>
               <td class="price-cell">990万円</td>
               <td class="area-cell">46.75㎡</td>
@@ -18427,7 +18425,7 @@ body {
             </tr>
             <tr data-score="85" data-price="1999" data-area="50.38" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99748728" target="_blank" rel="noopener" title="■事務所使用可■リフォーム物件■博多駅徒歩7分" onclick="event.stopPropagation()">■事務所使用可■リフォーム物件■博多駅徒歩7分</a></td>
               <td class="price-cell">1999万円</td>
               <td class="area-cell">50.38㎡</td>
@@ -18460,7 +18458,7 @@ body {
             </tr>
             <tr data-score="85" data-price="3980" data-area="67.46" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99752336" target="_blank" rel="noopener" title="ツインタワー博多駅前 ３０２" onclick="event.stopPropagation()">ツインタワー博多駅前 ３０２</a></td>
               <td class="price-cell">3980万円</td>
               <td class="area-cell">67.46㎡</td>
@@ -18493,7 +18491,7 @@ body {
             </tr>
             <tr data-score="85" data-price="2398" data-area="67.8" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99805653" target="_blank" rel="noopener" title="Asobi+ エクセレンス天神" onclick="event.stopPropagation()">Asobi+ エクセレンス天神</a></td>
               <td class="price-cell">2398万円</td>
               <td class="area-cell">67.8㎡</td>
@@ -18526,7 +18524,7 @@ body {
             </tr>
             <tr data-score="85" data-price="2890" data-area="58.91" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99768458" target="_blank" rel="noopener" title="福岡市中央区 1LDK" onclick="event.stopPropagation()">福岡市中央区 1LDK</a></td>
               <td class="price-cell">2890万円</td>
               <td class="area-cell">58.91㎡</td>
@@ -18559,7 +18557,7 @@ body {
             </tr>
             <tr data-score="83" data-price="2140" data-area="66.15" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78948574/" target="_blank" rel="noopener" title="ＧＳハイム博多" onclick="event.stopPropagation()">ＧＳハイム博多</a></td>
               <td class="price-cell">2140万円</td>
               <td class="area-cell">66.15㎡</td>
@@ -18592,7 +18590,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3490" data-area="69.16" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">2026-03-20</td>
+              <td>2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20450108/" target="_blank" rel="noopener" title="藤和コープソシエ薬院" onclick="event.stopPropagation()">藤和コープソシエ薬院</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">69.16㎡</td>
@@ -18625,7 +18623,7 @@ body {
             </tr>
             <tr data-score="83" data-price="2380" data-area="47.79" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">2026-03-20</td>
+              <td>2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20354638/" target="_blank" rel="noopener" title="ライオンズマンション南薬院" onclick="event.stopPropagation()">ライオンズマンション南薬院</a></td>
               <td class="price-cell">2380万円</td>
               <td class="area-cell">47.79㎡</td>
@@ -18658,7 +18656,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3150" data-area="56.22" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79117354/" target="_blank" rel="noopener" title="シティマンション薬院" onclick="event.stopPropagation()">シティマンション薬院</a></td>
               <td class="price-cell">3150万円</td>
               <td class="area-cell">56.22㎡</td>
@@ -18691,7 +18689,7 @@ body {
             </tr>
             <tr data-score="83" data-price="1999" data-area="40.97" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99800235" target="_blank" rel="noopener" title="ステイツ天神東 201" onclick="event.stopPropagation()">ステイツ天神東 201</a></td>
               <td class="price-cell">1999万円</td>
               <td class="area-cell">40.97㎡</td>
@@ -18724,7 +18722,7 @@ body {
             </tr>
             <tr data-score="83" data-price="2188" data-area="69.71" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">2026-03-02</td>
+              <td>2026-03-02</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99770725" target="_blank" rel="noopener" title="ローズマンション第２博多 1308" onclick="event.stopPropagation()">ローズマンション第２博多 1308</a></td>
               <td class="price-cell">2188万円</td>
               <td class="area-cell">69.71㎡</td>
@@ -18757,7 +18755,7 @@ body {
             </tr>
             <tr data-score="83" data-price="2280" data-area="53.28" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99752757" target="_blank" rel="noopener" title="皐月マンション奈良屋 302" onclick="event.stopPropagation()">皐月マンション奈良屋 302</a></td>
               <td class="price-cell">2280万円</td>
               <td class="area-cell">53.28㎡</td>
@@ -18790,7 +18788,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3490" data-area="68.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99795724" target="_blank" rel="noopener" title="日商岩井今泉マンション 210" onclick="event.stopPropagation()">日商岩井今泉マンション 210</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">68.75㎡</td>
@@ -18823,7 +18821,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3750" data-area="46.8" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">2026-03-19</td>
+              <td>2026-03-19</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99815483" target="_blank" rel="noopener" title="ステイツ天神 205" onclick="event.stopPropagation()">ステイツ天神 205</a></td>
               <td class="price-cell">3750万円</td>
               <td class="area-cell">46.8㎡</td>
@@ -18856,7 +18854,7 @@ body {
             </tr>
             <tr data-score="81" data-price="4399" data-area="65.32" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">81</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20033456/" target="_blank" rel="noopener" title="リファレンス天神南" onclick="event.stopPropagation()">リファレンス天神南</a></td>
               <td class="price-cell">4399万円</td>
               <td class="area-cell">65.32㎡</td>
@@ -18889,7 +18887,7 @@ body {
             </tr>
             <tr data-score="80" data-price="3490" data-area="50.12" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20260636/" target="_blank" rel="noopener" title="アルファシオサウスフォンテ" onclick="event.stopPropagation()">アルファシオサウスフォンテ</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">50.12㎡</td>
@@ -18922,7 +18920,7 @@ body {
             </tr>
             <tr data-score="80" data-price="3180" data-area="52.98" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">2026-03-20</td>
+              <td>2026-03-20</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20372579/" target="_blank" rel="noopener" title="チサンマンション祇園" onclick="event.stopPropagation()">チサンマンション祇園</a></td>
               <td class="price-cell">3180万円</td>
               <td class="area-cell">52.98㎡</td>
@@ -18955,7 +18953,7 @@ body {
             </tr>
             <tr data-score="80" data-price="3490" data-area="69.66" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_78908195/" target="_blank" rel="noopener" title="コスモテール吉塚" onclick="event.stopPropagation()">コスモテール吉塚</a></td>
               <td class="price-cell">3490万円</td>
               <td class="area-cell">69.66㎡</td>
@@ -18988,7 +18986,7 @@ body {
             </tr>
             <tr data-score="80" data-price="4699" data-area="53.04" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20163293/" target="_blank" rel="noopener" title="アルファライフ博多" onclick="event.stopPropagation()">アルファライフ博多</a></td>
               <td class="price-cell">4699万円</td>
               <td class="area-cell">53.04㎡</td>
@@ -19021,7 +19019,7 @@ body {
             </tr>
             <tr data-score="80" data-price="2100" data-area="63.3" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78138910/" target="_blank" rel="noopener" title="ダイナコート赤坂南" onclick="event.stopPropagation()">ダイナコート赤坂南</a></td>
               <td class="price-cell">2100万円</td>
               <td class="area-cell">63.3㎡</td>
@@ -19054,7 +19052,7 @@ body {
             </tr>
             <tr data-score="80" data-price="1698" data-area="58.32" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99757514" target="_blank" rel="noopener" title="高宮ハウスII 102" onclick="event.stopPropagation()">高宮ハウスII 102</a></td>
               <td class="price-cell">1698万円</td>
               <td class="area-cell">58.32㎡</td>
@@ -19087,7 +19085,7 @@ body {
             </tr>
             <tr data-score="80" data-price="2380" data-area="40.63" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99758573" target="_blank" rel="noopener" title="プレイスポットしんばしビル本館 905" onclick="event.stopPropagation()">プレイスポットしんばしビル本館 905</a></td>
               <td class="price-cell">2380万円</td>
               <td class="area-cell">40.63㎡</td>
@@ -19120,7 +19118,7 @@ body {
             </tr>
             <tr data-score="80" data-price="3350" data-area="47.04" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99798084" target="_blank" rel="noopener" title="詳細エリアを選択" onclick="event.stopPropagation()">詳細エリアを選択</a></td>
               <td class="price-cell">3350万円</td>
               <td class="area-cell">47.04㎡</td>
@@ -19153,7 +19151,7 @@ body {
             </tr>
             <tr data-score="80" data-price="3080" data-area="56.72" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99720200" target="_blank" rel="noopener" title="ライオンズマンション大名 1003" onclick="event.stopPropagation()">ライオンズマンション大名 1003</a></td>
               <td class="price-cell">3080万円</td>
               <td class="area-cell">56.72㎡</td>
@@ -19186,7 +19184,7 @@ body {
             </tr>
             <tr data-score="80" data-price="4390" data-area="65.32" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99803592" target="_blank" rel="noopener" title="福岡市中央区 3LDK" onclick="event.stopPropagation()">福岡市中央区 3LDK</a></td>
               <td class="price-cell">4390万円</td>
               <td class="area-cell">65.32㎡</td>
@@ -21765,14 +21763,14 @@ body {
           <tbody>
             <tr data-score="80" data-price="5600" data-area="141.66" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99777307" target="_blank" rel="noopener" title="エルフ藤" onclick="event.stopPropagation()">エルフ藤</a></td>
               <td class="price-cell">5600万円</td>
               <td>6.3%</td>
               <td class="area-cell">141.66㎡</td>
               <td>軽量鉄骨造</td>
               <td>5</td>
-              <td class="station-cell" title="高宮 徒歩4分">高宮 徒歩4分</td>
+              <td>高宮 徒歩4分</td>
               <td class="price-cell">30.6万</td>
               <td class="price-cell" style="color:var(--red)">-1.5万</td>
               <td class="price-cell">39.5万/㎡</td>
@@ -21797,14 +21795,14 @@ body {
             </tr>
             <tr data-score="72" data-price="11760" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">72</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3576986/show.html" target="_blank" rel="noopener" title="南区大楠二丁目 RC" onclick="event.stopPropagation()">南区大楠二丁目 RC</a></td>
               <td class="price-cell">1億1760万円</td>
               <td>6.0%</td>
               <td class="area-cell">—</td>
               <td>RC造</td>
               <td>21</td>
-              <td class="station-cell" title="西鉄平尾 徒歩7分">西鉄平尾 徒歩7分</td>
+              <td>西鉄平尾 徒歩7分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--red)">-12.3万</td>
               <td class="price-cell">—</td>
@@ -21829,14 +21827,14 @@ body {
             </tr>
             <tr data-score="72" data-price="9500" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">72</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3570739/show.html" target="_blank" rel="noopener" title="コートビレッヂ輝国(ヴィラ桜坂)" onclick="event.stopPropagation()">コートビレッヂ輝国(ヴィラ桜坂)</a></td>
               <td class="price-cell">9500万円</td>
               <td>7.7%</td>
               <td class="area-cell">—</td>
               <td>RC造</td>
               <td>16</td>
-              <td class="station-cell" title="六本松 徒歩10分">六本松 徒歩10分</td>
+              <td>六本松 徒歩10分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--red)">-5.1万</td>
               <td class="price-cell">—</td>
@@ -21861,14 +21859,14 @@ body {
             </tr>
             <tr data-score="72" data-price="11000" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">72</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3506635/show.html" target="_blank" rel="noopener" title="早良区西新 鉄骨22戸" onclick="event.stopPropagation()">早良区西新 鉄骨22戸</a></td>
               <td class="price-cell">1億1000万円</td>
               <td>8.0%</td>
               <td class="area-cell">—</td>
               <td>鉄骨造</td>
               <td>22</td>
-              <td class="station-cell" title="西新 徒歩7分">西新 徒歩7分</td>
+              <td>西新 徒歩7分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--green)">11.6万</td>
               <td class="price-cell">—</td>
@@ -21893,14 +21891,14 @@ body {
             </tr>
             <tr data-score="72" data-price="6980" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">72</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3531933/show.html" target="_blank" rel="noopener" title="東区アパート（箱崎宮前）" onclick="event.stopPropagation()">東区アパート（箱崎宮前）</a></td>
               <td class="price-cell">6980万円</td>
               <td>9.1%</td>
               <td class="area-cell">—</td>
               <td>木造</td>
               <td>9</td>
-              <td class="station-cell" title="箱崎宮前 徒歩6分">箱崎宮前 徒歩6分</td>
+              <td>箱崎宮前 徒歩6分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--green)">10.7万</td>
               <td class="price-cell">—</td>
@@ -21925,14 +21923,14 @@ body {
             </tr>
             <tr data-score="70" data-price="7860" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">70</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3499456/show.html" target="_blank" rel="noopener" title="箱崎4丁目一棟売マンション" onclick="event.stopPropagation()">箱崎4丁目一棟売マンション</a></td>
               <td class="price-cell">7860万円</td>
               <td>7.1%</td>
               <td class="area-cell">—</td>
               <td>鉄骨造</td>
               <td>14</td>
-              <td class="station-cell" title="箱崎九大前 徒歩5分">箱崎九大前 徒歩5分</td>
+              <td>箱崎九大前 徒歩5分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--green)">5.4万</td>
               <td class="price-cell">—</td>
@@ -21957,14 +21955,14 @@ body {
             </tr>
             <tr data-score="69" data-price="13000" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">69</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3578089/show.html" target="_blank" rel="noopener" title="エーデル箱崎" onclick="event.stopPropagation()">エーデル箱崎</a></td>
               <td class="price-cell">1億3000万円</td>
               <td>7.5%</td>
               <td class="area-cell">—</td>
               <td>RC造</td>
               <td>17</td>
-              <td class="station-cell" title="箱崎宮前 徒歩5分">箱崎宮前 徒歩5分</td>
+              <td>箱崎宮前 徒歩5分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--red)">-5.2万</td>
               <td class="price-cell">—</td>
@@ -21989,14 +21987,14 @@ body {
             </tr>
             <tr data-score="67" data-price="14500" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">67</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3574994/show.html" target="_blank" rel="noopener" title="シャトレ熊西(PHOENIX大橋南)" onclick="event.stopPropagation()">シャトレ熊西(PHOENIX大橋南)</a></td>
               <td class="price-cell">1億4500万円</td>
               <td>5.5%</td>
               <td class="area-cell">—</td>
               <td>RC造</td>
               <td>9</td>
-              <td class="station-cell" title="大橋 徒歩11分">大橋 徒歩11分</td>
+              <td>大橋 徒歩11分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--green)">4.6万</td>
               <td class="price-cell">—</td>
@@ -22021,14 +22019,14 @@ body {
             </tr>
             <tr data-score="67" data-price="6000" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">67</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3511023/show.html" target="_blank" rel="noopener" title="アークパレス" onclick="event.stopPropagation()">アークパレス</a></td>
               <td class="price-cell">6000万円</td>
               <td>7.8%</td>
               <td class="area-cell">—</td>
               <td>RC造</td>
               <td>9</td>
-              <td class="station-cell" title="笹原 徒歩6分">笹原 徒歩6分</td>
+              <td>笹原 徒歩6分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--red)">-2.1万</td>
               <td class="price-cell">—</td>
@@ -22053,14 +22051,14 @@ body {
             </tr>
             <tr data-score="67" data-price="9560" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">67</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3560427/show.html" target="_blank" rel="noopener" title="エクスクルーシブ" onclick="event.stopPropagation()">エクスクルーシブ</a></td>
               <td class="price-cell">9560万円</td>
               <td>6.1%</td>
               <td class="area-cell">—</td>
               <td>木造</td>
               <td>9</td>
-              <td class="station-cell" title="博多 徒歩13分">博多 徒歩13分</td>
+              <td>博多 徒歩13分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--red)">-11.3万</td>
               <td class="price-cell">—</td>
@@ -22085,14 +22083,14 @@ body {
             </tr>
             <tr data-score="65" data-price="19760" data-area="590.02" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">65</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp3/f/fukuoka/fukuoka-shi/3/re_43553956o1/" target="_blank" rel="noopener" title="ホワイトシャトー大橋 壱番館" onclick="event.stopPropagation()">ホワイトシャトー大橋 壱番館</a></td>
               <td class="price-cell">1億9760万円</td>
               <td>6.3%</td>
               <td class="area-cell">590.02m²</td>
               <td>RC造5階建</td>
               <td>24</td>
-              <td class="station-cell" title="大橋 歩9分">大橋 歩9分</td>
+              <td>大橋 歩9分</td>
               <td class="price-cell">102.0万</td>
               <td class="price-cell" style="color:var(--red)">-25.6万</td>
               <td class="price-cell">33.5万/㎡</td>
@@ -22117,14 +22115,14 @@ body {
             </tr>
             <tr data-score="65" data-price="7480" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">65</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3416902/show.html" target="_blank" rel="noopener" title="サンコウハイツ" onclick="event.stopPropagation()">サンコウハイツ</a></td>
               <td class="price-cell">7480万円</td>
               <td>6.0%</td>
               <td class="area-cell">—</td>
               <td>RC造</td>
               <td>12</td>
-              <td class="station-cell" title="井尻 徒歩2分">井尻 徒歩2分</td>
+              <td>井尻 徒歩2分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--red)">-9.7万</td>
               <td class="price-cell">—</td>
@@ -22149,14 +22147,14 @@ body {
             </tr>
             <tr data-score="65" data-price="8800" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">65</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3558564/show.html" target="_blank" rel="noopener" title="西区周船寺RC" onclick="event.stopPropagation()">西区周船寺RC</a></td>
               <td class="price-cell">8800万円</td>
               <td>6.8%</td>
               <td class="area-cell">—</td>
               <td>RC造</td>
               <td>14</td>
-              <td class="station-cell" title="周船寺 徒歩5分">周船寺 徒歩5分</td>
+              <td>周船寺 徒歩5分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--red)">-9.2万</td>
               <td class="price-cell">—</td>
@@ -22181,14 +22179,14 @@ body {
             </tr>
             <tr data-score="65" data-price="7230" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">65</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1001/3532120/show.html" target="_blank" rel="noopener" title="ウェルス田島" onclick="event.stopPropagation()">ウェルス田島</a></td>
               <td class="price-cell">7230万円</td>
               <td>7.2%</td>
               <td class="area-cell">—</td>
               <td>RC造</td>
               <td>12</td>
-              <td class="station-cell" title="別府 徒歩12分">別府 徒歩12分</td>
+              <td>別府 徒歩12分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--red)">-6.1万</td>
               <td class="price-cell">—</td>
@@ -22213,14 +22211,14 @@ body {
             </tr>
             <tr data-score="65" data-price="5000" data-area="None" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">65</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim1002/3569603/show.html" target="_blank" rel="noopener" title="サンバレー井尻" onclick="event.stopPropagation()">サンバレー井尻</a></td>
               <td class="price-cell">5000万円</td>
               <td>7.0%</td>
               <td class="area-cell">—</td>
               <td>木造</td>
               <td>10</td>
-              <td class="station-cell" title="笹原 徒歩3分">笹原 徒歩3分</td>
+              <td>笹原 徒歩3分</td>
               <td class="price-cell">—</td>
               <td class="price-cell" style="color:var(--green)">9.6万</td>
               <td class="price-cell">—</td>
@@ -23939,121 +23937,121 @@ body {
           <tbody>
             <tr data-score="60" data-price="1700" data-area="None">
               <td class="score-cell">60</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/1/" target="_blank" rel="noopener">博多区博多駅南3丁目</a></td>
               <td class="price-cell">1700万円</td>
               <td class="area-cell">—</td>
               <td>—</td>
               <td>2016年10月</td>
-              <td class="station-cell" title="東比恵 徒歩12分">東比恵 徒歩12分</td>
+              <td>東比恵 徒歩12分</td>
               <td>5.0%</td>
               <td class="price-cell">—</td>
             </tr>
             <tr data-score="47" data-price="5720" data-area="108.88">
               <td class="score-cell">47</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/3/re_4343133epy/" target="_blank" rel="noopener">南区井尻3丁目</a></td>
               <td class="price-cell">5720万円</td>
               <td class="area-cell">108.88㎡/土地123.59㎡</td>
               <td>—</td>
               <td>2025年10月</td>
-              <td class="station-cell" title="笹原 徒歩2分">笹原 徒歩2分</td>
+              <td>笹原 徒歩2分</td>
               <td>4.3%</td>
               <td class="price-cell">52.5万/㎡</td>
             </tr>
             <tr data-score="27" data-price="4800" data-area="114.47">
               <td class="score-cell">27</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/7/re_4397531odl/" target="_blank" rel="noopener">西区石丸2丁目</a></td>
               <td class="price-cell">4800万円</td>
               <td class="area-cell">114.47㎡/土地81.3㎡</td>
               <td>—</td>
               <td>2020年02月</td>
-              <td class="station-cell" title="姪浜 徒歩21分">姪浜 徒歩21分</td>
+              <td>姪浜 徒歩21分</td>
               <td>4.2%</td>
               <td class="price-cell">41.9万/㎡</td>
             </tr>
             <tr data-score="27" data-price="4950" data-area="122.8">
               <td class="score-cell">27</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/7/re_4383924sp5/" target="_blank" rel="noopener">西区生松台2丁目</a></td>
               <td class="price-cell">4950万円</td>
               <td class="area-cell">122.80㎡/土地247.62㎡</td>
               <td>—</td>
               <td>2021年08月</td>
-              <td class="station-cell" title="橋本 徒歩31分">橋本 徒歩31分</td>
+              <td>橋本 徒歩31分</td>
               <td>4.0%</td>
               <td class="price-cell">40.3万/㎡</td>
             </tr>
             <tr data-score="25" data-price="1450" data-area="80.31">
               <td class="score-cell">25</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99781425" target="_blank" rel="noopener">南区柏原 木造</a></td>
               <td class="price-cell">1450万円</td>
               <td class="area-cell">80.31㎡/土地300.82㎡</td>
               <td>木造</td>
               <td>1986年7月</td>
-              <td class="station-cell" title="吉塚 徒歩7分">吉塚 徒歩7分</td>
+              <td>吉塚 徒歩7分</td>
               <td>≈11.5%</td>
               <td class="price-cell">18.1万/㎡</td>
             </tr>
             <tr data-score="25" data-price="2100" data-area="40.49">
               <td class="score-cell">25</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99694165" target="_blank" rel="noopener">南区柏原 木造</a></td>
               <td class="price-cell">2100万円</td>
               <td class="area-cell">40.49㎡/土地87.27㎡</td>
               <td>木造</td>
               <td>1985年2月</td>
-              <td class="station-cell" title="吉塚 徒歩8分">吉塚 徒歩8分</td>
+              <td>吉塚 徒歩8分</td>
               <td>≈3.6%</td>
               <td class="price-cell">51.9万/㎡</td>
             </tr>
             <tr data-score="25" data-price="748" data-area="74.52">
               <td class="score-cell">25</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/5/re_43493925xe/" target="_blank" rel="noopener">早良区野芥</a></td>
               <td class="price-cell">748万円</td>
               <td class="area-cell">74.52㎡/土地427.33㎡</td>
               <td>—</td>
               <td>1976年03月</td>
-              <td class="station-cell" title="野芥 徒歩21分">野芥 徒歩21分</td>
+              <td>野芥 徒歩21分</td>
               <td>9.6%</td>
               <td class="price-cell">10.0万/㎡</td>
             </tr>
             <tr data-score="20" data-price="950" data-area="24.69">
               <td class="score-cell">20</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99801780" target="_blank" rel="noopener">中央区六本松 木造</a></td>
               <td class="price-cell">950万円</td>
               <td class="area-cell">24.69㎡/土地40.0㎡</td>
               <td>木造</td>
               <td>1971年3月</td>
-              <td class="station-cell" title="六本松 徒歩5分">六本松 徒歩5分</td>
+              <td>六本松 徒歩5分</td>
               <td>≈6.5%</td>
               <td class="price-cell">38.5万/㎡</td>
             </tr>
             <tr data-score="20" data-price="1100" data-area="119.07">
               <td class="score-cell">20</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99723575" target="_blank" rel="noopener">中央区輝国 木造</a></td>
               <td class="price-cell">1100万円</td>
               <td class="area-cell">119.07㎡/土地164.59㎡</td>
               <td>木造</td>
               <td>1958年8月</td>
-              <td class="station-cell" title="六本松 徒歩13分">六本松 徒歩13分</td>
+              <td>六本松 徒歩13分</td>
               <td>6.5%</td>
               <td class="price-cell">9.2万/㎡</td>
             </tr>
             <tr data-score="20" data-price="2380" data-area="69.55">
               <td class="score-cell">20</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99731468" target="_blank" rel="noopener">南区老司 木造</a></td>
               <td class="price-cell">2380万円</td>
               <td class="area-cell">69.55㎡/土地108.12㎡</td>
               <td>木造</td>
               <td>2012年3月</td>
-              <td class="station-cell" title="大橋 バス25分">大橋 バス25分</td>
+              <td>大橋 バス25分</td>
               <td>≈7.7%</td>
               <td class="price-cell">34.2万/㎡</td>
             </tr>
@@ -25992,7 +25990,7 @@ body {
           <tbody>
             <tr data-score="100" data-price="1000" data-area="46.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">100</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99781409" target="_blank" rel="noopener" title="トピレック博多" onclick="event.stopPropagation()">トピレック博多</a></td>
               <td class="price-cell">1000万円</td>
               <td class="area-cell">46.75㎡</td>
@@ -26001,8 +25999,8 @@ body {
               <td class="station-cell" title="竹下 徒歩15分">竹下 徒歩15分</td>
               <td>—</td>
               <td>相談可</td>
-              <td class="price-cell">—</td>
-              <td class="price-cell">11.5万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">11.5万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区 2460円/㎡</span></td>
               <td>13.8%</td>
               <td class="price-cell" style="color:var(--green)">2.9万</td>
               <td class="price-cell">21.4万/㎡</td>
@@ -26028,7 +26026,7 @@ body {
             </tr>
             <tr data-score="77" data-price="850" data-area="68.3" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">77</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99804693" target="_blank" rel="noopener" title="第3シャトー高宮 101" onclick="event.stopPropagation()">第3シャトー高宮 101</a></td>
               <td class="price-cell">850万円</td>
               <td class="area-cell">68.3㎡</td>
@@ -26037,8 +26035,8 @@ body {
               <td class="station-cell" title="西鉄平尾 徒歩10分">西鉄平尾 徒歩10分</td>
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
-              <td class="price-cell">7.0万<br><span style="font-size:9px;color:var(--red)">-48%</span></td>
-              <td class="price-cell">13.4万<br><span style="font-size:9px;color:var(--text-muted)">相場南区</span></td>
+              <td class="price-cell" style="white-space:nowrap">7.0万<br><span style="font-size:9px;color:var(--red)">-48%</span></td>
+              <td class="price-cell" style="white-space:nowrap">13.4万<br><span style="font-size:9px;color:var(--text-muted)">相場南区 1967円/㎡</span></td>
               <td>9.9%</td>
               <td class="price-cell" style="color:var(--green)">0.8万</td>
               <td class="price-cell">12.4万/㎡</td>
@@ -26064,7 +26062,7 @@ body {
             </tr>
             <tr data-score="75" data-price="580" data-area="55.2" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">75</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99665480" target="_blank" rel="noopener" title="第一大楠マンション 305" onclick="event.stopPropagation()">第一大楠マンション 305</a></td>
               <td class="price-cell">580万円</td>
               <td class="area-cell">55.2㎡</td>
@@ -26073,8 +26071,8 @@ body {
               <td class="station-cell" title="雑餉隈 徒歩5分">雑餉隈 徒歩5分</td>
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
-              <td class="price-cell">5.5万<br><span style="font-size:9px;color:var(--red)">-54%</span></td>
-              <td class="price-cell">11.9万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="white-space:nowrap">5.5万<br><span style="font-size:9px;color:var(--red)">-54%</span></td>
+              <td class="price-cell" style="white-space:nowrap">11.9万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区 2160円/㎡</span></td>
               <td>11.1%</td>
               <td class="price-cell" style="color:var(--green)">0.5万</td>
               <td class="price-cell">10.5万/㎡</td>
@@ -26100,7 +26098,7 @@ body {
             </tr>
             <tr data-score="72" data-price="980" data-area="51.7" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">72</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99789402" target="_blank" rel="noopener" title="シャルマンコーポ" onclick="event.stopPropagation()">シャルマンコーポ</a></td>
               <td class="price-cell">980万円</td>
               <td class="area-cell">51.7㎡</td>
@@ -26109,8 +26107,8 @@ body {
               <td class="station-cell" title="千代県庁口 徒歩7分">千代県庁口 徒歩7分</td>
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
-              <td class="price-cell">5.5万<br><span style="font-size:9px;color:var(--red)">-57%</span></td>
-              <td class="price-cell">12.7万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="white-space:nowrap">5.5万<br><span style="font-size:9px;color:var(--red)">-57%</span></td>
+              <td class="price-cell" style="white-space:nowrap">12.7万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区 2460円/㎡</span></td>
               <td>6.7%</td>
               <td class="price-cell" style="color:var(--red)">-0.4万</td>
               <td class="price-cell">19.0万/㎡</td>
@@ -26136,7 +26134,7 @@ body {
             </tr>
             <tr data-score="70" data-price="650" data-area="40.23" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">70</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99789433" target="_blank" rel="noopener" title="ローズマンション山王 203" onclick="event.stopPropagation()">ローズマンション山王 203</a></td>
               <td class="price-cell">650万円</td>
               <td class="area-cell">40.23㎡</td>
@@ -26145,8 +26143,8 @@ body {
               <td class="station-cell" title="東比恵 徒歩13分">東比恵 徒歩13分</td>
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>相談可</td>
-              <td class="price-cell">4.7万<br><span style="font-size:9px;color:var(--red)">-46%</span></td>
-              <td class="price-cell">8.7万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="white-space:nowrap">4.7万<br><span style="font-size:9px;color:var(--red)">-46%</span></td>
+              <td class="price-cell" style="white-space:nowrap">8.7万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区 2160円/㎡</span></td>
               <td>8.7%</td>
               <td class="price-cell" style="color:var(--red)">-0.2万</td>
               <td class="price-cell">16.2万/㎡</td>
@@ -26172,7 +26170,7 @@ body {
             </tr>
             <tr data-score="67" data-price="950" data-area="54.4" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">67</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99795576" target="_blank" rel="noopener" title="ロワールマンション井尻" onclick="event.stopPropagation()">ロワールマンション井尻</a></td>
               <td class="price-cell">950万円</td>
               <td class="area-cell">54.4㎡</td>
@@ -26181,8 +26179,8 @@ body {
               <td class="station-cell" title="井尻 徒歩3分">井尻 徒歩3分</td>
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
-              <td class="price-cell">6.2万<br><span style="font-size:9px;color:var(--red)">-42%</span></td>
-              <td class="price-cell">10.7万<br><span style="font-size:9px;color:var(--text-muted)">相場南区</span></td>
+              <td class="price-cell" style="white-space:nowrap">6.2万<br><span style="font-size:9px;color:var(--red)">-42%</span></td>
+              <td class="price-cell" style="white-space:nowrap">10.7万<br><span style="font-size:9px;color:var(--text-muted)">相場南区 1967円/㎡</span></td>
               <td>7.6%</td>
               <td class="price-cell" style="color:var(--green)">0.1万</td>
               <td class="price-cell">17.5万/㎡</td>
@@ -26208,7 +26206,7 @@ body {
             </tr>
             <tr data-score="63" data-price="590" data-area="62.86" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--orange, #ff6b35)">63</td>
-              <td class="date-cell">2026-03-19</td>
+              <td>2026-03-19</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99813072" target="_blank" rel="noopener" title="スカイマンション南福岡" onclick="event.stopPropagation()">スカイマンション南福岡</a></td>
               <td class="price-cell">590万円</td>
               <td class="area-cell">62.86㎡</td>
@@ -26217,8 +26215,8 @@ body {
               <td class="station-cell" title="春日 徒歩7分">春日 徒歩7分</td>
               <td>—</td>
               <td>—</td>
-              <td class="price-cell">—</td>
-              <td class="price-cell">13.6万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区</span></td>
+              <td class="price-cell" style="white-space:nowrap">—</td>
+              <td class="price-cell" style="white-space:nowrap">13.6万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区 2160円/㎡</span></td>
               <td>27.6%</td>
               <td class="price-cell" style="color:var(--green)">4.7万</td>
               <td class="price-cell">9.4万/㎡</td>
@@ -26244,7 +26242,7 @@ body {
             </tr>
             <tr data-score="62" data-price="650" data-area="40.0" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--orange, #ff6b35)">62</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99776046" target="_blank" rel="noopener" title="ローレルハイツ高宮 116" onclick="event.stopPropagation()">ローレルハイツ高宮 116</a></td>
               <td class="price-cell">650万円</td>
               <td class="area-cell">40.0㎡</td>
@@ -26253,8 +26251,8 @@ body {
               <td class="station-cell" title="高宮 徒歩7分">高宮 徒歩7分</td>
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
-              <td class="price-cell">4.5万<br><span style="font-size:9px;color:var(--red)">-35%</span></td>
-              <td class="price-cell">6.9万<br><span style="font-size:9px;color:var(--text-muted)">相場南区</span></td>
+              <td class="price-cell" style="white-space:nowrap">4.5万<br><span style="font-size:9px;color:var(--red)">-35%</span></td>
+              <td class="price-cell" style="white-space:nowrap">6.9万<br><span style="font-size:9px;color:var(--text-muted)">相場南区 1728円/㎡</span></td>
               <td>7.7%</td>
               <td class="price-cell" style="color:var(--red)">-0.4万</td>
               <td class="price-cell">16.2万/㎡</td>
@@ -26280,7 +26278,7 @@ body {
             </tr>
             <tr data-score="62" data-price="750" data-area="53.87" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--orange, #ff6b35)">62</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99801480" target="_blank" rel="noopener" title="長住三丁目分譲住宅１０棟" onclick="event.stopPropagation()">長住三丁目分譲住宅１０棟</a></td>
               <td class="price-cell">750万円</td>
               <td class="area-cell">53.87㎡</td>
@@ -26289,8 +26287,8 @@ body {
               <td class="station-cell" title="長住三丁目バス停 徒歩2分">長住三丁目バス停 徒歩2分</td>
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
-              <td class="price-cell">5.0万<br><span style="font-size:9px;color:var(--red)">-53%</span></td>
-              <td class="price-cell">10.6万<br><span style="font-size:9px;color:var(--text-muted)">相場南区</span></td>
+              <td class="price-cell" style="white-space:nowrap">5.0万<br><span style="font-size:9px;color:var(--red)">-53%</span></td>
+              <td class="price-cell" style="white-space:nowrap">10.6万<br><span style="font-size:9px;color:var(--text-muted)">相場南区 1967円/㎡</span></td>
               <td>8.0%</td>
               <td class="price-cell" style="color:var(--red)">-0.0万</td>
               <td class="price-cell">13.9万/㎡</td>
@@ -26316,7 +26314,7 @@ body {
             </tr>
             <tr data-score="60" data-price="670" data-area="65.9" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--orange, #ff6b35)">60</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99621859" target="_blank" rel="noopener" title="エクレール弥永 505" onclick="event.stopPropagation()">エクレール弥永 505</a></td>
               <td class="price-cell">670万円</td>
               <td class="area-cell">65.9㎡</td>
@@ -26325,8 +26323,8 @@ body {
               <td class="station-cell" title="博多南 徒歩14分">博多南 徒歩14分</td>
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
-              <td class="price-cell">3.9万<br><span style="font-size:9px;color:var(--red)">-66%</span></td>
-              <td class="price-cell">11.4万<br><span style="font-size:9px;color:var(--text-muted)">相場南区</span></td>
+              <td class="price-cell" style="white-space:nowrap">3.9万<br><span style="font-size:9px;color:var(--red)">-66%</span></td>
+              <td class="price-cell" style="white-space:nowrap">11.4万<br><span style="font-size:9px;color:var(--text-muted)">相場南区 1728円/㎡</span></td>
               <td>7.0%</td>
               <td class="price-cell" style="color:var(--red)">-0.7万</td>
               <td class="price-cell">10.2万/㎡</td>
@@ -30167,7 +30165,7 @@ body {
           <tbody>
             <tr data-score="93" data-price="3980" data-area="44.54" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">93</td>
-              <td class="date-cell">2026-03-22</td>
+              <td>2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20429198/" target="_blank" rel="noopener" title="スターハイツ台東" onclick="event.stopPropagation()">スターハイツ台東</a></td>
               <td class="price-cell">3980万円</td>
               <td class="area-cell">44.54㎡</td>
@@ -30200,7 +30198,7 @@ body {
             </tr>
             <tr data-score="85" data-price="4180" data-area="40.15" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td class="date-cell">2026-03-25</td>
+              <td>2026-03-25</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" rel="noopener" title="メゾンニシムラ" onclick="event.stopPropagation()">メゾンニシムラ</a></td>
               <td class="price-cell">4180万円</td>
               <td class="area-cell">40.15㎡</td>
@@ -30233,7 +30231,7 @@ body {
             </tr>
             <tr data-score="83" data-price="3480" data-area="47.3" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20020844/" target="_blank" rel="noopener" title="ニックハイム向島百花園" onclick="event.stopPropagation()">ニックハイム向島百花園</a></td>
               <td class="price-cell">3480万円</td>
               <td class="area-cell">47.3㎡</td>
@@ -30266,7 +30264,7 @@ body {
             </tr>
             <tr data-score="80" data-price="4380" data-area="40.94" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell">2026-03-22</td>
+              <td>2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20130053/" target="_blank" rel="noopener" title="グリーンパーク市ヶ谷柳町" onclick="event.stopPropagation()">グリーンパーク市ヶ谷柳町</a></td>
               <td class="price-cell">4380万円</td>
               <td class="area-cell">40.94㎡</td>
@@ -30299,7 +30297,7 @@ body {
             </tr>
             <tr data-score="80" data-price="4980" data-area="41.4" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">80</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20521952/" target="_blank" rel="noopener" title="ＧＥＮＯＶＩＡ鐘ヶ淵" onclick="event.stopPropagation()">ＧＥＮＯＶＩＡ鐘ヶ淵</a></td>
               <td class="price-cell">4980万円</td>
               <td class="area-cell">41.4㎡</td>
@@ -30332,7 +30330,7 @@ body {
             </tr>
             <tr data-score="78" data-price="4790" data-area="50.96" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">78</td>
-              <td class="date-cell">2026-03-22</td>
+              <td>2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20376620/" target="_blank" rel="noopener" title="上野ロイヤルハイツ" onclick="event.stopPropagation()">上野ロイヤルハイツ</a></td>
               <td class="price-cell">4790万円</td>
               <td class="area-cell">50.96㎡</td>
@@ -30365,7 +30363,7 @@ body {
             </tr>
             <tr data-score="78" data-price="3888" data-area="46.62" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">78</td>
-              <td class="date-cell">2026-03-22</td>
+              <td>2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20474788/" target="_blank" rel="noopener" title="グランドパレス沼袋 306号" onclick="event.stopPropagation()">グランドパレス沼袋 306号</a></td>
               <td class="price-cell">3888万円</td>
               <td class="area-cell">46.62㎡</td>
@@ -30398,7 +30396,7 @@ body {
             </tr>
             <tr data-score="77" data-price="3680" data-area="50.6" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">77</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20220965/" target="_blank" rel="noopener" title="マイステージ野方" onclick="event.stopPropagation()">マイステージ野方</a></td>
               <td class="price-cell">3680万円</td>
               <td class="area-cell">50.6㎡</td>
@@ -30431,7 +30429,7 @@ body {
             </tr>
             <tr data-score="77" data-price="3980" data-area="42.0" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">77</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_20507595/" target="_blank" rel="noopener" title="スターパレス北品川" onclick="event.stopPropagation()">スターパレス北品川</a></td>
               <td class="price-cell">3980万円</td>
               <td class="area-cell">42.0㎡</td>
@@ -30464,7 +30462,7 @@ body {
             </tr>
             <tr data-score="77" data-price="4880" data-area="48.96" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">77</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024759467/" target="_blank" rel="noopener" title="ベルディ早稲田東" onclick="event.stopPropagation()">ベルディ早稲田東</a></td>
               <td class="price-cell">4880万円</td>
               <td class="area-cell">48.96㎡</td>
@@ -30497,7 +30495,7 @@ body {
             </tr>
             <tr data-score="75" data-price="2980" data-area="46.28" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">75</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78515092/" target="_blank" rel="noopener" title="大江戸コーポ" onclick="event.stopPropagation()">大江戸コーポ</a></td>
               <td class="price-cell">2980万円</td>
               <td class="area-cell">46.28㎡</td>
@@ -30530,7 +30528,7 @@ body {
             </tr>
             <tr data-score="73" data-price="4990" data-area="43.02" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">73</td>
-              <td class="date-cell">2026-03-22</td>
+              <td>2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20351435/" target="_blank" rel="noopener" title="ヘブン鳥越" onclick="event.stopPropagation()">ヘブン鳥越</a></td>
               <td class="price-cell">4990万円</td>
               <td class="area-cell">43.02㎡</td>
@@ -30563,7 +30561,7 @@ body {
             </tr>
             <tr data-score="72" data-price="3150" data-area="59.4" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">72</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78764639/" target="_blank" rel="noopener" title="キャニオンマンション上鷺宮" onclick="event.stopPropagation()">キャニオンマンション上鷺宮</a></td>
               <td class="price-cell">3150万円</td>
               <td class="area-cell">59.4㎡</td>
@@ -30596,7 +30594,7 @@ body {
             </tr>
             <tr data-score="72" data-price="3499" data-area="49.23" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">72</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20255704/" target="_blank" rel="noopener" title="エクセルシィオール五條" onclick="event.stopPropagation()">エクセルシィオール五條</a></td>
               <td class="price-cell">3499万円</td>
               <td class="area-cell">49.23㎡</td>
@@ -30629,7 +30627,7 @@ body {
             </tr>
             <tr data-score="70" data-price="4290" data-area="56.7" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">70</td>
-              <td class="date-cell">2026-03-22</td>
+              <td>2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20347986/" target="_blank" rel="noopener" title="沼袋コーポラス" onclick="event.stopPropagation()">沼袋コーポラス</a></td>
               <td class="price-cell">4290万円</td>
               <td class="area-cell">56.7㎡</td>
@@ -30662,7 +30660,7 @@ body {
             </tr>
             <tr data-score="68" data-price="3880" data-area="47.07" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">68</td>
-              <td class="date-cell">—</td>
+              <td>—</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20335958/" target="_blank" rel="noopener" title="大塚キャノンハイツ" onclick="event.stopPropagation()">大塚キャノンハイツ</a></td>
               <td class="price-cell">3880万円</td>
               <td class="area-cell">47.07㎡</td>
@@ -30695,7 +30693,7 @@ body {
             </tr>
             <tr data-score="68" data-price="4590" data-area="40.16" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">68</td>
-              <td class="date-cell">2026-03-22</td>
+              <td>2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20353679/" target="_blank" rel="noopener" title="Refays-ms（リファイズエムエス）" onclick="event.stopPropagation()">Refays-ms（リファイズエムエス）</a></td>
               <td class="price-cell">4590万円</td>
               <td class="area-cell">40.16㎡</td>
@@ -30728,7 +30726,7 @@ body {
             </tr>
             <tr data-score="68" data-price="2680" data-area="45.36" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">68</td>
-              <td class="date-cell">2026-03-22</td>
+              <td>2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20452632/" target="_blank" rel="noopener" title="京成サンコーポ浅草" onclick="event.stopPropagation()">京成サンコーポ浅草</a></td>
               <td class="price-cell">2680万円</td>
               <td class="area-cell">45.36㎡</td>
@@ -30761,7 +30759,7 @@ body {
             </tr>
             <tr data-score="68" data-price="2700" data-area="41.52" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">68</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20494298/" target="_blank" rel="noopener" title="日商岩井上高田マンション" onclick="event.stopPropagation()">日商岩井上高田マンション</a></td>
               <td class="price-cell">2700万円</td>
               <td class="area-cell">41.52㎡</td>
@@ -30794,7 +30792,7 @@ body {
             </tr>
             <tr data-score="67" data-price="4780" data-area="44.47" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">67</td>
-              <td class="date-cell">2026-03-22</td>
+              <td>2026-03-22</td>
               <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_20341356/" target="_blank" rel="noopener" title="サンロイヤル五反田" onclick="event.stopPropagation()">サンロイヤル五反田</a></td>
               <td class="price-cell">4780万円</td>
               <td class="area-cell">44.47㎡</td>
@@ -33401,14 +33399,14 @@ body {
           <tbody>
             <tr data-score="85" data-price="17980" data-area="101.74" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">85</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/shinjuku-ku/re_4401201ls7/" target="_blank" rel="noopener" title="新宿区上落合3丁目9 (健美家)" onclick="event.stopPropagation()">新宿区上落合3丁目9 (健美家)</a></td>
               <td class="price-cell">1億7980万円</td>
               <td>4.7%</td>
               <td class="area-cell">101.74m²(※土地面積の可能性)</td>
               <td>2階建</td>
               <td>10</td>
-              <td class="station-cell" title="落合 歩1分">落合 歩1分</td>
+              <td>落合 歩1分</td>
               <td class="price-cell">40.7万</td>
               <td class="price-cell" style="color:var(--red)">-0.7万</td>
               <td class="price-cell">177万/㎡</td>
@@ -33433,14 +33431,14 @@ body {
             </tr>
             <tr data-score="83" data-price="14900" data-area="213.16" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/hachioji-shi/re_4397873uhg/" target="_blank" rel="noopener" title="八王子市大塚424 (健美家)" onclick="event.stopPropagation()">八王子市大塚424 (健美家)</a></td>
               <td class="price-cell">1億4900万円</td>
               <td>11.0%</td>
               <td class="area-cell">213.16m²</td>
               <td>2階建</td>
               <td>10</td>
-              <td class="station-cell" title="大塚・帝京大学 歩9分">大塚・帝京大学 歩9分</td>
+              <td>大塚・帝京大学 歩9分</td>
               <td class="price-cell">68.2万</td>
               <td class="price-cell" style="color:var(--green)">39.8万</td>
               <td class="price-cell">69.9万/㎡</td>
@@ -33465,14 +33463,14 @@ body {
             </tr>
             <tr data-score="83" data-price="19800" data-area="254.59" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">83</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/itabashi-ku/re_43864079ef/" target="_blank" rel="noopener" title="板橋区前野町2丁目 (健美家)" onclick="event.stopPropagation()">板橋区前野町2丁目 (健美家)</a></td>
               <td class="price-cell">1億9800万円</td>
               <td>7.0%</td>
               <td class="area-cell">254.59m²</td>
               <td>3階建</td>
               <td>12</td>
-              <td class="station-cell" title="ときわ台 歩9分">ときわ台 歩9分</td>
+              <td>ときわ台 歩9分</td>
               <td class="price-cell">86.6万</td>
               <td class="price-cell" style="color:var(--green)">19.4万</td>
               <td class="price-cell">77.8万/㎡</td>
@@ -33497,14 +33495,14 @@ body {
             </tr>
             <tr data-score="75" data-price="16700" data-area="190.13" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">75</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/nerima-ku/re_4392294is1/" target="_blank" rel="noopener" title="練馬区豊玉北3丁目2 (健美家)" onclick="event.stopPropagation()">練馬区豊玉北3丁目2 (健美家)</a></td>
               <td class="price-cell">1億6700万円</td>
               <td>5.5%</td>
               <td class="area-cell">190.13m²</td>
               <td>3階建</td>
               <td>9</td>
-              <td class="station-cell" title="桜台 歩5分">桜台 歩5分</td>
+              <td>桜台 歩5分</td>
               <td class="price-cell">58.9万</td>
               <td class="price-cell" style="color:var(--green)">4.4万</td>
               <td class="price-cell">87.8万/㎡</td>
@@ -33529,14 +33527,14 @@ body {
             </tr>
             <tr data-score="75" data-price="15000" data-area="121.04" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">75</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/shinagawa-ku/re_44013326go/" target="_blank" rel="noopener" title="品川区西中延 (健美家)" onclick="event.stopPropagation()">品川区西中延 (健美家)</a></td>
               <td class="price-cell">1億5000万円</td>
               <td>5.4%</td>
               <td class="area-cell">121.04m²(※土地面積の可能性)</td>
               <td>2階建</td>
               <td>10</td>
-              <td class="station-cell" title="荏原中延 歩3分">荏原中延 歩3分</td>
+              <td>荏原中延 歩3分</td>
               <td class="price-cell">40.1万</td>
               <td class="price-cell" style="color:var(--red)">-0.2万</td>
               <td class="price-cell">124万/㎡</td>
@@ -33561,14 +33559,14 @@ body {
             </tr>
             <tr data-score="73" data-price="19900" data-area="286.06" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">73</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/nerima-ku/re_43946322gw/" target="_blank" rel="noopener" title="練馬区桜台一丁目34 (健美家)" onclick="event.stopPropagation()">練馬区桜台一丁目34 (健美家)</a></td>
               <td class="price-cell">1億9900万円</td>
               <td>5.2%</td>
               <td class="area-cell">286.06m²</td>
               <td>2階建</td>
               <td>12</td>
-              <td class="station-cell" title="桜台 歩4分">桜台 歩4分</td>
+              <td>桜台 歩4分</td>
               <td class="price-cell">81.6万</td>
               <td class="price-cell" style="color:var(--green)">4.3万</td>
               <td class="price-cell">69.6万/㎡</td>
@@ -33593,14 +33591,14 @@ body {
             </tr>
             <tr data-score="73" data-price="16380" data-area="156.51" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">73</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/nakano-ku/re_4394613ixi/" target="_blank" rel="noopener" title="中野区本町二丁目 (健美家)" onclick="event.stopPropagation()">中野区本町二丁目 (健美家)</a></td>
               <td class="price-cell">1億6380万円</td>
               <td>5.0%</td>
               <td class="area-cell">156.51m²</td>
               <td>3階建</td>
               <td>10</td>
-              <td class="station-cell" title="中野坂上 歩6分">中野坂上 歩6分</td>
+              <td>中野坂上 歩6分</td>
               <td class="price-cell">51.8万</td>
               <td class="price-cell" style="color:var(--red)">-3.8万</td>
               <td class="price-cell">105万/㎡</td>
@@ -33625,14 +33623,14 @@ body {
             </tr>
             <tr data-score="73" data-price="16100" data-area="179.5" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">73</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/suginami-ku/re_4388850orv/" target="_blank" rel="noopener" title="杉並区浜田山1-29 (健美家)" onclick="event.stopPropagation()">杉並区浜田山1-29 (健美家)</a></td>
               <td class="price-cell">1億6100万円</td>
               <td>5.3%</td>
               <td class="area-cell">179.5m²</td>
               <td>2階建</td>
               <td>10</td>
-              <td class="station-cell" title="西永福 歩8分">西永福 歩8分</td>
+              <td>西永福 歩8分</td>
               <td class="price-cell">52.8万</td>
               <td class="price-cell" style="color:var(--green)">4.4万</td>
               <td class="price-cell">89.7万/㎡</td>
@@ -33657,14 +33655,14 @@ body {
             </tr>
             <tr data-score="71" data-price="20000" data-area="216.58" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">71</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp3/s/tokyo/shinagawa-ku/re_4399077jot/" target="_blank" rel="noopener" title="東京都品川区 一棟売りマンション" onclick="event.stopPropagation()">東京都品川区 一棟売りマンション</a></td>
               <td class="price-cell">2億円</td>
               <td>4.7%</td>
               <td class="area-cell">216.58m²</td>
               <td>RC造3階建</td>
               <td>9</td>
-              <td class="station-cell" title="西大井 歩9分">西大井 歩9分</td>
+              <td>西大井 歩9分</td>
               <td class="price-cell">63.9万</td>
               <td class="price-cell" style="color:var(--red)">-12.4万</td>
               <td class="price-cell">92.3万/㎡</td>
@@ -33689,14 +33687,14 @@ body {
             </tr>
             <tr data-score="70" data-price="14760" data-area="175.72" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">70</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/nerima-ku/re_4396036zvl/" target="_blank" rel="noopener" title="練馬区桜台1-32 (健美家)" onclick="event.stopPropagation()">練馬区桜台1-32 (健美家)</a></td>
               <td class="price-cell">1億4760万円</td>
               <td>6.0%</td>
               <td class="area-cell">175.72m²</td>
               <td>3階建</td>
               <td>9</td>
-              <td class="station-cell" title="新桜台 歩4分">新桜台 歩4分</td>
+              <td>新桜台 歩4分</td>
               <td class="price-cell">54.5万</td>
               <td class="price-cell" style="color:var(--green)">7.1万</td>
               <td class="price-cell">84.0万/㎡</td>
@@ -33721,14 +33719,14 @@ body {
             </tr>
             <tr data-score="70" data-price="20000" data-area="167.94" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">70</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/nakano-ku/re_4398129nt4/" target="_blank" rel="noopener" title="中野区本町 (健美家)" onclick="event.stopPropagation()">中野区本町 (健美家)</a></td>
               <td class="price-cell">2億円</td>
               <td>4.5%</td>
               <td class="area-cell">167.94m²(※土地面積の可能性)</td>
               <td>2階建</td>
               <td>14</td>
-              <td class="station-cell" title="新中野 歩5分">新中野 歩5分</td>
+              <td>新中野 歩5分</td>
               <td class="price-cell">60.5万</td>
               <td class="price-cell" style="color:var(--red)">-2.5万</td>
               <td class="price-cell">119万/㎡</td>
@@ -33753,14 +33751,14 @@ body {
             </tr>
             <tr data-score="70" data-price="16500" data-area="175.96" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">70</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp3/s/tokyo/itabashi-ku/re_4391333tyb/" target="_blank" rel="noopener" title="板橋区高島平2丁目 (健美家)" onclick="event.stopPropagation()">板橋区高島平2丁目 (健美家)</a></td>
               <td class="price-cell">1億6500万円</td>
               <td>5.0%</td>
               <td class="area-cell">175.96m²</td>
               <td>4階建</td>
               <td>8</td>
-              <td class="station-cell" title="高島平 歩9分">高島平 歩9分</td>
+              <td>高島平 歩9分</td>
               <td class="price-cell">59.8万</td>
               <td class="price-cell" style="color:var(--green)">1.0万</td>
               <td class="price-cell">93.8万/㎡</td>
@@ -33785,14 +33783,14 @@ body {
             </tr>
             <tr data-score="70" data-price="17840" data-area="184.8" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">70</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/kita-ku/re_4388955xu0/" target="_blank" rel="noopener" title="北区豊島7丁目 (健美家)" onclick="event.stopPropagation()">北区豊島7丁目 (健美家)</a></td>
               <td class="price-cell">1億7840万円</td>
               <td>6.0%</td>
               <td class="area-cell">184.80m²(※土地面積の可能性)</td>
               <td>3階建</td>
               <td>15</td>
-              <td class="station-cell" title="王子 歩18分">王子 歩18分</td>
+              <td>王子 歩18分</td>
               <td class="price-cell">59.1万</td>
               <td class="price-cell" style="color:var(--green)">9.7万</td>
               <td class="price-cell">96.5万/㎡</td>
@@ -33817,14 +33815,14 @@ body {
             </tr>
             <tr data-score="70" data-price="15600" data-area="124.28" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">70</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/nakano-ku/re_4388749icz/" target="_blank" rel="noopener" title="中野区鷺宮3 (健美家)" onclick="event.stopPropagation()">中野区鷺宮3 (健美家)</a></td>
               <td class="price-cell">1億5600万円</td>
               <td>4.7%</td>
               <td class="area-cell">124.28m²(※土地面積の可能性)</td>
               <td>2階建</td>
               <td>12</td>
-              <td class="station-cell" title="都立家政 歩3分">都立家政 歩3分</td>
+              <td>都立家政 歩3分</td>
               <td class="price-cell">41.2万</td>
               <td class="price-cell" style="color:var(--red)">-0.1万</td>
               <td class="price-cell">126万/㎡</td>
@@ -33849,14 +33847,14 @@ body {
             </tr>
             <tr data-score="68" data-price="16500" data-area="112.38" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">68</td>
-              <td class="date-cell"><span style="color:var(--green);font-weight:700">NEW</span></td>
+              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.kenbiya.com/pp2/s/tokyo/suginami-ku/re_4391924ygx/" target="_blank" rel="noopener" title="杉並区高円寺南5-4 (健美家)" onclick="event.stopPropagation()">杉並区高円寺南5-4 (健美家)</a></td>
               <td class="price-cell">1億6500万円</td>
               <td>≈2.6%</td>
               <td class="area-cell">112.38m²(※土地面積の可能性)</td>
               <td>2階建</td>
               <td>10</td>
-              <td class="station-cell" title="東高円寺 歩5分">東高円寺 歩5分</td>
+              <td>東高円寺 歩5分</td>
               <td class="price-cell">36.0万</td>
               <td class="price-cell" style="color:var(--red)">-15.9万</td>
               <td class="price-cell">147万/㎡</td>
@@ -33916,7 +33914,7 @@ body {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-03-30 13:54</div>
+  <div style="margin-top:4px;">Generated at 2026-03-30 13:28</div>
 </footer>
 <script>
 let currentView = 'list';

@@ -33,7 +33,7 @@ from generate_ittomono_report import (
     _filter_rows as ittomono_filter,
     _deduplicate_rows as ittomono_dedup,
 )
-from revenue_calc import analyze as revenue_analyze
+from revenue_calc import analyze as revenue_analyze, InvestmentParams
 from lib.renderer import create_env, PUBLIC_NAV
 from lib.styles.design_tokens import get_base_css, get_css_tokens, get_google_fonts_url
 
@@ -407,7 +407,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
                 area_sqm=row.area_sqm,
                 maintenance_fee_monthly=row.maintenance_fee or 0,
             )
-            d["revenue"] = {
+            rev = {
                 "noi": round(ra.noi, 1),
                 "net_yield": round(ra.net_yield_pct, 2),
                 "monthly_cf": round(ra.monthly_cf, 1),
@@ -429,6 +429,18 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
                 "rent_per_sqm": mkt_per_sqm,
                 "structure_used": structure_for_calc,
             }
+            # 20年融資シナリオ（現行<20年の場合のみ）
+            if ra.loan_years < 20:
+                ra20 = revenue_analyze(
+                    price_man=row.price_man, yield_pct=est_yield,
+                    structure=structure_for_calc, built_year=row.built_year,
+                    units_count=1, area_sqm=row.area_sqm,
+                    maintenance_fee_monthly=row.maintenance_fee or 0,
+                    params=InvestmentParams(loan_years=20),
+                )
+                rev["cf_20y"] = round(ra20.after_tax_cf / 12, 1)
+                rev["ads_20y"] = round(ra20.annual_debt_service, 1)
+            d["revenue"] = rev
         except Exception:
             pass
 

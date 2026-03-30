@@ -485,11 +485,14 @@ def dedupe_properties(rows: list[PropertyRow]) -> tuple[list[PropertyRow], int]:
         key_name_price = (row.name, row.price_man)
         # Third key: same address + same price = same property even if names differ (cross-listings)
         key_loc_price = (loc_norm, row.price_man) if loc_norm and row.price_man > 0 else None
+        # Fourth key: same price + same area = likely same property (catches cross-source dupes with different names/addresses)
+        key_price_area = (row.price_man, row.area_sqm) if row.price_man > 0 and row.area_sqm and row.area_sqm > 0 else None
         # Use sentinel-based lookup to avoid 0-index truthiness bug
         idx_phys = seen.get(key_physical)
         idx_name = seen.get(key_name_price)
         idx_loc = seen.get(key_loc_price) if key_loc_price is not None else None
-        existing_idx = idx_phys if idx_phys is not None else (idx_name if idx_name is not None else idx_loc)
+        idx_pa = seen.get(key_price_area) if key_price_area is not None else None
+        existing_idx = idx_phys if idx_phys is not None else (idx_name if idx_name is not None else (idx_loc if idx_loc is not None else idx_pa))
         if existing_idx is not None:
             # Prefer the row with richer data (maintenance fee, pet status, etc.)
             existing = out[existing_idx]
@@ -502,6 +505,8 @@ def dedupe_properties(rows: list[PropertyRow]) -> tuple[list[PropertyRow], int]:
         seen[key_name_price] = idx
         if key_loc_price is not None:
             seen[key_loc_price] = idx
+        if key_price_area is not None:
+            seen[key_price_area] = idx
         out.append(row)
     return out, dup_count
 

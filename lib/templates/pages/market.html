@@ -142,13 +142,15 @@
 .prop-table { border-collapse: collapse; font-size: 12px; }
 .prop-table th {
   text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 700;
-  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px;
   border-bottom: 1px solid var(--border); position: sticky; top: 0;
-  background: var(--bg); white-space: nowrap;
+  background: var(--bg); white-space: nowrap; padding: 6px 6px;
 }
-.prop-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); white-space: nowrap; }
+.prop-table td { padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,0.03); white-space: nowrap; }
 .prop-table tr:hover { background: rgba(255,255,255,0.02); }
-.prop-table .name-cell { white-space: nowrap; }
+.prop-table .name-cell { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prop-table .station-cell { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prop-table .date-cell { max-width: 56px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
 .prop-table .score-cell { font-family: var(--font-mono); font-weight: 700; }
 .prop-table .price-cell { font-family: var(--font-mono); font-weight: 600; text-align: right; white-space: nowrap; }
 .prop-table .area-cell { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
@@ -339,7 +341,7 @@
             {% for prop in city.kubun.properties %}
             <tr data-score="{{ prop.total_score }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}" {% if prop.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
               <td class="score-cell" style="color:{% if prop.total_score >= 80 %}var(--green){% elif prop.total_score >= 65 %}var(--yellow){% else %}var(--orange, #ff6b35){% endif %}">{{ prop.total_score }}</td>
-              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
+              <td class="date-cell">{% if prop.is_new %}<span style="color:var(--green);font-weight:700">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
@@ -405,14 +407,14 @@
             {% for prop in city.ittomono.properties %}
             <tr data-score="{{ prop.total_score | default(0) }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}" {% if prop.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
               <td class="score-cell" style="color:{% if (prop.total_score | default(0)) >= 80 %}var(--green){% elif (prop.total_score | default(0)) >= 50 %}var(--yellow){% else %}var(--text-muted){% endif %}">{{ prop.total_score | default(0) }}</td>
-              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
+              <td class="date-cell">{% if prop.is_new %}<span style="color:var(--green);font-weight:700">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
               <td>{{ prop.structure or "—" }}</td>
               <td>{{ prop.units_count or "—" }}</td>
-              <td>{{ prop.station_text | default(prop.location) }}</td>
+              <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td class="price-cell">{{ prop.est_monthly_rent or "—" }}</td>
               {% if prop.revenue %}
               <td class="price-cell" style="color:{% if prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.after_tax_monthly_cf }}万</td>
@@ -470,13 +472,13 @@
             {% for prop in city.kodate.properties %}
             <tr data-score="{{ prop.total_score | default(0) }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}">
               <td class="score-cell">{{ prop.total_score | default(0) }}</td>
-              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
+              <td class="date-cell">{% if prop.is_new %}<span style="color:var(--green);font-weight:700">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
               <td>{{ prop.structure or "—" }}</td>
               <td>{{ prop.built_text or "—" }}</td>
-              <td>{{ prop.station_text | default(prop.location) }}</td>
+              <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
@@ -522,7 +524,7 @@
             {% for prop in city.budget.properties %}
             <tr data-score="{{ prop.total_score }}" data-price="{{ prop.price_man | default(0) }}" data-area="{{ prop.area_sqm | default(0) }}" {% if prop.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
               <td class="score-cell" style="color:{% if prop.total_score >= 80 %}var(--green){% elif prop.total_score >= 65 %}var(--yellow){% else %}var(--orange, #ff6b35){% endif %}">{{ prop.total_score }}</td>
-              <td>{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
+              <td class="date-cell">{% if prop.is_new %}<span style="color:var(--green);font-weight:700">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
@@ -531,8 +533,8 @@
               <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}—{% endif %}</td>
               <td>{{ prop.pet_status or "—" }}</td>
-              <td class="price-cell" style="white-space:nowrap">{% if prop.actual_rent %}{{ prop.actual_rent }}{% if prop.rent_gap_pct %}<br><span style="font-size:9px;color:{% if '-' in prop.rent_gap_pct %}var(--red){% else %}var(--green){% endif %}">{{ prop.rent_gap_pct }}</span>{% endif %}{% else %}—{% endif %}</td>
-              <td class="price-cell" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}{% if prop.rent_per_sqm %} {{ prop.rent_per_sqm }}円/㎡{% endif %}</span>{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.actual_rent %}{{ prop.actual_rent }}{% if prop.rent_gap_pct %}<br><span style="font-size:9px;color:{% if '-' in prop.rent_gap_pct %}var(--red){% else %}var(--green){% endif %}">{{ prop.rent_gap_pct }}</span>{% endif %}{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}</span>{% else %}—{% endif %}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
               <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>

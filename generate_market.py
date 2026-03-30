@@ -90,9 +90,9 @@ TIER_GREEN = 80
 TIER_YELLOW = 65
 MAX_YELLOW_FILL = 20
 
-# Budget tier: lower thresholds (CF-focused, smaller properties)
-BUDGET_TIER_MIN = 40
-BUDGET_MAX_ITEMS = 25
+# Budget tier: CF-focused investment (SEARCH_CRITERIA: 40㎡以上, 上位のみ)
+BUDGET_TIER_MIN = 60
+BUDGET_MAX_ITEMS = 15
 
 
 # ---------------------------------------------------------------------------
@@ -183,9 +183,9 @@ def _load_budget(city_key: str) -> list[PropertyRow]:
     sold = load_sold_urls()
     rows = [r for r in rows if r.url.rstrip("/") + "/" not in sold]
 
-    # Budget tier: don't filter OC or pet (CF-focused), but exclude 木造 and 30㎡未満
+    # Budget tier: exclude 木造, 40㎡未満 (SEARCH_CRITERIA: 最低40㎡)
     rows = [r for r in rows if r.structure != "木造"]
-    rows = [r for r in rows if r.area_sqm is None or r.area_sqm >= 30]
+    rows = [r for r in rows if r.area_sqm is not None and r.area_sqm >= 40]
     config = ReportConfig(
         city_key=city_key, city_label=city_key,
         accent="#6366f1", accent_rgb="99,102,241",

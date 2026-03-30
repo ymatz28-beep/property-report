@@ -515,7 +515,11 @@ body {
 }
 .prop-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); white-space: nowrap; }
 .prop-table tr:hover { background: rgba(255,255,255,0.02); }
-.prop-table .name-cell { white-space: nowrap; }
+.prop-table .name-cell { white-space: normal; max-width: 180px; line-height: 1.3; overflow: hidden; }
+.prop-table .name-cell a,
+.prop-table .name-cell span {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
 .prop-table .score-cell { font-family: var(--font-mono); font-weight: 700; }
 .prop-table .price-cell { font-family: var(--font-mono); font-weight: 600; text-align: right; white-space: nowrap; }
 .prop-table .area-cell { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
@@ -528,7 +532,7 @@ body {
 [data-type="budget"] .station-cell,
 [data-type="kubun"] .station-cell { max-width: 180px; white-space: normal; word-break: break-all; line-height: 1.3; padding: 6px 4px; }
 [data-type="budget"] .name-cell,
-[data-type="kubun"] .name-cell { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+[data-type="kubun"] .name-cell { max-width: 180px; }
 [data-type="budget"] .layout-cell,
 [data-type="kubun"] .layout-cell { max-width: 48px; text-align: center; padding: 6px 2px; }
 
@@ -852,14 +856,14 @@ body {
         </button>
         <button class="city-tab"
                 data-city="fukuoka"
-                data-profitable="29"
+                data-profitable="28"
                 data-kubun="25"
                 data-ittomono="15"
                 data-kodate="10"
                 data-budget="10"
                 onclick="switchCity('fukuoka')">
           福岡
-          <span class="city-tab-count">89</span>
+          <span class="city-tab-count">88</span>
         </button>
         <button class="city-tab"
                 data-city="tokyo"
@@ -951,7 +955,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="34" data-price="2200">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3575438/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="谷町九丁目4分・平成28年・賃貸中・2200万円・4.33％">谷町九丁目4分・平成28年・賃貸中・2200万円・4.33％</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3575438/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="谷町九丁目4分・平成28年・賃貸中・2200万円・4.33％">谷町九丁目4分・平成28年・賃貸中・2200万円・4.33％</a></td>
               <td class="price-cell" style="white-space:nowrap">2200万</td>
               <td>24㎡</td>
               <td style="font-size:11px">1977<span style="opacity:0.6">(49)</span></td>
@@ -982,7 +986,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="47" data-price="970">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3576839/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="エスリード梅田東">エスリード梅田東</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3576839/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="エスリード梅田東">エスリード梅田東</a></td>
               <td class="price-cell" style="white-space:nowrap">970万</td>
               <td>33㎡</td>
               <td style="font-size:11px">1980<span style="opacity:0.6">(46)</span></td>
@@ -1013,7 +1017,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="47" data-price="850">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3575788/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="GE3816">GE3816</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3575788/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="GE3816">GE3816</a></td>
               <td class="price-cell" style="white-space:nowrap">850万</td>
               <td>17㎡</td>
               <td style="font-size:11px">1996<span style="opacity:0.6">(30)</span></td>
@@ -1044,7 +1048,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="62" data-price="1630">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3581806/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="エスライズ日本橋【オーナーチェンジ】">エスライズ日本橋【オーナーチェンジ】</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3581806/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="エスライズ日本橋【オーナーチェンジ】">エスライズ日本橋【オーナーチェンジ】</a></td>
               <td class="price-cell" style="white-space:nowrap">1630万</td>
               <td>26㎡</td>
               <td style="font-size:11px">2008<span style="opacity:0.6">(18)</span></td>
@@ -1075,7 +1079,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="49" data-price="850">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3576399/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="新大阪コーポビアネーズ">新大阪コーポビアネーズ</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3576399/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="新大阪コーポビアネーズ">新大阪コーポビアネーズ</a></td>
               <td class="price-cell" style="white-space:nowrap">850万</td>
               <td>27㎡</td>
               <td style="font-size:11px">1980<span style="opacity:0.6">(46)</span></td>
@@ -1106,7 +1110,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="64" data-price="990">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3580735/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="八尾ストークハイツ（オーナーチェンジ）">八尾ストークハイツ（オーナーチェンジ）</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kansai/osaka/dim2001/3580735/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="八尾ストークハイツ（オーナーチェンジ）">八尾ストークハイツ（オーナーチェンジ）</a></td>
               <td class="price-cell" style="white-space:nowrap">990万</td>
               <td>27㎡</td>
               <td style="font-size:11px">1981<span style="opacity:0.6">(45)</span></td>
@@ -2115,7 +2119,7 @@ body {
 
     </div>
     <div class="prop-card-title-block">
-      <div class="prop-card-name" title="●ストークマンション長堀●">●ストークマンション長堀●</div>
+      <div class="prop-card-name" title="大阪府大阪市 2LDK">大阪府大阪市 2LDK</div>
       <div class="prop-card-location">西長堀 徒歩4分</div>
     </div>
     <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
@@ -4019,7 +4023,7 @@ body {
 
     </div>
     <div class="prop-card-title-block">
-      <div class="prop-card-name" title="ファインレジデンス福島野田　The &nbsp;Garden">ファインレジデンス福島野田　The &nbsp;Garden</div>
+      <div class="prop-card-name" title="ファインレジデンス福島野田　The  Garden">ファインレジデンス福島野田　The  Garden</div>
       <div class="prop-card-location">野田 徒歩7分</div>
     </div>
     <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
@@ -5152,7 +5156,7 @@ body {
             <tr data-score="88" data-price="3050" data-area="56.91" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">88</td>
               <td class="date-cell"><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
-              <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener" title="●ストークマンション長堀●" onclick="event.stopPropagation()">●ストークマンション長堀●</a></td>
+              <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener" title="大阪府大阪市 2LDK" onclick="event.stopPropagation()">大阪府大阪市 2LDK</a></td>
               <td class="price-cell">3050万円</td>
               <td class="area-cell">56.91㎡</td>
               <td class="layout-cell">2LDK</td>
@@ -5502,7 +5506,7 @@ body {
             <tr data-score="82" data-price="4100" data-area="40.07" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">82</td>
               <td class="date-cell">03-19</td>
-              <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20468253/" target="_blank" rel="noopener" title="ファインレジデンス福島野田　The &nbsp;Garden" onclick="event.stopPropagation()">ファインレジデンス福島野田　The &nbsp;Garden</a></td>
+              <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20468253/" target="_blank" rel="noopener" title="ファインレジデンス福島野田　The  Garden" onclick="event.stopPropagation()">ファインレジデンス福島野田　The  Garden</a></td>
               <td class="price-cell">4100万円</td>
               <td class="area-cell">40.07㎡</td>
               <td class="layout-cell">1LDK</td>
@@ -7137,7 +7141,7 @@ body {
     <div class="type-section" id="fukuoka-profitable" data-type="profitable">
       <div class="type-header" style="background:linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04)); border-color:rgba(34,197,94,0.3)">
         <span class="type-label" style="color:var(--green)">収益物件</span>
-        <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">29</span>
+        <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">28</span>
         <span style="font-size:11px;color:var(--text-muted);margin-left:8px">CF > 0 / CCR↓順 / 種別横断</span>
       </div>
       <div class="kubun-legend" style="background:var(--bg);border-bottom:1px solid rgba(34,197,94,0.15);padding:8px 12px;font-size:11px;color:var(--text-muted);line-height:1.7;margin-bottom:4px">
@@ -7177,7 +7181,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="63" data-price="590">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.f-takken.com/freins/items/99813072" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="スカイマンション南福岡">スカイマンション南福岡</a></td>
+              <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99813072" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="スカイマンション南福岡">スカイマンション南福岡</a></td>
               <td class="price-cell" style="white-space:nowrap">590万</td>
               <td>63㎡</td>
               <td style="font-size:11px">1990<span style="opacity:0.6">(36)</span></td>
@@ -7206,40 +7210,9 @@ body {
               </td>
             </tr>
             <tr data-expandable onclick="toggleDetail(this)"
-                data-score="62" data-price="599">
-              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3567594/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="第三住吉ハイツ">第三住吉ハイツ</a></td>
-              <td class="price-cell" style="white-space:nowrap">599万</td>
-              <td>63㎡</td>
-              <td style="font-size:11px">1985<span style="opacity:0.6">(41)</span></td>
-              <td class="station-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3" title="春日 徒歩7分">春日 徒歩7分</td>
-              <td><span style="font-size:10px;color:var(--text-muted)">空</span></td>
-              <td class="price-cell" style="white-space:nowrap">—</td>
-              <td class="price-cell" style="white-space:nowrap">12.3万<br><span style="font-size:9px;color:var(--text-muted)">博多区</span></td>
-              <td class="price-cell" style="color:var(--green);font-weight:600">4.7万</td>
-              <td class="price-cell" style="white-space:nowrap">161.7万</td>
-              <td style="font-weight:600">35.2%</td>
-            </tr>
-            <tr class="detail-row">
-              <td colspan="12">
-                <div class="detail-grid">
-                  <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value"></span></div>
-                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">24.6%</span></div>
-                  <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">109.4万</span></div>
-                  <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value"></span></div>
-                  <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">119.8万</span></div>
-                  <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">41.9万</span></div>
-                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">2.85% / 20年</span></div>
-                  <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">31.5万</span></div>
-                  <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--green)">6.5万</span></div>
-                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">2.8年</span></div>
-                </div>
-              </td>
-            </tr>
-            <tr data-expandable onclick="toggleDetail(this)"
                 data-score="25" data-price="1450">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.f-takken.com/freins/items/99781425" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="南区柏原 木造">南区柏原 木造</a></td>
+              <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99781425" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="南区柏原 木造">南区柏原 木造</a></td>
               <td class="price-cell" style="white-space:nowrap">1450万</td>
               <td>80㎡</td>
               <td style="font-size:11px">1986<span style="opacity:0.6">(40)</span></td>
@@ -7270,7 +7243,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="25" data-price="490">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3554701/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="福岡県福岡市">福岡県福岡市</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3554701/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="福岡県福岡市">福岡県福岡市</a></td>
               <td class="price-cell" style="white-space:nowrap">490万</td>
               <td>16㎡</td>
               <td style="font-size:11px">1990<span style="opacity:0.6">(36)</span></td>
@@ -7301,7 +7274,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="100" data-price="1000">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.f-takken.com/freins/items/99781409" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="トピレック博多">トピレック博多</a></td>
+              <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99781409" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="トピレック博多">トピレック博多</a></td>
               <td class="price-cell" style="white-space:nowrap">1000万</td>
               <td>47㎡</td>
               <td style="font-size:11px">2000<span style="opacity:0.6">(26)</span></td>
@@ -7332,7 +7305,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="47" data-price="170">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3579215/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ルエ・メゾン・ロワール渡辺通り">ルエ・メゾン・ロワール渡辺通り</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3579215/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ルエ・メゾン・ロワール渡辺通り">ルエ・メゾン・ロワール渡辺通り</a></td>
               <td class="price-cell" style="white-space:nowrap">170万</td>
               <td>17㎡</td>
               <td style="font-size:11px">1986<span style="opacity:0.6">(40)</span></td>
@@ -7366,7 +7339,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="52" data-price="190">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3563869/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="博多駅前ビル">博多駅前ビル</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3563869/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="博多駅前ビル">博多駅前ビル</a></td>
               <td class="price-cell" style="white-space:nowrap">190万</td>
               <td>16㎡</td>
               <td style="font-size:11px">1987<span style="opacity:0.6">(39)</span></td>
@@ -7400,7 +7373,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="52" data-price="340">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3569222/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="パークアソシア">パークアソシア</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3569222/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="パークアソシア">パークアソシア</a></td>
               <td class="price-cell" style="white-space:nowrap">340万</td>
               <td>18㎡</td>
               <td style="font-size:11px">1986<span style="opacity:0.6">(40)</span></td>
@@ -7431,7 +7404,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="20" data-price="950">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.f-takken.com/freins/items/99801780" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="中央区六本松 木造">中央区六本松 木造</a></td>
+              <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99801780" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="中央区六本松 木造">中央区六本松 木造</a></td>
               <td class="price-cell" style="white-space:nowrap">950万</td>
               <td>25㎡</td>
               <td style="font-size:11px">1971<span style="opacity:0.6">(55)</span></td>
@@ -7462,7 +7435,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="20" data-price="1100">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.f-takken.com/freins/items/99723575" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="中央区輝国 木造">中央区輝国 木造</a></td>
+              <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99723575" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="中央区輝国 木造">中央区輝国 木造</a></td>
               <td class="price-cell" style="white-space:nowrap">1100万</td>
               <td>119㎡</td>
               <td style="font-size:11px">1958<span style="opacity:0.6">(68)</span></td>
@@ -7493,7 +7466,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="37" data-price="1600">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3577574/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="アルファシオサウスフォンテ">アルファシオサウスフォンテ</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3577574/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="アルファシオサウスフォンテ">アルファシオサウスフォンテ</a></td>
               <td class="price-cell" style="white-space:nowrap">1600万</td>
               <td>18㎡</td>
               <td style="font-size:11px">1972<span style="opacity:0.6">(54)</span></td>
@@ -7524,7 +7497,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="40" data-price="500">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3581036/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="コアマンションフェスティオ久留米">コアマンションフェスティオ久留米</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3581036/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="コアマンションフェスティオ久留米">コアマンションフェスティオ久留米</a></td>
               <td class="price-cell" style="white-space:nowrap">500万</td>
               <td>20㎡</td>
               <td style="font-size:11px">1992<span style="opacity:0.6">(34)</span></td>
@@ -7555,7 +7528,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="47" data-price="320">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3554695/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="▶想定利回り10.76％！平成築！賃貸中！">▶想定利回り10.76％！平成築！賃貸中！</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3554695/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="福岡県福岡市">福岡県福岡市</a></td>
               <td class="price-cell" style="white-space:nowrap">320万</td>
               <td>28㎡</td>
               <td style="font-size:11px">1990<span style="opacity:0.6">(36)</span></td>
@@ -7586,7 +7559,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="37" data-price="780">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3577309/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="利回り9.93%！オーナーチェンジ物件！人気の地下鉄空港線！">利回り9.93%！オーナーチェンジ物件！人気の地下鉄空港線！</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3577309/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="利回り9.93%！オーナーチェンジ物件！人気の地下鉄空港線！">利回り9.93%！オーナーチェンジ物件！人気の地下鉄空港線！</a></td>
               <td class="price-cell" style="white-space:nowrap">780万</td>
               <td>20㎡</td>
               <td style="font-size:11px">1979<span style="opacity:0.6">(47)</span></td>
@@ -7617,7 +7590,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="72" data-price="490">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3561398/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ピュアドームグラース天神">ピュアドームグラース天神</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3561398/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ピュアドームグラース天神">ピュアドームグラース天神</a></td>
               <td class="price-cell" style="white-space:nowrap">490万</td>
               <td>26㎡</td>
               <td style="font-size:11px">1991<span style="opacity:0.6">(35)</span></td>
@@ -7648,7 +7621,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="52" data-price="1000">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3555276/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="南博多パールシャトー">南博多パールシャトー</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3555276/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="南博多パールシャトー">南博多パールシャトー</a></td>
               <td class="price-cell" style="white-space:nowrap">1000万</td>
               <td>34㎡</td>
               <td style="font-size:11px">1980<span style="opacity:0.6">(46)</span></td>
@@ -7679,7 +7652,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="77" data-price="850">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(99,102,241,0.15);color:var(--accent)">格安区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.f-takken.com/freins/items/99804693" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="第3シャトー高宮 101">第3シャトー高宮 101</a></td>
+              <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99804693" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="第3シャトー高宮 101">第3シャトー高宮 101</a></td>
               <td class="price-cell" style="white-space:nowrap">850万</td>
               <td>68㎡</td>
               <td style="font-size:11px">1998<span style="opacity:0.6">(28)</span></td>
@@ -7710,7 +7683,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="25" data-price="748">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/5/re_43493925xe/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="早良区野芥">早良区野芥</a></td>
+              <td class="name-cell"><a href="https://www.kenbiya.com/pp8/f/fukuoka/fukuoka-shi/5/re_43493925xe/" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="早良区野芥">早良区野芥</a></td>
               <td class="price-cell" style="white-space:nowrap">748万</td>
               <td>75㎡</td>
               <td style="font-size:11px">1976<span style="opacity:0.6">(50)</span></td>
@@ -7741,7 +7714,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="25" data-price="400">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3571960/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="福岡市地下鉄箱崎線【箱崎宮前】駅徒歩6分オーナーチェンジ物件">福岡市地下鉄箱崎線【箱崎宮前】駅徒歩6分オーナーチェンジ物件</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3571960/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="福岡県福岡市">福岡県福岡市</a></td>
               <td class="price-cell" style="white-space:nowrap">400万</td>
               <td>17㎡</td>
               <td style="font-size:11px">1992<span style="opacity:0.6">(34)</span></td>
@@ -7772,7 +7745,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="55" data-price="425">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3576819/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="秀和警固レジデンス">秀和警固レジデンス</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3576819/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="秀和警固レジデンス">秀和警固レジデンス</a></td>
               <td class="price-cell" style="white-space:nowrap">425万</td>
               <td>21㎡</td>
               <td style="font-size:11px">1990<span style="opacity:0.6">(36)</span></td>
@@ -7803,7 +7776,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="52" data-price="750">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3571065/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="グランピア博多駅前">グランピア博多駅前</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3571065/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="グランピア博多駅前">グランピア博多駅前</a></td>
               <td class="price-cell" style="white-space:nowrap">750万</td>
               <td>21㎡</td>
               <td style="font-size:11px">1992<span style="opacity:0.6">(34)</span></td>
@@ -7834,7 +7807,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="30" data-price="1500">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3553853/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="福岡市博多区エリアで、通勤や外出に使いやすい立地">福岡市博多区エリアで、通勤や外出に使いやすい立地</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3553853/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="福岡市博多区エリアで、通勤や外出に使いやすい立地">福岡市博多区エリアで、通勤や外出に使いやすい立地</a></td>
               <td class="price-cell" style="white-space:nowrap">1500万</td>
               <td>99㎡</td>
               <td style="font-size:11px">1975<span style="opacity:0.6">(51)</span></td>
@@ -7865,7 +7838,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="37" data-price="980">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3569999/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ロワールマンション・ピュアやよい坂２">ロワールマンション・ピュアやよい坂２</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3569999/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ロワールマンション・ピュアやよい坂２">ロワールマンション・ピュアやよい坂２</a></td>
               <td class="price-cell" style="white-space:nowrap">980万</td>
               <td>64㎡</td>
               <td style="font-size:11px">1991<span style="opacity:0.6">(35)</span></td>
@@ -7896,7 +7869,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="37" data-price="1450">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3574361/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="エステート・モア博多">エステート・モア博多</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3574361/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="エステート・モア博多">エステート・モア博多</a></td>
               <td class="price-cell" style="white-space:nowrap">1450万</td>
               <td>67㎡</td>
               <td style="font-size:11px">1988<span style="opacity:0.6">(38)</span></td>
@@ -7927,7 +7900,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="25" data-price="2100">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b">戸建</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.f-takken.com/freins/items/99694165" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="南区柏原 木造">南区柏原 木造</a></td>
+              <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99694165" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="南区柏原 木造">南区柏原 木造</a></td>
               <td class="price-cell" style="white-space:nowrap">2100万</td>
               <td>40㎡</td>
               <td style="font-size:11px">1985<span style="opacity:0.6">(41)</span></td>
@@ -7958,7 +7931,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="52" data-price="740">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3580824/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ロマネスク博多駅前">ロマネスク博多駅前</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3580824/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ロマネスク博多駅前">ロマネスク博多駅前</a></td>
               <td class="price-cell" style="white-space:nowrap">740万</td>
               <td>16㎡</td>
               <td style="font-size:11px">1994<span style="opacity:0.6">(32)</span></td>
@@ -7989,7 +7962,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="25" data-price="700">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3560713/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="緑ケ丘第８マンション">緑ケ丘第８マンション</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3560713/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="緑ケ丘第８マンション">緑ケ丘第８マンション</a></td>
               <td class="price-cell" style="white-space:nowrap">700万</td>
               <td>21㎡</td>
               <td style="font-size:11px">1995<span style="opacity:0.6">(31)</span></td>
@@ -8020,7 +7993,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="52" data-price="1850">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3571016/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="第三住吉ハイツ">第三住吉ハイツ</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3571016/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="第三住吉ハイツ">第三住吉ハイツ</a></td>
               <td class="price-cell" style="white-space:nowrap">1850万</td>
               <td>63㎡</td>
               <td style="font-size:11px">1979<span style="opacity:0.6">(47)</span></td>
@@ -8051,7 +8024,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="47" data-price="850">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3558877/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="エステート・モア天神ＷＨＡＲＦ">エステート・モア天神ＷＨＡＲＦ</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3558877/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="エステート・モア天神ＷＨＡＲＦ">エステート・モア天神ＷＨＡＲＦ</a></td>
               <td class="price-cell" style="white-space:nowrap">850万</td>
               <td>28㎡</td>
               <td style="font-size:11px">1995<span style="opacity:0.6">(31)</span></td>
@@ -20969,7 +20942,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="32" data-price="650">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581849/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="クレヴィスタ亀戸Ⅲ">クレヴィスタ亀戸Ⅲ</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581849/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="クレヴィスタ亀戸Ⅲ">クレヴィスタ亀戸Ⅲ</a></td>
               <td class="price-cell" style="white-space:nowrap">650万</td>
               <td>31㎡</td>
               <td style="font-size:11px">1969<span style="opacity:0.6">(57)</span></td>
@@ -21000,7 +20973,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="25" data-price="860">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581960/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ジェイパーク東大前タワーウエスト">ジェイパーク東大前タワーウエスト</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581960/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ジェイパーク東大前タワーウエスト">ジェイパーク東大前タワーウエスト</a></td>
               <td class="price-cell" style="white-space:nowrap">860万</td>
               <td>30㎡</td>
               <td style="font-size:11px">1975<span style="opacity:0.6">(51)</span></td>
@@ -21031,7 +21004,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="42" data-price="880">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581932/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="白金ザ・スカイEAST棟">白金ザ・スカイEAST棟</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581932/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="白金ザ・スカイEAST棟">白金ザ・スカイEAST棟</a></td>
               <td class="price-cell" style="white-space:nowrap">880万</td>
               <td>21㎡</td>
               <td style="font-size:11px">1976<span style="opacity:0.6">(50)</span></td>
@@ -21062,7 +21035,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="37" data-price="950">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581596/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="八丁堀駅徒歩5分！投資用ワンルームマンション">八丁堀駅徒歩5分！投資用ワンルームマンション</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581596/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="八丁堀駅徒歩5分！投資用ワンルームマンション">八丁堀駅徒歩5分！投資用ワンルームマンション</a></td>
               <td class="price-cell" style="white-space:nowrap">950万</td>
               <td>18㎡</td>
               <td style="font-size:11px">1983<span style="opacity:0.6">(43)</span></td>
@@ -21093,7 +21066,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="49" data-price="1180">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581980/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="三田新中野コーポ">三田新中野コーポ</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581980/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="三田新中野コーポ">三田新中野コーポ</a></td>
               <td class="price-cell" style="white-space:nowrap">1180万</td>
               <td>32㎡</td>
               <td style="font-size:11px">1971<span style="opacity:0.6">(55)</span></td>
@@ -21124,7 +21097,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="44" data-price="699">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581953/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="バルミー五反田">バルミー五反田</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581953/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="バルミー五反田">バルミー五反田</a></td>
               <td class="price-cell" style="white-space:nowrap">699万</td>
               <td>17㎡</td>
               <td style="font-size:11px">1984<span style="opacity:0.6">(42)</span></td>
@@ -21155,7 +21128,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="37" data-price="2880">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581472/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="東京都板橋区">東京都板橋区</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581472/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="東京都板橋区">東京都板橋区</a></td>
               <td class="price-cell" style="white-space:nowrap">2880万</td>
               <td>23㎡</td>
               <td style="font-size:11px">2006<span style="opacity:0.6">(20)</span></td>
@@ -21186,7 +21159,7 @@ body {
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="32" data-price="1240">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.15);color:var(--green)">利回り区分</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581979/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ライオンズマンションときわ台">ライオンズマンションときわ台</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3581979/show.html" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="ライオンズマンションときわ台">ライオンズマンションときわ台</a></td>
               <td class="price-cell" style="white-space:nowrap">1240万</td>
               <td>23㎡</td>
               <td style="font-size:11px">1971<span style="opacity:0.6">(55)</span></td>
@@ -25775,7 +25748,7 @@ body {
 
     </div>
     <div class="prop-card-title-block">
-      <div class="prop-card-name" title="【満室稼働中】都心3駅利用可能×1Rタイプの単身者向け">【満室稼働中】都心3駅利用可能×1Rタイプの単身者向け</div>
+      <div class="prop-card-name" title="東京都新宿区">東京都新宿区</div>
       <div class="prop-card-location">中井 徒歩5分</div>
     </div>
     <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
@@ -26119,7 +26092,7 @@ body {
 
     </div>
     <div class="prop-card-title-block">
-      <div class="prop-card-name" title="「東武練馬」駅徒歩2分！2020年築RC造１棟マンション！">「東武練馬」駅徒歩2分！2020年築RC造１棟マンション！</div>
+      <div class="prop-card-name" title="東京都渋谷区">東京都渋谷区</div>
       <div class="prop-card-location">東武練馬 徒歩2分</div>
     </div>
     <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
@@ -28335,7 +28308,7 @@ body {
             <tr data-score="107" data-price="17000" data-area="77.46" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">107</td>
               <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
-              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim1002/3579815/show.html" target="_blank" rel="noopener" title="【満室稼働中】都心3駅利用可能×1Rタイプの単身者向け" onclick="event.stopPropagation()">【満室稼働中】都心3駅利用可能×1Rタイプの単身者向け</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim1002/3579815/show.html" target="_blank" rel="noopener" title="東京都新宿区" onclick="event.stopPropagation()">東京都新宿区</a></td>
               <td class="price-cell">1億7000万円</td>
               <td>6.3%</td>
               <td class="area-cell">77.46㎡(※土地面積の可能性)</td>
@@ -28399,7 +28372,7 @@ body {
             <tr data-score="99" data-price="20000" data-area="175.98" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">99</td>
               <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
-              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim1001/3576968/show.html" target="_blank" rel="noopener" title="「東武練馬」駅徒歩2分！2020年築RC造１棟マンション！" onclick="event.stopPropagation()">「東武練馬」駅徒歩2分！2020年築RC造１棟マンション！</a></td>
+              <td class="name-cell"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim1001/3576968/show.html" target="_blank" rel="noopener" title="東京都渋谷区" onclick="event.stopPropagation()">東京都渋谷区</a></td>
               <td class="price-cell">2億円</td>
               <td>4.0%</td>
               <td class="area-cell">175.98㎡</td>
@@ -28849,7 +28822,7 @@ body {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-03-31 03:48</div>
+  <div style="margin-top:4px;">Generated at 2026-03-31 03:56</div>
 </footer>
 <script>
 let currentView = 'list';

@@ -149,7 +149,11 @@
 }
 .prop-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); white-space: nowrap; }
 .prop-table tr:hover { background: rgba(255,255,255,0.02); }
-.prop-table .name-cell { white-space: nowrap; }
+.prop-table .name-cell { white-space: normal; max-width: 180px; line-height: 1.3; overflow: hidden; }
+.prop-table .name-cell a,
+.prop-table .name-cell span {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
 .prop-table .score-cell { font-family: var(--font-mono); font-weight: 700; }
 .prop-table .price-cell { font-family: var(--font-mono); font-weight: 600; text-align: right; white-space: nowrap; }
 .prop-table .area-cell { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
@@ -162,7 +166,7 @@
 [data-type="budget"] .station-cell,
 [data-type="kubun"] .station-cell { max-width: 180px; white-space: normal; word-break: break-all; line-height: 1.3; padding: 6px 4px; }
 [data-type="budget"] .name-cell,
-[data-type="kubun"] .name-cell { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+[data-type="kubun"] .name-cell { max-width: 180px; }
 [data-type="budget"] .layout-cell,
 [data-type="kubun"] .layout-cell { max-width: 48px; text-align: center; padding: 6px 2px; }
 
@@ -377,7 +381,7 @@
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="{{ prop.total_score|default(0) }}" data-price="{{ prop.price_man|default(0) }}">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:{% if prop._type_label == '一棟' %}rgba(168,85,247,0.15);color:#a855f7{% elif prop._type_label == '戸建' %}rgba(245,158,11,0.15);color:#f59e0b{% elif prop._type_label == '利回り区分' %}rgba(34,197,94,0.15);color:var(--green){% else %}rgba(99,102,241,0.15);color:var(--accent){% endif %}">{{ prop._type_label }}</span></td>
-              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="{{ prop.name }}">{{ prop.name or "—" }}</a></td>
+              <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="{{ prop.name }}">{{ prop.name or "—" }}</a></td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}</td>
               <td>{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
               <td style="font-size:11px">{% if prop.built_year %}{{ prop.built_year }}<span style="opacity:0.6">({{ 2026 - prop.built_year }})</span>{% else %}—{% endif %}</td>

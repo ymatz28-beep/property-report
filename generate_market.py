@@ -6,6 +6,7 @@ Each property includes investment analysis (score breakdown, revenue calc).
 from __future__ import annotations
 
 import json
+import re
 import sys
 from dataclasses import asdict
 from pathlib import Path
@@ -39,6 +40,41 @@ from lib.styles.design_tokens import get_base_css, get_css_tokens, get_google_fo
 
 DATA_DIR = Path("data")
 OUTPUT_DIR = Path("output")
+
+# Ad-copy name patterns that should be replaced with location-based fallback
+_ADCOPY_RE = re.compile(
+    r"^【[^】]+】|"       # 【満室稼働中】...
+    r"^[▶▲■◆◇●★☆※◎]+|"  # ▶金町駅...
+    r"^「[^」]+」"         # 「東武練馬」駅...
+)
+
+def _clean_adcopy_name(name: str, location: str, layout: str = "") -> str:
+    """Replace ad-copy property names with location-based fallback."""
+    if not name:
+        return name
+    # Skip if it's a real building name
+    bldg_suffixes = ["マンション", "ハイツ", "コーポ", "レジデンス", "ビル", "荘",
+                     "パレス", "テラス", "プラザ", "メゾン", "ガーデン", "パーク",
+                     "ハウス", "ドーム", "タワー", "コート", "シャトー", "グラン",
+                     "ステート", "ロイヤル", "エステート", "フォレスト", "シティ",
+                     "アーバン", "ライオンズ", "アンピール", "ピュアドーム",
+                     "ニック", "サン", "ロワール", "ペルル"]
+    # Detect ad-copy FIRST: starts with markers = always ad-copy regardless of suffix
+    if _ADCOPY_RE.match(name):
+        area_m = re.search(r"([\u4e00-\u9fff]{2,6}[区市町村])", location)
+        area_label = area_m.group(1) if area_m else location[:6] if location else "物件"
+        return f"{area_label} {layout}".strip() if layout else area_label
+    if any(s in name for s in bldg_suffixes):
+        return name.replace("&nbsp;", " ").strip()
+    # Long names with station info but no building suffix = ad-copy
+    is_adcopy = len(name) > 25 and "駅" in name
+    if not is_adcopy:
+        return name.replace("&nbsp;", " ").strip()
+    # Build fallback: {区名} {layout}
+    area_m = re.search(r"([\u4e00-\u9fff]{2,6}[区市町村])", location)
+    area_label = area_m.group(1) if area_m else location[:6] if location else "物件"
+    fallback = f"{area_label} {layout}".strip() if layout else area_label
+    return fallback
 
 # ---------------------------------------------------------------------------
 # Property nav (SSoT for all property pages)
@@ -357,6 +393,7 @@ def _extract_oc_rent(row: PropertyRow) -> tuple[float, float]:
 def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> dict:
     d = asdict(row)
     d["prop_type"] = "kubun"
+    d["name"] = _clean_adcopy_name(d["name"], d.get("location", ""), d.get("layout", ""))
     d["is_oc"] = _is_confirmed_oc(row)
     fs = first_seen.get(row.url, "")
     d["first_seen"] = fs[5:] if fs and len(fs) >= 10 else fs  # MM-DD only
@@ -511,6 +548,7 @@ def _load_ittomono_by_city(city_key: str) -> list[IttomonoRow]:
 
 def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: dict | None = None) -> dict:
     d = asdict(row)
+    d["name"] = _clean_adcopy_name(d["name"], d.get("location", ""))
     d["prop_type"] = "ittomono"
     d["maintenance_fee_text"] = ""
     d["pet_status"] = ""
@@ -797,6 +835,32 @@ def main() -> None:
         profitable = [p for p in profitable
                       if p.get("revenue", {}).get("ccr", 0) >= 5.0
                       or p.get("revenue", {}).get("total_equity", 0) <= 200]
+
+        # Cross-source dedup: same location+area across different sources = same property
+        import re as _re_dedup
+        seen_loc_area: dict[str, int] = {}
+        deduped: list[dict] = []
+        for p in profitable:
+            loc_raw = p.get("location", "")
+            # Strip prefecture prefix then numbers/address details → ward+town only
+            loc_raw = _re_dedup.sub(r"^(東京都|大阪府|京都府|北海道|.{2,3}県)", "", loc_raw)
+            loc_raw = loc_raw.translate(str.maketrans("０１２３４５６７８９", "0123456789"))
+            loc = _re_dedup.sub(r"[\s　\d丁目番地号−\-]", "", loc_raw)[:10]
+            area_int = str(int(p["area_sqm"])) if p.get("area_sqm") else ""
+            key = f"{loc}|{area_int}" if loc and area_int else None
+            if key and key in seen_loc_area:
+                # Keep the one with higher CCR
+                existing = deduped[seen_loc_area[key]]
+                # print(f"    [DEDUP] {p.get('name','')} ≈ {existing.get('name','')} (key={key})")
+                if p.get("revenue", {}).get("ccr", 0) > existing.get("revenue", {}).get("ccr", 0):
+                    deduped[seen_loc_area[key]] = p
+                continue
+            idx = len(deduped)
+            deduped.append(p)
+            if key:
+                seen_loc_area[key] = idx
+        profitable = [p for p in deduped if p is not None]
+
         profitable.sort(key=lambda p: p.get("revenue", {}).get("ccr", 0), reverse=True)
         city_data["profitable"] = {"count": len(profitable), "properties": profitable}
         city_data["count"] += len(profitable)

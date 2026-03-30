@@ -372,53 +372,82 @@ def check_sort_functionality(parser: MarketHTMLParser) -> tuple[str, str]:
 
 
 def check_data_accuracy(parser: MarketHTMLParser) -> tuple[str, str]:
-    """Compare rendered HTML against raw data files.
+    """Compare rendered HTML data attributes against raw data files.
 
-    Checks that property names, prices, areas are not blank/missing
-    and that first_seen (掲載日) is populated for all properties.
+    Loads raw yield data, builds a lookup by URL, then compares price/area
+    against HTML data-price/data-area attributes.
     """
+    data_dir = Path(__file__).resolve().parent / "data"
     issues = []
-    total = 0
-    blank_names = 0
-    blank_prices = 0
-    blank_areas = 0
-    blank_first_seen = 0
 
-    html_path = HTML_PATH
-    html_text = html_path.read_text(encoding="utf-8") if html_path.exists() else ""
+    # Build raw data lookup: url → {price_man, area_sqm} from ALL raw files
+    raw_lookup: dict[str, dict] = {}
+    for raw_file in sorted(data_dir.glob("*_raw.txt")):
+        for line in raw_file.read_text(encoding="utf-8").splitlines():
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("|")
+            if len(parts) < 12:
+                continue
+            url = parts[11].strip()
+            price_m = re.search(r"([\d.]+)", parts[2])
+            area_m = re.search(r"([\d.]+)", parts[4])
+            if url and price_m:
+                raw_lookup[url] = {
+                    "price": float(price_m.group(1)),
+                    "area": float(area_m.group(1)) if area_m else 0,
+                    "name": parts[1].strip(),
+                }
+
+    # Compare against HTML rendered data
+    total_compared = 0
+    mismatches = []
+    blank_names = 0
 
     for sec_id, sec in parser.sections.items():
-        if sec.get("type") == "profitable":
-            continue  # Profitable section uses different layout
         for row in sec.get("table_rows", []):
-            total += 1
             name = row.get("name", "").strip()
             if not name or name == "—":
                 blank_names += 1
-
-        for card in sec.get("prop_cards", []):
-            name = card.get("name", "").strip()
-            if not name or name == "—":
-                blank_names += 1
-
-    # Count blank cells via regex on rendered HTML (—, empty td)
-    blank_td_count = len(re.findall(r"<td[^>]*>\s*</td>", html_text))
+            url = row.get("url", "")
+            if url not in raw_lookup:
+                continue
+            raw = raw_lookup[url]
+            total_compared += 1
+            # Compare price
+            try:
+                html_price = float(row.get("price", 0))
+                if html_price > 0 and abs(html_price - raw["price"]) > 1:
+                    mismatches.append(f"price mismatch: {name} raw={raw['price']} html={html_price}")
+            except (ValueError, TypeError):
+                pass
+            # Compare area
+            try:
+                html_area = float(row.get("area", 0))
+                if html_area > 0 and raw["area"] > 0 and abs(html_area - raw["area"]) > 0.5:
+                    mismatches.append(f"area mismatch: {name} raw={raw['area']} html={html_area}")
+            except (ValueError, TypeError):
+                pass
 
     if blank_names:
         issues.append(f"{blank_names} blank property names")
-    if blank_td_count > 5:
-        issues.append(f"{blank_td_count} empty <td> cells")
+    if mismatches:
+        issues.append(f"{len(mismatches)} price/area mismatches")
 
-    # Check first_seen coverage in rendered output
-    # Count "—" in first_seen position (2nd column of each table)
-    dash_first_seen = html_text.count(">—</td>\n")
+    mismatch_pct = len(mismatches) / total_compared * 100 if total_compared else 0
 
-    if total == 0:
-        return "WARN", "No properties found"
-    if issues:
-        level = "FAIL" if blank_names > 3 else "WARN"
-        return level, "; ".join(issues) + f" (blank_td={blank_td_count})"
-    return "PASS", f"{total} properties checked; {blank_td_count} empty cells"
+    if total_compared == 0:
+        return "WARN", "No properties compared (0 URL matches between raw and HTML)"
+    if mismatches:
+        detail = "; ".join(mismatches[:5])
+        if len(mismatches) > 5:
+            detail += f" ... +{len(mismatches)-5} more"
+        level = "FAIL" if mismatch_pct > 10 else "WARN"
+        return level, f"{len(mismatches)}/{total_compared} ({mismatch_pct:.1f}%) — {detail}"
+    msg = f"{total_compared} properties compared, 0 mismatches"
+    if blank_names:
+        msg += f"; {blank_names} blank names"
+    return "PASS", msg
 
 
 def check_oc_income_coverage(parser: MarketHTMLParser) -> tuple[str, str]:

@@ -10,16 +10,18 @@ Output:
 - yield_ittomono_{city}_raw.txt (15-col, ittomono format)
 """
 
+import http.cookiejar
 import re
 import time
 from datetime import datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from urllib.request import HTTPCookieProcessor, Request, build_opener, urlopen
 
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
+COOKIE_FILE = DATA_DIR / "cookies_rakumachi.txt"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -27,6 +29,60 @@ HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "ja,en;q=0.5",
 }
+
+# Cookie-based opener for authenticated requests (楽待 detail pages)
+_opener = None
+
+
+def _get_opener():
+    """Get or create a URL opener with cookie support."""
+    global _opener
+    if _opener is not None:
+        return _opener
+    if COOKIE_FILE.exists():
+        cj = http.cookiejar.MozillaCookieJar()
+        try:
+            cj.load(str(COOKIE_FILE), ignore_discard=True, ignore_expires=True)
+        except (http.cookiejar.LoadError, OSError) as e:
+            print(f"  [WARN] Cookie読み込みエラー: {e}")
+            # Fallback: parse manually for malformed Netscape files
+            cj = _load_cookies_fallback(COOKIE_FILE)
+            if cj is None:
+                return None
+        _opener = build_opener(HTTPCookieProcessor(cj))
+        print(f"  [INFO] 楽待Cookie読み込み: {len(cj)}個")
+    return _opener
+
+
+def _load_cookies_fallback(path: Path) -> http.cookiejar.CookieJar | None:
+    """Parse Netscape cookie file manually when MozillaCookieJar fails."""
+    import re
+    cj = http.cookiejar.CookieJar()
+    count = 0
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("#") or not line.strip():
+            continue
+        parts = line.split("\t")
+        if len(parts) < 7:
+            continue
+        domain, domain_flag, cpath, secure, expires, name, value = parts[:7]
+        cookie = http.cookiejar.Cookie(
+            version=0, name=name, value=value,
+            port=None, port_specified=False,
+            domain=domain, domain_specified=domain.startswith("."),
+            domain_initial_dot=domain.startswith("."),
+            path=cpath, path_specified=bool(cpath),
+            secure=secure == "TRUE",
+            expires=int(expires) if expires and expires != "0" else None,
+            discard=expires == "0",
+            comment=None, comment_url=None,
+            rest={}, rfc2109=False,
+        )
+        cj.set_cookie(cookie)
+        count += 1
+    if count == 0:
+        return None
+    return cj
 
 # ── Yield-focused search parameters ──
 # 区分: investment condos (smaller, cheaper = higher yield potential)
@@ -78,7 +134,73 @@ AREA_CONFIGS = {
 }
 
 
+_pw_browser = None  # Shared Playwright browser
+_pw_context = None
+
+
+def _get_pw_context():
+    """Get or create a Playwright browser context with Cloudflare warmup."""
+    global _pw_browser, _pw_context
+    if _pw_context is not None:
+        return _pw_context
+    try:
+        from playwright.sync_api import sync_playwright
+        pw = sync_playwright().start()
+        _pw_browser = pw.chromium.launch(headless=True)
+        _pw_context = _pw_browser.new_context(
+            user_agent=HEADERS["User-Agent"],
+            locale="ja-JP",
+        )
+        # Inject login cookies (session-related, not cf_clearance)
+        if COOKIE_FILE.exists():
+            cookies = _parse_cookie_file(COOKIE_FILE)
+            # Only inject session cookies, not Cloudflare ones (browser needs its own)
+            session_cookies = [c for c in cookies if c["name"] not in
+                              ("cf_clearance", "__cf_bm", "FPID", "FPAU", "FPGSID", "FPLC")]
+            if session_cookies:
+                _pw_context.add_cookies(session_cookies)
+        # Warm up: visit main page to get Cloudflare clearance
+        page = _pw_context.new_page()
+        page.goto("https://www.rakumachi.jp/", timeout=30000, wait_until="domcontentloaded")
+        time.sleep(2)  # Let Cloudflare JS challenge resolve
+        page.close()
+        print(f"  [INFO] Playwright起動 + Cloudflare warmup完了")
+        return _pw_context
+    except Exception as e:
+        print(f"  [WARN] Playwright起動失敗: {e}")
+        return None
+
+
+def _parse_cookie_file(path: Path) -> list[dict]:
+    """Parse Netscape cookie file to Playwright cookie format."""
+    cookies = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("#") or not line.strip():
+            continue
+        parts = line.split("\t")
+        if len(parts) < 7:
+            continue
+        domain, _, cpath, secure, expires, name, value = parts[:7]
+        if not value:
+            continue
+        cookie = {
+            "name": name,
+            "value": value,
+            "domain": domain,
+            "path": cpath,
+            "secure": secure == "TRUE",
+        }
+        if expires and expires != "0":
+            cookie["expires"] = int(expires)
+        cookies.append(cookie)
+    return cookies
+
+
 def fetch_page(url: str, retries: int = 2) -> str | None:
+    # Use Playwright for rakumachi detail pages (Cloudflare protected)
+    if "rakumachi.jp" in url and "/show.html" in url:
+        return _fetch_page_pw(url, retries)
+    # Standard urllib for everything else
     for attempt in range(retries + 1):
         try:
             req = Request(url, headers=HEADERS)
@@ -100,6 +222,76 @@ def fetch_page(url: str, retries: int = 2) -> str | None:
             print(f"  [WARN] Connection error: {e}")
             return None
     return None
+
+
+_pw_403_streak = 0  # Track consecutive 403s for adaptive delay
+
+
+def _fetch_page_pw(url: str, retries: int = 2) -> str | None:
+    """Fetch page using Playwright (bypasses Cloudflare)."""
+    global _pw_403_streak
+    ctx = _get_pw_context()
+    if ctx is None:
+        # Fallback to urllib with cookies
+        opener = _get_opener()
+        try:
+            req = Request(url, headers=HEADERS)
+            resp = opener.open(req, timeout=20) if opener else urlopen(req, timeout=20)
+            data = resp.read().decode("utf-8", errors="ignore")
+            resp.close()
+            return data
+        except (HTTPError, URLError) as e:
+            print(f"  [WARN] fetch failed: {e}")
+            return None
+    for attempt in range(retries + 1):
+        try:
+            page = ctx.new_page()
+            resp = page.goto(url, timeout=30000, wait_until="domcontentloaded")
+            if resp and resp.status == 403:
+                # Check if Cloudflare challenge page (has JS challenge)
+                content = page.content()
+                page.close()
+                if "challenge-platform" in content or "cf-" in content[:2000]:
+                    # Cloudflare challenge - wait and retry
+                    _pw_403_streak += 1
+                    delay = min(10, 3 * _pw_403_streak)
+                    if attempt < retries:
+                        time.sleep(delay)
+                        continue
+                print(f"  [WARN] 403: {url[:80]}")
+                return None
+            _pw_403_streak = 0  # Reset streak on success
+            html = page.content()
+            page.close()
+            return html
+        except Exception as e:
+            try:
+                page.close()
+            except Exception:
+                pass
+            if attempt < retries:
+                time.sleep(3)
+                continue
+            print(f"  [WARN] Playwright error: {e}")
+            return None
+    return None
+
+
+def close_pw():
+    """Close Playwright context. Call when done with batch operations."""
+    global _pw_browser, _pw_context
+    if _pw_context:
+        try:
+            _pw_context.close()
+        except Exception:
+            pass
+        _pw_context = None
+    if _pw_browser:
+        try:
+            _pw_browser.close()
+        except Exception:
+            pass
+        _pw_browser = None
 
 
 def is_target_location(location: str, city_key: str) -> bool:

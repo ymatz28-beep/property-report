@@ -13,7 +13,7 @@ DATA_DIR = Path(__file__).resolve().parent / "data"
 
 # Reuse scraper's fetch + extract logic
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from search_yield_focused import fetch_page, _extract_detail_fields
+from search_yield_focused import fetch_page, _extract_detail_fields, close_pw
 
 
 def _parse_line(line: str) -> dict | None:
@@ -131,6 +131,7 @@ def main():
         if path.exists():
             total += enrich_file(path, max_fetches=args.max, dry_run=args.dry_run)
 
+    close_pw()
     print(f"\n合計: {total}件の年間収入を補完")
 
 

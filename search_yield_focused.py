@@ -709,8 +709,8 @@ def _build_name_xref() -> dict[str, str]:
                 area_m = re.search(r"([\d.]+)", area_text)
                 area_int = str(int(float(area_m.group(1)))) if area_m else ""
                 if loc and area_int:
-                    # Use ward-level location (first ~8 chars after city name)
-                    loc_key = re.sub(r"[県都府]", "", loc)[:8]
+                    # Use ward-level location (first ~8 chars after stripping prefecture)
+                    loc_key = re.sub(r"^(東京都|大阪府|京都府|北海道|.{2,3}県)", "", loc)[:8]
                     key = f"{loc_key}|{area_int}"
                     if key not in xref:
                         xref[key] = name
@@ -724,18 +724,29 @@ def enrich_from_detail(properties: list[dict], max_fetches: int = 20) -> None:
     when detail page is unavailable (403).
     """
     # Phase 1: Cross-reference names from other data sources (no network needed)
+    # Apply to ALL 楽待 properties — listing page names are often wrong
+    # (e.g., "博多駅前ビル" should be "メゾン・ド・プレジール")
     xref = _build_name_xref()
     xref_fixed = 0
     for prop in properties:
-        if _is_fallback_name(prop.get("name", "")):
-            loc = prop.get("location", "")
-            area_text = prop.get("area_text", "")
-            area_m = re.search(r"([\d.]+)", area_text)
-            area_int = str(int(float(area_m.group(1)))) if area_m else ""
-            loc_key = re.sub(r"[県都府]", "", loc)[:8]
-            key = f"{loc_key}|{area_int}"
-            if key in xref:
-                prop["name"] = xref[key]
+        loc = prop.get("location", "")
+        area_text = prop.get("area_text", "")
+        area_m = re.search(r"([\d.]+)", area_text)
+        area_int = str(int(float(area_m.group(1)))) if area_m else ""
+        # Normalize: strip full prefecture prefix, then first 8 chars
+        loc_norm = re.sub(r"^(東京都|大阪府|京都府|北海道|.{2,3}県)", "", loc)
+        loc_key = loc_norm[:8]
+        key = f"{loc_key}|{area_int}"
+        if key in xref:
+            xref_name = xref[key]
+            old_name = prop.get("name", "")
+            # Only replace if xref name is different and looks more reliable
+            if xref_name != old_name and (
+                _is_fallback_name(old_name) or
+                # 楽待 listing names can be wrong even with building suffixes
+                ("楽待" in prop.get("source", "") or "rakumachi" in prop.get("url", ""))
+            ):
+                prop["name"] = xref_name
                 xref_fixed += 1
     if xref_fixed:
         print(f"  クロスリファレンス: {xref_fixed}件の物件名を補完")

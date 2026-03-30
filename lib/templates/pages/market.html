@@ -397,6 +397,7 @@
             <tr class="detail-row">
               <td colspan="12">
                 <div class="detail-grid">
+                  <div class="detail-item" style="border-left:2px solid var(--accent);padding-left:8px"><span class="detail-label">家賃根拠</span><span class="detail-value">{% if prop.actual_rent %}実家賃 {{ prop.actual_rent }}/月{% elif prop.market_rent %}{{ prop.rent_source|default("相場") }} {{ prop.market_rent }}/月{% elif prop.est_monthly_rent %}{{ prop.rent_source|default("想定") }} {{ prop.est_monthly_rent }}/月{% else %}—{% endif %}{% if prop.rent_per_sqm %} <span style="font-size:9px;opacity:0.7">({{ prop.rent_per_sqm }}円/㎡)</span>{% endif %}</span></div>
                   <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">{{ prop.structure|default(prop.revenue.structure_used|default("—")) }}</span></div>
                   <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">{{ prop.yield_text|default("—") }}</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>

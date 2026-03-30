@@ -49,32 +49,54 @@ _ADCOPY_RE = re.compile(
 )
 
 def _clean_adcopy_name(name: str, location: str, layout: str = "") -> str:
-    """Replace ad-copy property names with location-based fallback."""
+    """Clean property names: strip ad-copy suffixes, replace pure ad-copy with fallback."""
     if not name:
         return name
-    # Skip if it's a real building name
+    name = name.replace("&nbsp;", " ").strip()
+
+    # Step 1: Strip ad-copy suffixes from real building names
+    # 【オーナーチェンジ】, （賃貸中）, etc.
+    name = re.sub(r"[【\(（][^】\)）]*(?:オーナーチェンジ|賃貸中|OC|満室|投資用)[^】\)）]*[】\)）]", "", name).strip()
+    # Trailing ！ phrases (e.g., "〜マンション！好立地！" → "〜マンション")
+    name = re.sub(r"[！!][^！!]*$", "", name).strip()
+
+    # Step 2: Detect pure ad-copy (no building name at all) → replace with fallback
     bldg_suffixes = ["マンション", "ハイツ", "コーポ", "レジデンス", "ビル", "荘",
                      "パレス", "テラス", "プラザ", "メゾン", "ガーデン", "パーク",
                      "ハウス", "ドーム", "タワー", "コート", "シャトー", "グラン",
                      "ステート", "ロイヤル", "エステート", "フォレスト", "シティ",
                      "アーバン", "ライオンズ", "アンピール", "ピュアドーム",
                      "ニック", "サン", "ロワール", "ペルル"]
-    # Detect ad-copy FIRST: starts with markers = always ad-copy regardless of suffix
-    if _ADCOPY_RE.match(name):
+
+    def _fallback():
         area_m = re.search(r"([\u4e00-\u9fff]{2,6}[区市町村])", location)
         area_label = area_m.group(1) if area_m else location[:6] if location else "物件"
         return f"{area_label} {layout}".strip() if layout else area_label
+
+    # Starts with ad markers → always fallback
+    if _ADCOPY_RE.match(name):
+        return _fallback()
+    # Has building suffix → keep (already cleaned of ad suffixes above)
     if any(s in name for s in bldg_suffixes):
-        return name.replace("&nbsp;", " ").strip()
-    # Long names with station info but no building suffix = ad-copy
-    is_adcopy = len(name) > 25 and "駅" in name
-    if not is_adcopy:
-        return name.replace("&nbsp;", " ").strip()
-    # Build fallback: {区名} {layout}
-    area_m = re.search(r"([\u4e00-\u9fff]{2,6}[区市町村])", location)
-    area_label = area_m.group(1) if area_m else location[:6] if location else "物件"
-    fallback = f"{area_label} {layout}".strip() if layout else area_label
-    return fallback
+        return name
+    # Starts with 利回り/駅名/数字+% → ad-copy
+    if re.match(r"^(利回り|表面利回|想定利回|\d+[\d.]*%)", name):
+        return _fallback()
+    # Station+walk pattern without building name (e.g., "八丁堀駅徒歩5分")
+    if re.match(r"^.{1,10}駅.{0,5}(徒歩|バス).{0,5}$", name):
+        return _fallback()
+    # Long names with station keywords but no building suffix
+    if len(name) > 20 and ("駅" in name or "徒歩" in name):
+        return _fallback()
+    # Descriptive sentence patterns (Japanese punctuation = not a building name)
+    if "、" in name or "。" in name:
+        return _fallback()
+    # Ad-copy descriptive keywords without building suffix
+    _ad_keywords = {"エリア", "立地", "好立地", "便利", "通勤", "アクセス", "おすすめ",
+                    "注目", "人気", "希少", "必見", "新着", "限定", "即入居", "賃貸中"}
+    if any(kw in name for kw in _ad_keywords):
+        return _fallback()
+    return name
 
 # ---------------------------------------------------------------------------
 # Property nav (SSoT for all property pages)
@@ -591,12 +613,19 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
     # Estimated monthly rent (ward-level, age-adjusted)
     d["est_monthly_rent"] = ""
     d["rent_source"] = "想定家賃"
+    d["market_rent"] = ""
+    d["market_rent_label"] = ""
+    d["actual_rent"] = ""
+    d["rent_gap_pct"] = ""
+    d["is_oc"] = False
     area = row.area_sqm or 0
     if row.price_man and row.price_man > 0 and area > 0:
         rent_per_sqm, ward = _get_rent_per_sqm(city_key, row.location, row.built_year)
         monthly_rent = rent_per_sqm * area
         d["est_monthly_rent"] = f"{monthly_rent / 10000:.1f}万" if monthly_rent >= 10000 else f"{int(monthly_rent):,}円"
         d["rent_source"] = f"相場{ward}" if ward else "想定家賃"
+        d["market_rent"] = d["est_monthly_rent"]
+        d["market_rent_label"] = ward if ward else ""
         d["rent_per_sqm"] = rent_per_sqm
 
     # Revenue analysis — estimate yield from area if missing
@@ -786,7 +815,8 @@ def main() -> None:
     for city_data in cities:
         profitable = []
         # Existing sections → profitable candidates
-        for section_key in ["kubun", "ittomono", "kodate", "budget"]:
+        # kodate excluded: market rent estimate uses apartment ㎡ rates → unreliable for houses
+        for section_key in ["kubun", "ittomono", "budget"]:
             for prop in city_data[section_key]["properties"]:
                 rev = prop.get("revenue")
                 # CF >= 1.0万 OR CCR >= 8%（低価格物件はCF絶対額が小さいためCCRで救済）

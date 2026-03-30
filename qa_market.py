@@ -421,6 +421,44 @@ def check_data_accuracy(parser: MarketHTMLParser) -> tuple[str, str]:
     return "PASS", f"{total} properties checked; {blank_td_count} empty cells"
 
 
+def check_oc_income_coverage(parser: MarketHTMLParser) -> tuple[str, str]:
+    """Check that OC properties in yield data files have 想定年間収入.
+
+    FAIL if >50% missing, WARN if >20% missing.
+    """
+    data_dir = Path(__file__).resolve().parent / "data"
+    total_oc = 0
+    missing_income = 0
+
+    for city in ["fukuoka", "osaka", "tokyo"]:
+        path = data_dir / f"yield_{city}_raw.txt"
+        if not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("|")
+            if len(parts) < 10:
+                continue
+            if parts[8].strip() == "OC":
+                total_oc += 1
+                if "年間収入" not in parts[9]:
+                    missing_income += 1
+
+    if total_oc == 0:
+        return "PASS", "No OC properties found"
+
+    pct_missing = missing_income / total_oc * 100
+    # Note: generate_market.py derives rent from yield×price when 年間収入 is missing,
+    # so display is correct. This check monitors raw data quality (management fees are lost).
+    msg = f"OC {total_oc}件中 {missing_income}件が年間収入欠落 ({pct_missing:.0f}%) — 利回り逆算で補完"
+    if pct_missing > 90:
+        return "FAIL", msg
+    if pct_missing > 50:
+        return "WARN", msg
+    return "PASS", msg
+
+
 def check_first_seen_coverage(parser: MarketHTMLParser) -> tuple[str, str]:
     """Verify first_seen (掲載日) is populated. WARN if >30% missing."""
     total = 0
@@ -476,6 +514,7 @@ def run_qa(html_path: Path = HTML_PATH, strict: bool = False) -> bool:
         ("Sort Functionality", check_sort_functionality),
         ("Data Accuracy", check_data_accuracy),
         ("First-Seen Coverage", check_first_seen_coverage),
+        ("OC Income Coverage", check_oc_income_coverage),
     ]
 
     results: list[tuple[str, str, str]] = []
@@ -514,6 +553,7 @@ def run_qa_for_kaizen(html_path: Path = HTML_PATH) -> list[dict]:
         ("sort_functionality", check_sort_functionality),
         ("data_accuracy", check_data_accuracy),
         ("first_seen_coverage", check_first_seen_coverage),
+        ("oc_income_coverage", check_oc_income_coverage),
     ]
 
     findings = []

@@ -341,6 +341,19 @@ def _extract_rakumachi_fields(context: str, url: str, prop_id: str, city_key: st
     if not name:
         name = f"楽待物件#{prop_id}"
 
+    # Filter out ad-copy names (利回りX%！, 人気の〜, 駅徒歩X分！ etc.)
+    ad_markers = ["利回り", "！", "オーナーチェンジ", "人気の", "駅利用", "アクセス", "徒歩圏",
+                  "リフォーム完了", "分譲マンション", "♪", "【", "▶", "★", "☆", "◆"]
+    if any(m in name for m in ad_markers) and not any(s in name for s in [
+        "マンション", "コーポ", "ハイツ", "パレス", "レジデンス", "ビル", "タワー",
+        "パーク", "コート", "メゾン", "プラザ", "ハウス", "ドーム",
+    ]):
+        # Ad-copy without a building suffix → use location-based fallback
+        city_label = {"osaka": "大阪", "fukuoka": "福岡", "tokyo": "東京"}.get(city_key, "")
+        ward = re.search(r"(?:市|都)([^区]+区)", location)
+        ward_name = ward.group(1) if ward else ""
+        name = f"{city_label}{ward_name} {layout}".strip() if ward_name else f"楽待物件#{prop_id}"
+
     # Brokerage info
     brokerage = ""
     if "手数料無料" in text or "仲介手数料なし" in text:

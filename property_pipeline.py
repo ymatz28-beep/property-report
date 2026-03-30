@@ -90,6 +90,34 @@ STATUS_COLORS = {
 
 CITY_LABELS = {"osaka": "大阪", "fukuoka": "福岡", "tokyo": "東京"}
 
+# Ad-copy markers that indicate a name is not a real building name
+_AD_MARKERS = ["利回り", "！", "オーナーチェンジ", "人気の", "駅利用", "アクセス",
+               "徒歩圏", "リフォーム完了", "分譲マンション", "♪", "【", "▶", "★",
+               "☆", "◆", "「", "エリア、"]
+_BLDG_SUFFIXES = ["マンション", "コーポ", "ハイツ", "パレス", "レジデンス", "ビル",
+                  "タワー", "パーク", "コート", "メゾン", "プラザ", "ハウス", "ドーム",
+                  "シャトー", "テラス", "ガーデン", "グラン", "ロイヤル", "アーバン",
+                  "サニー", "ライオンズ", "アンピール", "ピュアドーム"]
+
+
+def _clean_property_name(name: str, source: str = "", city_key: str = "") -> str:
+    """Remove ad-copy from property names. Returns cleaned name or area-based fallback."""
+    if not name:
+        return name
+    has_ad = any(m in name for m in _AD_MARKERS)
+    has_bldg = any(s in name for s in _BLDG_SUFFIXES)
+    if has_ad and not has_bldg:
+        # Ad-copy without building suffix → not a real name
+        return name  # Will be caught by fallback below
+    if len(name) > 40 and has_ad:
+        # Long name with ad markers → likely ad-copy even if it contains a suffix
+        import re
+        for s in _BLDG_SUFFIXES:
+            m = re.search(rf"([ァ-ヶーa-zA-Z\d]{{2,}}(?:{s})[^\s,。、♪！]*)", name)
+            if m:
+                return m.group(1)[:40]
+    return name
+
 
 def _clean_station(station: str) -> str:
     """駅名を簡略表示: 路線名プレフィックスと「駅」サフィックスを除去。
@@ -317,9 +345,12 @@ def auto_flag(min_score: int = FLAG_THRESHOLD) -> list[dict]:
             if row.total_score < min_score:
                 continue
 
+            # Clean ad-copy names
+            clean_name = _clean_property_name(row.name, row.source, city_key)
+
             entry = {
                 "id": _next_id(inquiries + new_flagged),
-                "name": row.name,
+                "name": clean_name,
                 "url": row.url,
                 "source": row.source,
                 "city": city_key,

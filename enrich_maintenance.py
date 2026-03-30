@@ -308,6 +308,44 @@ def _parse_ftakken_fee(text: str) -> str:
     return ""
 
 
+def _parse_ftakken_structure(text: str) -> str:
+    """Parse ふれんず detail page text for 建物構造."""
+    m = re.search(r"建物構造\s+(.+?)(?:\s{2,}|\n)", text)
+    if m:
+        raw = m.group(1).strip()
+        # Normalize full-width to half-width for matching
+        half = raw.translate(str.maketrans("ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ",
+                                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+        # Normalize to standard format
+        for label in ["鉄筋コンクリート造", "鉄筋コンクリート"]:
+            if label in raw:
+                return "RC造"
+        for label in ["鉄骨鉄筋コンクリート造", "鉄骨鉄筋コンクリート"]:
+            if label in raw:
+                return "SRC造"
+        if "鉄骨造" in raw:
+            return "S造"
+        if "木造" in raw:
+            return "木造"
+        if "軽量鉄骨" in raw:
+            return "軽量鉄骨造"
+        # Full-width alphabet shortcuts (ＲＣ, ＳＲＣ, etc.)
+        if "SRC" in half:
+            return "SRC造"
+        if "RC" in half:
+            return "RC造"
+        return raw
+    return ""
+
+
+def _parse_ftakken_conditions(text: str) -> str:
+    """Parse ふれんず detail page text for 条件等 (OC keywords etc)."""
+    m = re.search(r"条件等\s+(.+?)(?:\s{2,}|\n)", text)
+    if m:
+        return m.group(1).strip()
+    return ""
+
+
 def enrich_ftakken_file(filepath: Path, max_pages: int = 60) -> int:
     """Enrich ふれんず properties by visiting detail pages with Playwright.
 
@@ -325,7 +363,7 @@ def enrich_ftakken_file(filepath: Path, max_pages: int = 60) -> int:
 
     lines = filepath.read_text(encoding="utf-8").splitlines()
 
-    # Collect indices needing enrichment
+    # Collect indices needing enrichment (fee breakdown OR structure/conditions missing)
     to_enrich = []
     for i, line in enumerate(lines):
         if line.startswith("#") or not line.strip():
@@ -337,8 +375,9 @@ def enrich_ftakken_file(filepath: Path, max_pages: int = 60) -> int:
         if source != "ふれんず":
             continue
         maintenance = parts[10].strip()
-        has_breakdown = "管理" in maintenance and "修繕" in maintenance
-        if has_breakdown:
+        has_fee = "管理" in maintenance and "修繕" in maintenance
+        has_structure = len(parts) >= 13 and parts[12].strip()
+        if has_fee and has_structure:
             continue
         url = parts[11].strip()
         if not url or "f-takken.com" not in url:
@@ -388,12 +427,35 @@ def enrich_ftakken_file(filepath: Path, max_pages: int = 60) -> int:
                 time.sleep(1)
                 continue
 
+            changed = False
+            # Fee enrichment
             fee_text = _parse_ftakken_fee(text)
-            if fee_text:
+            if fee_text and not ("管理" in parts[10] and "修繕" in parts[10]):
                 parts[10] = fee_text
+                changed = True
+
+            # Structure + conditions enrichment (append as col 12, 13)
+            structure = _parse_ftakken_structure(text)
+            conditions = _parse_ftakken_conditions(text)
+            # Ensure 14 columns: pad if needed, then set
+            while len(parts) < 14:
+                parts.append("")
+            if structure and not parts[12].strip():
+                parts[12] = structure
+                changed = True
+            if conditions and not parts[13].strip():
+                parts[13] = conditions
+                changed = True
+
+            if changed:
                 lines[idx] = "|".join(parts)
                 updated += 1
-                print(f"    {parts[1][:25]} → {fee_text}")
+                extras = []
+                if structure:
+                    extras.append(structure)
+                if conditions:
+                    extras.append(f"条件:{conditions[:30]}")
+                print(f"    {parts[1][:25]} → {fee_text or '—'} {' '.join(extras)}")
             else:
                 print(f"    {parts[1][:25]} → データなし")
 

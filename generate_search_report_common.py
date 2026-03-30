@@ -346,8 +346,8 @@ def parse_data_file(data_path: Path, default_source: str = "SUUMO") -> list[Prop
                 url=parts[11],
                 raw_line=s,
             )
-        elif len(parts) == 13:
-            # 13-col: source|name|price|location|area|built|station|layout|pet|brokerage|maintenance|url|structure
+        elif len(parts) in (13, 14):
+            # 13-col: ...|structure  /  14-col: ...|structure|conditions
             row = PropertyRow(
                 source=parts[0] or default_source,
                 name=parts[1],

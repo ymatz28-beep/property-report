@@ -338,7 +338,7 @@
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>㎡単価</th>
+              <th>間取り</th><th>構造</th><th>最寄駅</th><th>ペット</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -352,9 +352,7 @@
               <td>{{ prop.layout or "—" }}</td>
               <td>{{ prop.structure or "—" }}</td>
               <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
-              <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}—{% endif %}</td>
               <td>{{ prop.pet_status or "—" }}</td>
-              <td class="price-cell" style="white-space:nowrap">{% if prop.actual_rent %}{{ prop.actual_rent }}{% if prop.rent_gap_pct %}<br><span style="font-size:9px;color:{% if '-' in prop.rent_gap_pct %}var(--red){% else %}var(--green){% endif %}">{{ prop.rent_gap_pct }}</span>{% endif %}{% else %}—{% endif %}</td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}{% if prop.rent_per_sqm %} {{ prop.rent_per_sqm }}円/㎡{% endif %}</span>{% else %}—{% endif %}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
@@ -362,7 +360,7 @@
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
-              <td colspan="15">
+              <td colspan="13">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">{{ prop.maintenance_fee_text or "—" }}</span></div>
                   <div class="detail-item"><span class="detail-label">{{ prop.revenue.rent_source or "想定家賃" }}{% if prop.revenue.rent_per_sqm %}<span style="font-size:9px;opacity:0.7"> ({{ prop.revenue.rent_per_sqm }}円/㎡)</span>{% endif %}</span><span class="detail-value">{{ prop.revenue.est_monthly_rent }}/月</span></div>

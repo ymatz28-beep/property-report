@@ -200,11 +200,70 @@ def _load_budget(city_key: str) -> list[PropertyRow]:
     return rows[:BUDGET_MAX_ITEMS]
 
 
-_ESTIMATED_RENT_PER_SQM: dict[str, int] = {
-    "osaka": 2800,    # 大阪: ㎡あたり月額賃料（円）
-    "fukuoka": 2400,  # 福岡
-    "tokyo": 3200,    # 東京
+# ── Ward-level rent per sqm (円/㎡/月) ──
+# Source: SUUMO/アットホーム/LIFULL 2025-2026年データ（1R/1K/1LDK中心）
+_RENT_PER_SQM_BY_WARD: dict[str, dict[str, int]] = {
+    "fukuoka": {
+        "中央区": 3200,   # 天神・大名。市内最高賃料帯
+        "博多区": 3000,   # 駅近需要強い
+        "東区":   2600,   # 箱崎・千早
+        "南区":   2400,   # 大橋・高宮
+        "早良区": 2300,   # 西新・藤崎
+        "西区":   2200,   # 姪浜方面
+        "城南区": 2000,   # 市内最安帯
+    },
+    "osaka": {
+        "中央区": 3400,   # 難波・心斎橋
+        "西区":   3300,   # 堀江・新町
+        "北区":   3200,   # 梅田
+        "浪速区": 3100,   # なんば
+        "福島区": 3000,   # 梅田近接
+        "天王寺区": 2900, # 上本町
+        "淀川区": 2800,   # 新大阪
+        "都島区": 2800,   # 京橋
+        "東淀川区": 2300, # 郊外
+    },
+    "tokyo": {
+        "中央区": 3900,   # 日本橋・銀座
+        "新宿区": 4000,   # ㎡単価最高帯
+        "渋谷区": 4000,   # 高単身需要
+        "港区":   3500,   # 超都心
+        "豊島区": 3800,   # 池袋
+        "品川区": 3600,   # 利便性◎
+        "目黒区": 3100,   # 高級住宅地
+        "文京区": 3200,   # 大学・病院
+        "台東区": 3100,   # 上野
+        "中野区": 3600,   # 需要安定
+        "墨田区": 3700,   # 小面積物件多
+        "板橋区": 3400,   # 再開発中
+        "練馬区": 3100,   # 西部
+        "北区":   3200,   # 赤羽
+        "足立区": 3400,   # 利回り出やすい
+        "葛飾区": 3400,   # 足立並み
+    },
 }
+
+# City-level fallback (ward not found)
+_ESTIMATED_RENT_PER_SQM: dict[str, int] = {
+    "osaka": 2800,
+    "fukuoka": 2400,
+    "tokyo": 3200,
+}
+
+
+def _get_rent_per_sqm(city_key: str, location: str) -> tuple[int, str]:
+    """Get rent per sqm (円/㎡) and ward name from city + location.
+
+    Returns (rent_per_sqm, ward_name). ward_name is "" if city fallback used.
+    """
+    import re as _re_local
+    ward_match = _re_local.search(r'([^\s市県都府]+区)', location)
+    ward = ward_match.group(1) if ward_match else ""
+    ward_data = _RENT_PER_SQM_BY_WARD.get(city_key, {})
+    if ward and ward in ward_data:
+        return ward_data[ward], ward
+    # Fallback to city average
+    return _ESTIMATED_RENT_PER_SQM.get(city_key, 2800), ""
 
 
 def _is_oc_row(row: PropertyRow) -> bool:
@@ -281,12 +340,13 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
             est_yield = oc_yield if oc_yield > 0 else (annual_rent / row.price_man) * 100
             d["rent_source"] = "実家賃"
         else:
-            # Estimate from market rent
-            rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
+            # Estimate from ward-level market rent
+            rent_per_sqm, ward = _get_rent_per_sqm(city_key, row.location)
             monthly_rent = rent_per_sqm * row.area_sqm  # 円
             annual_rent = monthly_rent * 12 / 10000  # 万円
             est_yield = (annual_rent / row.price_man) * 100
-            d["rent_source"] = "想定家賃"
+            d["rent_source"] = f"相場{ward}" if ward else "想定家賃"
+            d["rent_per_sqm"] = rent_per_sqm
         d["yield_text"] = f"{est_yield:.1f}%"
         d["est_monthly_rent"] = f"{monthly_rent / 10000:.1f}万" if monthly_rent >= 10000 else f"{int(monthly_rent):,}円"
         structure_for_calc = row.structure or "RC造"
@@ -318,6 +378,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
                 "annual_debt_service": round(ra.annual_debt_service, 1),
                 "est_monthly_rent": d["est_monthly_rent"],
                 "rent_source": d["rent_source"],
+                "rent_per_sqm": d.get("rent_per_sqm", 0),
                 "structure_used": structure_for_calc,
             }
         except Exception:
@@ -379,21 +440,23 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
     else:
         d["price_per_sqm"] = "—"
 
-    # Estimated monthly rent
+    # Estimated monthly rent (ward-level)
     d["est_monthly_rent"] = ""
     d["rent_source"] = "想定家賃"
     area = row.area_sqm or 0
     if row.price_man and row.price_man > 0 and area > 0:
-        rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
+        rent_per_sqm, ward = _get_rent_per_sqm(city_key, row.location)
         monthly_rent = rent_per_sqm * area
         d["est_monthly_rent"] = f"{monthly_rent / 10000:.1f}万" if monthly_rent >= 10000 else f"{int(monthly_rent):,}円"
+        d["rent_source"] = f"相場{ward}" if ward else "想定家賃"
+        d["rent_per_sqm"] = rent_per_sqm
 
     # Revenue analysis — estimate yield from area if missing
     yield_pct = row.yield_pct
     if (not yield_pct or yield_pct <= 0) and row.price_man and row.price_man > 0:
         units = row.units_count or 1
         if area > 0:
-            rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
+            rent_per_sqm, _ = _get_rent_per_sqm(city_key, row.location)
             annual_rent = rent_per_sqm * area * 12 / 10000  # 万円
             yield_pct = (annual_rent / row.price_man) * 100
             d["yield_text"] = f"≈{yield_pct:.1f}%"

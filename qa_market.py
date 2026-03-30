@@ -218,7 +218,7 @@ def check_feature_parity(parser: MarketHTMLParser) -> tuple[str, str]:
     issues = []
     sections_with_headers = {
         sid: sec for sid, sec in parser.sections.items()
-        if sec.get("headers")
+        if sec.get("headers") and sec.get("type") != "profitable"
     }
     total = len(sections_with_headers)
 
@@ -388,6 +388,8 @@ def check_data_accuracy(parser: MarketHTMLParser) -> tuple[str, str]:
     html_text = html_path.read_text(encoding="utf-8") if html_path.exists() else ""
 
     for sec_id, sec in parser.sections.items():
+        if sec.get("type") == "profitable":
+            continue  # Profitable section uses different layout
         for row in sec.get("table_rows", []):
             total += 1
             name = row.get("name", "").strip()

@@ -696,6 +696,24 @@ def main() -> None:
         budget_str = f" + 格安{len(budget_props)}" if budget_props else ""
         print(f"  {cfg['label']}: 区分{len(kubun_props)} + 一棟{len(ittomono_props)} + 戸建{len(kodate_props)}{budget_str}")
 
+    # ── 収益物件セクション: CF > 0 の物件を種別横断で収集 ──
+    profitable_props = []
+    for city_data in cities:
+        city_label = city_data["label"]
+        for section_key in ["kubun", "ittomono", "kodate", "budget"]:
+            for prop in city_data[section_key]["properties"]:
+                rev = prop.get("revenue")
+                if rev and rev.get("after_tax_monthly_cf") is not None and rev["after_tax_monthly_cf"] > 0:
+                    # Add city and type info for display
+                    prop_copy = dict(prop)
+                    prop_copy["_city_label"] = city_label
+                    type_labels = {"kubun": "区分", "ittomono": "一棟", "kodate": "戸建", "budget": "格安区分"}
+                    prop_copy["_type_label"] = type_labels.get(section_key, section_key)
+                    profitable_props.append(prop_copy)
+    # Sort by total_equity ascending (手出しが少ない順)
+    profitable_props.sort(key=lambda p: p.get("revenue", {}).get("total_equity", float("inf")))
+    print(f"  収益物件: {len(profitable_props)}件 (CF > 0)")
+
     # Totals
     total_count = total_kubun + total_ittomono + total_kodate + total_budget
     avg_price = int(sum(all_prices) / len(all_prices)) if all_prices else 0
@@ -722,6 +740,7 @@ def main() -> None:
     html = template.render(
         cities=cities,
         totals=totals,
+        profitable_props=profitable_props,
         patrol_summary=patrol_summary,
         property_pages=PROPERTY_PAGES,
         property_current="Market",

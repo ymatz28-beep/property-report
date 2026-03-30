@@ -322,6 +322,59 @@
     </div>
   </div>
 
+  {# ── 収益物件セクション（CF > 0、手出し少ない順） ── #}
+  {% if profitable_props %}
+  <div class="type-section profitable-section" id="profitable-section" data-type="profitable" style="margin-bottom:24px">
+    <div class="type-header" style="background:linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04)); border-color:rgba(34,197,94,0.3)">
+      <span class="type-label" style="color:var(--green)">収益物件</span>
+      <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">{{ profitable_props|length }}</span>
+      <span style="font-size:11px;color:var(--text-muted);margin-left:8px">CF > 0 / 手出し↑順 / 種別横断</span>
+    </div>
+    <div class="property-list active" data-view="list">
+      <table class="prop-table" data-type="profitable">
+        <thead>
+          <tr>
+            <th>都市</th><th>種別</th><th>物件名</th><th>価格</th><th>面積</th>
+            <th>利回り</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th><th>回収年</th><th>ローン</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for prop in profitable_props %}
+          <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+              data-score="{{ prop.total_score|default(0) }}" data-price="{{ prop.price_man|default(0) }}">
+            <td style="font-size:11px">{{ prop._city_label }}</td>
+            <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:{% if prop._type_label == '一棟' %}rgba(168,85,247,0.15);color:#a855f7{% elif prop._type_label == '戸建' %}rgba(245,158,11,0.15);color:#f59e0b{% else %}rgba(99,102,241,0.15);color:var(--accent){% endif %}">{{ prop._type_label }}</span></td>
+            <td><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">{{ prop.name or "—" }}</a></td>
+            <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}</td>
+            <td>{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
+            <td>{{ prop.yield_text|default("—") }}</td>
+            <td class="price-cell" style="color:var(--green);font-weight:600">{{ prop.revenue.after_tax_monthly_cf }}万</td>
+            <td class="price-cell" style="white-space:nowrap">{{ prop.revenue.total_equity }}万</td>
+            <td>{{ prop.revenue.ccr }}%</td>
+            <td>{% if prop.revenue.payback_years %}{{ prop.revenue.payback_years }}年{% else %}∞{% endif %}</td>
+            <td style="font-size:11px">{{ prop.revenue.loan_rate }}%/{{ prop.revenue.loan_years }}年</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="11">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">{{ prop.structure|default(prop.revenue.structure_used|default("—")) }}</span></div>
+                <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">{{ prop.station_text|default("—") }}</span></div>
+                <div class="detail-item"><span class="detail-label">{{ prop.revenue.rent_source|default("想定家賃") }}</span><span class="detail-value">{{ prop.revenue.est_monthly_rent|default("—") }}/月</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
+                <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">{{ prop.revenue.down_payment }}万</span></div>
+                <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">{{ prop.revenue.acquisition_cost }}万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">{{ prop.revenue.annual_debt_service }}万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
   {# ── City Panels ── #}
   {% for city in cities %}
   <div class="city-panel{% if loop.first %} active{% endif %}" id="panel-{{ city.key }}">

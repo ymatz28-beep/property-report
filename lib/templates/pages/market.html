@@ -227,10 +227,17 @@
   .city-tab { padding: 8px 14px; font-size: 12px; }
   .type-jump { justify-content: flex-start; }
   .type-jump-btn { font-size: 11px; padding: 6px 12px; }
-  .prop-table { font-size: 12px; }
-  .prop-table th, .prop-table td { padding: 6px 6px; }
+  .prop-table { font-size: 11px; }
+  .prop-table th, .prop-table td { padding: 5px 4px; }
   .detail-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px 12px; }
   .type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 40px + 120px); }
+  /* Mobile: hide low-priority columns to give property name more space */
+  .prop-table .hide-mobile { display: none; }
+  /* Property name: remove max-width on mobile, allow natural width */
+  [data-type="budget"] .name-cell,
+  [data-type="kubun"] .name-cell { max-width: none; min-width: 100px; }
+  .prop-table .name-cell { min-width: 100px; }
+  .prop-table .station-cell { max-width: 100px; }
 }
 {% endblock %}
 
@@ -373,8 +380,8 @@
           </colgroup>
           <thead>
             <tr>
-              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th><th>築年</th><th>最寄駅</th>
-              <th>OC</th><th>実家賃</th><th>相場家賃</th><th>CF/月</th><th>手出し</th><th>CCR</th>
+              <th>種別</th><th>物件名</th><th>価格</th><th class="hide-mobile">面積</th><th class="hide-mobile">築年</th><th class="hide-mobile">最寄駅</th>
+              <th class="hide-mobile">OC</th><th>実家賃</th><th class="hide-mobile">相場家賃</th><th>CF/月</th><th class="hide-mobile">手出し</th><th>CCR</th>
             </tr>
           </thead>
           <tbody>
@@ -384,14 +391,14 @@
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:{% if prop._type_label == '一棟' %}rgba(168,85,247,0.15);color:#a855f7{% elif prop._type_label == '戸建' %}rgba(245,158,11,0.15);color:#f59e0b{% elif prop._type_label == '利回り区分' %}rgba(34,197,94,0.15);color:var(--green){% else %}rgba(99,102,241,0.15);color:var(--accent){% endif %}">{{ prop._type_label }}</span></td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="{{ prop.name }}">{{ prop.name or "—" }}</a></td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}</td>
-              <td>{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
-              <td style="font-size:11px">{% if prop.built_year %}{{ prop.built_year }}<span style="opacity:0.6">({{ 2026 - prop.built_year }})</span>{% else %}—{% endif %}</td>
-              <td class="station-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3" title="{{ prop.station_text|default('') }}">{{ prop.station_text|default("—") }}</td>
-              <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}<span style="font-size:10px;color:var(--text-muted)">空</span>{% endif %}</td>
+              <td class="hide-mobile">{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
+              <td class="hide-mobile" style="font-size:11px">{% if prop.built_year %}{{ prop.built_year }}<span style="opacity:0.6">({{ 2026 - prop.built_year }})</span>{% else %}—{% endif %}</td>
+              <td class="station-cell hide-mobile" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3" title="{{ prop.station_text|default('') }}">{{ prop.station_text|default("—") }}</td>
+              <td class="hide-mobile">{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}<span style="font-size:10px;color:var(--text-muted)">空</span>{% endif %}</td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.actual_rent %}{{ prop.actual_rent }}{% if prop.rent_gap_pct %}<br><span style="font-size:9px;color:{% if '-' in prop.rent_gap_pct %}var(--red){% else %}var(--green){% endif %}">{{ prop.rent_gap_pct }}</span>{% endif %}{% else %}—{% endif %}</td>
-              <td class="price-cell" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}</span>{% else %}—{% endif %}</td>
+              <td class="price-cell hide-mobile" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}</span>{% else %}—{% endif %}</td>
               <td class="price-cell" style="color:var(--green);font-weight:600">{{ prop.revenue.after_tax_monthly_cf }}万</td>
-              <td class="price-cell" style="white-space:nowrap">{{ prop.revenue.total_equity }}万</td>
+              <td class="price-cell hide-mobile" style="white-space:nowrap">{{ prop.revenue.total_equity }}万</td>
               <td style="font-weight:600">{{ prop.revenue.ccr }}%</td>
             </tr>
             <tr class="detail-row">
@@ -451,7 +458,7 @@
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>ペット</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF(15年)</th><th>㎡単価</th>
+              <th class="hide-mobile">間取り</th><th class="hide-mobile">構造</th><th class="hide-mobile">最寄駅</th><th class="hide-mobile">ペット</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th class="hide-mobile">CF(15年)</th><th class="hide-mobile">㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -462,15 +469,15 @@
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
-              <td class="layout-cell">{{ prop.layout or "—" }}</td>
-              <td>{{ prop.structure or "—" }}</td>
-              <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
-              <td>{{ prop.pet_status or "—" }}</td>
+              <td class="layout-cell hide-mobile">{{ prop.layout or "—" }}</td>
+              <td class="hide-mobile">{{ prop.structure or "—" }}</td>
+              <td class="station-cell hide-mobile" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
+              <td class="hide-mobile">{{ prop.pet_status or "—" }}</td>
               <td class="price-cell">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}</span>{% else %}—{% endif %}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
-              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_stress is defined and prop.revenue.cf_stress is not none %}<span style="color:{% if prop.revenue.cf_stress > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ prop.revenue.cf_stress }}万</span>{% else %}—{% endif %}</td>
-              <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
+              <td class="price-cell hide-mobile">{% if prop.revenue and prop.revenue.cf_stress is defined and prop.revenue.cf_stress is not none %}<span style="color:{% if prop.revenue.cf_stress > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ prop.revenue.cf_stress }}万</span>{% else %}—{% endif %}</td>
+              <td class="price-cell hide-mobile">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
@@ -517,9 +524,9 @@
         <table class="prop-table">
           <thead>
             <tr>
-              <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>利回り</th><th>面積</th>
-              <th>構造</th><th>戸数</th><th>最寄駅</th><th>家賃</th><th>CF/月</th>
-              <th>㎡単価</th>
+              <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>利回り</th><th class="hide-mobile">面積</th>
+              <th class="hide-mobile">構造</th><th class="hide-mobile">戸数</th><th class="hide-mobile">最寄駅</th><th>家賃</th><th>CF/月</th>
+              <th class="hide-mobile">㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -530,17 +537,17 @@
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td>{{ prop.yield_text or "—" }}</td>
-              <td class="area-cell">{{ prop.area_text }}</td>
-              <td>{{ prop.structure or "—" }}</td>
-              <td>{{ prop.units_count or "—" }}</td>
-              <td>{{ prop.station_text | default(prop.location) }}</td>
+              <td class="area-cell hide-mobile">{{ prop.area_text }}</td>
+              <td class="hide-mobile">{{ prop.structure or "—" }}</td>
+              <td class="hide-mobile">{{ prop.units_count or "—" }}</td>
+              <td class="hide-mobile">{{ prop.station_text | default(prop.location) }}</td>
               <td class="price-cell">{{ prop.est_monthly_rent or "—" }}</td>
               {% if prop.revenue %}
               <td class="price-cell" style="color:{% if prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.after_tax_monthly_cf }}万</td>
               {% else %}
               <td>—</td>
               {% endif %}
-              <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
+              <td class="price-cell hide-mobile">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
@@ -585,7 +592,7 @@
       <div class="property-list active" data-view="list">
         <table class="prop-table">
           <thead>
-            <tr><th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th><th>構造</th><th>築年</th><th>最寄駅</th><th>利回り</th><th>㎡単価</th></tr>
+            <tr><th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th><th class="hide-mobile">構造</th><th class="hide-mobile">築年</th><th class="hide-mobile">最寄駅</th><th>利回り</th><th class="hide-mobile">㎡単価</th></tr>
           </thead>
           <tbody>
             {% for prop in city.kodate.properties %}
@@ -595,11 +602,11 @@
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
-              <td>{{ prop.structure or "—" }}</td>
-              <td>{{ prop.built_text or "—" }}</td>
-              <td>{{ prop.station_text | default(prop.location) }}</td>
+              <td class="hide-mobile">{{ prop.structure or "—" }}</td>
+              <td class="hide-mobile">{{ prop.built_text or "—" }}</td>
+              <td class="hide-mobile">{{ prop.station_text | default(prop.location) }}</td>
               <td>{{ prop.yield_text or "—" }}</td>
-              <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
+              <td class="price-cell hide-mobile">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -636,8 +643,8 @@
         <table class="prop-table">
           <thead>
             <tr>
-              <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造/築年</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF(15年)</th><th>㎡単価</th>
+              <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th class="hide-mobile">面積</th>
+              <th class="hide-mobile">間取り</th><th class="hide-mobile">構造/築年</th><th class="hide-mobile">最寄駅</th><th class="hide-mobile">OC</th><th class="hide-mobile">ペット</th><th>実家賃</th><th class="hide-mobile">相場家賃</th><th>利回り</th><th>CF/月</th><th class="hide-mobile">CF(15年)</th><th class="hide-mobile">㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -647,18 +654,18 @@
               <td class="date-cell">{% if prop.is_new %}<span style="color:var(--green);font-weight:700;font-size:10px">NEW</span>{% elif prop.first_seen %}{{ prop.first_seen }}{% else %}—{% endif %}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
-              <td class="area-cell">{{ prop.area_text }}</td>
-              <td class="layout-cell">{{ prop.layout or "—" }}</td>
-              <td style="white-space:nowrap">{{ prop.structure or "—" }}{% if prop.built_year %}<br><span style="font-size:10px;color:var(--text-muted)">{{ prop.built_year }}年(築{{ 2026 - prop.built_year }})</span>{% endif %}</td>
-              <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
-              <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}—{% endif %}</td>
-              <td>{{ prop.pet_status or "—" }}</td>
+              <td class="area-cell hide-mobile">{{ prop.area_text }}</td>
+              <td class="layout-cell hide-mobile">{{ prop.layout or "—" }}</td>
+              <td class="hide-mobile" style="white-space:nowrap">{{ prop.structure or "—" }}{% if prop.built_year %}<br><span style="font-size:10px;color:var(--text-muted)">{{ prop.built_year }}年(築{{ 2026 - prop.built_year }})</span>{% endif %}</td>
+              <td class="station-cell hide-mobile" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
+              <td class="hide-mobile">{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}—{% endif %}</td>
+              <td class="hide-mobile">{{ prop.pet_status or "—" }}</td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.actual_rent %}{{ prop.actual_rent }}{% if prop.rent_gap_pct %}<br><span style="font-size:9px;color:{% if '-' in prop.rent_gap_pct %}var(--red){% else %}var(--green){% endif %}">{{ prop.rent_gap_pct }}</span>{% endif %}{% else %}—{% endif %}</td>
-              <td class="price-cell" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}{% if prop.rent_per_sqm %} {{ prop.rent_per_sqm }}円/㎡{% endif %}</span>{% else %}—{% endif %}</td>
+              <td class="price-cell hide-mobile" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}{% if prop.rent_per_sqm %} {{ prop.rent_per_sqm }}円/㎡{% endif %}</span>{% else %}—{% endif %}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
-              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_stress is defined and prop.revenue.cf_stress is not none %}<span style="color:{% if prop.revenue.cf_stress > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.cf_stress }}万</span>{% else %}—{% endif %}</td>
-              <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
+              <td class="price-cell hide-mobile">{% if prop.revenue and prop.revenue.cf_stress is defined and prop.revenue.cf_stress is not none %}<span style="color:{% if prop.revenue.cf_stress > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.cf_stress }}万</span>{% else %}—{% endif %}</td>
+              <td class="price-cell hide-mobile">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">

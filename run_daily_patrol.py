@@ -70,6 +70,7 @@ STEP_LABELS = {
     "search_ftakken.py": ("F宅建検索", "F宅建の物件データが未更新"),
     "search_lifull.py": ("LIFULL検索", "LIFULLの物件データが未更新"),
     "search_ittomono.py": ("一棟もの検索", "一棟もの物件データが未更新"),
+    "search_yield_focused.py": ("利回りフォーカス検索", "利回り特化物件データが未更新"),
     "enrich_maintenance.py": ("管理費データ取得", "管理費・修繕積立金が未更新"),
     "generate_osaka_report.py": ("大阪レポート生成", "大阪レポートが古いまま"),
     "generate_fukuoka_report.py": ("福岡レポート生成", "福岡レポートが古いまま"),
@@ -439,6 +440,7 @@ def search_all_sites() -> list[dict]:
         ("search_ftakken.py", 300),
         ("search_lifull.py", 300),
         ("search_ittomono.py", 600),
+        ("search_yield_focused.py", 600),
     ]
 
     # Start all parallel processes with stderr capture

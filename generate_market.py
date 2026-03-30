@@ -455,7 +455,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
 # ---------------------------------------------------------------------------
 def _load_ittomono_by_city(city_key: str) -> list[IttomonoRow]:
     rows: list[IttomonoRow] = []
-    for prefix in ["ittomono", "rakumachi_ittomono", "ftakken_ittomono"]:
+    for prefix in ["ittomono", "rakumachi_ittomono", "ftakken_ittomono", "yield_ittomono"]:
         p = DATA_DIR / f"{prefix}_{city_key}_raw.txt"
         if p.exists():
             rows.extend(ittomono_parse(p, city_key))
@@ -700,6 +700,7 @@ def main() -> None:
     total_profitable = 0
     for city_data in cities:
         profitable = []
+        # Existing sections → profitable candidates
         for section_key in ["kubun", "ittomono", "kodate", "budget"]:
             for prop in city_data[section_key]["properties"]:
                 rev = prop.get("revenue")
@@ -708,6 +709,38 @@ def main() -> None:
                     type_labels = {"kubun": "区分", "ittomono": "一棟", "kodate": "戸建", "budget": "格安区分"}
                     prop_copy["_type_label"] = type_labels.get(section_key, section_key)
                     profitable.append(prop_copy)
+
+        # ── Yield-focused kubun (OC included, no pet filter) → profitable直接注入 ──
+        yield_p = DATA_DIR / f"yield_{city_data['key']}_raw.txt"
+        if yield_p.exists():
+            yield_rows = parse_data_file(yield_p)
+            yield_rows, _ = dedupe_properties(yield_rows)
+            sold = load_sold_urls()
+            yield_rows = [r for r in yield_rows if r.url.rstrip("/") + "/" not in sold]
+            yield_rows = [r for r in yield_rows if r.area_sqm is None or r.area_sqm >= 15]
+            # Exclude URLs already in other sections (avoid double-counting)
+            existing_urls = set()
+            for sk in ["kubun", "ittomono", "kodate", "budget"]:
+                for p in city_data[sk]["properties"]:
+                    existing_urls.add(p.get("url", ""))
+            yield_rows = [r for r in yield_rows if r.url not in existing_urls]
+            # Score and filter
+            config = ReportConfig(
+                city_key=city_data["key"], city_label=city_data["label"],
+                accent="#6366f1", accent_rgb="99,102,241",
+                data_path=yield_p, output_path=OUTPUT_DIR / "market.html",
+                hero_conditions=[], search_condition_bullets=[], investor_notes=[],
+            )
+            for row in yield_rows:
+                score_row(row, config)
+            yield_rows = [r for r in yield_rows if r.total_score >= 50]
+            for row in yield_rows:
+                d = _kubun_to_dict(row, first_seen, city_key=city_data["key"])
+                rev = d.get("revenue")
+                if rev and rev.get("after_tax_monthly_cf") is not None and rev["after_tax_monthly_cf"] >= 1.0 and rev.get("total_equity", float("inf")) < 1000:
+                    d["_type_label"] = "利回り区分"
+                    profitable.append(d)
+
         profitable.sort(key=lambda p: p.get("revenue", {}).get("ccr", 0), reverse=True)
         city_data["profitable"] = {"count": len(profitable), "properties": profitable}
         city_data["count"] += len(profitable)

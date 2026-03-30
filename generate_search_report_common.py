@@ -560,10 +560,10 @@ def station_score(walk_min: int | None) -> int:
     if walk_min <= 10:
         return 10
     if walk_min <= 15:
-        return -5
+        return 3
     if walk_min <= 20:
-        return -15
-    return -15  # 20分超は厳しいが-25は過大ペナルティ
+        return -10
+    return -15  # 20分超
 
 
 def layout_score(layout: str) -> int:
@@ -588,7 +588,7 @@ def classify_location_osaka(text: str) -> tuple[str, int]:
     for label, score, kws in checks:
         if any(kw in text for kw in kws):
             return label, score
-    return "Other", 5
+    return "Other", 0
 
 
 def classify_location_fukuoka(text: str) -> tuple[str, int]:
@@ -688,7 +688,7 @@ def renovation_score(row: PropertyRow) -> int:
     ]
     if any(kw in text for kw in unrenovated_keywords):
         return 5  # Clearly unrenovated - DIY opportunity
-    return 3  # Unknown - likely unrenovated (most used condos)
+    return 0  # Unknown - neutral (no data = no bonus)
 
 
 def minpaku_penalty(row: PropertyRow) -> int:

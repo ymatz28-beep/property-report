@@ -1,15 +1,14 @@
 # HANDOFF
 
-## [Constancy] 2026-03-29
+## [Constancy] 2026-03-30
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
-- [WARN] html_ui: Has gnav but missing hamburger toggle — mobile nav broken
-- [WARN] timestamp_format: Date-only timestamp 'Generated: 2026-02-20' — should include HH:MM
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-03-29 06:35): 【F宅建検索】タイムアウト (5分超過) → Fix: エラーログを確認
-- [WARN] blank_cells: ダッシュ「—」106個 (閾値20) — データ欠損の可能性
-- [WARN] numeric_outliers: 利回り: 異常値 3件 — 26.5>20, 22.9>20, 22.9>20
-- [ERROR] property_name_quality: 駅名が物件名になっている: 2件 — ['「東武練馬」駅徒歩2分！2020年築RC造１棟マンション！', '「東武練馬」駅徒歩2分！2020年築RC造１棟マンション！']
-- [WARN] qa_market_duplicate_detection: 8 duplicate (price, area) pairs: [(('3900', '40.07'), ['osaka-kubun', 'osaka-kubun']), (('4900', '46.01'), ['fukuoka-kubun', 'fukuoka-kubun']), (('3180', '52.98'), ['fukuoka-kubun', 'fukuoka-kubun'])]
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 6.5% (11/169件)。パイプライン変換バグの可能性。例: 4480.0万円/45.62㎡; 18880.0万円/271.58㎡; 4780.0万円/64.15㎡; 2580.0万円/46.86㎡; 17304.0万円/314.59㎡
+- [WARN] structural_reform: property_pipeline.py is 1617 lines (threshold: 800). Consider splitting.
+- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-03-30 06:37): 【F宅建検索】タイムアウト (5分超過) → Fix: エラーログを確認
+- [WARN] blank_cells: ダッシュ「—」320個 (閾値20) — データ欠損の可能性
+- [WARN] numeric_outliers: 利回り: 異常値 1件 — 30.7>25
+- [WARN] first_seen_coverage: 掲載日カバレッジ 59% (114/193) — 閾値80%
+- [WARN] qa_market_first_seen_coverage: 掲載日 coverage 59% (114/193)
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 12.3% (22/179件)。パイプライン変換バグの可能性。例: 1000.0万円/46.75㎡; 990.0万円/35.06㎡; 850.0万円/68.3㎡; 580.0万円/55.2㎡; 980.0万円/51.7㎡
 
 ## Last Updated
 2026-03-30

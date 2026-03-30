@@ -336,14 +336,14 @@
       <div class="type-header" style="background:linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04)); border-color:rgba(34,197,94,0.3)">
         <span class="type-label" style="color:var(--green)">収益物件</span>
         <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">{{ city.profitable.count }}</span>
-        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">CF > 0 / 手出し↑順 / 種別横断</span>
+        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">CF > 0 / CCR↓順 / 種別横断</span>
       </div>
       <div class="property-list active" data-view="list">
         <table class="prop-table" data-type="profitable">
           <thead>
             <tr>
-              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>利回り</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th><th>回収年</th><th>ローン</th>
+              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th><th>築年</th>
+              <th>想定家賃</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th>
             </tr>
           </thead>
           <tbody>
@@ -354,24 +354,25 @@
               <td><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">{{ prop.name or "—" }}</a></td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}</td>
               <td>{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
-              <td>{{ prop.yield_text|default("—") }}</td>
+              <td style="font-size:11px">{% if prop.built_year %}{{ prop.built_year }}年<span style="opacity:0.6">(築{{ 2026 - prop.built_year }})</span>{% else %}—{% endif %}</td>
+              <td class="price-cell" style="white-space:nowrap">{{ prop.revenue.est_monthly_rent or "—" }}</td>
               <td class="price-cell" style="color:var(--green);font-weight:600">{{ prop.revenue.after_tax_monthly_cf }}万</td>
               <td class="price-cell" style="white-space:nowrap">{{ prop.revenue.total_equity }}万</td>
-              <td>{{ prop.revenue.ccr }}%</td>
-              <td>{% if prop.revenue.payback_years %}{{ prop.revenue.payback_years }}年{% else %}∞{% endif %}</td>
-              <td style="font-size:11px">{{ prop.revenue.loan_rate }}%/{{ prop.revenue.loan_years }}年</td>
+              <td style="font-weight:600">{{ prop.revenue.ccr }}%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="10">
+              <td colspan="9">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">{{ prop.structure|default(prop.revenue.structure_used|default("—")) }}</span></div>
                   <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">{{ prop.station_text|default("—") }}</span></div>
-                  <div class="detail-item"><span class="detail-label">{{ prop.revenue.rent_source|default("想定家賃") }}</span><span class="detail-value">{{ prop.revenue.est_monthly_rent|default("—") }}/月</span></div>
+                  <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">{{ prop.yield_text|default("—") }}</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
                   <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">{{ prop.revenue.down_payment }}万</span></div>
                   <div class="detail-item"><span class="detail-label">諸費用</span><span class="detail-value">{{ prop.revenue.acquisition_cost }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">ローン</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年</span></div>
                   <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">{{ prop.revenue.annual_debt_service }}万</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">{% if prop.revenue.payback_years %}{{ prop.revenue.payback_years }}年{% else %}∞{% endif %}</span></div>
                 </div>
               </td>
             </tr>

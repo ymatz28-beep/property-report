@@ -708,7 +708,7 @@ def main() -> None:
                     type_labels = {"kubun": "区分", "ittomono": "一棟", "kodate": "戸建", "budget": "格安区分"}
                     prop_copy["_type_label"] = type_labels.get(section_key, section_key)
                     profitable.append(prop_copy)
-        profitable.sort(key=lambda p: p.get("revenue", {}).get("total_equity", float("inf")))
+        profitable.sort(key=lambda p: p.get("revenue", {}).get("ccr", 0), reverse=True)
         city_data["profitable"] = {"count": len(profitable), "properties": profitable}
         city_data["count"] += len(profitable)
         total_profitable += len(profitable)

@@ -405,6 +405,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
                 built_year=row.built_year,
                 units_count=1,
                 area_sqm=row.area_sqm,
+                maintenance_fee_monthly=row.maintenance_fee or 0,
             )
             d["revenue"] = {
                 "noi": round(ra.noi, 1),

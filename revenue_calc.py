@@ -32,7 +32,8 @@ class InvestmentParams:
 
     # Operations
     vacancy_rate: float = 0.07         # 空室率 (7%)
-    opex_rate: float = 0.20            # 経費率 (管理・修繕・保険・固定資産税, 20%)
+    opex_rate: float = 0.20            # 経費率 (管理・修繕・保険・固定資産税, 20%) — 一棟用
+    residual_opex_rate: float = 0.08   # 保険+固定資産税+賃貸管理委託 (8%) — 区分用(管理費実額と併用)
 
     # Depreciation
     building_ratio: float = 0.60       # 建物比率 (取得価格の60% = 建物, 残40% = 土地)
@@ -157,6 +158,7 @@ def analyze(
     units_count: int = 0,
     area_sqm: Optional[float] = None,
     params: Optional[InvestmentParams] = None,
+    maintenance_fee_monthly: int = 0,
 ) -> RevenueAnalysis:
     """Calculate revenue and cash-flow metrics for a 一棟もの property.
 
@@ -193,7 +195,14 @@ def analyze(
     gross_income = price_man * yield_pct / 100
     vacancy_loss = gross_income * p.vacancy_rate
     effective_income = gross_income - vacancy_loss
-    opex = effective_income * p.opex_rate
+    if maintenance_fee_monthly > 0:
+        # 区分: 管理費+修繕実額 + 残余経費(保険+固都税+賃貸管理)
+        maint_annual = maintenance_fee_monthly * 12 / 10000  # 円→万円
+        residual = effective_income * p.residual_opex_rate
+        opex = maint_annual + residual
+    else:
+        # 一棟: ブランケット20%
+        opex = effective_income * p.opex_rate
     noi = effective_income - opex
     net_yield_pct = noi / price_man * 100
 

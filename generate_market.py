@@ -323,7 +323,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
     d["prop_type"] = "kubun"
     d["is_oc"] = _is_oc_row(row)
     fs = first_seen.get(row.url, "")
-    d["first_seen"] = fs
+    d["first_seen"] = fs[5:] if fs and len(fs) >= 10 else fs  # MM-DD only
     if fs:
         from datetime import datetime
         try:
@@ -478,7 +478,7 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
             is_new = age_days <= 7
         except Exception:
             pass
-    d["first_seen"] = fs_date
+    d["first_seen"] = fs_date[5:] if fs_date and len(fs_date) >= 10 else fs_date  # MM-DD only
     d["is_new"] = is_new
 
     # Clean station text (remove route names)

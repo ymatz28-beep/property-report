@@ -508,7 +508,7 @@ def _revenue_block_html(r: IttomonoRow) -> str:
         <span class="rv-title">収益シミュレーション</span>
         <span class="rv-verdict {vclass}">{rev.verdict}</span>
       </div>
-      <div class="rv-assumptions">前提: 頭金{p.down_payment_ratio*100:.0f}% / 金利{p.loan_rate_annual*100:.1f}% / {rev.loan_years}年ローン / 空室率{p.vacancy_rate*100:.0f}% / 経費率{p.opex_rate*100:.0f}%</div>
+      <div class="rv-assumptions">前提: 頭金{p.down_payment_ratio*100:.0f}% + 諸費用{p.acquisition_cost_rate*100:.0f}% / 金利{p.loan_rate_annual*100:.1f}% / {rev.loan_years}年ローン / 空室率{p.vacancy_rate*100:.0f}% / 経費率{p.opex_rate*100:.0f}%</div>
 
       <div class="rv-section">
         <div class="rv-section-title">収入 → キャッシュフロー</div>
@@ -517,6 +517,7 @@ def _revenue_block_html(r: IttomonoRow) -> str:
         <div class="rv-row rv-minus"><span class="rv-desc">運営経費（管理・修繕・保険・税）</span><span class="rv-note">{p.opex_rate*100:.0f}%</span><span class="rv-amount">-{_f(rev.opex)}</span></div>
         <div class="rv-row rv-subtotal"><span class="rv-desc">営業利益</span><span class="rv-note"></span><span class="rv-amount">{_f(rev.noi)}</span></div>
         <div class="rv-row rv-minus"><span class="rv-desc">ローン返済</span><span class="rv-note">借入{_f(rev.loan_amount)} / {rev.loan_years}年</span><span class="rv-amount">-{_f(rev.annual_debt_service)}</span></div>
+        <div class="rv-row rv-info"><span class="rv-desc">初期必要資金</span><span class="rv-note">頭金{_f(rev.down_payment)} + 諸費用{_f(rev.acquisition_cost)}</span><span class="rv-amount">{_f(rev.total_equity)}</span></div>
         <div class="rv-row rv-total"><span class="rv-desc">年間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:{cf_color}">{cf_sign}{_f(rev.annual_cf)}</span></div>
         <div class="rv-row rv-highlight"><span class="rv-desc">月間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:{cf_color}">{cf_sign}{rev.monthly_cf:,.1f}万/月</span></div>
       </div>
@@ -1032,6 +1033,10 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
     }}
     .rv-total .rv-desc {{ font-weight: 700; }}
     .rv-total .rv-amount {{ font-size: 14px; }}
+    .rv-info {{ border-top: 1px dashed var(--border); padding-top: 4px; margin-top: 2px; }}
+    .rv-info .rv-desc {{ color: var(--text-secondary); font-size: 11px; }}
+    .rv-info .rv-amount {{ color: var(--text-secondary); font-size: 11px; }}
+    .rv-info .rv-note {{ font-size: 10px; }}
     .rv-highlight {{ padding: 4px 0; }}
     .rv-highlight .rv-desc {{ font-weight: 600; color: var(--accent); }}
     .rv-highlight .rv-amount {{ font-size: 14px; }}

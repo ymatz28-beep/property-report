@@ -40,6 +40,9 @@ class InvestmentParams:
     # Tax
     tax_rate: float = 0.30             # 所得税+住民税合算 (30%)
 
+    # Acquisition costs (初期費用: 仲介手数料+登録免許税+不動産取得税+印紙税+司法書士費用)
+    acquisition_cost_rate: float = 0.07  # 購入価格の7%
+
 
 # Module-level defaults — used when params=None
 DEFAULT_PARAMS = InvestmentParams()
@@ -85,6 +88,10 @@ class RevenueAnalysis:
     loan_amount: float = 0.0           # 借入額 (万円)
     loan_years: int = 0                # 実際のローン期間 (年)
     annual_debt_service: float = 0.0   # 年間ローン返済 (万円)
+
+    # --- Acquisition Costs ---
+    acquisition_cost: float = 0.0      # 取得諸費用 (万円) = 仲介+登記+取得税+印紙+司法書士
+    total_equity: float = 0.0          # 初期必要資金 (万円) = 頭金 + 取得諸費用
 
     # --- Cash Flow ---
     annual_cf: float = 0.0             # 年間CF (万円) = NOI - ADS
@@ -226,10 +233,14 @@ def analyze(
         loan_years = max(15, min(35, raw_term))
 
     down_payment = price_man * p.down_payment_ratio
+    acquisition_cost = price_man * p.acquisition_cost_rate
+    total_equity = down_payment + acquisition_cost
     loan_amount = price_man * (1 - p.down_payment_ratio)
     annual_debt_service = _pmt(p.loan_rate_annual, loan_years, loan_amount)
 
     result.down_payment = round(down_payment, 2)
+    result.acquisition_cost = round(acquisition_cost, 2)
+    result.total_equity = round(total_equity, 2)
     result.loan_amount = round(loan_amount, 2)
     result.loan_years = loan_years
     result.annual_debt_service = round(annual_debt_service, 2)
@@ -237,8 +248,8 @@ def analyze(
     # ---- Cash Flow ----
     annual_cf = noi - annual_debt_service
     monthly_cf = annual_cf / 12
-    ccr_pct = (annual_cf / down_payment * 100) if down_payment > 0 else 0.0
-    payback_years = (down_payment / annual_cf) if annual_cf > 0 else float("inf")
+    ccr_pct = (annual_cf / total_equity * 100) if total_equity > 0 else 0.0
+    payback_years = (total_equity / annual_cf) if annual_cf > 0 else float("inf")
 
     result.annual_cf = round(annual_cf, 2)
     result.monthly_cf = round(monthly_cf, 2)
@@ -310,9 +321,11 @@ def print_analysis(r: RevenueAnalysis) -> None:
         print(f"  敷地面積     : {r.area_sqm}㎡")
 
     print()
-    print(f"  【ローン条件】 頭金{p.down_payment_ratio*100:.0f}% / {p.loan_rate_annual*100:.1f}% / {r.loan_years}年")
+    print(f"  【初期費用・ローン条件】 頭金{p.down_payment_ratio*100:.0f}% / 諸費用{p.acquisition_cost_rate*100:.0f}% / {p.loan_rate_annual*100:.1f}% / {r.loan_years}年")
     print(sep)
     print(f"  頭金         : {_fmt(r.down_payment)}")
+    print(f"  取得諸費用   : {_fmt(r.acquisition_cost)}  (登記+取得税+仲介+印紙+司法書士)")
+    print(f"  初期必要資金 : {_fmt(r.total_equity)}  ← 自己資金として必要")
     print(f"  借入額       : {_fmt(r.loan_amount)}")
     print(f"  年間返済     : {_fmt(r.annual_debt_service)}")
 

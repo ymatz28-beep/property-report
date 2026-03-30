@@ -12,9 +12,14 @@
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 6.5% (11/169件)。パイプライン変換バグの可能性。例: 4480.0万円/45.62㎡; 18880.0万円/271.58㎡; 4780.0万円/64.15㎡; 2580.0万円/46.86㎡; 17304.0万円/314.59㎡
 
 ## Last Updated
-2026-03-29
+2026-03-30
 
 <!-- [Constancy] 2026-03-28: WARN hardcoded_data(91行inline) / structural_reform(4ファイル500行超) / html_ui(hamburger未実装) / timestamp_format(HH:MM欠落) / property_patrol_steps(管理費タイムアウト=設計仕様) / ERROR git_uncommitted(15files, 95h) -->
+
+## Completed (取得諸費用計上 + 掲載日クリーンアップ + 福岡格安デバッグ 2026-03-30)
+- **Before**: revenue_calc.pyが取得諸費用（登記+取得税+仲介+印紙+司法書士）を未計上。CCR・回収年数の分母が頭金のみ。first_seen.jsonに不正確なバックフィル日付（2/22, 2/23, 2/26, 3/1）が1,644件混入。福岡格安区分が一時的に25件→12件に減少
+- **After**: revenue_calc.pyに取得諸費用7%を追加、CCR・回収年数の分母を「頭金+諸費用」に修正。market.htmlテンプレートを「初期必要資金（頭金+諸費用）」表示に変更。不正確な掲載日1,644件を除去。福岡格安は`_load_budget`自体が25件正常出力を確認（別セッションの一時的影響）→再生成で福岡: 区分68+一棟15+戸建10+格安25、QA 7 PASS/1 WARN/0 FAIL
+- **Commits**: なし（コミット情報はトランスクリプトに記載なし）
 
 ## Completed (kaizen Visual Regression チェック追加 2026-03-29 x-ref)
 - **Before**: HTMLレポートのレイアウト崩れ（モバイル水平オーバーフロー、JS errors、空白ページ等）を検知する仕組みがなく、目視頼み。CSSや構造変更でUIが壊れても気づけなかった
@@ -176,6 +181,7 @@
 - GitHub Pages: report-dashboard(gh-pages) / property-report(gh-pages) / trip-planner(main)
 
 ## History（最新20件）
+- 2026-03-30: Before: 取得諸費用未計上+掲載日1,644件不正確+福岡格安12件に減少 → After: 諸費用7%追加+日付除去+格安25件正常確認(別セッション影響)
 - 2026-03-29 x-ref: Before: UIレイアウト崩れ検知なし(目視頼み) → After: Playwright visual regression追加、偽陽性7→3件に修正(kaizen `208f292`)
 - 2026-03-28: Before: ふれんず物件名が住所表示+管理費合算+㎡単価冗長 → After: 詳細ページから正式名称取得+管理費分離(60件)+万円表示(`c7e06f7`,`6f2ae0b`)
 - 2026-03-28: Before: main push≠デプロイで毎回ライブ反映漏れ → After: deploy-on-push.yml追加で自動デプロイ恒久化(`056b90b`)
@@ -195,5 +201,4 @@
 - 2026-03-24: Before: タイムアウト部分失敗が5日間放置 → After: retry_failed_searches()+失敗メタデータ構造化(reason/stderr_tail)
 - 2026-03-24 x-ref: Before: patrol false positive 33件 → After: nav_python_files SSoT移行反映で偽陽性解消
 - 2026-03-23: Before: ittomono.html未更新(3/22のまま)+gnav二重表示 → After: 再デプロイ(`49c39fc`)+gnav解消+モバイルQA
-- 2026-03-23: Before: 内覧分析にCFシミュレーションなし → After: 収益ウォーターフォール統合(CF/減価償却/節税/verdict)
 <!-- 20件制限: 2026-03-23以前はarchive参照 -->

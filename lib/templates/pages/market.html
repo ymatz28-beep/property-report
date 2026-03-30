@@ -155,11 +155,15 @@
 .prop-table a { color: var(--accent); text-decoration: none; }
 .prop-table a:hover { text-decoration: underline; }
 
-/* Compact date & station columns for dense tables */
+/* Compact columns for dense tables (kubun + budget only) */
 [data-type="budget"] .date-cell,
 [data-type="kubun"] .date-cell { max-width: 52px; overflow: hidden; text-overflow: ellipsis; font-size: 10px; padding: 6px 4px; }
 [data-type="budget"] .station-cell,
-[data-type="kubun"] .station-cell { max-width: 100px; white-space: normal; word-break: break-all; line-height: 1.3; padding: 6px 4px; }
+[data-type="kubun"] .station-cell { max-width: 130px; white-space: normal; word-break: break-all; line-height: 1.3; padding: 6px 4px; }
+[data-type="budget"] .name-cell,
+[data-type="kubun"] .name-cell { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+[data-type="budget"] .layout-cell,
+[data-type="kubun"] .layout-cell { max-width: 48px; text-align: center; padding: 6px 2px; }
 
 /* Hero — compact inline bar */
 .hero {
@@ -349,11 +353,11 @@
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
-              <td>{{ prop.layout or "—" }}</td>
+              <td class="layout-cell">{{ prop.layout or "—" }}</td>
               <td>{{ prop.structure or "—" }}</td>
               <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td>{{ prop.pet_status or "—" }}</td>
-              <td class="price-cell" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}{% if prop.rent_per_sqm %} {{ prop.rent_per_sqm }}円/㎡{% endif %}</span>{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}</span>{% else %}—{% endif %}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
               <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
@@ -533,7 +537,7 @@
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
-              <td>{{ prop.layout or "—" }}</td>
+              <td class="layout-cell">{{ prop.layout or "—" }}</td>
               <td>{{ prop.structure or "—" }}</td>
               <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}—{% endif %}</td>

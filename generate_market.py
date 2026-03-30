@@ -89,6 +89,7 @@ _OC_KEYWORDS = [
 TIER_GREEN = 80
 TIER_YELLOW = 65
 MAX_YELLOW_FILL = 20
+MAX_KUBUN_ITEMS = 25
 
 # Budget tier: CF-focused investment (SEARCH_CRITERIA: 40㎡以上, 上位のみ)
 BUDGET_TIER_MIN = 60
@@ -168,7 +169,7 @@ def _load_kubun(cfg: dict) -> list[PropertyRow]:
         slots = MAX_YELLOW_FILL - len(green)
         rows = green + yellow[:slots]
 
-    return rows
+    return rows[:MAX_KUBUN_ITEMS]
 
 
 def _load_budget(city_key: str) -> list[PropertyRow]:

@@ -251,8 +251,31 @@ _ESTIMATED_RENT_PER_SQM: dict[str, int] = {
 }
 
 
-def _get_rent_per_sqm(city_key: str, location: str) -> tuple[int, str]:
-    """Get rent per sqm (円/㎡) and ward name from city + location.
+def _age_discount(built_year: int | None) -> float:
+    """Rent discount factor for building age.
+
+    Market data averages skew toward newer properties.
+    Older buildings command lower rents — apply conservative discount.
+    """
+    if not built_year:
+        return 0.80  # Unknown age → conservative
+    age = CURRENT_YEAR - built_year
+    if age <= 10:
+        return 1.00
+    if age <= 20:
+        return 0.92
+    if age <= 30:
+        return 0.82
+    if age <= 40:
+        return 0.72
+    return 0.65  # 40年超
+
+
+CURRENT_YEAR = 2026  # for age calculation
+
+
+def _get_rent_per_sqm(city_key: str, location: str, built_year: int | None = None) -> tuple[int, str]:
+    """Get age-adjusted rent per sqm (円/㎡) and ward name.
 
     Returns (rent_per_sqm, ward_name). ward_name is "" if city fallback used.
     """
@@ -261,9 +284,12 @@ def _get_rent_per_sqm(city_key: str, location: str) -> tuple[int, str]:
     ward = ward_match.group(1) if ward_match else ""
     ward_data = _RENT_PER_SQM_BY_WARD.get(city_key, {})
     if ward and ward in ward_data:
-        return ward_data[ward], ward
-    # Fallback to city average
-    return _ESTIMATED_RENT_PER_SQM.get(city_key, 2800), ""
+        base = ward_data[ward]
+    else:
+        base = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
+        ward = ""
+    adjusted = int(base * _age_discount(built_year))
+    return adjusted, ward
 
 
 def _is_oc_row(row: PropertyRow) -> bool:
@@ -326,29 +352,49 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
         d["maintenance_fee_text"] = ""
 
     # Revenue analysis for kubun
-    # OC properties: use actual rent from conditions field
-    # Non-OC: estimate from market rent per sqm
+    # Always compute market rent (age-adjusted ward-level estimate).
+    # For OC: also extract actual rent. Display both for comparison.
     d["revenue"] = None
-    d["est_monthly_rent"] = ""
-    d["rent_source"] = ""  # "実家賃" or "想定家賃"
+    d["est_monthly_rent"] = ""  # used for CF calculation (actual > market)
+    d["rent_source"] = ""
+    d["actual_rent"] = ""       # OC actual rent (blank for non-OC)
+    d["market_rent"] = ""       # ward-level age-adjusted estimate
+    d["market_rent_label"] = "" # e.g. "相場博多区"
+    d["rent_gap_pct"] = ""      # deviation: (actual - market) / market
+    d["rent_per_sqm"] = 0
     if row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
+        # Always compute market rent (age-adjusted)
+        mkt_per_sqm, ward = _get_rent_per_sqm(city_key, row.location, row.built_year)
+        mkt_monthly = mkt_per_sqm * row.area_sqm  # 円
+        mkt_annual = mkt_monthly * 12 / 10000  # 万円
+        d["rent_per_sqm"] = mkt_per_sqm
+        d["market_rent"] = f"{mkt_monthly / 10000:.1f}万" if mkt_monthly >= 10000 else f"{int(mkt_monthly):,}円"
+        d["market_rent_label"] = f"相場{ward}" if ward else "相場"
+
+        # OC: extract actual rent
         oc_annual_man, oc_yield = _extract_oc_rent(row) if d["is_oc"] else (0, 0)
         if oc_annual_man > 0:
-            # Use actual OC rent
-            monthly_rent = oc_annual_man * 10000 / 12  # 円
-            annual_rent = oc_annual_man  # 万円
+            actual_monthly = oc_annual_man * 10000 / 12  # 円
+            d["actual_rent"] = f"{actual_monthly / 10000:.1f}万" if actual_monthly >= 10000 else f"{int(actual_monthly):,}円"
+            # Deviation: how much actual differs from market
+            if mkt_monthly > 0:
+                gap = (actual_monthly - mkt_monthly) / mkt_monthly * 100
+                d["rent_gap_pct"] = f"{gap:+.0f}%"
+            # Use actual rent for CF (more reliable)
+            monthly_rent = actual_monthly
+            annual_rent = oc_annual_man
             est_yield = oc_yield if oc_yield > 0 else (annual_rent / row.price_man) * 100
             d["rent_source"] = "実家賃"
+            d["est_monthly_rent"] = d["actual_rent"]
         else:
-            # Estimate from ward-level market rent
-            rent_per_sqm, ward = _get_rent_per_sqm(city_key, row.location)
-            monthly_rent = rent_per_sqm * row.area_sqm  # 円
-            annual_rent = monthly_rent * 12 / 10000  # 万円
+            # Non-OC: use market estimate for CF
+            monthly_rent = mkt_monthly
+            annual_rent = mkt_annual
             est_yield = (annual_rent / row.price_man) * 100
-            d["rent_source"] = f"相場{ward}" if ward else "想定家賃"
-            d["rent_per_sqm"] = rent_per_sqm
+            d["rent_source"] = d["market_rent_label"]
+            d["est_monthly_rent"] = d["market_rent"]
+
         d["yield_text"] = f"{est_yield:.1f}%"
-        d["est_monthly_rent"] = f"{monthly_rent / 10000:.1f}万" if monthly_rent >= 10000 else f"{int(monthly_rent):,}円"
         structure_for_calc = row.structure or "RC造"
         try:
             ra = revenue_analyze(
@@ -378,7 +424,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
                 "annual_debt_service": round(ra.annual_debt_service, 1),
                 "est_monthly_rent": d["est_monthly_rent"],
                 "rent_source": d["rent_source"],
-                "rent_per_sqm": d.get("rent_per_sqm", 0),
+                "rent_per_sqm": mkt_per_sqm,
                 "structure_used": structure_for_calc,
             }
         except Exception:
@@ -440,12 +486,12 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
     else:
         d["price_per_sqm"] = "—"
 
-    # Estimated monthly rent (ward-level)
+    # Estimated monthly rent (ward-level, age-adjusted)
     d["est_monthly_rent"] = ""
     d["rent_source"] = "想定家賃"
     area = row.area_sqm or 0
     if row.price_man and row.price_man > 0 and area > 0:
-        rent_per_sqm, ward = _get_rent_per_sqm(city_key, row.location)
+        rent_per_sqm, ward = _get_rent_per_sqm(city_key, row.location, row.built_year)
         monthly_rent = rent_per_sqm * area
         d["est_monthly_rent"] = f"{monthly_rent / 10000:.1f}万" if monthly_rent >= 10000 else f"{int(monthly_rent):,}円"
         d["rent_source"] = f"相場{ward}" if ward else "想定家賃"
@@ -456,7 +502,7 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
     if (not yield_pct or yield_pct <= 0) and row.price_man and row.price_man > 0:
         units = row.units_count or 1
         if area > 0:
-            rent_per_sqm, _ = _get_rent_per_sqm(city_key, row.location)
+            rent_per_sqm, _ = _get_rent_per_sqm(city_key, row.location, row.built_year)
             annual_rent = rent_per_sqm * area * 12 / 10000  # 万円
             yield_pct = (annual_rent / row.price_man) * 100
             d["yield_text"] = f"≈{yield_pct:.1f}%"

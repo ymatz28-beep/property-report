@@ -348,10 +348,10 @@
           </thead>
           <tbody>
             {% for prop in city.profitable.properties %}
-            <tr class="prop-row" onclick="toggleDetail(this)" style="cursor:pointer"
+            <tr data-expandable onclick="toggleDetail(this)"
                 data-score="{{ prop.total_score|default(0) }}" data-price="{{ prop.price_man|default(0) }}">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:{% if prop._type_label == '一棟' %}rgba(168,85,247,0.15);color:#a855f7{% elif prop._type_label == '戸建' %}rgba(245,158,11,0.15);color:#f59e0b{% else %}rgba(99,102,241,0.15);color:var(--accent){% endif %}">{{ prop._type_label }}</span></td>
-              <td><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">{{ prop.name or "—" }}</a></td>
+              <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">{{ prop.name or "—" }}</a></td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}</td>
               <td>{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
               <td style="font-size:11px">{% if prop.built_year %}{{ prop.built_year }}年<span style="opacity:0.6">(築{{ 2026 - prop.built_year }})</span>{% else %}—{% endif %}</td>

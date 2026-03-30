@@ -519,7 +519,7 @@
               <td>{{ prop.structure or "—" }}</td>
               <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}—{% endif %}</td>
-              <td class="price-cell">{% if prop.est_monthly_rent %}<span style="font-size:10px;color:var(--text-muted)">{{ prop.rent_source }}</span> {{ prop.est_monthly_rent }}{% else %}—{% endif %}</td>
+              <td class="price-cell" style="white-space:nowrap">{% if prop.est_monthly_rent %}{{ prop.est_monthly_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.rent_source }}</span>{% else %}—{% endif %}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
               <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>

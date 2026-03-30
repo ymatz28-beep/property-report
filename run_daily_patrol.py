@@ -80,7 +80,7 @@ STEP_LABELS = {
     "first_seen": ("初回検出日記録", "新規物件の初回検出日が未記録"),
     "url_check": ("掲載終了チェック", "売却済み物件の検出が未実行"),
     "pipeline_flag": ("自動フラグ付与", "高スコア物件の自動フラグが未実行"),
-    "pipeline_sync": ("Agent Memory同期", "問い合わせ状況の同期が未実行"),
+    "pipeline_lifecycle": ("パイプラインライフサイクル", "掲載終了・価格変動・ステータス同期"),
     "pipeline_dashboard": ("問い合わせダッシュボード", "問い合わせ管理画面が未更新"),
     "naiken_analysis": ("内覧分析レポート", "内覧比較レポートが未更新"),
     "deploy": ("デプロイ", "レポートが公開されていない"),
@@ -795,9 +795,9 @@ def main():
         errors.append(f"generate_reports: {e}")
         log(f"  ❌ レポート生成全体エラー: {e} — デプロイは試行")
 
-    # 5.5. Auto-flag for inquiry pipeline (non-critical)
+    # 5.5. Pipeline lifecycle: auto-flag + sweep stale + price tracking + agent sync
     try:
-        from property_pipeline import auto_flag, generate_dashboard, generate_naiken_analysis, sync_from_agent_memory
+        from property_pipeline import auto_flag, generate_dashboard, generate_naiken_analysis, lifecycle
         auto_flag()
         all_steps.append({"step": "pipeline_flag", "ok": True})
         log("  Pipeline auto-flag 完了")
@@ -806,15 +806,15 @@ def main():
                           "stderr_tail": str(e)})
         log(f"  ⚠️ Pipeline auto-flag skipped: {e}")
 
-    # 5.6. Sync from agent memory (inbox-zero → inquiries.yaml)
+    # 5.6. Lifecycle management (sweep stale + price tracking + agent memory sync)
     try:
-        count = sync_from_agent_memory()
-        all_steps.append({"step": "pipeline_sync", "ok": True})
-        log(f"  Pipeline sync完了 ({count} updates)")
+        lc_result = lifecycle()
+        all_steps.append({"step": "pipeline_lifecycle", "ok": True})
+        log(f"  Pipeline lifecycle完了: {lc_result}")
     except Exception as e:
-        all_steps.append({"step": "pipeline_sync", "ok": False, "reason": "crash",
+        all_steps.append({"step": "pipeline_lifecycle", "ok": False, "reason": "crash",
                           "stderr_tail": str(e)})
-        log(f"  ⚠️ Pipeline sync skipped: {e}")
+        log(f"  ⚠️ Pipeline lifecycle skipped: {e}")
 
     # 5.7. Regenerate dashboard (after flag + sync)
     try:

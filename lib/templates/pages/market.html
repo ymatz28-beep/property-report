@@ -132,7 +132,7 @@
 
 /* Property grid */
 .property-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;
 }
 
 /* List view */
@@ -160,7 +160,7 @@
 [data-type="budget"] .date-cell,
 [data-type="kubun"] .date-cell { max-width: 58px; white-space: normal; word-break: break-all; line-height: 1.3; font-size: 10px; padding: 6px 4px; }
 [data-type="budget"] .station-cell,
-[data-type="kubun"] .station-cell { max-width: 150px; white-space: normal; word-break: break-all; line-height: 1.3; padding: 6px 4px; }
+[data-type="kubun"] .station-cell { max-width: 180px; white-space: normal; word-break: break-all; line-height: 1.3; padding: 6px 4px; }
 [data-type="budget"] .name-cell,
 [data-type="kubun"] .name-cell { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
 [data-type="budget"] .layout-cell,
@@ -219,11 +219,12 @@
   .market-controls { flex-direction: column; align-items: stretch; }
   .market-controls-sticky { margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
   .city-tabs { gap: 2px; }
-  .city-tab { padding: 6px 12px; font-size: 12px; }
+  .city-tab { padding: 8px 14px; font-size: 12px; }
   .type-jump { justify-content: flex-start; }
-  .type-jump-btn { font-size: 11px; padding: 4px 10px; }
-  .prop-table { font-size: 11px; }
+  .type-jump-btn { font-size: 11px; padding: 6px 12px; }
+  .prop-table { font-size: 12px; }
   .prop-table th, .prop-table td { padding: 6px 6px; }
+  .detail-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px 12px; }
   .type-section[id] { scroll-margin-top: calc(var(--gnav-height, 52px) + 36px + 40px + 120px); }
 }
 {% endblock %}
@@ -338,32 +339,58 @@
         <span class="type-count" style="background:rgba(34,197,94,0.2);color:var(--green)">{{ city.profitable.count }}</span>
         <span style="font-size:11px;color:var(--text-muted);margin-left:8px">CF > 0 / CCR↓順 / 種別横断</span>
       </div>
+      <div class="kubun-legend" style="background:var(--bg);border-bottom:1px solid rgba(34,197,94,0.15);padding:8px 12px;font-size:11px;color:var(--text-muted);line-height:1.7;margin-bottom:4px">
+        <div style="display:flex;flex-wrap:wrap;gap:4px 18px">
+          <span><b style="color:var(--text)">NOI</b> = 賃料×(1-空室7%)-(管理費実額+残余経費8%)</span>
+          <span><b style="color:var(--text)">CF/月</b> = (NOI - 年間返済) ÷ 12</span>
+          <span><b style="color:var(--text)">CCR</b> = 年間CF ÷ 初期資金 × 100</span>
+          <span><b style="color:var(--text)">初期資金</b> = 頭金20% + 諸費用7%</span>
+          <span><b style="color:var(--text)">諸費用</b> = 仲介3%+登記2%+取得税+印紙+司法書士</span>
+          <span><b style="color:var(--text)">ローン</b> = 60−築年数（フロア20年・澤畠さん筑波銀行）/ ストレス=基準−5年</span>
+          <span><b style="color:var(--text)">相場{区名}</b> = 区別㎡単価×面積（築年齢割引適用・SUUMO/アットホーム2025年データ）</span>
+        </div>
+      </div>
       <div class="property-list active" data-view="list">
-        <table class="prop-table" data-type="profitable">
+        <table class="prop-table" data-type="profitable" style="table-layout:fixed">
+          <colgroup>
+            <col style="width:42px"><!-- 種別 -->
+            <col style="width:68px"><!-- 物件名 -->
+            <col style="width:54px"><!-- 価格 -->
+            <col style="width:38px"><!-- 面積 -->
+            <col style="width:54px"><!-- 築年 -->
+            <col style="width:64px"><!-- 最寄駅 -->
+            <col style="width:24px"><!-- OC -->
+            <col style="width:56px"><!-- 実家賃 -->
+            <col style="width:56px"><!-- 相場家賃 -->
+            <col style="width:48px"><!-- CF -->
+            <col style="width:48px"><!-- 手出し -->
+            <col style="width:42px"><!-- CCR -->
+          </colgroup>
           <thead>
             <tr>
               <th>種別</th><th>物件名</th><th>価格</th><th>面積</th><th>築年</th><th>最寄駅</th>
-              <th>OC</th><th>家賃</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th>
+              <th>OC</th><th>実家賃</th><th>相場家賃</th><th>CF/月</th><th>手出し</th><th>CCR</th>
             </tr>
           </thead>
           <tbody>
             {% for prop in city.profitable.properties %}
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="{{ prop.total_score|default(0) }}" data-price="{{ prop.price_man|default(0) }}">
-              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:{% if prop._type_label == '一棟' %}rgba(168,85,247,0.15);color:#a855f7{% elif prop._type_label == '戸建' %}rgba(245,158,11,0.15);color:#f59e0b{% else %}rgba(99,102,241,0.15);color:var(--accent){% endif %}">{{ prop._type_label }}</span></td>
-              <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none">{{ prop.name or "—" }}</a></td>
+              <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:{% if prop._type_label == '一棟' %}rgba(168,85,247,0.15);color:#a855f7{% elif prop._type_label == '戸建' %}rgba(245,158,11,0.15);color:#f59e0b{% elif prop._type_label == '利回り区分' %}rgba(34,197,94,0.15);color:var(--green){% else %}rgba(99,102,241,0.15);color:var(--accent){% endif %}">{{ prop._type_label }}</span></td>
+              <td class="name-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3"><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="{{ prop.name }}">{{ prop.name or "—" }}</a></td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}</td>
               <td>{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
-              <td style="font-size:11px">{% if prop.built_year %}{{ prop.built_year }}年<span style="opacity:0.6">(築{{ 2026 - prop.built_year }})</span>{% else %}—{% endif %}</td>
-              <td class="station-cell">{{ prop.station_text|default("—") }}</td>
+              <td style="font-size:11px">{% if prop.built_year %}{{ prop.built_year }}<span style="opacity:0.6">({{ 2026 - prop.built_year }})</span>{% else %}—{% endif %}</td>
+              <td class="station-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3" title="{{ prop.station_text|default('') }}">{{ prop.station_text|default("—") }}</td>
               <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}<span style="font-size:10px;color:var(--text-muted)">空</span>{% endif %}</td>
-              <td class="price-cell" style="white-space:nowrap">{{ prop.revenue.est_monthly_rent or "—" }}{% if prop.rent_source %}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.rent_source }}</span>{% elif prop.revenue.rent_source %}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.revenue.rent_source }}</span>{% endif %}</td>
+              <td class="price-cell" style="white-space:nowrap">{% if prop.actual_rent %}{{ prop.actual_rent }}{% if prop.rent_gap_pct %}<br><span style="font-size:9px;color:{% if '-' in prop.rent_gap_pct %}var(--red){% else %}var(--green){% endif %}">{{ prop.rent_gap_pct }}</span>{% endif %}{% else %}—{% endif %}</td>
+              <td class="price-cell" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}</span>{% else %}—{% endif %}</td>
               <td class="price-cell" style="color:var(--green);font-weight:600">{{ prop.revenue.after_tax_monthly_cf }}万</td>
               <td class="price-cell" style="white-space:nowrap">{{ prop.revenue.total_equity }}万</td>
               <td style="font-weight:600">{{ prop.revenue.ccr }}%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="11">
+              <td colspan="12">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">{{ prop.structure|default(prop.revenue.structure_used|default("—")) }}</span></div>
                   <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">{{ prop.yield_text|default("—") }}</span></div>
@@ -375,6 +402,11 @@
                   <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">{{ prop.revenue.annual_debt_service }}万</span></div>
                   <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if prop.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.monthly_cf }}万</span></div>
                   <div class="detail-item"><span class="detail-label">回収年</span><span class="detail-value">{% if prop.revenue.payback_years %}{{ prop.revenue.payback_years }}年{% else %}∞{% endif %}</span></div>
+                  {% if prop.revenue.cash_cf is defined and prop.revenue.cash_cf is not none %}
+                  <div class="detail-item" style="border-left:2px solid var(--green);padding-left:8px"><span class="detail-label">現金CF/月</span><span class="detail-value" style="color:var(--green);font-weight:700">{{ prop.revenue.cash_cf }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">現金手出し</span><span class="detail-value">{{ prop.revenue.cash_equity }}万</span></div>
+                  <div class="detail-item"><span class="detail-label">現金CCR</span><span class="detail-value" style="font-weight:700">{{ prop.revenue.cash_ccr }}%</span></div>
+                  {% endif %}
                 </div>
               </td>
             </tr>

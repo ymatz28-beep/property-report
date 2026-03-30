@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>問い合わせメッセージ — Property</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     
 /* ── Shared Gnav ── */
@@ -60,45 +60,106 @@
 .gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
 @media(max-width:640px){.gnav a{padding:10px 10px;font-size:10px;min-height:44px;display:inline-flex;align-items:center}}
 
-    :root { --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; --green:#34d399; --red:#f87171; --yellow:#eab308; }
+    :root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #242836;
+  --card: #1a1d27;
+  --card-hover: #242836;
+  --border: #2d3348;
+  --border-light: #3d4460;
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.12);
+  --accent: #6366f1;
+  --accent2: #8b5cf6;
+  --blue: #3b82f6;
+  --purple: #6366f1;
+  --orange: #ff6b35;
+  --green: #22c55e;
+  --green-light: #4ade80;
+  --red: #ef4444;
+  --red-light: #f87171;
+  --yellow: #eab308;
+  --text: #e4e4e7;
+  --text-secondary: #9ca3af;
+  --text-muted: #7c8293;
+  --text-decorative: #5f6678;
+  --font-display: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --bp-mobile: 640px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1200px;
+  --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
+  --gnav-height: 52px;
+  --z-nav: 100;
+  --z-subnav: 90;
+  --z-modal: 200;
+  --z-toast: 300;
+  --fs-display: clamp(22px, 4vw, 36px);
+  --fs-h1: clamp(20px, 2.5vw, 26px);
+  --fs-h2: clamp(16px, 2vw, 22px);
+  --fs-h3: clamp(14px, 1.8vw, 18px);
+  --fs-body: 14px;
+  --fs-small: 12px;
+  --fs-xs: 10px;
+}
     * { box-sizing:border-box; margin:0; }
-    body { font-family:'Inter','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+    body { font-family:var(--font-body); background:var(--bg); color:var(--text); min-height:100vh; }
     .wrap { max-width:900px; margin:0 auto; padding:24px 16px 80px; }
-    h1 { font-size:28px; font-weight:900; margin:24px 0 4px; }
-    .subtitle { color:var(--muted); font-size:13px; margin-bottom:32px; }
-    .city-section { margin-bottom:40px; }
-    .city-title { font-size:20px; font-weight:800; margin-bottom:16px; padding-left:14px; border-left:4px solid; }
-    .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:16px; transition:border-color .2s; }
-    .card:hover { border-color:var(--card-accent, var(--line)); }
+    h1 { font-size:var(--fs-h1); font-weight:700; margin:24px 0 4px; }
+    .subtitle { color:var(--text-muted); font-size:13px; margin-bottom:32px; }
+    .city-section { margin-bottom:40px; scroll-margin-top:calc(var(--gnav-height, 52px) + 36px + 44px); }
+    .city-title { font-size:var(--fs-h2); font-weight:700; margin-bottom:16px; padding-left:14px; border-left:4px solid; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:16px; transition:border-color .2s; }
+    .card:hover { border-color:var(--card-accent, var(--border)); }
     .card-header { display:flex; align-items:flex-start; gap:12px; margin-bottom:10px; }
-    .card-rank { font-size:14px; font-weight:800; color:var(--muted); min-width:28px; padding-top:2px; }
+    .card-rank { font-size:14px; font-weight:800; color:var(--text-muted); min-width:28px; padding-top:2px; }
     .card-info { flex:1; }
     .card-name { font-size:16px; font-weight:800; line-height:1.3; color:var(--text); text-decoration:none; display:block; transition:color .2s; }
-    .card-name:hover { color:var(--card-accent, #3b9eff); }
-    .card-meta { font-size:13px; color:var(--muted); margin-top:2px; }
-    .card-score { font-size:12px; color:var(--muted); margin-top:2px; }
+    .card-name:hover { color:var(--card-accent, var(--accent, #6366f1)); }
+    .card-meta { font-size:13px; color:var(--text-muted); margin-top:2px; }
+    .card-score { font-size:12px; color:var(--text-muted); margin-top:2px; }
     .card-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
     .tag { display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; }
     .tag-red { background:rgba(248,113,113,.12); color:var(--red); border:1px solid rgba(248,113,113,.25); }
     .tag-green { background:rgba(52,211,153,.12); color:var(--green); border:1px solid rgba(52,211,153,.25); }
     .tag-yellow { background:rgba(250,204,21,.12); color:var(--yellow); border:1px solid rgba(250,204,21,.25); }
-    .tag-muted { background:rgba(169,179,198,.08); color:var(--muted); border:1px solid rgba(169,179,198,.15); }
+    .tag-muted { background:rgba(169,179,198,.08); color:var(--text-muted); border:1px solid rgba(169,179,198,.15); }
     .msg-container { position:relative; }
-    .msg-text { background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:16px; font-family:'Noto Sans JP',sans-serif; font-size:13px; line-height:1.8; white-space:pre-wrap; word-wrap:break-word; color:#ddd; max-height:300px; overflow-y:auto; }
+    .msg-text { background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:16px; font-family:var(--font-body); font-size:13px; line-height:1.8; white-space:pre-wrap; word-wrap:break-word; color:#ddd; max-height:300px; overflow-y:auto; }
     .copy-btn { position:absolute; top:8px; right:8px; padding:6px 16px; border-radius:8px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:#fff; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s; }
     .copy-btn:hover { background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.3); }
     .copy-btn.copied { background:rgba(52,211,153,.2); border-color:rgba(52,211,153,.5); color:var(--green); }
     .nav { margin-top:40px; text-align:center; }
-    .nav a { display:inline-block; padding:10px 24px; border-radius:999px; border:1px solid var(--line); color:var(--text); margin:4px; font-size:13px; text-decoration:none; }
-    .nav a:hover { border-color:#3b9eff; background:rgba(59,158,255,.06); }
-    .city-jump { display:flex; gap:10px; margin-bottom:32px; position:sticky; top:40px; z-index:100; background:var(--bg); padding:12px 0; border-bottom:1px solid var(--line); }
-    .jump-btn { flex:1; text-align:center; padding:10px 16px; border-radius:10px; border:1px solid var(--line); color:var(--text); font-size:14px; font-weight:700; text-decoration:none; transition:all .2s; }
-    .jump-btn:hover { border-color:var(--jc); background:rgba(255,255,255,.04); color:var(--jc); }
-    .city-section { scroll-margin-top:120px; }
+    .nav a { display:inline-block; padding:10px 24px; border-radius:999px; border:1px solid var(--border); color:var(--text); margin:4px; font-size:13px; text-decoration:none; }
+    .nav a:hover { border-color:var(--accent, #6366f1); background:rgba(99,102,241,.06); }
+    .section-nav { position:sticky; top:calc(var(--gnav-height, 52px) + 36px); z-index:var(--z-subnav, 90); background:rgba(10,12,18,.94); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid rgba(255,255,255,.06); margin:0 -16px; padding:0 16px; }
+    .section-nav-inner { display:flex; gap:0; overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .section-nav-inner::-webkit-scrollbar { display:none; }
+    .nav-tab { display:inline-flex; align-items:center; gap:4px; padding:10px 16px; font-size:12px; font-weight:600; color:rgba(255,255,255,.45); text-decoration:none; border-bottom:2px solid transparent; transition:color .2s, border-color .2s; cursor:pointer; }
+    .nav-tab:hover { color:rgba(255,255,255,.8); }
+    .nav-tab.active { color:#fff; border-bottom-color:var(--accent, #6366f1); }
+    .tab-count { font-size:10px; color:rgba(255,255,255,.3); font-family:var(--font-mono); }
+    .nav-tab.active .tab-count { color:rgba(255,255,255,.6); }
     @media(max-width:640px) {
       .card-header { flex-wrap:wrap; }
-      .city-jump { flex-wrap:wrap; }
-      .jump-btn { flex:none; width:calc(50% - 5px); font-size:13px; }
+      .nav-tab { padding:10px 12px; font-size:11px; }
     }
   </style>
 </head>
@@ -115,11 +176,11 @@
 <div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="market.html">Market</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html" class="cur">問い合わせ</a><a href="inquiry-pipeline.html">Pipeline</a></div></div>
 <div class="wrap">
   <h1>問い合わせメッセージ</h1>
-  <p class="subtitle">生成日: 2026-03-30 07:08 — スコア上位10件/都市 — 合計30件 — コピーして各サイトのフォームに貼り付け</p>
+  <p class="subtitle">生成日: 2026-03-31 03:21 — スコア上位10件/都市 — 合計30件 — コピーして各サイトのフォームに貼り付け</p>
 
-  <div class="city-jump">
-    <a href="#city-osaka" class="jump-btn" style="--jc:#3b9eff">大阪（10件）</a><a href="#city-fukuoka" class="jump-btn" style="--jc:#34d399">福岡（10件）</a><a href="#city-tokyo" class="jump-btn" style="--jc:#a78bfa">東京（10件）</a>
-  </div>
+  <div class="section-nav"><div class="section-nav-inner">
+    <a href="#city-osaka" class="nav-tab">大阪 <span class="tab-count">10</span></a><a href="#city-fukuoka" class="nav-tab">福岡 <span class="tab-count">10</span></a><a href="#city-tokyo" class="nav-tab">東京 <span class="tab-count">10</span></a>
+  </div></div>
 
   
         <div class="city-section" id="city-osaka">
@@ -131,7 +192,7 @@
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78620843/" target="_blank" class="card-name">ビーバードルチェ阿波座</a>
                 <div class="card-meta">3100万円 / 54㎡ / 1988年築 / 2LDK / 徒歩8分</div>
-                <div class="card-score">98pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <div class="card-score">95pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 17,290円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
@@ -158,7 +219,7 @@
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20437273/" target="_blank" class="card-name">梅田北セントポリア</a>
                 <div class="card-meta">2280万円 / 40㎡ / 1982年築 / 1LDK / 徒歩10分</div>
-                <div class="card-score">97pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <div class="card-score">94pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 12,120円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
@@ -183,14 +244,14 @@
             <div class="card-header">
               <div class="card-rank">#3</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" class="card-name">●ストークマンション長堀●</a>
-                <div class="card-meta">3050万円 / 57㎡ / 1982年築 / 2LDK / 徒歩4分</div>
-                <div class="card-score">96pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20465323/" target="_blank" class="card-name">ランズ南森町</a>
+                <div class="card-meta">3780万円 / 45㎡ / 2005年築 / 1LDK / 徒歩4分</div>
+                <div class="card-score">92pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 22,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 16,910円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-3">「ストークマンション長堀」（3050万円）について、駅からのアクセスの良さ、57㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-3">「ランズ南森町」（3780万円）について、駅からのアクセスの良さ、45㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -210,14 +271,14 @@
             <div class="card-header">
               <div class="card-rank">#4</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20465323/" target="_blank" class="card-name">ランズ南森町</a>
-                <div class="card-meta">3780万円 / 45㎡ / 2005年築 / 1LDK / 徒歩4分</div>
-                <div class="card-score">95pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20472764/" target="_blank" class="card-name">エステムプラザ心斎橋エグゼ</a>
+                <div class="card-meta">4200万円 / 41㎡ / 2011年築 / 2LDK / 徒歩2分</div>
+                <div class="card-score">92pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 16,910円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 17,780円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-4">「ランズ南森町」（3780万円）について、駅からのアクセスの良さ、45㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-4">「エステムプラザ心斎橋エグゼ」（4200万円）について、駅からのアクセスの良さ、41㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -237,14 +298,14 @@
             <div class="card-header">
               <div class="card-rank">#5</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20472764/" target="_blank" class="card-name">エステムプラザ心斎橋エグゼ</a>
-                <div class="card-meta">4200万円 / 41㎡ / 2011年築 / 2LDK / 徒歩2分</div>
-                <div class="card-score">95pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" class="card-name">セレッソコート南堀江マルティア</a>
+                <div class="card-meta">4380万円 / 53㎡ / 2000年築 / 2LDK / 徒歩4分</div>
+                <div class="card-score">90pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 17,780円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 29,800円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-5">「エステムプラザ心斎橋エグゼ」（4200万円）について、駅からのアクセスの良さ、41㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-5">「セレッソコート南堀江マルティア」（4380万円）について、駅からのアクセスの良さ、53㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -264,14 +325,14 @@
             <div class="card-header">
               <div class="card-rank">#6</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" class="card-name">サントピア九条</a>
-                <div class="card-meta">1750万円 / 52㎡ / 1981年築 / 2LDK / 徒歩2分</div>
-                <div class="card-score">93pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" class="card-name">●ストークマンション長堀●</a>
+                <div class="card-meta">3050万円 / 57㎡ / 1982年築 / 2LDK / 徒歩4分</div>
+                <div class="card-score">88pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 27,300円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 22,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-6">「サントピア九条」（1750万円）について、駅からのアクセスの良さ、52㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-6">「ストークマンション長堀」（3050万円）について、駅からのアクセスの良さ、57㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -291,14 +352,14 @@
             <div class="card-header">
               <div class="card-rank">#7</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" class="card-name">セレッソコート南堀江マルティア</a>
-                <div class="card-meta">4380万円 / 53㎡ / 2000年築 / 2LDK / 徒歩4分</div>
-                <div class="card-score">93pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20465603/" target="_blank" class="card-name">ファインレジデンス福島野田The Garden</a>
+                <div class="card-meta">3900万円 / 40㎡ / 2023年築 / 1LDK / 徒歩7分</div>
+                <div class="card-score">87pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 29,800円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 11,620円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-7">「セレッソコート南堀江マルティア」（4380万円）について、駅からのアクセスの良さ、53㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-7">「ファインレジデンス福島野田The Garden」（3900万円）について、立地の利便性、40㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -318,14 +379,14 @@
             <div class="card-header">
               <div class="card-rank">#8</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20465603/" target="_blank" class="card-name">ファインレジデンス福島野田The Garden</a>
-                <div class="card-meta">3900万円 / 40㎡ / 2023年築 / 1LDK / 徒歩7分</div>
-                <div class="card-score">90pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" class="card-name">サントピア九条</a>
+                <div class="card-meta">1750万円 / 52㎡ / 1981年築 / 2LDK / 徒歩2分</div>
+                <div class="card-score">85pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 11,620円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 27,300円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-8">「ファインレジデンス福島野田The Garden」（3900万円）について、立地の利便性、40㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-8">「サントピア九条」（1750万円）について、駅からのアクセスの良さ、52㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と大阪の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 大阪市西区・北区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -347,7 +408,7 @@
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20375130/" target="_blank" class="card-name">ストークマンション野田阪神</a>
                 <div class="card-meta">3499万円 / 54㎡ / 1984年築 / 2LDK / 徒歩4分</div>
-                <div class="card-score">86pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <div class="card-score">83pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 23,320円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
@@ -374,7 +435,7 @@
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/" target="_blank" class="card-name">グランドメゾン谷町四丁目</a>
                 <div class="card-meta">4750万円 / 42㎡ / 2024年築 / 1LDK / 徒歩3分</div>
-                <div class="card-score">86pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <div class="card-score">83pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 16,608円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
@@ -404,7 +465,7 @@
               <div class="card-info">
                 <a href="https://www.f-takken.com/freins/items/99339192" target="_blank" class="card-name">第一プリンスビル</a>
                 <div class="card-meta">1499万円 / 42㎡ / 1988年築 / 2LDK / 徒歩7分</div>
-                <div class="card-score">113pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+                <div class="card-score">110pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 17,730円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
@@ -432,7 +493,7 @@
               <div class="card-info">
                 <a href="https://www.f-takken.com/freins/items/99358163" target="_blank" class="card-name">博多ニッコーハイツ 5階</a>
                 <div class="card-meta">1900万円 / 63㎡ / 1989年築 / 3LDK / 徒歩8分</div>
-                <div class="card-score">106pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+                <div class="card-score">103pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 20,810円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
@@ -460,7 +521,7 @@
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20400394/" target="_blank" class="card-name">ヒューマインド博多駅東ネクスタイル</a>
                 <div class="card-meta">4480万円 / 58㎡ / 2005年築 / 2LDK / 徒歩5分</div>
-                <div class="card-score">105pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <div class="card-score">102pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 13,300円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
@@ -487,7 +548,7 @@
               <div class="card-info">
                 <a href="https://www.f-takken.com/freins/items/99773040" target="_blank" class="card-name">ニューライフ薬院 603</a>
                 <div class="card-meta">3082万円 / 47㎡ / 1982年築 / 1SLDK / 徒歩3分</div>
-                <div class="card-score">104pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+                <div class="card-score">101pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 20,930円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
@@ -515,7 +576,7 @@
               <div class="card-info">
                 <a href="https://www.f-takken.com/freins/items/99775027" target="_blank" class="card-name">福岡市中央区 1SLDK</a>
                 <div class="card-meta">3099万円 / 47㎡ / 1986年築 / 1SLDK / 徒歩3分</div>
-                <div class="card-score">104pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+                <div class="card-score">101pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 24,490円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
@@ -543,7 +604,7 @@
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/" target="_blank" class="card-name">オープンレジデンシア天神今泉</a>
                 <div class="card-meta">4900万円 / 46㎡ / 2023年築 / 2LDK / 徒歩6分</div>
-                <div class="card-score">103pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <div class="card-score">100pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 8,800円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
@@ -570,7 +631,7 @@
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/" target="_blank" class="card-name">サングレート薬院駅ロイヤルウィン</a>
                 <div class="card-meta">4980万円 / 56㎡ / 2003年築 / 2LDK / 徒歩5分</div>
-                <div class="card-score">103pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <div class="card-score">100pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 12,810円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
@@ -595,24 +656,23 @@
             <div class="card-header">
               <div class="card-rank">#18</div>
               <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99819148" target="_blank" class="card-name">福岡市中央区 2LDK</a>
-                <div class="card-meta">4980万円 / 56㎡ / 2000年築 / 2LDK / 徒歩5分</div>
-                <div class="card-score">103pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/" target="_blank" class="card-name">ロワールマンション西公園2</a>
+                <div class="card-meta">1950万円 / 55㎡ / 1984年築 / 2LDK / 徒歩15分</div>
+                <div class="card-score">95pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 11,240円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">ふれんず</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 14,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-18">お世話になります。
-貴サイトに掲載されている「福岡市中央区 2LDK」を拝見し、駅からのアクセスの良さ、56㎡のゆとりある広さに魅力を感じご連絡いたしました。
+              <pre class="msg-text" id="msg-18">「ロワールマンション西公園2」（1950万円）について、55㎡のゆとりある広さ、周辺環境に魅力を感じお問い合わせいたします。
 
 東京と福岡の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
-居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
 チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
 上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
-よろしくお願い申し上げます。</pre>
+よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-18', this)" data-accent="#34d399">
                 コピー
               </button>
@@ -625,7 +685,7 @@
               <div class="card-info">
                 <a href="https://www.f-takken.com/freins/items/99791987" target="_blank" class="card-name">103大稲マンション 706</a>
                 <div class="card-meta">1950万円 / 56㎡ / 1984年築 / 2LDK / 徒歩1分</div>
-                <div class="card-score">98pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+                <div class="card-score">95pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 14,500円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">ふれんず</span></div>
@@ -653,7 +713,7 @@
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20370839/" target="_blank" class="card-name">大名サンハイツ</a>
                 <div class="card-meta">2737万円 / 62㎡ / 1981年築 / 3LDK / 徒歩6分</div>
-                <div class="card-score">98pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <div class="card-score">95pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 18,100円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
@@ -683,7 +743,7 @@
               <div class="card-info">
                 <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20429198/" target="_blank" class="card-name">スターハイツ台東</a>
                 <div class="card-meta">3980万円 / 45㎡ / 1982年築 / 2LDK / 徒歩6分</div>
-                <div class="card-score">96pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <div class="card-score">93pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 24,344円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
@@ -708,14 +768,14 @@
             <div class="card-header">
               <div class="card-rank">#22</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" class="card-name">メゾンニシムラ</a>
-                <div class="card-meta">4180万円 / 40㎡ / 1987年築 / 1R / 徒歩8分</div>
-                <div class="card-score">88pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78942164/" target="_blank" class="card-name">藤和シティコープ池袋</a>
+                <div class="card-meta">4800万円 / 45㎡ / 1993年築 / 2LDK / 徒歩5分</div>
+                <div class="card-score">93pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 14,294円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 24,600円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-22">「メゾンニシムラ」（4180万円）について、立地の利便性、40㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-22">「藤和シティコープ池袋」（4800万円）について、駅からのアクセスの良さ、45㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -735,14 +795,14 @@
             <div class="card-header">
               <div class="card-rank">#23</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20020844/" target="_blank" class="card-name">ニックハイム向島百花園</a>
-                <div class="card-meta">3480万円 / 47㎡ / 1982年築 / 2LDK / 徒歩10分</div>
-                <div class="card-score">86pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" class="card-name">メゾンニシムラ</a>
+                <div class="card-meta">4180万円 / 40㎡ / 1987年築 / 1R / 徒歩8分</div>
+                <div class="card-score">85pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 23,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 14,294円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-23">「ニックハイム向島百花園」（3480万円）について、立地の利便性、47㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-23">「メゾンニシムラ」（4180万円）について、立地の利便性、40㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -762,20 +822,20 @@
             <div class="card-header">
               <div class="card-rank">#24</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20130053/" target="_blank" class="card-name">グリーンパーク市ヶ谷柳町</a>
-                <div class="card-meta">4380万円 / 41㎡ / 1987年築 / 1LDK / 徒歩1分</div>
+                <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20020844/" target="_blank" class="card-name">ニックハイム向島百花園</a>
+                <div class="card-meta">3480万円 / 47㎡ / 1982年築 / 2LDK / 徒歩10分</div>
                 <div class="card-score">83pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 19,000円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 23,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-24">「グリーンパーク市ヶ谷柳町」（4380万円）について、駅からのアクセスの良さ、41㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-24">「ニックハイム向島百花園」（3480万円）について、立地の利便性、47㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
 不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-なお、チワワ（3kg）を飼っております。ペット飼育は可能でしょうか。
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
 上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
@@ -789,14 +849,14 @@
             <div class="card-header">
               <div class="card-rank">#25</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20521952/" target="_blank" class="card-name">ＧＥＮＯＶＩＡ鐘ヶ淵</a>
-                <div class="card-meta">4980万円 / 41㎡ / 2023年築 / 1LDK / 徒歩3分</div>
-                <div class="card-score">83pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20214392/" target="_blank" class="card-name">サンコート池袋</a>
+                <div class="card-meta">3998万円 / 42㎡ / 1984年築 / 1LDK / 徒歩13分</div>
+                <div class="card-score">81pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 8,400円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 24,560円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-25">「ＧＥＮＯＶＩＡ鐘ヶ淵」（4980万円）について、駅からのアクセスの良さ、41㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-25">「サンコート池袋」（3998万円）について、42㎡のゆとりある広さ、周辺環境に魅力を感じお問い合わせいたします。
 
 東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -816,14 +876,14 @@
             <div class="card-header">
               <div class="card-rank">#26</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20474788/" target="_blank" class="card-name">グランドパレス沼袋 306号</a>
-                <div class="card-meta">3888万円 / 47㎡ / 1982年築 / 2LDK / 徒歩2分</div>
-                <div class="card-score">81pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20130053/" target="_blank" class="card-name">グリーンパーク市ヶ谷柳町</a>
+                <div class="card-meta">4380万円 / 41㎡ / 1987年築 / 1LDK / 徒歩1分</div>
+                <div class="card-score">80pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 22,342円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 19,000円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-26">「グランドパレス沼袋 306号」（3888万円）について、駅からのアクセスの良さ、47㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-26">「グリーンパーク市ヶ谷柳町」（4380万円）について、駅からのアクセスの良さ、41㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -843,20 +903,20 @@
             <div class="card-header">
               <div class="card-rank">#27</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20477856/" target="_blank" class="card-name">グランドパレス沼袋</a>
-                <div class="card-meta">3888万円 / 47㎡ / 1982年築 / 2LDK / 徒歩2分</div>
-                <div class="card-score">81pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20521952/" target="_blank" class="card-name">ＧＥＮＯＶＩＡ鐘ヶ淵</a>
+                <div class="card-meta">4980万円 / 41㎡ / 2023年築 / 1LDK / 徒歩3分</div>
+                <div class="card-score">80pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 22,342円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 8,400円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-27">「グランドパレス沼袋」（3888万円）について、駅からのアクセスの良さ、47㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-27">「ＧＥＮＯＶＩＡ鐘ヶ淵」（4980万円）について、駅からのアクセスの良さ、41㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
 不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-なお、チワワ（3kg）を飼っております。ペット飼育は可能でしょうか。
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
 上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
@@ -870,14 +930,14 @@
             <div class="card-header">
               <div class="card-rank">#28</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20376620/" target="_blank" class="card-name">上野ロイヤルハイツ</a>
-                <div class="card-meta">4790万円 / 51㎡ / 1982年築 / 2LDK / 徒歩1分</div>
-                <div class="card-score">81pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20474788/" target="_blank" class="card-name">グランドパレス沼袋 306号</a>
+                <div class="card-meta">3888万円 / 47㎡ / 1982年築 / 2LDK / 徒歩2分</div>
+                <div class="card-score">78pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 20,660円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 22,342円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-28">「上野ロイヤルハイツ」（4790万円）について、駅からのアクセスの良さ、51㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-28">「グランドパレス沼袋 306号」（3888万円）について、駅からのアクセスの良さ、47㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -897,20 +957,20 @@
             <div class="card-header">
               <div class="card-rank">#29</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20220965/" target="_blank" class="card-name">マイステージ野方</a>
-                <div class="card-meta">3680万円 / 51㎡ / 2000年築 / 1LDK / 徒歩3分</div>
-                <div class="card-score">80pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20376620/" target="_blank" class="card-name">上野ロイヤルハイツ</a>
+                <div class="card-meta">4790万円 / 51㎡ / 1982年築 / 2LDK / 徒歩1分</div>
+                <div class="card-score">78pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 43,520円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 20,660円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-29">「マイステージ野方」（3680万円）について、駅からのアクセスの良さ、51㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-29">「上野ロイヤルハイツ」（4790万円）について、駅からのアクセスの良さ、51㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
 不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
+なお、チワワ（3kg）を飼っております。ペット飼育は可能でしょうか。
 
 上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願いいたします。</pre>
@@ -924,14 +984,14 @@
             <div class="card-header">
               <div class="card-rank">#30</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_20507595/" target="_blank" class="card-name">スターパレス北品川</a>
-                <div class="card-meta">3980万円 / 42㎡ / 1992年築 / 2DK / 徒歩5分</div>
-                <div class="card-score">80pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20220965/" target="_blank" class="card-name">マイステージ野方</a>
+                <div class="card-meta">3680万円 / 51㎡ / 2000年築 / 1LDK / 徒歩3分</div>
+                <div class="card-score">77pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 34,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 43,520円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-30">「スターパレス北品川」（3980万円）について、駅からのアクセスの良さ、42㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+              <pre class="msg-text" id="msg-30">「マイステージ野方」（3680万円）について、駅からのアクセスの良さ、51㎡のゆとりある広さに魅力を感じお問い合わせいたします。
 
 東京と東京の2拠点生活を実施しており、法人（合同会社）での購入を考えております。
 渋谷区・新宿区・目黒区・台東区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。

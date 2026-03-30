@@ -5,10 +5,69 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Property Pipeline — iUMA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #242836;
+  --card: #1a1d27;
+  --card-hover: #242836;
+  --border: #2d3348;
+  --border-light: #3d4460;
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.12);
+  --accent: #6366f1;
+  --accent2: #8b5cf6;
+  --blue: #3b82f6;
+  --purple: #6366f1;
+  --orange: #ff6b35;
+  --green: #22c55e;
+  --green-light: #4ade80;
+  --red: #ef4444;
+  --red-light: #f87171;
+  --yellow: #eab308;
+  --text: #e4e4e7;
+  --text-secondary: #9ca3af;
+  --text-muted: #7c8293;
+  --text-decorative: #5f6678;
+  --font-display: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --bp-mobile: 640px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1200px;
+  --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
+  --gnav-height: 52px;
+  --z-nav: 100;
+  --z-subnav: 90;
+  --z-modal: 200;
+  --z-toast: 300;
+  --fs-display: clamp(22px, 4vw, 36px);
+  --fs-h1: clamp(20px, 2.5vw, 26px);
+  --fs-h2: clamp(16px, 2vw, 22px);
+  --fs-h3: clamp(14px, 1.8vw, 18px);
+  --fs-body: 14px;
+  --fs-small: 12px;
+  --fs-xs: 10px;
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-serif;min-height:100vh}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}
 
 /* ── Shared Gnav ── */
 .site-header {
@@ -70,17 +129,17 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
 .hero h1{font-size:clamp(20px,2.5vw,26px);font-weight:700}
 .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
 .stat{background:rgba(255,255,255,.06);border-radius:10px;padding:10px 16px;text-align:center;min-width:72px}
-.stat-val{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
-.stat-label{font-size:10px;color:#71717a;margin-top:2px}
+.stat-val{font-size:22px;font-weight:700;font-family:var(--font-mono)}
+.stat-label{font-size:10px;color:var(--text-muted);margin-top:2px}
 
 /* Section nav — matches stock portfolio .nav-bar pattern */
-.section-nav{position:sticky;top:92px;z-index:80;background:rgba(10,12,18,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);margin:0 -16px;padding:0 16px}
+.section-nav{position:sticky;top:calc(var(--gnav-height, 52px) + 36px);z-index:var(--z-subnav, 90);background:rgba(10,12,18,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);margin:0 -16px;padding:0 16px}
 .section-nav-inner{display:flex;gap:0;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .section-nav-inner::-webkit-scrollbar{display:none}
 .nav-tab{display:inline-flex;align-items:center;gap:4px;padding:10px 16px;font-size:12px;font-weight:600;color:rgba(255,255,255,.45);text-decoration:none;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;cursor:pointer}
 .nav-tab:hover{color:rgba(255,255,255,.8)}
-.nav-tab.active{color:#fff;border-bottom-color:#3b9eff}
-.tab-count{font-size:10px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--accent, #6366f1)}
+.tab-count{font-size:10px;color:rgba(255,255,255,.3);font-family:var(--font-mono)}
 .nav-tab.active .tab-count{color:rgba(255,255,255,.6)}
 
 /* City sections */
@@ -88,17 +147,17 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
 .city-section.hidden{display:none}
 .city-header{padding-left:12px;margin-bottom:14px;display:flex;align-items:baseline;gap:12px}
 .city-header h2{font-size:18px;font-weight:700}
-.city-stats{display:flex;gap:10px;font-size:11px;color:#71717a}
+.city-stats{display:flex;gap:10px;font-size:11px;color:var(--text-muted)}
 
 /* Cards */
 .inq-card{display:block;text-decoration:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:8px;transition:background .15s,border-color .15s}
 .inq-card:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}
-.card-name{color:#f5f5f7;font-size:14px;font-weight:600}
-.card-score{background:rgba(255,255,255,.08);padding:2px 8px;border-radius:8px;font-size:11px;font-family:'JetBrains Mono',monospace;color:#a1a1aa}
+.card-name{color:var(--text);font-size:14px;font-weight:600}
+.card-score{background:rgba(255,255,255,.08);padding:2px 8px;border-radius:8px;font-size:11px;font-family:var(--font-mono);color:var(--text-secondary)}
 .status-pill{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;color:#fff}
-.card-detail{color:#a1a1aa;font-size:12px;margin-top:6px}
-.card-filters{display:flex;gap:12px;margin-top:8px;font-size:11px;color:#71717a}
-.card-meta{color:#52525b;font-size:10px;margin-top:6px}
+.card-detail{color:var(--text-secondary);font-size:12px;margin-top:6px}
+.card-filters{display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--text-muted)}
+.card-meta{color:var(--text-decorative);font-size:10px;margin-top:6px}
 
 /* Schedule section */
 .schedule-section{margin:24px 0;padding:0}
@@ -109,19 +168,19 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
 .sched-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;transition:background .15s}
 .sched-card:hover{background:rgba(255,255,255,.08)}
 .sched-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.sched-name{font-size:15px;font-weight:600;color:#f5f5f7}
-.sched-city{font-size:11px;color:#71717a;font-family:'JetBrains Mono',monospace}
+.sched-name{font-size:15px;font-weight:600;color:var(--text)}
+.sched-city{font-size:11px;color:var(--text-muted);font-family:var(--font-mono)}
 .sched-date{font-size:13px;color:#a78bfa;margin-bottom:4px}
-.sched-loc{font-size:12px;color:#71717a;margin-bottom:4px}
+.sched-loc{font-size:12px;color:var(--text-muted);margin-bottom:4px}
 .sched-agent{font-size:12px;color:#d4d4d8;margin-bottom:2px}
-.agent-title{font-size:10px;color:#71717a;margin-left:4px}
-.sched-contact{font-size:11px;color:#71717a;margin-bottom:4px;font-family:'JetBrains Mono',monospace}
-.sched-filters{font-size:11px;color:#71717a;margin-top:6px}
-.sched-notes{font-size:11px;color:#a1a1aa;font-style:italic;margin-top:4px}
+.agent-title{font-size:10px;color:var(--text-muted);margin-left:4px}
+.sched-contact{font-size:11px;color:var(--text-muted);margin-bottom:4px;font-family:var(--font-mono)}
+.sched-filters{font-size:11px;color:var(--text-muted);margin-top:6px}
+.sched-notes{font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:4px}
 
 /* Empty state */
-.empty{text-align:center;padding:60px 20px;color:#52525b}
-.empty h2{font-size:18px;color:#71717a;margin-bottom:8px}
+.empty{text-align:center;padding:60px 20px;color:var(--text-decorative)}
+.empty h2{font-size:18px;color:var(--text-muted);margin-bottom:8px}
 
 @media(max-width:640px){
   .hero{padding:24px 20px 20px}
@@ -149,81 +208,39 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   <div class="hero">
     <h1>Property Pipeline</h1>
     <div class="stats">
-      <div class="stat"><div class="stat-val">75</div><div class="stat-label">Total</div></div>
-      <div class="stat"><div class="stat-val" style="color:#f97316">3</div><div class="stat-label">進行中</div></div>
+      <div class="stat"><div class="stat-val" style="color:#f97316">0</div><div class="stat-label">進行中</div></div>
       <div class="stat"><div class="stat-val" style="color:#a78bfa">0</div><div class="stat-label">内見</div></div>
+      <div class="stat"><div class="stat-val" style="color:#6366f1">4</div><div class="stat-label">内見済</div></div>
       <div class="stat"><div class="stat-val" style="color:#22c55e">0</div><div class="stat-label">決定</div></div>
-      <div class="stat"><div class="stat-val" style="color:#ef4444">2</div><div class="stat-label">見送り</div></div>
     </div>
+    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 59 / 見送り 13</div>
   </div>
 
   
-<div class="schedule-section">
-  <div class="schedule-header">
-    <h2>内覧スケジュール / 進行中</h2>
-    <div class="schedule-counts">
-      
-      <span style="color:#f97316">やり取り中 3</span>
-      
-    </div>
-  </div>
-  <div class="schedule-cards">
-    <div class="sched-card" style="border-left:3px solid #f97316">
-  <div class="sched-header">
-    <span class="sched-name">博多ニッコーハイツ 5階</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#f97316">やり取り中</span>
-      <span class="sched-city">福岡</span>
-    </div>
-  </div>
-  <div class="sched-date" style="color:#f59e0b">⏳ 日程調整中</div>
-  <div class="sched-agent">👤 <strong>ロジャーサービス</strong><span class='agent-title'>不動産仲介</span>（株式会社ロジャーサービス）</div><div class="sched-contact">info@rogerservice.co.jp</div>
-  <div class="sched-filters">ペット ✅　短期賃貸 ⏳</div>
-  
-</div><div class="sched-card" style="border-left:3px solid #f97316">
-  <div class="sched-header">
-    <span class="sched-name">クリオ渡辺通アーバンマークス</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#f97316">やり取り中</span>
-      <span class="sched-city">福岡</span>
-    </div>
-  </div>
-  <div class="sched-date" style="color:#f59e0b">⏳ 日程調整中</div>
-  <div class="sched-agent">👤 <strong>桑原大</strong><span class='agent-title'>不動産営業</span>（ムーブグループ）</div><div class="sched-contact">masaru.kuwabara@move-group.net</div>
-  <div class="sched-filters">ペット ✅　短期賃貸 ✅</div>
-  
-</div><div class="sched-card" style="border-left:3px solid #f97316">
-  <div class="sched-header">
-    <span class="sched-name">ニューライフ薬院 603</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#f97316">やり取り中</span>
-      <span class="sched-city">福岡</span>
-    </div>
-  </div>
-  <div class="sched-date" style="color:#f59e0b">⏳ 日程調整中</div>
-  <div class="sched-agent">👤 <strong>吉ヶ江正嗣</strong><span class='agent-title'>不動産仲介</span>（大山不動産）</div><div class="sched-contact">yoshigae@taizan.co.jp</div>
-  <div class="sched-filters">ペット ✅　短期賃貸 🔶</div>
-  
-</div>
-  </div>
-</div>
 
-  <div class="section-nav"><div class="section-nav-inner"><a href="#" class="nav-tab active" onclick="showCity('all')" data-city="all">All <span class="tab-count">75</span></a><a href="#city-osaka" class="nav-tab" onclick="showCity('osaka')" data-city="osaka">大阪 <span class="tab-count">21</span></a><a href="#city-fukuoka" class="nav-tab" onclick="showCity('fukuoka')" data-city="fukuoka">福岡 <span class="tab-count">25</span></a><a href="#city-tokyo" class="nav-tab" onclick="showCity('tokyo')" data-city="tokyo">東京 <span class="tab-count">29</span></a></div></div>
+  <div class="section-nav"><div class="section-nav-inner"><a href="#" class="nav-tab active" onclick="showCity('all')" data-city="all">All <span class="tab-count">63</span></a><a href="#city-osaka" class="nav-tab" onclick="showCity('osaka')" data-city="osaka">大阪 <span class="tab-count">21</span></a><a href="#city-fukuoka" class="nav-tab" onclick="showCity('fukuoka')" data-city="fukuoka">福岡 <span class="tab-count">21</span></a><a href="#city-tokyo" class="nav-tab" onclick="showCity('tokyo')" data-city="tokyo">東京 <span class="tab-count">21</span></a></div></div>
 
   
 <div class="city-section" id="city-osaka" data-city="osaka">
   <div class="city-header" style="border-left:3px solid #3b9eff">
     <h2>大阪</h2>
     <div class="city-stats">
-      <span>21件</span>
-      
-      <span style="color:#3b9eff">候補 21</span>
+      <span>進行中 0件</span>
+      <span style="color:#71717a">候補 21</span>
     </div>
   </div>
-  <div class="city-cards"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20101804/" target="_blank" rel="noopener" class="inq-card">
+  <div class="city-cards"></div>
+  
+  <details style="margin-top:12px">
+    <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
+      候補 21件（クリックで展開）
+    </summary>
+    <div class="city-cards" style="margin-top:8px"><div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20101804/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">サニーハウス谷町</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">99pt</span>
     </div>
@@ -234,13 +251,32 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
     <span>短期賃貸 ⏳</span>
     
   </div>
-  
+  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">⚠️ 掲載未確認</div>
   <div class="card-meta">SUUMO / inq-001</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78620843/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜13万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.4〜4.5%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>91万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>184万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-7.7万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-10.0万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+44万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-5.1%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78620843/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">ビーバードルチェ阿波座</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">98pt</span>
     </div>
@@ -253,11 +289,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-062</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜13万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.9〜5.0%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>97万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>152万/年（22年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-4.5万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-6.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+21万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-4.0%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">●ストークマンション長堀●</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">96pt</span>
     </div>
@@ -270,11 +325,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-002</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20465323/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>11〜14万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>4.3〜5.5%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>101万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>160万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-4.9万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-7.2万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+32万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-3.2%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20465323/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">ランズ南森町</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">95pt</span>
     </div>
@@ -287,11 +361,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-063</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>9〜11万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.9〜3.5%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>82万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>129万/年（39年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-3.9万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-5.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+20万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-2.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20176437/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">サントピア九条</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">93pt</span>
     </div>
@@ -304,11 +397,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-003</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜13万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>6.9〜8.9%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>85万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>92万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-0.5万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-3.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+10万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>0.8%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>128.3年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">セレッソコート南堀江マルティア</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">93pt</span>
     </div>
@@ -321,11 +433,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-004</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20437273/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜13万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.7〜3.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>82万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>161万/年（34年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-6.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-9.5万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+31万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-4.1%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20437273/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">梅田北セントポリア</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">92pt</span>
     </div>
@@ -338,11 +469,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-005</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20420054/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>8〜10万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>4.2〜5.3%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>78万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>120万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-3.5万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-4.7万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+23万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-3.0%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20420054/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">梅田北セントポリア</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">92pt</span>
     </div>
@@ -353,13 +503,32 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
     <span>短期賃貸 ⏳</span>
     
   </div>
-  
+  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">⚠️ 掲載未確認</div>
   <div class="card-meta">SUUMO / inq-031</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20454080/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>8〜10万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>4.2〜5.3%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>78万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>120万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-3.5万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-4.7万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+23万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-3.0%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20454080/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">ランズ南森町</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">90pt</span>
     </div>
@@ -370,13 +539,32 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
     <span>短期賃貸 ⏳</span>
     
   </div>
-  
+  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">⚠️ 掲載未確認</div>
   <div class="card-meta">SUUMO / inq-006</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20472764/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>9〜11万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.9〜3.5%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>82万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>129万/年（39年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-3.9万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-5.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+20万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-2.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20472764/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">エステムプラザ心斎橋エグゼ</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">90pt</span>
     </div>
@@ -389,531 +577,41 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-032</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20503067/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">アデレイド新福島</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">88pt</span>
-    </div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>9〜11万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.6〜3.1%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>81万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>133万/年（45年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-4.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-6.0万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+22万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-2.5%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
   </div>
-  <div class="card-detail">4,998万 / 54.86㎡ / 2LDK / 「新福島」徒歩2分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-047</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20375130/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ストークマンション野田阪神</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">86pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,499万 / 54.32㎡ / 2LDK / 「海老江」徒歩4分</div>
-  <div class="card-filters">
-    <span>ペット ⏳</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-064</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">グランドメゾン谷町四丁目</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">86pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,750万 / 41.57㎡ / 1LDK / 「谷町四丁目」徒歩3分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-065</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20465603/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ファインレジデンス福島野田 The Garden</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">85pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,800万 / 40.07㎡ / 1LDK / 「野田」徒歩7分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">重複統合(旧inq-008): 同一物件の別掲載URL https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20468253/</div>
-  <div class="card-meta">SUUMO / inq-007</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20443516/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">西道頓堀コーポ</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">85pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,890万 / 69.61㎡ / 3LDK / 「ドーム前千代崎」徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-009</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20331873/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ベル・アーバニティ同心</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">85pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,480万 / 55.58㎡ / 2LDK / 「南森町」徒歩10分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-010</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20436547/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">西道頓堀コーポ二号棟</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">85pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,890万 / 69.61㎡ / 3LDK / 「西長堀」徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-033</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20483828/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ファインレジデンス福島野田 The Garden</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">85pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,900万 / 40.07㎡ / 1LDK / 「野田」徒歩7分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-046</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_20503024/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">西道頓堀コーポ</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">85pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,890万 / 69.61㎡ / 3LDK / 「ドーム前千代崎」徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-048</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20274808/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ベル・アーバニティ同心</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">85pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,480万 / 55.58㎡ / 2LDK / 「大阪天満宮」徒歩8分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-059</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_20280326/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ベル・アーバニティ同心</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">85pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,480万 / 55.58㎡ / 2LDK / 「大阪天満宮」徒歩10分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-061</div>
-</a></div>
+</details>
+</div></div>
+    <div style="color:#71717a;font-size:12px;padding:8px 16px">他 11件 (score順)</div>
+  </details>
 </div>
 <div class="city-section" id="city-fukuoka" data-city="fukuoka">
   <div class="city-header" style="border-left:3px solid #34d399">
     <h2>福岡</h2>
     <div class="city-stats">
-      <span>25件</span>
-      <span style="color:#f97316">進行中 3</span>
-      <span style="color:#34d399">候補 16</span>
+      <span>進行中 4件</span>
+      <span style="color:#71717a">候補 17</span>
     </div>
   </div>
-  <div class="city-cards"><a href="https://www.f-takken.com/freins/items/99773040" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ニューライフ薬院 603</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#f97316">やり取り中</span>
-      <span class="card-score">99pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,082万 / 47.29㎡ / 1SLDK / 薬院 徒歩3分</div>
-  <div class="card-filters">
-    <span>ペット ✅</span>
-    <span>短期賃貸 ⏳</span>
-    <span>担当: 吉ヶ江正嗣</span>
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-050</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99358163" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">博多ニッコーハイツ 5階</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#f97316">やり取り中</span>
-      <span class="card-score">93pt</span>
-    </div>
-  </div>
-  <div class="card-detail">1,900万 / 62.91㎡ / 3LDK / 東比恵 徒歩8分</div>
-  <div class="card-filters">
-    <span>ペット ✅</span>
-    <span>短期賃貸 ⏳</span>
-    <span>担当: ロジャーサービス</span>
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-017</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79085867/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">クリオ渡辺通アーバンマークス</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#f97316">やり取り中</span>
-      <span class="card-score">93pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,380万 / 44.58㎡ / 2LDK / 「渡辺通」徒歩9分</div>
-  <div class="card-filters">
-    <span>ペット ✅</span>
-    <span>短期賃貸 ✅</span>
-    <span>担当: 桑原大</span>
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-019</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99339192" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">第一プリンスビル</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">113pt</span>
-    </div>
-  </div>
-  <div class="card-detail">1,499万 / 41.78㎡ / 2LDK / 祇園 徒歩7分</div>
-  <div class="card-filters">
-    <span>ペット ✅</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-075</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20131079/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ヒューマインド博多駅東ネクスタイル</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">105pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,480万 / 58.3㎡ / 2LDK / 「東比恵」徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-011</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20400394/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ヒューマインド博多駅東ネクスタイル</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">105pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,480万 / 58.3㎡ / 2LDK / 「東比恵」徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-035</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">サングレート薬院駅ロイヤルウィン</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">103pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,980万 / 55.72㎡ / 2LDK / 「薬院」徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-066</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99819148" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">福岡市中央区 2LDK</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">103pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,980万 / 55.72㎡ / 2LDK / 薬院 徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-067</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79232246/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">コモダスパッソ天神</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">100pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,780万 / 64.15㎡ / 2LDK / 「天神南」徒歩3分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-036</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99802856" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">福岡市空港線天神駅 徒歩11分</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">100pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,400万 / 68.9㎡ / 3LDK / 赤坂 徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-038</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99810838" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">「祇園4分、博多8分、そして中洲は徒歩圏。」都心を使いこなす2LDK</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">100pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,180万 / 52.98㎡ / 2LDK / 祇園 徒歩4分</div>
-  <div class="card-filters">
-    <span>ペット ⏳</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-068</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99795327" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">福岡市七隈線薬院駅 徒歩3分（2026年2月リフォーム完了）</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">99pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,099万 / 47.29㎡ / 1SLDK / 薬院 徒歩3分</div>
-  <div class="card-filters">
-    <span>ペット ✅</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">重複統合(旧inq-014): 同一物件の別掲載URL https://www.f-takken.com/freins/items/99798361 / 2026年2月リフォーム完了、オートロック・エレベーターあり</div>
-  <div class="card-meta">ふれんず / inq-013</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99775027" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">福岡市七隈線薬院駅 徒歩3分</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">99pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,099万 / 47.29㎡ / 1SLDK / 薬院 徒歩3分</div>
-  <div class="card-filters">
-    <span>ペット ✅</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-049</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99765771" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">福岡市七隈線櫛田神社前駅 徒歩9分</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">98pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,280万 / 65.04㎡ / 2LDK / 渡辺通 徒歩9分</div>
-  <div class="card-filters">
-    <span>ペット ✅</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-015</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">オープンレジデンシア天神今泉</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">98pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,900万 / 46.01㎡ / 2LDK / 「薬院大通」徒歩6分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-016</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20370839/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">大名サンハイツ</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">98pt</span>
-    </div>
-  </div>
-  <div class="card-detail">2,720万 / 62.32㎡ / 3LDK / 「赤坂」徒歩6分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-037</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99791987" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">103大稲マンション 706</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">98pt</span>
-    </div>
-  </div>
-  <div class="card-detail">1,950万 / 55.62㎡ / 2LDK / 薬院大通 徒歩1分</div>
-  <div class="card-filters">
-    <span>ペット ⏳</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-069</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99798395" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">西鉄天神大牟田線西鉄福岡（天神）駅 徒歩13分</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">96pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,399万 / 52.92㎡ / 2LDK / 赤坂 徒歩6分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-039</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99782845" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">大名エリア、1LDKの分譲マンションです。ペット飼育可能(規約の範囲内)♪</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">93pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,280万 / 65.61㎡ / 3LDK / 桜坂 徒歩9分</div>
-  <div class="card-filters">
-    <span>ペット ✅</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">ふれんず / inq-018</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99763695" target="_blank" rel="noopener" class="inq-card">
+  <div class="city-cards"><div class="inq-card">
+  <a href="https://www.f-takken.com/freins/items/99763695" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">アンピール天神東 405</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#6366f1">内見済</span>
       <span class="card-score">101pt</span>
     </div>
@@ -924,13 +622,33 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">3/21内覧: 春吉エリアで好印象。3月末期限（売主が買取業者検討）。指値3800万前後の可能性</div>
+  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">3/21内覧: 春吉エリアで好印象。3月末期限（売主が買取業者検討）。価格改定3800万円。融資3000万/20年で合意
+価格変動: 3800万→4280万 (2026-03-31)</div>
   <div class="card-meta">ふれんず / inq-012</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20310107/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>11〜14万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.1〜3.9%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>108万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>197万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-7.4万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-9.0万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+15万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-4.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金30% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20310107/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">プレイスポットしんばしビル本館</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#6366f1">内見済</span>
       <span class="card-score">0pt</span>
     </div>
@@ -943,11 +661,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-29</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">旧耐震・築51年。㎡単価61万は同築年帯(35-43万)の1.5倍で割高。指値余地あり</div>
   <div class="card-meta">SUUMO / inq-072</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99718694" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>14〜15万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>6.8〜7.3%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>134万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>130万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#facc15">+0.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-1.0万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+18万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>3.2%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>30.9年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#facc15;font-weight:600">薄利</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://www.f-takken.com/freins/items/99718694" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">GSハイム博多 10階</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#6366f1">内見済</span>
       <span class="card-score">0pt</span>
     </div>
@@ -960,11 +697,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-29</div>
   <div class="card-meta">ふれんず / inq-073</div>
-</a>
-<a href="https://www.f-takken.com/freins/items/99770725" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>16〜17万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>8.7〜9.3%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>143万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>108万/年（22年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#facc15">+3.0万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#22c55e">+0.8万/月</span></div>
+    
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>4.7%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>21.1年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#facc15;font-weight:600">薄利</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://www.f-takken.com/freins/items/99770725" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">ローズマンション第2博多 1308</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#6366f1">内見済</span>
       <span class="card-score">0pt</span>
     </div>
@@ -977,55 +733,413 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-29</div>
   <div class="card-meta">ふれんず / inq-074</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79063957/" target="_blank" rel="noopener" class="inq-card" style="opacity:0.4">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>16〜17万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>8.7〜9.3%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>153万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>115万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#22c55e">+3.1万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#22c55e">+1.7万/月</span></div>
+    
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>6.2%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>16.2年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#facc15;font-weight:600">薄利</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div></div>
+  
+  <details style="margin-top:12px">
+    <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
+      候補 17件（クリックで展開）
+    </summary>
+    <div class="city-cards" style="margin-top:8px"><div class="inq-card">
+  <a href="https://www.f-takken.com/freins/items/99339192" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">コスモ博多古門戸</span>
+    <span class="card-name">第一プリンスビル</span>
     <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#ef4444">見送り</span>
-      <span class="card-score">93pt</span>
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">113pt</span>
     </div>
   </div>
-  <div class="card-detail">4,499万 / 54.49㎡ / 1LDK+S（納戸） / 「中洲川端」徒歩9分</div>
+  <div class="card-detail">1,499万 / 41.78㎡ / 2LDK / 祇園 徒歩7分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ⏳</span>
-    <span>担当: 中野智弘</span>
+    
   </div>
-  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">3/21内覧: 場所がよくない。レノベ済みだがありふれた感じで好みでない。㎡単価も高い(82.6万/㎡)</div>
-  <div class="card-meta">SUUMO / inq-020</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20001055/" target="_blank" rel="noopener" class="inq-card" style="opacity:0.4">
+  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">⚠️ 掲載未確認</div>
+  <div class="card-meta">ふれんず / inq-075</div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>7〜9万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>5.6〜7.2%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>61万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>73万/年（22年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-1.1万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-2.8万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+6万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-1.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20131079/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">クリオラベルヴィ呉服町</span>
+    <span class="card-name">ヒューマインド博多駅東ネクスタイル</span>
     <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#ef4444">見送り</span>
-      <span class="card-score">0pt</span>
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">105pt</span>
     </div>
   </div>
-  <div class="card-detail">4,499万 / 47.0㎡ / 2LDK / 呉服町 徒歩5分</div>
+  <div class="card-detail">4,480万 / 58.3㎡ / 2LDK / 「東比恵」徒歩5分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-011</div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜12万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.7〜3.2%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>97万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>152万/年（39年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-4.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-5.9万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+24万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-2.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20400394/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">ヒューマインド博多駅東ネクスタイル</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">105pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,480万 / 58.3㎡ / 2LDK / 「東比恵」徒歩5分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-035</div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜12万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.7〜3.2%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>97万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>152万/年（39年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-4.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-5.9万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+24万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-2.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">サングレート薬院駅ロイヤルウィン</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">103pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,980万 / 55.72㎡ / 2LDK / 「薬院」徒歩5分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">SUUMO / inq-066</div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜12万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.4〜2.9%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>98万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>174万/年（37年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-6.4万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-7.7万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+31万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-3.4%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://www.f-takken.com/freins/items/99819148" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">福岡市中央区 2LDK</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">103pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,980万 / 55.72㎡ / 2LDK / 薬院 徒歩5分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">ふれんず / inq-067</div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜12万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.4〜2.9%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>99万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>183万/年（34年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-7.0万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-8.1万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+33万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-3.8%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79232246/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">コモダスパッソ天神</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">100pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,780万 / 64.15㎡ / 2LDK / 「天神南」徒歩3分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">⚠️ 掲載未確認</div>
+  <div class="card-meta">SUUMO / inq-036</div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>11〜14万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.8〜3.5%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>115万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>176万/年（34年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-5.1万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-6.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+26万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-2.7%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://www.f-takken.com/freins/items/99802856" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">福岡市空港線天神駅 徒歩11分</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">100pt</span>
+    </div>
+  </div>
+  <div class="card-detail">4,400万 / 68.9㎡ / 3LDK / 赤坂 徒歩5分</div>
+  <div class="card-filters">
+    <span>ペット 🔶</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">ふれんず / inq-038</div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>12〜15万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.3〜4.1%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>123万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>175万/年（30年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-4.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-5.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+22万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-2.5%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://www.f-takken.com/freins/items/99810838" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">「祇園4分、博多8分、そして中洲は徒歩圏。」都心を使いこなす2LDK</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">100pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,180万 / 52.98㎡ / 2LDK / 祇園 徒歩4分</div>
+  <div class="card-filters">
+    <span>ペット ⏳</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">ふれんず / inq-068</div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>9〜11万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.4〜4.2%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>87万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>119万/年（33年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-2.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-3.9万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+15万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-2.0%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://www.f-takken.com/freins/items/99795327" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">福岡市七隈線薬院駅 徒歩3分（2026年2月リフォーム完了）</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">99pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,099万 / 47.29㎡ / 1SLDK / 薬院 徒歩3分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ⏳</span>
-    <span>担当: 中野智弘</span>
+    
   </div>
-  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">3/21内覧: 場所がよくない。レノベ済みだがありふれた感じで好みでない。㎡単価高い(95.7万/㎡)</div>
-  <div class="card-meta">SUUMO / inq-034</div>
-</a></div>
+  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">重複統合(旧inq-014): 同一物件の別掲載URL https://www.f-takken.com/freins/items/99798361 / 2026年2月リフォーム完了、オートロック・エレベーターあり
+⚠️ 掲載未確認</div>
+  <div class="card-meta">ふれんず / inq-013</div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>8〜10万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.1〜3.9%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>63万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>163万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-8.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-10.8万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+33万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-8.0%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://www.f-takken.com/freins/items/99775027" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span class="card-name">福岡市七隈線薬院駅 徒歩3分</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">99pt</span>
+    </div>
+  </div>
+  <div class="card-detail">3,099万 / 47.29㎡ / 1SLDK / 薬院 徒歩3分</div>
+  <div class="card-filters">
+    <span>ペット ✅</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  
+  <div class="card-meta">ふれんず / inq-049</div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>8〜10万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.1〜3.9%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>63万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>163万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-8.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-10.8万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+33万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-8.0%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div></div>
+    <div style="color:#71717a;font-size:12px;padding:8px 16px">他 7件 (score順)</div>
+  </details>
 </div>
 <div class="city-section" id="city-tokyo" data-city="tokyo">
   <div class="city-header" style="border-left:3px solid #a78bfa">
     <h2>東京</h2>
     <div class="city-stats">
-      <span>29件</span>
-      
-      <span style="color:#a78bfa">候補 29</span>
+      <span>進行中 0件</span>
+      <span style="color:#71717a">候補 21</span>
     </div>
   </div>
-  <div class="city-cards"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20466383/" target="_blank" rel="noopener" class="inq-card">
+  <div class="city-cards"></div>
+  
+  <details style="margin-top:12px">
+    <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
+      候補 21件（クリックで展開）
+    </summary>
+    <div class="city-cards" style="margin-top:8px"><div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20466383/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">蔵前コヤマハイツ</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">98pt</span>
     </div>
@@ -1036,30 +1150,68 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
     <span>短期賃貸 ⏳</span>
     
   </div>
-  
+  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">⚠️ 掲載未確認</div>
   <div class="card-meta">SUUMO / inq-040</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78942164/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>14〜18万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>6.0〜7.8%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>152万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>146万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#facc15">+0.5万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-0.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+20万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>3.4%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>29.4年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#facc15;font-weight:600">薄利</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_78942164/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">藤和シティコープ池袋</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">91pt</span>
     </div>
   </div>
-  <div class="card-detail">4,880万 / 45.0㎡ / 2LDK / 「北池袋」徒歩5分</div>
+  <div class="card-detail">4,800万 / 45.0㎡ / 2LDK / 「北池袋」徒歩5分</div>
   <div class="card-filters">
     <span>ペット 🔶</span>
     <span>短期賃貸 ⏳</span>
     
   </div>
-  
+  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">価格変動: 4880万→4800万 (2026-03-31)</div>
   <div class="card-meta">SUUMO / inq-021</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20429198/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>11〜14万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.8〜3.5%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>99万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>204万/年（27年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-8.8万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-11.2万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+39万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-5.1%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20429198/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">スターハイツ台東</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">91pt</span>
     </div>
@@ -1072,11 +1224,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-041</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20220965/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>11〜14万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.3〜4.2%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>99万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>209万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-9.2万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-11.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+52万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-5.4%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20220965/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">マイステージ野方</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">90pt</span>
     </div>
@@ -1089,11 +1260,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-022</div>
-</a>
-<a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024759467/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>12〜16万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.9〜5.2%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>92万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>135万/年（34年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-3.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-8.0万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+19万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-2.5%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024759467/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">ベルディ早稲田東</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">86pt</span>
     </div>
@@ -1106,11 +1296,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">Yahoo不動産 / inq-070</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20347986/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>12〜15万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.0〜3.7%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>110万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>256万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-12.2万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-14.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+53万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-7.1%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20347986/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">沼袋コーポラス</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">83pt</span>
     </div>
@@ -1123,11 +1332,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-042</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>14〜18万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.9〜5.0%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>133万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>225万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-7.7万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-10.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+61万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-2.7%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">メゾンニシムラ</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">83pt</span>
     </div>
@@ -1140,11 +1368,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-051</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20130053/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜12万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.9〜3.4%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>96万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>212万/年（21年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-9.7万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-11.1万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+42万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-6.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20130053/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">グリーンパーク市ヶ谷柳町</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">83pt</span>
     </div>
@@ -1157,11 +1404,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-071</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20521952/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜13万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.7〜3.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>95万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>222万/年（21年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-10.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-12.5万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+45万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-6.9%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20521952/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">ＧＥＮＯＶＩＡ鐘ヶ淵</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">83pt</span>
     </div>
@@ -1174,11 +1440,30 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-076</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20376620/" target="_blank" rel="noopener" class="inq-card">
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>11〜14万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.7〜3.4%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>118万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>141万/年（57年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-1.9万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-2.8万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+16万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-0.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20376620/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">上野ロイヤルハイツ</span>
     <div style="display:flex;gap:6px;align-items:center">
+      
       <span class="status-pill" style="background:#3b9eff">候補</span>
       <span class="card-score">81pt</span>
     </div>
@@ -1191,330 +1476,26 @@ body{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-se
   </div>
   
   <div class="card-meta">SUUMO / inq-077</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_20507595/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">スターパレス北品川</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">80pt</span>
-    </div>
+  </a>
+  <details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>12〜16万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.0〜4.0%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>119万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>252万/年（20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:#f87171">-11.0万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:#f87171">-13.1万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+62万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>-5.4%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金20% / 金利2.85% / 空室7%</div>
   </div>
-  <div class="card-detail">3,980万 / 42.0㎡ / 2DK / 北品川 徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-078</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20158878/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">恵進マンション</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">79pt</span>
-    </div>
-  </div>
-  <div class="card-detail">2,480万 / 41.33㎡ / 1R / 「本所吾妻橋」徒歩1分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-023</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20020844/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ニックハイム向島百花園</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">76pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,480万 / 47.3㎡ / 2LDK / 「東向島」徒歩10分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-024</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79057808/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">菊川グリーンハイツ</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">76pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,180万 / 50.0㎡ / 2DK / 「菊川」徒歩4分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-025</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20474788/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">グランドパレス沼袋 306号</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">76pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,888万 / 46.62㎡ / 2LDK / 「沼袋」徒歩2分</div>
-  <div class="card-filters">
-    <span>ペット ⏳</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-043</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20477856/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">グランドパレス沼袋</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">76pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,888万 / 46.62㎡ / 2LDK / 「沼袋」徒歩2分</div>
-  <div class="card-filters">
-    <span>ペット ⏳</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-044</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20382454/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">菊川グリーンハイツ</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">76pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,080万 / 50.0㎡ / 2DK / 「菊川」徒歩3分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-045</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20480093/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">グランドパレス沼袋</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">76pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,888万 / 46.62㎡ / 2LDK / 「沼袋」徒歩1分</div>
-  <div class="card-filters">
-    <span>ペット ⏳</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-060</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78515092/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">大江戸コーポ</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">73pt</span>
-    </div>
-  </div>
-  <div class="card-detail">2,980万 / 46.28㎡ / 1LDK / 「中野坂上」徒歩1分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-026</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_20214392/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">サンコート池袋</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">71pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,998万 / 42.44㎡ / 1LDK / 「池袋」徒歩13分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-027</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78764639/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">キャニオンマンション上鷺宮</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">70pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,300万 / 59.4㎡ / 3LDK / 「富士見台」徒歩3分</div>
-  <div class="card-filters">
-    <span>ペット ⏳</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-028</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79163699/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ヴィラロイヤル東中野 706号室</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">68pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,500万 / 62.94㎡ / 2LDK / 「東中野」徒歩7分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">重複統合(旧inq-030): 706号室が明示された別掲載URL https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79140949/</div>
-  <div class="card-meta">SUUMO / inq-029</div>
-</a>
-<a href="https://cowcamo.jp/short_stories/AHB95HFGZz0" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">野方駅 / 1LDK / 39.99㎡</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">68pt</span>
-    </div>
-  </div>
-  <div class="card-detail">2,980万 / 39.99㎡ / 1LDK / 野方 徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット ✅</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">カウカモ / inq-052</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_77817708/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">菊川ローヤルコーポ</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">68pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,100万 / 56.66㎡ / 3DK / 「菊川」徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット ⏳</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-053</div>
-</a>
-<a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024141980/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ベルディ早稲田東</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">65pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,880万 / 48.96㎡ / 2LDK / 「江戸川橋」 徒歩4分</div>
-  <div class="card-filters">
-    <span>ペット ⏳</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">Yahoo不動産 / inq-054</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20403509/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">NICアーバンハイム亀戸 102</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">63pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,080万 / 56.16㎡ / 3LDK / 「東あずま」徒歩7分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-055</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20477211/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">プリマドムス立花</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">63pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,980万 / 53.7㎡ / 1LDK+S（納戸） / 「東あずま」徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-056</div>
-</a>
-<a href="https://cowcamo.jp/short_stories/75NK4KiKK4g" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">生田駅 / 3LDK / 78.00㎡</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">62pt</span>
-    </div>
-  </div>
-  <div class="card-detail">3,580万 / 78.0㎡ / 3LDK / 生田 徒歩8分</div>
-  <div class="card-filters">
-    <span>ペット ✅</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">カウカモ / inq-057</div>
-</a>
-<a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_79117927/" target="_blank" rel="noopener" class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">ドルミ錦糸町大興ビル</span>
-    <div style="display:flex;gap:6px;align-items:center">
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">61pt</span>
-    </div>
-  </div>
-  <div class="card-detail">4,480万 / 52.91㎡ / 2LDK / 「錦糸町」徒歩5分</div>
-  <div class="card-filters">
-    <span>ペット 🔶</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  
-  <div class="card-meta">SUUMO / inq-058</div>
-</a></div>
+</details>
+</div></div>
+    <div style="color:#71717a;font-size:12px;padding:8px 16px">他 11件 (score順)</div>
+  </details>
 </div>
 </div>
 

@@ -108,8 +108,11 @@ def is_target_location(location: str, city_key: str) -> bool:
     areas = config.get("target_areas", [])
     city_prefixes = {"osaka": "大阪市", "fukuoka": "福岡市", "tokyo": "東京都"}
     prefix = city_prefixes.get(city_key, "")
+    # Ward match: require city prefix (e.g., 福岡市博多区)
     ward_match = any(f"{prefix}{w}" in location or (not prefix and w in location) for w in wards)
-    area_match = any(a in location for a in areas)
+    # Area match: also require city prefix to avoid false positives
+    # e.g., 北九州市小倉北区赤坂 ≠ 福岡市赤坂
+    area_match = (prefix in location and any(a in location for a in areas)) if prefix else any(a in location for a in areas)
     return ward_match or area_match
 
 
@@ -254,12 +257,18 @@ def _extract_kubun_fields(context: str, url: str, prop_id: str, city_key: str) -
     for pat in [
         r"((?:地下鉄|JR|阪急|阪神|南海|京阪|近鉄|西鉄)?[^\s「」]*?線\s*「[^」]+」\s*(?:駅\s*)?徒歩\s*\d+\s*分)",
         r"(「[^」]+」\s*(?:駅\s*)?徒歩\s*\d+\s*分)",
-        r"([^\s]+(?:駅)\s*徒歩\s*\d+\s*分)",
+        r"([^\s。、！？]{1,10}駅\s*徒歩\s*\d+\s*分)",
     ]:
         sm = re.search(pat, text)
         if sm:
             station_text = sm.group(1).strip()
             break
+    # Clean: remove description prefix and junk patterns
+    if "。" in station_text:
+        station_text = station_text.split("。")[-1].strip()
+    # "最寄駅徒歩X分" is generic, not an actual station name
+    if station_text.startswith("最寄駅"):
+        station_text = ""
 
     # Layout
     layout_match = re.search(r"(\d[SLDK]+(?:\+S)?)", text)
@@ -292,6 +301,16 @@ def _extract_kubun_fields(context: str, url: str, prop_id: str, city_key: str) -
         loc_short = location.replace(pref, "")[:10]
         name = f"楽待 {loc_short}#{prop_id[-4:]}"
 
+    # OC detection from full listing text (before station cleanup)
+    # 楽待の利回り区分: 利回り表示あり = ほぼ賃貸中（詳細ページで確認済み）
+    # 明示的に「空室」「現況空」がある場合のみ非OC
+    oc_keywords = ["賃貸中", "オーナーチェンジ", "入居者付", "入居中", "月額賃料", "年間収入", "満室"]
+    vacant_keywords = ["現況空", "空室", "居住用"]
+    is_explicitly_oc = any(kw in text for kw in oc_keywords)
+    is_vacant = any(kw in text for kw in vacant_keywords)
+    # 楽待 yield listings with yield % shown → default OC unless explicitly vacant
+    is_oc = is_explicitly_oc or (yield_text and not is_vacant)
+
     return {
         "source": "楽待(利回り区分)",
         "name": name,
@@ -304,6 +323,7 @@ def _extract_kubun_fields(context: str, url: str, prop_id: str, city_key: str) -
         "station_text": station_text,
         "layout": layout,
         "yield_text": yield_text,
+        "is_oc": is_oc,
         "url": url,
     }
 
@@ -508,6 +528,12 @@ def _extract_ittomono_fields(context: str, url: str, prop_id: str, city_key: str
                     and not re.match(r"^\d+億", candidate)):
                 name = candidate[:40]
                 break
+    # Strip 【...】prefix from names (e.g., "【価格改定】リッシュハウス伊都" → "リッシュハウス伊都")
+    if name:
+        name = re.sub(r"^(?:【[^】]*】)+\s*", "", name).strip()
+        # Also strip leading ▶▲■◆ etc. and trailing ！
+        name = re.sub(r"^[▶▲■◆◇●★☆※◎！]+\s*", "", name).strip()
+        name = re.sub(r"[！!]+$", "", name).strip()
     if not name:
         loc_short = location.replace(pref, "")[:10]
         name = f"楽待 {loc_short}#{prop_id[-4:]}"
@@ -584,35 +610,155 @@ def score_ittomono(prop: dict) -> int:
 # =====================================================================
 
 def _is_fallback_name(name: str) -> bool:
+    """Check if name is ad-copy / not a real building name → needs detail page fetch."""
     if not name:
         return True
     if re.match(r"^楽待\s", name):
         return True
-    return False
+    # Names starting with ad markers
+    if re.match(r"^[【▶▲■◆◇●★☆※◎]+", name):
+        return True
+    # Building name patterns — if present, it's likely a real name
+    bldg_suffixes = ["マンション", "ハイツ", "コーポ", "レジデンス", "ビル", "荘",
+                     "パレス", "テラス", "プラザ", "メゾン", "ガーデン", "パーク",
+                     "ハウス", "ドーム", "タワー", "コート", "シャトー", "グラン",
+                     "ステート", "ロイヤル", "エステート", "フォレスト", "シティ",
+                     "アーバン", "サンライズ", "サニー", "ライオンズ", "ダイアパレス",
+                     "アンピール", "ピュアドーム", "GE"]
+    if any(s in name for s in bldg_suffixes):
+        return False
+    # No building suffix → likely ad-copy → fetch detail page
+    return True
+
+
+def _extract_detail_fields(html: str, prop: dict) -> bool:
+    """Extract OC status, annual income, management fees from detail page.
+
+    Returns True if any field was enriched.
+    """
+    text = re.sub(r"<[^>]+>", "|", html)
+    text = re.sub(r"\|+", "|", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    changed = False
+
+    # Building name from h1
+    m_name = re.search(r"<h1[^>]*>([^<]+)</h1>", html)
+    if m_name:
+        name = m_name.group(1).strip()
+        if name and len(name) >= 2 and "楽待" not in name and "物件一覧" not in name:
+            prop["name"] = name[:50]
+            changed = True
+
+    # 現況: 賃貸中 / 空室 / 賃貸中（満室）
+    # Flattened HTML: "現況| |現況| | | | |賃貸中|" — skip whitespace-only pipes
+    m_status = re.search(r"現況(?:\| *)*\|(賃貸中[^|]*|空室[^|]*|空[^|]*)", text)
+    if m_status:
+        status = m_status.group(1).strip()
+        if "賃貸中" in status or "満室" in status:
+            prop["is_oc"] = True
+            changed = True
+        elif "空" in status:
+            prop["is_oc"] = False
+            changed = True
+
+    # 想定年間収入: 90.0万円 (7.5万円/月)
+    # Flattened: "想定年間収入| |90.0万円|"
+    m_income = re.search(r"想定年間収入(?:\| *)*\|([\d,.]+)万円", text)
+    if m_income:
+        try:
+            annual_man = float(m_income.group(1).replace(",", ""))
+            prop["annual_income_man"] = annual_man
+            changed = True
+        except ValueError:
+            pass
+
+    # 管理費（月額）: X円 / 修繕積立金（月額）: X円
+    m_kanri = re.search(r"管理費（月額）(?:\| *)*\|([\d,]+)円", text)
+    m_shuuzen = re.search(r"修繕積立金（月額）(?:\| *)*\|([\d,]+)円", text)
+    if m_kanri or m_shuuzen:
+        kanri = int(m_kanri.group(1).replace(",", "")) if m_kanri else 0
+        shuuzen = int(m_shuuzen.group(1).replace(",", "")) if m_shuuzen else 0
+        prop["maintenance_fee"] = kanri + shuuzen
+        changed = True
+
+    return changed
+
+
+def _build_name_xref() -> dict[str, str]:
+    """Build cross-reference of (location_prefix, area) → building name from all data files.
+
+    Uses F宅建, SUUMO, etc. as reliable name sources to fix 楽待 ad-copy names.
+    """
+    xref: dict[str, str] = {}
+    for pattern in ["ftakken_*_raw.txt", "suumo_*_raw.txt", "athome_*_raw.txt",
+                     "restate_*_raw.txt", "yahoo_*_raw.txt", "cowcamo_*_raw.txt",
+                     "ftakken_*_budget_raw.txt"]:
+        for f in sorted(DATA_DIR.glob(pattern)):
+            for line in f.read_text(encoding="utf-8").splitlines():
+                if not line or line.startswith("#"):
+                    continue
+                parts = line.split("|")
+                if len(parts) < 6:
+                    continue
+                name = parts[1].strip()
+                if not name or _is_fallback_name(name):
+                    continue
+                loc = parts[3].strip()
+                area_text = parts[4].strip()
+                # Key: first 8 chars of location + area (e.g. "福岡市南区屋形原|63")
+                area_m = re.search(r"([\d.]+)", area_text)
+                area_int = str(int(float(area_m.group(1)))) if area_m else ""
+                if loc and area_int:
+                    # Use ward-level location (first ~8 chars after city name)
+                    loc_key = re.sub(r"[県都府]", "", loc)[:8]
+                    key = f"{loc_key}|{area_int}"
+                    if key not in xref:
+                        xref[key] = name
+    return xref
 
 
 def enrich_from_detail(properties: list[dict], max_fetches: int = 20) -> None:
-    """Fetch detail pages for building names."""
-    to_fetch = [p for p in properties if _is_fallback_name(p.get("name", ""))][:max_fetches]
+    """Fetch detail pages to enrich: name, OC status, annual income, fees.
+
+    Also cross-references other data sources (F宅建, SUUMO) for building names
+    when detail page is unavailable (403).
+    """
+    # Phase 1: Cross-reference names from other data sources (no network needed)
+    xref = _build_name_xref()
+    xref_fixed = 0
+    for prop in properties:
+        if _is_fallback_name(prop.get("name", "")):
+            loc = prop.get("location", "")
+            area_text = prop.get("area_text", "")
+            area_m = re.search(r"([\d.]+)", area_text)
+            area_int = str(int(float(area_m.group(1)))) if area_m else ""
+            loc_key = re.sub(r"[県都府]", "", loc)[:8]
+            key = f"{loc_key}|{area_int}"
+            if key in xref:
+                prop["name"] = xref[key]
+                xref_fixed += 1
+    if xref_fixed:
+        print(f"  クロスリファレンス: {xref_fixed}件の物件名を補完")
+
+    # Phase 2: Fetch detail pages for remaining fallback names + all for OC/rent/fees
+    fallback = [p for p in properties if _is_fallback_name(p.get("name", ""))]
+    non_fallback = [p for p in properties if not _is_fallback_name(p.get("name", ""))]
+    to_fetch = (fallback + non_fallback)[:max_fetches]
     if not to_fetch:
         return
 
-    print(f"  物件名取得中... ({len(to_fetch)}件)")
+    print(f"  詳細取得中... ({len(to_fetch)}件)")
     enriched = 0
 
-    for i, prop in enumerate(to_fetch):
+    for prop in to_fetch:
         html = fetch_page(prop["url"])
         if not html:
             continue
-        m = re.search(r"<h1[^>]*>([^<]+)</h1>", html)
-        if m:
-            name = m.group(1).strip()
-            if name and len(name) >= 2 and "楽待" not in name and "物件一覧" not in name:
-                prop["name"] = name[:50]
-                enriched += 1
+        if _extract_detail_fields(html, prop):
+            enriched += 1
         time.sleep(1.0)
 
-    print(f"  物件名: {enriched}件取得")
+    print(f"  詳細取得: {enriched}件")
 
 
 # =====================================================================
@@ -633,7 +779,16 @@ def save_kubun(properties: list[dict], city_key: str) -> Path:
     ]
 
     for p in properties:
-        # 12-col: source|name|price|location|area|built|station|layout|pet|brokerage|maintenance|url
+        # 12-col: source|name|price|location|area|built|station|layout|pet(=OC flag)|brokerage|maintenance|url
+        # brokerage: yield + annual income (from detail page)
+        brok_parts = []
+        if p.get("yield_text"):
+            brok_parts.append(f"利回り{p['yield_text']}")
+        if p.get("annual_income_man"):
+            brok_parts.append(f"年間収入{p['annual_income_man']}万円")
+        brokerage = " ".join(brok_parts)
+        # maintenance: from detail page or empty
+        maint = f"管理費{p['maintenance_fee']}円" if p.get("maintenance_fee") else ""
         line = "|".join([
             p["source"],
             p["name"],
@@ -643,9 +798,9 @@ def save_kubun(properties: list[dict], city_key: str) -> Path:
             p["built_text"],
             p["station_text"],
             p.get("layout", ""),
-            "",  # pet
-            "",  # brokerage
-            "",  # maintenance
+            "OC" if p.get("is_oc") else "",  # pet column → OC marker
+            brokerage,
+            maint,
             p["url"],
         ])
         lines.append(line)
@@ -713,7 +868,7 @@ def main():
         # 区分
         kubun_props = search_kubun(city_key)
         if kubun_props:
-            enrich_from_detail(kubun_props, max_fetches=15)
+            enrich_from_detail(kubun_props, max_fetches=40)
         kubun_out = save_kubun(kubun_props, city_key)
         print(f"  区分: {kubun_out} ({len(kubun_props)}件)")
 

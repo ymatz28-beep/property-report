@@ -397,15 +397,26 @@ def parse_osaka_r_rows(lines: Iterable[str]) -> list[PropertyRow]:
 
 
 def _clean_station_text(text: str) -> str:
-    """Clean station text: remove route names, keep station name + walk time.
+    """Clean station text: remove route names and description junk, keep station name + walk time.
 
     Examples:
       "地下鉄堺筋線「天神橋筋六丁目」徒歩10分" → "天神橋筋六丁目 徒歩10分"
       "ＪＲ東西線「大阪天満宮」徒歩4分" → "大阪天満宮 徒歩4分"
       "博多駅 徒歩5分" → "博多 徒歩5分"
+      "賃貸中で家賃収入が見込める区分マンション。大久保駅徒歩7分" → "大久保 徒歩7分"
+      "RC・25平米・最寄駅徒歩9分" → ""
     """
     if not text:
         return text
+    # Strip description prefix before station info (split on 。)
+    if "。" in text:
+        text = text.split("。")[-1].strip()
+    # "最寄駅徒歩X分" is generic, not an actual station name
+    if "最寄駅" in text and not re.search(r"[^\s最寄駅]{2,}駅", text):
+        return ""
+    # No station-like content — clear junk
+    if not re.search(r"駅|徒歩", text):
+        return ""
     # Extract station name from 「」brackets
     m = re.search(r"「(.+?)」", text)
     if m:

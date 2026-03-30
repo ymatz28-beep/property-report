@@ -16,6 +16,7 @@ Commands:
   --sync                Sync viewing/status from inbox-zero agent_memory
   --dashboard           Generate pipeline dashboard HTML
   --naiken              Generate naiken analysis for viewing properties
+  --lifecycle           Run full lifecycle management (sweep stale + price tracking + sync)
   --stats               Show pipeline statistics
 """
 
@@ -45,6 +46,13 @@ OUTPUT = BASE / "output"
 # Make the report pipeline importable
 if str(BASE) not in sys.path:
     sys.path.insert(0, str(BASE))
+
+# Make the shared lib importable (Projects root)
+_PROJECTS_ROOT = str(BASE.parent)
+if _PROJECTS_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECTS_ROOT)
+
+from lib.styles.design_tokens import get_css_tokens, get_google_fonts_url
 
 # ---------------------------------------------------------------------------
 # Config
@@ -350,6 +358,283 @@ def auto_flag(min_score: int = FLAG_THRESHOLD) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# Lifecycle management: sweep stale + price tracking
+# ---------------------------------------------------------------------------
+
+
+def sweep_stale() -> dict:
+    """Sweep stale flagged inquiries: delisted detection, age-out, still-listed check."""
+    import re
+    inquiries = load_inquiries()
+    today = date.today()
+    delisted = 0
+    aged_out = 0
+    unconfirmed = 0
+
+    # Load property_status.json for delisted detection
+    status_json_path = DATA / "property_status.json"
+    sold_urls: set[str] = set()
+    if status_json_path.exists():
+        try:
+            with open(status_json_path, encoding="utf-8") as f:
+                ps = json.load(f)
+            for url, info in ps.get("properties", {}).items():
+                if isinstance(info, dict) and info.get("status") == "SOLD":
+                    sold_urls.add(url)
+        except Exception:
+            pass
+
+    # Build set of URLs present in any raw file (for still-listed check)
+    raw_urls: set[str] = set()
+    for raw_file in DATA.glob("*_raw.txt"):
+        try:
+            with open(raw_file, encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    parts = line.split("|")
+                    if parts:
+                        url = parts[-1].strip()
+                        if url.startswith("http"):
+                            raw_urls.add(url)
+        except Exception:
+            pass
+
+    no_reply = 0
+    low_score = 0
+    changed = False
+
+    for inq in inquiries:
+        status = inq.get("status", "")
+        url = inq.get("url", "")
+
+        # --- Applies to flagged AND inquired ---
+
+        # a) Delisted detection: URL marked SOLD in property_status.json
+        if status in ("flagged", "inquired") and url and url in sold_urls:
+            inq["status"] = "passed"
+            existing_notes = inq.get("notes") or ""
+            inq["notes"] = (existing_notes + "\n掲載終了（自動検出）").strip()
+            inq["updated"] = str(today)
+            delisted += 1
+            changed = True
+            print(f"[sweep] {inq['id']} {inq['name']} → 掲載終了パス")
+            continue
+
+        # --- inquired: no reply detection (14 days) ---
+        if status == "inquired":
+            inquired_str = inq.get("inquired_date", inq.get("updated", ""))
+            if inquired_str:
+                try:
+                    inquired_dt = date.fromisoformat(str(inquired_str))
+                    days_waiting = (today - inquired_dt).days
+                    if days_waiting > 14:
+                        inq["status"] = "passed"
+                        existing_notes = inq.get("notes") or ""
+                        inq["notes"] = (existing_notes + f"\n未返信{days_waiting}日（自動パス）").strip()
+                        inq["updated"] = str(today)
+                        no_reply += 1
+                        changed = True
+                        print(f"[sweep] {inq['id']} {inq['name']} → 未返信パス ({days_waiting}日)")
+                        continue
+                except (ValueError, TypeError):
+                    pass
+
+        # --- in_discussion: stale detection (14 days no movement) ---
+        if status == "in_discussion":
+            updated_str = inq.get("updated", "")
+            if updated_str:
+                try:
+                    updated_dt = date.fromisoformat(str(updated_str))
+                    days_stale = (today - updated_dt).days
+                    if days_stale > 14:
+                        inq["status"] = "passed"
+                        existing_notes = inq.get("notes") or ""
+                        inq["notes"] = (existing_notes + f"\nやり取り停滞{days_stale}日（自動パス）").strip()
+                        inq["updated"] = str(today)
+                        no_reply += 1
+                        changed = True
+                        print(f"[sweep] {inq['id']} {inq['name']} → やり取り停滞パス ({days_stale}日)")
+                        continue
+                except (ValueError, TypeError):
+                    pass
+
+        # --- flagged only ---
+        if status != "flagged":
+            continue
+
+        # b) Age-out: flagged > 30 days with no agent
+        created_str = inq.get("created", "")
+        if created_str and not inq.get("agent"):
+            try:
+                created_date = date.fromisoformat(str(created_str))
+                if (today - created_date).days > 30:
+                    inq["status"] = "passed"
+                    existing_notes = inq.get("notes") or ""
+                    inq["notes"] = (existing_notes + "\n30日間アクション無し（自動パス）").strip()
+                    inq["updated"] = str(today)
+                    aged_out += 1
+                    changed = True
+                    print(f"[sweep] {inq['id']} {inq['name']} → 期限パス (created: {created_str})")
+                    continue
+            except (ValueError, TypeError):
+                pass
+
+        # c) Low-score pruning: flagged with score < 70 and no agent
+        score = inq.get("score", 0)
+        if isinstance(score, (int, float)) and score < 70 and not inq.get("agent"):
+            inq["status"] = "passed"
+            existing_notes = inq.get("notes") or ""
+            inq["notes"] = (existing_notes + f"\nスコア{score}（基準70未満・自動パス）").strip()
+            inq["updated"] = str(today)
+            low_score += 1
+            changed = True
+            print(f"[sweep] {inq['id']} {inq['name']} → 低スコアパス ({score}pt)")
+            continue
+
+        # d) Still-listed check: URL not found in any raw file
+        if url and raw_urls and url not in raw_urls:
+            existing_notes = inq.get("notes") or ""
+            if "⚠️ 掲載未確認" not in existing_notes:
+                inq["notes"] = (existing_notes + "\n⚠️ 掲載未確認").strip()
+            inq["updated"] = str(today)
+            unconfirmed += 1
+            changed = True
+
+    if changed:
+        save_inquiries(inquiries)
+
+    total = delisted + aged_out + no_reply + low_score
+    print(f"[lifecycle] sweep: {delisted}件 掲載終了, {aged_out}件 期限切れ, {no_reply}件 未返信, {low_score}件 低スコア, {unconfirmed}件 掲載未確認")
+    return {"delisted": delisted, "aged_out": aged_out, "no_reply": no_reply, "low_score": low_score, "unconfirmed": unconfirmed}
+
+
+def track_price_changes() -> list[dict]:
+    """Parse raw files and detect price changes vs inquiries.yaml."""
+    import re
+
+    def _parse_price_man(price_text: str) -> int:
+        """Parse price string to 万円 int. Handles '4190万円', '1億9760万円'."""
+        if not price_text:
+            return 0
+        price_text = price_text.strip()
+        # Handle 億 + 万 pattern: e.g. "1億9760万円"
+        m = re.match(r"(\d+)億(\d+)万", price_text)
+        if m:
+            return int(m.group(1)) * 10000 + int(m.group(2))
+        # Handle 億 only: e.g. "1億円"
+        m = re.match(r"(\d+)億", price_text)
+        if m:
+            return int(m.group(1)) * 10000
+        # Handle 万 only: e.g. "4190万円"
+        m = re.match(r"(\d+(?:\.\d+)?)万", price_text)
+        if m:
+            return int(float(m.group(1)))
+        # Plain number
+        m = re.match(r"(\d+)", price_text)
+        if m:
+            return int(m.group(1))
+        return 0
+
+    # Build {url: price_text} from all raw files
+    url_price_map: dict[str, str] = {}
+    for raw_file in DATA.glob("*_raw.txt"):
+        is_ittomono = "ittomono" in raw_file.name
+        try:
+            with open(raw_file, encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    parts = line.split("|")
+                    if len(parts) < 3:
+                        continue
+                    url = parts[-1].strip()
+                    if not url.startswith("http"):
+                        continue
+                    # ittomono has score prefix at index 0, price at index 3
+                    price_idx = 3 if is_ittomono else 2
+                    if len(parts) > price_idx:
+                        url_price_map[url] = parts[price_idx].strip()
+        except Exception:
+            pass
+
+    inquiries = load_inquiries()
+    today = date.today()
+    changes: list[dict] = []
+    modified = False
+
+    for inq in inquiries:
+        url = inq.get("url", "")
+        if not url or url not in url_price_map:
+            continue
+
+        raw_price_text = url_price_map[url]
+        new_price = _parse_price_man(raw_price_text)
+        old_price = inq.get("price")
+
+        if not isinstance(old_price, (int, float)) or old_price <= 0:
+            continue
+        if new_price <= 0:
+            continue
+        if new_price == int(old_price):
+            continue
+
+        # Price changed
+        old_price_int = int(old_price)
+        pct = (new_price - old_price_int) / old_price_int * 100
+
+        note_part = f"価格変動: {old_price_int}万→{new_price}万 ({today})"
+        if pct <= -10:
+            note_part = "🔥値下げ " + note_part
+
+        existing_notes = inq.get("notes") or ""
+        inq["notes"] = (existing_notes + "\n" + note_part).strip()
+        inq["price"] = new_price
+        inq["updated"] = str(today)
+        modified = True
+
+        changes.append({
+            "id": inq["id"],
+            "name": inq.get("name", ""),
+            "old_price": old_price_int,
+            "new_price": new_price,
+            "pct": round(pct, 1),
+        })
+        print(f"[lifecycle] 価格変動: {inq['id']} {inq.get('name', '')} {old_price_int}万→{new_price}万 ({pct:+.1f}%)")
+
+    if modified:
+        save_inquiries(inquiries)
+
+    drop_count = sum(1 for c in changes if c["pct"] <= -10)
+    print(f"[lifecycle] 価格変動: {len(changes)}件 (値下げ{drop_count}件)")
+    return changes
+
+
+def lifecycle() -> dict:
+    """Run full lifecycle management: sweep stale + price tracking + sync."""
+    print("=== Pipeline Lifecycle ===")
+    sweep_result = sweep_stale()
+    price_changes = track_price_changes()
+    sync_count = sync_from_agent_memory()
+
+    result = {
+        "sweep": sweep_result,
+        "price_changes": len(price_changes),
+        "sync_updates": sync_count,
+    }
+
+    if sweep_result["delisted"] + sweep_result["aged_out"] + len(price_changes) + sync_count > 0:
+        save_inquiries(load_inquiries())  # Already saved by individual functions
+        print(f"[lifecycle] 完了: sweep={sweep_result}, 価格変動={len(price_changes)}件, sync={sync_count}件")
+    else:
+        print("[lifecycle] 変更なし")
+
+    return result
+
+
+# ---------------------------------------------------------------------------
 # Extract structured data from email reply (Claude API)
 # ---------------------------------------------------------------------------
 
@@ -519,6 +804,103 @@ def _create_action_item(inquiry_id: str, viewing_date: str) -> None:
 # ---------------------------------------------------------------------------
 
 
+def _render_card_analysis(inq: dict) -> str:
+    """Render inline investment analysis for a pipeline card (collapsible)."""
+    price_val = inq.get("price", 0)
+    area_val = inq.get("area", 0)
+    yr = inq.get("year_built", 0)
+    mgmt = inq.get("management_fee", 0)
+    city = inq.get("city", "")
+
+    if not price_val or not area_val:
+        return ""
+
+    # Estimate rent
+    rent_override = inq.get("rent_estimate")
+    if rent_override:
+        rent_lo = int(rent_override)
+        rent_hi = int(rent_override) + 1
+    else:
+        rent_per_sqm = {"fukuoka": (1800, 2200), "osaka": (2000, 2500), "tokyo": (2500, 3200)}
+        lo, hi = rent_per_sqm.get(city, (2000, 2500))
+        if yr and yr >= 2010:
+            lo, hi = int(lo * 1.1), int(hi * 1.1)
+        rent_lo = int(area_val * lo / 10000) if area_val else 0
+        rent_hi = int(area_val * hi / 10000) if area_val else 0
+
+    if not rent_lo:
+        return ""
+
+    rent_mid = (rent_lo + rent_hi) / 2
+    yield_mid = round(rent_mid * 12 / price_val * 100, 2) if price_val else 0
+    yield_lo = round(rent_lo * 12 / price_val * 100, 1) if price_val else 0
+    yield_hi = round(rent_hi * 12 / price_val * 100, 1) if price_val else 0
+
+    if yield_mid <= 0:
+        return ""
+
+    # Run revenue_calc
+    inq_loan_amount = inq.get("loan_amount")
+    inq_loan_years = inq.get("loan_years")
+    if inq_loan_amount and price_val:
+        dr = (price_val - inq_loan_amount) / price_val
+    else:
+        dr = 0.20
+    params = InvestmentParams(
+        building_ratio=0.50,
+        down_payment_ratio=dr,
+        loan_years=int(inq_loan_years) if inq_loan_years else 0,
+    )
+    rev = revenue_analyze(
+        price_man=price_val,
+        yield_pct=yield_mid,
+        structure="RC造",
+        built_year=yr if yr else None,
+        maintenance_fee_monthly=mgmt if mgmt else 0,
+        params=params,
+    )
+    if rev.verdict == "データ不足":
+        return ""
+
+    mcf = rev.monthly_cf
+    cf_color = "#22c55e" if mcf > 3 else "#facc15" if mcf > 0 else "#f87171"
+    cf_sign = "+" if mcf >= 0 else ""
+
+    # Management fee impact
+    mgmt_line = ""
+    if mgmt:
+        mgmt_man = mgmt / 10000
+        cf_net = mcf - mgmt_man
+        net_color = "#22c55e" if cf_net > 0 else "#f87171"
+        net_sign = "+" if cf_net >= 0 else ""
+        mgmt_line = f'<div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:{net_color}">{net_sign}{cf_net:.1f}万/月</span></div>'
+
+    payback = f"{rev.payback_years:.1f}年" if rev.payback_years != float("inf") else "∞"
+    tax_line = ""
+    if rev.tax_benefit > 0:
+        tax_line = f'<div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+{rev.tax_benefit:,.0f}万/年</span></div>'
+
+    vclass_map = {"高CF物件": "#22c55e", "安定CF": "#34d399", "薄利": "#facc15", "CF赤字": "#f87171"}
+    v_color = vclass_map.get(rev.verdict, "#71717a")
+
+    return f'''<details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>{rent_lo}〜{rent_hi}万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>{yield_lo}〜{yield_hi}%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>{rev.noi:,.0f}万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>{rev.annual_debt_service:,.0f}万/年（{rev.loan_years}年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:{cf_color}">{cf_sign}{mcf:.1f}万/月</span></div>
+    {mgmt_line}
+    {tax_line}
+    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>{rev.ccr_pct:.1f}%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>{payback}</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:{v_color};font-weight:600">{rev.verdict}</span></div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金{params.down_payment_ratio*100:.0f}% / 金利{params.loan_rate_annual*100:.2f}% / 空室{params.vacancy_rate*100:.0f}%</div>
+  </div>
+</details>'''
+
+
 def _render_card(inq: dict) -> str:
     """Render a single inquiry card."""
     status = inq.get("status", "unknown")
@@ -539,10 +921,41 @@ def _render_card(inq: dict) -> str:
         notes_line = f'<div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">{inq["notes"]}</div>'
     dimmed = ' style="opacity:0.4"' if status == "passed" else ""
 
-    return f'''<a href="{inq.get('url', '#')}" target="_blank" rel="noopener" class="inq-card"{dimmed}>
+    # Waiting badge for inquired properties
+    waiting_badge = ""
+    if status == "inquired":
+        inquired_str = inq.get("inquired_date", inq.get("updated", ""))
+        if inquired_str:
+            try:
+                days_w = (date.today() - date.fromisoformat(str(inquired_str))).days
+                if days_w >= 7:
+                    waiting_badge = f'<span style="background:#f97316;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600">未返信 {days_w}日</span>'
+                else:
+                    waiting_badge = f'<span style="background:#3b82f6;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 {days_w}日前</span>'
+            except (ValueError, TypeError):
+                pass
+
+    # Stale badge for in_discussion
+    stale_badge = ""
+    if status == "in_discussion":
+        updated_str = inq.get("updated", "")
+        if updated_str:
+            try:
+                days_stale = (date.today() - date.fromisoformat(str(updated_str))).days
+                if days_stale >= 7:
+                    stale_badge = f'<span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし {days_stale}日</span>'
+            except (ValueError, TypeError):
+                pass
+
+    # Investment analysis (collapsible)
+    analysis_html = _render_card_analysis(inq)
+
+    return f'''<div class="inq-card"{dimmed}>
+  <a href="{inq.get('url', '#')}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <span class="card-name">{inq.get('name', '?')}</span>
     <div style="display:flex;gap:6px;align-items:center">
+      {waiting_badge}{stale_badge}
       <span class="status-pill" style="background:{color}">{label}</span>
       <span class="card-score">{inq.get('score', '?')}pt</span>
     </div>
@@ -555,7 +968,9 @@ def _render_card(inq: dict) -> str:
   </div>
   {viewing_line}{notes_line}
   <div class="card-meta">{inq.get('source', '')} / {inq.get('id', '')}</div>
-</a>'''
+  </a>
+  {analysis_html}
+</div>'''
 
 
 def _load_agent_memory() -> dict:
@@ -763,8 +1178,17 @@ def _naiken_invest_analysis(p: dict, all_props: list[dict]) -> str:
         return grid_html
 
     # 区分マンション: RC構造を仮定、建物比率50%（区分は土地持分小さい）
+    # loan_amount / loan_years が inquiry に設定されていれば頭金比率・期間を導出
+    inq_loan_amount = p.get("loan_amount")  # 万円
+    inq_loan_years = p.get("loan_years")    # 年
+    if inq_loan_amount and price:
+        computed_ratio = (price - inq_loan_amount) / price
+    else:
+        computed_ratio = 0.20  # default 20%
     params = InvestmentParams(
         building_ratio=0.50,
+        down_payment_ratio=computed_ratio,
+        loan_years=int(inq_loan_years) if inq_loan_years else 0,
     )
     rev = revenue_analyze(
         price_man=price,
@@ -992,12 +1416,14 @@ def generate_naiken_analysis() -> Path | None:
     inquiries = load_inquiries()
     viewing = [i for i in inquiries if i.get("status") in ("viewing", "viewed")]
     if not viewing:
+        _fonts_url_e = get_google_fonts_url()
+        _css_tokens_e = get_css_tokens()
         html = f"""<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>内覧分析</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<style>{site_header_css()}{global_nav_css()}
-body{{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-serif;min-height:100vh}}
+<link href="{_fonts_url_e}" rel="stylesheet">
+<style>{_css_tokens_e}{site_header_css()}{global_nav_css()}
+body{{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}}
 .wrap{{max-width:900px;margin:0 auto;padding:24px 16px}}
 h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 .empty{{color:#a9b3c6;margin-top:40px;text-align:center;font-size:15px}}
@@ -1187,20 +1613,22 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
     latest_cities = set(CITY_LABELS.get(p.get("city", ""), "") for p in latest_props)
     title_city = "・".join(sorted(c for c in latest_cities if c))
 
+    _fonts_url_n = get_google_fonts_url()
+    _css_tokens_n = get_css_tokens()
     html = f"""<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>内覧分析 — {title_city} {latest_date}</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="{_fonts_url_n}" rel="stylesheet">
 <style>
-:root{{--bg:#0f1117;--surface:#1a1d27;--card:rgba(255,255,255,0.035);--border:#2d3348;--line:rgba(255,255,255,0.08);--text:#e4e4e7;--text-secondary:#9ca3af;--muted:#7c8293;--accent:#6366f1;--blue:#3b82f6;--green:#22c55e;--red:#ef4444;--yellow:#eab308;--orange:#ff6b35;--gold:#c9a84c;--gnav-height:52px;--z-nav:100;--z-subnav:90;--z-modal:200;--font-display:'Inter','Noto Sans JP',sans-serif;--font-mono:'JetBrains Mono',monospace}}
+{_css_tokens_n}
 *{{box-sizing:border-box;margin:0}}
-body{{font-family:'Inter','Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}}
+body{{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}}
 {site_header_css()}{global_nav_css()}
 .wrap{{max-width:900px;margin:0 auto;padding:24px 16px}}
 h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 .meta{{color:var(--muted);font-size:12px;margin-bottom:24px}}
-.property{{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;margin-bottom:24px}}
-.property h2{{font-size:20px;font-weight:800;margin-bottom:4px}}
+.property{{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:24px}}
+.property h2{{font-size:clamp(16px,2vw,20px);font-weight:800;margin-bottom:4px}}
 .property .sub{{color:var(--muted);font-size:13px;margin-bottom:20px}}
 .tag{{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-right:6px;margin-bottom:6px}}
 .tag-red{{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}}
@@ -1214,20 +1642,20 @@ th{{text-align:left;padding:8px 12px;color:var(--muted);font-weight:600;font-siz
 td{{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .val{{font-weight:700}}.warn{{color:var(--red);font-weight:700}}.ok{{color:var(--green);font-weight:700}}.neutral{{color:var(--muted)}}
 .mono{{font-family:'JetBrains Mono',monospace}}
-.section-title{{font-size:16px;font-weight:800;margin:24px 0 12px;padding-left:12px;border-left:3px solid var(--gold)}}
+.section-title{{font-size:14px;font-weight:800;margin:24px 0 12px;padding-left:12px;border-left:3px solid var(--gold)}}
 .invest-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:16px 0}}
 .invest-card{{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;text-align:center}}
-.invest-card .label{{font-size:11px;color:var(--muted);margin-bottom:8px}}.invest-card .num{{font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace}}
+.invest-card .label{{font-size:12px;color:var(--muted);margin-bottom:8px}}.invest-card .num{{font-size:15px;font-weight:800;font-family:'JetBrains Mono',monospace}}
 .checklist{{list-style:none;padding:0}}.checklist li{{padding:6px 0 6px 24px;position:relative;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .checklist li::before{{content:'☐';position:absolute;left:0;color:var(--muted)}}
 .question{{padding:8px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .schedule-banner{{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:20px;margin-bottom:24px}}
-.schedule-banner h2{{font-size:18px;color:var(--gold);margin-bottom:8px}}.schedule-banner .detail{{font-size:14px;line-height:1.8}}
+.schedule-banner h2{{font-size:16px;color:var(--gold);margin-bottom:8px}}.schedule-banner .detail{{font-size:14px;line-height:1.8}}
 .verdict{{padding:16px;border-radius:12px;margin:16px 0;font-size:13px;line-height:1.8}}
 .verdict-caution{{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2)}}
 .revenue-block{{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px;margin:20px 0}}
 .rv-header{{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}}
-.rv-title{{font-size:16px;font-weight:800}}.rv-verdict{{padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}}
+.rv-title{{font-size:14px;font-weight:800}}.rv-verdict{{padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}}
 .rv-high{{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}}
 .rv-stable{{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)}}
 .rv-thin{{background:rgba(250,204,21,.15);color:#facc15;border:1px solid rgba(250,204,21,.3)}}
@@ -1237,11 +1665,11 @@ td{{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .rv-row{{display:flex;align-items:baseline;padding:4px 0;font-size:13px;gap:8px}}
 .rv-desc{{flex:1;min-width:0}}.rv-note{{flex:0 0 auto;font-size:11px;color:var(--muted)}}.rv-amount{{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;min-width:80px}}
 .collapsible-section{{margin:16px 0}}
-.collapsible-trigger{{cursor:pointer;font-size:16px;font-weight:800;padding:12px;border-left:3px solid var(--gold);color:var(--text);list-style:none;user-select:none}}
+.collapsible-trigger{{cursor:pointer;font-size:14px;font-weight:800;padding:12px;border-left:3px solid var(--gold);color:var(--text);list-style:none;user-select:none}}
 .collapsible-trigger::-webkit-details-marker{{display:none}}
 details[open] .collapsible-trigger{{color:var(--text)}}
 details[open] .collapsible-trigger::after{{content:'';}}
-.archive-header{{font-size:18px;font-weight:800;color:var(--muted);margin:40px 0 16px;padding:12px 0;border-top:2px solid var(--line);border-bottom:1px solid var(--line)}}
+.archive-header{{font-size:16px;font-weight:800;color:var(--muted);margin:40px 0 16px;padding:12px 0;border-top:2px solid var(--line);border-bottom:1px solid var(--line)}}
 .archive-header span{{font-size:13px;font-weight:500;margin-left:8px}}
 .archive-section .property{{opacity:0.7}}
 .rv-minus .rv-desc{{color:var(--muted)}}.rv-subtotal{{border-top:1px solid var(--line);padding-top:6px;margin-top:4px}}
@@ -1271,14 +1699,21 @@ def generate_dashboard() -> Path:
         site_header_html,
     )
 
-    inquiries = load_inquiries()
+    all_inquiries = load_inquiries()
     agent_memory = _load_agent_memory()
 
+    # Active = everything except passed. Flagged shown separately.
+    ACTIVE_STATUSES = ("inquired", "in_discussion", "viewing", "viewed", "decided")
+    inquiries = [i for i in all_inquiries if i.get("status") in ACTIVE_STATUSES]
+    flagged_items = [i for i in all_inquiries if i.get("status") == "flagged"]
+    passed_items = [i for i in all_inquiries if i.get("status") == "passed"]
+
     # Stats
-    total = len(inquiries)
+    total = len(all_inquiries)
+    active_count = len(inquiries)
     by_status: dict[str, int] = {}
     by_city: dict[str, int] = {}
-    for inq in inquiries:
+    for inq in all_inquiries:
         s = inq.get("status", "unknown")
         by_status[s] = by_status.get(s, 0) + 1
         c = inq.get("city", "other")
@@ -1297,10 +1732,12 @@ def generate_dashboard() -> Path:
         ("tokyo", "東京", "#a78bfa", "167,139,250"),
     ]
 
-    # Build section nav
+    # Build section nav (count active + flagged per city, exclude passed)
     nav_items = []
     for city_key, city_label, accent, _ in city_configs:
-        cnt = by_city.get(city_key, 0)
+        cnt_active = sum(1 for i in inquiries if i.get("city") == city_key)
+        cnt_flagged = sum(1 for i in flagged_items if i.get("city") == city_key)
+        cnt = cnt_active + cnt_flagged
         if cnt:
             nav_items.append(
                 f'<a href="#city-{city_key}" class="nav-tab" '
@@ -1308,47 +1745,63 @@ def generate_dashboard() -> Path:
                 f'{city_label} <span class="tab-count">{cnt}</span></a>'
             )
 
+    active_total = active_count + len(flagged_items)
     section_nav = (
         '<div class="section-nav"><div class="section-nav-inner">'
         + '<a href="#" class="nav-tab active" onclick="showCity(\'all\')" data-city="all">'
-        + f'All <span class="tab-count">{total}</span></a>'
+        + f'All <span class="tab-count">{active_total}</span></a>'
         + "".join(nav_items)
         + "</div></div>"
     )
 
-    # Build city sections
+    # Build city sections (active items only)
     city_sections = []
     for city_key, city_label, accent, accent_rgb in city_configs:
-        city_items = [i for i in inquiries if i.get("city") == city_key]
-        if not city_items:
+        city_active_items = [i for i in inquiries if i.get("city") == city_key]
+        city_flagged_items = [i for i in flagged_items if i.get("city") == city_key]
+        if not city_active_items and not city_flagged_items:
             continue
 
-        # Sort: active statuses first, then by score descending
-        city_items.sort(
+        # Sort active: by status priority then score
+        city_active_items.sort(
             key=lambda x: (status_priority.get(x.get("status", ""), 9), -(x.get("score") or 0))
         )
+        # Sort flagged by score descending
+        city_flagged_items.sort(key=lambda x: -(x.get("score") or 0))
 
-        # City-level stats
-        city_active = sum(
-            1 for i in city_items if i.get("status") in ("viewing", "in_discussion", "inquired")
-        )
-        city_flagged = sum(1 for i in city_items if i.get("status") == "flagged")
+        active_cards = "\n".join(_render_card(inq) for inq in city_active_items)
 
-        cards_html = "\n".join(_render_card(inq) for inq in city_items)
+        # Flagged as collapsible section (top 10 only)
+        flagged_html = ""
+        if city_flagged_items:
+            top_flagged = city_flagged_items[:10]
+            flagged_cards = "\n".join(_render_card(inq) for inq in top_flagged)
+            remaining = len(city_flagged_items) - len(top_flagged)
+            remaining_note = f'<div style="color:#71717a;font-size:12px;padding:8px 16px">他 {remaining}件 (score順)</div>' if remaining else ""
+            flagged_html = f'''
+  <details style="margin-top:12px">
+    <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
+      候補 {len(city_flagged_items)}件（クリックで展開）
+    </summary>
+    <div class="city-cards" style="margin-top:8px">{flagged_cards}</div>
+    {remaining_note}
+  </details>'''
 
         city_sections.append(f'''
 <div class="city-section" id="city-{city_key}" data-city="{city_key}">
   <div class="city-header" style="border-left:3px solid {accent}">
     <h2>{city_label}</h2>
     <div class="city-stats">
-      <span>{len(city_items)}件</span>
-      {f'<span style="color:#f97316">進行中 {city_active}</span>' if city_active else ''}
-      {f'<span style="color:{accent}">候補 {city_flagged}</span>' if city_flagged else ''}
+      <span>進行中 {len(city_active_items)}件</span>
+      {f'<span style="color:#71717a">候補 {len(city_flagged_items)}</span>' if city_flagged_items else ''}
     </div>
   </div>
-  <div class="city-cards">{cards_html}</div>
+  <div class="city-cards">{active_cards}</div>
+  {flagged_html}
 </div>''')
 
+    _fonts_url_d = get_google_fonts_url()
+    _css_tokens_d = get_css_tokens()
     html = f'''<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -1356,10 +1809,11 @@ def generate_dashboard() -> Path:
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Property Pipeline — iUMA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="{_fonts_url_d}" rel="stylesheet">
 <style>
+{_css_tokens_d}
 *{{margin:0;padding:0;box-sizing:border-box}}
-body{{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-serif;min-height:100vh}}
+body{{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}}
 {site_header_css()}
 {global_nav_css()}
 .container{{max-width:800px;margin:0 auto;padding:0 16px 80px}}
@@ -1369,17 +1823,17 @@ body{{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-s
 .hero h1{{font-size:clamp(20px,2.5vw,26px);font-weight:700}}
 .stats{{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}}
 .stat{{background:rgba(255,255,255,.06);border-radius:10px;padding:10px 16px;text-align:center;min-width:72px}}
-.stat-val{{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}}
-.stat-label{{font-size:10px;color:#71717a;margin-top:2px}}
+.stat-val{{font-size:22px;font-weight:700;font-family:var(--font-mono)}}
+.stat-label{{font-size:10px;color:var(--text-muted);margin-top:2px}}
 
 /* Section nav — matches stock portfolio .nav-bar pattern */
-.section-nav{{position:sticky;top:92px;z-index:80;background:rgba(10,12,18,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);margin:0 -16px;padding:0 16px}}
+.section-nav{{position:sticky;top:calc(var(--gnav-height, 52px) + 36px);z-index:var(--z-subnav, 90);background:rgba(10,12,18,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);margin:0 -16px;padding:0 16px}}
 .section-nav-inner{{display:flex;gap:0;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}}
 .section-nav-inner::-webkit-scrollbar{{display:none}}
 .nav-tab{{display:inline-flex;align-items:center;gap:4px;padding:10px 16px;font-size:12px;font-weight:600;color:rgba(255,255,255,.45);text-decoration:none;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;cursor:pointer}}
 .nav-tab:hover{{color:rgba(255,255,255,.8)}}
-.nav-tab.active{{color:#fff;border-bottom-color:#3b9eff}}
-.tab-count{{font-size:10px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace}}
+.nav-tab.active{{color:var(--text);border-bottom-color:var(--accent, #6366f1)}}
+.tab-count{{font-size:10px;color:rgba(255,255,255,.3);font-family:var(--font-mono)}}
 .nav-tab.active .tab-count{{color:rgba(255,255,255,.6)}}
 
 /* City sections */
@@ -1387,17 +1841,17 @@ body{{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-s
 .city-section.hidden{{display:none}}
 .city-header{{padding-left:12px;margin-bottom:14px;display:flex;align-items:baseline;gap:12px}}
 .city-header h2{{font-size:18px;font-weight:700}}
-.city-stats{{display:flex;gap:10px;font-size:11px;color:#71717a}}
+.city-stats{{display:flex;gap:10px;font-size:11px;color:var(--text-muted)}}
 
 /* Cards */
 .inq-card{{display:block;text-decoration:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:8px;transition:background .15s,border-color .15s}}
 .inq-card:hover{{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}}
-.card-name{{color:#f5f5f7;font-size:14px;font-weight:600}}
-.card-score{{background:rgba(255,255,255,.08);padding:2px 8px;border-radius:8px;font-size:11px;font-family:'JetBrains Mono',monospace;color:#a1a1aa}}
+.card-name{{color:var(--text);font-size:14px;font-weight:600}}
+.card-score{{background:rgba(255,255,255,.08);padding:2px 8px;border-radius:8px;font-size:11px;font-family:var(--font-mono);color:var(--text-secondary)}}
 .status-pill{{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;color:#fff}}
-.card-detail{{color:#a1a1aa;font-size:12px;margin-top:6px}}
-.card-filters{{display:flex;gap:12px;margin-top:8px;font-size:11px;color:#71717a}}
-.card-meta{{color:#52525b;font-size:10px;margin-top:6px}}
+.card-detail{{color:var(--text-secondary);font-size:12px;margin-top:6px}}
+.card-filters{{display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--text-muted)}}
+.card-meta{{color:var(--text-decorative);font-size:10px;margin-top:6px}}
 
 /* Schedule section */
 .schedule-section{{margin:24px 0;padding:0}}
@@ -1408,19 +1862,19 @@ body{{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-s
 .sched-card{{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;transition:background .15s}}
 .sched-card:hover{{background:rgba(255,255,255,.08)}}
 .sched-header{{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}}
-.sched-name{{font-size:15px;font-weight:600;color:#f5f5f7}}
-.sched-city{{font-size:11px;color:#71717a;font-family:'JetBrains Mono',monospace}}
+.sched-name{{font-size:15px;font-weight:600;color:var(--text)}}
+.sched-city{{font-size:11px;color:var(--text-muted);font-family:var(--font-mono)}}
 .sched-date{{font-size:13px;color:#a78bfa;margin-bottom:4px}}
-.sched-loc{{font-size:12px;color:#71717a;margin-bottom:4px}}
+.sched-loc{{font-size:12px;color:var(--text-muted);margin-bottom:4px}}
 .sched-agent{{font-size:12px;color:#d4d4d8;margin-bottom:2px}}
-.agent-title{{font-size:10px;color:#71717a;margin-left:4px}}
-.sched-contact{{font-size:11px;color:#71717a;margin-bottom:4px;font-family:'JetBrains Mono',monospace}}
-.sched-filters{{font-size:11px;color:#71717a;margin-top:6px}}
-.sched-notes{{font-size:11px;color:#a1a1aa;font-style:italic;margin-top:4px}}
+.agent-title{{font-size:10px;color:var(--text-muted);margin-left:4px}}
+.sched-contact{{font-size:11px;color:var(--text-muted);margin-bottom:4px;font-family:var(--font-mono)}}
+.sched-filters{{font-size:11px;color:var(--text-muted);margin-top:6px}}
+.sched-notes{{font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:4px}}
 
 /* Empty state */
-.empty{{text-align:center;padding:60px 20px;color:#52525b}}
-.empty h2{{font-size:18px;color:#71717a;margin-bottom:8px}}
+.empty{{text-align:center;padding:60px 20px;color:var(--text-decorative)}}
+.empty h2{{font-size:18px;color:var(--text-muted);margin-bottom:8px}}
 
 @media(max-width:640px){{
   .hero{{padding:24px 20px 20px}}
@@ -1440,12 +1894,12 @@ body{{background:#050507;color:#f5f5f7;font-family:'Inter','Noto Sans JP',sans-s
   <div class="hero">
     <h1>Property Pipeline</h1>
     <div class="stats">
-      <div class="stat"><div class="stat-val">{total}</div><div class="stat-label">Total</div></div>
       <div class="stat"><div class="stat-val" style="color:#f97316">{by_status.get('in_discussion', 0) + by_status.get('inquired', 0)}</div><div class="stat-label">進行中</div></div>
       <div class="stat"><div class="stat-val" style="color:#a78bfa">{by_status.get('viewing', 0)}</div><div class="stat-label">内見</div></div>
+      <div class="stat"><div class="stat-val" style="color:#6366f1">{by_status.get('viewed', 0)}</div><div class="stat-label">内見済</div></div>
       <div class="stat"><div class="stat-val" style="color:#22c55e">{by_status.get('decided', 0)}</div><div class="stat-label">決定</div></div>
-      <div class="stat"><div class="stat-val" style="color:#ef4444">{by_status.get('passed', 0)}</div><div class="stat-label">見送り</div></div>
     </div>
+    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 {by_status.get('flagged', 0)} / 見送り {by_status.get('passed', 0)}</div>
   </div>
 
   {_build_viewing_schedule(inquiries, agent_memory)}
@@ -1604,6 +2058,9 @@ def main() -> None:
             subprocess.run(["open", str(path)])
         else:
             print("No viewing properties found.")
+
+    elif cmd == "--lifecycle":
+        lifecycle()
 
     elif cmd == "--stats":
         print_stats()

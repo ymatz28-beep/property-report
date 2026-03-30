@@ -45,7 +45,7 @@ OUTPUT_DIR = Path("output")
 # ---------------------------------------------------------------------------
 PROPERTY_PAGES = [
     {"href": "market.html", "label": "Market"},
-    {"href": "pipeline.html", "label": "Pipeline"},
+    {"href": "inquiry-pipeline.html", "label": "Pipeline"},
     {"href": "simulate.html", "label": "Simulate"},
 ]
 
@@ -301,27 +301,63 @@ def _is_oc_row(row: PropertyRow) -> bool:
 
 import re as _re
 
+_CONFIRMED_OC_KEYWORDS = [
+    "賃貸中", "オーナーチェンジ", "入居者付", "入居中",
+    "月額賃料", "年間収入", "年間賃料", "年間予定収入",
+]
+
+
+def _is_confirmed_oc(row: PropertyRow) -> bool:
+    """Strictly check if property has confirmed tenant (actual rent available).
+
+    Unlike _is_oc_row (broad filter for kubun section), this only returns True
+    when there is strong evidence of an existing tenant. "利回り" alone is NOT enough.
+    Checks: pet field "OC" marker (from yield scraper) + keyword search in all text fields.
+    """
+    # Yield scraper stores OC flag in pet column
+    if getattr(row, "pet_status", "") == "OC":
+        return True
+    text = f"{row.name} {row.station_text} {row.minpaku_status} {row.location} {row.raw_line}"
+    return any(kw in text for kw in _CONFIRMED_OC_KEYWORDS)
+
+
 def _extract_oc_rent(row: PropertyRow) -> tuple[float, float]:
     """Extract actual annual income (万円) and yield (%) from OC conditions.
 
     Returns (annual_income_man, yield_pct) or (0, 0) if not found.
     """
     text = row.raw_line
-    annual_yen = 0.0
+    annual_man = 0.0
     yield_pct = 0.0
-    m_rent = _re.search(r'年間予定収入[：:]?\s*(\d[\d,]+)円', text)
+    # Pattern 1: explicit annual income (円 or 万円)
+    m_rent = _re.search(r'年間(?:予定)?収入[：:]?\s*([\d,.]+)万円', text)
     if m_rent:
-        annual_yen = float(m_rent.group(1).replace(',', ''))
+        annual_man = float(m_rent.group(1).replace(',', ''))
+    if annual_man == 0:
+        m_rent2 = _re.search(r'年間(?:予定)?収入[：:]?\s*(\d[\d,]+)円', text)
+        if m_rent2:
+            annual_man = float(m_rent2.group(1).replace(',', '')) / 10000
+    # Pattern 2: explicit yield
     m_yield = _re.search(r'年利回り[：:]?\s*([\d.]+)%', text)
     if m_yield:
         yield_pct = float(m_yield.group(1))
-    return (annual_yen / 10000, yield_pct)
+    # Pattern 3: yield from listing title (e.g., "利回り9.93%")
+    if yield_pct == 0:
+        m_yield2 = _re.search(r'利回り\s*([\d.]+)\s*[%％]', text)
+        if m_yield2:
+            yv = float(m_yield2.group(1))
+            if 1.0 <= yv <= 30.0:
+                yield_pct = yv
+    # Derive annual income from price × yield if not explicitly stated
+    if annual_man == 0 and yield_pct > 0 and row.price_man > 0:
+        annual_man = row.price_man * yield_pct / 100  # 万円
+    return (annual_man, yield_pct)
 
 
 def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> dict:
     d = asdict(row)
     d["prop_type"] = "kubun"
-    d["is_oc"] = _is_oc_row(row)
+    d["is_oc"] = _is_confirmed_oc(row)
     fs = first_seen.get(row.url, "")
     d["first_seen"] = fs[5:] if fs and len(fs) >= 10 else fs  # MM-DD only
     if fs:
@@ -442,6 +478,18 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
                 )
                 rev["cf_stress"] = round(ra_stress.after_tax_cf / 12, 1)
                 rev["stress_years"] = stress_years
+            # 現金購入比較（200万以下）
+            if row.price_man <= 200:
+                ra_cash = revenue_analyze(
+                    price_man=row.price_man, yield_pct=est_yield,
+                    structure=structure_for_calc, built_year=row.built_year,
+                    units_count=1, area_sqm=row.area_sqm,
+                    maintenance_fee_monthly=row.maintenance_fee or 0,
+                    params=InvestmentParams(down_payment_ratio=1.0),
+                )
+                rev["cash_cf"] = round(ra_cash.after_tax_cf / 12, 1)
+                rev["cash_equity"] = round(ra_cash.total_equity, 1)
+                rev["cash_ccr"] = round(ra_cash.ccr_pct, 1)
             d["revenue"] = rev
         except Exception:
             pass
@@ -703,7 +751,9 @@ def main() -> None:
         for section_key in ["kubun", "ittomono", "kodate", "budget"]:
             for prop in city_data[section_key]["properties"]:
                 rev = prop.get("revenue")
-                if rev and rev.get("after_tax_monthly_cf") is not None and rev["after_tax_monthly_cf"] >= 1.0 and rev.get("total_equity", float("inf")) < 1000:
+                # CF >= 1.0万 OR CCR >= 8%（低価格物件はCF絶対額が小さいためCCRで救済）
+                cf_ok = rev and rev.get("after_tax_monthly_cf") is not None and (rev["after_tax_monthly_cf"] >= 1.0 or rev.get("ccr", 0) >= 8.0)
+                if cf_ok and rev.get("total_equity", float("inf")) < 1000:
                     prop_copy = dict(prop)
                     type_labels = {"kubun": "区分", "ittomono": "一棟", "kodate": "戸建", "budget": "格安区分"}
                     prop_copy["_type_label"] = type_labels.get(section_key, section_key)
@@ -732,14 +782,21 @@ def main() -> None:
             )
             for row in yield_rows:
                 score_row(row, config)
-            yield_rows = [r for r in yield_rows if r.total_score >= 50]
+            # 収益物件は居住スコアではなくCF/CCRで評価。スコア閾値を緩和（駅遠OC物件の救済）
+            yield_rows = [r for r in yield_rows if r.total_score >= 20]
             for row in yield_rows:
                 d = _kubun_to_dict(row, first_seen, city_key=city_data["key"])
                 rev = d.get("revenue")
-                if rev and rev.get("after_tax_monthly_cf") is not None and rev["after_tax_monthly_cf"] >= 1.0 and rev.get("total_equity", float("inf")) < 1000:
+                # CF >= 1.0万 OR CCR >= 8%（低価格物件はCF絶対額が小さいためCCRで救済）
+                cf_ok = rev and rev.get("after_tax_monthly_cf") is not None and (rev["after_tax_monthly_cf"] >= 1.0 or rev.get("ccr", 0) >= 8.0)
+                if cf_ok and rev.get("total_equity", float("inf")) < 1000:
                     d["_type_label"] = "利回り区分"
                     profitable.append(d)
 
+        # Filter: 手出しが大きいのにCF薄利は除外（CCR < 5% AND 手出し > 200万）
+        profitable = [p for p in profitable
+                      if p.get("revenue", {}).get("ccr", 0) >= 5.0
+                      or p.get("revenue", {}).get("total_equity", 0) <= 200]
         profitable.sort(key=lambda p: p.get("revenue", {}).get("ccr", 0), reverse=True)
         city_data["profitable"] = {"count": len(profitable), "properties": profitable}
         city_data["count"] += len(profitable)

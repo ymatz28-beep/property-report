@@ -14,6 +14,8 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+from lib.styles.design_tokens import get_css_tokens, get_google_fonts_url
+
 from generate_search_report_common import (
     OSAKA_R_ROWS,
     PropertyRow,
@@ -349,55 +351,61 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
     sh_css = site_header_css()
     sh_html = site_header_html()
 
+    css_tokens = get_css_tokens()
+    fonts_url = get_google_fonts_url()
+
     return f'''<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>問い合わせメッセージ — Property</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="{fonts_url}" rel="stylesheet">
   <style>
     {sh_css}
     {nav_css}
-    :root {{ --bg:#0b0f16; --card:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.10); --text:#edf3ff; --muted:#a9b3c6; --green:#34d399; --red:#f87171; --yellow:#eab308; }}
+    {css_tokens}
     * {{ box-sizing:border-box; margin:0; }}
-    body {{ font-family:'Inter','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }}
+    body {{ font-family:var(--font-body); background:var(--bg); color:var(--text); min-height:100vh; }}
     .wrap {{ max-width:900px; margin:0 auto; padding:24px 16px 80px; }}
-    h1 {{ font-size:28px; font-weight:900; margin:24px 0 4px; }}
-    .subtitle {{ color:var(--muted); font-size:13px; margin-bottom:32px; }}
-    .city-section {{ margin-bottom:40px; }}
-    .city-title {{ font-size:20px; font-weight:800; margin-bottom:16px; padding-left:14px; border-left:4px solid; }}
-    .card {{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:16px; transition:border-color .2s; }}
-    .card:hover {{ border-color:var(--card-accent, var(--line)); }}
+    h1 {{ font-size:var(--fs-h1); font-weight:700; margin:24px 0 4px; }}
+    .subtitle {{ color:var(--text-muted); font-size:13px; margin-bottom:32px; }}
+    .city-section {{ margin-bottom:40px; scroll-margin-top:calc(var(--gnav-height, 52px) + 36px + 44px); }}
+    .city-title {{ font-size:var(--fs-h2); font-weight:700; margin-bottom:16px; padding-left:14px; border-left:4px solid; }}
+    .card {{ background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:16px; transition:border-color .2s; }}
+    .card:hover {{ border-color:var(--card-accent, var(--border)); }}
     .card-header {{ display:flex; align-items:flex-start; gap:12px; margin-bottom:10px; }}
-    .card-rank {{ font-size:14px; font-weight:800; color:var(--muted); min-width:28px; padding-top:2px; }}
+    .card-rank {{ font-size:14px; font-weight:800; color:var(--text-muted); min-width:28px; padding-top:2px; }}
     .card-info {{ flex:1; }}
     .card-name {{ font-size:16px; font-weight:800; line-height:1.3; color:var(--text); text-decoration:none; display:block; transition:color .2s; }}
-    .card-name:hover {{ color:var(--card-accent, #3b9eff); }}
-    .card-meta {{ font-size:13px; color:var(--muted); margin-top:2px; }}
-    .card-score {{ font-size:12px; color:var(--muted); margin-top:2px; }}
+    .card-name:hover {{ color:var(--card-accent, var(--accent, #6366f1)); }}
+    .card-meta {{ font-size:13px; color:var(--text-muted); margin-top:2px; }}
+    .card-score {{ font-size:12px; color:var(--text-muted); margin-top:2px; }}
     .card-tags {{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }}
     .tag {{ display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; }}
     .tag-red {{ background:rgba(248,113,113,.12); color:var(--red); border:1px solid rgba(248,113,113,.25); }}
     .tag-green {{ background:rgba(52,211,153,.12); color:var(--green); border:1px solid rgba(52,211,153,.25); }}
     .tag-yellow {{ background:rgba(250,204,21,.12); color:var(--yellow); border:1px solid rgba(250,204,21,.25); }}
-    .tag-muted {{ background:rgba(169,179,198,.08); color:var(--muted); border:1px solid rgba(169,179,198,.15); }}
+    .tag-muted {{ background:rgba(169,179,198,.08); color:var(--text-muted); border:1px solid rgba(169,179,198,.15); }}
     .msg-container {{ position:relative; }}
-    .msg-text {{ background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:16px; font-family:'Noto Sans JP',sans-serif; font-size:13px; line-height:1.8; white-space:pre-wrap; word-wrap:break-word; color:#ddd; max-height:300px; overflow-y:auto; }}
+    .msg-text {{ background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:16px; font-family:var(--font-body); font-size:13px; line-height:1.8; white-space:pre-wrap; word-wrap:break-word; color:#ddd; max-height:300px; overflow-y:auto; }}
     .copy-btn {{ position:absolute; top:8px; right:8px; padding:6px 16px; border-radius:8px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:#fff; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s; }}
     .copy-btn:hover {{ background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.3); }}
     .copy-btn.copied {{ background:rgba(52,211,153,.2); border-color:rgba(52,211,153,.5); color:var(--green); }}
     .nav {{ margin-top:40px; text-align:center; }}
-    .nav a {{ display:inline-block; padding:10px 24px; border-radius:999px; border:1px solid var(--line); color:var(--text); margin:4px; font-size:13px; text-decoration:none; }}
-    .nav a:hover {{ border-color:#3b9eff; background:rgba(59,158,255,.06); }}
-    .city-jump {{ display:flex; gap:10px; margin-bottom:32px; position:sticky; top:40px; z-index:100; background:var(--bg); padding:12px 0; border-bottom:1px solid var(--line); }}
-    .jump-btn {{ flex:1; text-align:center; padding:10px 16px; border-radius:10px; border:1px solid var(--line); color:var(--text); font-size:14px; font-weight:700; text-decoration:none; transition:all .2s; }}
-    .jump-btn:hover {{ border-color:var(--jc); background:rgba(255,255,255,.04); color:var(--jc); }}
-    .city-section {{ scroll-margin-top:120px; }}
+    .nav a {{ display:inline-block; padding:10px 24px; border-radius:999px; border:1px solid var(--border); color:var(--text); margin:4px; font-size:13px; text-decoration:none; }}
+    .nav a:hover {{ border-color:var(--accent, #6366f1); background:rgba(99,102,241,.06); }}
+    .section-nav {{ position:sticky; top:calc(var(--gnav-height, 52px) + 36px); z-index:var(--z-subnav, 90); background:rgba(10,12,18,.94); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid rgba(255,255,255,.06); margin:0 -16px; padding:0 16px; }}
+    .section-nav-inner {{ display:flex; gap:0; overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch; scrollbar-width:none; }}
+    .section-nav-inner::-webkit-scrollbar {{ display:none; }}
+    .nav-tab {{ display:inline-flex; align-items:center; gap:4px; padding:10px 16px; font-size:12px; font-weight:600; color:rgba(255,255,255,.45); text-decoration:none; border-bottom:2px solid transparent; transition:color .2s, border-color .2s; cursor:pointer; }}
+    .nav-tab:hover {{ color:rgba(255,255,255,.8); }}
+    .nav-tab.active {{ color:#fff; border-bottom-color:var(--accent, #6366f1); }}
+    .tab-count {{ font-size:10px; color:rgba(255,255,255,.3); font-family:var(--font-mono); }}
+    .nav-tab.active .tab-count {{ color:rgba(255,255,255,.6); }}
     @media(max-width:640px) {{
       .card-header {{ flex-wrap:wrap; }}
-      .city-jump {{ flex-wrap:wrap; }}
-      .jump-btn {{ flex:none; width:calc(50% - 5px); font-size:13px; }}
+      .nav-tab {{ padding:10px 12px; font-size:11px; }}
     }}
   </style>
 </head>
@@ -408,9 +416,9 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
   <h1>問い合わせメッセージ</h1>
   <p class="subtitle">生成日: {today} — スコア上位{MAX_PER_CITY}件/都市 — 合計{total}件 — コピーして各サイトのフォームに貼り付け</p>
 
-  <div class="city-jump">
-    {"".join(f'<a href="#city-{k}" class="jump-btn" style="--jc:{city_colors[k][0]}">{city_labels[k]}（{len(all_data.get(k, []))}件）</a>' for k in ["osaka", "fukuoka", "tokyo"] if all_data.get(k))}
-  </div>
+  <div class="section-nav"><div class="section-nav-inner">
+    {"".join(f'<a href="#city-{k}" class="nav-tab">{city_labels[k]} <span class="tab-count">{len(all_data.get(k, []))}</span></a>' for k in ["osaka", "fukuoka", "tokyo"] if all_data.get(k))}
+  </div></div>
 
   {"".join(cards_html)}
 

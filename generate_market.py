@@ -397,8 +397,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
 
         d["yield_text"] = f"{est_yield:.1f}%"
         structure_for_calc = row.structure or "RC造"
-        # 区分: 法人融資20年フロア（澤畠さん交渉ベース）
-        kubun_params = InvestmentParams(min_loan_years=20)
+        # 融資年数: 60 - 築年数（フロア20年 — 澤畠さん筑波銀行）
         try:
             ra = revenue_analyze(
                 price_man=row.price_man,
@@ -408,7 +407,6 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
                 units_count=1,
                 area_sqm=row.area_sqm,
                 maintenance_fee_monthly=row.maintenance_fee or 0,
-                params=kubun_params,
             )
             rev = {
                 "noi": round(ra.noi, 1),
@@ -432,17 +430,18 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
                 "rent_per_sqm": mkt_per_sqm,
                 "structure_used": structure_for_calc,
             }
-            # 15年ストレステスト（20年フロアが適用された物件のみ）
-            ra15 = revenue_analyze(
-                price_man=row.price_man, yield_pct=est_yield,
-                structure=structure_for_calc, built_year=row.built_year,
-                units_count=1, area_sqm=row.area_sqm,
-                maintenance_fee_monthly=row.maintenance_fee or 0,
-                params=InvestmentParams(min_loan_years=15),
-            )
-            if ra15.loan_years < ra.loan_years:
-                rev["cf_stress"] = round(ra15.after_tax_cf / 12, 1)
-                rev["stress_years"] = ra15.loan_years
+            # ストレステスト: 融資年数 - 5年（最低15年）
+            stress_years = max(15, ra.loan_years - 5)
+            if stress_years < ra.loan_years:
+                ra_stress = revenue_analyze(
+                    price_man=row.price_man, yield_pct=est_yield,
+                    structure=structure_for_calc, built_year=row.built_year,
+                    units_count=1, area_sqm=row.area_sqm,
+                    maintenance_fee_monthly=row.maintenance_fee or 0,
+                    params=InvestmentParams(loan_years=stress_years),
+                )
+                rev["cf_stress"] = round(ra_stress.after_tax_cf / 12, 1)
+                rev["stress_years"] = stress_years
             d["revenue"] = rev
         except Exception:
             pass

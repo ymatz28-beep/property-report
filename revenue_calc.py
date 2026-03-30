@@ -28,8 +28,8 @@ class InvestmentParams:
     # Financing
     down_payment_ratio: float = 0.20   # 頭金比率 (20%)
     loan_rate_annual: float = 0.0285   # ローン金利 年率 (2.85%)
-    loan_years: int = 0                # 0 = 自動算出（残存耐用年数ベース）
-    min_loan_years: int = 15           # 自動算出時のフロア（一棟15年、区分20年）
+    loan_years: int = 0                # 0 = 自動算出（60 - 築年数、フロア20年）
+    min_loan_years: int = 20           # 未使用（互換用）— 新ロジックは 60-築年数
 
     # Operations
     vacancy_rate: float = 0.07         # 空室率 (7%)
@@ -235,12 +235,9 @@ def analyze(
         # Explicitly specified — use as-is
         loan_years = p.loan_years
     else:
-        # Auto: 法人融資の現実的な年数
-        # 区分: min_loan_years=20（澤畠さん交渉ベース）
-        # 一棟: min_loan_years=15（デフォルト）
-        # 耐用年数内は残存年数ベース (上限35年)
-        raw_term = max(0, useful_life - age)
-        loan_years = max(p.min_loan_years, min(35, raw_term))
+        # 澤畠さん（筑波銀行）ルール: 60 - 築年数
+        # フロア20年（築40年超でも20年に伸ばせる可能性あり）
+        loan_years = max(20, 60 - age) if age > 0 else 35
 
     down_payment = price_man * p.down_payment_ratio
     acquisition_cost = price_man * p.acquisition_cost_rate

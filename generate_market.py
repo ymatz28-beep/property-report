@@ -213,6 +213,25 @@ def _is_oc_row(row: PropertyRow) -> bool:
     return any(kw in text for kw in _OC_KEYWORDS)
 
 
+import re as _re
+
+def _extract_oc_rent(row: PropertyRow) -> tuple[float, float]:
+    """Extract actual annual income (万円) and yield (%) from OC conditions.
+
+    Returns (annual_income_man, yield_pct) or (0, 0) if not found.
+    """
+    text = row.raw_line
+    annual_yen = 0.0
+    yield_pct = 0.0
+    m_rent = _re.search(r'年間予定収入[：:]?\s*(\d[\d,]+)円', text)
+    if m_rent:
+        annual_yen = float(m_rent.group(1).replace(',', ''))
+    m_yield = _re.search(r'年利回り[：:]?\s*([\d.]+)%', text)
+    if m_yield:
+        yield_pct = float(m_yield.group(1))
+    return (annual_yen / 10000, yield_pct)
+
+
 def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> dict:
     d = asdict(row)
     d["prop_type"] = "kubun"
@@ -247,14 +266,27 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
     else:
         d["maintenance_fee_text"] = ""
 
-    # Revenue analysis for kubun (estimate yield from market rent)
+    # Revenue analysis for kubun
+    # OC properties: use actual rent from conditions field
+    # Non-OC: estimate from market rent per sqm
     d["revenue"] = None
     d["est_monthly_rent"] = ""
+    d["rent_source"] = ""  # "実家賃" or "想定家賃"
     if row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
-        rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
-        monthly_rent = rent_per_sqm * row.area_sqm  # 円
-        annual_rent = monthly_rent * 12 / 10000  # 万円
-        est_yield = (annual_rent / row.price_man) * 100
+        oc_annual_man, oc_yield = _extract_oc_rent(row) if d["is_oc"] else (0, 0)
+        if oc_annual_man > 0:
+            # Use actual OC rent
+            monthly_rent = oc_annual_man * 10000 / 12  # 円
+            annual_rent = oc_annual_man  # 万円
+            est_yield = oc_yield if oc_yield > 0 else (annual_rent / row.price_man) * 100
+            d["rent_source"] = "実家賃"
+        else:
+            # Estimate from market rent
+            rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
+            monthly_rent = rent_per_sqm * row.area_sqm  # 円
+            annual_rent = monthly_rent * 12 / 10000  # 万円
+            est_yield = (annual_rent / row.price_man) * 100
+            d["rent_source"] = "想定家賃"
         d["yield_text"] = f"{est_yield:.1f}%"
         d["est_monthly_rent"] = f"{monthly_rent / 10000:.1f}万" if monthly_rent >= 10000 else f"{int(monthly_rent):,}円"
         structure_for_calc = row.structure or "RC造"
@@ -278,11 +310,14 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
                 "tax_benefit": round(ra.tax_benefit, 1),
                 "verdict": ra.verdict,
                 "down_payment": round(ra.down_payment, 1),
+                "acquisition_cost": round(ra.acquisition_cost, 1),
+                "total_equity": round(ra.total_equity, 1),
                 "loan_amount": round(ra.loan_amount, 1),
                 "loan_years": ra.loan_years,
                 "loan_rate": ra.params.loan_rate_annual * 100,
                 "annual_debt_service": round(ra.annual_debt_service, 1),
                 "est_monthly_rent": d["est_monthly_rent"],
+                "rent_source": d["rent_source"],
                 "structure_used": structure_for_calc,
             }
         except Exception:
@@ -346,6 +381,7 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
 
     # Estimated monthly rent
     d["est_monthly_rent"] = ""
+    d["rent_source"] = "想定家賃"
     area = row.area_sqm or 0
     if row.price_man and row.price_man > 0 and area > 0:
         rent_per_sqm = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
@@ -382,11 +418,14 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
                 "tax_benefit": round(ra.tax_benefit, 1),
                 "verdict": ra.verdict,
                 "down_payment": round(ra.down_payment, 1),
+                "acquisition_cost": round(ra.acquisition_cost, 1),
+                "total_equity": round(ra.total_equity, 1),
                 "loan_amount": round(ra.loan_amount, 1),
                 "loan_years": ra.loan_years,
                 "loan_rate": ra.params.loan_rate_annual * 100,
                 "annual_debt_service": round(ra.annual_debt_service, 1),
                 "est_monthly_rent": d["est_monthly_rent"],
+                "rent_source": d["rent_source"],
                 "structure_used": row.structure or "RC造",
             }
         except Exception:
@@ -506,9 +545,7 @@ def main() -> None:
         # 格安区分 (budget tier — Fukuoka only)
         budget_rows = _load_budget(cfg["key"])
         budget_props = [_kubun_to_dict(r, first_seen, city_key=cfg["key"]) for r in budget_rows]
-        # CF赤字フィルタ: マイナスCFは投資対象外
-        budget_props = [p for p in budget_props
-                        if p.get("revenue") and p["revenue"].get("monthly_cf", 0) >= 0]
+        # Budget tier: CF赤字もOC実家賃データとして価値があるため、フィルタなし
 
         city_total = len(kubun_props) + len(ittomono_props) + len(kodate_props) + len(budget_props)
 

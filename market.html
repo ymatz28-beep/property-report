@@ -522,6 +522,10 @@ body {
 .prop-table a { color: var(--accent); text-decoration: none; }
 .prop-table a:hover { text-decoration: underline; }
 
+/* Budget table — compact date & station columns */
+[data-type="budget"] .date-cell { max-width: 52px; overflow: hidden; text-overflow: ellipsis; font-size: 10px; padding: 6px 4px; }
+[data-type="budget"] .station-cell { max-width: 72px; overflow: hidden; text-overflow: ellipsis; padding: 6px 4px; }
+
 /* Hero — compact inline bar */
 .hero {
   display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
@@ -25990,7 +25994,7 @@ body {
           <tbody>
             <tr data-score="100" data-price="1000" data-area="46.75" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--green)">100</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99781409" target="_blank" rel="noopener" title="トピレック博多" onclick="event.stopPropagation()">トピレック博多</a></td>
               <td class="price-cell">1000万円</td>
               <td class="area-cell">46.75㎡</td>
@@ -26000,7 +26004,7 @@ body {
               <td>—</td>
               <td>相談可</td>
               <td class="price-cell" style="white-space:nowrap">—</td>
-              <td class="price-cell" style="white-space:nowrap">11.5万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区 2460円/㎡</span></td>
+              <td class="price-cell" style="white-space:nowrap">11.5万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2460円/㎡</span></td>
               <td>13.8%</td>
               <td class="price-cell" style="color:var(--green)">2.9万</td>
               <td class="price-cell">21.4万/㎡</td>
@@ -26026,7 +26030,7 @@ body {
             </tr>
             <tr data-score="77" data-price="850" data-area="68.3" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">77</td>
-              <td><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
+              <td class="date-cell"><span style="color:var(--green);font-weight:700;font-size:10px">NEW</span></td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99804693" target="_blank" rel="noopener" title="第3シャトー高宮 101" onclick="event.stopPropagation()">第3シャトー高宮 101</a></td>
               <td class="price-cell">850万円</td>
               <td class="area-cell">68.3㎡</td>
@@ -26036,7 +26040,7 @@ body {
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
               <td class="price-cell" style="white-space:nowrap">7.0万<br><span style="font-size:9px;color:var(--red)">-48%</span></td>
-              <td class="price-cell" style="white-space:nowrap">13.4万<br><span style="font-size:9px;color:var(--text-muted)">相場南区 1967円/㎡</span></td>
+              <td class="price-cell" style="white-space:nowrap">13.4万<br><span style="font-size:9px;color:var(--text-muted)">南区 1967円/㎡</span></td>
               <td>9.9%</td>
               <td class="price-cell" style="color:var(--green)">0.8万</td>
               <td class="price-cell">12.4万/㎡</td>
@@ -26062,7 +26066,7 @@ body {
             </tr>
             <tr data-score="75" data-price="580" data-area="55.2" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">75</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99665480" target="_blank" rel="noopener" title="第一大楠マンション 305" onclick="event.stopPropagation()">第一大楠マンション 305</a></td>
               <td class="price-cell">580万円</td>
               <td class="area-cell">55.2㎡</td>
@@ -26072,7 +26076,7 @@ body {
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
               <td class="price-cell" style="white-space:nowrap">5.5万<br><span style="font-size:9px;color:var(--red)">-54%</span></td>
-              <td class="price-cell" style="white-space:nowrap">11.9万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区 2160円/㎡</span></td>
+              <td class="price-cell" style="white-space:nowrap">11.9万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>11.1%</td>
               <td class="price-cell" style="color:var(--green)">0.5万</td>
               <td class="price-cell">10.5万/㎡</td>
@@ -26098,7 +26102,7 @@ body {
             </tr>
             <tr data-score="72" data-price="980" data-area="51.7" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">72</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99789402" target="_blank" rel="noopener" title="シャルマンコーポ" onclick="event.stopPropagation()">シャルマンコーポ</a></td>
               <td class="price-cell">980万円</td>
               <td class="area-cell">51.7㎡</td>
@@ -26108,7 +26112,7 @@ body {
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
               <td class="price-cell" style="white-space:nowrap">5.5万<br><span style="font-size:9px;color:var(--red)">-57%</span></td>
-              <td class="price-cell" style="white-space:nowrap">12.7万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区 2460円/㎡</span></td>
+              <td class="price-cell" style="white-space:nowrap">12.7万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2460円/㎡</span></td>
               <td>6.7%</td>
               <td class="price-cell" style="color:var(--red)">-0.4万</td>
               <td class="price-cell">19.0万/㎡</td>
@@ -26134,7 +26138,7 @@ body {
             </tr>
             <tr data-score="70" data-price="650" data-area="40.23" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">70</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99789433" target="_blank" rel="noopener" title="ローズマンション山王 203" onclick="event.stopPropagation()">ローズマンション山王 203</a></td>
               <td class="price-cell">650万円</td>
               <td class="area-cell">40.23㎡</td>
@@ -26144,7 +26148,7 @@ body {
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>相談可</td>
               <td class="price-cell" style="white-space:nowrap">4.7万<br><span style="font-size:9px;color:var(--red)">-46%</span></td>
-              <td class="price-cell" style="white-space:nowrap">8.7万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区 2160円/㎡</span></td>
+              <td class="price-cell" style="white-space:nowrap">8.7万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>8.7%</td>
               <td class="price-cell" style="color:var(--red)">-0.2万</td>
               <td class="price-cell">16.2万/㎡</td>
@@ -26170,7 +26174,7 @@ body {
             </tr>
             <tr data-score="67" data-price="950" data-area="54.4" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--yellow)">67</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99795576" target="_blank" rel="noopener" title="ロワールマンション井尻" onclick="event.stopPropagation()">ロワールマンション井尻</a></td>
               <td class="price-cell">950万円</td>
               <td class="area-cell">54.4㎡</td>
@@ -26180,7 +26184,7 @@ body {
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
               <td class="price-cell" style="white-space:nowrap">6.2万<br><span style="font-size:9px;color:var(--red)">-42%</span></td>
-              <td class="price-cell" style="white-space:nowrap">10.7万<br><span style="font-size:9px;color:var(--text-muted)">相場南区 1967円/㎡</span></td>
+              <td class="price-cell" style="white-space:nowrap">10.7万<br><span style="font-size:9px;color:var(--text-muted)">南区 1967円/㎡</span></td>
               <td>7.6%</td>
               <td class="price-cell" style="color:var(--green)">0.1万</td>
               <td class="price-cell">17.5万/㎡</td>
@@ -26206,7 +26210,7 @@ body {
             </tr>
             <tr data-score="63" data-price="590" data-area="62.86" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--orange, #ff6b35)">63</td>
-              <td>2026-03-19</td>
+              <td class="date-cell">2026-03-19</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99813072" target="_blank" rel="noopener" title="スカイマンション南福岡" onclick="event.stopPropagation()">スカイマンション南福岡</a></td>
               <td class="price-cell">590万円</td>
               <td class="area-cell">62.86㎡</td>
@@ -26216,7 +26220,7 @@ body {
               <td>—</td>
               <td>—</td>
               <td class="price-cell" style="white-space:nowrap">—</td>
-              <td class="price-cell" style="white-space:nowrap">13.6万<br><span style="font-size:9px;color:var(--text-muted)">相場博多区 2160円/㎡</span></td>
+              <td class="price-cell" style="white-space:nowrap">13.6万<br><span style="font-size:9px;color:var(--text-muted)">博多区 2160円/㎡</span></td>
               <td>27.6%</td>
               <td class="price-cell" style="color:var(--green)">4.7万</td>
               <td class="price-cell">9.4万/㎡</td>
@@ -26242,7 +26246,7 @@ body {
             </tr>
             <tr data-score="62" data-price="650" data-area="40.0" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--orange, #ff6b35)">62</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99776046" target="_blank" rel="noopener" title="ローレルハイツ高宮 116" onclick="event.stopPropagation()">ローレルハイツ高宮 116</a></td>
               <td class="price-cell">650万円</td>
               <td class="area-cell">40.0㎡</td>
@@ -26252,7 +26256,7 @@ body {
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
               <td class="price-cell" style="white-space:nowrap">4.5万<br><span style="font-size:9px;color:var(--red)">-35%</span></td>
-              <td class="price-cell" style="white-space:nowrap">6.9万<br><span style="font-size:9px;color:var(--text-muted)">相場南区 1728円/㎡</span></td>
+              <td class="price-cell" style="white-space:nowrap">6.9万<br><span style="font-size:9px;color:var(--text-muted)">南区 1728円/㎡</span></td>
               <td>7.7%</td>
               <td class="price-cell" style="color:var(--red)">-0.4万</td>
               <td class="price-cell">16.2万/㎡</td>
@@ -26278,7 +26282,7 @@ body {
             </tr>
             <tr data-score="62" data-price="750" data-area="53.87" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--orange, #ff6b35)">62</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99801480" target="_blank" rel="noopener" title="長住三丁目分譲住宅１０棟" onclick="event.stopPropagation()">長住三丁目分譲住宅１０棟</a></td>
               <td class="price-cell">750万円</td>
               <td class="area-cell">53.87㎡</td>
@@ -26288,7 +26292,7 @@ body {
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
               <td class="price-cell" style="white-space:nowrap">5.0万<br><span style="font-size:9px;color:var(--red)">-53%</span></td>
-              <td class="price-cell" style="white-space:nowrap">10.6万<br><span style="font-size:9px;color:var(--text-muted)">相場南区 1967円/㎡</span></td>
+              <td class="price-cell" style="white-space:nowrap">10.6万<br><span style="font-size:9px;color:var(--text-muted)">南区 1967円/㎡</span></td>
               <td>8.0%</td>
               <td class="price-cell" style="color:var(--red)">-0.0万</td>
               <td class="price-cell">13.9万/㎡</td>
@@ -26314,7 +26318,7 @@ body {
             </tr>
             <tr data-score="60" data-price="670" data-area="65.9" data-expandable onclick="toggleDetail(this)">
               <td class="score-cell" style="color:var(--orange, #ff6b35)">60</td>
-              <td>—</td>
+              <td class="date-cell">—</td>
               <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99621859" target="_blank" rel="noopener" title="エクレール弥永 505" onclick="event.stopPropagation()">エクレール弥永 505</a></td>
               <td class="price-cell">670万円</td>
               <td class="area-cell">65.9㎡</td>
@@ -26324,7 +26328,7 @@ body {
               <td><span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span></td>
               <td>—</td>
               <td class="price-cell" style="white-space:nowrap">3.9万<br><span style="font-size:9px;color:var(--red)">-66%</span></td>
-              <td class="price-cell" style="white-space:nowrap">11.4万<br><span style="font-size:9px;color:var(--text-muted)">相場南区 1728円/㎡</span></td>
+              <td class="price-cell" style="white-space:nowrap">11.4万<br><span style="font-size:9px;color:var(--text-muted)">南区 1728円/㎡</span></td>
               <td>7.0%</td>
               <td class="price-cell" style="color:var(--red)">-0.7万</td>
               <td class="price-cell">10.2万/㎡</td>
@@ -33914,7 +33918,7 @@ body {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-03-30 13:56</div>
+  <div style="margin-top:4px;">Generated at 2026-03-30 14:02</div>
 </footer>
 <script>
 let currentView = 'list';

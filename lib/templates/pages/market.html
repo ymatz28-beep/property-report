@@ -527,7 +527,7 @@
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF/月(20年)</th><th>㎡単価</th>
+              <th>間取り</th><th>構造/築年</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF/月(20年)</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -539,7 +539,7 @@
               <td class="price-cell">{{ prop.price_text }}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
               <td class="layout-cell">{{ prop.layout or "—" }}</td>
-              <td>{{ prop.structure or "—" }}</td>
+              <td style="white-space:nowrap">{{ prop.structure or "—" }}{% if prop.built_year %}<br><span style="font-size:10px;color:var(--text-muted)">{{ prop.built_year }}年(築{{ 2026 - prop.built_year }})</span>{% endif %}</td>
               <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}—{% endif %}</td>
               <td>{{ prop.pet_status or "—" }}</td>

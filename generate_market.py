@@ -703,7 +703,7 @@ def main() -> None:
         for section_key in ["kubun", "ittomono", "kodate", "budget"]:
             for prop in city_data[section_key]["properties"]:
                 rev = prop.get("revenue")
-                if rev and rev.get("after_tax_monthly_cf") is not None and rev["after_tax_monthly_cf"] > 0:
+                if rev and rev.get("after_tax_monthly_cf") is not None and rev["after_tax_monthly_cf"] > 0 and rev.get("total_equity", float("inf")) < 1000:
                     prop_copy = dict(prop)
                     type_labels = {"kubun": "区分", "ittomono": "一棟", "kodate": "戸建", "budget": "格安区分"}
                     prop_copy["_type_label"] = type_labels.get(section_key, section_key)

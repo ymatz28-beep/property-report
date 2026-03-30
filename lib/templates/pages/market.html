@@ -342,7 +342,7 @@
         <table class="prop-table" data-type="profitable">
           <thead>
             <tr>
-              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th><th>築年</th>
+              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th><th>築年</th><th>最寄駅</th>
               <th>想定家賃</th><th>CF/月(税後)</th><th>手出し</th><th>CCR</th>
             </tr>
           </thead>
@@ -355,16 +355,16 @@
               <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}</td>
               <td>{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
               <td style="font-size:11px">{% if prop.built_year %}{{ prop.built_year }}年<span style="opacity:0.6">(築{{ 2026 - prop.built_year }})</span>{% else %}—{% endif %}</td>
+              <td class="station-cell">{{ prop.station_text|default("—") }}</td>
               <td class="price-cell" style="white-space:nowrap">{{ prop.revenue.est_monthly_rent or "—" }}</td>
               <td class="price-cell" style="color:var(--green);font-weight:600">{{ prop.revenue.after_tax_monthly_cf }}万</td>
               <td class="price-cell" style="white-space:nowrap">{{ prop.revenue.total_equity }}万</td>
               <td style="font-weight:600">{{ prop.revenue.ccr }}%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="9">
+              <td colspan="10">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">構造</span><span class="detail-value">{{ prop.structure|default(prop.revenue.structure_used|default("—")) }}</span></div>
-                  <div class="detail-item"><span class="detail-label">最寄駅</span><span class="detail-value">{{ prop.station_text|default("—") }}</span></div>
                   <div class="detail-item"><span class="detail-label">利回り</span><span class="detail-value">{{ prop.yield_text|default("—") }}</span></div>
                   <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ prop.revenue.noi }}万</span></div>
                   <div class="detail-item"><span class="detail-label">頭金</span><span class="detail-value">{{ prop.revenue.down_payment }}万</span></div>

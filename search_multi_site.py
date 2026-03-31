@@ -758,6 +758,14 @@ def save_results(properties: list[dict], city_key: str, source_name: str) -> Pat
     filename = f"{source_name}_{city_key}_raw.txt"
     out_path = DATA_DIR / filename
 
+    # Guard: never overwrite existing data with 0 results (scrape failure)
+    if not properties and out_path.exists():
+        existing_lines = [l for l in out_path.read_text(encoding="utf-8").splitlines()
+                         if l and not l.startswith("#")]
+        if existing_lines:
+            print(f"  [GUARD] {filename}: 0件取得 — 既存{len(existing_lines)}件を保護、上書きスキップ")
+            return out_path
+
     lines = [
         f"## {source_name} 検索結果 - {AREA_CONFIGS[city_key]['label']}",
         f"## 条件: {PRICE_MAX // 10000}万以下, {AREA_MIN}-{AREA_MAX}㎡",

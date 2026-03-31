@@ -973,6 +973,14 @@ def save_kubun(properties: list[dict], city_key: str) -> Path:
     DATA_DIR.mkdir(exist_ok=True)
     out = DATA_DIR / f"yield_{city_key}_raw.txt"
 
+    # Guard: never overwrite existing data with 0 results (scrape failure)
+    if not properties and out.exists():
+        existing_lines = [l for l in out.read_text(encoding="utf-8").splitlines()
+                         if l and not l.startswith("#")]
+        if existing_lines:
+            print(f"  [GUARD] {out.name}: 0件取得 — 既存{len(existing_lines)}件を保護、上書きスキップ")
+            return out
+
     lines = [
         f"## 利回りフォーカス区分 - {AREA_CONFIGS[city_key]['label']}",
         f"## 条件: ≤{KUBUN_PRICE_MAX}万, ≥{KUBUN_AREA_MIN}㎡",
@@ -1016,6 +1024,14 @@ def save_ittomono(properties: list[dict], city_key: str) -> Path:
     """Save ittomono results in 15-column pipe format (with score)."""
     DATA_DIR.mkdir(exist_ok=True)
     out = DATA_DIR / f"yield_ittomono_{city_key}_raw.txt"
+
+    # Guard: never overwrite existing data with 0 results (scrape failure)
+    if not properties and out.exists():
+        existing_lines = [l for l in out.read_text(encoding="utf-8").splitlines()
+                         if l and not l.startswith("#")]
+        if existing_lines:
+            print(f"  [GUARD] {out.name}: 0件取得 — 既存{len(existing_lines)}件を保護、上書きスキップ")
+            return out
 
     # Score and sort
     for p in properties:

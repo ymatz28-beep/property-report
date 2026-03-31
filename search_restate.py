@@ -318,6 +318,14 @@ def save_results(properties: list[dict], city_key: str) -> Path:
     config = SITE_CONFIGS[city_key]
     out_path = DATA_DIR / f"restate_{city_key}_raw.txt"
 
+    # Guard: never overwrite existing data with 0 results (scrape failure)
+    if not properties and out_path.exists():
+        existing_lines = [l for l in out_path.read_text(encoding="utf-8").splitlines()
+                         if l and not l.startswith("#")]
+        if existing_lines:
+            print(f"  [GUARD] {out_path.name}: 0件取得 — 既存{len(existing_lines)}件を保護、上書きスキップ")
+            return out_path
+
     lines = [
         f"## {config['source']} 検索結果",
         f"## 条件: {PRICE_MAX}万以下, {AREA_MIN}-{AREA_MAX}㎡",

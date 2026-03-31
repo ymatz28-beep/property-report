@@ -393,6 +393,14 @@ def save_results(properties: list[dict], city_key: str) -> Path:
     DATA_DIR.mkdir(exist_ok=True)
     out_path = DATA_DIR / f"ftakken_{city_key}_raw.txt"
 
+    # Guard: never overwrite existing data with 0 results (scrape failure)
+    if not properties and out_path.exists():
+        existing_lines = [l for l in out_path.read_text(encoding="utf-8").splitlines()
+                         if l and not l.startswith("#")]
+        if existing_lines:
+            print(f"  [GUARD] {out_path.name}: 0件取得 — 既存{len(existing_lines)}件を保護、上書きスキップ")
+            return out_path
+
     config = SEARCH_CONFIGS[city_key]
     lines = [
         f"## ふれんず(f-takken.com) 検索結果 - {config['label']}",
@@ -824,6 +832,14 @@ def save_ittomono_results(properties: list[dict], prop_type: str) -> Path:
     slug = "ittomono" if prop_type == "一棟マンション" else "kodate"
     out_path = DATA_DIR / f"ftakken_{slug}_fukuoka_raw.txt"
 
+    # Guard: never overwrite existing data with 0 results (scrape failure)
+    if not properties and out_path.exists():
+        existing_lines = [l for l in out_path.read_text(encoding="utf-8").splitlines()
+                         if l and not l.startswith("#")]
+        if existing_lines:
+            print(f"  [GUARD] {out_path.name}: 0件取得 — 既存{len(existing_lines)}件を保護、上書きスキップ")
+            return out_path
+
     price_range = f"{ITTOMONO_PRICE_MIN}万〜{ITTOMONO_PRICE_MAX}万" if prop_type == "一棟マンション" else f"{KODATE_PRICE_MIN}万〜{KODATE_PRICE_MAX}万"
     lines = [
         f"## ふれんず {prop_type} 検索結果 - 福岡",
@@ -922,6 +938,14 @@ def save_budget_results(properties: list[dict], city_key: str = "fukuoka") -> Pa
     """Save budget results to pipe-delimited data file."""
     DATA_DIR.mkdir(exist_ok=True)
     out_path = DATA_DIR / f"ftakken_{city_key}_budget_raw.txt"
+
+    # Guard: never overwrite existing data with 0 results (scrape failure)
+    if not properties and out_path.exists():
+        existing_lines = [l for l in out_path.read_text(encoding="utf-8").splitlines()
+                         if l and not l.startswith("#")]
+        if existing_lines:
+            print(f"  [GUARD] {out_path.name}: 0件取得 — 既存{len(existing_lines)}件を保護、上書きスキップ")
+            return out_path
 
     config = SEARCH_CONFIGS[city_key]
     lines = [

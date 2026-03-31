@@ -171,6 +171,7 @@
 .prop-table .area-cell { font-family: var(--font-mono); text-align: right; white-space: nowrap; }
 .prop-table a { color: var(--accent); text-decoration: none; }
 .prop-table a:hover { text-decoration: underline; }
+.prop-table .name-cell a { color: var(--text); }
 
 /* Compact columns for dense tables (kubun + budget only) */
 [data-type="budget"] .date-cell,
@@ -405,7 +406,7 @@
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="{{ prop.total_score|default(0) }}" data-price="{{ prop.price_man|default(0) }}">
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:{% if prop._type_label == '一棟' %}rgba(168,85,247,0.15);color:#a855f7{% elif prop._type_label == '戸建' %}rgba(245,158,11,0.15);color:#f59e0b{% elif prop._type_label == '利回り区分' %}rgba(34,197,94,0.15);color:var(--green){% else %}rgba(99,102,241,0.15);color:var(--accent){% endif %}">{{ prop._type_label }}</span></td>
-              <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="{{ prop.name }}">{{ prop.name or "—" }}</a></td>
+              <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}">{{ prop.name or "—" }}</a></td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}{% if prop.price_validity %}<br><span class="price-badge price-badge--{{ prop.price_validity.color }}">{{ prop.price_validity.label }} {{ prop.price_validity.deviation_pct }}%</span>{% endif %}</td>
               <td>{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
               <td style="font-size:11px">{% if prop.built_year %}{{ prop.built_year }}<span style="opacity:0.6">({{ 2026 - prop.built_year }})</span>{% else %}—{% endif %}</td>

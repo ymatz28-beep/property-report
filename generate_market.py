@@ -10,6 +10,7 @@ import re
 import sys
 from dataclasses import asdict
 from pathlib import Path
+from statistics import median as _stat_median
 
 _PROJECT_ROOT = Path(__file__).resolve().parent
 _LIB_PARENT = _PROJECT_ROOT.parent
@@ -351,6 +352,118 @@ def _get_rent_per_sqm(city_key: str, location: str, built_year: int | None = Non
     return adjusted, ward
 
 
+# ── Price Validity (適正価格判定) ──
+# Cap rates by city — used for income approach fair value
+# 区分マンション投資の実勢Cap Rate（居住用物件寄り、表面利回りより低め）
+_CAP_RATES: dict[str, float] = {
+    "fukuoka": 0.050,  # 5.0% — 地方都市（投資利回り5-7%帯）
+    "osaka": 0.045,    # 4.5% — 準都心
+    "tokyo": 0.035,    # 3.5% — 都心（低利回り・値上がり期待）
+}
+
+
+def _extract_ward(location: str) -> str:
+    """Extract ward name (e.g. '博多区') from location string."""
+    m = re.search(r'([^\s市県都府]+区)', location)
+    return m.group(1) if m else ""
+
+
+def _build_sqm_benchmarks(rows: list, city_key: str) -> dict[str, dict]:
+    """Build ㎡単価 benchmarks by ward from property rows.
+
+    Returns: {ward: {median, count}, "_city": {median, count}}
+    """
+    ward_prices: dict[str, list[float]] = {}
+    all_prices: list[float] = []
+
+    for row in rows:
+        price = getattr(row, "price_man", 0) or 0
+        area = getattr(row, "area_sqm", 0) or 0
+        if price <= 0 or area <= 0:
+            continue
+        sqm = price / area  # 万円/㎡
+        loc = getattr(row, "location", "")
+        ward = _extract_ward(loc)
+        if ward:
+            ward_prices.setdefault(ward, []).append(sqm)
+        all_prices.append(sqm)
+
+    result: dict[str, dict] = {}
+    for ward, prices in ward_prices.items():
+        if len(prices) >= 3:
+            result[ward] = {"median": _stat_median(prices), "count": len(prices)}
+    if all_prices:
+        result["_city"] = {"median": _stat_median(all_prices), "count": len(all_prices)}
+    return result
+
+
+def _compute_price_validity(
+    price_man: int,
+    area_sqm: float,
+    monthly_rent_yen: float,
+    city_key: str,
+    ward: str,
+    sqm_benchmarks: dict[str, dict],
+    maintenance_fee: int = 0,
+) -> dict | None:
+    """Compute price validity: income approach + comparable sales.
+
+    Returns dict with: fair_price_man, deviation_pct, label, color,
+                       income_fair, comp_fair, comp_source, cap_rate
+    """
+    if price_man <= 0 or area_sqm <= 0 or monthly_rent_yen <= 0:
+        return None
+
+    # Income approach: NOI / Cap Rate
+    cap_rate = _CAP_RATES.get(city_key, 0.055)
+    annual_rent = monthly_rent_yen * 12
+    opex = maintenance_fee * 12 + annual_rent * 0.08
+    noi = annual_rent * (1 - 0.07) - opex  # vacancy 7%
+    if noi <= 0:
+        return None
+    income_fair_man = round(noi / cap_rate / 10000)
+
+    # Comparable sales: median ㎡単価 × area
+    bench = sqm_benchmarks.get(ward) or sqm_benchmarks.get("_city")
+    comp_fair_man = None
+    comp_source = ""
+    if bench:
+        comp_fair_man = round(bench["median"] * area_sqm)
+        comp_source = ward if ward in sqm_benchmarks else "市全体"
+
+    # Weighted average (comp 60% + income 40% — comparable sales more reliable for 区分)
+    if comp_fair_man and comp_fair_man > 0:
+        fair_price = comp_fair_man * 0.6 + income_fair_man * 0.4
+    else:
+        fair_price = income_fair_man
+
+    if fair_price <= 0:
+        return None
+
+    deviation = (price_man - fair_price) / fair_price * 100
+
+    # Thresholds: 不動産は売り出し価格が適正価格+10-20%が標準
+    if deviation < -20:
+        label, color_key = "割安", "green"
+    elif deviation <= 10:
+        label, color_key = "適正", "accent"
+    elif deviation <= 30:
+        label, color_key = "やや割高", "yellow"
+    else:
+        label, color_key = "割高", "red"
+
+    return {
+        "fair_price_man": round(fair_price),
+        "deviation_pct": round(deviation, 1),
+        "label": label,
+        "color": color_key,
+        "income_fair": income_fair_man,
+        "comp_fair": comp_fair_man,
+        "comp_source": comp_source,
+        "cap_rate": cap_rate * 100,
+    }
+
+
 def _is_oc_row(row: PropertyRow) -> bool:
     """Check if a property row is owner-change (OC)."""
     text = f"{row.name} {row.station_text} {row.minpaku_status} {row.location} {row.raw_line}"
@@ -412,7 +525,7 @@ def _extract_oc_rent(row: PropertyRow) -> tuple[float, float]:
     return (annual_man, yield_pct)
 
 
-def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> dict:
+def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_benchmarks: dict | None = None) -> dict:
     d = asdict(row)
     d["prop_type"] = "kubun"
     d["name"] = _clean_adcopy_name(d["name"], d.get("location", ""), d.get("layout", ""))
@@ -458,6 +571,9 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
     d["market_rent_label"] = "" # e.g. "相場博多区"
     d["rent_gap_pct"] = ""      # deviation: (actual - market) / market
     d["rent_per_sqm"] = 0
+    d["price_validity"] = None
+    _monthly_rent_yen = 0  # track for price validity
+    _ward_for_validity = ""
     if row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
         # Always compute market rent (age-adjusted)
         mkt_per_sqm, ward = _get_rent_per_sqm(city_key, row.location, row.built_year)
@@ -491,6 +607,8 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
             d["est_monthly_rent"] = d["market_rent"]
 
         d["yield_text"] = f"{est_yield:.1f}%"
+        _monthly_rent_yen = monthly_rent  # capture for price validity
+        _ward_for_validity = ward
         structure_for_calc = row.structure or "RC造"
         # 融資年数: 60 - 築年数（フロア20年 — 澤畠さん筑波銀行）
         try:
@@ -552,6 +670,18 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "") -> di
             d["revenue"] = rev
         except Exception:
             pass
+
+    # Price validity (適正価格判定)
+    if _monthly_rent_yen > 0 and sqm_benchmarks:
+        d["price_validity"] = _compute_price_validity(
+            price_man=row.price_man,
+            area_sqm=row.area_sqm,
+            monthly_rent_yen=_monthly_rent_yen,
+            city_key=city_key,
+            ward=_ward_for_validity,
+            sqm_benchmarks=sqm_benchmarks,
+            maintenance_fee=row.maintenance_fee or 0,
+        )
 
     return d
 
@@ -772,7 +902,11 @@ def main() -> None:
     for cfg in CITY_CONFIGS:
         # 区分
         kubun_rows = _load_kubun(cfg)
-        kubun_props = [_kubun_to_dict(r, first_seen, city_key=cfg["key"]) for r in kubun_rows]
+        # Build ㎡単価 benchmarks per segment (budget/yield vs kubun have different price bands)
+        budget_rows = _load_budget(cfg["key"])
+        kubun_benchmarks = _build_sqm_benchmarks(kubun_rows, cfg["key"])
+        budget_benchmarks = _build_sqm_benchmarks(budget_rows, cfg["key"]) if budget_rows else kubun_benchmarks
+        kubun_props = [_kubun_to_dict(r, first_seen, city_key=cfg["key"], sqm_benchmarks=kubun_benchmarks) for r in kubun_rows]
 
         # 一棟もの (city subset)
         city_ittomono = [r for r in all_ittomono if r.city_key == cfg["key"]]
@@ -783,8 +917,7 @@ def main() -> None:
         kodate_props = [_kodate_to_dict(r, city_key=cfg["key"], first_seen=first_seen) for r in city_kodate[:10]]
 
         # 格安区分 (budget tier — Fukuoka only)
-        budget_rows = _load_budget(cfg["key"])
-        budget_props = [_kubun_to_dict(r, first_seen, city_key=cfg["key"]) for r in budget_rows]
+        budget_props = [_kubun_to_dict(r, first_seen, city_key=cfg["key"], sqm_benchmarks=budget_benchmarks) for r in budget_rows]
         # Budget tier: CF赤字もOC実家賃データとして価値があるため、フィルタなし
 
         city_total = len(kubun_props) + len(ittomono_props) + len(kodate_props) + len(budget_props)
@@ -797,6 +930,8 @@ def main() -> None:
             "ittomono": {"count": len(ittomono_props), "properties": ittomono_props},
             "kodate": {"count": len(kodate_props), "properties": kodate_props},
             "budget": {"count": len(budget_props), "properties": budget_props},
+            "_sqm_benchmarks_kubun": kubun_benchmarks,
+            "_sqm_benchmarks_budget": budget_benchmarks,
         })
 
         total_kubun += len(kubun_props)
@@ -852,8 +987,11 @@ def main() -> None:
                 score_row(row, config)
             # 収益物件は居住スコアではなくCF/CCRで評価。スコア閾値を緩和（駅遠OC物件の救済）
             yield_rows = [r for r in yield_rows if r.total_score >= 20]
+            # Build yield-specific benchmarks (cheap OC properties != kubun)
+            _yield_bench = _build_sqm_benchmarks(yield_rows, city_data["key"])
+            _city_bench = _yield_bench if _yield_bench.get("_city") else city_data.get("_sqm_benchmarks_budget", {})
             for row in yield_rows:
-                d = _kubun_to_dict(row, first_seen, city_key=city_data["key"])
+                d = _kubun_to_dict(row, first_seen, city_key=city_data["key"], sqm_benchmarks=_city_bench)
                 rev = d.get("revenue")
                 # CF >= 1.0万 OR CCR >= 8%（低価格物件はCF絶対額が小さいためCCRで救済）
                 cf_ok = rev and rev.get("after_tax_monthly_cf") is not None and (rev["after_tax_monthly_cf"] >= 1.0 or rev.get("ccr", 0) >= 8.0)

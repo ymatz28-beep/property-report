@@ -368,7 +368,7 @@
           <span><b style="color:var(--text)">CCR</b> = 年間CF ÷ 初期資金 × 100</span>
           <span><b style="color:var(--text)">初期資金</b> = 頭金20% + 諸費用7%</span>
           <span><b style="color:var(--text)">諸費用</b> = 仲介3%+登記2%+取得税+印紙+司法書士</span>
-          <span><b style="color:var(--text)">ローン</b> = 60−築年数（フロア20年・澤畠さん筑波銀行）/ ストレス=基準−5年</span>
+          <span><b style="color:var(--text)">ローン</b> = 60−築年数（フロア15年・上限35年・澤畠さん筑波銀行）/ ストレス=基準−5年</span>
           <span><b style="color:var(--text)">相場{区名}</b> = 区別㎡単価×面積（築年齢割引適用・SUUMO/アットホーム2025年データ）</span>
         </div>
       </div>
@@ -385,13 +385,15 @@
             <col style="width:52px"><!-- 実家賃 -->
             <col style="width:52px"><!-- 相場家賃 -->
             <col style="width:44px"><!-- CF -->
+            <col style="width:44px"><!-- CF(15) -->
+            <col style="width:44px"><!-- CF(20) -->
             <col style="width:48px"><!-- 手出し -->
             <col style="width:40px"><!-- CCR -->
           </colgroup>
           <thead>
             <tr>
-              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th><th>築年</th><th>最寄駅</th>
-              <th>OC</th><th>実家賃</th><th>相場家賃</th><th>CF/月</th><th>手出し</th><th>CCR</th>
+              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th><th>築年(融資)</th><th>最寄駅</th>
+              <th>OC</th><th>実家賃</th><th>相場家賃</th><th>CF/月</th><th>CF(15)</th><th>CF(20)</th><th>手出し</th><th>CCR</th>
             </tr>
           </thead>
           <tbody>
@@ -402,17 +404,19 @@
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="{{ prop.name }}">{{ prop.name or "—" }}</a></td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}{% if prop.price_validity %}<br><span class="price-badge price-badge--{{ prop.price_validity.color }}">{{ prop.price_validity.label }} {{ prop.price_validity.deviation_pct }}%</span>{% endif %}</td>
               <td>{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
-              <td style="font-size:11px">{% if prop.built_year %}{{ prop.built_year }}<span style="opacity:0.6">({{ 2026 - prop.built_year }})</span>{% else %}—{% endif %}</td>
+              <td style="font-size:11px">{% if prop.built_year %}築{{ 2026 - prop.built_year }}年({{ [35, [15, 60 - (2026 - prop.built_year)] | max] | min }}年){% else %}—{% endif %}</td>
               <td class="station-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3" title="{{ prop.station_text|default('') }}">{{ prop.station_text|default("—") }}</td>
               <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}<span style="font-size:10px;color:var(--text-muted)">空</span>{% endif %}</td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.actual_rent %}{{ prop.actual_rent }}{% if prop.rent_gap_pct %}<br><span style="font-size:9px;color:{% if '-' in prop.rent_gap_pct %}var(--red){% else %}var(--green){% endif %}">{{ prop.rent_gap_pct }}</span>{% endif %}{% else %}—{% endif %}</td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}</span>{% else %}—{% endif %}</td>
               <td class="price-cell" style="color:var(--green);font-weight:600">{{ prop.revenue.after_tax_monthly_cf }}万</td>
+              <td class="price-cell">{% if prop.revenue.cf_15y is defined and prop.revenue.cf_15y is not none %}<span style="color:{% if prop.revenue.cf_15y > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ prop.revenue.cf_15y }}万</span>{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.revenue.cf_20y is defined and prop.revenue.cf_20y is not none %}<span style="color:{% if prop.revenue.cf_20y > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ prop.revenue.cf_20y }}万</span>{% else %}—{% endif %}</td>
               <td class="price-cell" style="white-space:nowrap">{{ prop.revenue.total_equity }}万</td>
               <td style="font-weight:600">{{ prop.revenue.ccr }}%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="14">
                 <div class="detail-grid">
                   {% if prop.price_validity %}<div class="detail-item" style="border-left:2px solid var(--{{ prop.price_validity.color }});padding-left:8px"><span class="detail-label">適正価格</span><span class="detail-value" style="color:var(--{{ prop.price_validity.color }})">{{ prop.price_validity.fair_price_man }}万 <span style="font-size:10px">({{ prop.price_validity.label }})</span></span></div>{% endif %}
                   {% if prop.price_validity and prop.price_validity.income_fair %}<div class="detail-item"><span class="detail-label">収益還元(Cap{{ prop.price_validity.cap_rate }}%)</span><span class="detail-value">{{ prop.price_validity.income_fair }}万</span></div>{% endif %}
@@ -462,7 +466,7 @@
           <span><b style="color:var(--text)">CCR</b> = 年間CF ÷ 初期資金 × 100</span>
           <span><b style="color:var(--text)">初期資金</b> = 頭金20% + 諸費用7%</span>
           <span><b style="color:var(--text)">諸費用</b> = 仲介3%+登記2%+取得税+印紙+司法書士</span>
-          <span><b style="color:var(--text)">ローン</b> = 60−築年数（フロア20年・澤畠さん筑波銀行）/ ストレス=基準−5年</span>
+          <span><b style="color:var(--text)">ローン</b> = 60−築年数（フロア15年・上限35年・澤畠さん筑波銀行）/ ストレス=基準−5年</span>
           <span><b style="color:var(--text)">相場{区名}</b> = 区別㎡単価×面積（築年齢割引適用・SUUMO/アットホーム2025年データ）</span>
         </div>
       </div>
@@ -471,7 +475,7 @@
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造</th><th>最寄駅</th><th>ペット</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF(15年)</th><th>㎡単価</th>
+              <th>築年(融資)</th><th>構造</th><th>最寄駅</th><th>ペット</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF(15)</th><th>CF(20)</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -482,19 +486,20 @@
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}{% if prop.price_validity %}<br><span class="price-badge price-badge--{{ prop.price_validity.color }}">{{ prop.price_validity.label }} {{ prop.price_validity.deviation_pct }}%</span>{% endif %}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
-              <td class="layout-cell">{{ prop.layout or "—" }}</td>
+              <td class="layout-cell">{% if prop.built_year %}築{{ 2026 - prop.built_year }}年({{ [35, [15, 60 - (2026 - prop.built_year)] | max] | min }}年){% else %}—{% endif %}</td>
               <td>{{ prop.structure or "—" }}</td>
               <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td>{{ prop.pet_status or "—" }}</td>
               <td class="price-cell">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}</span>{% else %}—{% endif %}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
-              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_stress is defined and prop.revenue.cf_stress is not none %}<span style="color:{% if prop.revenue.cf_stress > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ prop.revenue.cf_stress }}万</span>{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_15y is defined and prop.revenue.cf_15y is not none %}<span style="color:{% if prop.revenue.cf_15y > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ prop.revenue.cf_15y }}万</span>{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_20y is defined and prop.revenue.cf_20y is not none %}<span style="color:{% if prop.revenue.cf_20y > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ prop.revenue.cf_20y }}万</span>{% else %}—{% endif %}</td>
               <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
-              <td colspan="14">
+              <td colspan="15">
                 <div class="detail-grid">
                   {% if prop.price_validity %}<div class="detail-item" style="border-left:2px solid var(--{{ prop.price_validity.color }});padding-left:8px"><span class="detail-label">適正価格</span><span class="detail-value" style="color:var(--{{ prop.price_validity.color }})">{{ prop.price_validity.fair_price_man }}万 <span style="font-size:10px">({{ prop.price_validity.label }})</span></span></div>{% endif %}
                   {% if prop.price_validity and prop.price_validity.income_fair %}<div class="detail-item"><span class="detail-label">収益還元(Cap{{ prop.price_validity.cap_rate }}%)</span><span class="detail-value">{{ prop.price_validity.income_fair }}万</span></div>{% endif %}
@@ -650,7 +655,7 @@
           <span><b style="color:var(--text)">CCR</b> = 年間CF ÷ 初期資金 × 100</span>
           <span><b style="color:var(--text)">初期資金</b> = 頭金20% + 諸費用7%</span>
           <span><b style="color:var(--text)">諸費用</b> = 仲介3%+登記2%+取得税+印紙+司法書士</span>
-          <span><b style="color:var(--text)">ローン</b> = 60−築年数（フロア20年・澤畠さん筑波銀行）/ ストレス=基準−5年</span>
+          <span><b style="color:var(--text)">ローン</b> = 60−築年数（フロア15年・上限35年・澤畠さん筑波銀行）/ ストレス=基準−5年</span>
           <span><b style="color:var(--text)">実家賃</b> = OC物件の実際の賃料</span>
           <span><b style="color:var(--text)">相場{区名}</b> = 区別㎡単価×面積（築年齢割引適用・SUUMO/アットホーム2025年データ）</span>
         </div>
@@ -660,7 +665,7 @@
           <thead>
             <tr>
               <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>面積</th>
-              <th>間取り</th><th>構造/築年</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF(15年)</th><th>㎡単価</th>
+              <th>築年(融資)</th><th>構造</th><th>最寄駅</th><th>OC</th><th>ペット</th><th>実家賃</th><th>相場家賃</th><th>利回り</th><th>CF/月</th><th>CF(15)</th><th>CF(20)</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -671,8 +676,8 @@
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}{% if prop.price_validity %}<br><span class="price-badge price-badge--{{ prop.price_validity.color }}">{{ prop.price_validity.label }} {{ prop.price_validity.deviation_pct }}%</span>{% endif %}</td>
               <td class="area-cell">{{ prop.area_text }}</td>
-              <td class="layout-cell">{{ prop.layout or "—" }}</td>
-              <td style="white-space:nowrap">{{ prop.structure or "—" }}{% if prop.built_year %}<br><span style="font-size:10px;color:var(--text-muted)">{{ prop.built_year }}年(築{{ 2026 - prop.built_year }})</span>{% endif %}</td>
+              <td class="layout-cell">{% if prop.built_year %}築{{ 2026 - prop.built_year }}年({{ [35, [15, 60 - (2026 - prop.built_year)] | max] | min }}年){% else %}—{% endif %}</td>
+              <td>{{ prop.structure or "—" }}</td>
               <td class="station-cell" title="{{ prop.station_text | default(prop.location) }}">{{ prop.station_text | default(prop.location) }}</td>
               <td>{% if prop.is_oc %}<span style="color:var(--yellow);font-weight:700;font-size:11px">OC</span>{% else %}—{% endif %}</td>
               <td>{{ prop.pet_status or "—" }}</td>
@@ -680,12 +685,13 @@
               <td class="price-cell" style="white-space:nowrap">{% if prop.market_rent %}{{ prop.market_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ prop.market_rent_label }}{% if prop.rent_per_sqm %} {{ prop.rent_per_sqm }}円/㎡{% endif %}</span>{% else %}—{% endif %}</td>
               <td>{{ prop.yield_text or "—" }}</td>
               <td class="price-cell" style="color:{% if prop.revenue and prop.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif prop.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if prop.revenue %}{{ prop.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
-              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_stress is defined and prop.revenue.cf_stress is not none %}<span style="color:{% if prop.revenue.cf_stress > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.cf_stress }}万</span>{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_15y is defined and prop.revenue.cf_15y is not none %}<span style="color:{% if prop.revenue.cf_15y > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.cf_15y }}万</span>{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_20y is defined and prop.revenue.cf_20y is not none %}<span style="color:{% if prop.revenue.cf_20y > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.revenue.cf_20y }}万</span>{% else %}—{% endif %}</td>
               <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
-              <td colspan="16">
+              <td colspan="17">
                 <div class="detail-grid">
                   {% if prop.price_validity %}<div class="detail-item" style="border-left:2px solid var(--{{ prop.price_validity.color }});padding-left:8px"><span class="detail-label">適正価格</span><span class="detail-value" style="color:var(--{{ prop.price_validity.color }})">{{ prop.price_validity.fair_price_man }}万 <span style="font-size:10px">({{ prop.price_validity.label }})</span></span></div>{% endif %}
                   {% if prop.price_validity and prop.price_validity.income_fair %}<div class="detail-item"><span class="detail-label">収益還元(Cap{{ prop.price_validity.cap_rate }}%)</span><span class="detail-value">{{ prop.price_validity.income_fair }}万</span></div>{% endif %}

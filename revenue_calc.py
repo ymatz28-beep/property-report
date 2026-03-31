@@ -236,8 +236,8 @@ def analyze(
         loan_years = p.loan_years
     else:
         # 澤畠さん（筑波銀行）ルール: 60 - 築年数
-        # フロア20年（築40年超でも20年に伸ばせる可能性あり）
-        loan_years = max(20, 60 - age) if age > 0 else 35
+        # フロア15年（交渉次第で20年も可能）、上限35年
+        loan_years = min(35, max(15, 60 - age)) if age > 0 else 35
 
     down_payment = price_man * p.down_payment_ratio
     acquisition_cost = price_man * p.acquisition_cost_rate

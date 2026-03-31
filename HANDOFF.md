@@ -1,13 +1,21 @@
 # HANDOFF
 
-## [Constancy] 2026-03-30
+## [Constancy] 2026-03-31
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
-- [WARN] structural_reform: property_pipeline.py is 1800+ lines (threshold: 800). Consider splitting.
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-03-30 06:37): 【F宅建検索】タイムアウト (5分超過) → Fix: エラーログを確認
-- [WARN] blank_cells: ダッシュ「—」320個 (閾値20) — データ欠損の可能性
-- [WARN] numeric_outliers: 利回り: 異常値 1件 — 30.7>25
-- [WARN] first_seen_coverage: 掲載日カバレッジ 59% (114/193) — 閾値80%
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 12.3% (22/179件)
+- [WARN] structural_reform: property_pipeline.py is 2167 lines (threshold: 800). Consider splitting.
+- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-03-31 06:48): 【F宅建検索】タイムアウト (5分超過) → Fix: エラーログを確認
+- [WARN] design_token_compliance: Line 944: hardcoded #22c55e should be var(--green)
+- [WARN] design_token_compliance: Line 1023: hardcoded #3b82f6 should be var(--blue)
+- [WARN] design_token_compliance: Line 1346: hardcoded #22c55e should be var(--green)
+- [WARN] design_token_compliance: Line 1992: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 1993: hardcoded #22c55e should be var(--green)
+- [WARN] blank_cells: ダッシュ「—」147個 (閾値20) — データ欠損の可能性
+- [WARN] numeric_outliers: 利回り: 異常値 2件 — 27.6>25, 27.6>25
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 36% (47/131) — 閾値80%
+- [WARN] qa_market_data_accuracy: 4/84 (4.8%) — price mismatch: スカイマンション南福岡 raw=599.0 html=590.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: スカイマンション南福岡 raw=599.0 html=590.0
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 13.9% (15/108件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 1900.0万円/62.91㎡; 2899.0万円/59.75㎡; 2978.0万円/40.75㎡; 2500.0万円/56.36㎡
+- [WARN] visual_regression: [mobile] missing_element: Critical element 'content' (table, .prop-card, .card, .kpi, .metric, ul, ol, section) not found
+- [WARN] visual_regression: [desktop] missing_element: Critical element 'content' (table, .prop-card, .card, .kpi, .metric, ul, ol, section) not found
 
 ## Last Updated
 2026-03-31
@@ -48,24 +56,24 @@
 - **After**: Playwright headless Chromiumで全HTMLをmobile+desktopでレンダリングし5項目チェック
 
 ## In Progress / Next Actions
-1. **楽待ログインCookie対応**: 229件のOC物件で403 Forbidden → ログインセッションCookieでスクレイピング改善
-2. **F宅建広告コピー名防御**: search_ftakken.pyにも広告コピー検出を追加
-3. **property_pipeline.py分割**: 1800+行。lifecycle/dashboard/naiken等のモジュール分離を検討
-4. **パイプライン候補59件の精査**: スコア70+だが30日以内の物件。問い合わせ送信 or 見送り判断
-5. **viewed 4件のアーカイブ判断**: アンピール天神東(considering)/プレイスポットしんばし/GSハイム博多/ローズマンション博多
-6. **data_accuracy 12.3%不一致**: スクレイプデータとHTMLレンダリングの乖離を調査・修正
+1. **F宅建広告コピー名防御**: search_ftakken.pyにも広告コピー検出を追加
+2. **property_pipeline.py分割**: 1800+行。lifecycle/dashboard/naiken等のモジュール分離を検討
+3. **パイプライン候補59件の精査**: スコア70+だが30日以内の物件。問い合わせ送信 or 見送り判断
+4. **viewed 4件のアーカイブ判断**: アンピール天神東(considering)/プレイスポットしんばし/GSハイム博多/ローズマンション博多
+5. **data_accuracy 4件のprice mismatch**: 2物件のrawとHTML価格差（掲載価格変動 — 非バグ）
 
 ## Key Decisions
 - 2026-03-31: **戸建て収益除外**: アパート㎡賃料での推定は過大 → profitable sectionからkodate除外
 - 2026-03-31: **広告コピー7パターン**: 句読点・キーワード・駅徒歩短パターンを追加。全164物件QA PASS
 - 2026-03-31: **OC QA閾値**: FAIL>90%, WARN>50%（yield×price逆算でDisplay正常のため緩め）
 - 2026-03-31: **クロスリファレンス全楽待物件**: fallback名のみ→全物件に拡大
+- 2026-03-31: **現金購入比較分析**: ロワール渡辺通り(170万,CCR16.1%)vsメゾン・ド・プレジール(190万,CCR13.4%)。ロワールが年CF差+2.4万有利だが、プレジールの家賃上昇余地大(-45%gap vs -27%)
 - 2026-03-31: **Pipeline Anti-Stale Pattern**: 自動Sweep/アクティブのみ表示/外部連動/カード内分析インライン
 - 2026-03-31: **旧pipeline.html廃止**: inquiry-pipeline.htmlがSSoT
 - 2026-03-31: **内覧予定なし**: 当面内見しない方針
 
 ## Blockers
-- 楽待詳細ページの75%が403 Forbidden（ログインCookie必要）
+- なし（楽待403は解消済み、残り29件は掲載終了物件のみ）
 
 ## Environment
 - Python: `stock-analyzer/.venv/bin/python3`（property-analyzer自体のvenvなし）
@@ -76,22 +84,21 @@
 ## History (last 20)
 1. 2026-03-31: マーケットページ品質改善 — 広告コピー7パターン + 戸建て除外 + OC収入補完
 2. 2026-03-31: パイプライン形骸化解消 — lifecycle + メール連動 + UI刷新 + 旧パイプライン廃止
-2. 2026-03-30: 取得諸費用計上 + 掲載日クリーンアップ + 福岡格安デバッグ
-3. 2026-03-30: kaizen自律修正Phase A+C — 修正率1%→自動修正+commit
-4. 2026-03-29: kaizen Visual Regression チェック追加
-5. 2026-03-29: 有識者的中率3層ティアリング
-6. 2026-03-28: main→gh-pages自動デプロイworkflow追加
-7. 2026-03-28: ふれんず物件名詳細取得 + 管理費/修繕分離
-8. 2026-03-28: Market sticky section nav + section_navコンポーネント横展開
-9. 2026-03-27: 楽待スクレイパー詳細ページ構造化抽出
-10. 2026-03-26: 収益物件(yield)ページ新規作成
-11. 2026-03-25: 特区民泊候補物件調査
-12. 2026-03-24: 筑波銀行融資打診メール送信
-13. 2026-03-23: 内見分析ページアーカイブ機能
-14. 2026-03-22: inquiry-pipeline dashboard作成
-15. 2026-03-21: 福岡内見3物件（アンピール天神東/コスモ博多古門戸/クリオラベルヴィ呉服町）
-16. 2026-03-20: agent_memory SSoT確立 + pipeline sync
-17. 2026-03-19: Property Inquiry Pipeline構築 + Reply Assist Agent Memory構築
-18. 2026-03-18: GHA patrol Gmail通知
-19. 2026-03-17: 格安区分スコアリング導入
-20. 2026-03-16: 一棟もの収益シミュレーター(revenue_calc.py)
+3. 2026-03-30: Before: 諸費用未計上+掲載日1,644件不正確 → After: 諸費用7%追加+不正確日付除去
+4. 2026-03-30: Before: kaizen修正率1% → After: 自動修正+commit
+5. 2026-03-29: Before: レイアウト崩れ目視頼み → After: Playwright Visual Regression自動チェック
+6. 2026-03-29: Before: 有識者一律扱い → After: 3層ティアリング(833件評価/58.4%)
+7. 2026-03-28: Before: 手動デプロイ → After: main→gh-pages自動デプロイworkflow
+8. 2026-03-28: Before: 物件名不正確+管理費混在 → After: F宅建詳細取得+管理費/修繕分離
+9. 2026-03-28: Before: セクション遷移なし → After: Market sticky section nav横展開
+10. 2026-03-27: Before: 楽待一覧のみ → After: 詳細ページ構造化抽出(現況/年間収入/管理費)
+11. 2026-03-26: Before: 収益物件ページなし → After: yield専用ページ新規作成
+12. 2026-03-25: Before: 民泊候補未調査 → After: 特区民泊候補物件調査完了
+13. 2026-03-24: Before: 融資未打診 → After: 筑波銀行(澤畠さん)へメール送信
+14. 2026-03-23: Before: 内見分析がアーカイブ不可 → After: アーカイブ機能追加
+15. 2026-03-22: Before: パイプラインUI未整備 → After: inquiry-pipeline dashboard作成
+16. 2026-03-21: Before: 福岡物件未内見 → After: 3物件内見完了
+17. 2026-03-20: Before: agent_memory分散 → After: SSoT確立+pipeline sync
+18. 2026-03-19: Before: 問い合わせ管理なし → After: Pipeline+Reply Assist構築
+19. 2026-03-18: Before: patrol結果確認が手動 → After: GHA patrol Gmail通知
+20. 2026-03-17: Before: 格安区分の評価基準なし → After: スコアリング導入

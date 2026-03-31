@@ -345,6 +345,47 @@ def auto_flag(min_score: int = FLAG_THRESHOLD) -> list[dict]:
             if row.total_score < min_score:
                 continue
 
+            # CF gate: only flag properties with positive cash flow
+            if row.price_man and row.area_sqm:
+                rent_override = None
+                if rent_override:
+                    rent_mid = rent_override
+                else:
+                    rent_per_sqm = {"fukuoka": (1800, 2200), "osaka": (2000, 2500), "tokyo": (2500, 3200)}
+                    lo, hi = rent_per_sqm.get(city_key, (2000, 2500))
+                    yr_val = row.built_year or 0
+                    if yr_val and yr_val >= 2010:
+                        lo, hi = int(lo * 1.1), int(hi * 1.1)
+                    rent_lo = int(row.area_sqm * lo / 10000)
+                    rent_hi = int(row.area_sqm * hi / 10000)
+                    rent_mid = (rent_lo + rent_hi) / 2
+                if rent_mid > 0:
+                    yield_mid = round(rent_mid * 12 / row.price_man * 100, 2)
+                    mgmt_fee = row.maintenance_fee or 0
+                    age = (2026 - row.built_year) if row.built_year else 0
+                    loan_yrs = min(35, max(15, 60 - age)) if age > 0 else 35
+                    dr = 0.20
+                    params = InvestmentParams(
+                        building_ratio=0.50,
+                        down_payment_ratio=dr,
+                        loan_years=loan_yrs,
+                    )
+                    rev = revenue_analyze(
+                        price_man=row.price_man,
+                        yield_pct=yield_mid,
+                        structure="RC造",
+                        built_year=row.built_year,
+                        maintenance_fee_monthly=mgmt_fee,
+                        params=params,
+                    )
+                    # Skip if CF negative or CCR below 3%
+                    if rev.verdict != "データ不足":
+                        cf_net = rev.monthly_cf
+                        if mgmt_fee:
+                            cf_net -= mgmt_fee / 10000
+                        if cf_net <= 0 or rev.ccr_pct < 3.0:
+                            continue
+
             # Clean ad-copy names
             clean_name = _clean_property_name(row.name, row.source, city_key)
 
@@ -897,37 +938,54 @@ def _render_card_analysis(inq: dict) -> str:
     cf_color = "#22c55e" if mcf > 3 else "#facc15" if mcf > 0 else "#f87171"
     cf_sign = "+" if mcf >= 0 else ""
 
-    # Management fee impact
-    mgmt_line = ""
-    if mgmt:
-        mgmt_man = mgmt / 10000
-        cf_net = mcf - mgmt_man
-        net_color = "#22c55e" if cf_net > 0 else "#f87171"
-        net_sign = "+" if cf_net >= 0 else ""
-        mgmt_line = f'<div style="display:flex;justify-content:space-between"><span>管理費込CF</span><span style="color:{net_color}">{net_sign}{cf_net:.1f}万/月</span></div>'
-
     payback = f"{rev.payback_years:.1f}年" if rev.payback_years != float("inf") else "∞"
     tax_line = ""
     if rev.tax_benefit > 0:
-        tax_line = f'<div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:#22c55e">+{rev.tax_benefit:,.0f}万/年</span></div>'
+        tax_line = f'<div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+{rev.tax_benefit:,.0f}万/年</span></div>'
 
     vclass_map = {"高CF物件": "#22c55e", "安定CF": "#34d399", "薄利": "#facc15", "CF赤字": "#f87171"}
     v_color = vclass_map.get(rev.verdict, "#71717a")
 
+    # Waterfall breakdown lines
+    vacancy_pct = int(params.vacancy_rate * 100)
+    mgmt_fee_monthly = inq.get("management_fee", 0) or 0
+    mgmt_detail = inq.get("management_fee_detail", "")
+    mgmt_detail_str = f"（{mgmt_detail}）" if mgmt_detail else ""
+
+    wf_mgmt = ""
+    if mgmt_fee_monthly > 0:
+        mgmt_annual_man = mgmt_fee_monthly * 12 / 10000
+        wf_mgmt = f'<div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　管理費・修繕</span><span>-{mgmt_annual_man:.1f}万/年{mgmt_detail_str}</span></div>'
+    residual_line = ""
+    if mgmt_fee_monthly > 0 and rev.opex > 0:
+        mgmt_annual_man = mgmt_fee_monthly * 12 / 10000
+        residual = rev.opex - mgmt_annual_man
+        if residual > 0:
+            residual_line = f'<div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-{residual:.1f}万/年</span></div>'
+    elif rev.opex > 0:
+        wf_mgmt = f'<div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　経費（{int(params.opex_rate*100)}%）</span><span>-{rev.opex:,.0f}万/年</span></div>'
+
     return f'''<details class="card-analysis" onclick="event.stopPropagation()">
   <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
-    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>{rent_lo}〜{rent_hi}万/月</span></div>
-    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>{yield_lo}〜{yield_hi}%</span></div>
-    <div style="display:flex;justify-content:space-between"><span>NOI</span><span>{rev.noi:,.0f}万/年</span></div>
-    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>{rev.annual_debt_service:,.0f}万/年（{rev.loan_years}年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600"><span>月間CF</span><span style="color:{cf_color}">{cf_sign}{mcf:.1f}万/月</span></div>
-    {mgmt_line}
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>{rent_lo}〜{rent_hi}万/月（年{rev.gross_income:,.0f}万）</span></div>
+    <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（{vacancy_pct}%）</span><span>-{rev.vacancy_loss:,.0f}万/年</span></div>
+    {wf_mgmt}
+    {residual_line}
+    <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>{rev.noi:,.0f}万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-{rev.annual_debt_service:,.0f}万/年（月{rev.annual_debt_service / 12:.1f}万 × {rev.loan_years}年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:{cf_color}">{cf_sign}{mcf:.1f}万/月</span></div>
     {tax_line}
-    <div style="display:flex;justify-content:space-between"><span>CCR</span><span>{rev.ccr_pct:.1f}%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>{yield_lo}〜{yield_hi}%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>{rev.ccr_pct:.1f}%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>{payback}</span></div>
     <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:{v_color};font-weight:600">{rev.verdict}</span></div>
-    <div style="color:#52525b;font-size:10px;margin-top:2px">頭金{params.down_payment_ratio*100:.0f}% / 金利{params.loan_rate_annual*100:.2f}% / 空室{params.vacancy_rate*100:.0f}%</div>
+    <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
+      <div style="display:flex;justify-content:space-between"><span>頭金</span><span>{rev.down_payment:,.0f}万（{params.down_payment_ratio*100:.0f}%）</span></div>
+      <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（{params.acquisition_cost_rate*100:.0f}%）</span><span>{rev.acquisition_cost:,.0f}万</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>{rev.total_equity:,.0f}万</span></div>
+    </div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">金利{params.loan_rate_annual*100:.2f}% / 空室{vacancy_pct}%</div>
   </div>
 </details>'''
 
@@ -962,7 +1020,7 @@ def _render_card(inq: dict) -> str:
                 if days_w >= 7:
                     waiting_badge = f'<span style="background:#f97316;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600">未返信 {days_w}日</span>'
                 else:
-                    waiting_badge = f'<span style="background:#3b82f6;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 {days_w}日前</span>'
+                    waiting_badge = f'<span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 {days_w}日前</span>'
             except (ValueError, TypeError):
                 pass
 
@@ -991,7 +1049,7 @@ def _render_card(inq: dict) -> str:
       <span class="card-score">{inq.get('score', '?')}pt</span>
     </div>
   </div>
-  <div class="card-detail">{price} / {area} / {inq.get('layout', '?')} / {_clean_station(inq.get('station', '?'))}</div>
+  <div class="card-detail">{price} / {area} / 築{2026 - int(inq['year_built']) if inq.get('year_built') else '?'}年（融資{min(35, max(15, 60 - (2026 - int(inq['year_built'])))) if inq.get('year_built') else '?'}年） / {_clean_station(inq.get('station', '?'))}</div>
   <div class="card-filters">
     <span>ペット {pet_icon}</span>
     <span>短期賃貸 {st_icon}</span>
@@ -1285,7 +1343,7 @@ def _naiken_invest_analysis(p: dict, all_props: list[dict]) -> str:
         <div class="rv-row"><span class="rv-desc">建物価格</span><span class="rv-note">= 取得価格 × 建物比率{p_rv.building_ratio*100:.0f}%</span><span class="rv-amount">{_f(building_price)}</span></div>
         <div class="rv-row"><span class="rv-desc">残存耐用年数</span><span class="rv-note">法定{rev.useful_life}年 − 築{2026 - yr if yr else "?"}年</span><span class="rv-amount">{rev.remaining_life}年</span></div>
         <div class="rv-row rv-subtotal"><span class="rv-desc">年間償却額</span><span class="rv-note">= {_f(building_price)} ÷ {rev.remaining_life}年</span><span class="rv-amount">{_f(rev.depreciation_annual)}</span></div>
-        {"<div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style=\"color:#22c55e\">+" + f"{rev.tax_benefit:,.0f}" + "万/年</span></div>" if rev.tax_benefit > 0 else "<div class='rv-row'><span class='rv-desc'>税負担</span><span class='rv-note'>課税所得" + f"{rev.taxable_income:,.0f}" + "万 × 税率" + f"{p_rv.tax_rate*100:.0f}" + "%</span><span class='rv-amount'>-" + f"{rev.taxable_income * p_rv.tax_rate:,.0f}" + "万</span></div>"}
+        {"<div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style=\"color:var(--green)\">+" + f"{rev.tax_benefit:,.0f}" + "万/年</span></div>" if rev.tax_benefit > 0 else "<div class='rv-row'><span class='rv-desc'>税負担</span><span class='rv-note'>課税所得" + f"{rev.taxable_income:,.0f}" + "万 × 税率" + f"{p_rv.tax_rate*100:.0f}" + "%</span><span class='rv-amount'>-" + f"{rev.taxable_income * p_rv.tax_rate:,.0f}" + "万</span></div>"}
       </div>
 
       <div class="rv-bottom">
@@ -1653,57 +1711,61 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
 <style>
 {_css_tokens_n}
 *{{box-sizing:border-box;margin:0}}
-body{{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}}
+body{{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;font-size:12px}}
 {site_header_css()}{global_nav_css()}
-.wrap{{max-width:900px;margin:0 auto;padding:24px 16px}}
-h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
-.meta{{color:var(--muted);font-size:12px;margin-bottom:24px}}
-.property{{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:24px}}
-.property h2{{font-size:clamp(16px,2vw,20px);font-weight:800;margin-bottom:4px}}
-.property .sub{{color:var(--muted);font-size:13px;margin-bottom:20px}}
-.tag{{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-right:6px;margin-bottom:6px}}
+.wrap{{max-width:720px;margin:0 auto;padding:16px 12px}}
+h1{{font-size:clamp(16px,2vw,20px);font-weight:900;margin-bottom:6px}}
+.meta{{color:var(--muted);font-size:11px;margin-bottom:16px}}
+.property{{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:16px}}
+.property h2{{font-size:clamp(13px,1.8vw,16px);font-weight:800;margin-bottom:2px}}
+.property .sub{{color:var(--muted);font-size:11px;margin-bottom:12px}}
+.tag{{display:inline-block;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:700;margin-right:4px;margin-bottom:4px}}
 .tag-red{{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}}
 .tag-green{{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3)}}
 .tag-yellow{{background:rgba(250,204,21,.15);color:var(--yellow);border:1px solid rgba(250,204,21,.3)}}
 .tag-blue{{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.3)}}
 .tag-muted{{background:rgba(169,179,198,.1);color:var(--muted);border:1px solid rgba(169,179,198,.2)}}
-table{{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}}
-@media(max-width:640px){{table{{font-size:13px}}th{{white-space:nowrap;width:70px;min-width:70px}}td{{word-break:break-word}}}}
-th{{text-align:left;padding:8px 12px;color:var(--muted);font-weight:600;font-size:12px;border-bottom:1px solid var(--line)}}
-td{{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}}
+table{{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}}
+@media(max-width:640px){{table{{font-size:11px}}th{{white-space:nowrap;width:60px;min-width:60px}}td{{word-break:break-word}}}}
+th{{text-align:left;padding:5px 8px;color:var(--muted);font-weight:600;font-size:10px;border-bottom:1px solid var(--line)}}
+td{{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .val{{font-weight:700}}.warn{{color:var(--red);font-weight:700}}.ok{{color:var(--green);font-weight:700}}.neutral{{color:var(--muted)}}
 .mono{{font-family:'JetBrains Mono',monospace}}
-.section-title{{font-size:14px;font-weight:800;margin:24px 0 12px;padding-left:12px;border-left:3px solid var(--gold)}}
-.invest-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:16px 0}}
-.invest-card{{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;text-align:center}}
-.invest-card .label{{font-size:12px;color:var(--muted);margin-bottom:8px}}.invest-card .num{{font-size:15px;font-weight:800;font-family:'JetBrains Mono',monospace}}
-.checklist{{list-style:none;padding:0}}.checklist li{{padding:6px 0 6px 24px;position:relative;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}}
+.section-title{{font-size:12px;font-weight:800;margin:16px 0 8px;padding-left:10px;border-left:3px solid var(--gold)}}
+.invest-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:10px 0}}
+.invest-card{{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px;text-align:center}}
+.invest-card .label{{font-size:10px;color:var(--muted);margin-bottom:4px}}.invest-card .num{{font-size:13px;font-weight:800;font-family:'JetBrains Mono',monospace}}
+.checklist{{list-style:none;padding:0}}.checklist li{{padding:4px 0 4px 20px;position:relative;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04)}}
 .checklist li::before{{content:'☐';position:absolute;left:0;color:var(--muted)}}
-.question{{padding:8px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}}
-.schedule-banner{{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:20px;margin-bottom:24px}}
-.schedule-banner h2{{font-size:16px;color:var(--gold);margin-bottom:8px}}.schedule-banner .detail{{font-size:14px;line-height:1.8}}
-.verdict{{padding:16px;border-radius:12px;margin:16px 0;font-size:13px;line-height:1.8}}
+.question{{padding:5px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04)}}
+.schedule-banner{{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:14px;margin-bottom:16px}}
+.schedule-banner h2{{font-size:13px;color:var(--gold);margin-bottom:6px}}.schedule-banner .detail{{font-size:12px;line-height:1.6}}
+.verdict{{padding:12px;border-radius:10px;margin:12px 0;font-size:11px;line-height:1.7}}
 .verdict-caution{{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2)}}
-.revenue-block{{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px;margin:20px 0}}
-.rv-header{{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}}
-.rv-title{{font-size:14px;font-weight:800}}.rv-verdict{{padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}}
+.revenue-block{{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;margin:14px 0}}
+.rv-header{{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}}
+.rv-title{{font-size:12px;font-weight:800}}.rv-verdict{{padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700}}
 .rv-high{{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}}
 .rv-stable{{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)}}
 .rv-thin{{background:rgba(250,204,21,.15);color:#facc15;border:1px solid rgba(250,204,21,.3)}}
 .rv-red{{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)}}
-.rv-assumptions{{font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.6}}
-.rv-section{{margin-bottom:16px}}.rv-section-title{{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(201,168,76,.2)}}
-.rv-row{{display:flex;align-items:baseline;padding:4px 0;font-size:13px;gap:8px}}
-.rv-desc{{flex:1;min-width:0}}.rv-note{{flex:0 0 auto;font-size:11px;color:var(--muted)}}.rv-amount{{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;min-width:80px}}
-.collapsible-section{{margin:16px 0}}
-.collapsible-trigger{{cursor:pointer;font-size:14px;font-weight:800;padding:12px;border-left:3px solid var(--gold);color:var(--text);list-style:none;user-select:none}}
+.rv-assumptions{{font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5}}
+.rv-section{{margin-bottom:12px}}.rv-section-title{{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid rgba(201,168,76,.2)}}
+.rv-row{{display:flex;align-items:baseline;padding:3px 0;font-size:11px;gap:6px}}
+.rv-desc{{flex:1;min-width:0}}.rv-note{{flex:0 0 auto;font-size:10px;color:var(--muted)}}.rv-amount{{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;min-width:70px}}
+.collapsible-section{{margin:12px 0}}
+.collapsible-trigger{{cursor:pointer;font-size:12px;font-weight:800;padding:8px;border-left:3px solid var(--gold);color:var(--text);list-style:none;user-select:none}}
 .collapsible-trigger::-webkit-details-marker{{display:none}}
 details[open] .collapsible-trigger{{color:var(--text)}}
 details[open] .collapsible-trigger::after{{content:'';}}
-.archive-header{{font-size:16px;font-weight:800;color:var(--muted);margin:40px 0 16px;padding:12px 0;border-top:2px solid var(--line);border-bottom:1px solid var(--line)}}
-.archive-header span{{font-size:13px;font-weight:500;margin-left:8px}}
+.archive-fold{{margin-top:24px}}
+.archive-header{{font-size:13px;font-weight:800;color:var(--muted);padding:8px 0;border-top:2px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;list-style:none;user-select:none}}
+.archive-header::-webkit-details-marker{{display:none}}
+.archive-header::before{{content:'▸ ';font-size:11px}}
+details[open]>.archive-header::before{{content:'▾ '}}
+.archive-header span{{font-size:11px;font-weight:500;margin-left:8px}}
 .archive-section .property{{opacity:0.7}}
-.rv-minus .rv-desc{{color:var(--muted)}}.rv-subtotal{{border-top:1px solid var(--line);padding-top:6px;margin-top:4px}}
+.rv-minus .rv-desc{{color:var(--muted)}}.rv-subtotal{{border-top:1px solid var(--line);padding-top:4px;margin-top:3px}}
 .rv-total{{border-top:2px solid var(--line);padding-top:8px;margin-top:4px;font-weight:800}}
 .rv-highlight{{background:rgba(201,168,76,.06);border-radius:8px;padding:8px;margin-top:4px}}
 .rv-bottom{{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}}
@@ -1715,7 +1777,7 @@ details[open] .collapsible-trigger::after{{content:'';}}
 <p class="meta">自動生成: {now_str} / {len(viewing)}件の内覧予定物件</p>
 {"".join(property_sections)}
 {common}
-{'<div class="archive-header">過去の内見<span>（' + str(len(archive_sections)) + '件）</span></div><div class="archive-section">' + "".join(archive_sections) + '</div>' if archive_sections else ''}
+{'<details class="archive-fold"><summary class="archive-header">過去の内見<span>（' + str(len(archive_sections)) + '件）</span></summary><div class="archive-section">' + "".join(archive_sections) + '</div></details>' if archive_sections else ''}
 </div></body></html>"""
 
     out.write_text(html, encoding="utf-8")
@@ -1927,8 +1989,8 @@ body{{font-family:var(--font-body);background:var(--bg);color:var(--text);min-he
     <div class="stats">
       <div class="stat"><div class="stat-val" style="color:#f97316">{by_status.get('in_discussion', 0) + by_status.get('inquired', 0)}</div><div class="stat-label">進行中</div></div>
       <div class="stat"><div class="stat-val" style="color:#a78bfa">{by_status.get('viewing', 0)}</div><div class="stat-label">内見</div></div>
-      <div class="stat"><div class="stat-val" style="color:#6366f1">{by_status.get('viewed', 0)}</div><div class="stat-label">内見済</div></div>
-      <div class="stat"><div class="stat-val" style="color:#22c55e">{by_status.get('decided', 0)}</div><div class="stat-label">決定</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--accent)">{by_status.get('viewed', 0)}</div><div class="stat-label">内見済</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--green)">{by_status.get('decided', 0)}</div><div class="stat-label">決定</div></div>
     </div>
     <div style="color:#71717a;font-size:12px;margin-top:8px">候補 {by_status.get('flagged', 0)} / 見送り {by_status.get('passed', 0)}</div>
   </div>

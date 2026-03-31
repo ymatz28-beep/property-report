@@ -104,7 +104,6 @@ def _clean_adcopy_name(name: str, location: str, layout: str = "") -> str:
 # ---------------------------------------------------------------------------
 PROPERTY_PAGES = [
     {"href": "market.html", "label": "Market"},
-    {"href": "inquiry-pipeline.html", "label": "Pipeline"},
     {"href": "simulate.html", "label": "Simulate"},
 ]
 
@@ -610,7 +609,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
         _monthly_rent_yen = monthly_rent  # capture for price validity
         _ward_for_validity = ward
         structure_for_calc = row.structure or "RC造"
-        # 融資年数: 60 - 築年数（フロア20年 — 澤畠さん筑波銀行）
+        # 融資年数: 60 - 築年数（フロア15年・上限35年 — 澤畠さん筑波銀行）
         try:
             ra = revenue_analyze(
                 price_man=row.price_man,
@@ -643,18 +642,16 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
                 "rent_per_sqm": mkt_per_sqm,
                 "structure_used": structure_for_calc,
             }
-            # ストレステスト: 融資年数 - 5年（最低15年）
-            stress_years = max(15, ra.loan_years - 5)
-            if stress_years < ra.loan_years:
-                ra_stress = revenue_analyze(
+            # 固定融資シナリオ: CF(15年) と CF(20年)
+            for scenario_years in (15, 20):
+                ra_s = revenue_analyze(
                     price_man=row.price_man, yield_pct=est_yield,
                     structure=structure_for_calc, built_year=row.built_year,
                     units_count=1, area_sqm=row.area_sqm,
                     maintenance_fee_monthly=row.maintenance_fee or 0,
-                    params=InvestmentParams(loan_years=stress_years),
+                    params=InvestmentParams(loan_years=scenario_years),
                 )
-                rev["cf_stress"] = round(ra_stress.after_tax_cf / 12, 1)
-                rev["stress_years"] = stress_years
+                rev[f"cf_{scenario_years}y"] = round(ra_s.after_tax_cf / 12, 1)
             # 現金購入比較（200万以下）
             if row.price_man <= 200:
                 ra_cash = revenue_analyze(
@@ -777,7 +774,7 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
                 units_count=row.units_count or 0,
                 area_sqm=row.area_sqm,
             )
-            d["revenue"] = {
+            rev_dict = {
                 "noi": round(ra.noi, 1),
                 "net_yield": round(ra.net_yield_pct, 2),
                 "monthly_cf": round(ra.monthly_cf, 1),
@@ -798,6 +795,16 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
                 "rent_source": d["rent_source"],
                 "structure_used": row.structure or "RC造",
             }
+            # 固定融資シナリオ: CF(15年) と CF(20年)
+            for scenario_years in (15, 20):
+                ra_s = revenue_analyze(
+                    price_man=row.price_man, yield_pct=yield_pct,
+                    structure=row.structure or "RC造", built_year=row.built_year,
+                    units_count=row.units_count or 0, area_sqm=row.area_sqm,
+                    params=InvestmentParams(loan_years=scenario_years),
+                )
+                rev_dict[f"cf_{scenario_years}y"] = round(ra_s.after_tax_cf / 12, 1)
+            d["revenue"] = rev_dict
         except Exception:
             d["revenue"] = None
     else:
@@ -836,6 +843,92 @@ def _load_patrol_summary() -> dict | None:
         except Exception:
             return None
     return None
+
+
+# ---------------------------------------------------------------------------
+# Pipeline auto-flag: 収益物件の上位をinquiries.yamlへ自動注入
+# ---------------------------------------------------------------------------
+def _pipeline_auto_flag(cities: list[dict]) -> None:
+    """Flag top profitable properties into the pipeline (CF+ & CCR high)."""
+    try:
+        import yaml as _yaml
+        from pathlib import Path as _Path
+        from datetime import date as _date
+
+        inq_path = _Path("data/inquiries.yaml")
+        if not inq_path.exists():
+            return
+        raw = _yaml.safe_load(inq_path.read_text(encoding="utf-8"))
+        inquiries = raw.get("inquiries", []) if isinstance(raw, dict) else raw
+        existing_urls = {inq.get("url", "").rstrip("/") for inq in inquiries}
+
+        # Next ID
+        max_id = 0
+        for inq in inquiries:
+            try:
+                max_id = max(max_id, int(inq.get("id", "inq-0").split("-")[-1]))
+            except (ValueError, IndexError):
+                pass
+
+        new_flagged = []
+        for city_data in cities:
+            for prop in city_data.get("profitable", {}).get("properties", []):
+                url = prop.get("url", "").rstrip("/")
+                if not url or url in existing_urls:
+                    continue
+                rev = prop.get("revenue", {})
+                if not rev:
+                    continue
+                ccr = rev.get("ccr", 0)
+                cf = rev.get("after_tax_monthly_cf", 0)
+                if cf <= 0 or ccr < 5.0:
+                    continue
+
+                max_id += 1
+                entry = {
+                    "id": f"inq-{max_id:03d}",
+                    "name": prop.get("name", ""),
+                    "url": prop.get("url", ""),
+                    "source": prop.get("source", ""),
+                    "city": city_data.get("key", ""),
+                    "score": prop.get("total_score", 0),
+                    "status": "flagged",
+                    "price": prop.get("price_man", 0),
+                    "area": prop.get("area_sqm", 0),
+                    "layout": prop.get("layout", ""),
+                    "station": prop.get("station_text", prop.get("location", "")),
+                    "year_built": prop.get("built_year"),
+                    "pet": prop.get("pet_status") or "unknown",
+                    "short_term": None,
+                    "management_fee": prop.get("maintenance_fee", 0),
+                    "agent": None,
+                    "thread_id": None,
+                    "viewing_date": None,
+                    "decision": None,
+                    "notes": f"自動フラグ: CF {cf:.1f}万/月, CCR {ccr:.1f}%",
+                    "created": str(_date.today()),
+                    "updated": str(_date.today()),
+                }
+                new_flagged.append(entry)
+                existing_urls.add(url)
+
+        if new_flagged:
+            inquiries.extend(new_flagged)
+            if isinstance(raw, dict):
+                raw["inquiries"] = inquiries
+            else:
+                raw = inquiries
+            inq_path.write_text(
+                _yaml.dump(raw, allow_unicode=True, default_flow_style=False, sort_keys=False),
+                encoding="utf-8",
+            )
+            print(f"  → Pipeline: {len(new_flagged)}件を自動フラグ (CF+/CCR≥5%)")
+            for e in new_flagged[:5]:
+                print(f"    {e['id']} {e['name']} CCR={e['notes'].split('CCR ')[-1]}")
+        else:
+            print("  → Pipeline: 新規フラグ対象なし")
+    except Exception as e:
+        print(f"  → Pipeline auto-flag error: {e}")
 
 
 # ---------------------------------------------------------------------------
@@ -1034,6 +1127,9 @@ def main() -> None:
         city_data["count"] += len(profitable)
         total_profitable += len(profitable)
     print(f"  収益物件: {total_profitable}件 (CF > 0)")
+
+    # ── 収益物件 → Pipeline 自動フラグ（CCR上位をinquiries.yamlに注入） ──
+    _pipeline_auto_flag(cities)
 
     # Totals
     total_count = total_kubun + total_ittomono + total_kodate + total_budget

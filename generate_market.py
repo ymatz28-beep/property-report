@@ -114,6 +114,7 @@ GNAV_PAGES = [
     {"href": "naiken-analysis.html", "label": "内覧分析"},
     {"href": "inquiry-messages.html", "label": "問い合わせ"},
     {"href": "inquiry-pipeline.html", "label": "Pipeline"},
+    {"href": "rent-strategy.html", "label": "家賃戦略"},
 ]
 
 CITY_CONFIGS: list[dict] = [
@@ -143,6 +144,9 @@ _OC_KEYWORDS = [
     "表面利回", "想定利回", "収益", "入居者付", "入居中",
     "賃借人", "テナント付", "現行賃料", "満室",
 ]
+
+# Default city tab (change this to switch which city opens first)
+DEFAULT_CITY = "fukuoka"
 
 TIER_GREEN = 80
 TIER_YELLOW = 65
@@ -404,6 +408,7 @@ def _compute_price_validity(
     ward: str,
     sqm_benchmarks: dict[str, dict],
     maintenance_fee: int = 0,
+    cap_rate_override: float = 0,
 ) -> dict | None:
     """Compute price validity: income approach + comparable sales.
 
@@ -414,7 +419,7 @@ def _compute_price_validity(
         return None
 
     # Income approach: NOI / Cap Rate
-    cap_rate = _CAP_RATES.get(city_key, 0.055)
+    cap_rate = cap_rate_override if cap_rate_override > 0 else _CAP_RATES.get(city_key, 0.055)
     annual_rent = monthly_rent_yen * 12
     opex = maintenance_fee * 12 + annual_rent * 0.08
     noi = annual_rent * (1 - 0.07) - opex  # vacancy 7%
@@ -460,6 +465,48 @@ def _compute_price_validity(
         "comp_fair": comp_fair_man,
         "comp_source": comp_source,
         "cap_rate": cap_rate * 100,
+    }
+
+
+def _compute_total_return(
+    price_man: int,
+    fair_price_man: int,
+    annual_cf_after_tax: float,
+    total_equity: float,
+    hold_years: int = 5,
+) -> dict | None:
+    """Compute 5-year total return: CG (short/long tax) + CF cumulative."""
+    if price_man <= 0 or fair_price_man <= 0 or total_equity <= 0:
+        return None
+
+    cg_gross = fair_price_man - price_man  # CG before tax (万円). Can be negative
+    cf_cumulative = annual_cf_after_tax * hold_years
+
+    # Short-term capital gains tax: 39.63% (≤5 years)
+    # Long-term capital gains tax: 20.315% (>5 years)
+    short_tax_rate = 0.3963
+    long_tax_rate = 0.20315
+
+    cg_net_short = cg_gross * (1 - short_tax_rate) if cg_gross > 0 else cg_gross
+    cg_net_long = cg_gross * (1 - long_tax_rate) if cg_gross > 0 else cg_gross
+
+    total_short = cg_net_short + cf_cumulative
+    total_long = cg_net_long + cf_cumulative
+
+    # ROI against initial equity
+    roi_short = (total_short / total_equity) * 100 if total_equity > 0 else 0
+    roi_long = (total_long / total_equity) * 100 if total_equity > 0 else 0
+
+    return {
+        "cg_gross": round(cg_gross, 1),
+        "cg_net_short": round(cg_net_short, 1),
+        "cg_net_long": round(cg_net_long, 1),
+        "cf_cumulative": round(cf_cumulative, 1),
+        "total_short": round(total_short, 1),
+        "total_long": round(total_long, 1),
+        "roi_short": round(roi_short, 1),
+        "roi_long": round(roi_long, 1),
+        "hold_years": hold_years,
     }
 
 
@@ -571,7 +618,10 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
     d["rent_gap_pct"] = ""      # deviation: (actual - market) / market
     d["rent_per_sqm"] = 0
     d["price_validity"] = None
+    d["price_validity_actual"] = None  # OC: actual-rent-based fair price (for CG risk)
+    d["cg_rent_risk"] = False  # OC低家賃CGリスクフラグ
     _monthly_rent_yen = 0  # track for price validity
+    _mkt_monthly_yen = 0   # market rent (for OC CG risk comparison)
     _ward_for_validity = ""
     if row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
         # Always compute market rent (age-adjusted)
@@ -581,6 +631,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
         d["rent_per_sqm"] = mkt_per_sqm
         d["market_rent"] = f"{mkt_monthly / 10000:.1f}万" if mkt_monthly >= 10000 else f"{int(mkt_monthly):,}円"
         d["market_rent_label"] = ward if ward else ""
+        _mkt_monthly_yen = mkt_monthly  # capture for OC CG risk comparison
 
         # OC: extract actual rent
         oc_annual_man, oc_yield = _extract_oc_rent(row) if d["is_oc"] else (0, 0)
@@ -678,6 +729,101 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
             ward=_ward_for_validity,
             sqm_benchmarks=sqm_benchmarks,
             maintenance_fee=row.maintenance_fee or 0,
+        )
+
+    # OC CG risk: actual rent << market rent → CG may not materialize
+    # price_validity uses actual rent (OC) → realistic fair price
+    # For OC with low rent, also compute market-rent fair price to show CG potential gap
+    # 実家賃ベースはCap Rate 6%（投資家が低家賃OC物件に要求する利回り）
+    _OC_LOW_RENT_CAP_RATE = 0.06
+    if d["is_oc"] and _monthly_rent_yen > 0 and _mkt_monthly_yen > 0 and _monthly_rent_yen != _mkt_monthly_yen and sqm_benchmarks:
+        rent_gap = (_monthly_rent_yen - _mkt_monthly_yen) / _mkt_monthly_yen * 100
+        if rent_gap < -20:
+            # market-rent fair price (CG potential if rent is raised)
+            pv_market = _compute_price_validity(
+                price_man=row.price_man,
+                area_sqm=row.area_sqm,
+                monthly_rent_yen=_mkt_monthly_yen,
+                city_key=city_key,
+                ward=_ward_for_validity,
+                sqm_benchmarks=sqm_benchmarks,
+                maintenance_fee=row.maintenance_fee or 0,
+            )
+            # actual-rent fair price with stressed cap rate (conservative: buyer demands 6%)
+            pv_actual_stressed = _compute_price_validity(
+                price_man=row.price_man,
+                area_sqm=row.area_sqm,
+                monthly_rent_yen=_monthly_rent_yen,
+                city_key=city_key,
+                ward=_ward_for_validity,
+                sqm_benchmarks=sqm_benchmarks,
+                maintenance_fee=row.maintenance_fee or 0,
+                cap_rate_override=_OC_LOW_RENT_CAP_RATE,
+            )
+            if pv_market:
+                d["price_validity_actual"] = pv_actual_stressed or d["price_validity"]
+                d["price_validity"] = pv_market  # market rent version (CG potential)
+                d["cg_rent_risk"] = True
+                d["cg_actual_gross"] = d["price_validity_actual"]["fair_price_man"] - row.price_man if d["price_validity_actual"] else None
+                # Negotiation cost/gain calculation
+                eviction_cost = round(_monthly_rent_yen * 6 / 10000, 1)  # 立退料: 家賃6ヶ月分(万円)
+                annual_gain = round((_mkt_monthly_yen - _monthly_rent_yen) * 12 / 10000, 1)  # 年間増収(万円)
+                if annual_gain > 0 and eviction_cost > 0:
+                    payback_months = round(eviction_cost / (annual_gain / 12))
+                    payback = f"{payback_months}ヶ月で回収" if payback_months < 12 else f"約{round(payback_months/12, 1)}年で回収"
+                else:
+                    payback = "—"
+                # 段階的値上げステップ（乖離幅に応じて2〜3段階）
+                actual_man = round(_monthly_rent_yen / 10000, 2)
+                market_man = round(_mkt_monthly_yen / 10000, 2)
+                gap = market_man - actual_man
+                if gap > 0:
+                    steps_count = 3 if abs(rent_gap) > 35 else 2
+                    step_size = gap / steps_count
+                    rent_steps = []
+                    for i in range(1, steps_count + 1):
+                        step_rent = actual_man + step_size * i
+                        rent_steps.append(f"{step_rent:.1f}万")
+                else:
+                    rent_steps = []
+                d["negotiation"] = {
+                    "eviction_cost": eviction_cost,
+                    "annual_gain": annual_gain,
+                    "payback": payback,
+                    "rent_steps": rent_steps,
+                    "actual_man": f"{actual_man:.1f}",
+                    "market_man": f"{market_man:.1f}",
+                }
+
+    # Total return (CG + CF)
+    d["total_return"] = None
+    d["total_return_actual"] = None  # actual-rent-based (for CG risk comparison)
+    pv = d.get("price_validity")
+    rev = d.get("revenue")
+    if pv and rev and pv.get("fair_price_man"):
+        d["total_return"] = _compute_total_return(
+            price_man=row.price_man,
+            fair_price_man=pv["fair_price_man"],
+            annual_cf_after_tax=rev.get("after_tax_monthly_cf", 0) * 12,
+            total_equity=rev.get("total_equity", 0),
+        )
+    # Actual-rent total return (OC with rent gap)
+    pv_actual = d.get("price_validity_actual")
+    if pv_actual and rev and pv_actual.get("fair_price_man"):
+        d["total_return_actual"] = _compute_total_return(
+            price_man=row.price_man,
+            fair_price_man=pv_actual["fair_price_man"],
+            annual_cf_after_tax=rev.get("after_tax_monthly_cf", 0) * 12,
+            total_equity=rev.get("total_equity", 0),
+        )
+    # Cash purchase total return (200万以下)
+    d["total_return_cash"] = None
+    if rev and rev.get("cash_equity") and pv and pv.get("fair_price_man"):
+        d["total_return_cash"] = _compute_total_return(
+            price_man=row.price_man,
+            fair_price_man=pv["fair_price_man"],
+            annual_cf_after_tax=rev.get("cash_cf", 0) * 12,
+            total_equity=rev["cash_equity"],
         )
 
     return d
@@ -1049,7 +1195,10 @@ def main() -> None:
                 rev = prop.get("revenue")
                 # CF >= 1.0万 OR CCR >= 8%（低価格物件はCF絶対額が小さいためCCRで救済）
                 cf_ok = rev and rev.get("after_tax_monthly_cf") is not None and (rev["after_tax_monthly_cf"] >= 1.0 or rev.get("ccr", 0) >= 8.0)
-                if cf_ok and rev.get("total_equity", float("inf")) < 1000:
+                # CG rescue: CFマイナスでもCG込みトータルリターンがプラスなら収益物件に含める
+                tr = prop.get("total_return")
+                cg_ok = tr and tr.get("total_long", 0) > 0
+                if (cf_ok or cg_ok) and rev.get("total_equity", float("inf")) < 1000:
                     prop_copy = dict(prop)
                     type_labels = {"kubun": "区分", "ittomono": "一棟", "kodate": "戸建", "budget": "格安区分"}
                     prop_copy["_type_label"] = type_labels.get(section_key, section_key)
@@ -1088,14 +1237,17 @@ def main() -> None:
                 rev = d.get("revenue")
                 # CF >= 1.0万 OR CCR >= 8%（低価格物件はCF絶対額が小さいためCCRで救済）
                 cf_ok = rev and rev.get("after_tax_monthly_cf") is not None and (rev["after_tax_monthly_cf"] >= 1.0 or rev.get("ccr", 0) >= 8.0)
-                if cf_ok and rev.get("total_equity", float("inf")) < 1000:
+                tr = d.get("total_return")
+                cg_ok = tr and tr.get("total_long", 0) > 0
+                if (cf_ok or cg_ok) and rev.get("total_equity", float("inf")) < 1000:
                     d["_type_label"] = "利回り区分"
                     profitable.append(d)
 
         # Filter: 手出しが大きいのにCF薄利は除外（CCR < 5% AND 手出し > 200万）
         profitable = [p for p in profitable
                       if p.get("revenue", {}).get("ccr", 0) >= 5.0
-                      or p.get("revenue", {}).get("total_equity", 0) <= 200]
+                      or p.get("revenue", {}).get("total_equity", 0) <= 200
+                      or (p.get("total_return", {}).get("total_long", 0) > 0)]
 
         # Cross-source dedup: same location+area across different sources = same property
         import re as _re_dedup
@@ -1122,11 +1274,15 @@ def main() -> None:
                 seen_loc_area[key] = idx
         profitable = [p for p in deduped if p is not None]
 
+        # Filter: 対手出し(長期)が120%未満は除外（5年で元本+20%以上のリターンが見込めない物件は不要）
+        profitable = [p for p in profitable
+                      if p.get("total_return", {}).get("roi_long", 0) >= 120]
+
         profitable.sort(key=lambda p: p.get("revenue", {}).get("ccr", 0), reverse=True)
         city_data["profitable"] = {"count": len(profitable), "properties": profitable}
         city_data["count"] += len(profitable)
         total_profitable += len(profitable)
-    print(f"  収益物件: {total_profitable}件 (CF > 0)")
+    print(f"  収益物件: {total_profitable}件 (CF+ or CG+)")
 
     # ── 収益物件 → Pipeline 自動フラグ（CCR上位をinquiries.yamlに注入） ──
     _pipeline_auto_flag(cities)
@@ -1157,6 +1313,7 @@ def main() -> None:
     html = template.render(
         cities=cities,
         totals=totals,
+        default_city=DEFAULT_CITY,
         patrol_summary=patrol_summary,
         property_pages=PROPERTY_PAGES,
         property_current="Market",
@@ -1180,6 +1337,30 @@ def main() -> None:
         run_qa(out, strict=False)
     except Exception as _qa_err:
         print(f"[QA] skipped ({_qa_err})")
+
+    # ── 家賃改善戦略ページ (OC低家賃リスク物件) ──
+    rent_risk_props: list[dict] = []
+    for city_data in cities:
+        for prop in city_data["profitable"]["properties"]:
+            if prop.get("cg_rent_risk"):
+                prop_copy = dict(prop)
+                prop_copy["_city_label"] = city_data["label"]
+                rent_risk_props.append(prop_copy)
+
+    strategy_template = env.get_template("pages/rent_strategy.html")
+    strategy_html = strategy_template.render(
+        properties=rent_risk_props,
+        gnav_pages=GNAV_PAGES,
+        gnav_current="家賃戦略",
+        nav_items=PUBLIC_NAV,
+        current_page="Property",
+        css_tokens=get_css_tokens(),
+        base_css=get_base_css(),
+        google_fonts_url=get_google_fonts_url(),
+    )
+    strategy_out = OUTPUT_DIR / "rent-strategy.html"
+    strategy_out.write_text(strategy_html, encoding="utf-8")
+    print(f"  家賃改善戦略: {len(rent_risk_props)}件 → {strategy_out}")
 
     return out
 

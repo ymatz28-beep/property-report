@@ -302,7 +302,7 @@
     <div class="market-controls">
       <div class="city-tabs" id="cityTabs">
         {% for city in cities %}
-        <button class="city-tab{% if loop.first %} active{% endif %}"
+        <button class="city-tab{% if city.key == default_city %} active{% endif %}"
                 data-city="{{ city.key }}"
                 data-profitable="{{ city.profitable.count }}"
                 data-kubun="{{ city.kubun.count }}"
@@ -351,7 +351,7 @@
 
   {# ── City Panels ── #}
   {% for city in cities %}
-  <div class="city-panel{% if loop.first %} active{% endif %}" id="panel-{{ city.key }}">
+  <div class="city-panel{% if city.key == default_city %} active{% endif %}" id="panel-{{ city.key }}">
 
     {# ── 収益物件 Section (CF > 0, 手出し昇順) ── #}
     {% if city.profitable.count > 0 %}
@@ -370,29 +370,32 @@
           <span><b style="color:var(--text)">諸費用</b> = 仲介3%+登記2%+取得税+印紙+司法書士</span>
           <span><b style="color:var(--text)">ローン</b> = 60−築年数（フロア15年・上限35年・澤畠さん筑波銀行）/ ストレス=基準−5年</span>
           <span><b style="color:var(--text)">相場{区名}</b> = 区別㎡単価×面積（築年齢割引適用・SUUMO/アットホーム2025年データ）</span>
+          <span><b style="color:var(--text)">CG</b> = 適正価格 − 売出価格（Comparable60%+収益還元40%）</span>
+          <span><b style="color:var(--text)">対手出し</b> = (CG税後+CF累計5年) ÷ 初期資金 × 100</span>
         </div>
       </div>
       <div class="property-list active" data-view="list">
         <table class="prop-table" data-type="profitable">
           <colgroup>
-            <col style="width:38px"><!-- 種別 -->
-            <col><!-- 物件名（自然幅） -->
-            <col style="width:52px"><!-- 価格 -->
-            <col style="width:34px"><!-- 面積 -->
-            <col style="width:50px"><!-- 築年 -->
-            <col style="width:60px"><!-- 最寄駅 -->
-            <col style="width:22px"><!-- OC -->
-            <col style="width:52px"><!-- 実家賃 -->
-            <col style="width:52px"><!-- 相場家賃 -->
-            <col style="width:44px"><!-- CF -->
-            <col style="width:44px"><!-- CF(15) -->
-            <col style="width:44px"><!-- CF(20) -->
-            <col style="width:48px"><!-- 手出し -->
-            <col style="width:40px"><!-- CCR -->
+            <col style="width:36px"><!-- 種別 -->
+            <col style="min-width:100px"><!-- 物件名（自然幅） -->
+            <col style="width:50px"><!-- 価格 -->
+            <col style="width:42px"><!-- CG -->
+            <col style="width:32px"><!-- 面積 -->
+            <col style="width:48px"><!-- 築年 -->
+            <col style="min-width:70px"><!-- 最寄駅 -->
+            <col style="width:20px"><!-- OC -->
+            <col style="width:48px"><!-- 実家賃 -->
+            <col style="width:48px"><!-- 相場家賃 -->
+            <col style="width:42px"><!-- CF -->
+            <col style="width:38px"><!-- CF(15) -->
+            <col style="width:38px"><!-- CF(20) -->
+            <col style="width:44px"><!-- 手出し -->
+            <col style="width:38px"><!-- CCR -->
           </colgroup>
           <thead>
             <tr>
-              <th>種別</th><th>物件名</th><th>価格</th><th>面積</th><th>築年(融資)</th><th>最寄駅</th>
+              <th>種別</th><th>物件名</th><th>価格</th><th>CG</th><th>面積</th><th>築年(融資)</th><th>最寄駅</th>
               <th>OC</th><th>実家賃</th><th>相場家賃</th><th>CF/月</th><th>CF(15)</th><th>CF(20)</th><th>手出し</th><th>CCR</th>
             </tr>
           </thead>
@@ -403,6 +406,7 @@
               <td><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:{% if prop._type_label == '一棟' %}rgba(168,85,247,0.15);color:#a855f7{% elif prop._type_label == '戸建' %}rgba(245,158,11,0.15);color:#f59e0b{% elif prop._type_label == '利回り区分' %}rgba(34,197,94,0.15);color:var(--green){% else %}rgba(99,102,241,0.15);color:var(--accent){% endif %}">{{ prop._type_label }}</span></td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="{{ prop.name }}">{{ prop.name or "—" }}</a></td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}{% if prop.price_validity %}<br><span class="price-badge price-badge--{{ prop.price_validity.color }}">{{ prop.price_validity.label }} {{ prop.price_validity.deviation_pct }}%</span>{% endif %}</td>
+              <td class="price-cell" style="white-space:nowrap">{% if prop.total_return %}<span style="color:{% if prop.total_return.cg_gross > 0 %}var(--green){% elif prop.total_return.cg_gross < 0 %}var(--red){% else %}var(--text-muted){% endif %};font-weight:600;font-size:11px">{{ prop.total_return.cg_gross }}万</span>{% if prop.price_validity %}<br><span class="price-badge price-badge--{{ prop.price_validity.color }}" style="font-size:9px">{{ prop.price_validity.label }}</span>{% endif %}{% if prop.cg_rent_risk %}<br><span style="font-size:8px;color:var(--yellow)">⚠家賃乖離</span>{% endif %}{% else %}—{% endif %}</td>
               <td>{% if prop.area_sqm %}{{ "%.0f"|format(prop.area_sqm) }}㎡{% else %}—{% endif %}</td>
               <td style="font-size:11px">{% if prop.built_year %}築{{ 2026 - prop.built_year }}年({{ [35, [15, 60 - (2026 - prop.built_year)] | max] | min }}年){% else %}—{% endif %}</td>
               <td class="station-cell" style="overflow-wrap:break-word;word-break:break-all;line-height:1.3" title="{{ prop.station_text|default('') }}">{{ prop.station_text|default("—") }}</td>
@@ -416,7 +420,7 @@
               <td style="font-weight:600">{{ prop.revenue.ccr }}%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="14">
+              <td colspan="15">
                 <div class="detail-grid">
                   {% if prop.price_validity %}<div class="detail-item" style="border-left:2px solid var(--{{ prop.price_validity.color }});padding-left:8px"><span class="detail-label">適正価格</span><span class="detail-value" style="color:var(--{{ prop.price_validity.color }})">{{ prop.price_validity.fair_price_man }}万 <span style="font-size:10px">({{ prop.price_validity.label }})</span></span></div>{% endif %}
                   {% if prop.price_validity and prop.price_validity.income_fair %}<div class="detail-item"><span class="detail-label">収益還元(Cap{{ prop.price_validity.cap_rate }}%)</span><span class="detail-value">{{ prop.price_validity.income_fair }}万</span></div>{% endif %}
@@ -436,6 +440,142 @@
                   <div class="detail-item" style="border-left:2px solid var(--green);padding-left:8px"><span class="detail-label">現金CF/月</span><span class="detail-value" style="color:var(--green);font-weight:700">{{ prop.revenue.cash_cf }}万</span></div>
                   <div class="detail-item"><span class="detail-label">現金手出し</span><span class="detail-value">{{ prop.revenue.cash_equity }}万</span></div>
                   <div class="detail-item"><span class="detail-label">現金CCR</span><span class="detail-value" style="font-weight:700">{{ prop.revenue.cash_ccr }}%</span></div>
+                  {% endif %}
+                  {% if prop.total_return %}
+                  {% set has_risk = prop.cg_rent_risk and prop.total_return_actual %}
+                  {% set has_cash = prop.total_return_cash %}
+                  <div style="grid-column:1/-1;border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;margin-top:4px">
+                    <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:6px">📊 {{ prop.total_return.hold_years }}年トータルリターン{% if has_risk %} <span style="color:var(--yellow);font-weight:400;font-size:10px">⚠ 家賃乖離あり</span>{% endif %}</div>
+                    <table style="width:auto;border-collapse:collapse;font-size:10px;line-height:1.5">
+                      <thead>
+                        <tr style="border-bottom:1px solid rgba(255,255,255,0.1)">
+                          <th style="text-align:left;padding:3px 10px 3px 0;color:var(--text-muted);font-weight:400"></th>
+                          {% if has_cash %}
+                          <th style="text-align:right;padding:3px 10px;color:var(--accent);font-weight:600;white-space:nowrap">現金購入</th>
+                          {% endif %}
+                          <th style="text-align:right;padding:3px 10px;color:var(--green);font-weight:600;white-space:nowrap">{% if has_risk %}ローン+家賃改定{% else %}ローン（長期税20%）{% endif %}</th>
+                          {% if has_risk %}
+                          <th style="text-align:right;padding:3px 10px;color:var(--yellow);font-weight:600;white-space:nowrap">ローン+実家賃</th>
+                          {% endif %}
+                          <th style="text-align:right;padding:3px 10px;color:var(--text-muted);font-weight:400;white-space:nowrap">ローン短期（税39%）</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="padding:2px 10px 2px 0;color:var(--text-muted)">手出し</td>
+                          {% if has_cash %}
+                          <td style="text-align:right;padding:2px 10px">{{ prop.total_return_cash.hold_years }}年 / <b>{{ prop.revenue.cash_equity }}万</b></td>
+                          {% endif %}
+                          <td style="text-align:right;padding:2px 10px">{{ prop.total_return.hold_years }}年 / <b>{{ prop.revenue.total_equity }}万</b></td>
+                          {% if has_risk %}
+                          <td style="text-align:right;padding:2px 10px">{{ prop.total_return_actual.hold_years }}年 / <b>{{ prop.revenue.total_equity }}万</b></td>
+                          {% endif %}
+                          <td style="text-align:right;padding:2px 10px;color:var(--text-muted)">{{ prop.revenue.total_equity }}万</td>
+                        </tr>
+                        <tr>
+                          <td style="padding:2px 10px 2px 0;color:var(--text-muted)">売却想定</td>
+                          {% if has_cash %}
+                          <td style="text-align:right;padding:2px 10px">{% if prop.price_validity %}<b>{{ prop.price_validity.fair_price_man }}万</b>{% else %}—{% endif %}</td>
+                          {% endif %}
+                          <td style="text-align:right;padding:2px 10px">{% if prop.price_validity %}<b>{{ prop.price_validity.fair_price_man }}万</b>{% else %}—{% endif %}</td>
+                          {% if has_risk %}
+                          <td style="text-align:right;padding:2px 10px">{% if prop.price_validity_actual %}<b>{{ prop.price_validity_actual.fair_price_man }}万</b>{% else %}—{% endif %}</td>
+                          {% endif %}
+                          {% set short_src = prop.total_return_actual if has_risk else prop.total_return %}
+                          {% set short_pv = prop.price_validity_actual if has_risk and prop.price_validity_actual else prop.price_validity %}
+                          <td style="text-align:right;padding:2px 10px;color:var(--text-muted)">{% if short_pv %}<b>{{ short_pv.fair_price_man }}万</b>{% else %}—{% endif %}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding:2px 10px 2px 0;color:var(--text-muted)">CG（税後）</td>
+                          {% if has_cash %}
+                          <td style="text-align:right;padding:2px 10px;color:{% if prop.total_return_cash.cg_net_long > 0 %}var(--green){% else %}var(--red){% endif %};font-weight:600">{{ prop.total_return_cash.cg_net_long }}万</td>
+                          {% endif %}
+                          <td style="text-align:right;padding:2px 10px;color:{% if prop.total_return.cg_net_long > 0 %}var(--green){% else %}var(--red){% endif %};font-weight:600">{{ prop.total_return.cg_net_long }}万</td>
+                          {% if has_risk %}
+                          <td style="text-align:right;padding:2px 10px;color:{% if prop.total_return_actual.cg_net_long > 0 %}var(--green){% else %}var(--red){% endif %};font-weight:600">{{ prop.total_return_actual.cg_net_long }}万</td>
+                          {% endif %}
+                          <td style="text-align:right;padding:2px 10px;color:{% if short_src.cg_net_short > 0 %}var(--green){% else %}var(--red){% endif %}">{{ short_src.cg_net_short }}万</td>
+                        </tr>
+                        <tr>
+                          <td style="padding:2px 10px 2px 0;color:var(--text-muted)">CF累計</td>
+                          {% if has_cash %}
+                          <td style="text-align:right;padding:2px 10px">{{ prop.total_return_cash.cf_cumulative }}万</td>
+                          {% endif %}
+                          <td style="text-align:right;padding:2px 10px">{{ prop.total_return.cf_cumulative }}万</td>
+                          {% if has_risk %}
+                          <td style="text-align:right;padding:2px 10px">{{ prop.total_return_actual.cf_cumulative }}万</td>
+                          {% endif %}
+                          <td style="text-align:right;padding:2px 10px;color:var(--text-muted)">{{ short_src.cf_cumulative }}万</td>
+                        </tr>
+                        <tr style="border-top:1px solid rgba(255,255,255,0.1)">
+                          <td style="padding:3px 10px 2px 0;color:var(--text);font-weight:600">合計</td>
+                          {% if has_cash %}
+                          <td style="text-align:right;padding:3px 10px;font-weight:700;color:{% if prop.total_return_cash.total_long > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.total_return_cash.total_long }}万</td>
+                          {% endif %}
+                          <td style="text-align:right;padding:3px 10px;font-weight:700;color:{% if prop.total_return.total_long > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.total_return.total_long }}万</td>
+                          {% if has_risk %}
+                          <td style="text-align:right;padding:3px 10px;font-weight:700;color:{% if prop.total_return_actual.total_long > 0 %}var(--green){% else %}var(--red){% endif %}">{{ prop.total_return_actual.total_long }}万</td>
+                          {% endif %}
+                          <td style="text-align:right;padding:3px 10px;font-weight:600;color:{% if short_src.total_short > 0 %}var(--green){% else %}var(--red){% endif %}">{{ short_src.total_short }}万</td>
+                        </tr>
+                        <tr>
+                          <td style="padding:2px 10px 2px 0;color:var(--text-muted)">対手出し</td>
+                          {% if has_cash %}
+                          <td style="text-align:right;padding:2px 10px;font-weight:600;color:{% if prop.total_return_cash.roi_long >= 100 %}var(--green){% elif prop.total_return_cash.roi_long >= 50 %}var(--yellow){% else %}var(--text){% endif %}">{{ prop.total_return_cash.roi_long }}%</td>
+                          {% endif %}
+                          <td style="text-align:right;padding:2px 10px;font-weight:600;color:{% if prop.total_return.roi_long >= 100 %}var(--green){% elif prop.total_return.roi_long >= 50 %}var(--yellow){% else %}var(--text){% endif %}">{{ prop.total_return.roi_long }}%</td>
+                          {% if has_risk %}
+                          <td style="text-align:right;padding:2px 10px;font-weight:600;color:{% if prop.total_return_actual.roi_long >= 100 %}var(--green){% elif prop.total_return_actual.roi_long >= 50 %}var(--yellow){% else %}var(--text){% endif %}">{{ prop.total_return_actual.roi_long }}%</td>
+                          {% endif %}
+                          <td style="text-align:right;padding:2px 10px;color:{% if short_src.roi_short >= 100 %}var(--green){% elif short_src.roi_short >= 50 %}var(--yellow){% else %}var(--text-muted){% endif %}">{{ short_src.roi_short }}%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    {% if has_risk %}
+                    <div style="margin-top:6px;font-size:9px;color:var(--yellow)">→ 家賃増額の可否を不動産業者に要確認（実家賃 {{ prop.actual_rent }}/月 vs 相場 {{ prop.market_rent }}/月）　<a href="rent-strategy.html" style="color:var(--accent);text-decoration:none;font-weight:700">詳細戦略・通知テンプレート →</a></div>
+                    <div style="margin-top:6px">
+                      <div style="font-size:10px;font-weight:600;color:var(--text);margin-bottom:4px">📋 家賃改善シナリオ（交渉優先順）</div>
+                      <table style="width:auto;border-collapse:collapse;font-size:9px;line-height:1.5">
+                        <thead>
+                          <tr style="border-bottom:1px solid rgba(255,255,255,0.1)">
+                            <th style="text-align:left;padding:2px 8px 2px 0;color:var(--text-muted);font-weight:400">優先</th>
+                            <th style="text-align:left;padding:2px 8px;color:var(--text-muted);font-weight:400">手段</th>
+                            <th style="text-align:left;padding:2px 8px;color:var(--text-muted);font-weight:400">コスト</th>
+                            <th style="text-align:left;padding:2px 8px;color:var(--text-muted);font-weight:400">効果</th>
+                            <th style="text-align:left;padding:2px 8px;color:var(--text-muted);font-weight:400">タイミング</th>
+                            <th style="text-align:left;padding:2px 8px;color:var(--text-muted);font-weight:400">確認事項</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td style="padding:2px 8px 2px 0;color:var(--green);font-weight:600">①</td>
+                            <td style="padding:2px 8px;color:var(--text)">段階的値上げ</td>
+                            <td style="padding:2px 8px">0円</td>
+                            <td style="padding:2px 8px">{% if prop.negotiation and prop.negotiation.rent_steps %}{{ prop.negotiation.actual_man }}万 → {{ prop.negotiation.rent_steps | join(' → ') }}{% else %}{{ prop.actual_rent }} → {{ prop.market_rent }}{% endif %}</td>
+                            <td style="padding:2px 8px">更新毎（{{ prop.negotiation.rent_steps | length }}段階）</td>
+                            <td style="padding:2px 8px;color:var(--text-muted)">契約更新日・過去の値上げ履歴</td>
+                          </tr>
+                          <tr>
+                            <td style="padding:2px 8px 2px 0;color:var(--yellow);font-weight:600">②</td>
+                            <td style="padding:2px 8px;color:var(--text)">定期借家へ切替</td>
+                            <td style="padding:2px 8px">交渉コスト</td>
+                            <td style="padding:2px 8px">期間満了で確実退居</td>
+                            <td style="padding:2px 8px">テナント合意時</td>
+                            <td style="padding:2px 8px;color:var(--text-muted)">現契約形態（普通/定期）</td>
+                          </tr>
+                          <tr>
+                            <td style="padding:2px 8px 2px 0;color:var(--red);font-weight:600">③</td>
+                            <td style="padding:2px 8px;color:var(--text)">立退料で合意解約</td>
+                            <td style="padding:2px 8px">{% if prop.negotiation %}{{ prop.negotiation.eviction_cost }}万{% else %}—{% endif %}</td>
+                            <td style="padding:2px 8px">{% if prop.negotiation %}{{ prop.market_rent }}で再募集 → 年+{{ prop.negotiation.annual_gain }}万{% else %}相場で再募集{% endif %}</td>
+                            <td style="padding:2px 8px">{% if prop.negotiation %}{{ prop.negotiation.payback }}{% else %}—{% endif %}</td>
+                            <td style="padding:2px 8px;color:var(--text-muted)">テナントの意向・管理会社の見解</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    {% endif %}
+                  </div>
                   {% endif %}
                 </div>
               </td>
@@ -545,9 +685,9 @@
         <table class="prop-table">
           <thead>
             <tr>
-              <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>利回り</th><th>面積</th>
+              <th>スコア</th><th>掲載日</th><th>物件名</th><th>価格</th><th>利回り</th><th>築年(融資)</th>
               <th>構造</th><th>戸数</th><th>最寄駅</th><th>家賃</th><th>CF/月</th>
-              <th>㎡単価</th>
+              <th>CF(15)</th><th>CF(20)</th><th>㎡単価</th>
             </tr>
           </thead>
           <tbody>
@@ -558,7 +698,7 @@
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}" onclick="event.stopPropagation()">{{ prop.name }}</a></td>
               <td class="price-cell">{{ prop.price_text }}</td>
               <td>{{ prop.yield_text or "—" }}</td>
-              <td class="area-cell">{{ prop.area_text }}</td>
+              <td style="font-size:11px">{% if prop.built_year %}築{{ 2026 - prop.built_year }}年({{ [35, [15, 60 - (2026 - prop.built_year)] | max] | min }}年){% else %}—{% endif %}</td>
               <td>{{ prop.structure or "—" }}</td>
               <td>{{ prop.units_count or "—" }}</td>
               <td>{{ prop.station_text | default(prop.location) }}</td>
@@ -568,11 +708,13 @@
               {% else %}
               <td>—</td>
               {% endif %}
+              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_15y is defined and prop.revenue.cf_15y is not none %}<span style="color:{% if prop.revenue.cf_15y > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ prop.revenue.cf_15y }}万</span>{% else %}—{% endif %}</td>
+              <td class="price-cell">{% if prop.revenue and prop.revenue.cf_20y is defined and prop.revenue.cf_20y is not none %}<span style="color:{% if prop.revenue.cf_20y > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ prop.revenue.cf_20y }}万</span>{% else %}—{% endif %}</td>
               <td class="price-cell">{{ prop.price_per_sqm or "—" }}</td>
             </tr>
             {% if prop.revenue %}
             <tr class="detail-row">
-              <td colspan="12">
+              <td colspan="14">
                 <div class="detail-grid">
                   <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">{{ prop.revenue.loan_rate }}% / {{ prop.revenue.loan_years }}年</span></div>
                   <div class="detail-item"><span class="detail-label">{{ prop.revenue.rent_source or "想定家賃" }}</span><span class="detail-value">{{ prop.revenue.est_monthly_rent }}/月</span></div>

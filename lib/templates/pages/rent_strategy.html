@@ -1,0 +1,549 @@
+{% extends "base.html" %}
+
+{% block title %}家賃改善戦略 — iUMA Property{% endblock %}
+
+{% block nav %}
+{{ super() }}
+{% include "components/gnav.html" %}
+{% endblock %}
+
+{% block styles %}
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 60px; }
+
+/* Hero */
+.hero {
+  padding: 32px 0 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 32px;
+}
+.hero-label {
+  display: inline-block;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--yellow); background: rgba(250,204,21,0.1);
+  border: 1px solid rgba(250,204,21,0.25);
+  padding: 3px 10px; border-radius: 20px; margin-bottom: 12px;
+}
+.hero h1 {
+  font-size: clamp(20px, 3vw, 28px); font-weight: 900; margin-bottom: 8px;
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-sub { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.6; }
+
+/* Section title */
+.section-heading {
+  font-size: 14px; font-weight: 800; margin: 32px 0 12px;
+  padding-left: 12px; border-left: 3px solid var(--accent);
+  color: var(--text);
+}
+
+/* Property table */
+.prop-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 12px; }
+.prop-table {
+  width: 100%; border-collapse: collapse; font-size: 12px; min-width: 600px;
+}
+.prop-table th {
+  text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.45); border-bottom: 1px solid rgba(255,255,255,0.08);
+  white-space: nowrap;
+}
+.prop-table td {
+  padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.prop-table tr:hover td { background: rgba(255,255,255,0.025); }
+.prop-table a { color: var(--text); text-decoration: none; }
+.prop-table a:hover { color: var(--accent); }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 2px 7px; border-radius: 999px;
+  font-size: 10px; font-weight: 700;
+}
+.badge-red { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.badge-yellow { background: rgba(250,204,21,0.15); color: var(--yellow); border: 1px solid rgba(250,204,21,0.3); }
+.badge-green { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.badge-city { background: rgba(99,102,241,0.12); color: var(--accent); border: 1px solid rgba(99,102,241,0.25); font-size: 9px; padding: 1px 6px; }
+
+/* Steps chip */
+.steps-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-family: var(--font-mono, monospace);
+  color: var(--green); white-space: nowrap;
+}
+.steps-chip span { color: rgba(255,255,255,0.3); }
+
+/* Strategy cards */
+.strategy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.strategy-card {
+  background: var(--card, rgba(255,255,255,0.04)); border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.07); padding: 20px;
+}
+.strategy-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.strategy-priority {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; flex-shrink: 0;
+}
+.priority-1 { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.priority-2 { background: rgba(250,204,21,0.15); color: var(--yellow); border: 1px solid rgba(250,204,21,0.3); }
+.priority-3 { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.strategy-title { font-size: 13px; font-weight: 800; }
+.strategy-subtitle { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+.strategy-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: 11px; line-height: 1.5; }
+.strategy-row-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); width: 64px; flex-shrink: 0; padding-top: 1px; }
+.strategy-row-val { flex: 1; }
+.strategy-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 12px 0; }
+.risk-note { font-size: 10px; color: var(--red); background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.15); border-radius: 6px; padding: 6px 10px; margin-top: 8px; }
+
+/* Letter section */
+.letter-block { margin-bottom: 28px; }
+.letter-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; flex-wrap: wrap; gap: 8px;
+}
+.letter-title { font-size: 12px; font-weight: 800; }
+.letter-type { font-size: 10px; color: rgba(255,255,255,0.45); }
+.letter-body {
+  background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; padding: 14px 16px; font-size: 11px; line-height: 1.8;
+  white-space: pre-wrap; font-family: var(--font-body); color: rgba(255,255,255,0.8);
+  position: relative;
+}
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.3);
+  color: var(--accent); font-size: 11px; font-weight: 600;
+  padding: 5px 12px; border-radius: 6px; cursor: pointer;
+  transition: background 0.15s; white-space: nowrap;
+}
+.copy-btn:hover { background: rgba(99,102,241,0.22); }
+.copy-btn.copied { background: rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.3); color: var(--green); }
+
+/* Property letter group */
+.prop-letter-group {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 16px; margin-bottom: 20px;
+}
+.prop-letter-name {
+  font-size: 13px; font-weight: 800; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.prop-letter-meta { font-size: 10px; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+
+/* Letter tabs */
+.letter-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+.letter-tab {
+  padding: 5px 12px; border-radius: 6px; font-size: 10px; font-weight: 700;
+  cursor: pointer; border: 1px solid transparent;
+  color: rgba(255,255,255,0.4); background: transparent; transition: all 0.15s;
+}
+.letter-tab:hover { color: #fff; background: rgba(255,255,255,0.05); }
+.letter-tab.active { color: var(--accent); border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.08); }
+
+/* Notes section */
+.notes-card {
+  background: rgba(250,204,21,0.05); border: 1px solid rgba(250,204,21,0.2);
+  border-radius: 12px; padding: 20px; margin-bottom: 32px;
+}
+.notes-card h3 { font-size: 13px; font-weight: 800; color: var(--yellow); margin-bottom: 12px; }
+.notes-list { list-style: none; padding: 0; }
+.notes-list li {
+  padding: 7px 0 7px 20px; position: relative;
+  font-size: 11px; line-height: 1.6; border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.8);
+}
+.notes-list li:last-child { border-bottom: none; }
+.notes-list li::before { content: '⚠'; position: absolute; left: 0; color: var(--yellow); font-size: 10px; }
+
+/* Empty state */
+.empty { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.35); font-size: 13px; }
+
+@media (max-width: 640px) {
+  .strategy-grid { grid-template-columns: 1fr; }
+  .wrap { padding: 16px 12px 48px; }
+  .hero h1 { font-size: 20px; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+
+  {# ── Hero ── #}
+  <div class="hero">
+    <div class="hero-label">⚠ 家賃乖離リスク管理</div>
+    <h1>家賃改善戦略</h1>
+    <p class="hero-sub">
+      実家賃が相場を大幅に下回るOC物件の交渉戦略・通知テンプレートをまとめたページです。<br>
+      管理会社への依頼文は物件ごとにカスタマイズされています。コピーして活用してください。
+    </p>
+  </div>
+
+  {% if properties %}
+
+  {# ── Section 1: 対象物件一覧 ── #}
+  <div class="section-heading">対象物件一覧（{{ properties | length }}件）</div>
+  <div class="prop-table-wrap">
+    <table class="prop-table">
+      <thead>
+        <tr>
+          <th>エリア</th>
+          <th>物件名</th>
+          <th>価格</th>
+          <th>実家賃/月</th>
+          <th>相場家賃/月</th>
+          <th>乖離率</th>
+          <th>改善ステップ</th>
+          <th>立退料目安</th>
+          <th>年間増収</th>
+          <th>回収</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for prop in properties %}
+        <tr>
+          <td><span class="badge badge-city">{{ prop._city_label }}</span></td>
+          <td>
+            <a href="{{ prop.url }}" target="_blank" rel="noopener" title="{{ prop.name }}">
+              {{ prop.name or "—" }}
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+            {% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億
+            {% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万
+            {% else %}{{ prop.price_man }}万{% endif %}
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            {{ prop.actual_rent or "—" }}
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            {{ prop.market_rent or "—" }}
+            {% if prop.market_rent_label %}<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">{{ prop.market_rent_label }}</span>{% endif %}
+          </td>
+          <td>
+            {% if prop.rent_gap_pct %}
+            <span class="badge {% if '-' in prop.rent_gap_pct %}badge-red{% else %}badge-green{% endif %}">{{ prop.rent_gap_pct }}</span>
+            {% else %}—{% endif %}
+          </td>
+          <td>
+            {% if prop.negotiation and prop.negotiation.rent_steps %}
+            <div class="steps-chip">
+              <span>{{ prop.negotiation.actual_man }}万</span>
+              {% for s in prop.negotiation.rent_steps %}
+              <span>→</span><span style="color:var(--green)">{{ s }}</span>
+              {% endfor %}
+            </div>
+            {% else %}—{% endif %}
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+            {% if prop.negotiation %}{{ prop.negotiation.eviction_cost }}万{% else %}—{% endif %}
+          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
+            {% if prop.negotiation %}+{{ prop.negotiation.annual_gain }}万/年{% else %}—{% endif %}
+          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+            {% if prop.negotiation %}{{ prop.negotiation.payback }}{% else %}—{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:32px">
+    乖離率 = (実家賃 − 相場) ÷ 相場 × 100。立退料は実家賃6ヶ月分の目安。
+  </p>
+
+  {# ── Section 2: 交渉戦略ガイド ── #}
+  <div class="section-heading">交渉戦略ガイド（3段階）</div>
+  <div class="strategy-grid">
+
+    {# Strategy 1 #}
+    <div class="strategy-card">
+      <div class="strategy-card-header">
+        <div class="strategy-priority priority-1">①</div>
+        <div>
+          <div class="strategy-title">段階的値上げ（更新時交渉）</div>
+          <div class="strategy-subtitle">コスト0円・最優先</div>
+        </div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">法的根拠</div>
+        <div class="strategy-row-val">借地借家法第32条（借賃増額請求権）</div>
+      </div>
+      <hr class="strategy-divider">
+      <div class="strategy-row">
+        <div class="strategy-row-label">必要証拠</div>
+        <div class="strategy-row-val">周辺相場データ、固定資産税通知書、経済事情の変化</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">交渉のコツ</div>
+        <div class="strategy-row-val">一気に上げず2〜3段階。更新の3ヶ月前に書面通知</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">タイムライン</div>
+        <div class="strategy-row-val">通知 → 交渉 → 合意 or 調停（最長6ヶ月）</div>
+      </div>
+      <div class="risk-note">⚠ リスク: テナントが拒否→調停→裁判。費用と時間がかかる。相場データの整備が重要</div>
+    </div>
+
+    {# Strategy 2 #}
+    <div class="strategy-card">
+      <div class="strategy-card-header">
+        <div class="strategy-priority priority-2">②</div>
+        <div>
+          <div class="strategy-title">定期借家への切替</div>
+          <div class="strategy-subtitle">中期戦略・テナント合意が前提</div>
+        </div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">法的根拠</div>
+        <div class="strategy-row-val">借地借家法第38条</div>
+      </div>
+      <hr class="strategy-divider">
+      <div class="strategy-row">
+        <div class="strategy-row-label">条件</div>
+        <div class="strategy-row-val">テナントの書面合意が必須。強制不可</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">インセンティブ例</div>
+        <div class="strategy-row-val">一定期間の家賃据え置き、フリーレント1ヶ月の提案</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">メリット</div>
+        <div class="strategy-row-val">期間満了で確実に終了。再契約は新条件で設定可能</div>
+      </div>
+      <div class="risk-note">⚠ リスク: テナントが拒否したら打つ手なし。管理会社の信頼関係が重要</div>
+    </div>
+
+    {# Strategy 3 #}
+    <div class="strategy-card">
+      <div class="strategy-card-header">
+        <div class="strategy-priority priority-3">③</div>
+        <div>
+          <div class="strategy-title">立退料による合意解約</div>
+          <div class="strategy-subtitle">最終手段・即効性あり</div>
+        </div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">立退料相場</div>
+        <div class="strategy-row-val">家賃の6〜12ヶ月分（裁判例ベース）</div>
+      </div>
+      <hr class="strategy-divider">
+      <div class="strategy-row">
+        <div class="strategy-row-label">交渉ポイント</div>
+        <div class="strategy-row-val">引越し費用＋新居初期費用を立退料に含めた提案</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">メリット</div>
+        <div class="strategy-row-val">退去後即座に相場家賃で再募集。入替CGも実現可能</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">タイムライン</div>
+        <div class="strategy-row-val">打診〜退去まで1〜3ヶ月（合意がスムーズな場合）</div>
+      </div>
+      <div class="risk-note">⚠ リスク: テナントが居座る場合は正当事由が必要。立退き訴訟は費用大</div>
+    </div>
+
+  </div>
+
+  {# ── Section 3: 管理会社通知テンプレート ── #}
+  <div class="section-heading">管理会社通知テンプレート</div>
+  <p style="font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:20px">
+    各物件の実データを埋め込んだ通知文面です。コピーして管理会社へのメール等にご活用ください。
+  </p>
+
+  {% for prop in properties %}
+  {% set pid = loop.index %}
+  {% set prop_name = prop.name or ("物件" ~ pid) %}
+  {% set actual_rent = prop.actual_rent or "—" %}
+  {% set market_rent = prop.market_rent or "—" %}
+  {% set location = prop.location or "" %}
+  {% set eviction_cost = prop.negotiation.eviction_cost if prop.negotiation else "—" %}
+  {% set rent_steps = prop.negotiation.rent_steps if prop.negotiation else [] %}
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      {{ prop_name }}
+      <span class="badge badge-city">{{ prop._city_label }}</span>
+      {% if prop.rent_gap_pct %}<span class="badge badge-red">乖離{{ prop.rent_gap_pct }}</span>{% endif %}
+    </div>
+    <div class="prop-letter-meta">
+      実家賃 {{ actual_rent }}/月 → 相場 {{ market_rent }}/月
+      {% if prop.negotiation %}｜年間増収想定 +{{ prop.negotiation.annual_gain }}万{% endif %}
+    </div>
+
+    {# Tabs #}
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-{{ pid }}-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-{{ pid }}-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-{{ pid }}-c')">C: 合意解約打診</button>
+    </div>
+
+    {# Letter A #}
+    <div id="letter-{{ pid }}-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-{{ pid }}-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-{{ pid }}-a">件名: 【ご相談】{{ prop_name }} テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。{{ prop_name }}のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: {{ prop_name }}{% if location %}
+所在地: {{ location }}{% endif %}
+
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料{{ actual_rent }}に対し、周辺相場が{{ market_rent }}と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    {# Letter B #}
+    <div id="letter-{{ pid }}-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-{{ pid }}-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-{{ pid }}-b">件名: 【賃料改定のお願い】{{ prop_name }} 次回更新時
+
+管理会社 御中
+
+お世話になっております。{{ prop_name }}のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: {{ prop_name }}
+現行賃料: {{ actual_rent }}/月
+周辺相場: {{ market_rent }}/月
+
+改定案（段階的）:
+{% if rent_steps %}{% for s in rent_steps %}  第{{ loop.index }}段階: {% if loop.first %}{{ prop.negotiation.actual_man }}万 → {{ s }}{% else %}{{ rent_steps[loop.index - 2] }} → {{ s }}{% endif %}
+{% endfor %}{% else %}  段階的値上げ（管理会社と相談のうえ設定）
+{% endif %}
+段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    {# Letter C #}
+    <div id="letter-{{ pid }}-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-{{ pid }}-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-{{ pid }}-c">件名: 【ご相談】{{ prop_name }} 退去条件について
+
+管理会社 御中
+
+お世話になっております。{{ prop_name }}のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: {{ prop_name }}
+立退料（提示額）: {{ eviction_cost }}万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の{{ market_rent }}/月で新規募集予定です。
+{% if prop.negotiation %}年間増収見込み: +{{ prop.negotiation.annual_gain }}万（{{ prop.negotiation.payback }}）
+{% endif %}
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+  {% endfor %}
+
+  {# ── Section 4: 注意事項 ── #}
+  <div class="section-heading">注意事項・法的制約</div>
+  <div class="notes-card">
+    <h3>借地借家法の制約と対処法</h3>
+    <ul class="notes-list">
+      <li>
+        <strong>普通借家契約はオーナーが弱い立場</strong>：テナントの居住権が強く保護されており、一方的な値上げや退去要求はほぼ不可。管理会社を通じた誠実な交渉が最優先。
+      </li>
+      <li>
+        <strong>弁護士への相談が望ましいケース</strong>：増額請求調停、定期借家切替の書類作成、立退き交渉が難航した場合。不動産専門の弁護士（賃料増額・明渡し経験者）を選ぶこと。
+      </li>
+      <li>
+        <strong>賃料増額請求の注意点</strong>：借地借家法32条に基づく増額請求は、テナントが拒否した場合でも従前賃料を払い続けながら調停・裁判に移行できる。裁判になった場合、相場データ（SUUMO・HOME'S等の公開データ）が重要な証拠となる。
+      </li>
+      <li>
+        <strong>定期借家への切替は任意</strong>：テナントの書面同意が必要。同意なしに切り替えることはできない。インセンティブを提示して前向きな交渉を。
+      </li>
+      <li>
+        <strong>交渉が決裂した場合のフロー</strong>：① 内容証明郵便で増額通知 → ② 調停（裁判所） → ③ 審判 → ④ 訴訟。各ステージで費用・時間が増加するため、早期合意が最善。
+      </li>
+      <li>
+        <strong>相場家賃の根拠を整備</strong>：管理会社や調停委員を説得するため、SUUMO等での同エリア・同面積・築年数近似の成約賃料データを収集しておくこと。
+      </li>
+    </ul>
+  </div>
+
+  <p style="font-size:10px;color:rgba(255,255,255,0.25);text-align:center">
+    本ページは参考情報です。実際の交渉は不動産専門家・弁護士にご相談のうえ進めてください。
+  </p>
+
+  {% else %}
+  <div class="empty">
+    <div style="font-size:32px;margin-bottom:12px">🎉</div>
+    <div>家賃乖離リスクのある物件はありません</div>
+    <div style="font-size:11px;margin-top:6px;color:rgba(255,255,255,0.25)">OC物件の実家賃が相場に近い状態です</div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function switchLetter(btn, targetId) {
+  const group = btn.closest('.prop-letter-group');
+  group.querySelectorAll('.letter-block').forEach(el => el.style.display = 'none');
+  group.querySelectorAll('.letter-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(targetId).style.display = 'block';
+  btn.classList.add('active');
+}
+
+function copyLetter(btn, textId) {
+  const el = document.getElementById(textId);
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ コピー済み';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    // Fallback: select text
+    const range = document.createRange();
+    range.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,3352 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>家賃改善戦略 — iUMA Property</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #242836;
+  --card: #1a1d27;
+  --card-hover: #242836;
+  --border: #2d3348;
+  --border-light: #3d4460;
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.12);
+  --accent: #6366f1;
+  --accent2: #8b5cf6;
+  --blue: #3b82f6;
+  --purple: #6366f1;
+  --orange: #ff6b35;
+  --green: #22c55e;
+  --green-light: #4ade80;
+  --red: #ef4444;
+  --red-light: #f87171;
+  --yellow: #eab308;
+  --text: #e4e4e7;
+  --text-secondary: #9ca3af;
+  --text-muted: #7c8293;
+  --text-decorative: #5f6678;
+  --font-display: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --bp-mobile: 640px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1200px;
+  --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
+  --gnav-height: 52px;
+  --z-nav: 100;
+  --z-subnav: 90;
+  --z-modal: 200;
+  --z-toast: 300;
+  --fs-display: clamp(22px, 4vw, 36px);
+  --fs-h1: clamp(20px, 2.5vw, 26px);
+  --fs-h2: clamp(16px, 2vw, 22px);
+  --fs-h3: clamp(14px, 1.8vw, 18px);
+  --fs-body: 14px;
+  --fs-small: 12px;
+  --fs-xs: 10px;
+}
+
+/* === Reset === */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; scroll-padding-top: calc(var(--gnav-height, 52px) + 60px); }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* === Utilities === */
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.container-narrow { max-width: 720px; margin: 0 auto; padding: 24px; }
+.container-wide { max-width: 1280px; margin: 0 auto; padding: 24px; }
+.hide-mobile { }  /* overridden at 640px */
+.show-mobile { display: none; }
+.pnl-positive { color: var(--green); }
+.pnl-negative { color: var(--red); }
+
+/* === Fluid Typography === */
+.text-display { font-size: var(--fs-display); font-weight: 700; font-family: var(--font-display); line-height: 1.1; }
+.text-h1 { font-size: var(--fs-h1); font-weight: 700; line-height: 1.2; }
+.text-h2 { font-size: var(--fs-h2); font-weight: 700; line-height: 1.3; }
+.text-h3 { font-size: var(--fs-h3); font-weight: 600; line-height: 1.4; }
+.text-body { font-size: var(--fs-body); }
+.text-small { font-size: var(--fs-small); }
+.text-xs { font-size: var(--fs-xs); }
+.text-mono { font-family: var(--font-mono); }
+
+/* === Stat Grid (responsive auto-fit) === */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-4);
+}
+
+/* === Section Spacing === */
+.section { padding: var(--space-8) 0; }
+.section + .section { border-top: 1px solid var(--border); }
+
+/* === Responsive grid === */
+.responsive-grid { display: grid; gap: 16px; }
+.responsive-grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+.responsive-grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+/* === Table Scroll Indicator === */
+.table-scroll-wrap {
+  position: relative;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-scroll-wrap::after {
+  content: '→ scroll';
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  font-size: 9px;
+  color: var(--text-muted);
+  background: var(--surface);
+  padding: 2px 6px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.table-scroll-wrap.has-scroll::after { opacity: 1; }
+
+/* === Animations === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== Tablet (768px) ===== */
+@media (max-width: 768px) {
+  .responsive-grid.cols-2,
+  .responsive-grid.cols-3 { grid-template-columns: 1fr; }
+}
+
+/* ===== Mobile (640px) ===== */
+@media (max-width: 640px) {
+  .container { padding: 12px; }
+  .hide-mobile { display: none; }
+  .show-mobile { display: block; }
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+  }
+  .section { padding: var(--space-4) 0; }
+}
+
+/* ===== Extra small (380px) ===== */
+@media (max-width: 380px) {
+  .container { padding: 8px; }
+  .stat-grid { grid-template-columns: 1fr; }
+}
+
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 60px; }
+
+/* Hero */
+.hero {
+  padding: 32px 0 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 32px;
+}
+.hero-label {
+  display: inline-block;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--yellow); background: rgba(250,204,21,0.1);
+  border: 1px solid rgba(250,204,21,0.25);
+  padding: 3px 10px; border-radius: 20px; margin-bottom: 12px;
+}
+.hero h1 {
+  font-size: clamp(20px, 3vw, 28px); font-weight: 900; margin-bottom: 8px;
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-sub { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.6; }
+
+/* Section title */
+.section-heading {
+  font-size: 14px; font-weight: 800; margin: 32px 0 12px;
+  padding-left: 12px; border-left: 3px solid var(--accent);
+  color: var(--text);
+}
+
+/* Property table */
+.prop-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 12px; }
+.prop-table {
+  width: 100%; border-collapse: collapse; font-size: 12px; min-width: 600px;
+}
+.prop-table th {
+  text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.45); border-bottom: 1px solid rgba(255,255,255,0.08);
+  white-space: nowrap;
+}
+.prop-table td {
+  padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.prop-table tr:hover td { background: rgba(255,255,255,0.025); }
+.prop-table a { color: var(--text); text-decoration: none; }
+.prop-table a:hover { color: var(--accent); }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 2px 7px; border-radius: 999px;
+  font-size: 10px; font-weight: 700;
+}
+.badge-red { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.badge-yellow { background: rgba(250,204,21,0.15); color: var(--yellow); border: 1px solid rgba(250,204,21,0.3); }
+.badge-green { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.badge-city { background: rgba(99,102,241,0.12); color: var(--accent); border: 1px solid rgba(99,102,241,0.25); font-size: 9px; padding: 1px 6px; }
+
+/* Steps chip */
+.steps-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-family: var(--font-mono, monospace);
+  color: var(--green); white-space: nowrap;
+}
+.steps-chip span { color: rgba(255,255,255,0.3); }
+
+/* Strategy cards */
+.strategy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.strategy-card {
+  background: var(--card, rgba(255,255,255,0.04)); border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.07); padding: 20px;
+}
+.strategy-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.strategy-priority {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; flex-shrink: 0;
+}
+.priority-1 { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.priority-2 { background: rgba(250,204,21,0.15); color: var(--yellow); border: 1px solid rgba(250,204,21,0.3); }
+.priority-3 { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.strategy-title { font-size: 13px; font-weight: 800; }
+.strategy-subtitle { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+.strategy-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: 11px; line-height: 1.5; }
+.strategy-row-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); width: 64px; flex-shrink: 0; padding-top: 1px; }
+.strategy-row-val { flex: 1; }
+.strategy-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 12px 0; }
+.risk-note { font-size: 10px; color: var(--red); background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.15); border-radius: 6px; padding: 6px 10px; margin-top: 8px; }
+
+/* Letter section */
+.letter-block { margin-bottom: 28px; }
+.letter-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; flex-wrap: wrap; gap: 8px;
+}
+.letter-title { font-size: 12px; font-weight: 800; }
+.letter-type { font-size: 10px; color: rgba(255,255,255,0.45); }
+.letter-body {
+  background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; padding: 14px 16px; font-size: 11px; line-height: 1.8;
+  white-space: pre-wrap; font-family: var(--font-body); color: rgba(255,255,255,0.8);
+  position: relative;
+}
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.3);
+  color: var(--accent); font-size: 11px; font-weight: 600;
+  padding: 5px 12px; border-radius: 6px; cursor: pointer;
+  transition: background 0.15s; white-space: nowrap;
+}
+.copy-btn:hover { background: rgba(99,102,241,0.22); }
+.copy-btn.copied { background: rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.3); color: var(--green); }
+
+/* Property letter group */
+.prop-letter-group {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 16px; margin-bottom: 20px;
+}
+.prop-letter-name {
+  font-size: 13px; font-weight: 800; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.prop-letter-meta { font-size: 10px; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+
+/* Letter tabs */
+.letter-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+.letter-tab {
+  padding: 5px 12px; border-radius: 6px; font-size: 10px; font-weight: 700;
+  cursor: pointer; border: 1px solid transparent;
+  color: rgba(255,255,255,0.4); background: transparent; transition: all 0.15s;
+}
+.letter-tab:hover { color: #fff; background: rgba(255,255,255,0.05); }
+.letter-tab.active { color: var(--accent); border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.08); }
+
+/* Notes section */
+.notes-card {
+  background: rgba(250,204,21,0.05); border: 1px solid rgba(250,204,21,0.2);
+  border-radius: 12px; padding: 20px; margin-bottom: 32px;
+}
+.notes-card h3 { font-size: 13px; font-weight: 800; color: var(--yellow); margin-bottom: 12px; }
+.notes-list { list-style: none; padding: 0; }
+.notes-list li {
+  padding: 7px 0 7px 20px; position: relative;
+  font-size: 11px; line-height: 1.6; border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.8);
+}
+.notes-list li:last-child { border-bottom: none; }
+.notes-list li::before { content: '⚠'; position: absolute; left: 0; color: var(--yellow); font-size: 10px; }
+
+/* Empty state */
+.empty { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.35); font-size: 13px; }
+
+@media (max-width: 640px) {
+  .strategy-grid { grid-template-columns: 1fr; }
+  .wrap { padding: 16px 12px 48px; }
+  .hero h1 { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<style>
+/* ── Shared Gnav ── */
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: var(--gnav-height, 52px);
+  background: rgba(22,24,31,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky; top: 0; z-index: var(--z-nav, 100);
+}
+.site-nav { display: flex; gap: 4px; }
+.site-nav a {
+  color: #71717a; text-decoration: none; font-size: 13px; font-weight: 500;
+  padding: 6px 14px; border-radius: 6px; transition: background .15s, color .15s;
+}
+.site-nav a:hover, .site-nav a[aria-current="page"] {
+  background: rgba(255,255,255,0.065); color: #f5f5f7;
+}
+.nav-toggle { display: none; }
+.nav-toggle-label { display: none; cursor: pointer; padding: 8px; }
+.nav-toggle-label span,
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  display: block; background: #f5f5f7; height: 2px; width: 20px;
+  border-radius: 2px; position: relative; transition: .3s;
+}
+.nav-toggle-label span::before,
+.nav-toggle-label span::after { content: ''; position: absolute; }
+.nav-toggle-label span::before { top: -6px; }
+.nav-toggle-label span::after { top: 6px; }
+@media (max-width: 640px) {
+  .nav-toggle-label { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
+  .site-nav {
+    display: none; flex-direction: column; gap: 0;
+    position: absolute; top: var(--gnav-height, 52px); left: 0; right: 0; z-index: var(--z-modal, 200);
+    background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 0;
+  }
+  .site-nav a { padding: 12px 24px; border-radius: 0; font-size: 14px; }
+  .nav-toggle:checked ~ .site-nav { display: flex; }
+  .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
+  .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
+  .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
+}
+</style>
+
+<header class="site-header">
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+  <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
+  <nav class="site-nav">
+    <a href="https://ymatz28-beep.github.io/report-dashboard/"
+>
+      Hub
+    </a>
+    <a href="https://ymatz28-beep.github.io/property-report/"
+ aria-current="page">
+      Property
+    </a>
+    <a href="https://ymatz28-beep.github.io/trip-planner/"
+>
+      Travel
+    </a>
+  </nav>
+</header>
+
+
+<style>
+.gnav {
+  position: sticky;
+  top: var(--gnav-height, 52px);
+  z-index: 95;
+  background: rgba(10,12,18,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0;
+  font-family: var(--font-display, 'Inter','Noto Sans JP',sans-serif);
+}
+.gnav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 16px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.gnav a {
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.gnav a:hover { color: #fff; }
+.gnav a.cur { color: #fff; border-bottom: 2px solid #3b9eff; }
+@media (max-width: 640px) {
+  .gnav a { padding: 10px 10px; font-size: 10px; min-height: 44px; display: inline-flex; align-items: center; }
+}
+@media (max-width: 375px) {
+  .gnav-inner { padding: 0 8px; }
+  .gnav a { padding: 10px 8px; font-size: 9px; }
+}
+</style>
+
+<div class="gnav">
+  <div class="gnav-inner">
+    <a href="index.html">Hub</a>
+    <a href="market.html">Market</a>
+    <a href="naiken-analysis.html">内覧分析</a>
+    <a href="inquiry-messages.html">問い合わせ</a>
+    <a href="inquiry-pipeline.html">Pipeline</a>
+    <a href="rent-strategy.html" class="cur">家賃戦略</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-label">⚠ 家賃乖離リスク管理</div>
+    <h1>家賃改善戦略</h1>
+    <p class="hero-sub">
+      実家賃が相場を大幅に下回るOC物件の交渉戦略・通知テンプレートをまとめたページです。<br>
+      管理会社への依頼文は物件ごとにカスタマイズされています。コピーして活用してください。
+    </p>
+  </div>
+
+
+  <div class="section-heading">対象物件一覧（20件）</div>
+  <div class="prop-table-wrap">
+    <table class="prop-table">
+      <thead>
+        <tr>
+          <th>エリア</th>
+          <th>物件名</th>
+          <th>価格</th>
+          <th>実家賃/月</th>
+          <th>相場家賃/月</th>
+          <th>乖離率</th>
+          <th>改善ステップ</th>
+          <th>立退料目安</th>
+          <th>年間増収</th>
+          <th>回収</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3563869/show.html" target="_blank" rel="noopener" title="メゾン・ド・プレジール">
+              メゾン・ド・プレジール
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+190万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            2.1万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            3.8万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">中央区</span>          </td>
+          <td>
+            <span class="badge badge-red">-45%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>2.1万</span>
+              <span>→</span><span style="color:var(--green)">2.6万</span>
+              <span>→</span><span style="color:var(--green)">3.2万</span>
+              <span>→</span><span style="color:var(--green)">3.8万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+12.4万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++20.6万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+7ヶ月で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.f-takken.com/freins/items/99804693" target="_blank" rel="noopener" title="第3シャトー高宮 101">
+              第3シャトー高宮 101
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+850万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            7.0万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            13.4万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">南区</span>          </td>
+          <td>
+            <span class="badge badge-red">-48%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>7.0万</span>
+              <span>→</span><span style="color:var(--green)">9.1万</span>
+              <span>→</span><span style="color:var(--green)">11.3万</span>
+              <span>→</span><span style="color:var(--green)">13.4万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+42.0万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++77.2万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+7ヶ月で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3569999/show.html" target="_blank" rel="noopener" title="ロワールマンション・ピュアやよい坂２">
+              ロワールマンション・ピュアやよい坂２
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+980万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            7.5万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            11.0万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">南区</span>          </td>
+          <td>
+            <span class="badge badge-red">-32%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>7.5万</span>
+              <span>→</span><span style="color:var(--green)">9.3万</span>
+              <span>→</span><span style="color:var(--green)">11.0万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+45.0万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++42.4万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+約1.1年で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3558882/show.html" target="_blank" rel="noopener" title="サンシティ博多フレックス21">
+              サンシティ博多フレックス21
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+1050万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            6.9万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            8.8万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">博多区</span>          </td>
+          <td>
+            <span class="badge badge-red">-22%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>6.9万</span>
+              <span>→</span><span style="color:var(--green)">7.9万</span>
+              <span>→</span><span style="color:var(--green)">8.8万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+41.4万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++23.3万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+約1.8年で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3579215/show.html" target="_blank" rel="noopener" title="福岡県福岡市">
+              福岡県福岡市
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+170万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            2.1万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            2.9万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">南区</span>          </td>
+          <td>
+            <span class="badge badge-red">-27%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>2.1万</span>
+              <span>→</span><span style="color:var(--green)">2.5万</span>
+              <span>→</span><span style="color:var(--green)">2.9万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+12.6万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++9.3万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+約1.3年で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.f-takken.com/freins/items/99801480" target="_blank" rel="noopener" title="長住三丁目分譲住宅１０棟">
+              長住三丁目分譲住宅１０棟
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+750万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            5.0万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            10.6万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">南区</span>          </td>
+          <td>
+            <span class="badge badge-red">-53%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>5.0万</span>
+              <span>→</span><span style="color:var(--green)">6.9万</span>
+              <span>→</span><span style="color:var(--green)">8.7万</span>
+              <span>→</span><span style="color:var(--green)">10.6万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+30.0万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++67.2万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+5ヶ月で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3576819/show.html" target="_blank" rel="noopener" title="ライベストコート薬院">
+              ライベストコート薬院
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+425万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            3.5万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            4.7万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">中央区</span>          </td>
+          <td>
+            <span class="badge badge-red">-26%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>3.5万</span>
+              <span>→</span><span style="color:var(--green)">4.1万</span>
+              <span>→</span><span style="color:var(--green)">4.7万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+21.0万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++14.8万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+約1.4年で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.f-takken.com/freins/items/99665480" target="_blank" rel="noopener" title="第一大楠マンション 305">
+              第一大楠マンション 305
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+580万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            5.5万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            11.9万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">博多区</span>          </td>
+          <td>
+            <span class="badge badge-red">-54%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>5.5万</span>
+              <span>→</span><span style="color:var(--green)">7.6万</span>
+              <span>→</span><span style="color:var(--green)">9.8万</span>
+              <span>→</span><span style="color:var(--green)">11.9万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+33.0万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++77.1万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+5ヶ月で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3568059/show.html" target="_blank" rel="noopener" title="福岡県福岡市">
+              福岡県福岡市
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+518万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            3.5万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            4.7万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">博多区</span>          </td>
+          <td>
+            <span class="badge badge-red">-26%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>3.5万</span>
+              <span>→</span><span style="color:var(--green)">4.1万</span>
+              <span>→</span><span style="color:var(--green)">4.7万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+20.9万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++15.0万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+約1.4年で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.f-takken.com/freins/items/99789402" target="_blank" rel="noopener" title="シャルマンコーポ">
+              シャルマンコーポ
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+980万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            5.5万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            12.7万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">博多区</span>          </td>
+          <td>
+            <span class="badge badge-red">-57%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>5.5万</span>
+              <span>→</span><span style="color:var(--green)">7.9万</span>
+              <span>→</span><span style="color:var(--green)">10.3万</span>
+              <span>→</span><span style="color:var(--green)">12.7万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+33.0万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++86.6万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+5ヶ月で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.f-takken.com/freins/items/99789433" target="_blank" rel="noopener" title="ローズマンション山王 203">
+              ローズマンション山王 203
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+650万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            4.7万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            8.7万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">博多区</span>          </td>
+          <td>
+            <span class="badge badge-red">-46%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>4.7万</span>
+              <span>→</span><span style="color:var(--green)">6.0万</span>
+              <span>→</span><span style="color:var(--green)">7.4万</span>
+              <span>→</span><span style="color:var(--green)">8.7万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+28.2万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++47.9万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+7ヶ月で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3562396/show.html" target="_blank" rel="noopener" title="シティマンション輝国">
+              シティマンション輝国
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+980万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            7.0万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            13.1万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">中央区</span>          </td>
+          <td>
+            <span class="badge badge-red">-47%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>7.0万</span>
+              <span>→</span><span style="color:var(--green)">9.0万</span>
+              <span>→</span><span style="color:var(--green)">11.1万</span>
+              <span>→</span><span style="color:var(--green)">13.1万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+42.0万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++73.2万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+7ヶ月で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3561398/show.html" target="_blank" rel="noopener" title="じゅうグランドモア県庁口">
+              じゅうグランドモア県庁口
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+490万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            4.2万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            5.6万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">博多区</span>          </td>
+          <td>
+            <span class="badge badge-red">-26%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>4.2万</span>
+              <span>→</span><span style="color:var(--green)">4.9万</span>
+              <span>→</span><span style="color:var(--green)">5.6万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+25.2万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++17.3万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+約1.4年で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3571088/show.html" target="_blank" rel="noopener" title="ロマネスク小笹第３">
+              ロマネスク小笹第３
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+550万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            4.0万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            5.3万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">中央区</span>          </td>
+          <td>
+            <span class="badge badge-red">-25%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>4.0万</span>
+              <span>→</span><span style="color:var(--green)">4.7万</span>
+              <span>→</span><span style="color:var(--green)">5.3万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+24.0万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++16.1万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+約1.5年で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3574051/show.html" target="_blank" rel="noopener" title="エステート・モア博多">
+              エステート・モア博多
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+1080万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            6.3万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            13.2万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">博多区</span>          </td>
+          <td>
+            <span class="badge badge-red">-52%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>6.3万</span>
+              <span>→</span><span style="color:var(--green)">8.6万</span>
+              <span>→</span><span style="color:var(--green)">10.9万</span>
+              <span>→</span><span style="color:var(--green)">13.2万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+37.8万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++82.5万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+5ヶ月で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.f-takken.com/freins/items/99621859" target="_blank" rel="noopener" title="エクレール弥永 505">
+              エクレール弥永 505
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+670万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            3.9万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            11.4万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">南区</span>          </td>
+          <td>
+            <span class="badge badge-red">-66%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>3.9万</span>
+              <span>→</span><span style="color:var(--green)">6.4万</span>
+              <span>→</span><span style="color:var(--green)">8.9万</span>
+              <span>→</span><span style="color:var(--green)">11.4万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+23.5万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++89.6万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+3ヶ月で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3553007/show.html" target="_blank" rel="noopener" title="ロマネスク警固">
+              ロマネスク警固
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+500万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            3.5万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            4.8万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">中央区</span>          </td>
+          <td>
+            <span class="badge badge-red">-27%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>3.5万</span>
+              <span>→</span><span style="color:var(--green)">4.1万</span>
+              <span>→</span><span style="color:var(--green)">4.8万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+21.0万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++15.4万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+約1.3年で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3578484/show.html" target="_blank" rel="noopener" title="ルエ・メゾン・ロワール渡辺通り">
+              ルエ・メゾン・ロワール渡辺通り
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+580万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            3.9万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            5.6万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">中央区</span>          </td>
+          <td>
+            <span class="badge badge-red">-30%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>3.9万</span>
+              <span>→</span><span style="color:var(--green)">4.7万</span>
+              <span>→</span><span style="color:var(--green)">5.5万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+23.4万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++19.8万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+約1.2年で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3555456/show.html" target="_blank" rel="noopener" title="福岡県福岡市">
+              福岡県福岡市
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+280万          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            1.8万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            3.1万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">南区</span>          </td>
+          <td>
+            <span class="badge badge-red">-43%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>1.8万</span>
+              <span>→</span><span style="color:var(--green)">2.2万</span>
+              <span>→</span><span style="color:var(--green)">2.7万</span>
+              <span>→</span><span style="color:var(--green)">3.1万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+10.7万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++16.0万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+8ヶ月で回収          </td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-city">福岡</span></td>
+          <td>
+            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3553853/show.html" target="_blank" rel="noopener" title="福岡リバーキャッスル">
+              福岡リバーキャッスル
+            </a>
+          </td>
+          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
+1500万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
+            11.0万
+          </td>
+          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
+            20.5万
+<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">中央区</span>          </td>
+          <td>
+            <span class="badge badge-red">-46%</span>
+          </td>
+          <td>
+            <div class="steps-chip">
+              <span>11.0万</span>
+              <span>→</span><span style="color:var(--green)">14.2万</span>
+              <span>→</span><span style="color:var(--green)">17.3万</span>
+              <span>→</span><span style="color:var(--green)">20.5万</span>
+            </div>
+          </td>
+          <td style="font-size:11px;white-space:nowrap">
+66.0万          </td>
+          <td style="font-size:11px;color:var(--green);font-weight:600">
++113.9万/年          </td>
+          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
+7ヶ月で回収          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:32px">
+    乖離率 = (実家賃 − 相場) ÷ 相場 × 100。立退料は実家賃6ヶ月分の目安。
+  </p>
+
+  <div class="section-heading">交渉戦略ガイド（3段階）</div>
+  <div class="strategy-grid">
+
+    <div class="strategy-card">
+      <div class="strategy-card-header">
+        <div class="strategy-priority priority-1">①</div>
+        <div>
+          <div class="strategy-title">段階的値上げ（更新時交渉）</div>
+          <div class="strategy-subtitle">コスト0円・最優先</div>
+        </div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">法的根拠</div>
+        <div class="strategy-row-val">借地借家法第32条（借賃増額請求権）</div>
+      </div>
+      <hr class="strategy-divider">
+      <div class="strategy-row">
+        <div class="strategy-row-label">必要証拠</div>
+        <div class="strategy-row-val">周辺相場データ、固定資産税通知書、経済事情の変化</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">交渉のコツ</div>
+        <div class="strategy-row-val">一気に上げず2〜3段階。更新の3ヶ月前に書面通知</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">タイムライン</div>
+        <div class="strategy-row-val">通知 → 交渉 → 合意 or 調停（最長6ヶ月）</div>
+      </div>
+      <div class="risk-note">⚠ リスク: テナントが拒否→調停→裁判。費用と時間がかかる。相場データの整備が重要</div>
+    </div>
+
+    <div class="strategy-card">
+      <div class="strategy-card-header">
+        <div class="strategy-priority priority-2">②</div>
+        <div>
+          <div class="strategy-title">定期借家への切替</div>
+          <div class="strategy-subtitle">中期戦略・テナント合意が前提</div>
+        </div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">法的根拠</div>
+        <div class="strategy-row-val">借地借家法第38条</div>
+      </div>
+      <hr class="strategy-divider">
+      <div class="strategy-row">
+        <div class="strategy-row-label">条件</div>
+        <div class="strategy-row-val">テナントの書面合意が必須。強制不可</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">インセンティブ例</div>
+        <div class="strategy-row-val">一定期間の家賃据え置き、フリーレント1ヶ月の提案</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">メリット</div>
+        <div class="strategy-row-val">期間満了で確実に終了。再契約は新条件で設定可能</div>
+      </div>
+      <div class="risk-note">⚠ リスク: テナントが拒否したら打つ手なし。管理会社の信頼関係が重要</div>
+    </div>
+
+    <div class="strategy-card">
+      <div class="strategy-card-header">
+        <div class="strategy-priority priority-3">③</div>
+        <div>
+          <div class="strategy-title">立退料による合意解約</div>
+          <div class="strategy-subtitle">最終手段・即効性あり</div>
+        </div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">立退料相場</div>
+        <div class="strategy-row-val">家賃の6〜12ヶ月分（裁判例ベース）</div>
+      </div>
+      <hr class="strategy-divider">
+      <div class="strategy-row">
+        <div class="strategy-row-label">交渉ポイント</div>
+        <div class="strategy-row-val">引越し費用＋新居初期費用を立退料に含めた提案</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">メリット</div>
+        <div class="strategy-row-val">退去後即座に相場家賃で再募集。入替CGも実現可能</div>
+      </div>
+      <div class="strategy-row">
+        <div class="strategy-row-label">タイムライン</div>
+        <div class="strategy-row-val">打診〜退去まで1〜3ヶ月（合意がスムーズな場合）</div>
+      </div>
+      <div class="risk-note">⚠ リスク: テナントが居座る場合は正当事由が必要。立退き訴訟は費用大</div>
+    </div>
+
+  </div>
+
+  <div class="section-heading">管理会社通知テンプレート</div>
+  <p style="font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:20px">
+    各物件の実データを埋め込んだ通知文面です。コピーして管理会社へのメール等にご活用ください。
+  </p>
+
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      メゾン・ド・プレジール
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-45%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 2.1万/月 → 相場 3.8万/月
+｜年間増収想定 +20.6万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-1-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-1-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-1-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-1-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-1-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-1-a">件名: 【ご相談】メゾン・ド・プレジール テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。メゾン・ド・プレジールのオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: メゾン・ド・プレジール所在地: 福岡県福岡市中央区鳥飼３−１２−４
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料2.1万に対し、周辺相場が3.8万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-1-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-1-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-1-b">件名: 【賃料改定のお願い】メゾン・ド・プレジール 次回更新時
+
+管理会社 御中
+
+お世話になっております。メゾン・ド・プレジールのオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: メゾン・ド・プレジール
+現行賃料: 2.1万/月
+周辺相場: 3.8万/月
+
+改定案（段階的）:
+  第1段階: 2.1万 → 2.6万  第2段階: 2.6万 → 3.2万  第3段階: 3.2万 → 3.8万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-1-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-1-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-1-c">件名: 【ご相談】メゾン・ド・プレジール 退去条件について
+
+管理会社 御中
+
+お世話になっております。メゾン・ド・プレジールのオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: メゾン・ド・プレジール
+立退料（提示額）: 12.4万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の3.8万/月で新規募集予定です。
+年間増収見込み: +20.6万（7ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      第3シャトー高宮 101
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-48%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 7.0万/月 → 相場 13.4万/月
+｜年間増収想定 +77.2万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-2-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-2-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-2-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-2-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-2-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-2-a">件名: 【ご相談】第3シャトー高宮 101 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。第3シャトー高宮 101のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: 第3シャトー高宮 101所在地: 福岡市南区高宮２丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料7.0万に対し、周辺相場が13.4万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-2-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-2-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-2-b">件名: 【賃料改定のお願い】第3シャトー高宮 101 次回更新時
+
+管理会社 御中
+
+お世話になっております。第3シャトー高宮 101のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: 第3シャトー高宮 101
+現行賃料: 7.0万/月
+周辺相場: 13.4万/月
+
+改定案（段階的）:
+  第1段階: 7.0万 → 9.1万  第2段階: 9.1万 → 11.3万  第3段階: 11.3万 → 13.4万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-2-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-2-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-2-c">件名: 【ご相談】第3シャトー高宮 101 退去条件について
+
+管理会社 御中
+
+お世話になっております。第3シャトー高宮 101のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: 第3シャトー高宮 101
+立退料（提示額）: 42.0万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の13.4万/月で新規募集予定です。
+年間増収見込み: +77.2万（7ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      ロワールマンション・ピュアやよい坂２
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-32%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 7.5万/月 → 相場 11.0万/月
+｜年間増収想定 +42.4万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-3-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-3-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-3-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-3-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-3-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-3-a">件名: 【ご相談】ロワールマンション・ピュアやよい坂２ テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。ロワールマンション・ピュアやよい坂２のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: ロワールマンション・ピュアやよい坂２所在地: 福岡県福岡市南区屋形原３丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料7.5万に対し、周辺相場が11.0万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-3-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-3-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-3-b">件名: 【賃料改定のお願い】ロワールマンション・ピュアやよい坂２ 次回更新時
+
+管理会社 御中
+
+お世話になっております。ロワールマンション・ピュアやよい坂２のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: ロワールマンション・ピュアやよい坂２
+現行賃料: 7.5万/月
+周辺相場: 11.0万/月
+
+改定案（段階的）:
+  第1段階: 7.5万 → 9.3万  第2段階: 9.3万 → 11.0万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-3-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-3-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-3-c">件名: 【ご相談】ロワールマンション・ピュアやよい坂２ 退去条件について
+
+管理会社 御中
+
+お世話になっております。ロワールマンション・ピュアやよい坂２のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: ロワールマンション・ピュアやよい坂２
+立退料（提示額）: 45.0万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の11.0万/月で新規募集予定です。
+年間増収見込み: +42.4万（約1.1年で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      サンシティ博多フレックス21
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-22%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 6.9万/月 → 相場 8.8万/月
+｜年間増収想定 +23.3万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-4-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-4-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-4-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-4-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-4-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-4-a">件名: 【ご相談】サンシティ博多フレックス21 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。サンシティ博多フレックス21のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: サンシティ博多フレックス21所在地: 福岡県福岡市博多区大博町7
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料6.9万に対し、周辺相場が8.8万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-4-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-4-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-4-b">件名: 【賃料改定のお願い】サンシティ博多フレックス21 次回更新時
+
+管理会社 御中
+
+お世話になっております。サンシティ博多フレックス21のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: サンシティ博多フレックス21
+現行賃料: 6.9万/月
+周辺相場: 8.8万/月
+
+改定案（段階的）:
+  第1段階: 6.9万 → 7.9万  第2段階: 7.9万 → 8.8万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-4-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-4-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-4-c">件名: 【ご相談】サンシティ博多フレックス21 退去条件について
+
+管理会社 御中
+
+お世話になっております。サンシティ博多フレックス21のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: サンシティ博多フレックス21
+立退料（提示額）: 41.4万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の8.8万/月で新規募集予定です。
+年間増収見込み: +23.3万（約1.8年で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      福岡県福岡市
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-27%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 2.1万/月 → 相場 2.9万/月
+｜年間増収想定 +9.3万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-5-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-5-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-5-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-5-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-5-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-5-a">件名: 【ご相談】福岡県福岡市 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。福岡県福岡市のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: 福岡県福岡市所在地: 福岡県福岡市南区塩原4丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料2.1万に対し、周辺相場が2.9万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-5-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-5-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-5-b">件名: 【賃料改定のお願い】福岡県福岡市 次回更新時
+
+管理会社 御中
+
+お世話になっております。福岡県福岡市のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: 福岡県福岡市
+現行賃料: 2.1万/月
+周辺相場: 2.9万/月
+
+改定案（段階的）:
+  第1段階: 2.1万 → 2.5万  第2段階: 2.5万 → 2.9万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-5-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-5-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-5-c">件名: 【ご相談】福岡県福岡市 退去条件について
+
+管理会社 御中
+
+お世話になっております。福岡県福岡市のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: 福岡県福岡市
+立退料（提示額）: 12.6万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の2.9万/月で新規募集予定です。
+年間増収見込み: +9.3万（約1.3年で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      長住三丁目分譲住宅１０棟
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-53%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 5.0万/月 → 相場 10.6万/月
+｜年間増収想定 +67.2万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-6-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-6-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-6-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-6-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-6-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-6-a">件名: 【ご相談】長住三丁目分譲住宅１０棟 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。長住三丁目分譲住宅１０棟のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: 長住三丁目分譲住宅１０棟所在地: 福岡市南区長住３丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料5.0万に対し、周辺相場が10.6万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-6-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-6-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-6-b">件名: 【賃料改定のお願い】長住三丁目分譲住宅１０棟 次回更新時
+
+管理会社 御中
+
+お世話になっております。長住三丁目分譲住宅１０棟のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: 長住三丁目分譲住宅１０棟
+現行賃料: 5.0万/月
+周辺相場: 10.6万/月
+
+改定案（段階的）:
+  第1段階: 5.0万 → 6.9万  第2段階: 6.9万 → 8.7万  第3段階: 8.7万 → 10.6万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-6-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-6-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-6-c">件名: 【ご相談】長住三丁目分譲住宅１０棟 退去条件について
+
+管理会社 御中
+
+お世話になっております。長住三丁目分譲住宅１０棟のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: 長住三丁目分譲住宅１０棟
+立退料（提示額）: 30.0万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の10.6万/月で新規募集予定です。
+年間増収見込み: +67.2万（5ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      ライベストコート薬院
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-26%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 3.5万/月 → 相場 4.7万/月
+｜年間増収想定 +14.8万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-7-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-7-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-7-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-7-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-7-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-7-a">件名: 【ご相談】ライベストコート薬院 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。ライベストコート薬院のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: ライベストコート薬院所在地: 福岡県福岡市中央区大宮１−１−１８
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料3.5万に対し、周辺相場が4.7万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-7-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-7-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-7-b">件名: 【賃料改定のお願い】ライベストコート薬院 次回更新時
+
+管理会社 御中
+
+お世話になっております。ライベストコート薬院のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: ライベストコート薬院
+現行賃料: 3.5万/月
+周辺相場: 4.7万/月
+
+改定案（段階的）:
+  第1段階: 3.5万 → 4.1万  第2段階: 4.1万 → 4.7万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-7-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-7-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-7-c">件名: 【ご相談】ライベストコート薬院 退去条件について
+
+管理会社 御中
+
+お世話になっております。ライベストコート薬院のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: ライベストコート薬院
+立退料（提示額）: 21.0万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の4.7万/月で新規募集予定です。
+年間増収見込み: +14.8万（約1.4年で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      第一大楠マンション 305
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-54%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 5.5万/月 → 相場 11.9万/月
+｜年間増収想定 +77.1万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-8-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-8-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-8-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-8-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-8-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-8-a">件名: 【ご相談】第一大楠マンション 305 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。第一大楠マンション 305のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: 第一大楠マンション 305所在地: 福岡市博多区麦野５丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料5.5万に対し、周辺相場が11.9万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-8-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-8-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-8-b">件名: 【賃料改定のお願い】第一大楠マンション 305 次回更新時
+
+管理会社 御中
+
+お世話になっております。第一大楠マンション 305のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: 第一大楠マンション 305
+現行賃料: 5.5万/月
+周辺相場: 11.9万/月
+
+改定案（段階的）:
+  第1段階: 5.5万 → 7.6万  第2段階: 7.6万 → 9.8万  第3段階: 9.8万 → 11.9万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-8-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-8-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-8-c">件名: 【ご相談】第一大楠マンション 305 退去条件について
+
+管理会社 御中
+
+お世話になっております。第一大楠マンション 305のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: 第一大楠マンション 305
+立退料（提示額）: 33.0万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の11.9万/月で新規募集予定です。
+年間増収見込み: +77.1万（5ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      福岡県福岡市
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-26%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 3.5万/月 → 相場 4.7万/月
+｜年間増収想定 +15.0万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-9-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-9-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-9-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-9-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-9-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-9-a">件名: 【ご相談】福岡県福岡市 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。福岡県福岡市のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: 福岡県福岡市所在地: 福岡県福岡市博多区千代
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料3.5万に対し、周辺相場が4.7万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-9-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-9-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-9-b">件名: 【賃料改定のお願い】福岡県福岡市 次回更新時
+
+管理会社 御中
+
+お世話になっております。福岡県福岡市のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: 福岡県福岡市
+現行賃料: 3.5万/月
+周辺相場: 4.7万/月
+
+改定案（段階的）:
+  第1段階: 3.5万 → 4.1万  第2段階: 4.1万 → 4.7万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-9-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-9-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-9-c">件名: 【ご相談】福岡県福岡市 退去条件について
+
+管理会社 御中
+
+お世話になっております。福岡県福岡市のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: 福岡県福岡市
+立退料（提示額）: 20.9万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の4.7万/月で新規募集予定です。
+年間増収見込み: +15.0万（約1.4年で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      シャルマンコーポ
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-57%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 5.5万/月 → 相場 12.7万/月
+｜年間増収想定 +86.6万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-10-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-10-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-10-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-10-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-10-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-10-a">件名: 【ご相談】シャルマンコーポ テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。シャルマンコーポのオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: シャルマンコーポ所在地: 福岡市博多区千代５丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料5.5万に対し、周辺相場が12.7万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-10-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-10-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-10-b">件名: 【賃料改定のお願い】シャルマンコーポ 次回更新時
+
+管理会社 御中
+
+お世話になっております。シャルマンコーポのオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: シャルマンコーポ
+現行賃料: 5.5万/月
+周辺相場: 12.7万/月
+
+改定案（段階的）:
+  第1段階: 5.5万 → 7.9万  第2段階: 7.9万 → 10.3万  第3段階: 10.3万 → 12.7万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-10-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-10-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-10-c">件名: 【ご相談】シャルマンコーポ 退去条件について
+
+管理会社 御中
+
+お世話になっております。シャルマンコーポのオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: シャルマンコーポ
+立退料（提示額）: 33.0万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の12.7万/月で新規募集予定です。
+年間増収見込み: +86.6万（5ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      ローズマンション山王 203
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-46%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 4.7万/月 → 相場 8.7万/月
+｜年間増収想定 +47.9万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-11-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-11-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-11-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-11-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-11-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-11-a">件名: 【ご相談】ローズマンション山王 203 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。ローズマンション山王 203のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: ローズマンション山王 203所在地: 福岡市博多区山王１丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料4.7万に対し、周辺相場が8.7万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-11-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-11-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-11-b">件名: 【賃料改定のお願い】ローズマンション山王 203 次回更新時
+
+管理会社 御中
+
+お世話になっております。ローズマンション山王 203のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: ローズマンション山王 203
+現行賃料: 4.7万/月
+周辺相場: 8.7万/月
+
+改定案（段階的）:
+  第1段階: 4.7万 → 6.0万  第2段階: 6.0万 → 7.4万  第3段階: 7.4万 → 8.7万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-11-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-11-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-11-c">件名: 【ご相談】ローズマンション山王 203 退去条件について
+
+管理会社 御中
+
+お世話になっております。ローズマンション山王 203のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: ローズマンション山王 203
+立退料（提示額）: 28.2万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の8.7万/月で新規募集予定です。
+年間増収見込み: +47.9万（7ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      シティマンション輝国
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-47%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 7.0万/月 → 相場 13.1万/月
+｜年間増収想定 +73.2万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-12-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-12-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-12-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-12-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-12-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-12-a">件名: 【ご相談】シティマンション輝国 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。シティマンション輝国のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: シティマンション輝国所在地: 福岡県福岡市中央区輝国2丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料7.0万に対し、周辺相場が13.1万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-12-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-12-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-12-b">件名: 【賃料改定のお願い】シティマンション輝国 次回更新時
+
+管理会社 御中
+
+お世話になっております。シティマンション輝国のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: シティマンション輝国
+現行賃料: 7.0万/月
+周辺相場: 13.1万/月
+
+改定案（段階的）:
+  第1段階: 7.0万 → 9.0万  第2段階: 9.0万 → 11.1万  第3段階: 11.1万 → 13.1万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-12-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-12-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-12-c">件名: 【ご相談】シティマンション輝国 退去条件について
+
+管理会社 御中
+
+お世話になっております。シティマンション輝国のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: シティマンション輝国
+立退料（提示額）: 42.0万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の13.1万/月で新規募集予定です。
+年間増収見込み: +73.2万（7ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      じゅうグランドモア県庁口
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-26%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 4.2万/月 → 相場 5.6万/月
+｜年間増収想定 +17.3万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-13-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-13-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-13-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-13-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-13-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-13-a">件名: 【ご相談】じゅうグランドモア県庁口 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。じゅうグランドモア県庁口のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: じゅうグランドモア県庁口所在地: 福岡県福岡市博多区千代１−２４−１２
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料4.2万に対し、周辺相場が5.6万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-13-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-13-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-13-b">件名: 【賃料改定のお願い】じゅうグランドモア県庁口 次回更新時
+
+管理会社 御中
+
+お世話になっております。じゅうグランドモア県庁口のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: じゅうグランドモア県庁口
+現行賃料: 4.2万/月
+周辺相場: 5.6万/月
+
+改定案（段階的）:
+  第1段階: 4.2万 → 4.9万  第2段階: 4.9万 → 5.6万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-13-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-13-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-13-c">件名: 【ご相談】じゅうグランドモア県庁口 退去条件について
+
+管理会社 御中
+
+お世話になっております。じゅうグランドモア県庁口のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: じゅうグランドモア県庁口
+立退料（提示額）: 25.2万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の5.6万/月で新規募集予定です。
+年間増収見込み: +17.3万（約1.4年で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      ロマネスク小笹第３
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-25%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 4.0万/月 → 相場 5.3万/月
+｜年間増収想定 +16.1万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-14-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-14-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-14-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-14-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-14-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-14-a">件名: 【ご相談】ロマネスク小笹第３ テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。ロマネスク小笹第３のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: ロマネスク小笹第３所在地: 福岡県福岡市中央区小笹3丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料4.0万に対し、周辺相場が5.3万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-14-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-14-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-14-b">件名: 【賃料改定のお願い】ロマネスク小笹第３ 次回更新時
+
+管理会社 御中
+
+お世話になっております。ロマネスク小笹第３のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: ロマネスク小笹第３
+現行賃料: 4.0万/月
+周辺相場: 5.3万/月
+
+改定案（段階的）:
+  第1段階: 4.0万 → 4.7万  第2段階: 4.7万 → 5.3万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-14-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-14-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-14-c">件名: 【ご相談】ロマネスク小笹第３ 退去条件について
+
+管理会社 御中
+
+お世話になっております。ロマネスク小笹第３のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: ロマネスク小笹第３
+立退料（提示額）: 24.0万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の5.3万/月で新規募集予定です。
+年間増収見込み: +16.1万（約1.5年で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      エステート・モア博多
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-52%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 6.3万/月 → 相場 13.2万/月
+｜年間増収想定 +82.5万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-15-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-15-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-15-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-15-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-15-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-15-a">件名: 【ご相談】エステート・モア博多 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。エステート・モア博多のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: エステート・モア博多所在地: 福岡県福岡市博多区美野島１丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料6.3万に対し、周辺相場が13.2万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-15-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-15-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-15-b">件名: 【賃料改定のお願い】エステート・モア博多 次回更新時
+
+管理会社 御中
+
+お世話になっております。エステート・モア博多のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: エステート・モア博多
+現行賃料: 6.3万/月
+周辺相場: 13.2万/月
+
+改定案（段階的）:
+  第1段階: 6.3万 → 8.6万  第2段階: 8.6万 → 10.9万  第3段階: 10.9万 → 13.2万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-15-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-15-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-15-c">件名: 【ご相談】エステート・モア博多 退去条件について
+
+管理会社 御中
+
+お世話になっております。エステート・モア博多のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: エステート・モア博多
+立退料（提示額）: 37.8万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の13.2万/月で新規募集予定です。
+年間増収見込み: +82.5万（5ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      エクレール弥永 505
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-66%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 3.9万/月 → 相場 11.4万/月
+｜年間増収想定 +89.6万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-16-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-16-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-16-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-16-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-16-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-16-a">件名: 【ご相談】エクレール弥永 505 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。エクレール弥永 505のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: エクレール弥永 505所在地: 福岡市南区弥永５丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料3.9万に対し、周辺相場が11.4万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-16-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-16-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-16-b">件名: 【賃料改定のお願い】エクレール弥永 505 次回更新時
+
+管理会社 御中
+
+お世話になっております。エクレール弥永 505のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: エクレール弥永 505
+現行賃料: 3.9万/月
+周辺相場: 11.4万/月
+
+改定案（段階的）:
+  第1段階: 3.9万 → 6.4万  第2段階: 6.4万 → 8.9万  第3段階: 8.9万 → 11.4万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-16-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-16-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-16-c">件名: 【ご相談】エクレール弥永 505 退去条件について
+
+管理会社 御中
+
+お世話になっております。エクレール弥永 505のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: エクレール弥永 505
+立退料（提示額）: 23.5万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の11.4万/月で新規募集予定です。
+年間増収見込み: +89.6万（3ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      ロマネスク警固
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-27%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 3.5万/月 → 相場 4.8万/月
+｜年間増収想定 +15.4万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-17-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-17-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-17-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-17-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-17-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-17-a">件名: 【ご相談】ロマネスク警固 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。ロマネスク警固のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: ロマネスク警固所在地: 福岡県福岡市中央区警固１丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料3.5万に対し、周辺相場が4.8万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-17-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-17-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-17-b">件名: 【賃料改定のお願い】ロマネスク警固 次回更新時
+
+管理会社 御中
+
+お世話になっております。ロマネスク警固のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: ロマネスク警固
+現行賃料: 3.5万/月
+周辺相場: 4.8万/月
+
+改定案（段階的）:
+  第1段階: 3.5万 → 4.1万  第2段階: 4.1万 → 4.8万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-17-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-17-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-17-c">件名: 【ご相談】ロマネスク警固 退去条件について
+
+管理会社 御中
+
+お世話になっております。ロマネスク警固のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: ロマネスク警固
+立退料（提示額）: 21.0万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の4.8万/月で新規募集予定です。
+年間増収見込み: +15.4万（約1.3年で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      ルエ・メゾン・ロワール渡辺通り
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-30%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 3.9万/月 → 相場 5.6万/月
+｜年間増収想定 +19.8万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-18-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-18-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-18-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-18-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-18-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-18-a">件名: 【ご相談】ルエ・メゾン・ロワール渡辺通り テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。ルエ・メゾン・ロワール渡辺通りのオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: ルエ・メゾン・ロワール渡辺通り所在地: 福岡県福岡市中央区清川2
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料3.9万に対し、周辺相場が5.6万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-18-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-18-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-18-b">件名: 【賃料改定のお願い】ルエ・メゾン・ロワール渡辺通り 次回更新時
+
+管理会社 御中
+
+お世話になっております。ルエ・メゾン・ロワール渡辺通りのオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: ルエ・メゾン・ロワール渡辺通り
+現行賃料: 3.9万/月
+周辺相場: 5.6万/月
+
+改定案（段階的）:
+  第1段階: 3.9万 → 4.7万  第2段階: 4.7万 → 5.5万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-18-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-18-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-18-c">件名: 【ご相談】ルエ・メゾン・ロワール渡辺通り 退去条件について
+
+管理会社 御中
+
+お世話になっております。ルエ・メゾン・ロワール渡辺通りのオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: ルエ・メゾン・ロワール渡辺通り
+立退料（提示額）: 23.4万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の5.6万/月で新規募集予定です。
+年間増収見込み: +19.8万（約1.2年で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      福岡県福岡市
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-43%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 1.8万/月 → 相場 3.1万/月
+｜年間増収想定 +16.0万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-19-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-19-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-19-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-19-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-19-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-19-a">件名: 【ご相談】福岡県福岡市 テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。福岡県福岡市のオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: 福岡県福岡市所在地: 福岡県福岡市南区塩原
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料1.8万に対し、周辺相場が3.1万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-19-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-19-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-19-b">件名: 【賃料改定のお願い】福岡県福岡市 次回更新時
+
+管理会社 御中
+
+お世話になっております。福岡県福岡市のオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: 福岡県福岡市
+現行賃料: 1.8万/月
+周辺相場: 3.1万/月
+
+改定案（段階的）:
+  第1段階: 1.8万 → 2.2万  第2段階: 2.2万 → 2.7万  第3段階: 2.7万 → 3.1万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-19-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-19-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-19-c">件名: 【ご相談】福岡県福岡市 退去条件について
+
+管理会社 御中
+
+お世話になっております。福岡県福岡市のオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: 福岡県福岡市
+立退料（提示額）: 10.7万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の3.1万/月で新規募集予定です。
+年間増収見込み: +16.0万（8ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="prop-letter-group">
+    <div class="prop-letter-name">
+      福岡リバーキャッスル
+      <span class="badge badge-city">福岡</span>
+<span class="badge badge-red">乖離-46%</span>    </div>
+    <div class="prop-letter-meta">
+      実家賃 11.0万/月 → 相場 20.5万/月
+｜年間増収想定 +113.9万    </div>
+
+    <div class="letter-tabs">
+      <button class="letter-tab active" onclick="switchLetter(this, 'letter-20-a')">A: 初回相談</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-20-b')">B: 値上げ交渉</button>
+      <button class="letter-tab" onclick="switchLetter(this, 'letter-20-c')">C: 合意解約打診</button>
+    </div>
+
+    <div id="letter-20-a" class="letter-block">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
+          <div class="letter-type">管理会社への現状確認メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-20-a')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-20-a">件名: 【ご相談】福岡リバーキャッスル テナント状況の確認
+
+管理会社 御中
+
+お世話になっております。福岡リバーキャッスルのオーナーの手嶋と申します。
+
+下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
+
+物件: 福岡リバーキャッスル所在地: 福岡県福岡市中央区清川３丁目
+確認事項:
+1. 現在の契約形態（普通借家 / 定期借家）
+2. 契約開始日と次回更新日
+3. 過去の賃料改定履歴
+4. テナント様の入居期間
+
+現行賃料11.0万に対し、周辺相場が20.5万と乖離が生じております。
+次回更新時の賃料改定について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-20-b" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
+          <div class="letter-type">段階的賃料改定の依頼メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-20-b')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-20-b">件名: 【賃料改定のお願い】福岡リバーキャッスル 次回更新時
+
+管理会社 御中
+
+お世話になっております。福岡リバーキャッスルのオーナーの手嶋です。
+
+周辺相場調査の結果、現行賃料との乖離が確認されましたため、
+次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
+
+物件: 福岡リバーキャッスル
+現行賃料: 11.0万/月
+周辺相場: 20.5万/月
+
+改定案（段階的）:
+  第1段階: 11.0万 → 14.2万  第2段階: 14.2万 → 17.3万  第3段階: 17.3万 → 20.5万段階的な改定とすることで、テナント様のご負担にも配慮しております。
+テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
+
+何卒よろしくお願いいたします。</div>
+    </div>
+
+    <div id="letter-20-c" class="letter-block" style="display:none">
+      <div class="letter-header">
+        <div>
+          <div class="letter-title">通知文面C — 合意解約の打診</div>
+          <div class="letter-type">立退料提示・合意解約の相談メール</div>
+        </div>
+        <button class="copy-btn" onclick="copyLetter(this, 'text-20-c')">📋 コピー</button>
+      </div>
+      <div class="letter-body" id="text-20-c">件名: 【ご相談】福岡リバーキャッスル 退去条件について
+
+管理会社 御中
+
+お世話になっております。福岡リバーキャッスルのオーナーの手嶋です。
+
+テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
+合意解約の可能性についてご相談させていただきたくご連絡いたしました。
+
+物件: 福岡リバーキャッスル
+立退料（提示額）: 66.0万円（家賃6ヶ月分相当）
+
+上記には引越し費用の一部も含む想定です。
+テナント様のご意向を確認いただくことは可能でしょうか。
+
+退去後は周辺相場の20.5万/月で新規募集予定です。
+年間増収見込み: +113.9万（7ヶ月で回収）
+何卒よろしくお願いいたします。</div>
+    </div>
+  </div>
+
+  <div class="section-heading">注意事項・法的制約</div>
+  <div class="notes-card">
+    <h3>借地借家法の制約と対処法</h3>
+    <ul class="notes-list">
+      <li>
+        <strong>普通借家契約はオーナーが弱い立場</strong>：テナントの居住権が強く保護されており、一方的な値上げや退去要求はほぼ不可。管理会社を通じた誠実な交渉が最優先。
+      </li>
+      <li>
+        <strong>弁護士への相談が望ましいケース</strong>：増額請求調停、定期借家切替の書類作成、立退き交渉が難航した場合。不動産専門の弁護士（賃料増額・明渡し経験者）を選ぶこと。
+      </li>
+      <li>
+        <strong>賃料増額請求の注意点</strong>：借地借家法32条に基づく増額請求は、テナントが拒否した場合でも従前賃料を払い続けながら調停・裁判に移行できる。裁判になった場合、相場データ（SUUMO・HOME'S等の公開データ）が重要な証拠となる。
+      </li>
+      <li>
+        <strong>定期借家への切替は任意</strong>：テナントの書面同意が必要。同意なしに切り替えることはできない。インセンティブを提示して前向きな交渉を。
+      </li>
+      <li>
+        <strong>交渉が決裂した場合のフロー</strong>：① 内容証明郵便で増額通知 → ② 調停（裁判所） → ③ 審判 → ④ 訴訟。各ステージで費用・時間が増加するため、早期合意が最善。
+      </li>
+      <li>
+        <strong>相場家賃の根拠を整備</strong>：管理会社や調停委員を説得するため、SUUMO等での同エリア・同面積・築年数近似の成約賃料データを収集しておくこと。
+      </li>
+    </ul>
+  </div>
+
+  <p style="font-size:10px;color:rgba(255,255,255,0.25);text-align:center">
+    本ページは参考情報です。実際の交渉は不動産専門家・弁護士にご相談のうえ進めてください。
+  </p>
+
+
+</div>
+
+
+<style>
+.iuma-footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: var(--space-8) 0;
+  border-top: 1px solid var(--border);
+  margin-top: var(--space-8);
+}
+.iuma-footer .warn {
+  color: var(--red);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .iuma-footer {
+    padding: var(--space-4) 0;
+    font-size: 10px;
+  }
+}
+</style>
+
+<footer class="iuma-footer">
+  <div style="margin-top:4px;">Generated at 2026-04-01 16:31</div>
+</footer>
+<script>
+function switchLetter(btn, targetId) {
+  const group = btn.closest('.prop-letter-group');
+  group.querySelectorAll('.letter-block').forEach(el => el.style.display = 'none');
+  group.querySelectorAll('.letter-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(targetId).style.display = 'block';
+  btn.classList.add('active');
+}
+
+function copyLetter(btn, textId) {
+  const el = document.getElementById(textId);
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ コピー済み';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    // Fallback: select text
+    const range = document.createRange();
+    range.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  });
+}
+</script>
+</body>
+</html>

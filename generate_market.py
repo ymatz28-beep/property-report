@@ -1225,7 +1225,7 @@ def main() -> None:
         all_ittomono.extend(_load_ittomono_by_city(cfg["key"]))
         all_kodate.extend(_load_kodate_by_city(cfg["key"]))
 
-    # Backfill first_seen for ittomono/kodate URLs
+    # Backfill first_seen for all property URLs (ittomono/kodate/kubun/budget/yield)
     for r in all_ittomono:
         if r.url and r.url not in first_seen:
             first_seen[r.url] = _today_iso
@@ -1234,6 +1234,22 @@ def main() -> None:
         if r.url and r.url not in first_seen:
             first_seen[r.url] = _today_iso
             _backfilled += 1
+    # kubun/budget/yield — load all raw files and backfill URLs
+    for cfg in CITY_CONFIGS:
+        for prefix in ["suumo", "multi_site", "ftakken", "yield"]:
+            _raw_path = DATA_DIR / f"{prefix}_{cfg['key']}_raw.txt"
+            if _raw_path.exists():
+                for row in parse_data_file(_raw_path):
+                    if row.url and row.url not in first_seen:
+                        first_seen[row.url] = _today_iso
+                        _backfilled += 1
+        # budget (ftakken_budget)
+        _budget_path = DATA_DIR / f"ftakken_{cfg['key']}_budget_raw.txt"
+        if _budget_path.exists():
+            for row in parse_data_file(_budget_path):
+                if row.url and row.url not in first_seen:
+                    first_seen[row.url] = _today_iso
+                    _backfilled += 1
     if _backfilled:
         _fs_path = Path("data") / "first_seen.json"
         _fs_path.write_text(json.dumps(first_seen, ensure_ascii=False, indent=2), encoding="utf-8")

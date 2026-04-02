@@ -664,7 +664,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
         from datetime import datetime
         try:
             fs_date = datetime.strptime(fs[:10], "%Y-%m-%d")
-            d["is_new"] = (datetime.now() - fs_date).days <= 3
+            d["is_new"] = (datetime.now() - fs_date).days == 0
         except (ValueError, TypeError):
             d["is_new"] = False
     else:
@@ -943,7 +943,7 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
         try:
             fs_d = _dt.date.fromisoformat(fs_date)
             age_days = (_dt.date.today() - fs_d).days
-            is_new = age_days <= 7
+            is_new = age_days == 0
         except Exception:
             pass
     d["first_seen"] = fs_date[5:] if fs_date and len(fs_date) >= 10 else fs_date  # MM-DD only

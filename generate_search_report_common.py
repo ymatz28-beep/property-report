@@ -788,7 +788,9 @@ def classify_location_tokyo(text: str) -> tuple[str, int]:
 
 
 def score_row(row: PropertyRow, config: ReportConfig) -> None:
-    text_for_loc = f"{row.location} {row.station_text} {row.name}"
+    # Clean location text: remove address patterns like "博多駅南6丁目" that false-match station names
+    _clean_loc = re.sub(r"駅[南北東西前][^\s]*", "", row.location)
+    text_for_loc = f"{_clean_loc} {row.station_text} {row.name}"
     if config.city_key == "osaka":
         bucket, loc_score = classify_location_osaka(text_for_loc)
     elif config.city_key == "tokyo":

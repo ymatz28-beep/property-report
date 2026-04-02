@@ -1,3 +1,7 @@
+# Property Inquiry Pipeline — State Tracking
+# Updated: 2026-04-02 23:01
+# Status: discovered → flagged → inquired → in_discussion → viewing → viewed → decided | passed
+
 inquiries:
 - id: inq-012
   name: アンピール天神東 405
@@ -32,7 +36,7 @@ inquiries:
   source: ふれんず
   city: fukuoka
   score: 93
-  status: passed
+  status: in_discussion
   price: 1900
   area: 62.91
   layout: 3LDK
@@ -41,13 +45,13 @@ inquiries:
   pet: 可
   short_term: null
   management_fee: 16500
-  agent: ロジャーサービス
+  agent: 中野智弘
   thread_id: null
   viewing_date: null
-  decision: pass
-  notes: 返信なし・内覧予定なし
+  decision: null
+  notes: 売主夜勤のため日曜内見不可。候補日提示で後日調整（中野さん3/27確認）。誤ってlifecycle sweepでpassされていた→復元
   created: '2026-03-19'
-  updated: '2026-03-31'
+  updated: '2026-04-02'
 - id: inq-019
   name: クリオ渡辺通アーバンマークス
   url: https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79085867/
@@ -343,10 +347,13 @@ inquiries:
   viewing_date: '2026-03-29'
   viewing_time: '13:00'
   decision: null
-  notes: 3/29内見済。SRC築51年・櫛田神社前駅徒歩2分。リフォーム要（水回り+内装500万見込）。想定家賃13-14万。澤畠さん（筑波銀行）に融資相談中。リフォーム費用の融資組込みも打診済
+  notes: '3/29内見済。SRC築51年・櫛田神社前駅徒歩2分。リフォーム要（水回り+内装500万見込）。想定家賃13-14万。澤畠さん（筑波銀行）に融資相談中。リフォーム費用の融資組込みも打診済
+
+    [recalc 2026-04-02] rent_estimate=14.0万/月, yield=6.77%, 月CF=-2.9万, CCR=-2.2%,
+    税後年CF=-14.5万 (CF赤字)'
   rent_estimate: 14
   created: '2026-03-29'
-  updated: '2026-03-31'
+  updated: '2026-04-02'
 - id: inq-073
   name: GSハイム博多 10階
   url: https://www.f-takken.com/freins/items/99718694
@@ -368,10 +375,13 @@ inquiries:
   viewing_date: '2026-03-29'
   viewing_time: '13:00'
   decision: null
-  notes: 3/29内見済。RC築38年・東比恵駅徒歩5分・3LDK 66㎡。リフォーム要。想定家賃16-17万。管理費21,900円/月。澤畠さんに融資相談中
+  notes: '3/29内見済。RC築38年・東比恵駅徒歩5分・3LDK 66㎡。リフォーム要。想定家賃16-17万。管理費21,900円/月。澤畠さんに融資相談中
+
+    [recalc 2026-04-02] rent_estimate=16.0万/月, yield=8.73%, 月CF=+2.5万, CCR=4.1%, 税後年CF=24.5万
+    (薄利)'
   rent_estimate: 16
   created: '2026-03-29'
-  updated: '2026-03-31'
+  updated: '2026-04-02'
 - id: inq-074
   name: ローズマンション第2博多 1308
   url: https://www.f-takken.com/freins/items/99770725
@@ -392,10 +402,13 @@ inquiries:
   viewing_date: '2026-03-29'
   viewing_time: '13:00'
   decision: null
-  notes: 3/29内見済。SRC築45年・博多駅徒歩16分・2LDK 69㎡。想定家賃15-16万。管理費13,840円/月。澤畠さんに融資相談中
+  notes: '3/29内見済。SRC築45年・博多駅徒歩16分・2LDK 69㎡。想定家賃15-16万。管理費13,840円/月。澤畠さんに融資相談中
+
+    [recalc 2026-04-02] rent_estimate=16.0万/月, yield=8.74%, 月CF=+0.3万, CCR=0.7%, 税後年CF=4.2万
+    (薄利)'
   rent_estimate: 16
   created: '2026-03-29'
-  updated: '2026-03-31'
+  updated: '2026-04-02'
 - id: inq-075
   name: スカイマンション南福岡
   url: https://www.f-takken.com/freins/items/99813072
@@ -450,7 +463,7 @@ inquiries:
   source: 楽待(利回り区分)
   city: fukuoka
   score: 37
-  status: flagged
+  status: passed
   price: 190
   area: 16.43
   layout: ''
@@ -462,10 +475,10 @@ inquiries:
   agent: 中野智弘
   thread_id: null
   viewing_date: null
-  decision: null
-  notes: '自動フラグ: CF 0.6万/月, CCR 13.4%'
+  decision: pass
+  notes: 'サブリース物件。中野さん助言: 賃料値上げはほぼ無理（2026-04-02）。投資対象外ルール化'
   created: '2026-03-31'
-  updated: '2026-04-01'
+  updated: '2026-04-02'
   loan_amount: 0
   loan_years: 0
 - id: inq-078
@@ -726,7 +739,7 @@ inquiries:
   source: 楽待(利回り区分)
   city: fukuoka
   score: 62
-  status: flagged
+  status: passed
   price: 340
   area: 18.2
   layout: ''
@@ -735,13 +748,13 @@ inquiries:
   pet: OC
   short_term: null
   management_fee: 11310
-  agent: null
+  agent: 中野智弘
   thread_id: null
   viewing_date: null
-  decision: null
-  notes: '自動フラグ: CF 0.5万/月, CCR 6.0%'
+  decision: pass
+  notes: 'サブリース物件。中野さん助言: 賃料値上げはほぼ無理（2026-04-02）。投資対象外ルール化'
   created: '2026-04-01'
-  updated: '2026-04-01'
+  updated: '2026-04-02'
 - id: inq-090
   name: JGM南天神（じゅうグランドモア）
   url: https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3571065/show.html
@@ -810,33 +823,34 @@ inquiries:
   updated: '2026-04-01'
 - id: inq-093
   name: ルエ・メゾン・ロワール渡辺通り
-  url: https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3579215/show.html
-  source: 楽待(利回り区分)
+  url: https://www.f-takken.com/freins/items/99818523
+  source: ふれんず
   city: fukuoka
   score: 47
-  status: flagged
-  price: 170
-  area: 16.64
-  layout: ''
-  station: 大橋 徒歩7分
-  year_built: 1986
+  status: in_discussion
+  price: 580
+  area: 24.09
+  layout: 1K
+  station: 西鉄平尾 徒歩13分
+  year_built: 1985
   pet: OC
   short_term: null
-  management_fee: 0
-  agent: null
+  management_fee: 15350
+  agent: 中野智弘
   thread_id: null
   viewing_date: null
   decision: null
-  notes: '自動フラグ: CF 0.6万/月, CCR 16.1%'
+  notes: 中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。実家賃4万前半。CF赤字(融資時)→現金購入前提で検討
+  rent_estimate: 4.0
   created: '2026-04-01'
-  updated: '2026-04-01'
+  updated: '2026-04-02'
 - id: inq-094
   name: ライベストコート薬院
   url: https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3576819/show.html
   source: 楽待(利回り区分)
   city: fukuoka
   score: 55
-  status: flagged
+  status: in_discussion
   price: 425
   area: 20.56
   layout: ''
@@ -845,13 +859,14 @@ inquiries:
   pet: OC
   short_term: null
   management_fee: 0
-  agent: null
+  agent: 中野智弘
   thread_id: null
   viewing_date: null
   decision: null
-  notes: '自動フラグ: CF 0.8万/月, CCR 8.2%'
+  notes: 中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。7F 42,000円成約(2025/9)、リフォーム済50,000円。マンスリー運用あり。月CF+1.5万/CCR11.4%
+  rent_estimate: 4.2
   created: '2026-04-01'
-  updated: '2026-04-01'
+  updated: '2026-04-02'
 - id: inq-095
   name: GE3899
   url: https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3582610/show.html
@@ -918,3 +933,115 @@ inquiries:
   notes: '自動フラグ: CF 25.8万/月, CCR 18.0%'
   created: '2026-04-01'
   updated: '2026-04-01'
+- id: inq-098
+  name: ライオンズステーションプラザ博多
+  url: https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3581994/show.html
+  source: 楽待(利回り区分)
+  city: fukuoka
+  score: 42
+  status: flagged
+  price: 195
+  area: 16.1
+  layout: ''
+  station: 大橋 徒歩5分
+  year_built: 1988
+  pet: OC
+  short_term: null
+  management_fee: 0
+  agent: null
+  thread_id: null
+  viewing_date: null
+  decision: null
+  notes: '自動フラグ: CF 0.3万/月, CCR 7.5%'
+  created: '2026-04-02'
+  updated: '2026-04-02'
+- id: inq-099
+  name: ライオンズマンション多賀
+  url: https://www.f-takken.com/freins/items/99629730
+  source: ふれんず
+  city: fukuoka
+  score: 65
+  status: flagged
+  price: 670
+  area: 60.0
+  layout: 3LDK
+  station: 高宮 徒歩13分
+  year_built: 1993
+  pet: unknown
+  short_term: null
+  management_fee: 10530
+  agent: null
+  thread_id: null
+  viewing_date: null
+  decision: null
+  notes: '自動フラグ: CF 4.0万/月, CCR 26.4%'
+  created: '2026-04-02'
+  updated: '2026-04-02'
+- id: inq-100
+  name: エステートモア博多2
+  url: https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3581036/show.html
+  source: 楽待(利回り区分)
+  city: fukuoka
+  score: 50
+  status: in_discussion
+  price: 500
+  area: 20.0
+  layout: ''
+  station: 博多 徒歩13分
+  year_built: null
+  pet: OC
+  short_term: null
+  management_fee: 0
+  agent: 中野智弘
+  thread_id: null
+  viewing_date: null
+  decision: null
+  notes: 中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。賃料5万円前後が相場。R5年3月入居中。月CF+2.2万/CCR13.5%。[recalc]
+    yield=12.0%,税後年CF=18.2万
+  rent_estimate: 5.0
+  created: '2026-04-02'
+  updated: '2026-04-02'
+- id: inq-101
+  name: 大名サンハイツ
+  url: https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20370839/
+  source: SUUMO
+  city: fukuoka
+  score: 0
+  status: in_discussion
+  price: 0
+  area: 0
+  layout: ''
+  station: ''
+  year_built: null
+  pet: null
+  short_term: null
+  management_fee: 0
+  agent: 中野智弘
+  thread_id: null
+  viewing_date: null
+  decision: null
+  notes: 賃貸中→4月末退去→5月以降内覧可能（中野さん3/28確認）
+  created: '2026-04-02'
+  updated: '2026-04-02'
+- id: inq-102
+  name: 美野島シャトー
+  url: https://www.athome.co.jp/mansion/6989571305/
+  source: athome
+  city: fukuoka
+  score: 0
+  status: in_discussion
+  price: 0
+  area: 0
+  layout: ''
+  station: ''
+  year_built: null
+  pet: null
+  short_term: null
+  management_fee: 0
+  agent: 中野智弘
+  thread_id: null
+  viewing_date: null
+  decision: null
+  notes: リフォーム中→5月以降内覧可能（中野さん3/28確認）
+  created: '2026-04-02'
+  updated: '2026-04-02'

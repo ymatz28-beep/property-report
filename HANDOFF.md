@@ -1,19 +1,16 @@
 # HANDOFF
 
-## [Constancy] 2026-03-31
+## [Constancy] 2026-04-02
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
-- [WARN] structural_reform: property_pipeline.py is 2167 lines (threshold: 800). Consider splitting.
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-03-31 06:48): 【F宅建検索】タイムアウト (5分超過) → Fix: エラーログを確認
-- [WARN] design_token_compliance: Line 944: hardcoded #22c55e should be var(--green)
-- [WARN] design_token_compliance: Line 1023: hardcoded #3b82f6 should be var(--blue)
-- [WARN] design_token_compliance: Line 1346: hardcoded #22c55e should be var(--green)
-- [WARN] design_token_compliance: Line 1992: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 1993: hardcoded #22c55e should be var(--green)
-- [WARN] blank_cells: ダッシュ「—」147個 (閾値20) — データ欠損の可能性
-- [WARN] numeric_outliers: 利回り: 異常値 2件 — 27.6>25, 27.6>25
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 36% (47/131) — 閾値80%
-- [WARN] qa_market_data_accuracy: 4/84 (4.8%) — price mismatch: スカイマンション南福岡 raw=599.0 html=590.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: スカイマンション南福岡 raw=599.0 html=590.0
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 13.9% (15/108件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 1900.0万円/62.91㎡; 2899.0万円/59.75㎡; 2978.0万円/40.75㎡; 2500.0万円/56.36㎡
+- [WARN] structural_reform: generate_market.py is 1622 lines (threshold: 800). Consider splitting.
+- [WARN] structural_reform: property_pipeline.py is 2171 lines (threshold: 800). Consider splitting.
+- [WARN] git_uncommitted: Property Analyzer: 14 uncommitted file(s), oldest 37h ago (threshold: 24h). GHA runs on old code until pushed.
+- [WARN] blank_cells: ダッシュ「—」164個 (閾値20) — データ欠損の可能性
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 0% (0/134) — 閾値80%
+- [WARN] qa_market_duplicate_detection: 2 duplicate (price, area) pairs: [(('1000', '46.75'), ['fukuoka-kubun', 'fukuoka-budget']), (('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
+- [WARN] qa_market_data_accuracy: 5/87 (5.7%) — price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: ローズマンション第2博多 1308 raw=2188.0 html=2198.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: スカイマンション南福岡 raw=599.0 html=590.0; price mismatch: アンピールやよい坂 305 raw=920.0 html=950.0
+- [WARN] qa_market_oc_income_coverage: OC 328件中 219件が年間収入欠落 (67%) — 利回り逆算で補完
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 38.2% (39/102件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 1900.0万円/62.91㎡; 3099.0万円/47.29㎡; 4980.0万円/60.61㎡; 3050.0万円/40.75㎡
 - [WARN] visual_regression: [mobile] missing_element: Critical element 'content' (table, .prop-card, .card, .kpi, .metric, ul, ol, section) not found
 - [WARN] visual_regression: [desktop] missing_element: Critical element 'content' (table, .prop-card, .card, .kpi, .metric, ul, ol, section) not found
 

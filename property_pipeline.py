@@ -18,6 +18,7 @@ Commands:
   --naiken              Generate naiken analysis for viewing properties
   --lifecycle           Run full lifecycle management (sweep stale + price tracking + sync)
   --stats               Show pipeline statistics
+  --recalc [ID...]      Recalculate CF/CCR for specified IDs (or 'all' for all active)
 """
 
 from __future__ import annotations
@@ -160,6 +161,40 @@ def load_inquiries() -> list[dict]:
     return data.get("inquiries", [])
 
 
+def _sync_to_registry(inquiries: list[dict]) -> None:
+    """Write-through: sync pipeline decisions to property registry (property_status.json)."""
+    status_file = BASE / "data" / "property_status.json"
+    try:
+        registry = json.loads(status_file.read_text(encoding="utf-8")) if status_file.exists() else {"properties": {}}
+        for inq in inquiries:
+            url = inq.get("url", "")
+            if not url:
+                continue
+            url_key = url.rstrip("/") + "/"
+            entry = registry["properties"].get(url_key, {})
+
+            # Sync field overrides
+            overrides = entry.get("overrides", {})
+            if inq.get("price"):
+                overrides["price"] = inq["price"]
+            if inq.get("name"):
+                overrides["name"] = inq["name"]
+            entry["overrides"] = overrides
+            entry["linked_inquiry"] = inq.get("id")
+
+            # Sync exclusion status
+            if inq.get("status") == "passed":
+                entry["status"] = "EXCLUDED"
+                entry["exclude_reason"] = inq.get("decision", "passed")
+
+            registry["properties"][url_key] = entry
+
+        registry["last_sync"] = datetime.now().isoformat()
+        status_file.write_text(json.dumps(registry, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception as e:
+        print(f"[registry sync] warning: {e}", file=sys.stderr)
+
+
 def save_inquiries(inquiries: list[dict]) -> None:
     INQUIRIES_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(INQUIRIES_PATH, "w", encoding="utf-8") as f:
@@ -173,6 +208,7 @@ def save_inquiries(inquiries: list[dict]) -> None:
             default_flow_style=False,
             sort_keys=False,
         )
+    _sync_to_registry(inquiries)
 
 
 def _next_id(inquiries: list[dict]) -> str:
@@ -355,6 +391,12 @@ def auto_flag(min_score: int = FLAG_THRESHOLD) -> list[dict]:
             if row.total_score < min_score:
                 continue
 
+            # Sublease exclusion: サブリース・家賃保証は不可
+            _SUBLEASE_KEYWORDS = ["サブリース", "家賃保証", "一括借上", "借上げ", "マスターリース"]
+            text = f"{row.name} {row.station_text} {row.raw_line}"
+            if any(kw in text for kw in _SUBLEASE_KEYWORDS):
+                continue
+
             # CF gate: only flag properties with positive cash flow
             if row.price_man and row.area_sqm:
                 rent_override = None
@@ -486,10 +528,27 @@ def sweep_stale() -> dict:
     no_reply = 0
     low_score = 0
     changed = False
+    sublease_count = 0
+
+    _SUBLEASE_KEYWORDS = ["サブリース", "家賃保証", "一括借上", "借上げ", "マスターリース"]
 
     for inq in inquiries:
         status = inq.get("status", "")
         url = inq.get("url", "")
+        name = inq.get("name", "")
+
+        # Sublease exclusion: auto-pass any sublease properties in pipeline
+        text = f"{name} {inq.get('notes', '')}"
+        if any(kw in text for kw in _SUBLEASE_KEYWORDS):
+            if status in ("flagged", "inquired", "in_discussion"):
+                inq["status"] = "passed"
+                existing_notes = inq.get("notes") or ""
+                inq["notes"] = (existing_notes + "\nサブリース・家賃保証（自動パス）").strip()
+                inq["updated"] = str(today)
+                sublease_count += 1
+                changed = True
+                print(f"[sweep] {inq['id']} {name} → サブリースパス")
+                continue
 
         # --- Applies to flagged AND inquired ---
 
@@ -588,8 +647,8 @@ def sweep_stale() -> dict:
         save_inquiries(inquiries)
 
     total = delisted + aged_out + no_reply + low_score
-    print(f"[lifecycle] sweep: {delisted}件 掲載終了, {aged_out}件 期限切れ, {no_reply}件 未返信, {low_score}件 低スコア, {unconfirmed}件 掲載未確認")
-    return {"delisted": delisted, "aged_out": aged_out, "no_reply": no_reply, "low_score": low_score, "unconfirmed": unconfirmed}
+    print(f"[lifecycle] sweep: {delisted}件 掲載終了, {aged_out}件 期限切れ, {no_reply}件 未返信, {low_score}件 低スコア, {sublease_count}件 サブリース, {unconfirmed}件 掲載未確認")
+    return {"delisted": delisted, "aged_out": aged_out, "no_reply": no_reply, "low_score": low_score, "sublease": sublease_count, "unconfirmed": unconfirmed}
 
 
 def track_price_changes() -> list[dict]:
@@ -1190,7 +1249,7 @@ def _build_viewing_schedule(inquiries: list[dict], agent_memory: dict) -> str:
 
         cards.append(f'''<div class="sched-card" style="border-left:3px solid {color}">
   <div class="sched-header">
-    <span class="sched-name">{inq.get("name", "?")}</span>
+    <a href="{inq.get('url', '#')}" target="_blank" rel="noopener" class="sched-name" style="text-decoration:none;color:inherit">{inq.get("name", "?")} ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       <span class="status-pill" style="background:{color}">{label}</span>
       <span class="sched-city">{city}</span>
@@ -1717,123 +1776,148 @@ def generate_dashboard() -> Path:
     all_inquiries = load_inquiries()
     agent_memory = _load_agent_memory()
 
-    # Active = everything except passed. Flagged shown separately.
-    ACTIVE_STATUSES = ("inquired", "in_discussion", "viewing", "viewed", "decided")
-    inquiries = [i for i in all_inquiries if i.get("status") in ACTIVE_STATUSES]
-    flagged_items = [i for i in all_inquiries if i.get("status") == "flagged"]
     passed_items = [i for i in all_inquiries if i.get("status") == "passed"]
 
     # Stats
-    total = len(all_inquiries)
-    active_count = len(inquiries)
     by_status: dict[str, int] = {}
-    by_city: dict[str, int] = {}
     for inq in all_inquiries:
         s = inq.get("status", "unknown")
         by_status[s] = by_status.get(s, 0) + 1
-        c = inq.get("city", "other")
-        by_city[c] = by_city.get(c, 0) + 1
 
-    # Status priority for sorting within each city (active first)
-    status_priority = {
-        "viewing": 0, "in_discussion": 1, "inquired": 2,
-        "flagged": 3, "viewed": 4, "decided": 5, "passed": 6,
-    }
-
-    # City configs matching existing report design
-    city_configs = [
-        ("osaka", "大阪", "#3b9eff", "59,158,255"),
-        ("fukuoka", "福岡", "#34d399", "52,211,153"),
-        ("tokyo", "東京", "#a78bfa", "167,139,250"),
+    # Stage tab definitions
+    STAGE_TABS = [
+        ("active",     "進行中", "#f59e0b", ("inquired", "in_discussion")),
+        ("viewing",    "内見",   "#a78bfa", ("viewing",)),
+        ("appraisal",  "査定中", "#6366f1", ("viewed",)),
+        ("done",       "完了",   "#22c55e", ("decided",)),
+        ("candidates", "候補",   "#71717a", ("flagged",)),
     ]
 
-    # Build section nav (count active + flagged per city, exclude passed)
-    nav_items = []
-    for city_key, city_label, accent, _ in city_configs:
-        cnt_active = sum(1 for i in inquiries if i.get("city") == city_key)
-        cnt_flagged = sum(1 for i in flagged_items if i.get("city") == city_key)
-        cnt = cnt_active + cnt_flagged
-        if cnt:
-            nav_items.append(
-                f'<a href="#city-{city_key}" class="nav-tab" '
-                f'onclick="showCity(\'{city_key}\')" data-city="{city_key}">'
-                f'{city_label} <span class="tab-count">{cnt}</span></a>'
-            )
+    # Group inquiries by stage
+    stage_items: dict[str, list] = {key: [] for key, *_ in STAGE_TABS}
+    for inq in all_inquiries:
+        status = inq.get("status", "")
+        for key, _label, _color, statuses in STAGE_TABS:
+            if status in statuses:
+                stage_items[key].append(inq)
+                break
 
-    active_total = active_count + len(flagged_items)
+    # Sort each stage by score descending
+    for key in stage_items:
+        stage_items[key].sort(key=lambda x: -(x.get("score") or 0))
+
+    # needs_action: active items not updated in 3+ days
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc)
+    active_statuses_set = {"inquired", "in_discussion"}
+    needs_action_count = 0
+    for inq in all_inquiries:
+        if inq.get("status") not in active_statuses_set:
+            continue
+        updated_raw = inq.get("updated_at") or inq.get("created_at") or ""
+        if not updated_raw:
+            needs_action_count += 1
+            continue
+        try:
+            updated_dt = datetime.fromisoformat(str(updated_raw).replace("Z", "+00:00"))
+            if updated_dt.tzinfo is None:
+                updated_dt = updated_dt.replace(tzinfo=timezone.utc)
+            if (now - updated_dt).days >= 3:
+                needs_action_count += 1
+        except (ValueError, TypeError):
+            needs_action_count += 1
+
+    # Build stage tabs nav
+    first_nonempty = next((key for key, *_ in STAGE_TABS if stage_items[key]), None)
+    tab_html_parts = []
+    for key, label, color, _ in STAGE_TABS:
+        cnt = len(stage_items[key])
+        is_active = key == first_nonempty
+        active_cls = " active" if is_active else ""
+        tab_html_parts.append(
+            f'<a class="stage-tab{active_cls}" data-stage="{key}" '
+            f'style="--tab-color:{color}" onclick="showStage(\'{key}\')">'
+            f'{label} <span class="tab-count">{cnt}</span></a>'
+        )
     section_nav = (
         '<div class="section-nav"><div class="section-nav-inner">'
-        + '<a href="#" class="nav-tab active" onclick="showCity(\'all\')" data-city="all">'
-        + f'All <span class="tab-count">{active_total}</span></a>'
-        + "".join(nav_items)
+        + "".join(tab_html_parts)
         + "</div></div>"
     )
 
-    # Build city sections (active items only)
-    city_sections = []
-    for city_key, city_label, accent, accent_rgb in city_configs:
-        city_active_items = [i for i in inquiries if i.get("city") == city_key]
-        city_flagged_items = [i for i in flagged_items if i.get("city") == city_key]
-        if not city_active_items and not city_flagged_items:
-            continue
+    # Build stage sections
+    stage_sections = []
+    for idx, (key, label, color, _) in enumerate(STAGE_TABS):
+        items = stage_items[key]
+        is_active = key == first_nonempty
+        hidden_cls = "" if is_active else " hidden"
 
-        # Sort active: by status priority then score
-        city_active_items.sort(
-            key=lambda x: (status_priority.get(x.get("status", ""), 9), -(x.get("score") or 0))
-        )
-        # Sort flagged by score descending
-        city_flagged_items.sort(key=lambda x: -(x.get("score") or 0))
-
-        active_cards = "\n".join(_render_card(inq) for inq in city_active_items)
-
-        # Flagged as collapsible section (top 10 only)
-        flagged_html = ""
-        if city_flagged_items:
-            top_flagged = city_flagged_items[:10]
-            flagged_cards = "\n".join(_render_card(inq) for inq in top_flagged)
-            remaining = len(city_flagged_items) - len(top_flagged)
-            remaining_note = f'<div style="color:#71717a;font-size:12px;padding:8px 16px">他 {remaining}件 (score順)</div>' if remaining else ""
-            flagged_html = f'''
+        if key == "candidates":
+            # Top 15 visible, rest in details
+            top = items[:15]
+            rest = items[15:]
+            cards_html = "\n".join(_render_card(inq) for inq in top)
+            if rest:
+                rest_cards = "\n".join(_render_card(inq) for inq in rest)
+                cards_html += f'''
   <details style="margin-top:12px">
     <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
-      候補 {len(city_flagged_items)}件（クリックで展開）
+      他 {len(rest)}件（クリックで展開）
     </summary>
-    <div class="city-cards" style="margin-top:8px">{flagged_cards}</div>
-    {remaining_note}
+    <div class="stage-cards" style="margin-top:8px">{rest_cards}</div>
   </details>'''
+        else:
+            cards_html = "\n".join(_render_card(inq) for inq in items)
 
-        city_sections.append(f'''
-<div class="city-section" id="city-{city_key}" data-city="{city_key}">
-  <div class="city-header" style="border-left:3px solid {accent}">
-    <h2>{city_label}</h2>
-    <div class="city-stats">
-      <span>進行中 {len(city_active_items)}件</span>
-      {f'<span style="color:#71717a">候補 {len(city_flagged_items)}</span>' if city_flagged_items else ''}
-    </div>
+        stage_sections.append(f'''
+<div class="stage-section{hidden_cls}" data-stage="{key}">
+  <div class="stage-header" style="border-left:3px solid {color}">
+    <h2>{label}</h2>
+    <div class="stage-stats"><span>{len(items)}件</span></div>
   </div>
-  <div class="city-cards">{active_cards}</div>
-  {flagged_html}
+  <div class="stage-cards">{cards_html}</div>
 </div>''')
 
-    # --- Template rendering (replaces inline HTML) ---
+    # Passed section (top 10 by recency)
+    passed_sorted = sorted(
+        passed_items,
+        key=lambda x: str(x.get("updated_at") or x.get("created_at") or ""),
+        reverse=True,
+    )
+    top_passed = passed_sorted[:10]
+    passed_cards_html = "\n".join(_render_card(inq) for inq in top_passed)
+    passed_html = f'''
+<details style="margin-top:32px">
+  <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
+    見送り {len(passed_items)}件（クリックで展開）
+  </summary>
+  <div class="stage-cards" style="margin-top:8px">{passed_cards_html}</div>
+</details>''' if passed_items else ""
+
+    # --- Template rendering ---
     from lib.renderer import render
 
     stats = {
-        "in_progress": by_status.get("in_discussion", 0) + by_status.get("inquired", 0),
-        "viewing": by_status.get("viewing", 0),
-        "viewed": by_status.get("viewed", 0),
-        "decided": by_status.get("decided", 0),
-        "flagged": by_status.get("flagged", 0),
-        "passed": by_status.get("passed", 0),
+        "active":       by_status.get("inquired", 0) + by_status.get("in_discussion", 0),
+        "viewing":      by_status.get("viewing", 0),
+        "appraisal":    by_status.get("viewed", 0),
+        "done":         by_status.get("decided", 0),
+        "candidates":   by_status.get("flagged", 0),
+        "passed":       by_status.get("passed", 0),
+        "needs_action": needs_action_count,
     }
 
-    schedule_html = _build_viewing_schedule(inquiries, agent_memory)
+    # schedule: active + viewing + appraisal items
+    schedule_statuses = {"inquired", "in_discussion", "viewing", "viewed"}
+    schedule_items = [i for i in all_inquiries if i.get("status") in schedule_statuses]
+    schedule_html = _build_viewing_schedule(schedule_items, agent_memory)
 
     html = render("pages/pipeline.html", {
         "stats": stats,
         "schedule_html": schedule_html,
         "section_nav": section_nav,
-        "city_sections": city_sections,
+        "stage_sections": stage_sections,
+        "passed_html": passed_html,
         "gnav_pages": GNAV_PAGES,
         "gnav_current": "Pipeline",
     }, extra_dirs=[BASE / "lib" / "templates"], scope="public")
@@ -1893,6 +1977,100 @@ def print_stats() -> None:
         print(f"\n  By city:")
         for c, cnt in sorted(by_city.items()):
             print(f"    {CITY_LABELS.get(c, c):6s}: {cnt}")
+
+
+# ---------------------------------------------------------------------------
+# Recalculate CF/CCR from rent_estimate
+# ---------------------------------------------------------------------------
+
+ACTIVE_STATUSES_RECALC = {"flagged", "inquired", "in_discussion", "viewing", "viewed", "decided"}
+
+
+def recalc_properties(property_ids: list[str] | None = None) -> None:
+    """Recalculate CF/CCR for specified properties using current rent_estimate."""
+    inquiries = load_inquiries()
+
+    recalc_all = property_ids is None or property_ids == ["all"]
+    if recalc_all:
+        targets = [i for i in inquiries if i.get("status") in ACTIVE_STATUSES_RECALC]
+    else:
+        targets = [i for i in inquiries if i.get("id") in property_ids]
+        found_ids = {i["id"] for i in targets}
+        missing = [pid for pid in property_ids if pid not in found_ids]
+        if missing:
+            print(f"  [warn] IDs not found: {', '.join(missing)}")
+
+    if not targets:
+        print("  No matching properties found.")
+        return
+
+    changed = 0
+    for inq in targets:
+        pid = inq.get("id", "?")
+        name = inq.get("name", "?")
+        price = inq.get("price")
+        rent_estimate = inq.get("rent_estimate")
+
+        if not price:
+            print(f"  [{pid}] {name}: skip — no price")
+            continue
+        if not rent_estimate:
+            print(f"  [{pid}] {name}: skip — no rent_estimate")
+            continue
+
+        price_man = int(price)
+        rent_monthly = float(rent_estimate)  # 万円/月
+        yield_pct = round(rent_monthly * 12 / price_man * 100, 2)
+
+        yr = inq.get("year_built")
+        mgmt = inq.get("management_fee", 0) or 0
+        loan_amount = inq.get("loan_amount")
+        loan_years = inq.get("loan_years")
+
+        if loan_amount and price_man:
+            dr = (price_man - int(loan_amount)) / price_man
+        else:
+            dr = 0.20
+
+        params = InvestmentParams(
+            building_ratio=0.50,
+            down_payment_ratio=dr,
+            loan_years=int(loan_years) if loan_years else 0,
+        )
+
+        rev = revenue_analyze(
+            price_man=price_man,
+            yield_pct=yield_pct,
+            structure="RC造",
+            built_year=int(yr) if yr else None,
+            maintenance_fee_monthly=int(mgmt) if mgmt else 0,
+            params=params,
+        )
+
+        mcf = rev.monthly_cf
+        ccr = rev.ccr_pct
+        after_tax_cf = rev.after_tax_cf
+        sign = "+" if mcf >= 0 else ""
+        print(f"  [{pid}] {name}: 利回り{yield_pct}% → 月CF {sign}{mcf:.1f}万, CCR {ccr:.1f}%, 税後年CF {after_tax_cf:.1f}万 ({rev.verdict})")
+
+        # Inject recalc summary into notes
+        recalc_note = (
+            f"[recalc {date.today()}] rent_estimate={rent_monthly}万/月, yield={yield_pct}%, "
+            f"月CF={sign}{mcf:.1f}万, CCR={ccr:.1f}%, 税後年CF={after_tax_cf:.1f}万 ({rev.verdict})"
+        )
+        existing_notes = inq.get("notes") or ""
+        # Replace previous recalc note if present, otherwise append
+        import re as _re
+        cleaned = _re.sub(r"\[recalc [^\]]+\][^\n]*\n?", "", existing_notes).rstrip()
+        inq["notes"] = (cleaned + "\n" + recalc_note).lstrip()
+        inq["updated"] = str(date.today())
+        changed += 1
+
+    if changed:
+        save_inquiries(inquiries)
+        print(f"\n  {changed} propert{'y' if changed == 1 else 'ies'} updated → {INQUIRIES_PATH}")
+    else:
+        print("  No updates made.")
 
 
 # ---------------------------------------------------------------------------
@@ -1979,6 +2157,10 @@ def main() -> None:
 
     elif cmd == "--stats":
         print_stats()
+
+    elif cmd == "--recalc":
+        ids = args[1:] if len(args) > 1 else None
+        recalc_properties(ids)
 
     else:
         print(f"Unknown command: {cmd}")

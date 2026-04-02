@@ -113,7 +113,7 @@ AREA_CONFIGS = {
         "target_wards": ["博多区", "中央区", "南区"],
         "target_areas": [
             "天神", "博多", "薬院", "平尾", "住吉", "祇園", "赤坂",
-            "大濠", "渡辺通", "中洲", "春吉", "呉服町",
+            "大濠", "渡辺通", "中洲", "春吉", "呉服町", "箱崎", "姪浜", "六本松",
         ],
     },
     "tokyo": {
@@ -503,6 +503,13 @@ def _extract_kubun_fields(context: str, url: str, prop_id: str, city_key: str) -
     # 楽待 yield listings with yield % shown → default OC unless explicitly vacant
     is_oc = is_explicitly_oc or (yield_text and not is_vacant)
 
+    # Sublease detection: サブリース物件は賃料改定不可 → 投資対象外
+    _SUBLEASE_KEYWORDS = ["サブリース", "家賃保証", "一括借上", "借上げ", "マスターリース"]
+    is_sublease = any(kw in text for kw in _SUBLEASE_KEYWORDS)
+    # Also check property name (楽待 often puts サブリース in title)
+    if not is_sublease:
+        is_sublease = any(kw in name for kw in _SUBLEASE_KEYWORDS)
+
     return {
         "source": "楽待(利回り区分)",
         "name": name,
@@ -516,6 +523,7 @@ def _extract_kubun_fields(context: str, url: str, prop_id: str, city_key: str) -
         "layout": layout,
         "yield_text": yield_text,
         "is_oc": is_oc,
+        "is_sublease": is_sublease,
         "url": url,
     }
 

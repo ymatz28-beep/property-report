@@ -24,6 +24,7 @@ from generate_search_report_common import (
     _clean_station_text,
     dedupe_properties,
     load_first_seen,
+    load_property_registry,
     load_sold_urls,
     parse_data_file,
     score_row,
@@ -145,6 +146,9 @@ _OC_KEYWORDS = [
     "賃借人", "テナント付", "現行賃料", "満室",
 ]
 
+# Sublease properties: 賃料改定不可のため投資対象外（中野さん知見 2026-04-02）
+_SUBLEASE_KEYWORDS = ["サブリース", "家賃保証", "一括借上", "借上げ", "マスターリース"]
+
 # Default city tab (change this to switch which city opens first)
 DEFAULT_CITY = "fukuoka"
 
@@ -199,6 +203,20 @@ def _load_kubun(cfg: dict) -> list[PropertyRow]:
     sold = load_sold_urls()
     rows = [r for r in rows if r.url.rstrip("/") + "/" not in sold]
 
+    # Apply property registry overrides (price, name, explicit exclude)
+    registry = load_property_registry()
+    for row in rows:
+        entry = registry.get(row.url.rstrip("/") + "/", {})
+        overrides = entry.get("overrides", {})
+        if "price" in overrides:
+            row.price_man = overrides["price"]
+            row.price_text = f"{overrides['price']}万円"
+        if "name" in overrides:
+            row.name = overrides["name"]
+        if overrides.get("exclude"):
+            row._excluded = True
+    rows = [r for r in rows if not getattr(r, "_excluded", False)]
+
     def _is_oc(r: PropertyRow) -> bool:
         text = f"{r.name} {r.station_text} {r.minpaku_status} {r.location} {r.raw_line}"
         return any(kw in text for kw in _OC_KEYWORDS)
@@ -245,6 +263,20 @@ def _load_budget(city_key: str) -> list[PropertyRow]:
 
     sold = load_sold_urls()
     rows = [r for r in rows if r.url.rstrip("/") + "/" not in sold]
+
+    # Apply property registry overrides
+    registry = load_property_registry()
+    for row in rows:
+        entry = registry.get(row.url.rstrip("/") + "/", {})
+        overrides = entry.get("overrides", {})
+        if "price" in overrides:
+            row.price_man = overrides["price"]
+            row.price_text = f"{overrides['price']}万円"
+        if "name" in overrides:
+            row.name = overrides["name"]
+        if overrides.get("exclude"):
+            row._excluded = True
+    rows = [r for r in rows if not getattr(r, "_excluded", False)]
 
     # Budget tier: exclude 木造, 40㎡未満 (SEARCH_CRITERIA: 最低40㎡)
     rows = [r for r in rows if r.structure != "木造"]
@@ -321,8 +353,10 @@ _RENT_PER_SQM_BY_STATION: dict[str, dict[str, int]] = {
         # 南区
         "大橋": 2000, "高宮": 1500, "西鉄平尾": 2400, "井尻": 1700,
         "笹原": 1600, "雑餉隈": 1200, "春日": 1800,
+        # 西区
+        "姪浜": 1800, "室見": 2000,
         # 早良区
-        "西新": 2200, "藤崎": 2100, "室見": 2000,
+        "西新": 2200, "藤崎": 2100,
         # 東区
         "箱崎": 2000, "箱崎宮前": 2000, "箱崎九大前": 1900,
         "千早": 2100, "香椎": 1900,
@@ -658,6 +692,9 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
     d["prop_type"] = "kubun"
     d["name"] = _clean_adcopy_name(d["name"], d.get("location", ""), d.get("layout", ""))
     d["is_oc"] = _is_confirmed_oc(row)
+    # Sublease detection from all text fields
+    _all_text = f"{row.name} {row.station_text} {row.minpaku_status} {row.location} {row.raw_line}"
+    d["is_sublease"] = any(kw in _all_text for kw in _SUBLEASE_KEYWORDS)
     fs = first_seen.get(row.url, "")
     d["first_seen"] = fs[5:] if fs and len(fs) >= 10 else fs  # MM-DD only
     if fs:
@@ -1345,6 +1382,9 @@ def main() -> None:
                 # 手出し制限: 区分/格安は400万未満、一棟は制限なし
                 equity_limit = float("inf") if section_key == "ittomono" else 400
                 if (cf_ok or cg_ok) and rev.get("total_equity", float("inf")) < equity_limit:
+                    # Skip sublease properties (賃料改定不可)
+                    if prop.get("is_sublease"):
+                        continue
                     prop_copy = dict(prop)
                     type_labels = {"kubun": "区分", "ittomono": "一棟", "kodate": "戸建", "budget": "格安区分"}
                     prop_copy["_type_label"] = type_labels.get(section_key, section_key)
@@ -1357,7 +1397,31 @@ def main() -> None:
             yield_rows, _ = dedupe_properties(yield_rows)
             sold = load_sold_urls()
             yield_rows = [r for r in yield_rows if r.url.rstrip("/") + "/" not in sold]
+
+            # Apply property registry overrides
+            registry = load_property_registry()
+            for row in yield_rows:
+                entry = registry.get(row.url.rstrip("/") + "/", {})
+                overrides = entry.get("overrides", {})
+                if "price" in overrides:
+                    row.price_man = overrides["price"]
+                    row.price_text = f"{overrides['price']}万円"
+                if "name" in overrides:
+                    row.name = overrides["name"]
+                if overrides.get("exclude"):
+                    row._excluded = True
+            yield_rows = [r for r in yield_rows if not getattr(r, "_excluded", False)]
+
             yield_rows = [r for r in yield_rows if r.area_sqm is None or r.area_sqm >= 15]
+            # Exclude sublease properties (賃料改定不可 → 投資対象外)
+            def _is_sublease_row(r):
+                text = f"{r.name} {r.station_text} {r.minpaku_status} {r.location} {r.raw_line}"
+                return any(kw in text for kw in _SUBLEASE_KEYWORDS)
+            _sub_before = len(yield_rows)
+            yield_rows = [r for r in yield_rows if not _is_sublease_row(r)]
+            _sub_removed = _sub_before - len(yield_rows)
+            if _sub_removed:
+                print(f"    サブリース除外: {_sub_removed}件")
             # Exclude URLs already in other sections (avoid double-counting)
             existing_urls = set()
             for sk in ["kubun", "ittomono", "kodate", "budget"]:
@@ -1386,6 +1450,8 @@ def main() -> None:
                 tr = d.get("total_return")
                 cg_ok = tr and tr.get("total_long", 0) > 0
                 if (cf_ok or cg_ok) and rev.get("total_equity", float("inf")) < 400:
+                    if d.get("is_sublease"):
+                        continue
                     d["_type_label"] = "利回り区分"
                     profitable.append(d)
 
@@ -1420,30 +1486,33 @@ def main() -> None:
                 seen_loc_area[key] = idx
         profitable = [p for p in deduped if p is not None]
 
-        # Filter: 徒歩15分以上 or バスの物件は除外（出口戦略で売れない）
+        # Filter: 徒歩制限 + バス除外（出口戦略で売れない）
+        # 中心エリア(loc_score>=10): 徒歩15分以内 / 非中心(loc_score<10): 徒歩10分以内
+        _WALK_LIMIT_CENTRAL = 15
+        _WALK_LIMIT_SUBURBAN = 10
+
         def _station_ok(p: dict) -> bool:
             st = p.get("station_text", "") or ""
             if not st.strip():
                 return False  # 駅情報なし = 出口判断不可
             if "バス" in st or "バス停" in st or "車" in st:
                 return False
-            wm = p.get("walk_min")
-            if wm is not None and wm >= 15:
-                return False
-            # 郊外駅除外: ロケーションスコア0 = 相場推定が不正確 + 出口が弱い
+            # ロケーションスコアで中心/非中心を判定
             loc_score = p.get("score_breakdown", {}).get("location", None)
-            if loc_score is not None:
-                if loc_score <= 0:
-                    return False
-            else:
-                # 一棟もの等はscore_breakdownがない → 駅名から直接判定
+            if loc_score is None:
                 from generate_search_report_common import classify_location_fukuoka, classify_location_osaka, classify_location_tokyo
                 _clfs = {"fukuoka": classify_location_fukuoka, "osaka": classify_location_osaka, "tokyo": classify_location_tokyo}
                 _clf = _clfs.get(city_data["key"])
-                if _clf:
-                    _, stn_score = _clf(st)
-                    if stn_score <= 0:
-                        return False
+                loc_score = _clf(st)[1] if _clf else 0
+            # 郊外駅除外: loc_score<=0 = 相場推定が不正確 + 出口が弱い
+            if loc_score <= 0:
+                return False
+            # 中心エリア(loc_score>=10): 徒歩15分以内 / 非中心: 徒歩10分以内
+            wm = p.get("walk_min")
+            if wm is not None:
+                walk_limit = _WALK_LIMIT_CENTRAL if loc_score >= 10 else _WALK_LIMIT_SUBURBAN
+                if wm >= walk_limit:
+                    return False
             return True
         profitable = [p for p in profitable if _station_ok(p)]
 

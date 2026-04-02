@@ -616,8 +616,11 @@ def classify_location_fukuoka(text: str) -> tuple[str, int]:
         ("渡辺通/住吉/上川端", 15, ["渡辺通", "住吉", "上川端"]),
         ("呉服町/古門戸", 12, ["呉服町", "古門戸"]),
         ("平尾/舞鶴", 10, ["平尾", "舞鶴"]),
+        ("六本松", 10, ["六本松"]),
         ("西新/唐人町/藤崎", 5, ["西新", "唐人町", "藤崎"]),
         ("大橋/高宮", 5, ["大橋", "高宮"]),
+        ("箱崎", 5, ["箱崎"]),
+        ("姪浜", 5, ["姪浜"]),
     ]
     for label, score, kws in checks:
         if any(kw in cleaned for kw in kws):
@@ -1101,20 +1104,36 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     )
 
 
-def load_sold_urls() -> set[str]:
-    """Load sold property URLs from status file."""
+def load_property_registry() -> dict:
+    """Load property registry with overrides and exclusions.
+
+    Returns dict keyed by normalized URL (trailing slash) with:
+      - status: ACTIVE/SOLD/EXCLUDED/ERROR_TIMEOUT
+      - overrides: dict of field overrides (price, name, exclude, etc.)
+      - exclude_reason: why excluded
+      - linked_inquiry: inquiry ID if in pipeline
+    """
     status_file = Path(__file__).parent / "data" / "property_status.json"
     if not status_file.exists():
-        return set()
+        return {}
     try:
         data = json.loads(status_file.read_text(encoding="utf-8"))
         return {
-            url.rstrip("/") + "/"
+            url.rstrip("/") + "/": info
             for url, info in data.get("properties", {}).items()
-            if info.get("status") == "SOLD"
         }
     except Exception:
-        return set()
+        return {}
+
+
+def load_sold_urls() -> set[str]:
+    """Load sold/excluded property URLs from status file (backward-compatible wrapper)."""
+    registry = load_property_registry()
+    return {
+        url
+        for url, data in registry.items()
+        if data.get("status") in ("SOLD", "EXCLUDED", "ERROR_TIMEOUT")
+    }
 
 
 def generate_report(config: ReportConfig) -> Path:
@@ -1184,6 +1203,17 @@ def generate_report(config: ReportConfig) -> Path:
     deduped = [r for r in deduped if not _is_minpaku_ng(r)]
     minpaku_ng_count = before_minpaku - len(deduped)
 
+    # Filter out サブリース properties
+    before_sublease = len(deduped)
+
+    def _is_sublease(r: PropertyRow) -> bool:
+        _SUBLEASE_KEYWORDS = ["サブリース", "家賃保証", "一括借上", "借上げ", "マスターリース"]
+        text = f"{r.name} {r.minpaku_status} {r.raw_line}"
+        return any(kw in text for kw in _SUBLEASE_KEYWORDS)
+
+    deduped = [r for r in deduped if not _is_sublease(r)]
+    sublease_count = before_sublease - len(deduped)
+
     # 20㎡台フィルタ: 面積30㎡未満は投資対象外
     before_small = len(deduped)
     deduped = [r for r in deduped if r.area_sqm is None or r.area_sqm >= 30]
@@ -1221,6 +1251,7 @@ def generate_report(config: ReportConfig) -> Path:
     meta["oc_removed"] = str(oc_count)
     meta["pet_ng_removed"] = str(pet_ng_count)
     meta["minpaku_ng_removed"] = str(minpaku_ng_count)
+    meta["sublease_removed"] = str(sublease_count)
     meta["small_area_removed"] = str(small_area_count)
     meta["quality_filtered"] = str(quality_filtered)
     meta["top_n_trimmed"] = str(top_n_trimmed)
@@ -1235,6 +1266,8 @@ def generate_report(config: ReportConfig) -> Path:
         print(f"  Removed {pet_ng_count} pet-NG properties")
     if minpaku_ng_count > 0:
         print(f"  Removed {minpaku_ng_count} minpaku-NG properties")
+    if sublease_count > 0:
+        print(f"  Removed {sublease_count} sublease properties")
     if small_area_count > 0:
         print(f"  Removed {small_area_count} small-area (< 30㎡) properties")
     if quality_filtered > 0:

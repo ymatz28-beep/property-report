@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Pipeline{% endblock %}
+
+{% block nav %}
+{{ super() }}
+{% include "components/gnav.html" %}
+{% endblock %}
+
+{% block styles %}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
+.container { max-width: 800px; margin: 0 auto; padding: 0 16px 80px; }
+
+/* Hero */
+.hero { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); border-radius: 16px; padding: 32px 32px 28px; margin: 20px 0; }
+.hero h1 { font-size: clamp(20px,2.5vw,26px); font-weight: 700; }
+.stats { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.stat { background: rgba(255,255,255,.06); border-radius: 10px; padding: 10px 16px; text-align: center; min-width: 72px; }
+.stat-val { font-size: 22px; font-weight: 700; font-family: var(--font-mono); }
+.stat-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+/* Section nav */
+.section-nav { position: sticky; top: calc(var(--gnav-height, 52px) + 36px); z-index: var(--z-subnav, 90); background: rgba(10,12,18,.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,.06); margin: 0 -16px; padding: 8px 16px; }
+.section-nav-inner { display: flex; gap: 6px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.section-nav-inner::-webkit-scrollbar { display: none; }
+.stage-tab { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,.45); border-radius: 20px; border: 1px solid rgba(255,255,255,.08); cursor: pointer; transition: all .2s; text-decoration: none; }
+.stage-tab:hover { background: rgba(255,255,255,.06); }
+.stage-tab.active { background: var(--tab-color, var(--accent)); color: #fff; border-color: transparent; }
+.tab-count { font-size: 10px; font-family: var(--font-mono); }
+.stage-tab.active .tab-count { color: rgba(255,255,255,.75); }
+
+/* Stage sections */
+.stage-section { margin-top: 28px; }
+.stage-section.hidden { display: none; }
+.stage-header { padding-left: 12px; margin-bottom: 14px; display: flex; align-items: baseline; gap: 12px; }
+.stage-header h2 { font-size: 18px; font-weight: 700; }
+.stage-stats { display: flex; gap: 10px; font-size: 11px; color: var(--text-muted); }
+.stage-cards { display: flex; flex-direction: column; }
+
+/* Cards */
+.inq-card { display: block; text-decoration: none; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 16px; margin-bottom: 8px; transition: background .15s, border-color .15s; }
+.inq-card:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14); }
+.card-name { color: var(--text); font-size: 14px; font-weight: 600; }
+.card-score { background: rgba(255,255,255,.08); padding: 2px 8px; border-radius: 8px; font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary); }
+.status-pill { padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 600; color: #fff; }
+.card-detail { color: var(--text-secondary); font-size: 12px; margin-top: 6px; }
+.card-filters { display: flex; gap: 12px; margin-top: 8px; font-size: 11px; color: var(--text-muted); }
+.card-meta { color: var(--text-decorative); font-size: 10px; margin-top: 6px; }
+
+/* Schedule section */
+.schedule-section { margin: 24px 0; padding: 0; }
+.schedule-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+.schedule-header h2 { font-size: 18px; font-weight: 700; }
+.schedule-counts { display: flex; gap: 10px; font-size: 11px; }
+.schedule-cards { display: flex; flex-direction: column; gap: 8px; }
+.sched-card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 16px; transition: background .15s; }
+.sched-card:hover { background: rgba(255,255,255,.08); }
+.sched-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.sched-name { font-size: 15px; font-weight: 600; color: var(--text); }
+.sched-city { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+.sched-date { font-size: 13px; color: #a78bfa; margin-bottom: 4px; }
+.sched-loc { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.sched-agent { font-size: 12px; color: #d4d4d8; margin-bottom: 2px; }
+.agent-title { font-size: 10px; color: var(--text-muted); margin-left: 4px; }
+.sched-contact { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: var(--font-mono); }
+.sched-filters { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+.sched-notes { font-size: 11px; color: var(--text-secondary); font-style: italic; margin-top: 4px; }
+
+/* Empty state */
+.empty { text-align: center; padding: 60px 20px; color: var(--text-decorative); }
+.empty h2 { font-size: 18px; color: var(--text-muted); margin-bottom: 8px; }
+
+@media (max-width: 640px) {
+  .hero { padding: 24px 20px 20px; }
+  .stats { gap: 8px; }
+  .stat { min-width: 60px; padding: 8px 12px; }
+  .stat-val { font-size: 18px; }
+  .stage-tab { padding: 7px 12px; font-size: 11px; }
+  .stage-header h2 { font-size: 16px; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="hero">
+    <h1>Property Pipeline</h1>
+    <div class="stats">
+      <div class="stat"><div class="stat-val" style="color:#f59e0b">{{ stats.active }}</div><div class="stat-label">進行中</div></div>
+      <div class="stat"><div class="stat-val" style="color:#a78bfa">{{ stats.viewing }}</div><div class="stat-label">内見</div></div>
+      <div class="stat"><div class="stat-val" style="color:#6366f1">{{ stats.appraisal }}</div><div class="stat-label">査定中</div></div>
+      <div class="stat"><div class="stat-val" style="color:#22c55e">{{ stats.done }}</div><div class="stat-label">完了</div></div>
+      <div class="stat"><div class="stat-val" style="color:#ef4444">{{ stats.needs_action }}</div><div class="stat-label">要アクション</div></div>
+    </div>
+    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 {{ stats.candidates }} / 見送り {{ stats.passed }}</div>
+  </div>
+
+  {{ schedule_html | safe }}
+
+  {{ section_nav | safe }}
+
+  {% if stage_sections %}
+    {% for section in stage_sections %}
+      {{ section | safe }}
+    {% endfor %}
+  {% else %}
+    <div class="empty"><h2>No inquiries yet</h2><p>Run --auto-flag to detect high-score properties</p></div>
+  {% endif %}
+
+  {{ passed_html | safe }}
+</div>
+
+<script>
+function showStage(stage) {
+  document.querySelectorAll('.stage-section').forEach(s => {
+    s.classList.toggle('hidden', s.dataset.stage !== stage);
+  });
+  document.querySelectorAll('.stage-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.stage === stage);
+  });
+}
+</script>
+{% endblock %}

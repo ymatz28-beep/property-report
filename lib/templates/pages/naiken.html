@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}内覧分析 — {{ title_city }}{% endblock %}
+
+{% block nav %}
+{{ super() }}
+{% include "components/gnav.html" %}
+{% endblock %}
+
+{% block styles %}
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 12px; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 16px 12px; }
+h1 { font-size: clamp(16px,2vw,20px); font-weight: 900; margin-bottom: 6px; }
+.meta { color: var(--muted); font-size: 11px; margin-bottom: 16px; }
+.empty { color: #a9b3c6; margin-top: 40px; text-align: center; font-size: 15px; }
+.property { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+.property h2 { font-size: clamp(13px,1.8vw,16px); font-weight: 800; margin-bottom: 2px; }
+.property .sub { color: var(--muted); font-size: 11px; margin-bottom: 12px; }
+.tag { display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 10px; font-weight: 700; margin-right: 4px; margin-bottom: 4px; }
+.tag-red { background: rgba(248,113,113,.15); color: var(--red); border: 1px solid rgba(248,113,113,.3); }
+.tag-green { background: rgba(52,211,153,.15); color: var(--green); border: 1px solid rgba(52,211,153,.3); }
+.tag-yellow { background: rgba(250,204,21,.15); color: var(--yellow); border: 1px solid rgba(250,204,21,.3); }
+.tag-blue { background: rgba(59,130,246,.15); color: var(--blue); border: 1px solid rgba(59,130,246,.3); }
+.tag-muted { background: rgba(169,179,198,.1); color: var(--muted); border: 1px solid rgba(169,179,198,.2); }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+@media (max-width: 640px) { table { font-size: 11px; } th { white-space: nowrap; width: 60px; min-width: 60px; } td { word-break: break-word; } }
+th { text-align: left; padding: 5px 8px; color: var(--muted); font-weight: 600; font-size: 10px; border-bottom: 1px solid var(--line); }
+td { padding: 5px 8px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.val { font-weight: 700; } .warn { color: var(--red); font-weight: 700; } .ok { color: var(--green); font-weight: 700; } .neutral { color: var(--muted); }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.section-title { font-size: 12px; font-weight: 800; margin: 16px 0 8px; padding-left: 10px; border-left: 3px solid var(--gold); }
+.invest-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 8px; margin: 10px 0; }
+.invest-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); border-radius: 8px; padding: 10px; text-align: center; }
+.invest-card .label { font-size: 10px; color: var(--muted); margin-bottom: 4px; } .invest-card .num { font-size: 13px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+.checklist { list-style: none; padding: 0; } .checklist li { padding: 4px 0 4px 20px; position: relative; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.checklist li::before { content: '☐'; position: absolute; left: 0; color: var(--muted); }
+.question { padding: 5px 0; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.schedule-banner { background: rgba(201,168,76,.08); border: 1px solid rgba(201,168,76,.25); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+.schedule-banner h2 { font-size: 13px; color: var(--gold); margin-bottom: 6px; } .schedule-banner .detail { font-size: 12px; line-height: 1.6; }
+.verdict { padding: 12px; border-radius: 10px; margin: 12px 0; font-size: 11px; line-height: 1.7; }
+.verdict-caution { background: rgba(250,204,21,.08); border: 1px solid rgba(250,204,21,.2); }
+.revenue-block { background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 14px; margin: 14px 0; }
+.rv-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.rv-title { font-size: 12px; font-weight: 800; } .rv-verdict { padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+.rv-high { background: rgba(34,197,94,.15); color: #22c55e; border: 1px solid rgba(34,197,94,.3); }
+.rv-stable { background: rgba(52,211,153,.15); color: #34d399; border: 1px solid rgba(52,211,153,.3); }
+.rv-thin { background: rgba(250,204,21,.15); color: #facc15; border: 1px solid rgba(250,204,21,.3); }
+.rv-red { background: rgba(248,113,113,.15); color: #f87171; border: 1px solid rgba(248,113,113,.3); }
+.rv-assumptions { font-size: 10px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+.rv-section { margin-bottom: 12px; } .rv-section-title { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 6px; padding-bottom: 3px; border-bottom: 1px solid rgba(201,168,76,.2); }
+.rv-row { display: flex; align-items: baseline; padding: 3px 0; font-size: 11px; gap: 6px; }
+.rv-desc { flex: 1; min-width: 0; } .rv-note { flex: 0 0 auto; font-size: 10px; color: var(--muted); } .rv-amount { flex: 0 0 auto; font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: right; min-width: 70px; }
+.collapsible-section { margin: 12px 0; }
+.collapsible-trigger { cursor: pointer; font-size: 12px; font-weight: 800; padding: 8px; border-left: 3px solid var(--gold); color: var(--text); list-style: none; user-select: none; }
+.collapsible-trigger::-webkit-details-marker { display: none; }
+details[open] .collapsible-trigger { color: var(--text); }
+details[open] .collapsible-trigger::after { content: ''; }
+.archive-fold { margin-top: 24px; }
+.archive-header { font-size: 13px; font-weight: 800; color: var(--muted); padding: 8px 0; border-top: 2px solid var(--line); border-bottom: 1px solid var(--line); cursor: pointer; list-style: none; user-select: none; }
+.archive-header::-webkit-details-marker { display: none; }
+.archive-header::before { content: '▸ '; font-size: 11px; }
+details[open] > .archive-header::before { content: '▾ '; }
+.archive-header span { font-size: 11px; font-weight: 500; margin-left: 8px; }
+.archive-section .property { opacity: 0.7; }
+.rv-minus .rv-desc { color: var(--muted); } .rv-subtotal { border-top: 1px solid var(--line); padding-top: 4px; margin-top: 3px; }
+.rv-total { border-top: 2px solid var(--line); padding-top: 8px; margin-top: 4px; font-weight: 800; }
+.rv-highlight { background: rgba(201,168,76,.06); border-radius: 8px; padding: 8px; margin-top: 4px; }
+.rv-bottom { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.rv-bottom-item { flex: 1; text-align: center; min-width: 100px; } .rv-bottom-label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; } .rv-bottom-val { font-size: 16px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <h1>内覧分析 — {{ title_city }} {{ viewing_count }}物件</h1>
+  <p class="meta">自動生成: {{ generated_at }} / {{ viewing_count }}件の内覧予定物件</p>
+
+  {% if viewing_count == 0 %}
+  <p class="empty">現在、内覧予定の物件はありません。<br>物件パイプラインで「viewing」ステータスに進んだ物件がここに自動表示されます。</p>
+  {% else %}
+
+  {% for section in property_sections %}
+    {{ section | safe }}
+  {% endfor %}
+
+  {{ common_html | safe }}
+
+  {% if archive_sections %}
+  <details class="archive-fold">
+    <summary class="archive-header">過去の内見<span>（{{ archive_sections | length }}件）</span></summary>
+    <div class="archive-section">
+      {% for section in archive_sections %}
+        {{ section | safe }}
+      {% endfor %}
+    </div>
+  </details>
+  {% endif %}
+
+  {% endif %}
+</div>
+{% endblock %}

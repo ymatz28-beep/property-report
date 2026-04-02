@@ -563,6 +563,11 @@ def sweep_stale() -> dict:
             print(f"[sweep] {inq['id']} {inq['name']} → 掲載終了パス")
             continue
 
+        # Skip [future:YYYY-MM] tagged items — 将来のアクション予定がある物件はsweep対象外
+        notes = inq.get("notes", "") or ""
+        if "[future:" in notes:
+            continue
+
         # --- inquired: no reply detection (14 days) ---
         if status == "inquired":
             inquired_str = inq.get("inquired_date", inq.get("updated", ""))

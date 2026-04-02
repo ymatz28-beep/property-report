@@ -377,6 +377,7 @@
       <div class="property-list active" data-view="list">
         <table class="prop-table" data-type="profitable">
           <colgroup>
+            <col style="width:38px"><!-- 掲載日 -->
             <col style="min-width:110px"><!-- 物件名（自然幅） -->
             <col style="width:50px"><!-- 価格 -->
             <col style="width:42px"><!-- CG -->
@@ -394,7 +395,7 @@
           </colgroup>
           <thead>
             <tr>
-              <th>物件名</th><th>価格</th><th>CG</th><th>面積</th><th>築年(融資)</th><th>最寄駅</th>
+              <th>掲載日</th><th>物件名</th><th>価格</th><th>CG</th><th>面積</th><th>築年(融資)</th><th>最寄駅</th>
               <th>OC</th><th>実家賃</th><th>相場家賃</th><th>CF/月</th><th>CF(15)</th><th>CF(20)</th><th>手出し</th><th>CCR</th>
             </tr>
           </thead>
@@ -402,6 +403,7 @@
             {% for prop in city.profitable.properties %}
             <tr data-expandable onclick="toggleDetail(this)"
                 data-score="{{ prop.total_score|default(0) }}" data-price="{{ prop.price_man|default(0) }}">
+              <td style="font-size:10px;color:var(--text-muted);white-space:nowrap">{{ prop.first_seen or "—" }}</td>
               <td class="name-cell"><a href="{{ prop.url }}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none" title="{{ prop.name }}">{{ prop.name or "—" }}</a></td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.price_man >= 10000 %}{{ "%.1f"|format(prop.price_man / 10000) }}億{% elif prop.price_man >= 1000 %}{{ "%.0f"|format(prop.price_man) }}万{% else %}{{ prop.price_man }}万{% endif %}{% if prop.price_validity %}<br><span class="price-badge price-badge--{{ prop.price_validity.color }}">{{ prop.price_validity.label }} {{ prop.price_validity.deviation_pct }}%</span>{% endif %}</td>
               <td class="price-cell" style="white-space:nowrap">{% if prop.total_return %}<span style="color:{% if prop.total_return.cg_gross > 0 %}var(--green){% elif prop.total_return.cg_gross < 0 %}var(--red){% else %}var(--text-muted){% endif %};font-weight:600;font-size:11px">{{ prop.total_return.cg_gross }}万</span>{% if prop.price_validity %}<br><span class="price-badge price-badge--{{ prop.price_validity.color }}" style="font-size:9px">{{ prop.price_validity.label }}</span>{% endif %}{% if prop.cg_rent_risk %}<br><span style="font-size:8px;color:var(--yellow)">⚠家賃乖離</span>{% endif %}{% else %}—{% endif %}</td>
@@ -418,7 +420,7 @@
               <td style="font-weight:600">{{ prop.revenue.ccr }}%</td>
             </tr>
             <tr class="detail-row">
-              <td colspan="14">
+              <td colspan="15">
                 <div class="detail-grid">
                   {% if prop.price_validity %}<div class="detail-item" style="border-left:2px solid var(--{{ prop.price_validity.color }});padding-left:8px"><span class="detail-label">適正価格</span><span class="detail-value" style="color:var(--{{ prop.price_validity.color }})">{{ prop.price_validity.fair_price_man }}万 <span style="font-size:10px">({{ prop.price_validity.label }})</span></span></div>{% endif %}
                   {% if prop.price_validity and prop.price_validity.income_fair %}<div class="detail-item"><span class="detail-label">収益還元(Cap{{ prop.price_validity.cap_rate }}%)</span><span class="detail-value">{{ prop.price_validity.income_fair }}万</span></div>{% endif %}

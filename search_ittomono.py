@@ -536,163 +536,223 @@ def search_kenbiya_ittomono(city_key: str) -> list[dict]:
 
 
 def _parse_kenbiya_listings(html: str, city_key: str, pp_label: str, pref: str) -> list[dict]:
-    """Parse 健美家 property listing HTML.
+    """Parse 健美家 property listing HTML using structured prop_block parsing.
 
-    Context isolation: use the NEXT property URL as the end-boundary of each
-    property's context window. This prevents adjacent properties' data from
-    bleeding into each other (the ±2000 char window approach caused cross-listing
-    contamination where wrong price/yield/location were extracted).
+    Kenbiya search pages have two sections:
+    1. PR listings (md-propetyListPr) — sponsor ads, skip these
+    2. Main listings (box_table_main) — actual search results with prop_block structure
+
+    Each listing card wraps all data inside:
+      <a href="/ppN/.../re_ID/"><ul class="prop_block">
+        <li class="main"> — title (h3), location, station
+        <li class="price"> — price + yield (structured HTML)
+        <li> — area (建/土)
+        <li> — built year, floors/units
+      </ul></a>
+
+    Previous approach (regex on forward-only text context from URL) caused:
+    - Yield extracted from h3 ad-copy text instead of structured <li class="price">
+    - Cross-listing contamination from PR/recommended properties
     """
     properties = []
-
-    # Find property links: /pp{N}/.../re_{ID}/
-    prop_pattern = re.compile(r'href="(/pp\d/[^"]*?/re_(\w+)/)"')
     seen_ids = set()
 
-    # Pre-collect all matches to use next-match position as context boundary
-    all_matches = list(prop_pattern.finditer(html))
+    # Parse each listing card: <a href="...re_ID/"><ul class="prop_block">...</ul></a>
+    card_pattern = re.compile(
+        r'<a\s+href="(/pp\d/[^"]*?/re_(\w+)/)"[^>]*>\s*'
+        r'<ul\s+class="prop_block">(.*?)</ul>\s*</a>',
+        re.DOTALL,
+    )
 
-    for i, match in enumerate(all_matches):
-        prop_path = match.group(1)
-        prop_id = match.group(2)
+    for card_match in card_pattern.finditer(html):
+        prop_path = card_match.group(1)
+        prop_id = card_match.group(2)
+        block_html = card_match.group(3)
+
         if prop_id in seen_ids:
-            continue
-        # Skip PR/sponsor links
-        if "propPrClick" in prop_path:
             continue
         seen_ids.add(prop_id)
 
         prop_url = "https://www.kenbiya.com" + prop_path
 
-        # Context: from this URL forward to the start of the NEXT property URL.
-        # NO lookback: Kenbiya search pages put all property data AFTER the URL
-        # anchor. Any backward window would contaminate with previous property data.
-        start = match.start()
-        if i + 1 < len(all_matches):
-            end = all_matches[i + 1].start()
-        else:
-            end = min(len(html), match.end() + 3000)
-        context = html[start:end]
-
-        prop = _extract_kenbiya_fields(context, prop_url, prop_id, city_key, pp_label, pref)
+        prop = _extract_kenbiya_fields_structured(
+            block_html, prop_url, prop_id, city_key, pp_label, pref
+        )
         if prop:
             if is_target_location(prop["location"], city_key):
                 if _url_location_valid(prop_url, prop["location"], city_key):
                     properties.append(prop)
                 else:
-                    print(f"  [SKIP] URL/location不一致(汚染): {prop_id} URL={prop_url.split('/')[-3]} loc={prop['location']}")
+                    print(
+                        f"  [SKIP] URL/location不一致(汚染): {prop_id} "
+                        f"URL={prop_url.split('/')[-3]} loc={prop['location']}"
+                    )
 
     return properties
 
 
-def _extract_kenbiya_fields(context: str, url: str, prop_id: str, city_key: str, pp_label: str, pref: str) -> dict | None:
-    """Extract fields from 健美家 listing context."""
-    text = re.sub(r"<[^>]+>", " ", context)
+def _extract_kenbiya_fields_structured(
+    block_html: str, url: str, prop_id: str, city_key: str, pp_label: str, pref: str
+) -> dict | None:
+    """Extract fields from 健美家 prop_block structured HTML.
+
+    The prop_block has distinct <li> sections for each data group,
+    so we parse each section separately to avoid cross-field contamination.
+    """
+    # Strip to plain text for location/station/name extraction
+    text = re.sub(r"<[^>]+>", " ", block_html)
     text = re.sub(r"&nbsp;", " ", text)
     text = re.sub(r"&[a-z]+;", " ", text)
+    text = re.sub(r"&sup2;", "m²", text)
     text = re.sub(r"\s+", " ", text).strip()
 
-    # Price: "1億5,500万円" or "1億5500万円"
+    # --- Yield: extract from structured <li class="price"> HTML ---
+    # Structure: <li class="price"><ul><li>PRICE</li><li>YIELD％</li></ul></li>
+    # Use </ul> as boundary since inner <li>s close before the yield line
+    yield_text = ""
+    price_section = re.search(
+        r'<li\s+class="price">(.*?)</ul>', block_html, re.DOTALL
+    )
+    if price_section:
+        ps = price_section.group(1)
+        # Yield: nested spans format: <span>6<span>.75</span></span>％
+        yield_match = re.search(
+            r'<span>(\d+)<span>([.\d]*)</span></span>\s*％', ps
+        )
+        if yield_match:
+            yield_str = yield_match.group(1) + yield_match.group(2)
+            try:
+                yield_val = float(yield_str)
+                if 1.0 <= yield_val <= 30.0:
+                    yield_text = f"{yield_val}%"
+            except ValueError:
+                pass
+        if not yield_text:
+            # Fallback: plain text ％ in price section only
+            ps_text = re.sub(r"<[^>]+>", " ", ps)
+            ym = re.search(r"(\d+(?:\.\d+)?)\s*[%％]", ps_text)
+            if ym:
+                try:
+                    yv = float(ym.group(1))
+                    if 1.0 <= yv <= 30.0:
+                        yield_text = f"{yv}%"
+                except ValueError:
+                    pass
+
+    # --- Price: from h3 title text or structured price section ---
+    # h3 format: "市区町村 1億9,800万円 7.21% 一棟マンション"
+    price_man = 0
+    price_text = ""
+    # Try 億+万 format
     price_match = re.search(r"(\d+)\s*億\s*(?:(\d[\d,]*)\s*万)?円", text)
-    if not price_match:
-        return None
-    oku = int(price_match.group(1))
-    man_part = price_match.group(2)
-    man = int(man_part.replace(",", "")) if man_part else 0
-    price_man = oku * 10000 + man
+    if price_match:
+        oku = int(price_match.group(1))
+        man_part = price_match.group(2)
+        man = int(man_part.replace(",", "")) if man_part else 0
+        price_man = oku * 10000 + man
+    else:
+        # Try 万円 only format (e.g. "9,800万円")
+        man_match = re.search(r"([\d,]+)\s*万円", text)
+        if man_match:
+            price_man = int(man_match.group(1).replace(",", ""))
 
     if price_man < KENBIYA_PRICE_MIN or price_man > KENBIYA_PRICE_MAX:
         return None
 
+    oku_part = price_man // 10000
     man_remainder = price_man % 10000
     if man_remainder > 0:
-        price_text = f"{oku}億{man_remainder}万円"
+        price_text = f"{oku_part}億{man_remainder}万円"
     else:
-        price_text = f"{oku}億円"
+        price_text = f"{oku_part}億円"
 
-    # Location: 大阪府xxx or 福岡県xxx or 東京都xxx
+    # --- Location ---
     loc_match = re.search(rf"({re.escape(pref)}[^\s,。、]{{2,20}})", text)
     location = loc_match.group(1) if loc_match else ""
     if not location:
         return None
 
-    # Building area: 建:468.18m² / 延床面積468.18m²
+    # --- Area: 建:468.18m² ---
     area_text = ""
-    # Try 建: marker first (most reliable)
     area_match = re.search(r"建[:：]\s*(\d[\d,.]*)\s*m", text)
     if not area_match:
-        # Try 延床面積 marker
         area_match = re.search(r"延床[面積]*[:：]?\s*(\d[\d,.]*)\s*m", text)
+    if not area_match:
+        # m² from &sup2; converted text
+        area_match = re.search(r"建[:：]?\s*(\d[\d,.]*)\s*m²", text)
     if area_match:
         area_text = area_match.group(1).replace(",", "") + "m²"
 
-    # Land area: 土:134.37m²
-    land_area_text = ""
-    land_match = re.search(r"土[:：]\s*(\d[\d,.]*)\s*m", text)
-    if land_match:
-        land_area_text = land_match.group(1).replace(",", "") + "m²"
+    # Land area fallback
+    if not area_text:
+        land_match = re.search(r"土[:：]\s*(\d[\d,.]*)\s*m", text)
+        if not land_match:
+            land_match = re.search(r"土[:：]?\s*(\d[\d,.]*)\s*m²", text)
+        if land_match:
+            area_text = land_match.group(1).replace(",", "") + "m²(土地)"
 
-    # If no building area found but land area exists, use land with flag
-    if not area_text and land_match:
-        area_text = land_area_text + "(土地)"
-
-    # Year built: 1991年1月
+    # --- Year built ---
     year_match = re.search(r"(\d{4})年(?:\s*(\d{1,2})月)?", text)
     built_text = year_match.group(0).strip() if year_match else ""
 
-    # Station: xxx駅 歩5分
+    # --- Station ---
     station_text = ""
     st_match = re.search(r"([^\s]+(?:駅)\s*歩\d+分)", text)
     if st_match:
         station_text = st_match.group(1)
 
-    # Structure (material + floors) + units
-    # Search listing shows e.g. "2階建/10戸"; material appears inline: "木造2階建"
+    # --- Structure + units ---
     structure = ""
     units = ""
-    # Try material+floors first (e.g. "木造2階建", "RC造3階建")
-    mat_floor_match = re.search(r"(RC造|SRC造|鉄筋コンクリート造|S造|鉄骨造|軽量鉄骨造|木造)\s*(\d+)階建", text)
+    mat_floor_match = re.search(
+        r"(RC造|SRC造|鉄筋コンクリート造|S造|鉄骨造|軽量鉄骨造|木造)\s*(\d+)階建", text
+    )
     if mat_floor_match:
         structure = mat_floor_match.group(1) + mat_floor_match.group(2) + "階建"
-        # Look for units after this
-        units_m = re.search(r"(\d+)戸", text[mat_floor_match.end():mat_floor_match.end() + 50])
+        units_m = re.search(
+            r"(\d+)戸", text[mat_floor_match.end() : mat_floor_match.end() + 50]
+        )
         if units_m:
             units = units_m.group(1) + "戸"
     if not structure:
-        # Floors-only format: "2階建/10戸" or "2階建"
         struct_match = re.search(r"(\d+)階建(?:/(\d+)戸)?", text)
         if struct_match:
             structure = struct_match.group(1) + "階建"
             if struct_match.group(2):
                 units = struct_match.group(2) + "戸"
-    # Fallback: units from standalone pattern if not found above
     if not units:
         units_m = re.search(r"(\d+)戸", text)
         if units_m:
             units = units_m.group(1) + "戸"
 
-    # Yield: 5.00% — cap at 15% (higher is almost certainly a scraping error)
-    yield_text = ""
-    yield_match = re.search(r"(\d+(?:\.\d+)?)\s*[%％]", text)
-    if yield_match:
-        yield_val = float(yield_match.group(1))
-        if 1.0 <= yield_val <= 15.0:
-            yield_text = f"{yield_val}%"
-        elif yield_val > 15.0:
-            yield_text = ""  # Discard: likely scraping error (e.g. wrong % captured)
-
-    # Name: heading / catch copy
+    # --- Name ---
     name = ""
-    # Try to find a building-like name
-    name_patterns = [
-        r"([ァ-ヶー]{3,}[^\s]*(?:マンション|ハイツ|コーポ|ビル|レジデンス|荘|パレス|テラス))",
-        r"(?:^|\s)([^\s]{3,}(?:ハイツ|コーポ|ビル|荘|パレス|マンション|テラス|レジデンス))",
-    ]
-    for pat in name_patterns:
-        nm = re.search(pat, text)
-        if nm:
-            name = nm.group(1).strip()[:40]
-            break
+    # Extract from <li class="main"> h3 first
+    main_section = re.search(r'<li\s+class="main">(.*?)</li>', block_html, re.DOTALL)
+    if main_section:
+        h3_match = re.search(r"<h3>(.*?)</h3>", main_section.group(1))
+        if h3_match:
+            h3_text = re.sub(r"<[^>]+>", "", h3_match.group(1)).strip()
+            # h3 often contains "市区町村 価格 利回り% 種別" — not a building name
+            # Try to extract a building name if present
+            for pat in [
+                r"([ァ-ヶー]{3,}[^\s]*(?:マンション|ハイツ|コーポ|ビル|レジデンス|荘|パレス|テラス))",
+                r"(?:^|\s)([^\s]{3,}(?:ハイツ|コーポ|ビル|荘|パレス|マンション|テラス|レジデンス))",
+            ]:
+                nm = re.search(pat, h3_text)
+                if nm:
+                    name = nm.group(1).strip()[:40]
+                    break
+    if not name:
+        # Fallback from full text
+        for pat in [
+            r"([ァ-ヶー]{3,}[^\s]*(?:マンション|ハイツ|コーポ|ビル|レジデンス|荘|パレス|テラス))",
+            r"(?:^|\s)([^\s]{3,}(?:ハイツ|コーポ|ビル|荘|パレス|マンション|テラス|レジデンス))",
+        ]:
+            nm = re.search(pat, text)
+            if nm:
+                name = nm.group(1).strip()[:40]
+                break
     if not name:
         loc_short = location.replace(pref, "")[:10]
         name = f"健美家 {loc_short}#{prop_id[-4:]}"

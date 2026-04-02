@@ -306,6 +306,49 @@ _RENT_PER_SQM_BY_WARD: dict[str, dict[str, int]] = {
     },
 }
 
+# ── Station-level rent per sqm (円/㎡/月) ──
+# 駅圏単位の相場。区平均より精度が高い。
+# Source: SUUMO賃貸相場 2025-2026年（1R-2LDK, 築10-30年帯）
+_RENT_PER_SQM_BY_STATION: dict[str, dict[str, int]] = {
+    "fukuoka": {
+        # 博多区
+        "博多": 3000, "祇園": 2900, "呉服町": 2800, "東比恵": 2400,
+        "中洲川端": 2800, "千代県庁口": 2400, "吉塚": 2200,
+        # 中央区
+        "天神": 3200, "赤坂": 3000, "薬院": 2800, "大濠公園": 2800,
+        "唐人町": 2600, "六本松": 2600, "渡辺通": 2800, "西鉄福岡": 3200,
+        "桜坂": 2500, "西鉄平尾": 2400, "舞鶴": 2800, "大手門": 2800,
+        # 南区
+        "大橋": 2000, "高宮": 1500, "西鉄平尾": 2400, "井尻": 1700,
+        "笹原": 1600, "雑餉隈": 1200, "春日": 1800,
+        # 早良区
+        "西新": 2200, "藤崎": 2100, "室見": 2000,
+        # 東区
+        "箱崎": 2000, "箱崎宮前": 2000, "箱崎九大前": 1900,
+        "千早": 2100, "香椎": 1900,
+    },
+    "osaka": {
+        "梅田": 3400, "福島": 3200, "中津": 3100, "天満": 2900,
+        "南森町": 3000, "北浜": 3100, "淀屋橋": 3200, "肥後橋": 3100,
+        "本町": 3000, "心斎橋": 3300, "長堀橋": 3100, "なんば": 3200,
+        "堺筋本町": 2900, "谷町四丁目": 2800, "天王寺": 2800,
+        "阿波座": 2800, "西長堀": 2700, "九条": 2500,
+        "新大阪": 2600, "東三国": 2300, "京橋": 2600,
+    },
+    "tokyo": {
+        "渋谷": 4200, "恵比寿": 4000, "代官山": 4000, "中目黒": 3800,
+        "新宿": 4000, "新宿三丁目": 3800, "池袋": 3600, "大塚": 3200,
+        "上野": 3200, "御徒町": 3200, "浅草": 3000, "蔵前": 3000,
+        "押上": 2800, "錦糸町": 3000, "両国": 2900,
+        "品川": 3600, "五反田": 3400, "大崎": 3300, "目黒": 3600,
+        "三田": 3400, "麻布十番": 4000, "六本木": 4200, "白金": 3800,
+        "中野": 3400, "高円寺": 3000, "荻窪": 2800,
+        "東中野": 3200, "野方": 2600, "沼袋": 2500,
+        "赤羽": 2800, "王子": 2700, "田端": 2800,
+        "練馬": 2800, "東武練馬": 2400,
+    },
+}
+
 # City-level fallback (ward not found)
 _ESTIMATED_RENT_PER_SQM: dict[str, int] = {
     "osaka": 2800,
@@ -337,22 +380,54 @@ def _age_discount(built_year: int | None) -> float:
 CURRENT_YEAR = 2026  # for age calculation
 
 
-def _get_rent_per_sqm(city_key: str, location: str, built_year: int | None = None) -> tuple[int, str]:
-    """Get age-adjusted rent per sqm (円/㎡) and ward name.
+def _get_rent_per_sqm(city_key: str, location: str, built_year: int | None = None, station_text: str = "") -> tuple[int, str]:
+    """Get age-adjusted rent per sqm (円/㎡) and source label.
 
-    Returns (rent_per_sqm, ward_name). ward_name is "" if city fallback used.
+    Lookup priority: station → ward → city fallback.
+    Returns (rent_per_sqm, source_label).
     """
     import re as _re_local
+
+    # 1. Station lookup (most precise, only for properties within 10min walk)
+    # 徒歩10分超は駅圏相場が当てはまらない（郊外に入る）→ 区にフォールバック
+    walk_match = _re_local.search(r'徒歩(\d+)分', station_text)
+    walk_min = int(walk_match.group(1)) if walk_match else 5  # default: close
+    station_data = _RENT_PER_SQM_BY_STATION.get(city_key, {})
+    if station_text and station_data and walk_min < 10:
+        # Extract station name from text like "博多 徒歩5分" or "西鉄天神大牟田線薬院駅 徒歩7分"
+        # Clean railway line prefixes
+        cleaned = _re_local.sub(
+            r"(西鉄天神大牟田線|地下鉄空港線|地下鉄箱崎線|地下鉄七隈線|ＪＲ鹿児島本線|ＪＲ篠栗線|JR鹿児島本線|JR篠栗線|ＪＲ中央線|JR中央線|東京メトロ[^\s]*線|都営[^\s]*線|西武[^\s]*線|東武[^\s]*線)",
+            "", station_text,
+        )
+        # Try matching station names (longest first for specificity)
+        for stn in sorted(station_data.keys(), key=len, reverse=True):
+            if stn in cleaned:
+                base = station_data[stn]
+                adjusted = int(base * _age_discount(built_year))
+                return adjusted, stn
+
+    # 2. Address-based station lookup (住所に駅名/地名が含まれる場合)
+    if station_data and location:
+        for stn in sorted(station_data.keys(), key=len, reverse=True):
+            if stn in location:
+                base = station_data[stn]
+                adjusted = int(base * _age_discount(built_year))
+                return adjusted, stn
+
+    # 3. Ward lookup (fallback)
     ward_match = _re_local.search(r'([^\s市県都府]+区)', location)
     ward = ward_match.group(1) if ward_match else ""
     ward_data = _RENT_PER_SQM_BY_WARD.get(city_key, {})
     if ward and ward in ward_data:
         base = ward_data[ward]
-    else:
-        base = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
-        ward = ""
+        adjusted = int(base * _age_discount(built_year))
+        return adjusted, ward
+
+    # 3. City fallback
+    base = _ESTIMATED_RENT_PER_SQM.get(city_key, 2800)
     adjusted = int(base * _age_discount(built_year))
-    return adjusted, ward
+    return adjusted, ""
 
 
 # ── Price Validity (適正価格判定) ──
@@ -409,8 +484,12 @@ def _compute_price_validity(
     sqm_benchmarks: dict[str, dict],
     maintenance_fee: int = 0,
     cap_rate_override: float = 0,
+    is_oc: bool = False,
 ) -> dict | None:
     """Compute price validity: income approach + comparable sales.
+
+    OC properties: income 60% + comp 40% (investor-oriented)
+    Non-OC:        comp 60% + income 40% (end-user-oriented)
 
     Returns dict with: fair_price_man, deviation_pct, label, color,
                        income_fair, comp_fair, comp_source, cap_rate
@@ -435,9 +514,12 @@ def _compute_price_validity(
         comp_fair_man = round(bench["median"] * area_sqm)
         comp_source = ward if ward in sqm_benchmarks else "市全体"
 
-    # Weighted average (comp 60% + income 40% — comparable sales more reliable for 区分)
+    # Weighted average: OC = income重視(60%), 居住用 = comp重視(60%)
     if comp_fair_man and comp_fair_man > 0:
-        fair_price = comp_fair_man * 0.6 + income_fair_man * 0.4
+        if is_oc:
+            fair_price = comp_fair_man * 0.4 + income_fair_man * 0.6  # 投資家目線
+        else:
+            fair_price = comp_fair_man * 0.6 + income_fair_man * 0.4  # 実需目線
     else:
         fair_price = income_fair_man
 
@@ -625,7 +707,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
     _ward_for_validity = ""
     if row.price_man > 0 and getattr(row, "area_sqm", None) and row.area_sqm > 0:
         # Always compute market rent (age-adjusted)
-        mkt_per_sqm, ward = _get_rent_per_sqm(city_key, row.location, row.built_year)
+        mkt_per_sqm, ward = _get_rent_per_sqm(city_key, row.location, row.built_year, row.station_text or "")
         mkt_monthly = mkt_per_sqm * row.area_sqm  # 円
         mkt_annual = mkt_monthly * 12 / 10000  # 万円
         d["rent_per_sqm"] = mkt_per_sqm
@@ -729,6 +811,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
             ward=_ward_for_validity,
             sqm_benchmarks=sqm_benchmarks,
             maintenance_fee=row.maintenance_fee or 0,
+            is_oc=d["is_oc"],
         )
 
     # OC CG risk: actual rent << market rent → CG may not materialize
@@ -748,6 +831,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
                 ward=_ward_for_validity,
                 sqm_benchmarks=sqm_benchmarks,
                 maintenance_fee=row.maintenance_fee or 0,
+                is_oc=True,
             )
             # actual-rent fair price with stressed cap rate (conservative: buyer demands 6%)
             pv_actual_stressed = _compute_price_validity(
@@ -759,6 +843,7 @@ def _kubun_to_dict(row: PropertyRow, first_seen: dict, city_key: str = "", sqm_b
                 sqm_benchmarks=sqm_benchmarks,
                 maintenance_fee=row.maintenance_fee or 0,
                 cap_rate_override=_OC_LOW_RENT_CAP_RATE,
+                is_oc=True,
             )
             if pv_market:
                 d["price_validity_actual"] = pv_actual_stressed or d["price_validity"]
@@ -893,7 +978,7 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
     d["is_oc"] = False
     area = row.area_sqm or 0
     if row.price_man and row.price_man > 0 and area > 0:
-        rent_per_sqm, ward = _get_rent_per_sqm(city_key, row.location, row.built_year)
+        rent_per_sqm, ward = _get_rent_per_sqm(city_key, row.location, row.built_year, getattr(row, "station_text", "") or "")
         monthly_rent = rent_per_sqm * area
         d["est_monthly_rent"] = f"{monthly_rent / 10000:.1f}万" if monthly_rent >= 10000 else f"{int(monthly_rent):,}円"
         d["rent_source"] = f"相場{ward}" if ward else "想定家賃"
@@ -906,7 +991,7 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
     if (not yield_pct or yield_pct <= 0) and row.price_man and row.price_man > 0:
         units = row.units_count or 1
         if area > 0:
-            rent_per_sqm, _ = _get_rent_per_sqm(city_key, row.location, row.built_year)
+            rent_per_sqm, _ = _get_rent_per_sqm(city_key, row.location, row.built_year, getattr(row, "station_text", "") or "")
             annual_rent = rent_per_sqm * area * 12 / 10000  # 万円
             yield_pct = (annual_rent / row.price_man) * 100
             d["yield_text"] = f"≈{yield_pct:.1f}%"
@@ -955,6 +1040,49 @@ def _ittomono_to_dict(row: IttomonoRow, city_key: str = "fukuoka", first_seen: d
             d["revenue"] = None
     else:
         d["revenue"] = None
+
+    # Price validity + Total return (same as kubun)
+    d["price_validity"] = None
+    d["price_validity_actual"] = None
+    d["cg_rent_risk"] = False
+    d["total_return"] = None
+    d["total_return_actual"] = None
+    d["total_return_cash"] = None
+    d["negotiation"] = None
+    _monthly_rent_yen = 0
+    _mkt_monthly_yen = 0
+    if row.price_man and row.price_man > 0 and area > 0:
+        _rent_sqm, _ward = _get_rent_per_sqm(city_key, row.location, row.built_year, getattr(row, "station_text", "") or "")
+        _mkt_monthly_yen = _rent_sqm * area
+        # For ittomono with yield, use yield-based rent as "actual"
+        if yield_pct and yield_pct > 0:
+            _monthly_rent_yen = row.price_man * yield_pct / 100 * 10000 / 12
+        else:
+            _monthly_rent_yen = _mkt_monthly_yen
+
+        # Use _build_sqm_benchmarks is not available here, pass empty
+        # Price validity uses income approach primarily for ittomono (is_oc=True since investment)
+        d["price_validity"] = _compute_price_validity(
+            price_man=row.price_man,
+            area_sqm=area,
+            monthly_rent_yen=_mkt_monthly_yen,
+            city_key=city_key,
+            ward=_ward,
+            sqm_benchmarks={},  # no comp for ittomono — will use income only
+            maintenance_fee=0,
+            is_oc=True,
+        )
+
+    # Total return
+    pv = d.get("price_validity")
+    rev = d.get("revenue")
+    if pv and rev and pv.get("fair_price_man"):
+        d["total_return"] = _compute_total_return(
+            price_man=row.price_man,
+            fair_price_man=pv["fair_price_man"],
+            annual_cf_after_tax=rev.get("after_tax_monthly_cf", 0) * 12,
+            total_equity=rev.get("total_equity", 0),
+        )
 
     return d
 
@@ -1190,7 +1318,7 @@ def main() -> None:
         profitable = []
         # Existing sections → profitable candidates
         # kodate excluded: market rent estimate uses apartment ㎡ rates → unreliable for houses
-        for section_key in ["kubun", "ittomono", "budget"]:
+        for section_key in ["kubun", "budget"]:  # 一棟は別扱い（収益物件セクションから除外）
             for prop in city_data[section_key]["properties"]:
                 rev = prop.get("revenue")
                 # CF >= 1.0万 OR CCR >= 8%（低価格物件はCF絶対額が小さいためCCRで救済）
@@ -1198,7 +1326,9 @@ def main() -> None:
                 # CG rescue: CFマイナスでもCG込みトータルリターンがプラスなら収益物件に含める
                 tr = prop.get("total_return")
                 cg_ok = tr and tr.get("total_long", 0) > 0
-                if (cf_ok or cg_ok) and rev.get("total_equity", float("inf")) < 1000:
+                # 手出し制限: 区分/格安は400万未満、一棟は制限なし
+                equity_limit = float("inf") if section_key == "ittomono" else 400
+                if (cf_ok or cg_ok) and rev.get("total_equity", float("inf")) < equity_limit:
                     prop_copy = dict(prop)
                     type_labels = {"kubun": "区分", "ittomono": "一棟", "kodate": "戸建", "budget": "格安区分"}
                     prop_copy["_type_label"] = type_labels.get(section_key, section_key)
@@ -1239,7 +1369,7 @@ def main() -> None:
                 cf_ok = rev and rev.get("after_tax_monthly_cf") is not None and (rev["after_tax_monthly_cf"] >= 1.0 or rev.get("ccr", 0) >= 8.0)
                 tr = d.get("total_return")
                 cg_ok = tr and tr.get("total_long", 0) > 0
-                if (cf_ok or cg_ok) and rev.get("total_equity", float("inf")) < 1000:
+                if (cf_ok or cg_ok) and rev.get("total_equity", float("inf")) < 400:
                     d["_type_label"] = "利回り区分"
                     profitable.append(d)
 
@@ -1247,7 +1377,7 @@ def main() -> None:
         profitable = [p for p in profitable
                       if p.get("revenue", {}).get("ccr", 0) >= 5.0
                       or p.get("revenue", {}).get("total_equity", 0) <= 200
-                      or (p.get("total_return", {}).get("total_long", 0) > 0)]
+                      or ((p.get("total_return") or {}).get("total_long", 0) > 0)]
 
         # Cross-source dedup: same location+area across different sources = same property
         import re as _re_dedup
@@ -1274,11 +1404,49 @@ def main() -> None:
                 seen_loc_area[key] = idx
         profitable = [p for p in deduped if p is not None]
 
-        # Filter: 対手出し(長期)が120%未満は除外（5年で元本+20%以上のリターンが見込めない物件は不要）
-        profitable = [p for p in profitable
-                      if p.get("total_return", {}).get("roi_long", 0) >= 120]
+        # Filter: 徒歩15分以上 or バスの物件は除外（出口戦略で売れない）
+        def _station_ok(p: dict) -> bool:
+            st = p.get("station_text", "") or ""
+            if not st.strip():
+                return False  # 駅情報なし = 出口判断不可
+            if "バス" in st or "バス停" in st or "車" in st:
+                return False
+            wm = p.get("walk_min")
+            if wm is not None and wm >= 15:
+                return False
+            # 郊外駅除外: ロケーションスコア0 = 相場推定が不正確 + 出口が弱い
+            loc_score = p.get("score_breakdown", {}).get("location", None)
+            if loc_score is not None:
+                if loc_score <= 0:
+                    return False
+            else:
+                # 一棟もの等はscore_breakdownがない → 駅名から直接判定
+                from generate_search_report_common import classify_location_fukuoka, classify_location_osaka, classify_location_tokyo
+                _clfs = {"fukuoka": classify_location_fukuoka, "osaka": classify_location_osaka, "tokyo": classify_location_tokyo}
+                _clf = _clfs.get(city_data["key"])
+                if _clf:
+                    _, stn_score = _clf(st)
+                    if stn_score <= 0:
+                        return False
+            return True
+        profitable = [p for p in profitable if _station_ok(p)]
 
-        profitable.sort(key=lambda p: p.get("revenue", {}).get("ccr", 0), reverse=True)
+        # Filter: 対手出し(長期)が200%未満は除外（5年で元本+100%以上のリターンが見込めない物件は不要）
+        profitable = [p for p in profitable
+                      if (p.get("total_return") or {}).get("roi_long", 0) >= 200]
+
+        def _realistic_roi(p: dict) -> float:
+            """内見優先スコア: CFが持てるなら長期ROI、持てないなら短期ROI。家賃リスクは減点。"""
+            tr = p.get("total_return", {})
+            cf = p.get("revenue", {}).get("after_tax_monthly_cf", 0)
+            # CF >= 1.0万/月 → 5年持てる → 長期税率で評価
+            # CF < 1.0万/月 → 早期売却 → 短期税率で評価
+            roi = tr.get("roi_long", 0) if cf >= 1.0 else tr.get("roi_short", 0)
+            # 家賃リスクあり → 交渉不確実性で20%減点
+            if p.get("cg_rent_risk"):
+                roi *= 0.8
+            return roi
+        profitable.sort(key=_realistic_roi, reverse=True)
         city_data["profitable"] = {"count": len(profitable), "properties": profitable}
         city_data["count"] += len(profitable)
         total_profitable += len(profitable)

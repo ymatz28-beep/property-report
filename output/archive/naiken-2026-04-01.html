@@ -1,6 +1,10 @@
-<!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>内覧分析 — 福岡 2026-03-29</title>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>内覧分析 — 福岡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -62,9 +66,177 @@
   --fs-small: 12px;
   --fs-xs: 10px;
 }
-*{box-sizing:border-box;margin:0}
-body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;font-size:12px}
 
+/* === Reset === */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; scroll-padding-top: calc(var(--gnav-height, 52px) + 60px); }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* === Utilities === */
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.container-narrow { max-width: 720px; margin: 0 auto; padding: 24px; }
+.container-wide { max-width: 1280px; margin: 0 auto; padding: 24px; }
+.hide-mobile { }  /* overridden at 640px */
+.show-mobile { display: none; }
+.pnl-positive { color: var(--green); }
+.pnl-negative { color: var(--red); }
+
+/* === Fluid Typography === */
+.text-display { font-size: var(--fs-display); font-weight: 700; font-family: var(--font-display); line-height: 1.1; }
+.text-h1 { font-size: var(--fs-h1); font-weight: 700; line-height: 1.2; }
+.text-h2 { font-size: var(--fs-h2); font-weight: 700; line-height: 1.3; }
+.text-h3 { font-size: var(--fs-h3); font-weight: 600; line-height: 1.4; }
+.text-body { font-size: var(--fs-body); }
+.text-small { font-size: var(--fs-small); }
+.text-xs { font-size: var(--fs-xs); }
+.text-mono { font-family: var(--font-mono); }
+
+/* === Stat Grid (responsive auto-fit) === */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-4);
+}
+
+/* === Section Spacing === */
+.section { padding: var(--space-8) 0; }
+.section + .section { border-top: 1px solid var(--border); }
+
+/* === Responsive grid === */
+.responsive-grid { display: grid; gap: 16px; }
+.responsive-grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+.responsive-grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+/* === Table Scroll Indicator === */
+.table-scroll-wrap {
+  position: relative;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-scroll-wrap::after {
+  content: '→ scroll';
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  font-size: 9px;
+  color: var(--text-muted);
+  background: var(--surface);
+  padding: 2px 6px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.table-scroll-wrap.has-scroll::after { opacity: 1; }
+
+/* === Animations === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== Tablet (768px) ===== */
+@media (max-width: 768px) {
+  .responsive-grid.cols-2,
+  .responsive-grid.cols-3 { grid-template-columns: 1fr; }
+}
+
+/* ===== Mobile (640px) ===== */
+@media (max-width: 640px) {
+  .container { padding: 12px; }
+  .hide-mobile { display: none; }
+  .show-mobile { display: block; }
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+  }
+  .section { padding: var(--space-4) 0; }
+}
+
+/* ===== Extra small (380px) ===== */
+@media (max-width: 380px) {
+  .container { padding: 8px; }
+  .stat-grid { grid-template-columns: 1fr; }
+}
+
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 12px; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 16px 12px; }
+h1 { font-size: clamp(16px,2vw,20px); font-weight: 900; margin-bottom: 6px; }
+.meta { color: var(--muted); font-size: 11px; margin-bottom: 16px; }
+.empty { color: #a9b3c6; margin-top: 40px; text-align: center; font-size: 15px; }
+.property { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+.property h2 { font-size: clamp(13px,1.8vw,16px); font-weight: 800; margin-bottom: 2px; }
+.property .sub { color: var(--muted); font-size: 11px; margin-bottom: 12px; }
+.tag { display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 10px; font-weight: 700; margin-right: 4px; margin-bottom: 4px; }
+.tag-red { background: rgba(248,113,113,.15); color: var(--red); border: 1px solid rgba(248,113,113,.3); }
+.tag-green { background: rgba(52,211,153,.15); color: var(--green); border: 1px solid rgba(52,211,153,.3); }
+.tag-yellow { background: rgba(250,204,21,.15); color: var(--yellow); border: 1px solid rgba(250,204,21,.3); }
+.tag-blue { background: rgba(59,130,246,.15); color: var(--blue); border: 1px solid rgba(59,130,246,.3); }
+.tag-muted { background: rgba(169,179,198,.1); color: var(--muted); border: 1px solid rgba(169,179,198,.2); }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+@media (max-width: 640px) { table { font-size: 11px; } th { white-space: nowrap; width: 60px; min-width: 60px; } td { word-break: break-word; } }
+th { text-align: left; padding: 5px 8px; color: var(--muted); font-weight: 600; font-size: 10px; border-bottom: 1px solid var(--line); }
+td { padding: 5px 8px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.val { font-weight: 700; } .warn { color: var(--red); font-weight: 700; } .ok { color: var(--green); font-weight: 700; } .neutral { color: var(--muted); }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.section-title { font-size: 12px; font-weight: 800; margin: 16px 0 8px; padding-left: 10px; border-left: 3px solid var(--gold); }
+.invest-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 8px; margin: 10px 0; }
+.invest-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); border-radius: 8px; padding: 10px; text-align: center; }
+.invest-card .label { font-size: 10px; color: var(--muted); margin-bottom: 4px; } .invest-card .num { font-size: 13px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+.checklist { list-style: none; padding: 0; } .checklist li { padding: 4px 0 4px 20px; position: relative; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.checklist li::before { content: '☐'; position: absolute; left: 0; color: var(--muted); }
+.question { padding: 5px 0; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.schedule-banner { background: rgba(201,168,76,.08); border: 1px solid rgba(201,168,76,.25); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+.schedule-banner h2 { font-size: 13px; color: var(--gold); margin-bottom: 6px; } .schedule-banner .detail { font-size: 12px; line-height: 1.6; }
+.verdict { padding: 12px; border-radius: 10px; margin: 12px 0; font-size: 11px; line-height: 1.7; }
+.verdict-caution { background: rgba(250,204,21,.08); border: 1px solid rgba(250,204,21,.2); }
+.revenue-block { background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 14px; margin: 14px 0; }
+.rv-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.rv-title { font-size: 12px; font-weight: 800; } .rv-verdict { padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+.rv-high { background: rgba(34,197,94,.15); color: #22c55e; border: 1px solid rgba(34,197,94,.3); }
+.rv-stable { background: rgba(52,211,153,.15); color: #34d399; border: 1px solid rgba(52,211,153,.3); }
+.rv-thin { background: rgba(250,204,21,.15); color: #facc15; border: 1px solid rgba(250,204,21,.3); }
+.rv-red { background: rgba(248,113,113,.15); color: #f87171; border: 1px solid rgba(248,113,113,.3); }
+.rv-assumptions { font-size: 10px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+.rv-section { margin-bottom: 12px; } .rv-section-title { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 6px; padding-bottom: 3px; border-bottom: 1px solid rgba(201,168,76,.2); }
+.rv-row { display: flex; align-items: baseline; padding: 3px 0; font-size: 11px; gap: 6px; }
+.rv-desc { flex: 1; min-width: 0; } .rv-note { flex: 0 0 auto; font-size: 10px; color: var(--muted); } .rv-amount { flex: 0 0 auto; font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: right; min-width: 70px; }
+.collapsible-section { margin: 12px 0; }
+.collapsible-trigger { cursor: pointer; font-size: 12px; font-weight: 800; padding: 8px; border-left: 3px solid var(--gold); color: var(--text); list-style: none; user-select: none; }
+.collapsible-trigger::-webkit-details-marker { display: none; }
+details[open] .collapsible-trigger { color: var(--text); }
+details[open] .collapsible-trigger::after { content: ''; }
+.archive-fold { margin-top: 24px; }
+.archive-header { font-size: 13px; font-weight: 800; color: var(--muted); padding: 8px 0; border-top: 2px solid var(--line); border-bottom: 1px solid var(--line); cursor: pointer; list-style: none; user-select: none; }
+.archive-header::-webkit-details-marker { display: none; }
+.archive-header::before { content: '▸ '; font-size: 11px; }
+details[open] > .archive-header::before { content: '▾ '; }
+.archive-header span { font-size: 11px; font-weight: 500; margin-left: 8px; }
+.archive-section .property { opacity: 0.7; }
+.rv-minus .rv-desc { color: var(--muted); } .rv-subtotal { border-top: 1px solid var(--line); padding-top: 4px; margin-top: 3px; }
+.rv-total { border-top: 2px solid var(--line); padding-top: 8px; margin-top: 4px; font-weight: 800; }
+.rv-highlight { background: rgba(201,168,76,.06); border-radius: 8px; padding: 8px; margin-top: 4px; }
+.rv-bottom { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.rv-bottom-item { flex: 1; text-align: center; min-width: 100px; } .rv-bottom-label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; } .rv-bottom-val { font-size: 16px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<style>
 /* ── Shared Gnav ── */
 .site-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -108,88 +280,90 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
   .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
   .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
 }
+</style>
 
-.gnav{position:sticky;top:var(--gnav-height,52px);z-index:var(--z-subnav,90);background:rgba(10,12,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:0;font-family:'Inter','Noto Sans JP',sans-serif;scrollbar-width:none}
-.gnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:0;padding:0 16px;overflow-x:auto;white-space:nowrap}
-.gnav::-webkit-scrollbar{display:none}
-.gnav a{display:inline-block;padding:8px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;letter-spacing:.04em;transition:color .2s}
-.gnav a:hover{color:#fff}
-.gnav a.cur{color:#fff;border-bottom:2px solid #3b9eff}
-@media(max-width:640px){.gnav a{padding:10px 10px;font-size:10px;min-height:44px;display:inline-flex;align-items:center}}
-
-.wrap{max-width:720px;margin:0 auto;padding:16px 12px}
-h1{font-size:clamp(16px,2vw,20px);font-weight:900;margin-bottom:6px}
-.meta{color:var(--muted);font-size:11px;margin-bottom:16px}
-.property{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:16px}
-.property h2{font-size:clamp(13px,1.8vw,16px);font-weight:800;margin-bottom:2px}
-.property .sub{color:var(--muted);font-size:11px;margin-bottom:12px}
-.tag{display:inline-block;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:700;margin-right:4px;margin-bottom:4px}
-.tag-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}
-.tag-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3)}
-.tag-yellow{background:rgba(250,204,21,.15);color:var(--yellow);border:1px solid rgba(250,204,21,.3)}
-.tag-blue{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.3)}
-.tag-muted{background:rgba(169,179,198,.1);color:var(--muted);border:1px solid rgba(169,179,198,.2)}
-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}
-@media(max-width:640px){table{font-size:11px}th{white-space:nowrap;width:60px;min-width:60px}td{word-break:break-word}}
-th{text-align:left;padding:5px 8px;color:var(--muted);font-weight:600;font-size:10px;border-bottom:1px solid var(--line)}
-td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.04)}
-.val{font-weight:700}.warn{color:var(--red);font-weight:700}.ok{color:var(--green);font-weight:700}.neutral{color:var(--muted)}
-.mono{font-family:'JetBrains Mono',monospace}
-.section-title{font-size:12px;font-weight:800;margin:16px 0 8px;padding-left:10px;border-left:3px solid var(--gold)}
-.invest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:10px 0}
-.invest-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px;text-align:center}
-.invest-card .label{font-size:10px;color:var(--muted);margin-bottom:4px}.invest-card .num{font-size:13px;font-weight:800;font-family:'JetBrains Mono',monospace}
-.checklist{list-style:none;padding:0}.checklist li{padding:4px 0 4px 20px;position:relative;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04)}
-.checklist li::before{content:'☐';position:absolute;left:0;color:var(--muted)}
-.question{padding:5px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04)}
-.schedule-banner{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:14px;margin-bottom:16px}
-.schedule-banner h2{font-size:13px;color:var(--gold);margin-bottom:6px}.schedule-banner .detail{font-size:12px;line-height:1.6}
-.verdict{padding:12px;border-radius:10px;margin:12px 0;font-size:11px;line-height:1.7}
-.verdict-caution{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2)}
-.revenue-block{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;margin:14px 0}
-.rv-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.rv-title{font-size:12px;font-weight:800}.rv-verdict{padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700}
-.rv-high{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
-.rv-stable{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)}
-.rv-thin{background:rgba(250,204,21,.15);color:#facc15;border:1px solid rgba(250,204,21,.3)}
-.rv-red{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)}
-.rv-assumptions{font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5}
-.rv-section{margin-bottom:12px}.rv-section-title{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid rgba(201,168,76,.2)}
-.rv-row{display:flex;align-items:baseline;padding:3px 0;font-size:11px;gap:6px}
-.rv-desc{flex:1;min-width:0}.rv-note{flex:0 0 auto;font-size:10px;color:var(--muted)}.rv-amount{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;min-width:70px}
-.collapsible-section{margin:12px 0}
-.collapsible-trigger{cursor:pointer;font-size:12px;font-weight:800;padding:8px;border-left:3px solid var(--gold);color:var(--text);list-style:none;user-select:none}
-.collapsible-trigger::-webkit-details-marker{display:none}
-details[open] .collapsible-trigger{color:var(--text)}
-details[open] .collapsible-trigger::after{content:'';}
-.archive-fold{margin-top:24px}
-.archive-header{font-size:13px;font-weight:800;color:var(--muted);padding:8px 0;border-top:2px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;list-style:none;user-select:none}
-.archive-header::-webkit-details-marker{display:none}
-.archive-header::before{content:'▸ ';font-size:11px}
-details[open]>.archive-header::before{content:'▾ '}
-.archive-header span{font-size:11px;font-weight:500;margin-left:8px}
-.archive-section .property{opacity:0.7}
-.rv-minus .rv-desc{color:var(--muted)}.rv-subtotal{border-top:1px solid var(--line);padding-top:4px;margin-top:3px}
-.rv-total{border-top:2px solid var(--line);padding-top:8px;margin-top:4px;font-weight:800}
-.rv-highlight{background:rgba(201,168,76,.06);border-radius:8px;padding:8px;margin-top:4px}
-.rv-bottom{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
-.rv-bottom-item{flex:1;text-align:center;min-width:100px}.rv-bottom-label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}.rv-bottom-val{font-size:16px;font-weight:800;font-family:'JetBrains Mono',monospace}
-</style></head><body>
 <header class="site-header">
   <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
   <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
   <nav class="site-nav">
-    <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
-    <a href="https://ymatz28-beep.github.io/property-report/" aria-current="page">Property</a>
-    <a href="https://ymatz28-beep.github.io/trip-planner/">Travel</a>
+    <a href="https://ymatz28-beep.github.io/report-dashboard/"
+>
+      Hub
+    </a>
+    <a href="https://ymatz28-beep.github.io/property-report/"
+>
+      Property
+    </a>
+    <a href="https://ymatz28-beep.github.io/trip-planner/"
+>
+      Travel
+    </a>
   </nav>
-</header><div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="market.html">Market</a><a href="naiken-analysis.html" class="cur">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a><a href="inquiry-pipeline.html">Pipeline</a></div></div>
+</header>
+
+
+<style>
+.gnav {
+  position: sticky;
+  top: var(--gnav-height, 52px);
+  z-index: 95;
+  background: rgba(10,12,18,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0;
+  font-family: var(--font-display, 'Inter','Noto Sans JP',sans-serif);
+}
+.gnav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 16px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.gnav a {
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.gnav a:hover { color: #fff; }
+.gnav a.cur { color: #fff; border-bottom: 2px solid #3b9eff; }
+@media (max-width: 640px) {
+  .gnav a { padding: 10px 10px; font-size: 10px; min-height: 44px; display: inline-flex; align-items: center; }
+}
+@media (max-width: 375px) {
+  .gnav-inner { padding: 0 8px; }
+  .gnav a { padding: 10px 8px; font-size: 9px; }
+}
+</style>
+
+<div class="gnav">
+  <div class="gnav-inner">
+    <a href="index.html">Hub</a>
+    <a href="market.html">Market</a>
+    <a href="naiken-analysis.html" class="cur">内覧分析</a>
+    <a href="inquiry-messages.html">問い合わせ</a>
+    <a href="inquiry-pipeline.html">Pipeline</a>
+  </div>
+</div>
+
 <div class="wrap">
-<h1>内覧分析 — 福岡 4物件</h1>
-<p class="meta">自動生成: 2026-03-31 19:06 / 4件の内覧予定物件</p>
-<div class="schedule-banner">
+  <h1>内覧分析 — 福岡 3物件</h1>
+  <p class="meta">自動生成: 2026-04-01 11:00 / 3件の内覧予定物件</p>
+
+
+    <div class="schedule-banner">
 <h2>2026-03-29 内覧スケジュール — 福岡 3件</h2>
-<div class="detail"><strong>13:00</strong> 集合<br>1. プレイスポットしんばしビル本館<br>→ 2. GSハイム博多 10階<br>→ 3. ローズマンション第2博多 1308<br><br>担当: <strong>中野智弘</strong>（悠悠ホーム（yuyuhome））<br></div></div><div class="property">
+<div class="detail"><strong>13:00</strong> 集合<br>1. プレイスポットしんばしビル本館<br>→ 2. GSハイム博多 10階<br>→ 3. ローズマンション第2博多 1308<br><br>担当: <strong>中野智弘</strong>（悠悠ホーム（yuyuhome））<br></div></div>
+    <div class="property">
 <h2>1. プレイスポットしんばしビル本館</h2>
 <p class="sub">福岡 / 1DK / 40.63㎡ / 1975年 / 櫛田神社前 徒歩2分</p>
 <div><span class="tag tag-blue">2480万円</span>
@@ -241,7 +415,7 @@ details[open]>.archive-header::before{content:'▾ '}
         <div class="rv-row"><span class="rv-desc">建物価格</span><span class="rv-note">= 取得価格 × 建物比率50%</span><span class="rv-amount">1,240万</span></div>
         <div class="rv-row"><span class="rv-desc">残存耐用年数</span><span class="rv-note">法定47年 − 築51年</span><span class="rv-amount">9年</span></div>
         <div class="rv-row rv-subtotal"><span class="rv-desc">年間償却額</span><span class="rv-note">= 1,240万 ÷ 9年</span><span class="rv-amount">138万</span></div>
-        <div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style="color:#22c55e">+19万/年</span></div>
+        <div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style="color:var(--green)">+19万/年</span></div>
       </div>
 
       <div class="rv-bottom">
@@ -272,7 +446,8 @@ details[open]>.archive-header::before{content:'▾ '}
 <div class="question"><strong>Q4.</strong> 修繕積立金の値上げ予定はありますか？</div>
 <div class="question"><strong>Q5.</strong> 1975年築は新耐震基準適用ですか？ 耐震診断は実施済みですか？</div>
 <div class="question"><strong>Q6.</strong> 管理組合の財務状況（借入金・滞納）は？</div>
-</div><div class="property">
+</div>
+    <div class="property">
 <h2>2. GSハイム博多 10階</h2>
 <p class="sub">福岡 / 3LDK / 66.15㎡ / 1988年 / 東比恵 徒歩5分</p>
 <div><span class="tag tag-blue">2200万円</span>
@@ -354,7 +529,8 @@ details[open]>.archive-header::before{content:'▾ '}
 <div class="question"><strong>Q3.</strong> 大規模修繕の直近実施時期と次回予定は？</div>
 <div class="question"><strong>Q4.</strong> 修繕積立金の値上げ予定はありますか？</div>
 <div class="question"><strong>Q5.</strong> 管理組合の財務状況（借入金・滞納）は？</div>
-</div><div class="property">
+</div>
+    <div class="property">
 <h2>3. ローズマンション第2博多 1308</h2>
 <p class="sub">福岡 / 2LDK / 69.71㎡ / 1981年 / 博多 徒歩16分</p>
 <div><span class="tag tag-blue">2198万円</span>
@@ -407,7 +583,7 @@ details[open]>.archive-header::before{content:'▾ '}
         <div class="rv-row"><span class="rv-desc">建物価格</span><span class="rv-note">= 取得価格 × 建物比率50%</span><span class="rv-amount">1,099万</span></div>
         <div class="rv-row"><span class="rv-desc">残存耐用年数</span><span class="rv-note">法定47年 − 築45年</span><span class="rv-amount">11年</span></div>
         <div class="rv-row rv-subtotal"><span class="rv-desc">年間償却額</span><span class="rv-note">= 1,099万 ÷ 11年</span><span class="rv-amount">100万</span></div>
-        <div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style="color:#22c55e">+1万/年</span></div>
+        <div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style="color:var(--green)">+1万/年</span></div>
       </div>
 
       <div class="rv-bottom">
@@ -439,7 +615,8 @@ details[open]>.archive-header::before{content:'▾ '}
 <div class="question"><strong>Q5.</strong> 1981年築は新耐震基準適用ですか？ 耐震診断は実施済みですか？</div>
 <div class="question"><strong>Q6.</strong> 管理組合の財務状況（借入金・滞納）は？</div>
 </div>
-<div class="property">
+
+  <div class="property">
 <h2>共通確認事項（全物件）</h2>
 <div class="section-title">ハードフィルター（必須確認）</div>
 <ul class="checklist">
@@ -468,89 +645,38 @@ details[open]>.archive-header::before{content:'▾ '}
 <li>インターネット回線（光回線の導入状況）</li>
 </ul>
 </div>
-<details class="archive-fold"><summary class="archive-header">過去の内見<span>（2件）</span></summary><div class="archive-section"><div class="schedule-banner">
-<h2>2026-03-21 内覧スケジュール — 福岡 1件</h2>
-<div class="detail"><strong>10:00</strong> 集合<br>1. アンピール天神東 405<br><br>担当: <strong>中野智弘</strong>（悠悠ホーム（yuyuhome））<br></div></div><div class="property">
-<h2>1. アンピール天神東 405</h2>
-<p class="sub">福岡 / 2LDK / 65.04㎡ / 2004年 / 渡辺通 徒歩8分</p>
-<div><span class="tag tag-blue">3800万円</span>
-<span class="tag tag-green">ペット可</span>
-<span class="tag tag-green">新耐震(2004)</span>
-<span class="tag tag-green">65.04㎡（広い）</span>
-<span class="tag tag-muted">ふれんず</span></div>
-<div class="section-title">物件概要</div>
-<table>
-<tr><th>価格</th><td class="val">3800万円</td></tr>
-<tr><th>面積</th><td>65.04㎡（最大）</td></tr>
-<tr><th>間取り</th><td>2LDK</td></tr>
-<tr><th>築年</th><td>2004年（築22年）</td></tr>
-<tr><th>最寄駅</th><td>渡辺通 徒歩8分</td></tr>
-<tr><th>管理費</th><td>16,500円/月</td></tr>
-<tr><th>㎡単価</th><td class="mono ok">58.4万円/㎡（最安）</td></tr>
-<tr><th>ペット</th><td class="ok">可 ✅</td></tr>
-<tr><th>短期賃貸</th><td>年1-2回程度なら可。マンスリー(1ヶ月以上)はOK、ウィークリーは旅館業法でNG</td></tr>
-<tr><th>ソース</th><td><a href="https://www.f-takken.com/freins/items/99763695" target="_blank">ふれんず</a></td></tr>
-</table>
-<details class="collapsible-section"><summary class="collapsible-trigger">収益分析 ▸</summary>
-<div class="section-title">投資分析</div>
-<div class="invest-grid">
-<div class="invest-card"><div class="label">想定賃料（福岡 2LDK 65.04㎡）</div><div class="num">16〜17万円/月</div></div>
-<div class="invest-card"><div class="label">表面利回り</div><div class="num ok">5.1〜5.4%</div></div>
-<div class="invest-card"><div class="label">㎡単価 vs 他物件</div><div class="num ok">割安</div></div>
-<div class="invest-card"><div class="label">築年数リスク</div><div class="num ">中程度</div></div>
-</div><div class="revenue-block">
-      <div class="rv-header">
-        <span class="rv-title">収益シミュレーション</span>
-        <span class="rv-verdict rv-red">CF赤字</span>
-      </div>
-      <div class="rv-assumptions">前提: 頭金21% / 金利2.85% / 25年ローン / 空室率7% / 経費率20% / 建物比率50%<br>想定賃料: 16〜17万/月（中央値16万 → 利回り5.2%で試算）</div>
 
-      <div class="rv-section">
-        <div class="rv-section-title">収入 → キャッシュフロー</div>
-        <div class="rv-row"><span class="rv-desc">年間賃料収入</span><span class="rv-note">= 想定16万/月 × 12</span><span class="rv-amount">198万</span></div>
-        <div class="rv-row rv-minus"><span class="rv-desc">空室損（7%）</span><span class="rv-note"></span><span class="rv-amount">-14万</span></div>
-        <div class="rv-row rv-minus"><span class="rv-desc">運営経費（税・保険・修繕等）</span><span class="rv-note">20%</span><span class="rv-amount">-37万</span></div>
-        <div class="rv-row rv-subtotal"><span class="rv-desc">営業利益（NOI）</span><span class="rv-note"></span><span class="rv-amount">147万</span></div>
-        <div class="rv-row rv-minus"><span class="rv-desc">ローン返済</span><span class="rv-note">借入3,000万 / 25年</span><span class="rv-amount">-168万</span></div>
-        <div class="rv-row rv-total"><span class="rv-desc">年間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:#f87171">-21万</span></div>
-        <div class="rv-row rv-highlight"><span class="rv-desc">月間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:#f87171">-1.7万/月</span></div>
-        <div class="rv-row rv-minus"><span class="rv-desc">管理費・修繕積立金</span><span class="rv-note">16,500円/月</span><span class="rv-amount">-1.6万/月</span></div>
-        <div class="rv-row rv-highlight"><span class="rv-desc">管理費込み月間CF</span><span class="rv-note"></span><span class="rv-amount" style="color:#f87171">-3.4万/月</span></div>
-      </div>
 
-      <div class="rv-section">
-        <div class="rv-section-title">減価償却 → 節税効果</div>
-        <div class="rv-row"><span class="rv-desc">建物価格</span><span class="rv-note">= 取得価格 × 建物比率50%</span><span class="rv-amount">1,900万</span></div>
-        <div class="rv-row"><span class="rv-desc">残存耐用年数</span><span class="rv-note">法定47年 − 築22年</span><span class="rv-amount">29年</span></div>
-        <div class="rv-row rv-subtotal"><span class="rv-desc">年間償却額</span><span class="rv-note">= 1,900万 ÷ 29年</span><span class="rv-amount">66万</span></div>
-        <div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style="color:#22c55e">+1万/年</span></div>
-      </div>
+</div>
 
-      <div class="rv-bottom">
-        <div class="rv-bottom-item"><span class="rv-bottom-label">税引後CF</span><span class="rv-bottom-val">-20万/年</span></div>
-        <div class="rv-bottom-item"><span class="rv-bottom-label">実質利回り</span><span class="rv-bottom-val">3.9%</span></div>
-        <div class="rv-bottom-item"><span class="rv-bottom-label">自己資金回収</span><span class="rv-bottom-val">∞</span></div>
-      </div>
-    </div>
-</details>
-<div class="section-title">メリット / リスク</div>
-<table><tr><th style="color:var(--green)">メリット</th><td>㎡単価最安（58.4万） / 面積最大（65.04㎡） / ペット可確定 / 新耐震（2004年） / 短期賃貸可</td></tr>
-<tr><th style="color:var(--red)">リスク</th><td>管理費最高（16,500円）</td></tr>
-<tr><th style="color:var(--yellow)">要確認</th><td>—</td></tr></table>
-<div class="section-title">内覧チェックリスト</div>
-<ul class="checklist"><li><strong>ペット飼育条件の詳細（サイズ・頭数制限）</strong></li>
-<li><strong>短期賃貸（マンスリー）活用の可否</strong></li>
-<li>管理規約で民泊条項の確認</li>
-<li>大規模修繕の履歴と次回予定</li>
-<li>修繕積立金の残高と値上げ予定</li>
-<li>築22年 — 水回り・設備の状態（リフォーム要否）</li>
-<li>日当たり・眺望・騒音</li>
-<li>管理組合の運営状況（滞納・借入）</li></ul>
-<div class="section-title">質問リスト（中野智弘さんに確認）</div>
-<div class="question"><strong>Q1.</strong> 管理規約で「住宅宿泊事業（民泊）」に関する規定はありますか？</div>
-<div class="question"><strong>Q2.</strong> 不在時のマンスリー賃貸（1ヶ月以上の定期賃貸借）は管理規約上可能ですか？</div>
-<div class="question"><strong>Q3.</strong> 大規模修繕の直近実施時期と次回予定は？</div>
-<div class="question"><strong>Q4.</strong> 修繕積立金の値上げ予定はありますか？</div>
-<div class="question"><strong>Q5.</strong> 管理組合の財務状況（借入金・滞納）は？</div>
-</div></div></details>
-</div></body></html>
+
+<style>
+.iuma-footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: var(--space-8) 0;
+  border-top: 1px solid var(--border);
+  margin-top: var(--space-8);
+}
+.iuma-footer .warn {
+  color: var(--red);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .iuma-footer {
+    padding: var(--space-4) 0;
+    font-size: 10px;
+  }
+}
+</style>
+
+<footer class="iuma-footer">
+  <div style="margin-top:4px;">Generated at 2026-04-01 11:00</div>
+</footer>
+</body>
+</html>

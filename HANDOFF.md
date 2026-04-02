@@ -18,7 +18,17 @@
 - [WARN] visual_regression: [desktop] missing_element: Critical element 'content' (table, .prop-card, .card, .kpi, .metric, ul, ol, section) not found
 
 ## Last Updated
-2026-03-31
+2026-04-01
+
+## Completed (健美家スクレイパー利回り修正 + DEFAULT_CITY + メールドラフト作成 2026-04-01)
+- **Before**: 健美家スクレイパーがHTMLのh3広告コピーからregexで利回りを誤取得。market.htmlのデフォルトタブが東京固定。中野さんへのメールドラフトなし。generate_inquiry_messages.pyに法人記載が残存
+- **After**:
+  - **健美家利回り修正**: h3広告コピーのregex取得 → `<li class="price">`内の構造化`<span>`から正確に取得。prop_block構造化解析に全面改修。全物件で利回り取得率100%
+  - **DEFAULT_CITY設定**: `generate_market.py`に`DEFAULT_CITY`変数追加。初期表示タブを福岡に変更（コード変更3行）
+  - **メールドラフト作成**: 中野さん宛「アンピール天神東の件 / 収益物件の内覧ご相談」をGmail MCPで作成。アンピール天神東クローズ報告 + OC収益物件6件の内覧相談 + 賃料改定・出口戦略の質問
+  - **generate_inquiry_messages.py**: 法人(iUMA)記載を削除（中野さんは既知のため不要）
+  - **topic_candidates追加**: topic-045（健美家利回りデータ嘘）, topic-046（1行UX改善）, topic-047（AI過剰実装）
+- **Commits**: セッション中のcommit hash未確認（Bashブロック）
 
 ## Completed (マーケットページ品質改善 — 広告コピー7パターン + 戸建て除外 + OC収入補完 2026-03-31)
 - **Before**: 広告コピー名3件フィルター漏れ（「福岡市博多区エリアで通勤に使いやすい立地」等）。戸建てが収益物件に掲載（アパート㎡単価で過大推定）。OC家賃根拠が不明。楽待物件名がクロスリファレンスされない。OC年間収入欠落検知なし
@@ -56,13 +66,17 @@
 - **After**: Playwright headless Chromiumで全HTMLをmobile+desktopでレンダリングし5項目チェック
 
 ## In Progress / Next Actions
-1. **F宅建広告コピー名防御**: search_ftakken.pyにも広告コピー検出を追加
-2. **property_pipeline.py分割**: 1800+行。lifecycle/dashboard/naiken等のモジュール分離を検討
-3. **パイプライン候補59件の精査**: スコア70+だが30日以内の物件。問い合わせ送信 or 見送り判断
-4. **viewed 4件のアーカイブ判断**: アンピール天神東(considering)/プレイスポットしんばし/GSハイム博多/ローズマンション博多
-5. **data_accuracy 4件のprice mismatch**: 2物件のrawとHTML価格差（掲載価格変動 — 非バグ）
+1. **アンピール天神東パイプラインクローズ**: ステータスをpassed/decidedに更新（融資CFマイナスで見送り確定）
+2. **OC収益物件6件の問い合わせ追跡**: 中野さんへメール送信後、inquiries.yamlにステータス反映
+3. **内見済み3件の銀行査定待ち**: プレイスポット/GSハイム/ローズマンション → 筑波銀行結果待ち
+4. **F宅建広告コピー名防御**: search_ftakken.pyにも広告コピー検出を追加
+5. **property_pipeline.py分割**: 2167行。lifecycle/dashboard/naiken等のモジュール分離を検討
+6. **data_accuracy 4件のprice mismatch**: 2物件のrawとHTML価格差（掲載価格変動 — 非バグ）
 
 ## Key Decisions
+- 2026-04-01: **投資方針転換 — 実需→完全収益目的**: 中野さんへのメールで明示。OC物件のCF+CG両面での投資判断。内覧は現地確認・周辺環境把握が目的
+- 2026-04-01: **OC賃料改定・出口戦略の質問**: 更新時の賃料改定余地、表面利回り6%での投資家売却可能性を中野さんに相談
+- 2026-04-01: **アンピール天神東クローズ**: 筑波銀行3,000万/25年 → 管理費込みCFマイナス。掲載終了済み
 - 2026-03-31: **戸建て収益除外**: アパート㎡賃料での推定は過大 → profitable sectionからkodate除外
 - 2026-03-31: **広告コピー7パターン**: 句読点・キーワード・駅徒歩短パターンを追加。全164物件QA PASS
 - 2026-03-31: **OC QA閾値**: FAIL>90%, WARN>50%（yield×price逆算でDisplay正常のため緩め）
@@ -82,23 +96,23 @@
 - Private deploy: Cloudflare iuma-private.pages.dev
 
 ## History (last 20)
-1. 2026-03-31: マーケットページ品質改善 — 広告コピー7パターン + 戸建て除外 + OC収入補完
-2. 2026-03-31: パイプライン形骸化解消 — lifecycle + メール連動 + UI刷新 + 旧パイプライン廃止
-3. 2026-03-30: Before: 諸費用未計上+掲載日1,644件不正確 → After: 諸費用7%追加+不正確日付除去
-4. 2026-03-30: Before: kaizen修正率1% → After: 自動修正+commit
-5. 2026-03-29: Before: レイアウト崩れ目視頼み → After: Playwright Visual Regression自動チェック
-6. 2026-03-29: Before: 有識者一律扱い → After: 3層ティアリング(833件評価/58.4%)
-7. 2026-03-28: Before: 手動デプロイ → After: main→gh-pages自動デプロイworkflow
-8. 2026-03-28: Before: 物件名不正確+管理費混在 → After: F宅建詳細取得+管理費/修繕分離
-9. 2026-03-28: Before: セクション遷移なし → After: Market sticky section nav横展開
-10. 2026-03-27: Before: 楽待一覧のみ → After: 詳細ページ構造化抽出(現況/年間収入/管理費)
-11. 2026-03-26: Before: 収益物件ページなし → After: yield専用ページ新規作成
-12. 2026-03-25: Before: 民泊候補未調査 → After: 特区民泊候補物件調査完了
-13. 2026-03-24: Before: 融資未打診 → After: 筑波銀行(澤畠さん)へメール送信
-14. 2026-03-23: Before: 内見分析がアーカイブ不可 → After: アーカイブ機能追加
-15. 2026-03-22: Before: パイプラインUI未整備 → After: inquiry-pipeline dashboard作成
-16. 2026-03-21: Before: 福岡物件未内見 → After: 3物件内見完了
-17. 2026-03-20: Before: agent_memory分散 → After: SSoT確立+pipeline sync
-18. 2026-03-19: Before: 問い合わせ管理なし → After: Pipeline+Reply Assist構築
-19. 2026-03-18: Before: patrol結果確認が手動 → After: GHA patrol Gmail通知
-20. 2026-03-17: Before: 格安区分の評価基準なし → After: スコアリング導入
+1. 2026-04-01: Before: 健美家利回りh3 regex誤取得+デフォルトタブ東京固定 → After: prop_block構造化解析+DEFAULT_CITY福岡+中野さんメール作成
+2. 2026-03-31: マーケットページ品質改善 — 広告コピー7パターン + 戸建て除外 + OC収入補完
+3. 2026-03-31: パイプライン形骸化解消 — lifecycle + メール連動 + UI刷新 + 旧パイプライン廃止
+4. 2026-03-30: Before: 諸費用未計上+掲載日1,644件不正確 → After: 諸費用7%追加+不正確日付除去
+5. 2026-03-30: Before: kaizen修正率1% → After: 自動修正+commit
+6. 2026-03-29: Before: レイアウト崩れ目視頼み → After: Playwright Visual Regression自動チェック
+7. 2026-03-29: Before: 有識者一律扱い → After: 3層ティアリング(833件評価/58.4%)
+8. 2026-03-28: Before: 手動デプロイ → After: main→gh-pages自動デプロイworkflow
+9. 2026-03-28: Before: 物件名不正確+管理費混在 → After: F宅建詳細取得+管理費/修繕分離
+10. 2026-03-28: Before: セクション遷移なし → After: Market sticky section nav横展開
+11. 2026-03-27: Before: 楽待一覧のみ → After: 詳細ページ構造化抽出(現況/年間収入/管理費)
+12. 2026-03-26: Before: 収益物件ページなし → After: yield専用ページ新規作成
+13. 2026-03-25: Before: 民泊候補未調査 → After: 特区民泊候補物件調査完了
+14. 2026-03-24: Before: 融資未打診 → After: 筑波銀行(澤畠さん)へメール送信
+15. 2026-03-23: Before: 内見分析がアーカイブ不可 → After: アーカイブ機能追加
+16. 2026-03-22: Before: パイプラインUI未整備 → After: inquiry-pipeline dashboard作成
+17. 2026-03-21: Before: 福岡物件未内見 → After: 3物件内見完了
+18. 2026-03-20: Before: agent_memory分散 → After: SSoT確立+pipeline sync
+19. 2026-03-19: Before: 問い合わせ管理なし → After: Pipeline+Reply Assist構築
+20. 2026-03-18: Before: patrol結果確認が手動 → After: GHA patrol Gmail通知

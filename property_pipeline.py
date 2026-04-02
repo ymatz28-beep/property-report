@@ -52,7 +52,17 @@ _PROJECTS_ROOT = str(BASE.parent)
 if _PROJECTS_ROOT not in sys.path:
     sys.path.insert(0, _PROJECTS_ROOT)
 
-from lib.styles.design_tokens import get_css_tokens, get_google_fonts_url
+
+# ---------------------------------------------------------------------------
+# Navigation
+# ---------------------------------------------------------------------------
+GNAV_PAGES = [
+    {"href": "index.html", "label": "Hub"},
+    {"href": "market.html", "label": "Market"},
+    {"href": "naiken-analysis.html", "label": "内覧分析"},
+    {"href": "inquiry-messages.html", "label": "問い合わせ"},
+    {"href": "inquiry-pipeline.html", "label": "Pipeline"},
+]
 
 # ---------------------------------------------------------------------------
 # Config
@@ -1040,9 +1050,8 @@ def _render_card(inq: dict) -> str:
     analysis_html = _render_card_analysis(inq)
 
     return f'''<div class="inq-card"{dimmed}>
-  <a href="{inq.get('url', '#')}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
   <div style="display:flex;justify-content:space-between;align-items:center">
-    <span class="card-name">{inq.get('name', '?')}</span>
+    <a href="{inq.get('url', '#')}" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">{inq.get('name', '?')} ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       {waiting_badge}{stale_badge}
       <span class="status-pill" style="background:{color}">{label}</span>
@@ -1057,7 +1066,6 @@ def _render_card(inq: dict) -> str:
   </div>
   {viewing_line}{notes_line}
   <div class="card-meta">{inq.get('source', '')} / {inq.get('id', '')}</div>
-  </a>
   {analysis_html}
 </div>'''
 
@@ -1480,12 +1488,7 @@ def generate_naiken_analysis() -> Path | None:
     merits/risks, checklists, questions, and common verification items.
     Archives previous version before overwriting.
     """
-    from generate_search_report_common import (
-        global_nav_css,
-        global_nav_html,
-        site_header_css,
-        site_header_html,
-    )
+    from lib.renderer import render
 
     out = OUTPUT / "naiken-analysis.html"
 
@@ -1495,7 +1498,6 @@ def generate_naiken_analysis() -> Path | None:
         archive_dir.mkdir(exist_ok=True)
         prev_content = out.read_text(encoding="utf-8")
         # Use modification date for archive filename
-        import time
         mtime = out.stat().st_mtime
         archive_date = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d")
         archive_path = archive_dir / f"naiken-{archive_date}.html"
@@ -1505,22 +1507,16 @@ def generate_naiken_analysis() -> Path | None:
     inquiries = load_inquiries()
     viewing = [i for i in inquiries if i.get("status") in ("viewing", "viewed")]
     if not viewing:
-        _fonts_url_e = get_google_fonts_url()
-        _css_tokens_e = get_css_tokens()
-        html = f"""<!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>内覧分析</title>
-<link href="{_fonts_url_e}" rel="stylesheet">
-<style>{_css_tokens_e}{site_header_css()}{global_nav_css()}
-body{{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}}
-.wrap{{max-width:900px;margin:0 auto;padding:24px 16px}}
-h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
-.empty{{color:#a9b3c6;margin-top:40px;text-align:center;font-size:15px}}
-</style></head><body>
-{site_header_html()}{global_nav_html("naiken-analysis.html")}
-<div class="wrap"><h1>内覧分析</h1>
-<p class="empty">現在、内覧予定の物件はありません。<br>物件パイプラインで「viewing」ステータスに進んだ物件がここに自動表示されます。</p>
-</div></body></html>"""
+        html = render("pages/naiken.html", {
+            "title_city": "",
+            "viewing_count": 0,
+            "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "property_sections": [],
+            "common_html": "",
+            "archive_sections": [],
+            "gnav_pages": GNAV_PAGES,
+            "gnav_current": "内覧分析",
+        }, extra_dirs=[BASE / "lib" / "templates"], scope="public")
         out.write_text(html, encoding="utf-8")
         return out
 
@@ -1702,96 +1698,22 @@ h1{{font-size:clamp(20px,2.5vw,26px);font-weight:900;margin-bottom:8px}}
     latest_cities = set(CITY_LABELS.get(p.get("city", ""), "") for p in latest_props)
     title_city = "・".join(sorted(c for c in latest_cities if c))
 
-    _fonts_url_n = get_google_fonts_url()
-    _css_tokens_n = get_css_tokens()
-    html = f"""<!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>内覧分析 — {title_city} {latest_date}</title>
-<link href="{_fonts_url_n}" rel="stylesheet">
-<style>
-{_css_tokens_n}
-*{{box-sizing:border-box;margin:0}}
-body{{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;font-size:12px}}
-{site_header_css()}{global_nav_css()}
-.wrap{{max-width:720px;margin:0 auto;padding:16px 12px}}
-h1{{font-size:clamp(16px,2vw,20px);font-weight:900;margin-bottom:6px}}
-.meta{{color:var(--muted);font-size:11px;margin-bottom:16px}}
-.property{{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:16px}}
-.property h2{{font-size:clamp(13px,1.8vw,16px);font-weight:800;margin-bottom:2px}}
-.property .sub{{color:var(--muted);font-size:11px;margin-bottom:12px}}
-.tag{{display:inline-block;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:700;margin-right:4px;margin-bottom:4px}}
-.tag-red{{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}}
-.tag-green{{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3)}}
-.tag-yellow{{background:rgba(250,204,21,.15);color:var(--yellow);border:1px solid rgba(250,204,21,.3)}}
-.tag-blue{{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.3)}}
-.tag-muted{{background:rgba(169,179,198,.1);color:var(--muted);border:1px solid rgba(169,179,198,.2)}}
-table{{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}}
-@media(max-width:640px){{table{{font-size:11px}}th{{white-space:nowrap;width:60px;min-width:60px}}td{{word-break:break-word}}}}
-th{{text-align:left;padding:5px 8px;color:var(--muted);font-weight:600;font-size:10px;border-bottom:1px solid var(--line)}}
-td{{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.04)}}
-.val{{font-weight:700}}.warn{{color:var(--red);font-weight:700}}.ok{{color:var(--green);font-weight:700}}.neutral{{color:var(--muted)}}
-.mono{{font-family:'JetBrains Mono',monospace}}
-.section-title{{font-size:12px;font-weight:800;margin:16px 0 8px;padding-left:10px;border-left:3px solid var(--gold)}}
-.invest-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:10px 0}}
-.invest-card{{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px;text-align:center}}
-.invest-card .label{{font-size:10px;color:var(--muted);margin-bottom:4px}}.invest-card .num{{font-size:13px;font-weight:800;font-family:'JetBrains Mono',monospace}}
-.checklist{{list-style:none;padding:0}}.checklist li{{padding:4px 0 4px 20px;position:relative;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04)}}
-.checklist li::before{{content:'☐';position:absolute;left:0;color:var(--muted)}}
-.question{{padding:5px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04)}}
-.schedule-banner{{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:14px;margin-bottom:16px}}
-.schedule-banner h2{{font-size:13px;color:var(--gold);margin-bottom:6px}}.schedule-banner .detail{{font-size:12px;line-height:1.6}}
-.verdict{{padding:12px;border-radius:10px;margin:12px 0;font-size:11px;line-height:1.7}}
-.verdict-caution{{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2)}}
-.revenue-block{{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;margin:14px 0}}
-.rv-header{{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}}
-.rv-title{{font-size:12px;font-weight:800}}.rv-verdict{{padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700}}
-.rv-high{{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}}
-.rv-stable{{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3)}}
-.rv-thin{{background:rgba(250,204,21,.15);color:#facc15;border:1px solid rgba(250,204,21,.3)}}
-.rv-red{{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)}}
-.rv-assumptions{{font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5}}
-.rv-section{{margin-bottom:12px}}.rv-section-title{{font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid rgba(201,168,76,.2)}}
-.rv-row{{display:flex;align-items:baseline;padding:3px 0;font-size:11px;gap:6px}}
-.rv-desc{{flex:1;min-width:0}}.rv-note{{flex:0 0 auto;font-size:10px;color:var(--muted)}}.rv-amount{{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;min-width:70px}}
-.collapsible-section{{margin:12px 0}}
-.collapsible-trigger{{cursor:pointer;font-size:12px;font-weight:800;padding:8px;border-left:3px solid var(--gold);color:var(--text);list-style:none;user-select:none}}
-.collapsible-trigger::-webkit-details-marker{{display:none}}
-details[open] .collapsible-trigger{{color:var(--text)}}
-details[open] .collapsible-trigger::after{{content:'';}}
-.archive-fold{{margin-top:24px}}
-.archive-header{{font-size:13px;font-weight:800;color:var(--muted);padding:8px 0;border-top:2px solid var(--line);border-bottom:1px solid var(--line);cursor:pointer;list-style:none;user-select:none}}
-.archive-header::-webkit-details-marker{{display:none}}
-.archive-header::before{{content:'▸ ';font-size:11px}}
-details[open]>.archive-header::before{{content:'▾ '}}
-.archive-header span{{font-size:11px;font-weight:500;margin-left:8px}}
-.archive-section .property{{opacity:0.7}}
-.rv-minus .rv-desc{{color:var(--muted)}}.rv-subtotal{{border-top:1px solid var(--line);padding-top:4px;margin-top:3px}}
-.rv-total{{border-top:2px solid var(--line);padding-top:8px;margin-top:4px;font-weight:800}}
-.rv-highlight{{background:rgba(201,168,76,.06);border-radius:8px;padding:8px;margin-top:4px}}
-.rv-bottom{{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}}
-.rv-bottom-item{{flex:1;text-align:center;min-width:100px}}.rv-bottom-label{{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}}.rv-bottom-val{{font-size:16px;font-weight:800;font-family:'JetBrains Mono',monospace}}
-</style></head><body>
-{site_header_html()}{global_nav_html("naiken-analysis.html")}
-<div class="wrap">
-<h1>内覧分析 — {title_city} {len(viewing)}物件</h1>
-<p class="meta">自動生成: {now_str} / {len(viewing)}件の内覧予定物件</p>
-{"".join(property_sections)}
-{common}
-{'<details class="archive-fold"><summary class="archive-header">過去の内見<span>（' + str(len(archive_sections)) + '件）</span></summary><div class="archive-section">' + "".join(archive_sections) + '</div></details>' if archive_sections else ''}
-</div></body></html>"""
+    html = render("pages/naiken.html", {
+        "title_city": title_city,
+        "viewing_count": len(viewing),
+        "generated_at": now_str,
+        "property_sections": property_sections,
+        "common_html": common,
+        "archive_sections": archive_sections,
+        "gnav_pages": GNAV_PAGES,
+        "gnav_current": "内覧分析",
+    }, extra_dirs=[BASE / "lib" / "templates"], scope="public")
 
     out.write_text(html, encoding="utf-8")
     return out
 
 
 def generate_dashboard() -> Path:
-    from generate_search_report_common import (
-        global_nav_css,
-        global_nav_html,
-        site_header_css,
-        site_header_html,
-    )
-
     all_inquiries = load_inquiries()
     agent_memory = _load_agent_memory()
 
@@ -1893,133 +1815,33 @@ def generate_dashboard() -> Path:
   {flagged_html}
 </div>''')
 
-    _fonts_url_d = get_google_fonts_url()
-    _css_tokens_d = get_css_tokens()
-    html = f'''<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Property Pipeline — iUMA</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="{_fonts_url_d}" rel="stylesheet">
-<style>
-{_css_tokens_d}
-*{{margin:0;padding:0;box-sizing:border-box}}
-body{{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh}}
-{site_header_css()}
-{global_nav_css()}
-.container{{max-width:800px;margin:0 auto;padding:0 16px 80px}}
+    # --- Template rendering (replaces inline HTML) ---
+    from lib.renderer import render
 
-/* Hero */
-.hero{{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:32px 32px 28px;margin:20px 0}}
-.hero h1{{font-size:clamp(20px,2.5vw,26px);font-weight:700}}
-.stats{{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}}
-.stat{{background:rgba(255,255,255,.06);border-radius:10px;padding:10px 16px;text-align:center;min-width:72px}}
-.stat-val{{font-size:22px;font-weight:700;font-family:var(--font-mono)}}
-.stat-label{{font-size:10px;color:var(--text-muted);margin-top:2px}}
+    stats = {
+        "in_progress": by_status.get("in_discussion", 0) + by_status.get("inquired", 0),
+        "viewing": by_status.get("viewing", 0),
+        "viewed": by_status.get("viewed", 0),
+        "decided": by_status.get("decided", 0),
+        "flagged": by_status.get("flagged", 0),
+        "passed": by_status.get("passed", 0),
+    }
 
-/* Section nav — matches stock portfolio .nav-bar pattern */
-.section-nav{{position:sticky;top:calc(var(--gnav-height, 52px) + 36px);z-index:var(--z-subnav, 90);background:rgba(10,12,18,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);margin:0 -16px;padding:0 16px}}
-.section-nav-inner{{display:flex;gap:0;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}}
-.section-nav-inner::-webkit-scrollbar{{display:none}}
-.nav-tab{{display:inline-flex;align-items:center;gap:4px;padding:10px 16px;font-size:12px;font-weight:600;color:rgba(255,255,255,.45);text-decoration:none;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;cursor:pointer}}
-.nav-tab:hover{{color:rgba(255,255,255,.8)}}
-.nav-tab.active{{color:var(--text);border-bottom-color:var(--accent, #6366f1)}}
-.tab-count{{font-size:10px;color:rgba(255,255,255,.3);font-family:var(--font-mono)}}
-.nav-tab.active .tab-count{{color:rgba(255,255,255,.6)}}
+    schedule_html = _build_viewing_schedule(inquiries, agent_memory)
 
-/* City sections */
-.city-section{{margin-top:28px}}
-.city-section.hidden{{display:none}}
-.city-header{{padding-left:12px;margin-bottom:14px;display:flex;align-items:baseline;gap:12px}}
-.city-header h2{{font-size:18px;font-weight:700}}
-.city-stats{{display:flex;gap:10px;font-size:11px;color:var(--text-muted)}}
+    html = render("pages/pipeline.html", {
+        "stats": stats,
+        "schedule_html": schedule_html,
+        "section_nav": section_nav,
+        "city_sections": city_sections,
+        "gnav_pages": GNAV_PAGES,
+        "gnav_current": "Pipeline",
+    }, extra_dirs=[BASE / "lib" / "templates"], scope="public")
 
-/* Cards */
-.inq-card{{display:block;text-decoration:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:8px;transition:background .15s,border-color .15s}}
-.inq-card:hover{{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}}
-.card-name{{color:var(--text);font-size:14px;font-weight:600}}
-.card-score{{background:rgba(255,255,255,.08);padding:2px 8px;border-radius:8px;font-size:11px;font-family:var(--font-mono);color:var(--text-secondary)}}
-.status-pill{{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;color:#fff}}
-.card-detail{{color:var(--text-secondary);font-size:12px;margin-top:6px}}
-.card-filters{{display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--text-muted)}}
-.card-meta{{color:var(--text-decorative);font-size:10px;margin-top:6px}}
-
-/* Schedule section */
-.schedule-section{{margin:24px 0;padding:0}}
-.schedule-header{{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}}
-.schedule-header h2{{font-size:18px;font-weight:700}}
-.schedule-counts{{display:flex;gap:10px;font-size:11px}}
-.schedule-cards{{display:flex;flex-direction:column;gap:8px}}
-.sched-card{{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;transition:background .15s}}
-.sched-card:hover{{background:rgba(255,255,255,.08)}}
-.sched-header{{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}}
-.sched-name{{font-size:15px;font-weight:600;color:var(--text)}}
-.sched-city{{font-size:11px;color:var(--text-muted);font-family:var(--font-mono)}}
-.sched-date{{font-size:13px;color:#a78bfa;margin-bottom:4px}}
-.sched-loc{{font-size:12px;color:var(--text-muted);margin-bottom:4px}}
-.sched-agent{{font-size:12px;color:#d4d4d8;margin-bottom:2px}}
-.agent-title{{font-size:10px;color:var(--text-muted);margin-left:4px}}
-.sched-contact{{font-size:11px;color:var(--text-muted);margin-bottom:4px;font-family:var(--font-mono)}}
-.sched-filters{{font-size:11px;color:var(--text-muted);margin-top:6px}}
-.sched-notes{{font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:4px}}
-
-/* Empty state */
-.empty{{text-align:center;padding:60px 20px;color:var(--text-decorative)}}
-.empty h2{{font-size:18px;color:var(--text-muted);margin-bottom:8px}}
-
-@media(max-width:640px){{
-  .hero{{padding:24px 20px 20px}}
-  .stats{{gap:8px}}
-  .stat{{min-width:60px;padding:8px 12px}}
-  .stat-val{{font-size:18px}}
-  .nav-tab{{padding:10px 12px;font-size:11px}}
-  .city-header h2{{font-size:16px}}
-}}
-</style>
-</head>
-<body>
-{site_header_html()}
-{global_nav_html("inquiry-pipeline.html")}
-
-<div class="container">
-  <div class="hero">
-    <h1>Property Pipeline</h1>
-    <div class="stats">
-      <div class="stat"><div class="stat-val" style="color:#f97316">{by_status.get('in_discussion', 0) + by_status.get('inquired', 0)}</div><div class="stat-label">進行中</div></div>
-      <div class="stat"><div class="stat-val" style="color:#a78bfa">{by_status.get('viewing', 0)}</div><div class="stat-label">内見</div></div>
-      <div class="stat"><div class="stat-val" style="color:var(--accent)">{by_status.get('viewed', 0)}</div><div class="stat-label">内見済</div></div>
-      <div class="stat"><div class="stat-val" style="color:var(--green)">{by_status.get('decided', 0)}</div><div class="stat-label">決定</div></div>
-    </div>
-    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 {by_status.get('flagged', 0)} / 見送り {by_status.get('passed', 0)}</div>
-  </div>
-
-  {_build_viewing_schedule(inquiries, agent_memory)}
-
-  {section_nav}
-
-  {''.join(city_sections) if city_sections else '<div class="empty"><h2>No inquiries yet</h2><p>Run --auto-flag to detect high-score properties</p></div>'}
-</div>
-
-<script>
-function showCity(city) {{
-  document.querySelectorAll('.city-section').forEach(s => {{
-    s.classList.toggle('hidden', city !== 'all' && s.dataset.city !== city);
-  }});
-  document.querySelectorAll('.nav-tab').forEach(t => {{
-    t.classList.toggle('active', t.dataset.city === city);
-  }});
-}}
-</script>
-</body>
-</html>'''
-
-    out_path = OUTPUT / "inquiry-pipeline.html"
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(html, encoding="utf-8")
-    print(f"[pipeline] Dashboard → {out_path}")
-    return out_path
+    out = OUTPUT / "inquiry-pipeline.html"
+    out.write_text(html, encoding="utf-8")
+    print(f"[pipeline] Dashboard → {out}")
+    return out
 
 
 # ---------------------------------------------------------------------------

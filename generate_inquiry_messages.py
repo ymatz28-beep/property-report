@@ -208,9 +208,9 @@ def generate_message(row: PropertyRow, city_key: str) -> str:
     if source_type == "portal_form":
         # --- Concise portal form version ---
         lines.append(f"「{name}」（{row.price_text}）について、{attraction}お問い合わせいたします。")
+        lines.append(row.url)
         lines.append("")
-        lines.append(f"東京と{city_label}の2拠点生活を実施しており、法人（合同会社）での購入を考えております。")
-        lines.append(common_context)
+        lines.append(f"東京と{city_label}の2拠点生活を実施しており、{common_context}")
         lines.append(f"不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。")
         if pet:
             lines.append("")
@@ -227,9 +227,9 @@ def generate_message(row: PropertyRow, city_key: str) -> str:
     elif source_type == "investor_portal":
         # --- Investor portal version (楽待) ---
         lines.append(f"「{name}」について、{attraction}お問い合わせいたします。")
+        lines.append(row.url)
         lines.append("")
-        lines.append(f"東京と{city_label}の2拠点生活を前提に、法人（合同会社）での購入を検討しております。")
-        lines.append(common_context)
+        lines.append(f"東京と{city_label}の2拠点生活を前提に、{common_context}")
         lines.append(f"不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用したいと考えておりますが、こうした利用は可能でしょうか。")
         if pet:
             lines.append("")
@@ -246,9 +246,9 @@ def generate_message(row: PropertyRow, city_key: str) -> str:
         # --- Direct email version (R不動産, カウカモ, ふれんず) ---
         lines.append("お世話になります。")
         lines.append(f"貴サイトに掲載されている「{name}」を拝見し、{attraction}ご連絡いたしました。")
+        lines.append(row.url)
         lines.append("")
-        lines.append(f"東京と{city_label}の2拠点生活を実施しており、法人（合同会社）での購入を考えております。")
-        lines.append(common_context)
+        lines.append(f"東京と{city_label}の2拠点生活を実施しており、{common_context}")
         lines.append(f"居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。")
         if pet:
             lines.append("")

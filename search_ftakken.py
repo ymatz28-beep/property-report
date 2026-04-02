@@ -193,6 +193,12 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
                     or "交通" in line or "築年月" in line
                     or "チェック" in line or "お気に入り" in line):
                 continue
+            # Reject station/access lines (e.g. "鹿児島本線博多駅 徒歩10分")
+            if re.search(r"(?:線|駅)\s.*?(?:徒歩|バス)\s*\d+\s*分", line):
+                continue
+            # Reject ad-copy lines (promotional descriptions)
+            if re.search(r"(?:リフォーム|リノベ|済み|専用|スペース|間取|準備中)", line):
+                continue
             # Reject lines that look like catchphrases (contain special chars or multiple 、)
             if any(c in line for c in _CATCHPHRASE_CHARS):
                 continue

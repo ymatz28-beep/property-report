@@ -2019,12 +2019,27 @@ def recalc_properties(property_ids: list[str] | None = None) -> None:
         if not price:
             print(f"  [{pid}] {name}: skip — no price")
             continue
-        if not rent_estimate:
-            print(f"  [{pid}] {name}: skip — no rent_estimate")
-            continue
-
         price_man = int(price)
-        rent_monthly = float(rent_estimate)  # 万円/月
+
+        if not rent_estimate:
+            # Auto-estimate rent using city ㎡ benchmarks (same as auto_flag)
+            area = inq.get("area") or 0
+            city_key = inq.get("city", "fukuoka")
+            yr_val = inq.get("year_built") or 0
+            if area and area > 0:
+                _RENT_PER_SQM = {"fukuoka": (1800, 2200), "osaka": (2000, 2500), "tokyo": (2500, 3200)}
+                lo, hi = _RENT_PER_SQM.get(city_key, (2000, 2500))
+                if yr_val and yr_val >= 2010:
+                    lo, hi = int(lo * 1.1), int(hi * 1.1)
+                rent_monthly = round((area * (lo + hi) / 2) / 10000, 1)  # 万円/月
+                rent_source = f"相場推定({city_key}, {lo}-{hi}円/㎡)"
+                print(f"  [{pid}] {name}: rent_estimate未設定 → 自動推定 {rent_monthly}万/月 ({rent_source})")
+            else:
+                print(f"  [{pid}] {name}: skip — no rent_estimate and no area")
+                continue
+        else:
+            rent_monthly = float(rent_estimate)
+            rent_source = "設定値"
         yield_pct = round(rent_monthly * 12 / price_man * 100, 2)
 
         yr = inq.get("year_built")
@@ -2060,7 +2075,7 @@ def recalc_properties(property_ids: list[str] | None = None) -> None:
 
         # Inject recalc summary into notes
         recalc_note = (
-            f"[recalc {date.today()}] rent_estimate={rent_monthly}万/月, yield={yield_pct}%, "
+            f"[recalc {date.today()}] 家賃={rent_monthly}万/月({rent_source}), yield={yield_pct}%, "
             f"月CF={sign}{mcf:.1f}万, CCR={ccr:.1f}%, 税後年CF={after_tax_cf:.1f}万 ({rev.verdict})"
         )
         existing_notes = inq.get("notes") or ""

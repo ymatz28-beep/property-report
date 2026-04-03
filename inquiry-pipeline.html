@@ -212,6 +212,20 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .card-filters { display: flex; gap: 12px; margin-top: 8px; font-size: 11px; color: var(--text-muted); }
 .card-meta { color: var(--text-decorative); font-size: 10px; margin-top: 6px; }
 
+/* KPI strip on cards */
+.card-kpi-strip { display: flex; gap: 2px; margin-top: 10px; padding: 8px 0 4px; border-top: 1px solid rgba(255,255,255,.06); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.card-kpi-strip::-webkit-scrollbar { display: none; }
+.card-kpi { flex: 1; min-width: 56px; text-align: center; padding: 4px 6px; background: rgba(255,255,255,.04); border-radius: 8px; }
+.card-kpi-val { font-size: 13px; font-weight: 700; font-family: var(--font-mono); white-space: nowrap; }
+.card-kpi-label { font-size: 9px; color: var(--text-muted); margin-top: 1px; white-space: nowrap; }
+.card-kpi.verdict { background: rgba(255,255,255,.06); border: 1px solid var(--v-color, #71717a); }
+.card-kpi.verdict .card-kpi-val { color: var(--v-color, #71717a); }
+
+/* Notes collapsible */
+.card-notes-wrap { margin-top: 4px; }
+.card-notes-preview { color: #a1a1aa; font-size: 11px; font-style: italic; cursor: pointer; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.card-notes-full { color: #a1a1aa; font-size: 11px; font-style: italic; margin-top: 4px; white-space: pre-line; }
+
 /* Schedule section */
 .schedule-section { margin: 24px 0; padding: 0; }
 .schedule-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
@@ -242,6 +256,10 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   .stat-val { font-size: 18px; }
   .stage-tab { padding: 7px 12px; font-size: 11px; }
   .stage-header h2 { font-size: 16px; }
+  .card-kpi-strip { gap: 2px; }
+  .card-kpi { min-width: 48px; padding: 3px 4px; }
+  .card-kpi-val { font-size: 11px; }
+  .card-kpi-label { font-size: 8px; }
 }
 </style>
 </head>
@@ -396,17 +414,28 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">93pt</span>
     </div>
   </div>
-  <div class="card-detail">1,900万 / 62.91㎡ / 築45年（融資15年） / 東比恵 徒歩8分</div>
+  <div class="card-detail">1,900万 / 62.91㎡ / 3LDK / 築45年 / 東比恵 徒歩8分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">[future:2026-04] 売主夜勤のため日曜内見不可。候補日提示で後日調整（中野さん3/27確認）。誤ってlifecycle sweepでpassされていた→復元
+  <details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">[future:2026-04] 売主夜勤のため日曜内見不可。候補日提示で後日調整（中野さん3/27確認）。誤ってlifecycle sweepでpassされていた→復元</summary>
+  <div class="card-notes-full">[future:2026-04] 売主夜勤のため日曜内見不可。候補日提示で後日調整（中野さん3/27確認）。誤ってlifecycle sweepでpassされていた→復元
 [recalc 2026-04-02] 家賃=12.6万/月(相場推定(fukuoka, 1800-2200円/㎡)), yield=7.96%, 月CF=-1.2万, CCR=-1.8%, 税後年CF=-9.0万 (CF赤字)</div>
+</details>
   <div class="card-meta">ふれんず / inq-017</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-1.8万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-2.6%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">6.9〜8.2%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,520万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">513万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>11〜13万/月（年144万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-10万/年</span></div>
@@ -438,17 +467,28 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">55pt</span>
     </div>
   </div>
-  <div class="card-detail">425万 / 20.56㎡ / 築36年（融資24年） / 薬院 徒歩5分</div>
+  <div class="card-detail">425万 / 20.56㎡ /  / 築36年 / 薬院 徒歩5分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。7F 42,000円成約(2025/9)、リフォーム済50,000円。マンスリー運用あり。月CF+1.5万/CCR11.4%
+  <details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。7F 42,000円成約(2025/9)、リフォーム済50,000円。マンスリー運用あり。月CF+1.5万/CCR11.4%</summary>
+  <div class="card-notes-full">中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。7F 42,000円成約(2025/9)、リフォーム済50,000円。マンスリー運用あり。月CF+1.5万/CCR11.4%
 [recalc 2026-04-02] 家賃=4.2万/月(設定値), yield=11.86%, 月CF=+1.5万, CCR=11.4%, 税後年CF=13.1万 (薄利)</div>
+</details>
   <div class="card-meta">楽待(利回り区分) / inq-094</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">+1.7万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">13.1%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">11.3〜14.1%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">340万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">115万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>4〜5万/月（年54万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-4万/年</span></div>
@@ -480,17 +520,28 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">50pt</span>
     </div>
   </div>
-  <div class="card-detail">500万 / 20.0㎡ / 築?年（融資?年） / 博多 徒歩13分</div>
+  <div class="card-detail">500万 / 20.0㎡ /  / 築?年 / 博多 徒歩13分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。賃料5万円前後が相場。R5年3月入居中。月CF+2.2万/CCR13.5%。[recalc] yield=12.0%,税後年CF=18.2万
+  <details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。賃料5万円前後が相場。R5年3月入居中。月CF+2.2万/CCR13.5%。[recalc] yield=12.0%,税後年CF=18.2万</summary>
+  <div class="card-notes-full">中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。賃料5万円前後が相場。R5年3月入居中。月CF+2.2万/CCR13.5%。[recalc] yield=12.0%,税後年CF=18.2万
 [recalc 2026-04-02] 家賃=5.0万/月(設定値), yield=12.0%, 月CF=+2.2万, CCR=13.5%, 税後年CF=18.2万 (薄利)</div>
+</details>
   <div class="card-meta">楽待(利回り区分) / inq-100</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">+2.6万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">15.8%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">12.0〜14.4%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">400万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">135万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>5〜6万/月（年66万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-5万/年</span></div>
@@ -522,17 +573,28 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">47pt</span>
     </div>
   </div>
-  <div class="card-detail">580万 / 24.09㎡ / 築41年（融資19年） / 渡辺通 徒歩9分 / 薬院 徒歩10分 / 西鉄平尾 徒歩13分</div>
+  <div class="card-detail">580万 / 24.09㎡ / 1K / 築41年 / 渡辺通 徒歩9分 / 薬院 徒歩10分 / 西鉄平尾 徒歩13分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。実家賃4万前半。CF赤字(融資時)→現金購入前提で検討
+  <details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。実家賃4万前半。CF赤字(融資時)→現金購入前提で検討</summary>
+  <div class="card-notes-full">中野さん電話確認済(4/2)。OC賃貸中のため内見不可、外観案内は保留。澤畠さん(筑波銀行)へ評価打診準備中。実家賃4万前半。CF赤字(融資時)→現金購入前提で検討
 [recalc 2026-04-02] 家賃=4.0万/月(設定値), yield=8.28%, 月CF=-0.8万, CCR=-3.6%, 税後年CF=-5.6万 (CF赤字)</div>
+</details>
   <div class="card-meta">ふれんず / inq-093</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-0.3万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-1.3%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">8.3〜10.3%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">464万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">157万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>4〜5万/月（年54万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-4万/年</span></div>
@@ -564,13 +626,13 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">0pt</span>
     </div>
   </div>
-  <div class="card-detail">0万 / ? / 築?年（融資?年） / </div>
+  <div class="card-detail">0万 / ? /  / 築?年 / </div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">[future:2026-05] 賃貸中→4月末退去→5月以降内覧可能（中野さん3/28確認）</div>
+  <div class="card-notes-preview">[future:2026-05] 賃貸中→4月末退去→5月以降内覧可能（中野さん3/28確認）</div>
   <div class="card-meta">SUUMO / inq-101</div>
   
 </div>
@@ -583,13 +645,13 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">0pt</span>
     </div>
   </div>
-  <div class="card-detail">0万 / ? / 築?年（融資?年） / </div>
+  <div class="card-detail">0万 / ? /  / 築?年 / </div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">[future:2026-05] リフォーム中→5月以降内覧可能（中野さん3/28確認）</div>
+  <div class="card-notes-preview">[future:2026-05] リフォーム中→5月以降内覧可能（中野さん3/28確認）</div>
   <div class="card-meta">athome / inq-102</div>
   
 </div></div>
@@ -617,34 +679,47 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">0pt</span>
     </div>
   </div>
-  <div class="card-detail">2,480万 / 40.63㎡ / 築51年（融資15年） / 櫛田神社前 徒歩2分</div>
+  <div class="card-detail">2,480万 / 40.63㎡ / 1DK / 築51年 / 櫛田神社前 徒歩2分</div>
   <div class="card-filters">
     <span>ペット 🔶</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-29</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">3/29内見済。SRC築51年・櫛田神社前駅徒歩2分。リフォーム要（水回り+内装500万見込）。想定家賃13-14万。澤畠さん（筑波銀行）に融資相談中。リフォーム費用の融資組込みも打診済
-[recalc 2026-04-02] 家賃=14.0万/月(設定値), yield=6.77%, 月CF=-2.9万, CCR=-2.2%, 税後年CF=-14.5万 (CF赤字)</div>
+  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-29</div><details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">3/29内見済。SRC築51年・櫛田神社前駅徒歩2分。リフォーム要（水回り+内装500万見込）。想定家賃13-14万。澤畠さん（筑波銀行）に融資相談中。リフォーム費用の融資組込みも打診済</summary>
+  <div class="card-notes-full">3/29内見済。SRC築51年・櫛田神社前駅徒歩2分。リフォーム要（水回り+内装500万見込）。想定家賃13-14万。澤畠さん（筑波銀行）に融資相談中。リフォーム費用の融資組込みも打診済
+[融資回答 2026-04-03] 筑波銀行: 1,380万円 / 20年。売価2,480万に対しLTV55.6%
+[recalc 2026-04-03] 家賃=14.0万/月(設定値), yield=6.77%, 月CF=+3.2万, CCR=4.1%, 税後年CF=52.4万（薄利）
+[値下げ+融資条件シミュレーション 2026-04-03] ※全てリフォーム500万込みで試算 ■ 現在（2,480万/20年）: 初期1,774万 / 月CF+3.2万 / CCR3.0% / 回収34年 ■ 値下げ2,200万/20年:  初期1,474万 / 月CF+3.2万 / CCR3.2% / 回収31年 ■ 値下げ1,980万/20年:  初期1,239万 / 月CF+3.2万 / CCR3.6% / 回収28年 ■ 現在2,480万/25年:    初期1,774万 / 月CF+4.3万 / CCR3.7% / 回収27年 ■ 値下げ2,200万/25年:  初期1,474万 / 月CF+4.3万 / CCR4.2% / 回収24年 ■ 値下げ1,980万/25年:  初期1,239万 / 月CF+4.3万 / CCR4.6% / 回収22年 ★最適 → 融資額1,380万は固定のため、値下げしても月CFは変わらない（返済額同じ） → 値下げの効果は「初期投資の圧縮→CCR改善+回収短縮」に出る → 期間25年延長で月CF+1.1万改善。値下げ+期間延長の合わせ技が最強 → 1,980万+25年なら初期1,239万/月CF+4.3万/回収22年。澤畠さんに25年打診すべき</div>
+</details>
   <div class="card-meta">SUUMO / inq-072</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+3.6万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">4.4%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">6.8〜7.3%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,380万</div><div class="card-kpi-label">融資（筑波銀行）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">56%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,274万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>14〜15万/月（年174万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-12万/年</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　管理費・修繕</span><span>-15.2万/年</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-12.9万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>134万/年</span></div>
-    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-163万/年（月13.6万 × 15年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-2.4万/月</span></div>
-    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+18万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-91万/年（月7.5万 × 20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#22c55e">+3.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+13万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>6.8〜7.3%</span></div>
-    <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-1.6%</span></div>
-    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>4.4%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>22.7年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#facc15;font-weight:600">薄利</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
-      <div style="display:flex;justify-content:space-between"><span>頭金</span><span>496万（20%）</span></div>
+      <div style="display:flex;justify-content:space-between"><span>頭金</span><span>1,100万（44%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>174万</span></div>
-      <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>670万</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>1,274万</span></div>
     </div>
     <div style="color:#52525b;font-size:10px;margin-top:2px">金利2.85% / 空室7%</div>
   </div>
@@ -659,34 +734,47 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">0pt</span>
     </div>
   </div>
-  <div class="card-detail">2,200万 / 66.15㎡ / 築38年（融資22年） / 東比恵 徒歩5分</div>
+  <div class="card-detail">2,200万 / 66.15㎡ / 3LDK / 築38年 / 東比恵 徒歩5分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-29</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">3/29内見済。RC築38年・東比恵駅徒歩5分・3LDK 66㎡。リフォーム要。想定家賃16-17万。管理費21,900円/月。澤畠さんに融資相談中
-[recalc 2026-04-02] 家賃=16.0万/月(設定値), yield=8.73%, 月CF=+2.5万, CCR=4.1%, 税後年CF=24.5万 (薄利)</div>
+  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-29</div><details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">3/29内見済。RC築38年・東比恵駅徒歩5分・3LDK 66㎡。リノベ必須（500万見込）。想定家賃16-17万。管理費21,900円/月。澤畠さんに融資相談中</summary>
+  <div class="card-notes-full">3/29内見済。RC築38年・東比恵駅徒歩5分・3LDK 66㎡。リノベ必須（500万見込）。想定家賃16-17万。管理費21,900円/月。澤畠さんに融資相談中
+[融資回答 2026-04-03] 筑波銀行: 2,190万円 / 20年。売価2,200万に対しLTV99.5%。3件中最高評価
+[recalc 2026-04-03] 家賃=16.0万/月(設定値), yield=8.73%, 月CF=-0.5万, CCR=-4.8%（CF赤字）
+[黒字化シミュレーション 2026-04-03] ※66㎡スケルトン×インダストリアル×ミニマルリノベ700万込みで試算 フルローン(LTV99.5%)で返済負担大→CF赤字 ■ 現在（2,190万/20年）:   初期 864万 / 月CF-0.5万 / CCR-0.9% / 回収∞ → CF赤字 ■ 融資2,190万/25年:       初期 864万 / 月CF+1.3万 / CCR1.5% / 回収65年 ■ 融資2,190万/30年:       初期 864万 / 月CF+2.4万 / CCR3.2% / 回収32年 ★（築38年で30年通るか要相談） ■ 融資2,000万/25年:       初期1,054万 / 月CF+2.2万 / CCR2.1% / 回収47年 ■ 融資1,800万/25年:       初期1,254万 / 月CF+3.1万 / CCR2.5% / 回収39年 → リノベ700万（66㎡スケルトン相場）で初期投資が重い → 25年延長でも回収65年。30年でも32年と厳しい → 融資額を下げると頭金増→初期が更に重くなる → 結論: 30年融資が通らない限り投資妙味薄い。澤畠さんに30年融資を打診、不可なら見送り検討</div>
+</details>
   <div class="card-meta">ふれんず / inq-073</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-0.1万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-2.6%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">8.7〜9.3%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">2,190万</div><div class="card-kpi-label">融資（筑波銀行）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">100%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">164万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>16〜17万/月（年198万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-14万/年</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　管理費・修繕</span><span>-26.3万/年（管理費7,800円 + 修繕積立金14,100円）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-14.7万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>143万/年</span></div>
-    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-108万/年（月9.0万 × 22年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#facc15">+3.0万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-144万/年（月12.0万 × 20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-0.1万/月</span></div>
     
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>8.7〜9.3%</span></div>
-    <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>4.7%</span></div>
-    <div style="display:flex;justify-content:space-between"><span>回収</span><span>21.1年</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#facc15;font-weight:600">薄利</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-2.6%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
-      <div style="display:flex;justify-content:space-between"><span>頭金</span><span>440万（20%）</span></div>
+      <div style="display:flex;justify-content:space-between"><span>頭金</span><span>10万（0%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>154万</span></div>
-      <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>594万</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>164万</span></div>
     </div>
     <div style="color:#52525b;font-size:10px;margin-top:2px">金利2.85% / 空室7%</div>
   </div>
@@ -701,34 +789,46 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">0pt</span>
     </div>
   </div>
-  <div class="card-detail">2,198万 / 69.71㎡ / 築45年（融資15年） / 博多 徒歩16分</div>
+  <div class="card-detail">2,198万 / 69.71㎡ / 2LDK / 築45年 / 博多 徒歩16分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-29</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">3/29内見済。SRC築45年・博多駅徒歩16分・2LDK 69㎡。想定家賃15-16万。管理費13,840円/月。澤畠さんに融資相談中
-[recalc 2026-04-02] 家賃=16.0万/月(設定値), yield=8.74%, 月CF=+0.3万, CCR=0.7%, 税後年CF=4.2万 (薄利)</div>
+  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-29</div><details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">3/29内見済。SRC築45年・博多駅徒歩16分・2LDK 69㎡。想定家賃15-16万。管理費13,840円/月。澤畠さんに融資相談中</summary>
+  <div class="card-notes-full">3/29内見済。SRC築45年・博多駅徒歩16分・2LDK 69㎡。想定家賃15-16万。管理費13,840円/月。澤畠さんに融資相談中
+[融資回答 2026-04-03] 筑波銀行: 1,440万円 / 20年。売価2,198万に対しLTV65.5%。頭金+諸費用で900万超必要
+[recalc 2026-04-03] 家賃=16.0万/月(設定値), yield=8.74%, 月CF=+4.4万, CCR=5.6%, 税後年CF=51.2万 (薄利)</div>
+</details>
   <div class="card-meta">ふれんず / inq-074</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+4.9万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">6.0%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">8.7〜9.3%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,440万</div><div class="card-kpi-label">融資（筑波銀行）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">66%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">912万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>16〜17万/月（年198万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-14万/年</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　管理費・修繕</span><span>-16.6万/年</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-14.7万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>153万/年</span></div>
-    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-144万/年（月12.0万 × 15年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#facc15">+0.7万/月</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-95万/年（月7.9万 × 20年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#22c55e">+4.9万/月</span></div>
     
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>8.7〜9.3%</span></div>
-    <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>1.3%</span></div>
-    <div style="display:flex;justify-content:space-between"><span>回収</span><span>76.2年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>6.0%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>16.7年</span></div>
     <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#facc15;font-weight:600">薄利</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
-      <div style="display:flex;justify-content:space-between"><span>頭金</span><span>440万（20%）</span></div>
+      <div style="display:flex;justify-content:space-between"><span>頭金</span><span>758万（34%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>154万</span></div>
-      <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>593万</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>912万</span></div>
     </div>
     <div style="color:#52525b;font-size:10px;margin-top:2px">金利2.85% / 空室7%</div>
   </div>
@@ -758,18 +858,29 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">100pt</span>
     </div>
   </div>
-  <div class="card-detail">1,000万 / 46.75㎡ / 築26年（融資34年） / 竹下 徒歩15分</div>
+  <div class="card-detail">1,000万 / 46.75㎡ / 2LDK / 築26年 / 竹下 徒歩15分</div>
   <div class="card-filters">
     <span>ペット 🔶</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">自動フラグ: CF 4.2万/月, CCR 18.6%
+  <details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">自動フラグ: CF 4.2万/月, CCR 18.6%</summary>
+  <div class="card-notes-full">自動フラグ: CF 4.2万/月, CCR 18.6%
 ⚠️ 掲載未確認
 [recalc 2026-04-02] 家賃=9.3万/月(相場推定(fukuoka, 1800-2200円/㎡)), yield=11.16%, 月CF=+3.8万, CCR=12.3%, 税後年CF=33.3万 (薄利)</div>
+</details>
   <div class="card-meta">ふれんず / inq-076</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+3.5万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">11.5%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">9.6〜12.0%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">800万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">270万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>8〜10万/月（年108万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-8万/年</span></div>
@@ -801,18 +912,29 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">77pt</span>
     </div>
   </div>
-  <div class="card-detail">850万 / 68.3㎡ / 築28年（融資32年） / 西鉄平尾 徒歩10分</div>
+  <div class="card-detail">850万 / 68.3㎡ / 2LDK / 築28年 / 西鉄平尾 徒歩10分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">自動フラグ: CF 1.7万/月, CCR 9.1%
+  <details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">自動フラグ: CF 1.7万/月, CCR 9.1%</summary>
+  <div class="card-notes-full">自動フラグ: CF 1.7万/月, CCR 9.1%
 ⚠️ 掲載未確認
 [recalc 2026-04-02] 家賃=13.7万/月(相場推定(fukuoka, 1800-2200円/㎡)), yield=19.34%, 月CF=+7.9万, CCR=29.6%, 税後年CF=67.9万 (薄利)</div>
+</details>
   <div class="card-meta">ふれんず / inq-079</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+7.8万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">29.0%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">16.9〜21.2%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">680万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">230万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>12〜15万/月（年162万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-11万/年</span></div>
@@ -844,7 +966,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">77pt</span>
     </div>
   </div>
-  <div class="card-detail">300万 / 41.37㎡ / 築0年（融資35年） / 俊徳道 徒歩3分</div>
+  <div class="card-detail">300万 / 41.37㎡ /  / 築0年 / 俊徳道 徒歩3分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ⏳</span>
@@ -852,8 +974,16 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   </div>
   
   <div class="card-meta">大阪R不動産 / inq-103</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+6.5万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">67.5%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">36.0〜44.0%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">240万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">81万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>9〜11万/月（年120万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-8万/年</span></div>
@@ -885,16 +1015,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">67pt</span>
     </div>
   </div>
-  <div class="card-detail">1,200万 / 50.65㎡ / 築47年（融資15年） / 千鳥橋 徒歩8分</div>
+  <div class="card-detail">1,200万 / 50.65㎡ / 2LDK / 築47年 / 千鳥橋 徒歩8分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">自動フラグ: CF 1.5万/月, CCR 5.4%</div>
+  <div class="card-notes-preview">自動フラグ: CF 1.5万/月, CCR 5.4%</div>
   <div class="card-meta">SUUMO / inq-104</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">+1.4万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">5.2%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">10.0〜12.0%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">960万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">324万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜12万/月（年132万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-9万/年</span></div>
@@ -926,18 +1064,29 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">63pt</span>
     </div>
   </div>
-  <div class="card-detail">590万 / 62.86㎡ / 築36年（融資24年） / 春日 徒歩7分</div>
+  <div class="card-detail">590万 / 62.86㎡ / 2LDK / 築36年 / 春日 徒歩7分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">自動フラグ: CF 5.0万/月, CCR 37.8%
+  <details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">自動フラグ: CF 5.0万/月, CCR 37.8%</summary>
+  <div class="card-notes-full">自動フラグ: CF 5.0万/月, CCR 37.8%
 ⚠️ 掲載未確認
 [recalc 2026-04-02] 家賃=12.6万/月(相場推定(fukuoka, 1800-2200円/㎡)), yield=25.63%, 月CF=+6.1万, CCR=32.8%, 税後年CF=52.3万 (薄利)</div>
+</details>
   <div class="card-meta">ふれんず / inq-075</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+5.6万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">30.1%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">22.4〜26.4%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">472万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">159万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>11〜13万/月（年144万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-10万/年</span></div>
@@ -969,16 +1118,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">52pt</span>
     </div>
   </div>
-  <div class="card-detail">500万 / 25.18㎡ / 築35年（融資25年） / 箱崎宮前 徒歩6分</div>
+  <div class="card-detail">500万 / 25.18㎡ /  / 築35年 / 箱崎宮前 徒歩6分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">自動フラグ: CF 0.9万/月, CCR 8.4%</div>
+  <div class="card-notes-preview">自動フラグ: CF 0.9万/月, CCR 8.4%</div>
   <div class="card-meta">楽待(利回り区分) / inq-105</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">+1.5万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">9.7%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">9.6〜12.0%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">400万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">135万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>4〜5万/月（年54万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-4万/年</span></div>
@@ -1010,16 +1167,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">52pt</span>
     </div>
   </div>
-  <div class="card-detail">480万 / 21.04㎡ / 築37年（融資23年） / 大橋 徒歩6分</div>
+  <div class="card-detail">480万 / 21.04㎡ /  / 築37年 / 大橋 徒歩6分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">自動フラグ: CF 0.7万/月, CCR 6.2%</div>
+  <div class="card-notes-preview">自動フラグ: CF 0.7万/月, CCR 6.2%</div>
   <div class="card-meta">楽待(利回り区分) / inq-107</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">+0.7万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">5.1%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">7.5〜10.0%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">384万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">130万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>3〜4万/月（年42万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-3万/年</span></div>
@@ -1051,16 +1216,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">47pt</span>
     </div>
   </div>
-  <div class="card-detail">298万 / 16.53㎡ / 築38年（融資22年） / 箱崎宮前 徒歩6分</div>
+  <div class="card-detail">298万 / 16.53㎡ /  / 築38年 / 箱崎宮前 徒歩6分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">自動フラグ: CF 0.4万/月, CCR 6.4%</div>
+  <div class="card-notes-preview">自動フラグ: CF 0.4万/月, CCR 6.4%</div>
   <div class="card-meta">楽待(利回り区分) / inq-106</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-0.2万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-1.4%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">8.1〜12.1%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">238万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>2〜3万/月（年30万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-2万/年</span></div>
@@ -1092,13 +1265,13 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">0pt</span>
     </div>
   </div>
-  <div class="card-detail">6,980万 / ? / 築20年（融資35年） / 箱崎宮前 徒歩6分</div>
+  <div class="card-detail">6,980万 / ? / 木造9戸 / 築20年 / 箱崎宮前 徒歩6分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">一棟もの自動フラグ: CF 27.9万/月, CF(15)=10.7万。CF(15)でも黒字の堅い物件</div>
+  <div class="card-notes-preview">一棟もの自動フラグ: CF 27.9万/月, CF(15)=10.7万。CF(15)でも黒字の堅い物件</div>
   <div class="card-meta">楽待(一棟アパート) / inq-084</div>
   
 </div>
@@ -1111,13 +1284,13 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">0pt</span>
     </div>
   </div>
-  <div class="card-detail">11,000万 / ? / 築39年（融資21年） / 西新 徒歩7分</div>
+  <div class="card-detail">11,000万 / ? / 鉄骨造22戸 / 築39年 / 西新 徒歩7分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">一棟もの自動フラグ: CF 25.3万/月, CF(15)=11.6万。CF(15)でも黒字の堅い物件</div>
+  <div class="card-notes-preview">一棟もの自動フラグ: CF 25.3万/月, CF(15)=11.6万。CF(15)でも黒字の堅い物件</div>
   <div class="card-meta">楽待(一棟マンション) / inq-085</div>
   
 </div>
@@ -1130,13 +1303,13 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">0pt</span>
     </div>
   </div>
-  <div class="card-detail">5,000万 / ? / 築32年（融資28年） / 笹原 徒歩3分</div>
+  <div class="card-detail">5,000万 / ? / 木造10戸 / 築32年 / 笹原 徒歩3分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">一棟もの自動フラグ: CF 19.6万/月, CF(15)=9.6万。CF(15)でも黒字の堅い物件</div>
+  <div class="card-notes-preview">一棟もの自動フラグ: CF 19.6万/月, CF(15)=9.6万。CF(15)でも黒字の堅い物件</div>
   <div class="card-meta">楽待(一棟アパート) / inq-086</div>
   
 </div>
@@ -1149,13 +1322,13 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">0pt</span>
     </div>
   </div>
-  <div class="card-detail">7,860万 / ? / 築38年（融資22年） / 箱崎九大前 徒歩5分</div>
+  <div class="card-detail">7,860万 / ? / 鉄骨造14戸 / 築38年 / 箱崎九大前 徒歩5分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">一棟もの自動フラグ: CF 16.3万/月, CF(15)=5.4万。CF(15)でも黒字の堅い物件</div>
+  <div class="card-notes-preview">一棟もの自動フラグ: CF 16.3万/月, CF(15)=5.4万。CF(15)でも黒字の堅い物件</div>
   <div class="card-meta">楽待(一棟マンション) / inq-087</div>
   
 </div></div>
@@ -1175,16 +1348,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">101pt</span>
     </div>
   </div>
-  <div class="card-detail">3,800万 / 65.04㎡ / 築22年（融資35年） / 渡辺通 徒歩8分</div>
+  <div class="card-detail">3,800万 / 65.04㎡ / 2LDK / 築22年 / 渡辺通 徒歩8分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">3/21内覧済。価格3800万・融資3000万/25年（筑波銀行評価）。60-築年数=38年まで延長可能性あり。ただし25年ではCF赤字(-1.5万/月)。掲載終了・売却済みのためクローズ</div>
+  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div class="card-notes-preview">3/21内覧済。価格3800万・融資3000万/25年（筑波銀行評価）。60-築年数=38年まで延長可能性あり。ただし25年ではCF赤字(-1.5万/月)。掲載終了・売却済みのためクローズ</div>
   <div class="card-meta">ふれんず / inq-012</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-1.5万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-1.7%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">5.1〜5.4%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">3,000万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">79%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,066万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>16〜17万/月（年198万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-14万/年</span></div>
@@ -1216,16 +1397,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">93pt</span>
     </div>
   </div>
-  <div class="card-detail">4,380万 / 44.58㎡ / 築3年（融資35年） / 「渡辺通」徒歩9分</div>
+  <div class="card-detail">4,380万 / 44.58㎡ / 2LDK / 築3年 / 「渡辺通」徒歩9分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ✅</span>
     <span>担当: 桑原大</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">返信なし・内覧予定なし</div>
+  <div class="card-notes-preview">返信なし・内覧予定なし</div>
   <div class="card-meta">SUUMO / inq-019</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-6.3万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-4.7%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">2.2〜2.7%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">3,504万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,183万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>8〜10万/月（年108万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-8万/年</span></div>
@@ -1257,16 +1446,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">93pt</span>
     </div>
   </div>
-  <div class="card-detail">4,499万 / 54.49㎡ / 築23年（融資35年） / 「中洲川端」徒歩9分</div>
+  <div class="card-detail">4,499万 / 54.49㎡ / 1LDK+S（納戸） / 築23年 / 「中洲川端」徒歩9分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">3/21内覧: 場所がよくない。レノベ済みだがありふれた感じで好みでない。㎡単価も高い(82.6万/㎡)</div>
+  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div class="card-notes-preview">3/21内覧: 場所がよくない。レノベ済みだがありふれた感じで好みでない。㎡単価も高い(82.6万/㎡)</div>
   <div class="card-meta">SUUMO / inq-020</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-6.8万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-4.2%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">2.4〜2.9%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">3,599万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,215万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>9〜11万/月（年120万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-8万/年</span></div>
@@ -1298,18 +1495,29 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">68pt</span>
     </div>
   </div>
-  <div class="card-detail">3,500万 / 62.94㎡ / 築57年（融資15年） / 「東中野」徒歩7分</div>
+  <div class="card-detail">3,500万 / 62.94㎡ / 2LDK / 築57年 / 「東中野」徒歩7分</div>
   <div class="card-filters">
     <span>ペット 🔶</span>
     <span>短期賃貸 ⏳</span>
     
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">重複統合(旧inq-030): 706号室が明示された別掲載URL https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79140949/
+  <details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">重複統合(旧inq-030): 706号室が明示された別掲載URL https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79140949/</summary>
+  <div class="card-notes-full">重複統合(旧inq-030): 706号室が明示された別掲載URL https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79140949/
 ⚠️ 掲載未確認
 スコア68（基準70未満・自動パス）</div>
+</details>
   <div class="card-meta">SUUMO / inq-029</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-7.7万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-5.4%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">5.1〜6.9%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">2,800万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">945万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>15〜20万/月（年210万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-15万/年</span></div>
@@ -1341,16 +1549,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">0pt</span>
     </div>
   </div>
-  <div class="card-detail">4,499万 / 47.0㎡ / 築8年（融資35年） / 呉服町 徒歩5分</div>
+  <div class="card-detail">4,499万 / 47.0㎡ / 2LDK / 築8年 / 呉服町 徒歩5分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 中野智弘</span>
   </div>
-  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">3/21内覧: 場所がよくない。レノベ済みだがありふれた感じで好みでない。㎡単価高い(95.7万/㎡)</div>
+  <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div class="card-notes-preview">3/21内覧: 場所がよくない。レノベ済みだがありふれた感じで好みでない。㎡単価高い(95.7万/㎡)</div>
   <div class="card-meta">SUUMO / inq-034</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-6.8万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-4.8%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">2.4〜2.9%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">3,599万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,215万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>9〜11万/月（年120万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-8万/年</span></div>
@@ -1382,16 +1598,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">99pt</span>
     </div>
   </div>
-  <div class="card-detail">3,082万 / 47.29㎡ / 築44年（融資16年） / 薬院 徒歩3分</div>
+  <div class="card-detail">3,082万 / 47.29㎡ / 1SLDK / 築44年 / 薬院 徒歩3分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ⏳</span>
     <span>担当: 吉ヶ江正嗣</span>
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">返信なし・内覧予定なし</div>
+  <div class="card-notes-preview">返信なし・内覧予定なし</div>
   <div class="card-meta">ふれんず / inq-050</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-10.4万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-9.8%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">3.1〜3.9%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">2,465万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">832万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>8〜10万/月（年108万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-8万/年</span></div>
@@ -1423,17 +1647,28 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">68pt</span>
     </div>
   </div>
-  <div class="card-detail">2,980万 / 39.99㎡ / 築?年（融資?年） / 野方 徒歩5分</div>
+  <div class="card-detail">2,980万 / 39.99㎡ / 1LDK / 築?年 / 野方 徒歩5分</div>
   <div class="card-filters">
     <span>ペット ✅</span>
     <span>短期賃貸 ⏳</span>
     
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">⚠️ 掲載未確認
+  <details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">⚠️ 掲載未確認</summary>
+  <div class="card-notes-full">⚠️ 掲載未確認
 スコア68（基準70未満・自動パス）</div>
+</details>
   <div class="card-meta">カウカモ / inq-052</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-2.6万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-3.0%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">3.6〜4.8%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">2,384万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">805万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>9〜12万/月（年126万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-9万/年</span></div>
@@ -1465,16 +1700,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">68pt</span>
     </div>
   </div>
-  <div class="card-detail">4,100万 / 56.66㎡ / 築45年（融資15年） / 「菊川」徒歩5分</div>
+  <div class="card-detail">4,100万 / 56.66㎡ / 3DK / 築45年 / 「菊川」徒歩5分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">スコア68（基準70未満・自動パス）</div>
+  <div class="card-notes-preview">スコア68（基準70未満・自動パス）</div>
   <div class="card-meta">SUUMO / inq-053</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-10.6万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-7.8%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">4.1〜5.3%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">3,280万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,107万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>14〜18万/月（年192万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-13万/年</span></div>
@@ -1506,16 +1749,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">65pt</span>
     </div>
   </div>
-  <div class="card-detail">4,880万 / 48.96㎡ / 築41年（融資19年） / 「江戸川橋」 徒歩4分</div>
+  <div class="card-detail">4,880万 / 48.96㎡ / 2LDK / 築41年 / 「江戸川橋」 徒歩4分</div>
   <div class="card-filters">
     <span>ペット ⏳</span>
     <span>短期賃貸 ⏳</span>
     
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">掲載終了（自動検出）</div>
+  <div class="card-notes-preview">掲載終了（自動検出）</div>
   <div class="card-meta">Yahoo不動産 / inq-054</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-12.2万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-7.3%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">3.0〜3.7%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">3,904万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,318万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>12〜15万/月（年162万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-11万/年</span></div>
@@ -1547,16 +1798,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <span class="card-score">63pt</span>
     </div>
   </div>
-  <div class="card-detail">4,080万 / 56.16㎡ / 築40年（融資20年） / 「東あずま」徒歩7分</div>
+  <div class="card-detail">4,080万 / 56.16㎡ / 3LDK / 築40年 / 「東あずま」徒歩7分</div>
   <div class="card-filters">
     <span>ペット 🔶</span>
     <span>短期賃貸 ⏳</span>
     
   </div>
-  <div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">スコア63（基準70未満・自動パス）</div>
+  <div class="card-notes-preview">スコア63（基準70未満・自動パス）</div>
   <div class="card-meta">SUUMO / inq-055</div>
-  <details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-8.3万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-5.9%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">4.1〜5.0%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">3,264万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,102万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#f87171"><div class="card-kpi-val">CF赤字</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>14〜17万/月（年186万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-13万/年</span></div>
@@ -1620,7 +1879,7 @@ function showStage(stage) {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-04-03 17:33</div>
+  <div style="margin-top:4px;">Generated at 2026-04-03 18:18</div>
 </footer>
 </body>
 </html>

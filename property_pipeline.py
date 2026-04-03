@@ -971,7 +971,12 @@ def _create_action_item(inquiry_id: str, viewing_date: str) -> None:
 
 
 def _render_card_analysis(inq: dict) -> str:
-    """Render inline investment analysis for a pipeline card (collapsible)."""
+    """Render inline investment analysis for a pipeline card.
+
+    Returns two parts:
+    1. KPI summary strip (always visible on card)
+    2. Collapsible waterfall detail
+    """
     price_val = inq.get("price", 0)
     area_val = inq.get("area", 0)
     yr = inq.get("year_built", 0)
@@ -1040,6 +1045,24 @@ def _render_card_analysis(inq: dict) -> str:
     vclass_map = {"高CF物件": "#22c55e", "安定CF": "#34d399", "薄利": "#facc15", "CF赤字": "#f87171"}
     v_color = vclass_map.get(rev.verdict, "#71717a")
 
+    # --- KPI summary strip (always visible) ---
+    loan_bank = inq.get("loan_bank", "")
+    ltv_pct = inq_loan_amount / price_val * 100 if inq_loan_amount else (1 - dr) * 100
+    loan_label = f"{int(inq_loan_amount):,}万" if inq_loan_amount else f"{int(rev.loan_amount):,}万"
+    loan_source = f"（{loan_bank}）" if loan_bank else "（想定）"
+    ccr_color = "#22c55e" if rev.ccr_pct > 5 else "#facc15" if rev.ccr_pct > 0 else "#f87171"
+    yield_color = "#22c55e" if yield_hi >= 7 else "#facc15" if yield_hi >= 4 else "#f87171"
+
+    kpi_html = f'''<div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:{cf_color}">{cf_sign}{mcf:.1f}万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:{ccr_color}">{rev.ccr_pct:.1f}%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:{yield_color}">{yield_lo}〜{yield_hi}%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">{loan_label}</div><div class="card-kpi-label">融資{loan_source}</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">{ltv_pct:.0f}%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">{rev.total_equity:,.0f}万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:{v_color}"><div class="card-kpi-val">{rev.verdict}</div><div class="card-kpi-label">判定</div></div>
+</div>'''
+
     # Waterfall breakdown lines
     vacancy_pct = int(params.vacancy_rate * 100)
     mgmt_fee_monthly = inq.get("management_fee", 0) or 0
@@ -1059,8 +1082,8 @@ def _render_card_analysis(inq: dict) -> str:
     elif rev.opex > 0:
         wf_mgmt = f'<div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　経費（{int(params.opex_rate*100)}%）</span><span>-{rev.opex:,.0f}万/年</span></div>'
 
-    return f'''<details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 投資分析</summary>
+    return kpi_html + f'''<details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
   <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
     <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>{rent_lo}〜{rent_hi}万/月（年{rev.gross_income:,.0f}万）</span></div>
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（{vacancy_pct}%）</span><span>-{rev.vacancy_loss:,.0f}万/年</span></div>
@@ -1101,7 +1124,16 @@ def _render_card(inq: dict) -> str:
         viewing_line = f'<div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: {inq["viewing_date"]}</div>'
     notes_line = ""
     if inq.get("notes"):
-        notes_line = f'<div style="color:#a1a1aa;font-size:11px;margin-top:4px;font-style:italic">{inq["notes"]}</div>'
+        notes_raw = inq["notes"]
+        # Show first line as preview, rest in collapsible
+        first_line = notes_raw.split('\n')[0].strip()
+        if len(notes_raw) > len(first_line) + 5:
+            notes_line = f'''<details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">{first_line}</summary>
+  <div class="card-notes-full">{notes_raw}</div>
+</details>'''
+        else:
+            notes_line = f'<div class="card-notes-preview">{first_line}</div>'
     dimmed = ' style="opacity:0.4"' if status == "passed" else ""
 
     # Waiting badge for inquired properties
@@ -1142,7 +1174,7 @@ def _render_card(inq: dict) -> str:
       <span class="card-score">{inq.get('score', '?')}pt</span>
     </div>
   </div>
-  <div class="card-detail">{price} / {area} / 築{2026 - int(inq['year_built']) if inq.get('year_built') else '?'}年（融資{min(35, max(15, 60 - (2026 - int(inq['year_built'])))) if inq.get('year_built') else '?'}年） / {_clean_station(inq.get('station', '?'))}</div>
+  <div class="card-detail">{price} / {area} / {inq.get('layout', '')} / 築{2026 - int(inq['year_built']) if inq.get('year_built') else '?'}年 / {_clean_station(inq.get('station', '?'))}</div>
   <div class="card-filters">
     <span>ペット {pet_icon}</span>
     <span>短期賃貸 {st_icon}</span>

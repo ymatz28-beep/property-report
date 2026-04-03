@@ -1658,7 +1658,8 @@ def generate_naiken_analysis() -> Path | None:
         if viewing_time:
             schedule += f"<strong>{viewing_time}</strong> 集合<br>"
         for idx, p in enumerate(props, 1):
-            schedule += f"{'→ ' if idx > 1 else ''}{idx}. {p['name']}<br>"
+            name_link = f'<a href="{p.get("url", "#")}" target="_blank" rel="noopener" style="color:inherit">{p["name"]} ↗</a>'
+            schedule += f"{'→ ' if idx > 1 else ''}{idx}. {name_link}<br>"
         schedule += f"<br>{agent_info_html}</div></div>"
         target.append(schedule)
 
@@ -1713,7 +1714,7 @@ def generate_naiken_analysis() -> Path | None:
                     sqm_note = "（最高）"
 
             section = f"""<div class="property">
-<h2>{idx}. {p['name']}</h2>
+<h2>{idx}. <a href="{p.get('url', '#')}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">{p['name']} ↗</a></h2>
 <p class="sub">{CITY_LABELS.get(p.get('city', ''), '')} / {p.get('layout', '')} / {p.get('area', '?')}㎡ / {yr}年 / {_clean_station(p.get('station', ''))}</p>
 <div>{tags_html}</div>
 <div class="section-title">物件概要</div>

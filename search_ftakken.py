@@ -141,17 +141,23 @@ def _parse_single_block(block: str, ward_name: str, detail_urls: list[str], idx:
         address = location
         building_name = ""
 
-    # Station/access (交通)
-    station_m = re.search(r"交通\s*([^\n]+)", block)
+    # Station/access (交通) — 複数駅を全て取得
+    station_m = re.search(r"交通\s*([\s\S]*?)(?=\n\s*(?:築年月|専有面積|間取|価格|所在地|構造|$))", block)
     station_text = ""
     if station_m:
         station_info = station_m.group(1).strip()
-        # Extract first line of station info (primary access)
-        station_text = station_info.split("\n")[0].strip()
-        # Clean up: extract "LINE STATION 徒歩N分" pattern
-        walk_m = re.search(r"([^\s]+(?:駅|線)[^\n]*?徒歩\s*\d+\s*分)", station_text)
-        if walk_m:
-            station_text = walk_m.group(1)
+        stations = []
+        for line in station_info.split("\n"):
+            line = line.strip()
+            if not line:
+                continue
+            walk_m = re.search(r"([^\s]+(?:駅|線)[^\n]*?徒歩\s*\d+\s*分)", line)
+            if walk_m:
+                stations.append(walk_m.group(1))
+        station_text = " / ".join(stations) if stations else ""
+    if not station_text and station_m:
+        # Fallback: first line raw
+        station_text = station_m.group(1).split("\n")[0].strip()
 
     # Year built (築年月)
     built_m = re.search(r"築年月\s*(\d{4})\s*\[.*?\]\s*年\s*(\d{1,2})\s*月", block)

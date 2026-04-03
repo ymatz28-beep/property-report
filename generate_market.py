@@ -23,6 +23,8 @@ from generate_search_report_common import (
     PropertyRow,
     _clean_station_text,
     dedupe_properties,
+    is_pet_ng,
+    is_sublease,
     load_first_seen,
     load_property_registry,
     load_sold_urls,
@@ -148,6 +150,8 @@ _OC_KEYWORDS = [
 
 # Sublease properties: 賃料改定不可のため投資対象外（中野さん知見 2026-04-02）
 _SUBLEASE_KEYWORDS = ["サブリース", "家賃保証", "一括借上", "借上げ", "マスターリース"]
+
+# ペット不可: is_pet_ng() (generate_search_report_common) で判定
 
 # Default city tab (change this to switch which city opens first)
 DEFAULT_CITY = "fukuoka"
@@ -1366,6 +1370,29 @@ def main() -> None:
         print(f"  {cfg['label']}: 区分{len(kubun_props)} + 一棟{len(ittomono_props)} + 戸建{len(kodate_props)}{budget_str}")
 
     # ── 収益物件: 各都市パネル内にCF > 0物件を種別横断で追加 ──
+    # パイプライン物件（in_discussion等）はフィルタ免除
+    # URL + (name, price, area) の両方でマッチ（cross-source対応）
+    _pipeline_urls: set[str] = set()
+    _pipeline_sigs: set[tuple] = set()  # (name, price_man, area_sqm_int)
+    try:
+        import yaml as _pl_yaml
+        _pl_inq_path = DATA_DIR / "inquiries.yaml"
+        if _pl_inq_path.exists():
+            _pl_raw = _pl_yaml.safe_load(_pl_inq_path.read_text(encoding="utf-8"))
+            _pl_list = _pl_raw.get("inquiries", []) if isinstance(_pl_raw, dict) else _pl_raw
+            _active_statuses = {"inquired", "in_discussion", "viewing", "viewed", "flagged"}
+            for inq in _pl_list:
+                if inq.get("status") in _active_statuses:
+                    if inq.get("url"):
+                        _pipeline_urls.add(inq["url"].rstrip("/"))
+                    # Cross-source: match by name + price + area
+                    _name = inq.get("name", "")
+                    _price = inq.get("price")
+                    _area = int(inq["area"]) if inq.get("area") else None
+                    if _name and _price is not None:
+                        _pipeline_sigs.add((_name, int(_price), _area))
+    except Exception:
+        pass
     total_profitable = 0
     for city_data in cities:
         profitable = []
@@ -1383,14 +1410,17 @@ def main() -> None:
                 equity_limit = float("inf") if section_key == "ittomono" else 400
                 if (cf_ok or cg_ok) and rev.get("total_equity", float("inf")) < equity_limit:
                     # Skip sublease properties (賃料改定不可)
-                    if prop.get("is_sublease"):
+                    if prop.get("is_sublease") or is_sublease(prop):
+                        continue
+                    # Skip ペット不可 for 区分 (チワワ3kg必須。一棟はオーナー判断)
+                    if section_key in ("kubun", "budget") and is_pet_ng(prop):
                         continue
                     prop_copy = dict(prop)
                     type_labels = {"kubun": "区分", "ittomono": "一棟", "kodate": "戸建", "budget": "格安区分"}
                     prop_copy["_type_label"] = type_labels.get(section_key, section_key)
                     profitable.append(prop_copy)
 
-        # ── Yield-focused kubun (OC included, no pet filter) → profitable直接注入 ──
+        # ── Yield-focused kubun (OC included) → profitable直接注入 ──
         yield_p = DATA_DIR / f"yield_{city_data['key']}_raw.txt"
         if yield_p.exists():
             yield_rows = parse_data_file(yield_p)
@@ -1414,14 +1444,17 @@ def main() -> None:
 
             yield_rows = [r for r in yield_rows if r.area_sqm is None or r.area_sqm >= 15]
             # Exclude sublease properties (賃料改定不可 → 投資対象外)
-            def _is_sublease_row(r):
-                text = f"{r.name} {r.station_text} {r.minpaku_status} {r.location} {r.raw_line}"
-                return any(kw in text for kw in _SUBLEASE_KEYWORDS)
             _sub_before = len(yield_rows)
-            yield_rows = [r for r in yield_rows if not _is_sublease_row(r)]
+            yield_rows = [r for r in yield_rows if not is_sublease(r)]
             _sub_removed = _sub_before - len(yield_rows)
             if _sub_removed:
                 print(f"    サブリース除外: {_sub_removed}件")
+            # Exclude ペット不可 (区分はチワワ3kg必須。一棟はオーナー判断なので対象外)
+            _pet_before = len(yield_rows)
+            yield_rows = [r for r in yield_rows if not is_pet_ng(r)]
+            _pet_removed = _pet_before - len(yield_rows)
+            if _pet_removed:
+                print(f"    ペット不可除外(区分): {_pet_removed}件")
             # Exclude URLs already in other sections (avoid double-counting)
             existing_urls = set()
             for sk in ["kubun", "ittomono", "kodate", "budget"]:
@@ -1514,11 +1547,20 @@ def main() -> None:
                 if wm >= walk_limit:
                     return False
             return True
-        profitable = [p for p in profitable if _station_ok(p)]
+        def _is_pipeline(p: dict) -> bool:
+            if p.get("url", "").rstrip("/") in _pipeline_urls:
+                return True
+            # Cross-source: match by name + price + area
+            _pn = p.get("name", "")
+            _pp = int(p["price_man"]) if p.get("price_man") else None
+            _pa = int(p["area_sqm"]) if p.get("area_sqm") else None
+            return _pp is not None and (_pn, _pp, _pa) in _pipeline_sigs
+
+        profitable = [p for p in profitable if _is_pipeline(p) or _station_ok(p)]
 
         # Filter: 対手出し(長期)が200%未満は除外（5年で元本+100%以上のリターンが見込めない物件は不要）
         profitable = [p for p in profitable
-                      if (p.get("total_return") or {}).get("roi_long", 0) >= 200]
+                      if _is_pipeline(p) or (p.get("total_return") or {}).get("roi_long", 0) >= 200]
 
         def _realistic_roi(p: dict) -> float:
             """内見優先スコア: CFが持てるなら長期ROI、持てないなら短期ROI。家賃リスクは減点。"""

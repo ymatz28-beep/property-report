@@ -21,6 +21,32 @@ for p in [str(_THIS_DIR), str(_LIB_ROOT)]:
 
 from lib.renderer import create_env  # noqa: E402
 
+# ── ハードフィルタ定数 ──
+# サブリース: 賃料改定不可 → 投資対象外（中野さん知見 2026-04-02）
+_SUBLEASE_KEYWORDS = ["サブリース", "家賃保証", "一括借上", "借上げ", "マスターリース"]
+# ペット不可: 区分はハード除外（チワワ3kg必須）。一棟はオーナー判断なので除外しない
+_PET_NG_KEYWORDS = ["ペット不可", "ペット飼育不可"]
+
+
+# ── ハードフィルタ関数（テスト可能 + Noneガード） ──
+
+def is_sublease(r) -> bool:
+    """サブリース物件判定。PropertyRow or dict対応。"""
+    name = getattr(r, "name", "") or (r.get("name", "") if isinstance(r, dict) else "") or ""
+    minpaku = getattr(r, "minpaku_status", "") or (r.get("minpaku_status", "") if isinstance(r, dict) else "") or ""
+    raw = getattr(r, "raw_line", "") or (r.get("raw_line", "") if isinstance(r, dict) else "") or ""
+    text = f"{name} {minpaku} {raw}"
+    return any(kw in text for kw in _SUBLEASE_KEYWORDS)
+
+
+def is_pet_ng(r) -> bool:
+    """ペット不可判定（区分用）。PropertyRow or dict対応。"""
+    pet = getattr(r, "pet_status", "") or (r.get("pet_status", "") if isinstance(r, dict) else "") or ""
+    name = getattr(r, "name", "") or (r.get("name", "") if isinstance(r, dict) else "") or ""
+    raw = getattr(r, "raw_line", "") or (r.get("raw_line", "") if isinstance(r, dict) else "") or ""
+    text = f"{pet} {name} {raw}"
+    return pet == "不可" or any(kw in text for kw in _PET_NG_KEYWORDS)
+
 
 def site_header_css() -> str:
     return """
@@ -213,9 +239,10 @@ def parse_maintenance_fee(text: str) -> int:
 def parse_walk_minutes(station_text: str) -> int | None:
     if "バス" in station_text:
         return None
-    m = re.search(r"徒歩\s*(\d+)\s*分", station_text)
-    if m:
-        return int(m.group(1))
+    # 複数駅対応: 全ての「徒歩N分」から最小値を返す
+    matches = re.findall(r"徒歩\s*(\d+)\s*分", station_text)
+    if matches:
+        return min(int(m) for m in matches)
     return None
 
 
@@ -396,16 +423,8 @@ def parse_osaka_r_rows(lines: Iterable[str]) -> list[PropertyRow]:
     return rows
 
 
-def _clean_station_text(text: str) -> str:
-    """Clean station text: remove route names and description junk, keep station name + walk time.
-
-    Examples:
-      "地下鉄堺筋線「天神橋筋六丁目」徒歩10分" → "天神橋筋六丁目 徒歩10分"
-      "ＪＲ東西線「大阪天満宮」徒歩4分" → "大阪天満宮 徒歩4分"
-      "博多駅 徒歩5分" → "博多 徒歩5分"
-      "賃貸中で家賃収入が見込める区分マンション。大久保駅徒歩7分" → "大久保 徒歩7分"
-      "RC・25平米・最寄駅徒歩9分" → ""
-    """
+def _clean_one_station(text: str) -> str:
+    """Clean a single station entry."""
     if not text:
         return text
     # Strip description prefix before station info (split on 。)
@@ -421,15 +440,12 @@ def _clean_station_text(text: str) -> str:
     m = re.search(r"「(.+?)」", text)
     if m:
         station = m.group(1)
-        # Remove trailing 駅
         station = re.sub(r"駅$", "", station)
-        # Extract walk time
         walk = re.search(r"(徒歩\s*\d+\s*分)", text)
         bus = re.search(r"(バス\s*\d+\s*分)", text)
         suffix = walk.group(1) if walk else (bus.group(1) if bus else "")
         return f"{station} {suffix}".strip()
     # No brackets — try to strip route prefix (e.g. "西鉄天神大牟田線高宮駅 徒歩12分")
-    # Pattern: route-name + station-name + 駅 + walk
     m2 = re.search(r"線(.+?)駅\s*(徒歩\s*\d+\s*分|バス\s*\d+\s*分)?", text)
     if m2:
         station = m2.group(1)
@@ -437,6 +453,30 @@ def _clean_station_text(text: str) -> str:
         return f"{station} {suffix}".strip()
     # Fallback: just remove 駅
     return re.sub(r"駅(\s)", r"\1", text)
+
+
+def _clean_station_text(text: str) -> str:
+    """Clean station text: remove route names and description junk, keep station name + walk time.
+
+    Supports multiple stations separated by " / ".
+
+    Examples:
+      "地下鉄堺筋線「天神橋筋六丁目」徒歩10分" → "天神橋筋六丁目 徒歩10分"
+      "西鉄平尾駅 徒歩13分 / 渡辺通駅 徒歩9分" → "西鉄平尾 徒歩13分 / 渡辺通 徒歩9分"
+    """
+    if not text:
+        return text
+    # Handle multiple stations separated by " / "
+    if " / " in text:
+        parts = [_clean_one_station(p.strip()) for p in text.split(" / ")]
+        parts = [p for p in parts if p]
+        # Sort by walk minutes (shortest first) for display
+        def _walk_sort(s: str) -> int:
+            m = re.search(r"徒歩\s*(\d+)\s*分", s)
+            return int(m.group(1)) if m else 999
+        parts.sort(key=_walk_sort)
+        return " / ".join(parts) if parts else ""
+    return _clean_one_station(text)
 
 
 def hydrate_parsed_fields(row: PropertyRow) -> None:
@@ -1185,14 +1225,7 @@ def generate_report(config: ReportConfig) -> Path:
 
     # Filter out ペット不可 properties
     before_pet = len(deduped)
-
-    def _is_pet_ng(r: PropertyRow) -> bool:
-        text = f"{r.pet_status} {r.name} {r.raw_line}"
-        if r.pet_status == "不可" or "ペット不可" in text or "ペット飼育不可" in text:
-            return True
-        return False
-
-    deduped = [r for r in deduped if not _is_pet_ng(r)]
+    deduped = [r for r in deduped if not is_pet_ng(r)]
     pet_ng_count = before_pet - len(deduped)
 
     # Filter out 民泊禁止 properties
@@ -1207,13 +1240,7 @@ def generate_report(config: ReportConfig) -> Path:
 
     # Filter out サブリース properties
     before_sublease = len(deduped)
-
-    def _is_sublease(r: PropertyRow) -> bool:
-        _SUBLEASE_KEYWORDS = ["サブリース", "家賃保証", "一括借上", "借上げ", "マスターリース"]
-        text = f"{r.name} {r.minpaku_status} {r.raw_line}"
-        return any(kw in text for kw in _SUBLEASE_KEYWORDS)
-
-    deduped = [r for r in deduped if not _is_sublease(r)]
+    deduped = [r for r in deduped if not is_sublease(r)]
     sublease_count = before_sublease - len(deduped)
 
     # 20㎡台フィルタ: 面積30㎡未満は投資対象外

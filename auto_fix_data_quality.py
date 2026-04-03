@@ -256,7 +256,13 @@ def fix_sublease_mark(path: Path, dry_run: bool = False) -> int:
             continue
         if "サブリース" in p["pet"]:
             continue
-        if SUBLEASE_KEYWORDS.search(line):
+        hit = bool(SUBLEASE_KEYWORDS.search(line))
+        # Heuristic: メゾン・ド・ + 割安(≤500万) + 楽待 = 高確率サブリース
+        if not hit and p["name"].startswith("メゾン・ド・"):
+            price_m = re.search(r"[\d.]+", p["price"])
+            if price_m and float(price_m.group()) <= 500 and "楽待" in p["source"]:
+                hit = True
+        if hit:
             print(f"  [SUBLEASE] {p['name'][:25]}: サブリース系キーワード検出")
             if not dry_run:
                 p["pet"] = p["pet"].rstrip() + " サブリース"

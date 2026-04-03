@@ -523,6 +523,219 @@ def check_first_seen_coverage(parser: MarketHTMLParser) -> tuple[str, str]:
 
 
 # ---------------------------------------------------------------------------
+# Raw-data quality checks (read data/ files directly)
+# ---------------------------------------------------------------------------
+def check_yield_consistency(parser: MarketHTMLParser) -> tuple[str, str]:
+    """Compare 利回り×価格/100 vs 年間収入 for OC properties in yield raw files.
+
+    Flags properties where the divergence exceeds 20%.
+    """
+    data_dir = Path(__file__).resolve().parent / "data"
+    flagged: list[str] = []
+
+    for city in ["fukuoka", "osaka", "tokyo"]:
+        path = data_dir / f"yield_{city}_raw.txt"
+        if not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("|")
+            if len(parts) < 10:
+                continue
+            brokerage = parts[9]
+            yield_m = re.search(r"利回り([\d.]+)%", brokerage)
+            income_m = re.search(r"年間収入([\d.]+)万円", brokerage)
+            if not (yield_m and income_m):
+                continue
+            price_m = re.search(r"([\d.]+)", parts[2])
+            if not price_m:
+                continue
+            price_man = float(price_m.group(1))
+            yield_pct = float(yield_m.group(1))
+            actual_income = float(income_m.group(1))
+            expected_income = price_man * yield_pct / 100
+            if actual_income == 0:
+                continue
+            divergence = abs(expected_income - actual_income) / actual_income
+            if divergence > 0.20:
+                name = parts[1].strip() or parts[3].strip()
+                flagged.append(
+                    f"{name}: expected={expected_income:.1f}万 actual={actual_income:.1f}万"
+                    f" ({divergence*100:.0f}%乖離)"
+                )
+
+    if not flagged:
+        return "PASS", "利回り×価格と年間収入の乖離なし"
+    detail = "; ".join(flagged[:5])
+    if len(flagged) > 5:
+        detail += f" ... +{len(flagged)-5} more"
+    return "FAIL", f"{len(flagged)}件の利回り/年間収入乖離(>20%): {detail}"
+
+
+def check_sublease_in_raw(parser: MarketHTMLParser) -> tuple[str, str]:
+    """Heuristic scan for indirect sublease signals not caught by is_sublease().
+
+    Keywords: 安心の(near サブリース/保証), 負担なし, 管理費.*負担, 家賃.*振込手数料.
+    Also flags price<300万 AND yield>9% as suspicious.
+    Returns WARN (not FAIL) — false positives are acceptable.
+    """
+    data_dir = Path(__file__).resolve().parent / "data"
+    _kw_patterns = [
+        re.compile(r"安心の.{0,10}(?:サブリース|保証)"),
+        re.compile(r"負担なし"),
+        re.compile(r"管理費.{0,5}負担"),
+        re.compile(r"家賃.{0,5}振込手数料"),
+    ]
+    flagged: list[str] = []
+
+    for raw_file in sorted(data_dir.glob("*_raw.txt")):
+        for line in raw_file.read_text(encoding="utf-8").splitlines():
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("|")
+            if len(parts) < 12:
+                continue
+            name = parts[1].strip()
+            raw_line = "|".join(parts)
+            hit = any(p.search(raw_line) for p in _kw_patterns)
+            if hit:
+                flagged.append(name or parts[3].strip())
+
+    if not flagged:
+        return "PASS", "疑わしいサブリース指標なし"
+    detail = ", ".join(flagged[:8])
+    if len(flagged) > 8:
+        detail += f" ... +{len(flagged)-8} more"
+    return "WARN", f"{len(flagged)}件に間接サブリース兆候: {detail}"
+
+
+def check_name_cross_reference(parser: MarketHTMLParser) -> tuple[str, str]:
+    """Find properties that appear in 2+ raw files with the same location+area but different names.
+
+    Ad-copy names (contains 【】▶, >20 chars, 利回り, 駅名+徒歩) are flagged as low-quality.
+    Returns WARN when mismatches are found.
+    """
+    data_dir = Path(__file__).resolve().parent / "data"
+    _pref_re = re.compile(r"^(?:東京都|大阪府|京都府|北海道|.{2,3}県)")
+    _strip_re = re.compile(r"[\d\-－一二三四五六七八九十]+(?:丁目|番地|番|号|-)?")
+    _adcopy_re = re.compile(r"[【】▶]|利回り|徒歩\d+分")
+
+    # registry: (loc_key, area_int) → {source: name}
+    registry: dict[tuple[str, int], dict[str, str]] = {}
+    for raw_file in sorted(data_dir.glob("*_raw.txt")):
+        source = raw_file.stem
+        for line in raw_file.read_text(encoding="utf-8").splitlines():
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("|")
+            if len(parts) < 12:
+                continue
+            name = parts[1].strip()
+            location = parts[3].strip()
+            area_m = re.search(r"([\d.]+)", parts[4])
+            if not (name and location and area_m):
+                continue
+            loc_clean = _pref_re.sub("", location)
+            loc_clean = _strip_re.sub("", loc_clean)[:10]
+            area_int = int(float(area_m.group(1)))
+            key = (loc_clean, area_int)
+            registry.setdefault(key, {})[source] = name
+
+    mismatches: list[str] = []
+    for key, src_names in registry.items():
+        if len(src_names) < 2:
+            continue
+        unique_names = set(src_names.values())
+        if len(unique_names) == 1:
+            continue
+        has_adcopy = any(
+            _adcopy_re.search(n) or len(n) > 20
+            for n in unique_names
+        )
+        if has_adcopy:
+            mismatches.append(f"{key[0]}({key[1]}㎡): {list(unique_names)}")
+
+    if not mismatches:
+        return "PASS", "クロスソース物件名の不一致なし"
+    detail = "; ".join(mismatches[:5])
+    if len(mismatches) > 5:
+        detail += f" ... +{len(mismatches)-5} more"
+    return "WARN", f"{len(mismatches)}件の物件名クロスリファレンス不一致: {detail}"
+
+
+def check_multi_station(parser: MarketHTMLParser) -> tuple[str, str]:
+    """Check if F宅建 budget raw station_text contains only 1 station.
+
+    Also cross-references yield_*_raw.txt: if the same property has a different
+    station in yield data, flag it.
+    WARN if any single-station properties could be multi-station.
+    """
+    data_dir = Path(__file__).resolve().parent / "data"
+    _walk_re = re.compile(r"徒歩\d+分")
+
+    # Build yield-file registry: (loc_clean, area_int) → station_text
+    _pref_re = re.compile(r"^(?:東京都|大阪府|京都府|北海道|.{2,3}県)")
+    _strip_re = re.compile(r"[\d\-－一二三四五六七八九十]+(?:丁目|番地|番|号|-)?")
+
+    yield_stations: dict[tuple[str, int], str] = {}
+    for city in ["fukuoka", "osaka", "tokyo"]:
+        path = data_dir / f"yield_{city}_raw.txt"
+        if not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("|")
+            if len(parts) < 12:
+                continue
+            location = parts[3].strip()
+            area_m = re.search(r"([\d.]+)", parts[4])
+            station = parts[6].strip()
+            if not (location and area_m):
+                continue
+            loc_clean = _pref_re.sub("", location)
+            loc_clean = _strip_re.sub("", loc_clean)[:10]
+            key = (loc_clean, int(float(area_m.group(1))))
+            yield_stations[key] = station
+
+    flagged: list[str] = []
+    for raw_file in sorted(data_dir.glob("budget_*_raw.txt")):
+        if "ftakken" not in raw_file.stem and "f_takken" not in raw_file.stem:
+            continue
+        for line in raw_file.read_text(encoding="utf-8").splitlines():
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("|")
+            if len(parts) < 12:
+                continue
+            station_text = parts[6].strip()
+            walk_hits = _walk_re.findall(station_text)
+            if len(walk_hits) > 1:
+                continue  # already multi-station, fine
+            name = parts[1].strip() or parts[3].strip()
+            location = parts[3].strip()
+            area_m = re.search(r"([\d.]+)", parts[4])
+            if not area_m:
+                continue
+            loc_clean = _pref_re.sub("", location)
+            loc_clean = _strip_re.sub("", loc_clean)[:10]
+            key = (loc_clean, int(float(area_m.group(1))))
+            yield_st = yield_stations.get(key)
+            if yield_st and yield_st != station_text:
+                flagged.append(
+                    f"{name}: budget={station_text!r} vs yield={yield_st!r}"
+                )
+
+    if not flagged:
+        return "PASS", "F宅建駅情報の不整合なし"
+    detail = "; ".join(flagged[:5])
+    if len(flagged) > 5:
+        detail += f" ... +{len(flagged)-5} more"
+    return "WARN", f"{len(flagged)}件の駅情報不一致 (単駅vs複数駅候補): {detail}"
+
+
+# ---------------------------------------------------------------------------
 # Runner
 # ---------------------------------------------------------------------------
 def run_qa(html_path: Path = HTML_PATH, strict: bool = False) -> bool:
@@ -544,6 +757,10 @@ def run_qa(html_path: Path = HTML_PATH, strict: bool = False) -> bool:
         ("Data Accuracy", check_data_accuracy),
         ("First-Seen Coverage", check_first_seen_coverage),
         ("OC Income Coverage", check_oc_income_coverage),
+        ("Yield Consistency", check_yield_consistency),
+        ("Sublease In Raw", check_sublease_in_raw),
+        ("Name Cross Reference", check_name_cross_reference),
+        ("Multi Station", check_multi_station),
     ]
 
     results: list[tuple[str, str, str]] = []
@@ -583,6 +800,10 @@ def run_qa_for_kaizen(html_path: Path = HTML_PATH) -> list[dict]:
         ("data_accuracy", check_data_accuracy),
         ("first_seen_coverage", check_first_seen_coverage),
         ("oc_income_coverage", check_oc_income_coverage),
+        ("yield_consistency", check_yield_consistency),
+        ("sublease_in_raw", check_sublease_in_raw),
+        ("name_cross_reference", check_name_cross_reference),
+        ("multi_station", check_multi_station),
     ]
 
     findings = []

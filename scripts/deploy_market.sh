@@ -59,7 +59,7 @@ git add data/*.txt data/*.json data/*.yaml output/market.html output/rent-strate
 
 if git diff --cached --quiet; then
   echo "No changes to commit."
-  open output/market.html 2>/dev/null || true
+  open "https://ymatz28-beep.github.io/property-report/market.html" 2>/dev/null || true
   exit 0
 fi
 
@@ -83,7 +83,7 @@ if [[ $NO_PUSH -eq 0 ]]; then
   set -e
 fi
 
-open output/market.html 2>/dev/null || true
+open "https://ymatz28-beep.github.io/property-report/market.html" 2>/dev/null || true
 
 echo ""
 echo "=== Deploy Summary ==="

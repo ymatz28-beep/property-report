@@ -397,6 +397,12 @@ def auto_flag(min_score: int = FLAG_THRESHOLD) -> list[dict]:
             if any(kw in text for kw in _SUBLEASE_KEYWORDS):
                 continue
 
+            # ペット不可除外（区分のみ。チワワ3kg必須）
+            _PET_NG_KEYWORDS = ["ペット不可", "ペット飼育不可"]
+            pet_text = f"{row.pet_status} {row.name} {row.raw_line}"
+            if row.pet_status == "不可" or any(kw in pet_text for kw in _PET_NG_KEYWORDS):
+                continue
+
             # CF gate: only flag properties with positive cash flow
             if row.price_man and row.area_sqm:
                 rent_override = None
@@ -548,6 +554,20 @@ def sweep_stale() -> dict:
                 sublease_count += 1
                 changed = True
                 print(f"[sweep] {inq['id']} {name} → サブリースパス")
+                continue
+
+        # ペット不可除外（区分のみ自動パス。チワワ3kg必須）
+        _PET_NG_KEYWORDS = ["ペット不可", "ペット飼育不可"]
+        hf = inq.get("hard_filter_result", "")
+        pet_text = f"{name} {inq.get('notes', '')}"
+        if hf == "fail" or any(kw in pet_text for kw in _PET_NG_KEYWORDS):
+            if status in ("flagged", "inquired", "in_discussion"):
+                inq["status"] = "passed"
+                existing_notes = inq.get("notes") or ""
+                inq["notes"] = (existing_notes + "\nペット不可（自動パス）").strip()
+                inq["updated"] = str(today)
+                changed = True
+                print(f"[sweep] {inq['id']} {name} → ペット不可パス")
                 continue
 
         # --- Applies to flagged AND inquired ---

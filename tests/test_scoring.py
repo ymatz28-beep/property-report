@@ -28,6 +28,8 @@ from generate_search_report_common import (
     classify_location_osaka,
     classify_location_tokyo,
     earthquake_score,
+    is_pet_ng,
+    is_sublease,
     layout_score,
     maintenance_fee_score,
     pet_score_for_row,
@@ -566,3 +568,90 @@ class TestGoldenScoreRow:
         config = make_config("fukuoka")
         score_row(row, config)
         assert row.bucket_label == "天神/中洲/春吉"
+
+
+# ===========================================================================
+# Hard Filter: is_sublease
+# ===========================================================================
+
+class TestIsSublease:
+    def test_sublease_in_name(self):
+        row = make_row(name="サブリース付きマンション")
+        assert is_sublease(row) is True
+
+    def test_sublease_keyword_kachiho(self):
+        row = make_row(name="テスト", raw_line="家賃保証プラン")
+        assert is_sublease(row) is True
+
+    def test_master_lease(self):
+        row = make_row(name="テスト", raw_line="マスターリース契約")
+        assert is_sublease(row) is True
+
+    def test_ikkatsu_kariagfe(self):
+        row = make_row(name="テスト", raw_line="一括借上")
+        assert is_sublease(row) is True
+
+    def test_normal_property(self):
+        row = make_row(name="天神マンション")
+        assert is_sublease(row) is False
+
+    def test_none_fields_safe(self):
+        """None in fields must not crash."""
+        row = make_row(name="テスト")
+        row.raw_line = None
+        row.minpaku_status = None
+        assert is_sublease(row) is False
+
+    def test_dict_input(self):
+        d = {"name": "サブリース物件", "minpaku_status": "", "raw_line": ""}
+        assert is_sublease(d) is True
+
+    def test_dict_normal(self):
+        d = {"name": "普通の物件", "minpaku_status": "", "raw_line": ""}
+        assert is_sublease(d) is False
+
+
+# ===========================================================================
+# Hard Filter: is_pet_ng
+# ===========================================================================
+
+class TestIsPetNg:
+    def test_pet_status_fuka(self):
+        row = make_row(pet_status="不可")
+        assert is_pet_ng(row) is True
+
+    def test_pet_fuka_in_name(self):
+        row = make_row(pet_status="", name="ペット不可マンション")
+        assert is_pet_ng(row) is True
+
+    def test_pet_shiiku_fuka(self):
+        row = make_row(pet_status="", raw_line="ペット飼育不可")
+        assert is_pet_ng(row) is True
+
+    def test_pet_allowed(self):
+        row = make_row(pet_status="可")
+        assert is_pet_ng(row) is False
+
+    def test_pet_negotiable(self):
+        row = make_row(pet_status="相談可")
+        assert is_pet_ng(row) is False
+
+    def test_pet_unknown_empty(self):
+        """Empty pet_status = unknown, NOT pet-NG (conservative)."""
+        row = make_row(pet_status="", name="テスト")
+        assert is_pet_ng(row) is False
+
+    def test_none_fields_safe(self):
+        """None in fields must not crash."""
+        row = make_row(pet_status="")
+        row.name = None
+        row.raw_line = None
+        assert is_pet_ng(row) is False
+
+    def test_dict_input_fuka(self):
+        d = {"pet_status": "不可", "name": "", "raw_line": ""}
+        assert is_pet_ng(d) is True
+
+    def test_dict_input_ok(self):
+        d = {"pet_status": "可", "name": "", "raw_line": ""}
+        assert is_pet_ng(d) is False

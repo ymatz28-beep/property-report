@@ -689,26 +689,31 @@ def _scrape_ittomono_page(page, items_url: str, price_min: int, price_max: int, 
     return all_props
 
 
-def _enrich_ftakken_detail(page, properties: list[dict]) -> None:
+def _enrich_ftakken_detail(page, properties: list[dict], budget_seconds: int = 180) -> None:
     """Visit each ふれんず detail page to get accurate building name, units, station.
 
     The listing page text-block parsing often contaminates data between adjacent
     properties. Detail pages are the SSoT for building name and unit count.
+    Budget-aware: stops when time budget is exhausted.
     """
-    print(f"  ふれんず詳細ページenrichment: {len(properties)}件")
+    print(f"  ふれんず詳細ページenrichment: {len(properties)}件 (budget: {budget_seconds}s)")
     enriched = 0
+    start_time = time.time()
     for i, prop in enumerate(properties):
+        elapsed = time.time() - start_time
+        if elapsed > budget_seconds:
+            print(f"    [BUDGET] 時間制限到達 ({elapsed:.0f}s), 残り{len(properties) - i}件スキップ")
+            break
         url = prop.get("url", "")
         if not url or "f-takken.com" not in url:
             continue
         try:
-            page.goto(url, timeout=20000)
-            page.wait_for_load_state("networkidle", timeout=15000)
-            time.sleep(1)
+            page.goto(url, timeout=10000)
+            page.wait_for_load_state("networkidle", timeout=8000)
+            time.sleep(0.5)
             text = page.inner_text("body")
         except Exception as e:
             print(f"    [WARN] {prop['name'][:20]}: {e}")
-            time.sleep(1)
             continue
 
         changed = False
@@ -990,39 +995,42 @@ def save_budget_results(properties: list[dict], city_key: str = "fukuoka") -> Pa
     return out_path
 
 
-def main():
-    print(f"ふれんず物件検索 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    props = search_ftakken("fukuoka")
-    if props:
-        out = save_results(props, "fukuoka")
-        print(f"\n出力(区分): {out}")
-    else:
-        print("\n物件データが取得できませんでした")
-        DATA_DIR.mkdir(exist_ok=True)
-        out_path = DATA_DIR / "ftakken_fukuoka_raw.txt"
-        out_path.write_text(
-            f"## ふれんず(f-takken.com) 検索結果 - 福岡\n"
-            f"## 条件: {PRICE_MAX}万以下, {AREA_MIN}-{AREA_MAX}㎡\n"
-            f"## 取得日: {datetime.now().strftime('%Y-%m-%d')}\n"
-            f"## 件数: 0件\n",
-            encoding="utf-8",
-        )
-
-    # 一棟もの + 戸建て
-    ittomono, kodate = search_ftakken_ittomono()
-    if ittomono:
-        out = save_ittomono_results(ittomono, "一棟マンション")
-        print(f"出力(一棟マンション): {out}")
-    if kodate:
-        out = save_ittomono_results(kodate, "戸建て")
-        print(f"出力(戸建て): {out}")
-
-    # 格安区分 (budget tier)
-    budget = search_ftakken_budget("fukuoka")
-    if budget:
-        out = save_budget_results(budget, "fukuoka")
-        print(f"出力(格安区分): {out}")
-
-
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", choices=["all", "kubun", "ittomono", "budget"], default="all")
+    args = parser.parse_args()
+
+    print(f"ふれんず物件検索 [{args.mode}] - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+
+    if args.mode in ("all", "kubun"):
+        props = search_ftakken("fukuoka")
+        if props:
+            out = save_results(props, "fukuoka")
+            print(f"\n出力(区分): {out}")
+        else:
+            print("\n物件データが取得できませんでした")
+            DATA_DIR.mkdir(exist_ok=True)
+            out_path = DATA_DIR / "ftakken_fukuoka_raw.txt"
+            out_path.write_text(
+                f"## ふれんず(f-takken.com) 検索結果 - 福岡\n"
+                f"## 条件: {PRICE_MAX}万以下, {AREA_MIN}-{AREA_MAX}㎡\n"
+                f"## 取得日: {datetime.now().strftime('%Y-%m-%d')}\n"
+                f"## 件数: 0件\n",
+                encoding="utf-8",
+            )
+
+    if args.mode in ("all", "ittomono"):
+        ittomono, kodate = search_ftakken_ittomono()
+        if ittomono:
+            out = save_ittomono_results(ittomono, "一棟マンション")
+            print(f"出力(一棟マンション): {out}")
+        if kodate:
+            out = save_ittomono_results(kodate, "戸建て")
+            print(f"出力(戸建て): {out}")
+
+    if args.mode in ("all", "budget"):
+        budget = search_ftakken_budget("fukuoka")
+        if budget:
+            out = save_budget_results(budget, "fukuoka")
+            print(f"出力(格安区分): {out}")

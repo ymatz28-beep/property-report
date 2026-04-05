@@ -473,8 +473,8 @@ def main():
 
     # GHA: tighter budget per file to fit within 900s total
     is_ci = os.environ.get("CI") == "true" or os.environ.get("GITHUB_ACTIONS") == "true"
-    per_file_budget = 60 if is_ci else 120
-    total_budget = 600 if is_ci else 1800
+    per_file_budget = 60 if is_ci else 90
+    total_budget = 600 if is_ci else 600
     total_start = time.time()
 
     targets = sorted(DATA_DIR.glob("*_raw.txt"))

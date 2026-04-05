@@ -1,5 +1,29 @@
 # HANDOFF
 
+## [Constancy] 2026-04-05
+- [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
+- [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
+- [WARN] structural_reform: property_pipeline.py is 2244 lines (threshold: 800). Consider splitting.
+- [WARN] structural_reform: Stale temp/debug file (9 days old). Delete it.
+- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-03 04:22): 【F宅建検索】タイムアウト (5分超過) → Fix: エラーログを確認
+- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-03 04:22): 【管理費データ取得】タイムアウト (15分超過) → Fix: 設計上の仕様（600s budget制）。未取得分は翌日継続。アクション不要
+- [WARN] blank_cells: ダッシュ「—」161個 (閾値20) — データ欠損の可能性
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 0% (0/139) — 閾値80%
+- [ERROR] property_name_quality: 駅名が物件名になっている: 2件 — ['値下げしました！東武練馬駅徒歩7分', '値下げしました！東武練馬駅徒歩7分']
+- [ERROR] qa_market_name_quality: 2 station-pattern names: ['値下げしました！東武練馬駅徒歩7分', '値下げしました！東武練馬駅徒歩7分']
+- [WARN] qa_market_duplicate_detection: 1 duplicate (price, area) pairs: [(('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
+- [WARN] qa_market_data_accuracy: 4/91 (4.4%) — price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: アンピールやよい坂 305 raw=920.0 html=950.0; price mismatch: メゾン野間ハイツ raw=698.0 html=690.0
+- [WARN] qa_market_oc_income_coverage: OC 302件中 190件が年間収入欠落 (63%) — 利回り逆算で補完
+- [WARN] qa_market_name_cross_reference: 4件の物件名クロスリファレンス不一致: 福岡市博多区美野島(18㎡): ['朝日プラザ博多Ⅱ', 'エステート・モア・博多グラン A棟 211']; 福岡市博多区西月隈(67㎡): ['ロワールマンションアール板付壱番館', 'ロワールマンション・アール板付壱番館 701']; 福岡市中央区薬院(68㎡): ['南薬院バス停 徒歩3分', 'ヴェルドミール薬院']; 福岡市中央区赤坂(59㎡): ['ライオンズマンション赤坂', '【弊社売主物件】ライオンズマンション赤坂']
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 24.6% (29/118件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 3099.0万円/47.29㎡; 4980.0万円/60.61㎡; 3050.0万円/40.75㎡; 1890.0万円/55.62㎡
+- [WARN] visual_regression: [mobile] render failed: Traceback (most recent call last):
+  File "<string>", line 92, in <module>
+    results = check_page(url, width)
+  File "<string>", line 16, in check_page
+    page.goto(url, wait_until="networkidle", t
+- [WARN] visual_regression: [mobile] missing_element: Critical element 'content' (table, .prop-card, .card, .kpi, .metric, ul, ol, section) not found
+- [WARN] visual_regression: [desktop] missing_element: Critical element 'content' (table, .prop-card, .card, .kpi, .metric, ul, ol, section) not found
+
 ## Last Updated
 2026-04-03
 

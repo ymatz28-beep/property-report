@@ -437,7 +437,9 @@ def search_all_sites() -> list[dict]:
     parallel_steps = [
         ("search_multi_site.py", 600),
         ("search_restate.py", 300),
-        ("search_ftakken.py", 300),
+        ("search_ftakken.py --mode kubun", 300),
+        ("search_ftakken.py --mode ittomono", 300),
+        ("search_ftakken.py --mode budget", 300),
         ("search_lifull.py", 300),
         ("search_ittomono.py", 600),
         ("search_yield_focused.py", 600),
@@ -446,9 +448,10 @@ def search_all_sites() -> list[dict]:
     # Start all parallel processes with stderr capture
     procs: dict[str, tuple[subprocess.Popen, Path, float]] = {}
     for script, _timeout in parallel_steps:
-        cmd = [sys.executable, script]
+        parts = script.split()
+        cmd = [sys.executable] + parts
         log(f"  Starting: {script}")
-        stderr_path = DATA_DIR / f".stderr_{Path(script).stem}.tmp"
+        stderr_path = DATA_DIR / f".stderr_{Path(parts[0]).stem}{'_' + parts[-1] if len(parts) > 1 else ''}.tmp"
         with open(stderr_path, "w") as stderr_file:
             proc = subprocess.Popen(
                 cmd, stdout=subprocess.DEVNULL, stderr=stderr_file,
@@ -513,6 +516,11 @@ def generate_reports() -> list[dict]:
         log("  ⚠️ generate_ittomono_report.py 失敗 — 続行")
     result = run_script("generate_inquiry_messages.py")
     results.append({"step": "generate_inquiry_messages.py", **result})
+    # Generate market.html (格安+区分+収益+一棟 統合ページ)
+    result = run_script("generate_market.py")
+    results.append({"step": "generate_market.py", **result})
+    if not result["ok"]:
+        log("  ⚠️ generate_market.py 失敗 — 続��")
     return results
 
 
@@ -815,6 +823,17 @@ def main():
         all_steps.append({"step": "pipeline_lifecycle", "ok": False, "reason": "crash",
                           "stderr_tail": str(e)})
         log(f"  ⚠️ Pipeline lifecycle skipped: {e}")
+
+    # 5.6.1. Re-generate market.html after lifecycle sweep (to reflect removed properties)
+    try:
+        result = run_script("generate_market.py")
+        all_steps.append({"step": "generate_market_post_sweep", **result})
+        if result["ok"]:
+            log("  market.html再生成完了（sweep反映）")
+        else:
+            log("  ⚠️ market.html再生成失敗（sweep後）— 続行")
+    except Exception as e:
+        log(f"  ⚠️ market.html再生成 skipped: {e}")
 
     # 5.7. Regenerate dashboard (after flag + sync)
     try:

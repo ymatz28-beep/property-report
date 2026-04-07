@@ -53,13 +53,6 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
-  --focus-ring: 2px solid #6366f1;
-  --focus-offset: 2px;
-  --active-scale: 0.97;
-  --transition-fast: 150ms ease;
-  --transition-normal: 250ms ease;
-  --skeleton-base: #1a1d27;
-  --skeleton-shine: #242836;
   --gnav-height: 52px;
   --z-nav: 100;
   --z-subnav: 90;
@@ -141,94 +134,6 @@ body {
   transition: opacity 0.3s;
 }
 .table-scroll-wrap.has-scroll::after { opacity: 1; }
-
-/* === Focus States (WCAG 2.1 AA) === */
-:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: var(--focus-offset);
-}
-button:focus-visible, a:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: var(--focus-offset);
-}
-
-/* === Interactive Elements === */
-button, .btn, [role="button"] {
-  transition: transform var(--transition-fast), background var(--transition-fast);
-  cursor: pointer;
-}
-button:active, .btn:active, [role="button"]:active {
-  transform: scale(var(--active-scale));
-}
-
-/* === Skeleton Loading === */
-.skeleton {
-  background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 50%, var(--skeleton-base) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: var(--radius-sm);
-}
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* === Trend Indicators === */
-.trend-up { color: var(--green); }
-.trend-up::before { content: '▲ '; font-size: 0.75em; }
-.trend-down { color: var(--red); }
-.trend-down::before { content: '▼ '; font-size: 0.75em; }
-.trend-flat { color: var(--text-muted); }
-.trend-flat::before { content: '— '; }
-
-/* === Empty State === */
-.empty-state {
-  text-align: center;
-  padding: var(--space-16) var(--space-8);
-  color: var(--text-muted);
-}
-.empty-state .empty-icon { font-size: 48px; margin-bottom: var(--space-4); opacity: 0.3; }
-.empty-state .empty-title { font-size: var(--fs-h3); font-weight: 600; margin-bottom: var(--space-2); color: var(--text-secondary); }
-.empty-state .empty-desc { font-size: var(--fs-body); }
-
-/* === Toast Notification === */
-.toast {
-  position: fixed; bottom: var(--space-6); right: var(--space-6);
-  background: var(--surface2); color: var(--text);
-  padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-md); border: 1px solid var(--border);
-  box-shadow: var(--shadow-hover);
-  font-size: var(--fs-small);
-  z-index: var(--z-toast);
-  animation: slideInUp 0.3s ease;
-}
-@keyframes slideInUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* === Progress Ring (CSS conic-gradient) === */
-.progress-ring {
-  --progress: 0;
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: conic-gradient(var(--accent) calc(var(--progress) * 1%), var(--border) 0);
-  display: flex; align-items: center; justify-content: center;
-}
-.progress-ring::after {
-  content: '';
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: var(--bg);
-}
-
-/* === Badge variants === */
-.badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: var(--fs-xs); font-weight: 600; }
-.badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
-.badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
-.badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
-.badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
-.badge-muted { background: rgba(124,130,147,0.15); color: var(--text-muted); }
 
 /* === Animations === */
 @keyframes fadeIn {
@@ -489,10 +394,10 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="stat"><div class="stat-val" style="color:#22c55e">0</div><div class="stat-label">完了</div></div>
       <div class="stat"><div class="stat-val" style="color:#ef4444">6</div><div class="stat-label">要アクション</div></div>
     </div>
-    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 10 / 見送り 37</div>
+    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 9 / 見送り 36</div>
   </div>
 
-  <div class="section-nav"><div class="section-nav-inner"><a class="stage-tab active" data-stage="active" style="--tab-color:#f59e0b" onclick="showStage('active')">進行中 <span class="tab-count">6</span></a><a class="stage-tab" data-stage="viewing" style="--tab-color:#a78bfa" onclick="showStage('viewing')">内見 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="appraisal" style="--tab-color:#6366f1" onclick="showStage('appraisal')">査定中 <span class="tab-count">3</span></a><a class="stage-tab" data-stage="done" style="--tab-color:#22c55e" onclick="showStage('done')">完了 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="candidates" style="--tab-color:#71717a" onclick="showStage('candidates')">候補 <span class="tab-count">10</span></a></div></div>
+  <div class="section-nav"><div class="section-nav-inner"><a class="stage-tab active" data-stage="active" style="--tab-color:#f59e0b" onclick="showStage('active')">進行中 <span class="tab-count">6</span></a><a class="stage-tab" data-stage="viewing" style="--tab-color:#a78bfa" onclick="showStage('viewing')">内見 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="appraisal" style="--tab-color:#6366f1" onclick="showStage('appraisal')">査定中 <span class="tab-count">3</span></a><a class="stage-tab" data-stage="done" style="--tab-color:#22c55e" onclick="showStage('done')">完了 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="candidates" style="--tab-color:#71717a" onclick="showStage('candidates')">候補 <span class="tab-count">9</span></a></div></div>
 
       
 <div class="stage-section" data-stage="active">
@@ -943,7 +848,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <div class="stage-section hidden" data-stage="candidates">
   <div class="stage-header" style="border-left:3px solid #71717a">
     <h2>候補</h2>
-    <div class="stage-stats"><span>10件</span></div>
+    <div class="stage-stats"><span>9件</span></div>
   </div>
   <div class="stage-cards"><div class="inq-card">
   <div style="display:flex;justify-content:space-between;align-items:center">
@@ -994,55 +899,6 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>200万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>70万</span></div>
       <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>270万</span></div>
-    </div>
-    <div style="color:#52525b;font-size:10px;margin-top:2px">金利2.85% / 空室7%</div>
-  </div>
-</details>
-</div>
-<div class="inq-card">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <a href="https://www.f-takken.com/freins/items/99757514" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">高宮ハウスII 102 ↗</a>
-    <div style="display:flex;gap:6px;align-items:center">
-      
-      <span class="status-pill" style="background:#3b9eff">候補</span>
-      <span class="card-score">90pt</span>
-    </div>
-  </div>
-  <div class="card-detail">1,650万 / 58.32㎡ / 3LDK / 築36年 / 西鉄平尾 徒歩9分 / 高宮 徒歩9分 / 薬院 徒歩22分</div>
-  <div class="card-filters">
-    <span>ペット ⏳</span>
-    <span>短期賃貸 ⏳</span>
-    
-  </div>
-  <div class="card-notes-preview">⚠️ 掲載未確認</div>
-  <div class="card-meta">ふれんず / inq-113</div>
-  <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">+1.6万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">3.5%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">7.3〜8.7%</div><div class="card-kpi-label">利回り</div></div>
-  <div class="card-kpi"><div class="card-kpi-val">1,320万</div><div class="card-kpi-label">融資（想定）</div></div>
-  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
-  <div class="card-kpi"><div class="card-kpi-val">446万</div><div class="card-kpi-label">初期必要</div></div>
-  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
-</div><details class="card-analysis" onclick="event.stopPropagation()">
-  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
-  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
-    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜12万/月（年132万）</span></div>
-    <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-9万/年</span></div>
-    <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　管理費・修繕</span><span>-17.8万/年</span></div>
-    <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-9.8万/年</span></div>
-    <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>95万/年</span></div>
-    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-76万/年（月6.3万 × 24年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#facc15">+1.6万/月</span></div>
-    
-    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>7.3〜8.7%</span></div>
-    <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>3.5%</span></div>
-    <div style="display:flex;justify-content:space-between"><span>回収</span><span>28.4年</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#facc15;font-weight:600">薄利</span></div>
-    <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
-      <div style="display:flex;justify-content:space-between"><span>頭金</span><span>330万（20%）</span></div>
-      <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>116万</span></div>
-      <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>446万</span></div>
     </div>
     <div style="color:#52525b;font-size:10px;margin-top:2px">金利2.85% / 空室7%</div>
   </div>
@@ -1339,7 +1195,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   
 <details style="margin-top:32px">
   <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
-    見送り 37件（クリックで展開）
+    見送り 36件（クリックで展開）
   </summary>
   <div class="stage-cards" style="margin-top:8px"><div class="inq-card" style="opacity:0.4">
   <div style="display:flex;justify-content:space-between;align-items:center">
@@ -1881,7 +1737,7 @@ function showStage(stage) {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-04-07 10:35</div>
+  <div style="margin-top:4px;">Generated at 2026-04-08 07:14</div>
 </footer>
 </body>
 </html>

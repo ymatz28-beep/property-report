@@ -106,6 +106,13 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
+  --focus-ring: 2px solid #6366f1;
+  --focus-offset: 2px;
+  --active-scale: 0.97;
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --skeleton-base: #1a1d27;
+  --skeleton-shine: #242836;
   --gnav-height: 52px;
   --z-nav: 100;
   --z-subnav: 90;
@@ -176,7 +183,7 @@
 <div class="gnav"><div class="gnav-inner"><a href="index.html">Hub</a><a href="market.html">Market</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html" class="cur">問い合わせ</a><a href="inquiry-pipeline.html">Pipeline</a></div></div>
 <div class="wrap">
   <h1>問い合わせメッセージ</h1>
-  <p class="subtitle">生成日: 2026-04-07 07:08 — スコア上位10件/都市 — 合計30件 — コピーして各サイトのフォームに貼り付け</p>
+  <p class="subtitle">生成日: 2026-04-07 10:35 — スコア上位10件/都市 — 合計30件 — コピーして各サイトのフォームに貼り付け</p>
 
   <div class="section-nav"><div class="section-nav-inner">
     <a href="#city-osaka" class="nav-tab">大阪 <span class="tab-count">10</span></a><a href="#city-fukuoka" class="nav-tab">福岡 <span class="tab-count">10</span></a><a href="#city-tokyo" class="nav-tab">東京 <span class="tab-count">10</span></a>
@@ -463,7 +470,7 @@ https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/
             <div class="card-header">
               <div class="card-rank">#11</div>
               <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99339192" target="_blank" class="card-name">第一プリンスビル</a>
+                <a href="https://www.f-takken.com/freins/items/99339192" target="_blank" class="card-name">ふれんず物件(博多区)</a>
                 <div class="card-meta">1499万円 / 42㎡ / 1988年築 / 2LDK / 徒歩7分</div>
                 <div class="card-score">110pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
@@ -471,7 +478,7 @@ https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20096087/
             <div class="card-tags"><span class="tag tag-green">管理費 17,730円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
             <div class="msg-container">
               <pre class="msg-text" id="msg-11">お世話になります。
-貴サイトに掲載されている「第一プリンスビル」を拝見し、立地の利便性、42㎡のゆとりある広さに魅力を感じご連絡いたしました。
+貴サイトに掲載されている「ふれんず物件(博多区)」を拝見し、立地の利便性、42㎡のゆとりある広さに魅力を感じご連絡いたしました。
 https://www.f-takken.com/freins/items/99339192
 
 東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
@@ -491,24 +498,23 @@ https://www.f-takken.com/freins/items/99339192
             <div class="card-header">
               <div class="card-rank">#12</div>
               <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99813076" target="_blank" class="card-name">ふれんず物件(中央区)</a>
-                <div class="card-meta">3090万円 / 56㎡ / 1984年築 / 2LDK / 徒歩3分</div>
-                <div class="card-score">103pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20400394/" target="_blank" class="card-name">ヒューマインド博多駅東ネクスタイル</a>
+                <div class="card-meta">4480万円 / 58㎡ / 2005年築 / 2LDK / 徒歩5分</div>
+                <div class="card-score">102pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 32,040円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 13,300円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-12">お世話になります。
-貴サイトに掲載されている「ふれんず物件(中央区)」を拝見し、駅からのアクセスの良さ、56㎡のゆとりある広さに魅力を感じご連絡いたしました。
-https://www.f-takken.com/freins/items/99813076
+              <pre class="msg-text" id="msg-12">「ヒューマインド博多駅東ネクスタイル」（4480万円）について、駅からのアクセスの良さ、58㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20400394/
 
 東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
-居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-チワワ（3kg）を飼っております。ペット可と記載がございましたが、念のため問題ございませんでしょうか。
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
 
 上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
-よろしくお願い申し上げます。</pre>
+よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-12', this)" data-accent="#34d399">
                 コピー
               </button>
@@ -519,61 +525,6 @@ https://www.f-takken.com/freins/items/99813076
             <div class="card-header">
               <div class="card-rank">#13</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20400394/" target="_blank" class="card-name">ヒューマインド博多駅東ネクスタイル</a>
-                <div class="card-meta">4480万円 / 58㎡ / 2005年築 / 2LDK / 徒歩5分</div>
-                <div class="card-score">102pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 13,300円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-13">「ヒューマインド博多駅東ネクスタイル」（4480万円）について、駅からのアクセスの良さ、58㎡のゆとりある広さに魅力を感じお問い合わせいたします。
-https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20400394/
-
-東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
-不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
-
-チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
-
-上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
-よろしくお願いいたします。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-13', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#14</div>
-              <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99819148" target="_blank" class="card-name">ふれんず物件(中央区)</a>
-                <div class="card-meta">4980万円 / 56㎡ / 1995年築 / 2LDK / 徒歩5分</div>
-                <div class="card-score">101pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
-              </div>
-            </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 24,600円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
-            <div class="msg-container">
-              <pre class="msg-text" id="msg-14">お世話になります。
-貴サイトに掲載されている「ふれんず物件(中央区)」を拝見し、駅からのアクセスの良さ、56㎡のゆとりある広さに魅力を感じご連絡いたしました。
-https://www.f-takken.com/freins/items/99819148
-
-東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
-居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
-
-チワワ（3kg）を飼っております。ペット可と記載がございましたが、念のため問題ございませんでしょうか。
-
-上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
-よろしくお願い申し上げます。</pre>
-              <button class="copy-btn" onclick="copyMsg('msg-14', this)" data-accent="#34d399">
-                コピー
-              </button>
-            </div>
-          </div>
-            
-          <div class="card" style="--card-accent:#34d399">
-            <div class="card-header">
-              <div class="card-rank">#15</div>
-              <div class="card-info">
                 <a href="https://www.f-takken.com/freins/items/99818434" target="_blank" class="card-name">ふれんず物件(博多区)</a>
                 <div class="card-meta">3080万円 / 41㎡ / 1999年築 / 1LDK / 徒歩13分</div>
                 <div class="card-score">100pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
@@ -581,7 +532,7 @@ https://www.f-takken.com/freins/items/99819148
             </div>
             <div class="card-tags"><span class="tag tag-green">管理費 12,600円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-15">お世話になります。
+              <pre class="msg-text" id="msg-13">お世話になります。
 貴サイトに掲載されている「ふれんず物件(博多区)」を拝見し、41㎡のゆとりある広さ、周辺環境に魅力を感じご連絡いたしました。
 https://www.f-takken.com/freins/items/99818434
 
@@ -592,6 +543,60 @@ https://www.f-takken.com/freins/items/99818434
 
 上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願い申し上げます。</pre>
+              <button class="copy-btn" onclick="copyMsg('msg-13', this)" data-accent="#34d399">
+                コピー
+              </button>
+            </div>
+          </div>
+            
+          <div class="card" style="--card-accent:#34d399">
+            <div class="card-header">
+              <div class="card-rank">#14</div>
+              <div class="card-info">
+                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/" target="_blank" class="card-name">オープンレジデンシア天神今泉</a>
+                <div class="card-meta">4900万円 / 46㎡ / 2023年築 / 2LDK / 徒歩6分</div>
+                <div class="card-score">100pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+              </div>
+            </div>
+            <div class="card-tags"><span class="tag tag-green">管理費 8,800円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="msg-container">
+              <pre class="msg-text" id="msg-14">「オープンレジデンシア天神今泉」（4900万円）について、立地の利便性、46㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/
+
+東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
+
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
+
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
+よろしくお願いいたします。</pre>
+              <button class="copy-btn" onclick="copyMsg('msg-14', this)" data-accent="#34d399">
+                コピー
+              </button>
+            </div>
+          </div>
+            
+          <div class="card" style="--card-accent:#34d399">
+            <div class="card-header">
+              <div class="card-rank">#15</div>
+              <div class="card-info">
+                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/" target="_blank" class="card-name">サングレート薬院駅ロイヤルウィン</a>
+                <div class="card-meta">4980万円 / 56㎡ / 2003年築 / 2LDK / 徒歩5分</div>
+                <div class="card-score">100pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+              </div>
+            </div>
+            <div class="card-tags"><span class="tag tag-green">管理費 12,810円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="msg-container">
+              <pre class="msg-text" id="msg-15">「サングレート薬院駅ロイヤルウィン」（4980万円）について、駅からのアクセスの良さ、56㎡のゆとりある広さに魅力を感じお問い合わせいたします。
+https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/
+
+東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
+不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
+
+チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
+
+上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
+よろしくお願いいたします。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-15', this)" data-accent="#34d399">
                 コピー
               </button>
@@ -602,15 +607,15 @@ https://www.f-takken.com/freins/items/99818434
             <div class="card-header">
               <div class="card-rank">#16</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/" target="_blank" class="card-name">オープンレジデンシア天神今泉</a>
-                <div class="card-meta">4900万円 / 46㎡ / 2023年築 / 2LDK / 徒歩6分</div>
-                <div class="card-score">100pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/" target="_blank" class="card-name">ロワールマンション西公園2</a>
+                <div class="card-meta">1890万円 / 55㎡ / 1984年築 / 2LDK / 徒歩15分</div>
+                <div class="card-score">95pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 8,800円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 14,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-16">「オープンレジデンシア天神今泉」（4900万円）について、立地の利便性、46㎡のゆとりある広さに魅力を感じお問い合わせいたします。
-https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/
+              <pre class="msg-text" id="msg-16">「ロワールマンション西公園2」（1890万円）について、55㎡のゆとりある広さ、周辺環境に魅力を感じお問い合わせいたします。
+https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/
 
 東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
 不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
@@ -629,15 +634,15 @@ https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/
             <div class="card-header">
               <div class="card-rank">#17</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/" target="_blank" class="card-name">サングレート薬院駅ロイヤルウィン</a>
-                <div class="card-meta">4980万円 / 56㎡ / 2003年築 / 2LDK / 徒歩5分</div>
-                <div class="card-score">100pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20370839/" target="_blank" class="card-name">大名サンハイツ</a>
+                <div class="card-meta">2830万円 / 62㎡ / 1981年築 / 3LDK / 徒歩6分</div>
+                <div class="card-score">95pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 12,810円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 18,100円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-17">「サングレート薬院駅ロイヤルウィン」（4980万円）について、駅からのアクセスの良さ、56㎡のゆとりある広さに魅力を感じお問い合わせいたします。
-https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/
+              <pre class="msg-text" id="msg-17">「大名サンハイツ」（2830万円）について、立地の利便性、周辺環境に魅力を感じお問い合わせいたします。
+https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20370839/
 
 東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
 不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
@@ -656,21 +661,21 @@ https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/
             <div class="card-header">
               <div class="card-rank">#18</div>
               <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99820052" target="_blank" class="card-name">詳細エリアを選択</a>
-                <div class="card-meta">4400万円 / 63㎡ / 1996年築 / 3LDK / 徒歩5分</div>
-                <div class="card-score">97pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+                <a href="https://www.f-takken.com/freins/items/99800747" target="_blank" class="card-name">令和2年2月築の築浅マンション　ペット飼育可（2匹可）　敷地内駐車場1住戸1台利</a>
+                <div class="card-meta">3180万円 / 61㎡ / 1986年築 / 2LDK / 徒歩5分</div>
+                <div class="card-score">93pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 12,880円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">ふれんず</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 24,860円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
             <div class="msg-container">
               <pre class="msg-text" id="msg-18">お世話になります。
-貴サイトに掲載されている「詳細エリアを選択」を拝見し、駅からのアクセスの良さ、周辺環境に魅力を感じご連絡いたしました。
-https://www.f-takken.com/freins/items/99820052
+貴サイトに掲載されている「令和2年2月築の築浅マンション　ペット飼育可（2匹可）　敷地」を拝見し、駅からのアクセスの良さ、ペット飼育可能な点に魅力を感じご連絡いたしました。
+https://www.f-takken.com/freins/items/99800747
 
 東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
 居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
+チワワ（3kg）を飼っております。ペット可と記載がございましたが、念のため問題ございませんでしょうか。
 
 上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願い申し上げます。</pre>
@@ -684,21 +689,21 @@ https://www.f-takken.com/freins/items/99820052
             <div class="card-header">
               <div class="card-rank">#19</div>
               <div class="card-info">
-                <a href="https://www.f-takken.com/freins/items/99819749" target="_blank" class="card-name">アクロス天神センタープラザ 709</a>
-                <div class="card-meta">4980万円 / 61㎡ / 2003年築 / 1LDK / 徒歩5分</div>
-                <div class="card-score">97pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
+                <a href="https://www.f-takken.com/freins/items/99757514" target="_blank" class="card-name">高宮ハウスII 102</a>
+                <div class="card-meta">1650万円 / 58㎡ / 1990年築 / 3LDK / 徒歩9分</div>
+                <div class="card-score">90pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 12,810円</span><span class="tag tag-green">ペット可</span><span class="tag tag-muted">ふれんず</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 14,800円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">ふれんず</span></div>
             <div class="msg-container">
               <pre class="msg-text" id="msg-19">お世話になります。
-貴サイトに掲載されている「アクロス天神センタープラザ 709」を拝見し、駅からのアクセスの良さ、周辺環境に魅力を感じご連絡いたしました。
-https://www.f-takken.com/freins/items/99819749
+貴サイトに掲載されている「高宮ハウスII 102」を拝見し、立地の利便性、58㎡のゆとりある広さに魅力を感じご連絡いたしました。
+https://www.f-takken.com/freins/items/99757514
 
 東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
 居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-チワワ（3kg）を飼っております。ペット可と記載がございましたが、念のため問題ございませんでしょうか。
+なお、チワワ（3kg）を飼っております。ペット飼育は可能でしょうか。
 
 上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
 よろしくお願い申し上げます。</pre>
@@ -712,23 +717,24 @@ https://www.f-takken.com/freins/items/99819749
             <div class="card-header">
               <div class="card-rank">#20</div>
               <div class="card-info">
-                <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/" target="_blank" class="card-name">ロワールマンション西公園2</a>
-                <div class="card-meta">1890万円 / 55㎡ / 1984年築 / 2LDK / 徒歩15分</div>
-                <div class="card-score">95pt — SUUMO問い合わせフォーム (ポータルフォーム)</div>
+                <a href="https://www.f-takken.com/freins/items/99800708" target="_blank" class="card-name">ふれんず物件(博多区)</a>
+                <div class="card-meta">3290万円 / 45㎡ / 1989年築 / 1LDK / 徒歩3分</div>
+                <div class="card-score">90pt — ふれんず問い合わせフォーム / 直接連絡 (直接メール)</div>
               </div>
             </div>
-            <div class="card-tags"><span class="tag tag-green">管理費 14,500円</span><span class="tag tag-yellow">ペット相談可</span><span class="tag tag-muted">SUUMO</span></div>
+            <div class="card-tags"><span class="tag tag-green">管理費 16,330円</span><span class="tag tag-red">ペット不明</span><span class="tag tag-muted">ふれんず</span></div>
             <div class="msg-container">
-              <pre class="msg-text" id="msg-20">「ロワールマンション西公園2」（1890万円）について、55㎡のゆとりある広さ、周辺環境に魅力を感じお問い合わせいたします。
-https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/
+              <pre class="msg-text" id="msg-20">お世話になります。
+貴サイトに掲載されている「ふれんず物件(博多区)」を拝見し、駅からのアクセスの良さ、45㎡のゆとりある広さに魅力を感じご連絡いたしました。
+https://www.f-takken.com/freins/items/99800708
 
 東京と福岡の2拠点生活を実施しており、福岡市博多区・中央区を中心に予算5,000万円以内で探しており、リノベーション前の物件を優先しております。
-不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
+居住用として使いつつ、不在時には2ヶ月ほど不在にすることもあり、その間ウィークリー・マンスリーのような短期賃貸として活用することも視野に入れておりますが、そのような利用は可能でしょうか。
 
-チワワ（3kg）を飼っております。ペット相談可と記載がございましたが、念のため問題ございませんでしょうか。
+なお、チワワ（3kg）を飼っております。ペット飼育は可能でしょうか。
 
 上記の利用が可能であれば、ぜひ内覧をお願いしたく存じます。
-よろしくお願いいたします。</pre>
+よろしくお願い申し上げます。</pre>
               <button class="copy-btn" onclick="copyMsg('msg-20', this)" data-accent="#34d399">
                 コピー
               </button>

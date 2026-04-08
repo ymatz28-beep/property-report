@@ -27,25 +27,28 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
 # Navigation SSoT — all gnav links are defined here, nowhere else
 # ---------------------------------------------------------------------------
 PUBLIC_NAV = [
-    {"href": "https://ymatz28-beep.github.io/report-dashboard/", "label": "Hub"},
-    {"href": "https://ymatz28-beep.github.io/property-report/", "label": "Property"},
-    {"href": "https://ymatz28-beep.github.io/trip-planner/", "label": "Travel"},
+    {"href": "https://ymatz28-beep.github.io/report-dashboard/", "label": "Hub", "primary": True},
+    {"href": "https://ymatz28-beep.github.io/property-report/", "label": "Property", "primary": True},
+    {"href": "https://ymatz28-beep.github.io/trip-planner/", "label": "Travel", "primary": True},
 ]
 
 PRIVATE_NAV = [
-    {"href": "/stock/portfolio.html", "label": "Stock"},
-    {"href": "/stock/market-intel.html", "label": "Market Intel"},
-    {"href": "/intel/", "label": "Insight"},
+    # Primary: always visible in gnav bar
+    {"href": "/stock/portfolio.html", "label": "Stock", "primary": True},
+    {"href": "/stock/market-intel.html", "label": "Market Intel", "primary": True},
+    {"href": "/cisco/", "label": "Cisco", "primary": True},
+    {"href": "/action/", "label": "Action", "primary": True},
+    {"href": "https://ymatz28-beep.github.io/property-report/", "label": "Property", "primary": True},
+    # Overflow: visible in "⋯" dropdown
     {"href": "/wealth/dashboard.html", "label": "Wealth"},
-    {"href": "/action/", "label": "Action"},
-    {"href": "/cisco/", "label": "Cisco"},
-    {"href": "https://ymatz28-beep.github.io/self-insight/", "label": "Self-Insight"},
+    {"href": "/intel/", "label": "Insight"},
     {"href": "/health/", "label": "Health"},
-    {"href": "https://ymatz28-beep.github.io/property-report/", "label": "Property"},
+    {"href": "/health/medical/", "label": "Medical"},
     {"href": "https://ymatz28-beep.github.io/trip-planner/", "label": "Travel"},
     {"href": "/newsletter/", "label": "Newsletter"},
     {"href": "/bookmarks/", "label": "Bookmarks"},
     {"href": "/sns/", "label": "SNS"},
+    {"href": "https://ymatz28-beep.github.io/self-insight/", "label": "Self-Insight"},
 ]
 
 # ---------------------------------------------------------------------------
@@ -112,7 +115,7 @@ def get_nav_html(
     current_page: str = "",
     absolute: bool = False,
 ) -> str:
-    """Generate canonical nav HTML from SSoT.
+    """Generate canonical nav HTML from SSoT (Pattern B: primary + overflow).
 
     Args:
         scope: "private" or "public" — selects nav item list.
@@ -121,21 +124,35 @@ def get_nav_html(
                   Use for pages hosted outside iuma-private (e.g., GitHub Pages).
     """
     items = PRIVATE_NAV if scope == "private" else PUBLIC_NAV
-    links = []
-    for item in items:
+
+    def _link(item: dict) -> str:
         href = item["href"]
         if absolute and href.startswith("/"):
             href = _PRIVATE_DOMAIN + href
         label = item["label"]
         aria = ' aria-current="page"' if label == current_page or href == current_page else ""
-        links.append(f'    <a href="{href}"{aria}>{label}</a>')
+        return f'    <a href="{href}"{aria}>{label}</a>'
 
-    nav_links = "\n".join(links)
+    primary = [_link(i) for i in items if i.get("primary")]
+    overflow = [_link(i) for i in items if not i.get("primary")]
+
+    primary_html = "\n".join(primary)
+    overflow_html = ""
+    if overflow:
+        overflow_links = "\n".join(overflow)
+        overflow_html = f"""
+    <div class="nav-more">
+      <button class="nav-more-btn" aria-label="More pages" onclick="this.parentElement.classList.toggle('open')">⋯</button>
+      <div class="nav-more-menu">
+{overflow_links}
+      </div>
+    </div>"""
+
     return f"""<header class="site-header">
   <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
   <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
   <nav class="site-nav">
-{nav_links}
+{primary_html}{overflow_html}
   </nav>
 </header>"""
 

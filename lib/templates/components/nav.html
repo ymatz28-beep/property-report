@@ -1,9 +1,9 @@
 {#
-  Global navigation bar component.
+  Global navigation bar component — Pattern B (primary + overflow dropdown).
 
   Expected context:
-    nav_items: list of {href: str, label: str, external: bool}
-    current_page: str (matches href of the active item)
+    nav_items: list of {href: str, label: str, primary: bool, external: bool}
+    current_page: str (matches href or label of the active item)
     site_brand: str (default: "iUMA Dashboard")
 #}
 {% set site_brand = site_brand | default("iUMA Dashboard") %}
@@ -17,7 +17,7 @@
   border-bottom: 1px solid rgba(255,255,255,0.08);
   position: sticky; top: 0; z-index: var(--z-nav, 100);
 }
-.site-nav { display: flex; gap: 4px; }
+.site-nav { display: flex; gap: 4px; align-items: center; }
 .site-nav a {
   color: #71717a; text-decoration: none; font-size: 13px; font-weight: 500;
   padding: 6px 14px; border-radius: 6px; transition: background .15s, color .15s;
@@ -25,6 +25,34 @@
 .site-nav a:hover, .site-nav a[aria-current="page"] {
   background: rgba(255,255,255,0.065); color: #f5f5f7;
 }
+
+/* Overflow dropdown */
+.nav-more { position: relative; }
+.nav-more-btn {
+  color: #71717a; font-size: 18px; font-weight: 700; letter-spacing: 2px;
+  padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  background: none; border: none; transition: background .15s, color .15s;
+  line-height: 1;
+}
+.nav-more-btn:hover { background: rgba(255,255,255,0.065); color: #f5f5f7; }
+.nav-more-menu {
+  display: none; position: absolute; right: 0; top: calc(100% + 8px);
+  background: rgba(22,24,31,0.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+  padding: 6px; min-width: 180px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.nav-more-menu a {
+  display: block; padding: 10px 14px; border-radius: 6px;
+  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
+  transition: background .15s, color .15s; white-space: nowrap;
+}
+.nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
+  background: rgba(255,255,255,0.065); color: #f5f5f7;
+}
+.nav-more.open .nav-more-menu { display: block; }
+
+/* Hamburger toggle */
 .nav-toggle { display: none; }
 .nav-toggle-label { display: none; cursor: pointer; padding: 8px; }
 .nav-toggle-label span,
@@ -37,10 +65,12 @@
 .nav-toggle-label span::after { content: ''; position: absolute; }
 .nav-toggle-label span::before { top: -6px; }
 .nav-toggle-label span::after { top: 6px; }
+
+/* Mobile: all items in hamburger (flat list, no dropdown) */
 @media (max-width: 640px) {
   .nav-toggle-label { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
   .site-nav {
-    display: none; flex-direction: column; gap: 0;
+    display: none; flex-direction: column; align-items: stretch; gap: 0;
     position: absolute; top: var(--gnav-height, 52px); left: 0; right: 0; z-index: var(--z-modal, 200);
     background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -51,6 +81,11 @@
   .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
   .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
   .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
+  /* Hide dropdown container on mobile — items show as flat list */
+  .nav-more { display: contents; }
+  .nav-more-btn { display: none; }
+  .nav-more-menu { display: contents !important; position: static; background: none; border: none; box-shadow: none; padding: 0; min-width: auto; }
+  .nav-more-menu a { padding: 12px 24px; border-radius: 0; font-size: 14px; color: #71717a; }
 }
 </style>
 
@@ -59,13 +94,42 @@
   <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
   <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
   <nav class="site-nav">
-    {% for item in nav_items %}
+    {# Primary items: always visible #}
+    {% for item in nav_items if item.primary | default(false) %}
     <a href="{{ item.href }}"
        {% if item.label == current_page or item.href == current_page %} aria-current="page"{% endif %}
        {% if item.external | default(false) %} target="_blank" rel="noopener"{% endif %}>
       {{ item.label }}
     </a>
     {% endfor %}
+
+    {# Overflow items: in dropdown #}
+    {% set overflow = [] %}
+    {% for item in nav_items if not item.primary | default(false) %}
+      {% if overflow.append(item) %}{% endif %}
+    {% endfor %}
+    {% if overflow %}
+    <div class="nav-more">
+      <button class="nav-more-btn" aria-label="More pages" onclick="this.parentElement.classList.toggle('open')">⋯</button>
+      <div class="nav-more-menu">
+        {% for item in overflow %}
+        <a href="{{ item.href }}"
+           {% if item.label == current_page or item.href == current_page %} aria-current="page"{% endif %}
+           {% if item.external | default(false) %} target="_blank" rel="noopener"{% endif %}>
+          {{ item.label }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
   </nav>
 </header>
+
+<script>
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  var m = document.querySelector('.nav-more');
+  if (m && !m.contains(e.target)) m.classList.remove('open');
+});
+</script>
 {% endif %}

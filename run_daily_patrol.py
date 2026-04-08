@@ -631,8 +631,12 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
         except Exception:
             pass  # skip malformed entries silently
 
+    import os
+    source = "gha" if os.environ.get("GITHUB_ACTIONS") == "true" else "local"
+
     summary = {
         "date": start.strftime("%Y-%m-%d %H:%M"),
+        "source": source,
         "total": diff.get("after_count", 0),
         "prev_total": diff.get("before_count", 0),
         "new_count": len(new),
@@ -743,7 +747,42 @@ def send_line_if_new(diff: dict) -> None:
         log(f"  LINE送信エラー: {e}")
 
 
+def _should_skip() -> bool:
+    """Skip if last LOCAL patrol was less than 20h ago (cooldown guard).
+
+    Only local runs count for cooldown — GHA runs (source='gha') are ignored
+    so that GHA never blocks the local-first schedule.
+    """
+    summary_file = Path(__file__).parent / "data" / "patrol_summary.json"
+    try:
+        data = json.loads(summary_file.read_text(encoding="utf-8"))
+        # GHA results don't block local runs
+        if data.get("source") == "gha":
+            return False
+        last_date = datetime.strptime(data["date"], "%Y-%m-%d %H:%M")
+        hours_since = (datetime.now() - last_date).total_seconds() / 3600
+        if hours_since < 20:
+            return True
+    except Exception:
+        pass  # missing/corrupt summary → run anyway
+    return False
+
+
 def main():
+    # Cooldown guard: skip if last run was recent (for short StartInterval)
+    if _should_skip() and "--force" not in sys.argv:
+        print(f"[{datetime.now():%Y-%m-%d %H:%M}] 前回実行から20h未満 — スキップ")
+        return
+
+    # Idle guard: wait for user to be idle before heavy scraping
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        from lib.idle_guard import wait_for_idle
+        reason = wait_for_idle(min_idle_sec=300, max_wait_sec=7200, label="property-patrol")
+        print(f"[{datetime.now():%Y-%m-%d %H:%M}] idle_guard: {reason}")
+    except Exception as e:
+        print(f"[{datetime.now():%Y-%m-%d %H:%M}] idle_guard skipped: {e}")
+
     start = datetime.now()
     log(f"===== 物件巡回パトロール開始 {start.strftime('%Y-%m-%d %H:%M')} =====")
 

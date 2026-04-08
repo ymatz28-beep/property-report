@@ -53,6 +53,13 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
+  --focus-ring: 2px solid var(--accent);
+  --focus-offset: 2px;
+  --active-scale: 0.97;
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --skeleton-base: #1a1d27;
+  --skeleton-shine: #242836;
   --gnav-height: 52px;
   --z-nav: 100;
   --z-subnav: 90;
@@ -134,6 +141,94 @@ body {
   transition: opacity 0.3s;
 }
 .table-scroll-wrap.has-scroll::after { opacity: 1; }
+
+/* === Focus States (WCAG 2.1 AA) === */
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+button:focus-visible, a:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* === Interactive Elements === */
+button, .btn, [role="button"] {
+  transition: transform var(--transition-fast), background var(--transition-fast);
+  cursor: pointer;
+}
+button:active, .btn:active, [role="button"]:active {
+  transform: scale(var(--active-scale));
+}
+
+/* === Skeleton Loading === */
+.skeleton {
+  background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 50%, var(--skeleton-base) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* === Trend Indicators === */
+.trend-up { color: var(--green); }
+.trend-up::before { content: '▲ '; font-size: 0.75em; }
+.trend-down { color: var(--red); }
+.trend-down::before { content: '▼ '; font-size: 0.75em; }
+.trend-flat { color: var(--text-muted); }
+.trend-flat::before { content: '— '; }
+
+/* === Empty State === */
+.empty-state {
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: var(--space-4); opacity: 0.3; }
+.empty-state .empty-title { font-size: var(--fs-h3); font-weight: 600; margin-bottom: var(--space-2); color: var(--text-secondary); }
+.empty-state .empty-desc { font-size: var(--fs-body); }
+
+/* === Toast Notification === */
+.toast {
+  position: fixed; bottom: var(--space-6); right: var(--space-6);
+  background: var(--surface2); color: var(--text);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md); border: 1px solid var(--border);
+  box-shadow: var(--shadow-hover);
+  font-size: var(--fs-small);
+  z-index: var(--z-toast);
+  animation: slideInUp 0.3s ease;
+}
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* === Progress Ring (CSS conic-gradient) === */
+.progress-ring {
+  --progress: 0;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) calc(var(--progress) * 1%), var(--border) 0);
+  display: flex; align-items: center; justify-content: center;
+}
+.progress-ring::after {
+  content: '';
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+/* === Badge variants === */
+.badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: var(--fs-xs); font-weight: 600; }
+.badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+.badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+.badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+.badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+.badge-muted { background: rgba(124,130,147,0.15); color: var(--text-muted); }
 
 /* === Animations === */
 @keyframes fadeIn {
@@ -390,14 +485,14 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="stats">
       <div class="stat"><div class="stat-val" style="color:#f59e0b">6</div><div class="stat-label">進行中</div></div>
       <div class="stat"><div class="stat-val" style="color:#a78bfa">0</div><div class="stat-label">内見</div></div>
-      <div class="stat"><div class="stat-val" style="color:#6366f1">3</div><div class="stat-label">査定中</div></div>
-      <div class="stat"><div class="stat-val" style="color:#22c55e">0</div><div class="stat-label">完了</div></div>
-      <div class="stat"><div class="stat-val" style="color:#ef4444">6</div><div class="stat-label">要アクション</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--accent)">3</div><div class="stat-label">査定中</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--green)">0</div><div class="stat-label">完了</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--red)">6</div><div class="stat-label">要アクション</div></div>
     </div>
-    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 9 / 見送り 36</div>
+    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 10 / 見送り 38</div>
   </div>
 
-  <div class="section-nav"><div class="section-nav-inner"><a class="stage-tab active" data-stage="active" style="--tab-color:#f59e0b" onclick="showStage('active')">進行中 <span class="tab-count">6</span></a><a class="stage-tab" data-stage="viewing" style="--tab-color:#a78bfa" onclick="showStage('viewing')">内見 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="appraisal" style="--tab-color:#6366f1" onclick="showStage('appraisal')">査定中 <span class="tab-count">3</span></a><a class="stage-tab" data-stage="done" style="--tab-color:#22c55e" onclick="showStage('done')">完了 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="candidates" style="--tab-color:#71717a" onclick="showStage('candidates')">候補 <span class="tab-count">9</span></a></div></div>
+  <div class="section-nav"><div class="section-nav-inner"><a class="stage-tab active" data-stage="active" style="--tab-color:#f59e0b" onclick="showStage('active')">進行中 <span class="tab-count">6</span></a><a class="stage-tab" data-stage="viewing" style="--tab-color:#a78bfa" onclick="showStage('viewing')">内見 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="appraisal" style="--tab-color:#6366f1" onclick="showStage('appraisal')">査定中 <span class="tab-count">3</span></a><a class="stage-tab" data-stage="done" style="--tab-color:#22c55e" onclick="showStage('done')">完了 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="candidates" style="--tab-color:#71717a" onclick="showStage('candidates')">候補 <span class="tab-count">10</span></a></div></div>
 
       
 <div class="stage-section" data-stage="active">
@@ -427,9 +522,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">ふれんず / inq-017</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-1.8万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-2.6%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">6.9〜8.2%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-1.8万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-2.6%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">6.9〜8.2%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">1,520万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">513万</div><div class="card-kpi-label">初期必要</div></div>
@@ -443,12 +538,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-10.7万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>103万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-125万/年（月10.4万 × 15年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-1.8万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-1.8万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+8万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>6.9〜8.2%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-2.6%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>380万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>133万</span></div>
@@ -481,8 +576,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="card-meta">楽待(利回り区分) / inq-094</div>
   <div class="card-kpi-strip">
   <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">+1.7万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">13.1%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">11.3〜14.1%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">13.1%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">11.3〜14.1%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">340万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">115万</div><div class="card-kpi-label">初期必要</div></div>
@@ -534,8 +629,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="card-meta">楽待(利回り区分) / inq-100</div>
   <div class="card-kpi-strip">
   <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">+2.6万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">15.8%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">12.0〜14.4%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">15.8%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">12.0〜14.4%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">400万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">135万</div><div class="card-kpi-label">初期必要</div></div>
@@ -586,9 +681,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">ふれんず / inq-093</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-0.3万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-1.3%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">8.3〜10.3%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-0.3万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-1.3%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">8.3〜10.3%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">464万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">157万</div><div class="card-kpi-label">初期必要</div></div>
@@ -602,12 +697,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-4.0万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>28万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-32万/年（月2.6万 × 19年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-0.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-0.3万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+2万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>8.3〜10.3%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-1.3%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>116万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>41万</span></div>
@@ -666,7 +761,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </div>
       
 <div class="stage-section hidden" data-stage="appraisal">
-  <div class="stage-header" style="border-left:3px solid #6366f1">
+  <div class="stage-header" style="border-left:3px solid var(--accent)">
     <h2>査定中</h2>
     <div class="stage-stats"><span>3件</span></div>
   </div>
@@ -675,7 +770,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20310107/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">プレイスポットしんばしビル本館 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#6366f1">内見済</span>
+      <span class="status-pill" style="background:var(--accent)">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -695,9 +790,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">SUUMO / inq-072</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+3.6万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">+3.6万</div><div class="card-kpi-label">月CF</div></div>
   <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">4.8%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">7.2〜7.7%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">7.2〜7.7%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">1,380万</div><div class="card-kpi-label">融資（筑波銀行）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">59%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">1,113万</div><div class="card-kpi-label">初期必要</div></div>
@@ -711,7 +806,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-12.9万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>134万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-91万/年（月7.5万 × 20年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#22c55e">+3.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--green)">+3.6万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+11万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>7.2〜7.7%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>4.8%</span></div>
@@ -731,7 +826,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://www.f-takken.com/freins/items/99718694" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">GSハイム博多 10階 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#6366f1">内見済</span>
+      <span class="status-pill" style="background:var(--accent)">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -750,9 +845,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">ふれんず / inq-073</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-0.1万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-2.6%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">8.7〜9.3%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-0.1万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-2.6%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">8.7〜9.3%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">2,190万</div><div class="card-kpi-label">融資（筑波銀行）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">100%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">164万</div><div class="card-kpi-label">初期必要</div></div>
@@ -766,12 +861,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-14.7万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>143万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-144万/年（月12.0万 × 20年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-0.1万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-0.1万/月</span></div>
     
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>8.7〜9.3%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-2.6%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>10万（0%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>154万</span></div>
@@ -786,7 +881,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://www.f-takken.com/freins/items/99770725" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ローズマンション第2博多 1308 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#6366f1">内見済</span>
+      <span class="status-pill" style="background:var(--accent)">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -804,9 +899,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">ふれんず / inq-074</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+4.9万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">6.0%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">8.7〜9.3%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">+4.9万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">6.0%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">8.7〜9.3%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">1,440万</div><div class="card-kpi-label">融資（筑波銀行）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">66%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">912万</div><div class="card-kpi-label">初期必要</div></div>
@@ -820,7 +915,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-14.7万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>153万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-95万/年（月7.9万 × 20年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#22c55e">+4.9万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--green)">+4.9万/月</span></div>
     
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>8.7〜9.3%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>6.0%</span></div>
@@ -838,7 +933,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </div>
       
 <div class="stage-section hidden" data-stage="done">
-  <div class="stage-header" style="border-left:3px solid #22c55e">
+  <div class="stage-header" style="border-left:3px solid var(--green)">
     <h2>完了</h2>
     <div class="stage-stats"><span>0件</span></div>
   </div>
@@ -848,7 +943,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <div class="stage-section hidden" data-stage="candidates">
   <div class="stage-header" style="border-left:3px solid #71717a">
     <h2>候補</h2>
-    <div class="stage-stats"><span>9件</span></div>
+    <div class="stage-stats"><span>10件</span></div>
   </div>
   <div class="stage-cards"><div class="inq-card">
   <div style="display:flex;justify-content:space-between;align-items:center">
@@ -873,9 +968,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">ふれんず / inq-076</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+3.5万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">11.5%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">9.6〜12.0%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">+3.5万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">11.5%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">9.6〜12.0%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">800万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">270万</div><div class="card-kpi-label">初期必要</div></div>
@@ -889,7 +984,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-8.0万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>79万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-37万/年（月3.1万 × 34年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#22c55e">+3.5万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--green)">+3.5万/月</span></div>
     
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>9.6〜12.0%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>11.5%</span></div>
@@ -899,6 +994,55 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>200万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>70万</span></div>
       <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>270万</span></div>
+    </div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <a href="https://www.f-takken.com/freins/items/99757514" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">高宮ハウスII 102 ↗</a>
+    <div style="display:flex;gap:6px;align-items:center">
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">90pt</span>
+    </div>
+  </div>
+  <div class="card-detail">1,650万 / 58.32㎡ / 3LDK / 築36年 / 西鉄平尾 徒歩9分 / 高宮 徒歩9分 / 薬院 徒歩22分</div>
+  <div class="card-filters">
+    <span>ペット ⏳</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  <div class="card-notes-preview">⚠️ 掲載未確認</div>
+  <div class="card-meta">ふれんず / inq-113</div>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">+1.6万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">3.5%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">7.3〜8.7%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,320万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">446万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>10〜12万/月（年132万）</span></div>
+    <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-9万/年</span></div>
+    <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　管理費・修繕</span><span>-17.8万/年</span></div>
+    <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-9.8万/年</span></div>
+    <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>95万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-76万/年（月6.3万 × 24年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#facc15">+1.6万/月</span></div>
+    
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>7.3〜8.7%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>3.5%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>28.4年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#facc15;font-weight:600">薄利</span></div>
+    <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
+      <div style="display:flex;justify-content:space-between"><span>頭金</span><span>330万（20%）</span></div>
+      <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>116万</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>446万</span></div>
     </div>
     <div style="color:#52525b;font-size:10px;margin-top:2px">金利2.85% / 空室7%</div>
   </div>
@@ -927,9 +1071,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">ふれんず / inq-079</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+7.8万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">29.0%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">16.9〜21.2%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">+7.8万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">29.0%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">16.9〜21.2%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">680万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">230万</div><div class="card-kpi-label">初期必要</div></div>
@@ -943,7 +1087,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-12.1万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>125万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-32万/年（月2.7万 × 32年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#22c55e">+7.8万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--green)">+7.8万/月</span></div>
     
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>16.9〜21.2%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>29.0%</span></div>
@@ -976,9 +1120,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="card-notes-preview">⚠️ 掲載未確認</div>
   <div class="card-meta">大阪R不動産 / inq-103</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+6.5万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">67.5%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">36.0〜44.0%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">+6.5万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">67.5%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">36.0〜44.0%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">240万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">81万</div><div class="card-kpi-label">初期必要</div></div>
@@ -992,7 +1136,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>89万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-11万/年（月0.9万 × 35年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#22c55e">+6.5万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--green)">+6.5万/月</span></div>
     
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>36.0〜44.0%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>67.5%</span></div>
@@ -1029,9 +1173,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">ふれんず / inq-108</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+5.8万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">24.6%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">16.1〜19.3%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">+5.8万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">24.6%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">16.1〜19.3%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">596万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">201万</div><div class="card-kpi-label">初期必要</div></div>
@@ -1045,7 +1189,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-9.8万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>103万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-33万/年（月2.8万 × 25年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#22c55e">+5.8万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--green)">+5.8万/月</span></div>
     
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>16.1〜19.3%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>24.6%</span></div>
@@ -1083,9 +1227,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">ふれんず / inq-075</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">+5.6万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">30.1%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#22c55e">22.4〜26.4%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">+5.6万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">30.1%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--green)">22.4〜26.4%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">472万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">159万</div><div class="card-kpi-label">初期必要</div></div>
@@ -1099,7 +1243,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-10.7万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>95万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-27万/年（月2.3万 × 24年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#22c55e">+5.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--green)">+5.6万/月</span></div>
     
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>22.4〜26.4%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>30.1%</span></div>
@@ -1195,14 +1339,14 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   
 <details style="margin-top:32px">
   <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
-    見送り 36件（クリックで展開）
+    見送り 38件（クリックで展開）
   </summary>
   <div class="stage-cards" style="margin-top:8px"><div class="inq-card" style="opacity:0.4">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.f-takken.com/freins/items/99763695" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">アンピール天神東 405 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#ef4444">見送り</span>
+      <span class="status-pill" style="background:var(--red)">見送り</span>
       <span class="card-score">101pt</span>
     </div>
   </div>
@@ -1215,8 +1359,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div class="card-notes-preview">3/21内覧済。価格3800万・融資3000万/25年（筑波銀行評価）。60-築年数=38年まで延長可能性あり。ただし25年ではCF赤字(-1.5万/月)。掲載終了・売却済みのためクローズ</div>
   <div class="card-meta">ふれんず / inq-012</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-1.5万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-1.7%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-1.5万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-1.7%</div><div class="card-kpi-label">CCR</div></div>
   <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">5.1〜5.4%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">3,000万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">79%</div><div class="card-kpi-label">LTV</div></div>
@@ -1231,12 +1375,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-14.7万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>150万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-168万/年（月14.0万 × 25年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-1.5万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-1.5万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+0万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>5.1〜5.4%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-1.7%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>800万（21%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>266万</span></div>
@@ -1251,7 +1395,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79085867/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">クリオ渡辺通アーバンマークス ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#ef4444">見送り</span>
+      <span class="status-pill" style="background:var(--red)">見送り</span>
       <span class="card-score">93pt</span>
     </div>
   </div>
@@ -1264,9 +1408,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="card-notes-preview">返信なし・内覧予定なし</div>
   <div class="card-meta">SUUMO / inq-019</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-6.3万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-4.7%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">2.2〜2.7%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-6.3万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-4.7%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">2.2〜2.7%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">3,504万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">1,183万</div><div class="card-kpi-label">初期必要</div></div>
@@ -1280,12 +1424,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-8.0万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>82万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-158万/年（月13.2万 × 35年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-6.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-6.3万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+20万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.2〜2.7%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-4.7%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>876万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>307万</span></div>
@@ -1300,7 +1444,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79063957/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">コスモ博多古門戸 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#ef4444">見送り</span>
+      <span class="status-pill" style="background:var(--red)">見送り</span>
       <span class="card-score">93pt</span>
     </div>
   </div>
@@ -1313,9 +1457,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div class="card-notes-preview">3/21内覧: 場所がよくない。レノベ済みだがありふれた感じで好みでない。㎡単価も高い(82.6万/㎡)</div>
   <div class="card-meta">SUUMO / inq-020</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-6.8万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-4.2%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">2.4〜2.9%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-6.8万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-4.2%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">2.4〜2.9%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">3,599万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">1,215万</div><div class="card-kpi-label">初期必要</div></div>
@@ -1329,12 +1473,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-8.9万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>81万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-163万/年（月13.6万 × 35年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-6.8万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-6.8万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+31万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.4〜2.9%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-4.2%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>900万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>315万</span></div>
@@ -1349,7 +1493,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_79163699/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ヴィラロイヤル東中野 706号室 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#ef4444">見送り</span>
+      <span class="status-pill" style="background:var(--red)">見送り</span>
       <span class="card-score">68pt</span>
     </div>
   </div>
@@ -1367,8 +1511,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">SUUMO / inq-029</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-7.7万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-5.4%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-7.7万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-5.4%</div><div class="card-kpi-label">CCR</div></div>
   <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">5.1〜6.9%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">2,800万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
@@ -1383,12 +1527,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-15.6万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>138万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-230万/年（月19.1万 × 15年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-7.7万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-7.7万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+41万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>5.1〜6.9%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-5.4%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>700万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>245万</span></div>
@@ -1403,7 +1547,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20001055/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">クリオラベルヴィ呉服町 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#ef4444">見送り</span>
+      <span class="status-pill" style="background:var(--red)">見送り</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -1416,9 +1560,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: 2026-03-21</div><div class="card-notes-preview">3/21内覧: 場所がよくない。レノベ済みだがありふれた感じで好みでない。㎡単価高い(95.7万/㎡)</div>
   <div class="card-meta">SUUMO / inq-034</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-6.8万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-4.8%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">2.4〜2.9%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-6.8万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-4.8%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">2.4〜2.9%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">3,599万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">1,215万</div><div class="card-kpi-label">初期必要</div></div>
@@ -1432,12 +1576,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-8.9万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>82万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-163万/年（月13.6万 × 35年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-6.8万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-6.8万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+23万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>2.4〜2.9%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-4.8%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>900万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>315万</span></div>
@@ -1452,7 +1596,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://www.f-takken.com/freins/items/99773040" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ニューライフ薬院 603 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#ef4444">見送り</span>
+      <span class="status-pill" style="background:var(--red)">見送り</span>
       <span class="card-score">99pt</span>
     </div>
   </div>
@@ -1465,9 +1609,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="card-notes-preview">返信なし・内覧予定なし</div>
   <div class="card-meta">ふれんず / inq-050</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-10.4万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-9.8%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">3.1〜3.9%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-10.4万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-9.8%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">3.1〜3.9%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">2,465万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">832万</div><div class="card-kpi-label">初期必要</div></div>
@@ -1481,12 +1625,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-8.0万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>67万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-192万/年（月16.0万 × 16年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-10.4万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-10.4万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+43万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.1〜3.9%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-9.8%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>616万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>216万</span></div>
@@ -1501,7 +1645,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://cowcamo.jp/short_stories/AHB95HFGZz0" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">野方駅 / 1LDK / 39.99㎡ ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#ef4444">見送り</span>
+      <span class="status-pill" style="background:var(--red)">見送り</span>
       <span class="card-score">68pt</span>
     </div>
   </div>
@@ -1518,8 +1662,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 </details>
   <div class="card-meta">カウカモ / inq-052</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-2.6万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-3.0%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-2.6万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-3.0%</div><div class="card-kpi-label">CCR</div></div>
   <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">3.6〜4.8%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">2,384万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
@@ -1534,12 +1678,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-9.4万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>77万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-108万/年（月9.0万 × 35年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-2.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-2.6万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+7万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.6〜4.8%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-3.0%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>596万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>209万</span></div>
@@ -1554,7 +1698,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_77817708/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">菊川ローヤルコーポ ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#ef4444">見送り</span>
+      <span class="status-pill" style="background:var(--red)">見送り</span>
       <span class="card-score">68pt</span>
     </div>
   </div>
@@ -1567,8 +1711,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="card-notes-preview">スコア68（基準70未満・自動パス）</div>
   <div class="card-meta">SUUMO / inq-053</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-10.6万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-7.8%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-10.6万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-7.8%</div><div class="card-kpi-label">CCR</div></div>
   <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">4.1〜5.3%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">3,280万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
@@ -1583,12 +1727,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-14.3万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>141万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-269万/年（月22.4万 × 15年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-10.6万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-10.6万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+42万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>4.1〜5.3%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-7.8%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>820万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>287万</span></div>
@@ -1603,7 +1747,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024141980/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ベルディ早稲田東 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#ef4444">見送り</span>
+      <span class="status-pill" style="background:var(--red)">見送り</span>
       <span class="card-score">65pt</span>
     </div>
   </div>
@@ -1616,9 +1760,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="card-notes-preview">掲載終了（自動検出）</div>
   <div class="card-meta">Yahoo不動産 / inq-054</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-12.2万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-7.3%</div><div class="card-kpi-label">CCR</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">3.0〜3.7%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-12.2万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-7.3%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">3.0〜3.7%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">3,904万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
   <div class="card-kpi"><div class="card-kpi-val">1,318万</div><div class="card-kpi-label">初期必要</div></div>
@@ -1632,12 +1776,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>121万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-266万/年（月22.2万 × 19年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-12.2万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-12.2万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+50万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>3.0〜3.7%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-7.3%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>976万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>342万</span></div>
@@ -1652,7 +1796,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20403509/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">NICアーバンハイム亀戸 102 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#ef4444">見送り</span>
+      <span class="status-pill" style="background:var(--red)">見送り</span>
       <span class="card-score">63pt</span>
     </div>
   </div>
@@ -1665,8 +1809,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="card-notes-preview">スコア63（基準70未満・自動パス）</div>
   <div class="card-meta">SUUMO / inq-055</div>
   <div class="card-kpi-strip">
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-8.3万</div><div class="card-kpi-label">月CF</div></div>
-  <div class="card-kpi"><div class="card-kpi-val" style="color:#f87171">-5.9%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-8.3万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--red-light)">-5.9%</div><div class="card-kpi-label">CCR</div></div>
   <div class="card-kpi"><div class="card-kpi-val" style="color:#facc15">4.1〜5.0%</div><div class="card-kpi-label">利回り</div></div>
   <div class="card-kpi"><div class="card-kpi-val">3,264万</div><div class="card-kpi-label">融資（想定）</div></div>
   <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
@@ -1681,12 +1825,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-13.8万/年</span></div>
     <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>115万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-214万/年（月17.9万 × 20年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:#f87171">-8.3万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:var(--red-light)">-8.3万/月</span></div>
     <div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+34万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>4.1〜5.0%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>-5.9%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>∞</span></div>
-    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#f87171;font-weight:600">CF赤字</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:var(--red-light);font-weight:600">CF赤字</span></div>
     <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>816万（20%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>286万</span></div>
@@ -1737,7 +1881,7 @@ function showStage(stage) {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-04-08 07:14</div>
+  <div style="margin-top:4px;">Generated at 2026-04-08 14:36</div>
 </footer>
 </body>
 </html>

@@ -53,6 +53,13 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
+  --focus-ring: 2px solid var(--accent);
+  --focus-offset: 2px;
+  --active-scale: 0.97;
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --skeleton-base: #1a1d27;
+  --skeleton-shine: #242836;
   --gnav-height: 52px;
   --z-nav: 100;
   --z-subnav: 90;
@@ -135,6 +142,94 @@ body {
 }
 .table-scroll-wrap.has-scroll::after { opacity: 1; }
 
+/* === Focus States (WCAG 2.1 AA) === */
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+button:focus-visible, a:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* === Interactive Elements === */
+button, .btn, [role="button"] {
+  transition: transform var(--transition-fast), background var(--transition-fast);
+  cursor: pointer;
+}
+button:active, .btn:active, [role="button"]:active {
+  transform: scale(var(--active-scale));
+}
+
+/* === Skeleton Loading === */
+.skeleton {
+  background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 50%, var(--skeleton-base) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* === Trend Indicators === */
+.trend-up { color: var(--green); }
+.trend-up::before { content: '▲ '; font-size: 0.75em; }
+.trend-down { color: var(--red); }
+.trend-down::before { content: '▼ '; font-size: 0.75em; }
+.trend-flat { color: var(--text-muted); }
+.trend-flat::before { content: '— '; }
+
+/* === Empty State === */
+.empty-state {
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: var(--space-4); opacity: 0.3; }
+.empty-state .empty-title { font-size: var(--fs-h3); font-weight: 600; margin-bottom: var(--space-2); color: var(--text-secondary); }
+.empty-state .empty-desc { font-size: var(--fs-body); }
+
+/* === Toast Notification === */
+.toast {
+  position: fixed; bottom: var(--space-6); right: var(--space-6);
+  background: var(--surface2); color: var(--text);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md); border: 1px solid var(--border);
+  box-shadow: var(--shadow-hover);
+  font-size: var(--fs-small);
+  z-index: var(--z-toast);
+  animation: slideInUp 0.3s ease;
+}
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* === Progress Ring (CSS conic-gradient) === */
+.progress-ring {
+  --progress: 0;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) calc(var(--progress) * 1%), var(--border) 0);
+  display: flex; align-items: center; justify-content: center;
+}
+.progress-ring::after {
+  content: '';
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+/* === Badge variants === */
+.badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: var(--fs-xs); font-weight: 600; }
+.badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+.badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+.badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+.badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+.badge-muted { background: rgba(124,130,147,0.15); color: var(--text-muted); }
+
 /* === Animations === */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
@@ -207,10 +302,10 @@ td { padding: 5px 8px; border-bottom: 1px solid rgba(255,255,255,.04); }
 .revenue-block { background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 14px; margin: 14px 0; }
 .rv-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .rv-title { font-size: 12px; font-weight: 800; } .rv-verdict { padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; }
-.rv-high { background: rgba(34,197,94,.15); color: #22c55e; border: 1px solid rgba(34,197,94,.3); }
+.rv-high { background: rgba(34,197,94,.15); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
 .rv-stable { background: rgba(52,211,153,.15); color: #34d399; border: 1px solid rgba(52,211,153,.3); }
 .rv-thin { background: rgba(250,204,21,.15); color: #facc15; border: 1px solid rgba(250,204,21,.3); }
-.rv-red { background: rgba(248,113,113,.15); color: #f87171; border: 1px solid rgba(248,113,113,.3); }
+.rv-red { background: rgba(248,113,113,.15); color: var(--red-light); border: 1px solid rgba(248,113,113,.3); }
 .rv-assumptions { font-size: 10px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
 .rv-section { margin-bottom: 12px; } .rv-section-title { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 6px; padding-bottom: 3px; border-bottom: 1px solid rgba(201,168,76,.2); }
 .rv-row { display: flex; align-items: baseline; padding: 3px 0; font-size: 11px; gap: 6px; }
@@ -357,7 +452,7 @@ details[open] > .archive-header::before { content: '▾ '; }
 
 <div class="wrap">
   <h1>内覧分析 — 福岡 3物件</h1>
-  <p class="meta">自動生成: 2026-04-08 07:14 / 3件の内覧予定物件</p>
+  <p class="meta">自動生成: 2026-04-08 14:36 / 3件の内覧予定物件</p>
 
 
     <div class="schedule-banner">
@@ -492,7 +587,7 @@ details[open] > .archive-header::before { content: '▾ '; }
         <div class="rv-row rv-total"><span class="rv-desc">年間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:#facc15">+4万</span></div>
         <div class="rv-row rv-highlight"><span class="rv-desc">月間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:#facc15">+0.3万/月</span></div>
         <div class="rv-row rv-minus"><span class="rv-desc">管理費・修繕積立金</span><span class="rv-note">21,900円/月</span><span class="rv-amount">-2.2万/月</span></div>
-        <div class="rv-row rv-highlight"><span class="rv-desc">管理費込み月間CF</span><span class="rv-note"></span><span class="rv-amount" style="color:#f87171">-1.9万/月</span></div>
+        <div class="rv-row rv-highlight"><span class="rv-desc">管理費込み月間CF</span><span class="rv-note"></span><span class="rv-amount" style="color:var(--red-light)">-1.9万/月</span></div>
       </div>
 
       <div class="rv-section">
@@ -676,7 +771,7 @@ details[open] > .archive-header::before { content: '▾ '; }
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-04-08 07:14</div>
+  <div style="margin-top:4px;">Generated at 2026-04-08 14:36</div>
 </footer>
 </body>
 </html>

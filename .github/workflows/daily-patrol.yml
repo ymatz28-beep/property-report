@@ -1,8 +1,8 @@
 name: Daily Property Patrol
 
 on:
-  schedule:
-    - cron: '0 21 * * *'
+  # schedule disabled — local launchd is primary (every 6h + RunAtLoad)
+  # cron: '0 21 * * *' kept as comment for emergency re-enable
   workflow_dispatch:
 
 permissions:
@@ -27,23 +27,62 @@ jobs:
           token: ${{ github.token }}
           persist-credentials: true
 
+      - name: Check if local ran recently (fallback guard)
+        id: local-check
+        run: |
+          if [ ! -f data/patrol_summary.json ]; then
+            echo "No summary file — running GHA"
+            exit 0
+          fi
+          hours_ago=$(python3 -c "
+          import json
+          from datetime import datetime
+          d = json.load(open('data/patrol_summary.json'))
+          last = datetime.strptime(d['date'], '%Y-%m-%d %H:%M')
+          print(int((datetime.now() - last).total_seconds() / 3600))
+          ")
+          source=$(python3 -c "import json; print(json.load(open('data/patrol_summary.json')).get('source','unknown'))")
+          echo "Last run: ${hours_ago}h ago, source: ${source}"
+          if [ "$hours_ago" -lt 24 ]; then
+            echo "Local ran within 24h — skipping GHA"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Set up Python
+        if: steps.local-check.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          playwright install chromium --with-deps
+        if: steps.local-check.outputs.skip != 'true'
+        run: pip install -r requirements.txt
+
+      - name: Cache Playwright browsers
+        if: steps.local-check.outputs.skip != 'true'
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('requirements.txt') }}
+
+      - name: Install Playwright Chromium
+        if: steps.local-check.outputs.skip != 'true' && steps.playwright-cache.outputs.cache-hit != 'true'
+        run: playwright install chromium --with-deps
+
+      - name: Install Playwright deps (cached)
+        if: steps.local-check.outputs.skip != 'true' && steps.playwright-cache.outputs.cache-hit == 'true'
+        run: playwright install-deps chromium
 
       - name: Configure git user
+        if: steps.local-check.outputs.skip != 'true'
         run: |
           git config user.name "Property Report Bot"
           git config user.email "noreply@github.com"
 
       - name: Run daily patrol
         id: patrol
+        if: steps.local-check.outputs.skip != 'true'
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: python run_daily_patrol.py
@@ -54,7 +93,7 @@ jobs:
 
       - name: Commit and push data updates to main
         id: commit
-        if: always()
+        if: always() && steps.local-check.outputs.skip != 'true'
         run: |
           git add data/ output/
           if ! git diff --cached --quiet; then
@@ -68,7 +107,7 @@ jobs:
           fi
 
       - name: Deploy reports to gh-pages
-        if: always() && steps.patrol.outcome != 'skipped'
+        if: always() && steps.local-check.outputs.skip != 'true' && steps.patrol.outcome != 'skipped'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -112,7 +151,7 @@ jobs:
           fi
 
       - name: Notify via Gmail
-        if: always()
+        if: always() && steps.local-check.outputs.skip != 'true'
         env:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}

@@ -778,22 +778,55 @@ def track_price_changes() -> list[dict]:
     return changes
 
 
+def auto_transition_viewed() -> int:
+    """Auto-transition viewing → viewed when viewing_date has passed."""
+    inquiries = load_inquiries()
+    today = date.today()
+    count = 0
+
+    for inq in inquiries:
+        if inq.get("status") != "viewing":
+            continue
+        vd_str = inq.get("viewing_date")
+        if not vd_str:
+            continue
+        try:
+            vd = date.fromisoformat(str(vd_str))
+        except (ValueError, TypeError):
+            continue
+        if vd < today:
+            inq["status"] = "viewed"
+            existing_notes = inq.get("notes") or ""
+            inq["notes"] = (existing_notes + f"\n自動遷移: viewing→viewed ({vd_str})").strip()
+            inq["updated"] = str(today)
+            count += 1
+            print(f"[auto_transition] {inq['id']} {inq.get('name', '')} → viewed (内見日: {vd_str})")
+
+    if count > 0:
+        save_inquiries(inquiries)
+
+    print(f"[auto_transition] viewing→viewed: {count}件")
+    return count
+
+
 def lifecycle() -> dict:
     """Run full lifecycle management: sweep stale + price tracking + sync."""
     print("=== Pipeline Lifecycle ===")
     sweep_result = sweep_stale()
     price_changes = track_price_changes()
     sync_count = sync_from_agent_memory()
+    viewed_count = auto_transition_viewed()
 
     result = {
         "sweep": sweep_result,
         "price_changes": len(price_changes),
         "sync_updates": sync_count,
+        "viewed_transitions": viewed_count,
     }
 
-    if sweep_result["delisted"] + sweep_result["aged_out"] + len(price_changes) + sync_count > 0:
+    if sweep_result["delisted"] + sweep_result["aged_out"] + len(price_changes) + sync_count + viewed_count > 0:
         save_inquiries(load_inquiries())  # Already saved by individual functions
-        print(f"[lifecycle] 完了: sweep={sweep_result}, 価格変動={len(price_changes)}件, sync={sync_count}件")
+        print(f"[lifecycle] 完了: sweep={sweep_result}, 価格変動={len(price_changes)}件, sync={sync_count}件, viewed遷移={viewed_count}件")
     else:
         print("[lifecycle] 変更なし")
 

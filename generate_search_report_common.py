@@ -97,15 +97,8 @@ def site_header_css() -> str:
 
 
 def site_header_html() -> str:
-    return """<header class="site-header">
-  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
-  <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
-  <nav class="site-nav">
-    <a href="https://ymatz28-beep.github.io/report-dashboard/">Hub</a>
-    <a href="https://ymatz28-beep.github.io/property-report/" aria-current="page">Property</a>
-    <a href="https://ymatz28-beep.github.io/trip-planner/">Travel</a>
-  </nav>
-</header>"""
+    from lib.renderer import get_nav_html  # SSoT: lib/renderer.PUBLIC_NAV
+    return get_nav_html(scope="public", current_page="Property")
 
 
 def global_nav_css() -> str:

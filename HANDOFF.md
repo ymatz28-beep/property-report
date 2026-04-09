@@ -1,11 +1,12 @@
 # HANDOFF
 
 ## [Constancy] 2026-04-09
+- [WARN] data_freshness: Property Status: last updated 30h ago (threshold: 28h)
 - [ERROR] hardcoded_data: [ESCALATED: 17d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
 - [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 17d unresolved] property_pipeline.py is 2277 lines (threshold: 800). Consider splitting.
 - [WARN] structural_reform: Stale temp/debug file (9 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (12 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (13 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
@@ -21,11 +22,30 @@
 - [WARN] qa_market_data_accuracy: 4/86 (4.7%) — price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: アンピールやよい坂 305 raw=920.0 html=950.0; price mismatch: ふれんず物件(中央区) raw=800.0 html=950.0
 - [WARN] qa_market_oc_income_coverage: OC 289件中 197件が年間収入欠落 (68%) — 利回り逆算で補完
 - [ERROR] qa_market_yield_consistency: 2件の利回り/年間収入乖離(>20%): プレサンス難波南アーバニッシュ: expected=30.8万 actual=72.0万 (57%乖離); 複数路線が徒歩圏内でアクセス良好: expected=153.3万 actual=88.2万 (74%乖離)
-- [WARN] qa_market_name_cross_reference: 24件の物件名クロスリファレンス不一致: 目黒区東山(44㎡): ['中銀東山マンシオン', '池尻大橋駅 / 1LDK / 44.03㎡']; 福岡市博多区千代(26㎡): ['■■■【福岡', 'JGM県庁口 502']; 福岡市博多区博多駅前(22㎡): ['ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区比恵町(20㎡): ['■■■【福岡', 'ふれんず物件(博多区)'] ... +19 more
+- [WARN] qa_market_name_cross_reference: 24件の物件名クロスリファレンス不一致: 目黒区東山(44㎡): ['中銀東山マンシオン', '池尻大橋駅 / 1LDK / 44.03㎡']; 福岡市博多区千代(26㎡): ['JGM県庁口 502', '■■■【福岡']; 福岡市博多区博多駅前(22㎡): ['ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区比恵町(20㎡): ['ふれんず物件(博多区)', '■■■【福岡'] ... +19 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 26.1% (29/111件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 3080.0万円/40.75㎡; 4980.0万円/60.61㎡; 1890.0万円/55.62㎡; 3490.0万円/56.7㎡
 
 ## Last Updated
-2026-04-07
+2026-04-09
+
+## Completed (横断監査: APIキー除去+デッドコード削除+gnav SSoT化 2026-04-09)
+- **Before**: ① config.yamlにAPIキー平文記載 ② lib/renderer.py(222行)+lib/styles/(353行)+lib/__init__.py(3行)がデッドコード（sys.pathで共有Projects/lib/が先に解決されるため未使用） ③ generate_search_report_common.pyのsite_header_html()がHub/Property/Travelリンクをハードコード（lib/renderer.get_nav_html() SSoT違反）
+- **After**: ① config.yamlからAPIキー除去（キー自体は既に無効） ② lib/renderer.py+lib/styles/+lib/__init__.py削除（-578行）。templates/はcreate_env(extra_dirs)で使用中のため維持 ③ site_header_html()→lib/renderer.get_nav_html()に委譲（section-navはproperty固有で維持）
+- **Commits**: 未コミット
+
+## Completed (GHA cron完全無効化 — ローカルlaunchd一本化 2026-04-09)
+- **Before**: daily-patrol.ymlにcron `0 14 * * *`（JST 23:00）が残存。4/7のローカルファースト化後もGHAが毎晩発火し続け、条件付きスキップとはいえGHA minutes消費+ローカルとの二重管理が残る
+- **After**: daily-patrol.ymlからschedule cronを完全削除（workflow_dispatchのみ残す）。ローカルlaunchd（6h間隔）が唯一のPrimary。kaizen Dead Man's Switchが36h stale時にworkflow_dispatch自動トリガーするためGHAフォールバックは維持
+- **Commits**: `4c7a1c2`
+
+## Completed (Phase 1 自動化モジュール3点実装 + 中野メール下書き 2026-04-09)
+- **Before**: メール下書き作成→inquiries.yaml手動更新が必要。予約確認メール（新幹線/チケット/航空券/ホテル）→Calendar手動登録。viewing_date経過後も手動でviewed遷移が必要。中野さんへのOCサブリース確認+プレイスポット価格交渉メールが未送信
+- **After**:
+  - **pipeline_signal**: `lib/pipeline_signal.py`新設（115行）。`emit()`がsubject/bodyキーワードからaction_type自動分類（評価依頼→inquired, 価格交渉→in_discussion, 見送り→passed等）→inquiries.yaml自動更新。upgrade guardでステータス逆行防止。agent_memory.yamlからbroker email→物件名フォールバック解決
+  - **calendar_inject**: `inbox-zero/calendar_inject.py`新設。`detect_booking()`が新幹線(EX予約)/チケット(ぴあ/e+)/航空券(ANA/JAL)/ホテル(Booking等)→構造化イベントdict抽出。4テストケース全パス。gcal_create_eventに直接渡せる設計（Gmail MCP非依存）
+  - **viewing auto-transition**: `property_pipeline.py`に`auto_transition_viewed()`追加。`--lifecycle`実行時にviewing_date<todayの物件を自動でviewed遷移+notes追記
+  - **中野メール下書き**: OC7物件サブリース確認+プレイスポットしんばしビル本館1,980万円値下げ打診。2回修正（①「澤畠さん（筑波銀行）」→「銀行」に簡略化、②「興味を持っている顧客」の言い回しを中野→売主への伝え方として構造化）
+- **Commits**: 未commit（unstaged）
 
 ## Completed (ローカルファースト化 + idle_guard + GHAフォールバック 2026-04-07)
 - **Before**: GHAが実質Primary（毎朝JST 06:00に無条件実行、月900分消費）。ローカルはGHAのpatrol_summary.json更新で20hクールダウンに引っかかり3/30以降停止。GHAフォールバック機構なし（毎晩無条件実行）。PC起動時に全ジョブ同時発火でCPU/ネットワーク負荷
@@ -68,13 +88,24 @@
 - **Pushed**: `c8ff53f`
 
 ## In Progress / Next Actions
-1. **Phase 3: enrich拡張**: 楽待詳細ページ取得時にサブリースの「Point」欄スキャン + 複数駅補完（ネットワーク依存、後日）
-2. **内見済み3件の銀行査定フォロー**: プレイスポット/GSハイム/ローズマンション → 筑波銀行結果確認
-3. **一棟もの物件**: 中野さんが未公開物件を探すと言っていた（3/24）→ フォロー
-4. **Name Quality FAIL**: 東京の「値下げしました！東武練馬駅徒歩7分」→ auto_fixのBUILDING_MARKERSに該当しないパターン。手動修正 or パターン追加
-5. **Digest Status Bar v1**: 動作確認済み。2行折り返し・名前短縮・gnavとの視覚差別化が次の改善点
+1. **Phase 2: calendar_inject → reply_assist統合**: detect_booking()の結果をgcal_create_eventに接続（hook化 or reply_assist組み込み）
+2. **Phase 2: pipeline_signal → メール下書きhook統合**: Gmail MCP draft作成後に自動でemit()呼び出し
+3. **OC7物件サブリース回答待ち**: 中野さんからのOC物件サブリース有無確認（メール送信済み2026-04-09）
+4. **プレイスポットしんばしビル本館 価格交渉待ち**: 中野さん経由で1,980万円打診（メール送信済み2026-04-09）
+5. **Phase 3: enrich拡張**: 楽待詳細ページ取得時にサブリースの「Point」欄スキャン + 複数駅補完（ネットワーク依存、後日）
+6. **内見済み3件の銀行査定フォロー**: プレイスポット/GSハイム/ローズマンション → 筑波銀行結果確認
+7. **一棟もの物件**: 中野さんが未公開物件を探すと言っていた（3/24）→ フォロー
+8. **Name Quality FAIL**: 東京の「値下げしました！東武練馬駅徒歩7分」→ auto_fixのBUILDING_MARKERSに該当しないパターン。手動修正 or パターン追加
+9. **Digest Status Bar v1**: 動作確認済み。2行折り返し・名前短縮・gnavとの視覚差別化が次の改善点
 
 ## Key Decisions
+- 2026-04-09: **property-analyzer/lib/ デッドコード判定**: sys.pathで共有lib/が先に解決されるためPythonファイルは未使用→削除。templates/はcreate_env(extra_dirs)で使用中のため維持
+- 2026-04-09: **Gnav 2層分離**: site-header(Hub/Property/Travel)はlib/renderer SSoT委譲。section-nav(Market/内覧等)はproperty固有で維持
+- 2026-04-09: **pipeline_signalはYAML直接読み書き**: property_pipeline.pyのimport依存を回避し、inquiries.yamlを直接YAML操作。シンプルさ優先
+- 2026-04-09: **calendar_injectは抽出層のみ**: Gmail MCP非依存。呼び出し側（reply_assist/hook）がgcal_create_eventを呼ぶ設計。bidirectional syncは見送り
+- 2026-04-09: **ステータスはupgradeのみ（逆行防止）**: STATUS_ORDERで序列管理。passed/in_discussionにinquiredを送ってもstatus不変
+- 2026-04-09: **メール文面の構造**: 中野さんへの依頼と、中野さんから売主への伝え方を分離。「興味を持っている顧客」は中野→売主の交渉文言
+- 2026-04-09: **GHA cron完全廃止**: ローカルlaunchd 6hが唯一のPrimary。GHAはworkflow_dispatch（Dead Man's Switch経由）のみ。cron二重管理を構造的に排除
 - 2026-04-07: **ローカルファースト + GHA条件付きフォールバック**: GHA cronは24h以内にローカル成功ならスキップ。kaizen Dead Man's Switchで36h stale時にworkflow_dispatch
 - 2026-04-07: **idle_guard**: 重量ジョブはアイドル待機（property 5分/2h、kaizen 3分/1h）。深夜0-6時は即実行
 - 2026-04-06: **lib SSoT shim化**: property-analyzer内のlib/renderer.py, lib/styles/design_tokens.pyをshim化し、canonical Projects/lib/に一元化。二重管理を構造的に排除
@@ -96,7 +127,10 @@
 - dry-run: `bash scripts/deploy_market.sh --dry-run`
 
 ## History (last 20)
-1. 2026-04-07: Before: GHA実質Primary+ローカル3/30停止 → After: ローカルファースト化+GHA条件付きフォールバック+idle_guard+Playwrightキャッシュ+Dead Man's Switch
+1. 2026-04-09: Before: config.yamlにAPIキー+lib/578行デッドコード+gnav SSoT違反 → After: キー除去+lib/削除+get_nav_html()委譲
+2. 2026-04-09: Before: GHA cron残存でローカルと二重管理 → After: cron完全削除、launchd 6h一本化。`4c7a1c2`
+2. 2026-04-09: Before: メール→DB/Calendar断絶+viewing手動遷移 → After: pipeline_signal+calendar_inject+auto_transition_viewed 3モジュール実装+中野メール下書き
+2. 2026-04-07: Before: GHA実質Primary+ローカル3/30停止 → After: ローカルファースト化+GHA条件付きフォールバック+idle_guard+Playwrightキャッシュ+Dead Man's Switch
 2. 2026-04-07: Before: Digest Status Barなし（表示なし=正常の暗黙ルール） → After: 全パイプライン常時表示（●OK/▲warn/■error）+全ジョブ日本語短縮名
 3. 2026-04-06: Before: lib 2ファイルがフルコピー二重管理+patrol連続実行リスク → After: shim化でSSoT一元化+20hクールダウンガード
 4. 2026-04-06: Before: ジョブ依存関係が暗黙的 → After: infra-manifest.yamlに7ジョブ依存宣言+check_job_dependencies自動検証
@@ -114,5 +148,3 @@
 16. 2026-03-25: CLAUDE.md Before/After必須化昇格
 17. 2026-03-24: 内見分析ダッシュボード+reply_assist+中野さん対応
 18. 2026-03-23: Dashboard gnav統一+property inquiry pipeline
-19. 2026-03-22: 不動産パイプライン構築+物件スコアリング
-20. 2026-03-21: Dashboard UX改善+モバイル最適化

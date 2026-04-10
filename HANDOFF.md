@@ -1,12 +1,15 @@
 # HANDOFF
 
 ## [Constancy] 2026-04-10
-- [WARN] data_freshness: Property Status: last updated 43h ago (threshold: 28h)
+- [WARN] data_freshness: Property Status: last updated 50h ago (threshold: 28h)
 - [ERROR] hardcoded_data: [ESCALATED: 18d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
 - [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 18d unresolved] property_pipeline.py is 2277 lines (threshold: 800). Consider splitting.
-- [WARN] structural_reform: Stale temp/debug file (9 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (13 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (7 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (7 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (7 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (10 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (14 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
@@ -22,13 +25,18 @@
 - [WARN] qa_market_data_accuracy: 4/86 (4.7%) — price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: アンピールやよい坂 305 raw=920.0 html=950.0; price mismatch: ふれんず物件(中央区) raw=800.0 html=950.0
 - [WARN] qa_market_oc_income_coverage: OC 289件中 197件が年間収入欠落 (68%) — 利回り逆算で補完
 - [ERROR] qa_market_yield_consistency: 2件の利回り/年間収入乖離(>20%): プレサンス難波南アーバニッシュ: expected=30.8万 actual=72.0万 (57%乖離); 複数路線が徒歩圏内でアクセス良好: expected=153.3万 actual=88.2万 (74%乖離)
-- [WARN] qa_market_name_cross_reference: 24件の物件名クロスリファレンス不一致: 目黒区東山(44㎡): ['池尻大橋駅 / 1LDK / 44.03㎡', '中銀東山マンシオン']; 福岡市博多区千代(26㎡): ['■■■【福岡', 'JGM県庁口 502']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区比恵町(20㎡): ['ふれんず物件(博多区)', '■■■【福岡'] ... +19 more
+- [WARN] qa_market_name_cross_reference: 24件の物件名クロスリファレンス不一致: 目黒区東山(44㎡): ['中銀東山マンシオン', '池尻大橋駅 / 1LDK / 44.03㎡']; 福岡市博多区千代(26㎡): ['■■■【福岡', 'JGM県庁口 502']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分', 'ピュアドームエクセル博多']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区比恵町(20㎡): ['ふれんず物件(博多区)', '■■■【福岡'] ... +19 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 26.1% (29/111件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 3080.0万円/40.75㎡; 4980.0万円/60.61㎡; 1890.0万円/55.62㎡; 3490.0万円/56.7㎡
-- [WARN] visual_regression: [desktop] render failed: Traceback (most recent call last):
-  File "<string>", line 92, in <module>
-    results = check_page(url, width)
-  File "<string>", line 16, in check_page
-    page.goto(url, wait_until="networkidle", t
+- [ERROR] visual_regression: [mobile] console_error: 2 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED', 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
+- [ERROR] visual_regression: [desktop] console_error: 2 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED', 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
+- [ERROR] visual_regression: [mobile] console_error: 2 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED', 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
+- [ERROR] visual_regression: [desktop] console_error: 2 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED', 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
+- [ERROR] visual_regression: [mobile] console_error: 2 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED', 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
+- [ERROR] visual_regression: [desktop] console_error: 2 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED', 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
+- [ERROR] visual_regression: [mobile] console_error: 1 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
+- [ERROR] visual_regression: [desktop] console_error: 1 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
+- [ERROR] visual_regression: [mobile] console_error: 1 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
+- [ERROR] visual_regression: [desktop] console_error: 1 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
 - [ERROR] visual_regression: [mobile] console_error: 1 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
 - [ERROR] visual_regression: [desktop] console_error: 1 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
 

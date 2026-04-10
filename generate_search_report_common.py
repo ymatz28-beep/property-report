@@ -745,12 +745,12 @@ def minpaku_penalty(row: PropertyRow) -> int:
 
 def grade_tier(total: int) -> tuple[str, str, str]:
     if total >= 80:
-        return "強く推奨", "tier-strong", "#22c55e"
+        return "強く推奨", "tier-strong", "var(--accent-green)"
     if total >= 65:
         return "推奨", "tier-good", "#facc15"
     if total >= 50:
         return "条件付き", "tier-conditional", "#fb923c"
-    return "見送り", "tier-pass", "#ef4444"
+    return "見送り", "tier-pass", "var(--accent-red)"
 
 
 def build_comment(row: PropertyRow) -> str:

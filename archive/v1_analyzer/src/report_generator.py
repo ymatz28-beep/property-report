@@ -139,7 +139,7 @@ def generate_pdf(
         "条件付き推奨": "#d69e2e",
         "慎重検討": "#e53e3e",
         "見送り推奨": "#c53030",
-    }.get(decision["verdict"], "#333")
+    }.get(decision["verdict"], "var(--border-secondary)")
 
     elements.append(Paragraph(
         f'<font color="{verdict_color}" size="14"><b>【{decision["verdict"]}】スコア: {decision["score"]}/100</b></font>',

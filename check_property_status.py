@@ -286,8 +286,8 @@ def _generate_index_html() -> str:
     reports = [
         ("minpaku-osaka.html", "大阪", "民泊向け中古マンション候補", "#6ee7ff"),
         ("minpaku-fukuoka.html", "福岡", "民泊向け中古マンション候補", "#ff6b6b"),
-        ("minpaku-tokyo.html", "東京", "民泊向け中古マンション候補", "#a78bfa"),
-        ("naiken-analysis.html", "内覧分析", "内覧予定物件の比較・分析", "#a78bfa"),
+        ("minpaku-tokyo.html", "東京", "民泊向け中古マンション候補", "var(--accent-purple)"),
+        ("naiken-analysis.html", "内覧分析", "内覧予定物件の比較・分析", "var(--accent-purple)"),
     ]
     cards = ""
     for href, city, desc, color in reports:

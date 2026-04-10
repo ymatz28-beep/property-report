@@ -417,11 +417,11 @@ def _avg_sqm_cell(r: IttomonoRow) -> str:
     if r.avg_sqm_per_unit is not None:
         val = r.avg_sqm_per_unit
         if val >= 35:
-            color = "#22c55e"
+            color = "var(--accent-green)"
         elif val >= 25:
             color = "#facc15"
         else:
-            color = "#f87171"
+            color = "var(--accent-red-light)"
         parts.append(f'<span style="color:{color};font-weight:600">{val}㎡</span>')
     else:
         parts.append('<span style="color:var(--dim)">-</span>')
@@ -441,7 +441,7 @@ def _avg_sqm_cell(r: IttomonoRow) -> str:
 
 
 CITY_LABELS = {"osaka": "大阪", "fukuoka": "福岡", "tokyo": "東京"}
-CITY_ACCENTS = {"osaka": "#6ee7ff", "fukuoka": "#ff6b6b", "tokyo": "#a78bfa"}
+CITY_ACCENTS = {"osaka": "#6ee7ff", "fukuoka": "#ff6b6b", "tokyo": "var(--accent-purple)"}
 
 
 def _revenue_kpi(r: IttomonoRow) -> tuple[str, str]:
@@ -453,23 +453,23 @@ def _revenue_kpi(r: IttomonoRow) -> tuple[str, str]:
     # Net yield coloring
     ny = rev.net_yield_pct
     if ny >= 5:
-        ny_color = "#22c55e"
+        ny_color = "var(--accent-green)"
     elif ny >= 3:
         ny_color = "#facc15"
     else:
-        ny_color = "#f87171"
+        ny_color = "var(--accent-red-light)"
     ny_html = f'<span class="kpi-netyield" style="color:{ny_color}">実質{ny:.1f}%</span>'
 
     # Monthly CF coloring
     mcf = rev.monthly_cf
     if mcf > 30:
-        cf_color = "#22c55e"
+        cf_color = "var(--accent-green)"
     elif mcf > 15:
         cf_color = "#34d399"
     elif mcf > 0:
         cf_color = "#facc15"
     else:
-        cf_color = "#f87171"
+        cf_color = "var(--accent-red-light)"
     sign = "+" if mcf >= 0 else ""
     cf_html = f'<span class="kpi-cf" style="color:{cf_color}">CF{sign}{mcf:.1f}万/月</span>'
 
@@ -497,7 +497,7 @@ def _revenue_block_html(r: IttomonoRow) -> str:
 
     # CF color
     mcf = rev.monthly_cf
-    cf_color = "#22c55e" if mcf > 30 else "#34d399" if mcf > 15 else "#facc15" if mcf > 0 else "#f87171"
+    cf_color = "var(--accent-green)" if mcf > 30 else "#34d399" if mcf > 15 else "#facc15" if mcf > 0 else "var(--accent-red-light)"
     cf_sign = "+" if rev.annual_cf >= 0 else ""
 
     # Building price for depreciation breakdown
@@ -527,7 +527,7 @@ def _revenue_block_html(r: IttomonoRow) -> str:
         <div class="rv-row"><span class="rv-desc">建物価格</span><span class="rv-note">= 取得価格 × 建物比率{p.building_ratio*100:.0f}%</span><span class="rv-amount">{_f(building_price)}</span></div>
         <div class="rv-row"><span class="rv-desc">残存耐用年数</span><span class="rv-note">法定{rev.useful_life}年 − 築{rev.price_man and rev.built_year and (2026 - rev.built_year) or "?"}年</span><span class="rv-amount">{rev.remaining_life}年</span></div>
         <div class="rv-row rv-subtotal"><span class="rv-desc">年間償却額</span><span class="rv-note">= {_f(building_price)} ÷ {rev.remaining_life}年</span><span class="rv-amount">{_f(rev.depreciation_annual)}</span></div>
-        {"<div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style=\"color:#22c55e\">+{0}万/年</span></div>".format(f"{rev.tax_benefit:,.0f}") if rev.tax_benefit > 0 else "<div class='rv-row'><span class='rv-desc'>税負担</span><span class='rv-note'>課税所得{0}万 × 税率{1:.0f}%</span><span class='rv-amount'>-{2}万</span></div>".format(f"{rev.taxable_income:,.0f}", p.tax_rate*100, f"{rev.taxable_income * p.tax_rate:,.0f}")}
+        {"<div class='rv-row rv-highlight'><span class='rv-desc'>節税効果（損益通算）</span><span class='rv-note'>帳簿上の赤字 → 他の所得と相殺</span><span class='rv-amount' style=\"color:var(--accent-green)\">+{0}万/年</span></div>".format(f"{rev.tax_benefit:,.0f}") if rev.tax_benefit > 0 else "<div class='rv-row'><span class='rv-desc'>税負担</span><span class='rv-note'>課税所得{0}万 × 税率{1:.0f}%</span><span class='rv-amount'>-{2}万</span></div>".format(f"{rev.taxable_income:,.0f}", p.tax_rate*100, f"{rev.taxable_income * p.tax_rate:,.0f}")}
       </div>
 
       <div class="rv-bottom">
@@ -769,10 +769,10 @@ def build_report_html(all_rows: list[IttomonoRow]) -> str:
         # --- Table: revenue cells ---
         rev = r.revenue
         if rev and rev.verdict != "データ不足":
-            tbl_netyield = f'<span style="color:{"#22c55e" if rev.net_yield_pct >= 5 else "#facc15" if rev.net_yield_pct >= 3 else "#f87171"}">{rev.net_yield_pct:.1f}%</span>'
+            tbl_netyield = f'<span style="color:{"var(--accent-green)" if rev.net_yield_pct >= 5 else "#facc15" if rev.net_yield_pct >= 3 else "var(--accent-red-light)"}">{rev.net_yield_pct:.1f}%</span>'
             mcf = rev.monthly_cf
             cf_sign = "+" if mcf >= 0 else ""
-            tbl_cf = f'<span style="color:{"#22c55e" if mcf > 30 else "#34d399" if mcf > 15 else "#facc15" if mcf > 0 else "#f87171"}">{cf_sign}{mcf:.1f}万</span>'
+            tbl_cf = f'<span style="color:{"var(--accent-green)" if mcf > 30 else "#34d399" if mcf > 15 else "#facc15" if mcf > 0 else "var(--accent-red-light)"}">{cf_sign}{mcf:.1f}万</span>'
         else:
             tbl_netyield = '<span style="color:var(--dim)">-</span>'
             tbl_cf = '<span style="color:var(--dim)">-</span>'

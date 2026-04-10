@@ -32,7 +32,7 @@ def main() -> None:
     config = ReportConfig(
         city_key="tokyo",
         city_label="東京",
-        accent="#a78bfa",
+        accent="var(--accent-purple)",
         accent_rgb="167,139,250",
         data_path=Path("data/suumo_tokyo_raw.txt"),
         output_path=Path("output/minpaku-tokyo.html"),

@@ -91,12 +91,12 @@ STATUS_LABELS = {
 STATUS_COLORS = {
     "discovered": "#71717a",
     "flagged": "#3b9eff",
-    "inquired": "#f59e0b",
+    "inquired": "var(--accent-amber)",
     "in_discussion": "#f97316",
-    "viewing": "#a78bfa",
+    "viewing": "var(--accent-purple)",
     "viewed": "#6366f1",
-    "decided": "#22c55e",
-    "passed": "#ef4444",
+    "decided": "var(--accent-green)",
+    "passed": "var(--accent-red)",
 }
 
 CITY_LABELS = {"osaka": "大阪", "fukuoka": "福岡", "tokyo": "東京"}
@@ -1067,7 +1067,7 @@ def _render_card_analysis(inq: dict) -> str:
         return ""
 
     mcf = rev.monthly_cf
-    cf_color = "#22c55e" if mcf > 3 else "#facc15" if mcf > 0 else "#f87171"
+    cf_color = "var(--accent-green)" if mcf > 3 else "#facc15" if mcf > 0 else "var(--accent-red-light)"
     cf_sign = "+" if mcf >= 0 else ""
 
     payback = f"{rev.payback_years:.1f}年" if rev.payback_years != float("inf") else "∞"
@@ -1075,7 +1075,7 @@ def _render_card_analysis(inq: dict) -> str:
     if rev.tax_benefit > 0:
         tax_line = f'<div style="display:flex;justify-content:space-between"><span>節税効果</span><span style="color:var(--green)">+{rev.tax_benefit:,.0f}万/年</span></div>'
 
-    vclass_map = {"高CF物件": "#22c55e", "安定CF": "#34d399", "薄利": "#facc15", "CF赤字": "#f87171"}
+    vclass_map = {"高CF物件": "var(--accent-green)", "安定CF": "#34d399", "薄利": "#facc15", "CF赤字": "var(--accent-red-light)"}
     v_color = vclass_map.get(rev.verdict, "#71717a")
 
     # --- KPI summary strip (always visible) ---
@@ -1083,8 +1083,8 @@ def _render_card_analysis(inq: dict) -> str:
     ltv_pct = inq_loan_amount / price_val * 100 if inq_loan_amount else (1 - dr) * 100
     loan_label = f"{int(inq_loan_amount):,}万" if inq_loan_amount else f"{int(rev.loan_amount):,}万"
     loan_source = f"（{loan_bank}）" if loan_bank else "（想定）"
-    ccr_color = "#22c55e" if rev.ccr_pct > 5 else "#facc15" if rev.ccr_pct > 0 else "#f87171"
-    yield_color = "#22c55e" if yield_hi >= 7 else "#facc15" if yield_hi >= 4 else "#f87171"
+    ccr_color = "var(--accent-green)" if rev.ccr_pct > 5 else "#facc15" if rev.ccr_pct > 0 else "var(--accent-red-light)"
+    yield_color = "var(--accent-green)" if yield_hi >= 7 else "#facc15" if yield_hi >= 4 else "var(--accent-red-light)"
 
     kpi_html = f'''<div class="card-kpi-strip">
   <div class="card-kpi"><div class="card-kpi-val" style="color:{cf_color}">{cf_sign}{mcf:.1f}万</div><div class="card-kpi-label">月CF</div></div>
@@ -1122,15 +1122,15 @@ def _render_card_analysis(inq: dict) -> str:
     <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（{vacancy_pct}%）</span><span>-{rev.vacancy_loss:,.0f}万/年</span></div>
     {wf_mgmt}
     {residual_line}
-    <div style="display:flex;justify-content:space-between;border-top:1px solid #333;padding-top:2px"><span>NOI（営業利益）</span><span>{rev.noi:,.0f}万/年</span></div>
+    <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border-secondary);padding-top:2px"><span>NOI（営業利益）</span><span>{rev.noi:,.0f}万/年</span></div>
     <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-{rev.annual_debt_service:,.0f}万/年（月{rev.annual_debt_service / 12:.1f}万 × {rev.loan_years}年）</span></div>
-    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid #333;padding-top:2px"><span>月間CF</span><span style="color:{cf_color}">{cf_sign}{mcf:.1f}万/月</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid var(--border-secondary);padding-top:2px"><span>月間CF</span><span style="color:{cf_color}">{cf_sign}{mcf:.1f}万/月</span></div>
     {tax_line}
     <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>{yield_lo}〜{yield_hi}%</span></div>
     <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>{rev.ccr_pct:.1f}%</span></div>
     <div style="display:flex;justify-content:space-between"><span>回収</span><span>{payback}</span></div>
     <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:{v_color};font-weight:600">{rev.verdict}</span></div>
-    <div style="border-top:1px solid #333;padding-top:3px;margin-top:2px">
+    <div style="border-top:1px solid var(--border-secondary);padding-top:3px;margin-top:2px">
       <div style="display:flex;justify-content:space-between"><span>頭金</span><span>{rev.down_payment:,.0f}万（{params.down_payment_ratio*100:.0f}%）</span></div>
       <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（{params.acquisition_cost_rate*100:.0f}%）</span><span>{rev.acquisition_cost:,.0f}万</span></div>
       <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>{rev.total_equity:,.0f}万</span></div>
@@ -1154,7 +1154,7 @@ def _render_card(inq: dict) -> str:
     area = f"{area_val}㎡" if area_val else "?"
     viewing_line = ""
     if inq.get("viewing_date"):
-        viewing_line = f'<div style="color:#a78bfa;font-size:12px;margin-top:6px">内見: {inq["viewing_date"]}</div>'
+        viewing_line = f'<div style="color:var(--accent-purple);font-size:12px;margin-top:6px">内見: {inq["viewing_date"]}</div>'
     notes_line = ""
     if inq.get("notes"):
         notes_raw = inq["notes"]
@@ -1316,7 +1316,7 @@ def _build_viewing_schedule(inquiries: list[dict], agent_memory: dict) -> str:
             if loc:
                 date_line += f'<div class="sched-loc">📍 {loc}</div>'
         elif status == "in_discussion":
-            date_line = '<div class="sched-date" style="color:#f59e0b">⏳ 日程調整中</div>'
+            date_line = '<div class="sched-date" style="color:var(--accent-amber)">⏳ 日程調整中</div>'
         elif status == "inquired":
             date_line = '<div class="sched-date" style="color:#71717a">📨 返信待ち</div>'
 
@@ -1360,9 +1360,9 @@ def _build_viewing_schedule(inquiries: list[dict], agent_memory: dict) -> str:
   <div class="schedule-header">
     <h2>内覧スケジュール / 進行中</h2>
     <div class="schedule-counts">
-      {f'<span style="color:#a78bfa">内見 {count_viewing}</span>' if count_viewing else ''}
+      {f'<span style="color:var(--accent-purple)">内見 {count_viewing}</span>' if count_viewing else ''}
       {f'<span style="color:#f97316">やり取り中 {count_discussion}</span>' if count_discussion else ''}
-      {f'<span style="color:#f59e0b">問い合わせ済 {count_inquired}</span>' if count_inquired else ''}
+      {f'<span style="color:var(--accent-amber)">問い合わせ済 {count_inquired}</span>' if count_inquired else ''}
     </div>
   </div>
   <div class="schedule-cards">
@@ -1461,7 +1461,7 @@ def _naiken_invest_analysis(p: dict, all_props: list[dict]) -> str:
     payback = f"{rev.payback_years:.1f}年" if rev.payback_years != float("inf") else "∞"
 
     mcf = rev.monthly_cf
-    cf_color = "#22c55e" if mcf > 30 else "#34d399" if mcf > 15 else "#facc15" if mcf > 0 else "#f87171"
+    cf_color = "var(--accent-green)" if mcf > 30 else "#34d399" if mcf > 15 else "#facc15" if mcf > 0 else "var(--accent-red-light)"
     cf_sign = "+" if rev.annual_cf >= 0 else ""
 
     building_price = rev.price_man * p_rv.building_ratio
@@ -1471,7 +1471,7 @@ def _naiken_invest_analysis(p: dict, all_props: list[dict]) -> str:
     if mgmt:
         mgmt_man = mgmt / 10000
         cf_after_mgmt = rev.monthly_cf - mgmt_man
-        cf_after_color = "#34d399" if cf_after_mgmt > 0 else "#f87171"
+        cf_after_color = "#34d399" if cf_after_mgmt > 0 else "var(--accent-red-light)"
         cf_after_sign = "+" if cf_after_mgmt >= 0 else ""
         mgmt_note = f"""<div class="rv-row rv-minus"><span class="rv-desc">管理費・修繕積立金</span><span class="rv-note">{mgmt:,}円/月</span><span class="rv-amount">-{mgmt_man:.1f}万/月</span></div>
         <div class="rv-row rv-highlight"><span class="rv-desc">管理費込み月間CF</span><span class="rv-note"></span><span class="rv-amount" style="color:{cf_after_color}">{cf_after_sign}{cf_after_mgmt:.1f}万/月</span></div>"""
@@ -1877,10 +1877,10 @@ def generate_dashboard() -> Path:
 
     # Stage tab definitions
     STAGE_TABS = [
-        ("active",     "進行中", "#f59e0b", ("inquired", "in_discussion")),
-        ("viewing",    "内見",   "#a78bfa", ("viewing",)),
+        ("active",     "進行中", "var(--accent-amber)", ("inquired", "in_discussion")),
+        ("viewing",    "内見",   "var(--accent-purple)", ("viewing",)),
         ("appraisal",  "査定中", "#6366f1", ("viewed",)),
-        ("done",       "完了",   "#22c55e", ("decided",)),
+        ("done",       "完了",   "var(--accent-green)", ("decided",)),
         ("candidates", "候補",   "#71717a", ("flagged",)),
     ]
 

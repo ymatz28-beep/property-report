@@ -81,7 +81,7 @@ def load_city_properties(city_key: str) -> list[PropertyRow]:
             "extra": [DATA / "restate_tokyo_raw.txt", DATA / "cowcamo_tokyo_raw.txt", DATA / "suumo_tokyo_raw.txt"],
             "include_osaka_r": False,
             "label": "東京",
-            "accent": "#a78bfa",
+            "accent": "var(--accent-purple)",
             "accent_rgb": "167,139,250",
         },
     }
@@ -273,7 +273,7 @@ def build_html(all_data: dict[str, list[tuple[PropertyRow, str]]]) -> str:
     city_colors = {
         "osaka": ("#3b9eff", "59,158,255"),
         "fukuoka": ("#34d399", "52,211,153"),
-        "tokyo": ("#a78bfa", "167,139,250"),
+        "tokyo": ("var(--accent-purple)", "167,139,250"),
     }
     city_labels = {"osaka": "大阪", "fukuoka": "福岡", "tokyo": "東京"}
 

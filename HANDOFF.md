@@ -1,7 +1,6 @@
 # HANDOFF
 
 ## [Constancy] 2026-04-10
-- [WARN] data_freshness: Property Status: last updated 50h ago (threshold: 28h)
 - [ERROR] hardcoded_data: [ESCALATED: 18d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
 - [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 18d unresolved] property_pipeline.py is 2277 lines (threshold: 800). Consider splitting.
@@ -17,16 +16,38 @@
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
-- [WARN] blank_cells: ダッシュ「—」177個 (閾値20) — データ欠損の可能性
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 2% (2/127) — 閾値80%
+- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-10 18:54): 【問い合わせ文面生成】エラー終了 (exit 1) → Fix: エラーログを確認
+- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-10 18:54): 【内覧分析レポート】異常終了: '<' not supported between instances of 'str' and 'NoneType' → Fix: エラーログを確認
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 399: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 532: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 533: hardcoded #22c55e should be var(--green)
+- [WARN] design_token_compliance: Line 534: hardcoded #ef4444 should be var(--red)
+- [WARN] design_token_compliance: Line 1113: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 1122: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 1178: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 1233: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 343: hardcoded #4ade80 should be var(--green-light)
+- [WARN] design_token_compliance: Line 344: hardcoded #f87171 should be var(--red-light)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 753: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 468: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] blank_cells: ダッシュ「—」169個 (閾値20) — データ欠損の可能性
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 4% (5/136) — 閾値80%
 - [ERROR] property_name_quality: 駅名が物件名になっている: 2件 — ['値下げしました！東武練馬駅徒歩7分', '値下げしました！東武練馬駅徒歩7分']
 - [ERROR] qa_market_name_quality: 2 station-pattern names: ['値下げしました！東武練馬駅徒歩7分', '値下げしました！東武練馬駅徒歩7分']
-- [WARN] qa_market_duplicate_detection: 2 duplicate (price, area) pairs: [(('4980', '55.72'), ['fukuoka-kubun', 'fukuoka-kubun']), (('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
-- [WARN] qa_market_data_accuracy: 4/86 (4.7%) — price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: アンピールやよい坂 305 raw=920.0 html=950.0; price mismatch: ふれんず物件(中央区) raw=800.0 html=950.0
-- [WARN] qa_market_oc_income_coverage: OC 289件中 197件が年間収入欠落 (68%) — 利回り逆算で補完
-- [ERROR] qa_market_yield_consistency: 2件の利回り/年間収入乖離(>20%): プレサンス難波南アーバニッシュ: expected=30.8万 actual=72.0万 (57%乖離); 複数路線が徒歩圏内でアクセス良好: expected=153.3万 actual=88.2万 (74%乖離)
-- [WARN] qa_market_name_cross_reference: 24件の物件名クロスリファレンス不一致: 目黒区東山(44㎡): ['中銀東山マンシオン', '池尻大橋駅 / 1LDK / 44.03㎡']; 福岡市博多区千代(26㎡): ['■■■【福岡', 'JGM県庁口 502']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分', 'ピュアドームエクセル博多']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区比恵町(20㎡): ['ふれんず物件(博多区)', '■■■【福岡'] ... +19 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 26.1% (29/111件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 3080.0万円/40.75㎡; 4980.0万円/60.61㎡; 1890.0万円/55.62㎡; 3490.0万円/56.7㎡
+- [WARN] qa_market_duplicate_detection: 2 duplicate (price, area) pairs: [(('950', '55.43'), ['fukuoka-kubun', 'fukuoka-budget']), (('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
+- [WARN] qa_market_oc_income_coverage: OC 318件中 211件が年間収入欠落 (66%) — 利回り逆算で補完
+- [ERROR] qa_market_yield_consistency: 1件の利回り/年間収入乖離(>20%): プレサンス難波南アーバニッシュ: expected=30.8万 actual=72.0万 (57%乖離)
+- [WARN] qa_market_name_cross_reference: 15件の物件名クロスリファレンス不一致: 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ピュアドームエクセル博多', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区比恵町(20㎡): ['■■■【福岡', 'ふれんず物件(博多区)']; 福岡市博多区千代(34㎡): ['ふれんず物件(博多区)', '人気上昇中の博多エリア【吉塚駅】築浅の1LDK！']; 福岡市博多区博多駅前(29㎡): ['ロワールマンション博多駅南 601', '・博多駅まで徒歩10分（JR・地下鉄空港線・地下鉄七隈線の3路線） ・2023年8月より賃貸中'] ... +10 more
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 12.2% (14/115件)。パイプライン変換バグの可能性。例: 800.0万円/43.88㎡; 800.0万円/43.4㎡; 1000.0万円/46.75㎡; 850.0万円/68.3㎡; 950.0万円/59.65㎡
 - [ERROR] visual_regression: [mobile] console_error: 2 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED', 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
 - [ERROR] visual_regression: [desktop] console_error: 2 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED', 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED']
 - [ERROR] visual_regression: [mobile] console_error: 2 JS errors: ['Failed to load resource: net::ERR_INTERNET_DISCONNECTED', 'Failed to load resource: net::ERR_INTERNET_DISCONNECTED']

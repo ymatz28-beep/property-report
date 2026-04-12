@@ -90,8 +90,33 @@
     .page { max-width: 960px; margin: 0 auto; padding: 0 32px; }
 
     .hub-header {
-      padding: 48px 0 32px;
+      padding: 48px 0 24px;
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 0 0 32px;
+      padding: 0 0 32px;
       border-bottom: 1px solid var(--border);
+    }
+    .kpi-tile {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .kpi-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px; font-weight: 600; color: var(--text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.01em;
+    }
+    .kpi-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    @media (max-width: 640px) {
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); gap: 16px 12px; }
+      .kpi-value { font-size: 18px; }
     }
     .hub-header h1 {
       font-family: 'Inter', 'Noto Sans JP', sans-serif;
@@ -276,6 +301,12 @@
       <h1>物件レポート</h1>
       <p>毎日自動巡回・スコアリング・レポート生成</p>
     </div>
+    <div class="kpi-strip">
+      <div class="kpi-tile"><div class="kpi-value" id="kpi-candidates">—</div><div class="kpi-label">候補物件</div></div>
+      <div class="kpi-tile"><div class="kpi-value" id="kpi-top-score">—</div><div class="kpi-label">最高スコア</div></div>
+      <div class="kpi-tile"><div class="kpi-value" id="kpi-inquiries">—</div><div class="kpi-label">問い合わせ中</div></div>
+      <div class="kpi-tile"><div class="kpi-value" id="kpi-updated">—</div><div class="kpi-label">最終更新</div></div>
+    </div>
     <div class="reports" id="reports"></div>
 
     <footer>
@@ -311,6 +342,38 @@
 
     function pad(n) { return n < 10 ? "0" + n : "" + n; }
 
+    // KPI hub summary — Phase 1: static fallback, tries data/hub_summary.json for live
+    var KPI_FALLBACK = {
+      candidates: "—",
+      top_score: "—",
+      inquiries: "—",
+      updated_at: ""
+    };
+    function renderKpi(k) {
+      document.getElementById("kpi-candidates").textContent = k.candidates != null ? k.candidates : "—";
+      document.getElementById("kpi-top-score").textContent  = k.top_score  != null ? k.top_score  : "—";
+      document.getElementById("kpi-inquiries").textContent  = k.inquiries  != null ? k.inquiries  : "—";
+      document.getElementById("kpi-updated").textContent    = formatAgo(k.updated_at) || "—";
+    }
+    function formatAgo(iso) {
+      if (!iso) return "";
+      var t = new Date(iso).getTime();
+      if (isNaN(t)) return "";
+      var mins = Math.floor((Date.now() - t) / 60000);
+      if (mins < 60) return mins + "分前";
+      var hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + "h前";
+      var days = Math.floor(hrs / 24);
+      return days + "日前";
+    }
+    function loadKpi() {
+      renderKpi(KPI_FALLBACK);
+      fetch("data/hub_summary.json", { cache: "no-store" })
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(k) { if (k) renderKpi(k); })
+        .catch(function() { /* keep fallback */ });
+    }
+
     function render() {
       var container = document.getElementById("reports");
 
@@ -340,6 +403,7 @@
     }
 
     render();
+    loadKpi();
   </script>
 </body>
 </html>

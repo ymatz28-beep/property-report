@@ -321,7 +321,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .gnav {
   position: sticky;
   top: var(--gnav-height, 52px);
-  z-index: 95;
+  z-index: var(--z-subnav, 90);
   background: rgba(10,12,18,0.92);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -338,7 +338,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   padding: 0 16px;
   overflow-x: auto;
   white-space: nowrap;
+  scrollbar-width: none;
 }
+.gnav-inner::-webkit-scrollbar { display: none; }
 .gnav a {
   display: inline-block;
   padding: 8px 14px;

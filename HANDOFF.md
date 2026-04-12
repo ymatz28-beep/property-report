@@ -1,15 +1,15 @@
 # HANDOFF
 
 ## [Constancy] 2026-04-12
-- [WARN] data_freshness: Property Status: last updated 35h ago (threshold: 28h)
+- [WARN] data_freshness: Property Status: last updated 49h ago (threshold: 28h)
 - [ERROR] hardcoded_data: [ESCALATED: 20d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
 - [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 20d unresolved] property_pipeline.py is 2277 lines (threshold: 800). Consider splitting.
-- [WARN] structural_reform: Stale temp/debug file (8 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (8 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (8 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (11 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (15 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (9 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (9 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (9 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (12 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (16 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
@@ -26,8 +26,13 @@
 - [ERROR] qa_market_duplicate_detection: [ESCALATED: 14d unresolved] 2 duplicate (price, area) pairs: [(('950', '55.43'), ['fukuoka-kubun', 'fukuoka-budget']), (('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
 - [WARN] qa_market_oc_income_coverage: OC 318件中 211件が年間収入欠落 (66%) — 利回り逆算で補完
 - [ERROR] qa_market_yield_consistency: 1件の利回り/年間収入乖離(>20%): プレサンス難波南アーバニッシュ: expected=30.8万 actual=72.0万 (57%乖離)
-- [WARN] qa_market_name_cross_reference: 15件の物件名クロスリファレンス不一致: 福岡市博多区博多駅前(22㎡): ['ピュアドームエクセル博多', 'ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区比恵町(20㎡): ['ふれんず物件(博多区)', '■■■【福岡']; 福岡市博多区千代(34㎡): ['ふれんず物件(博多区)', '人気上昇中の博多エリア【吉塚駅】築浅の1LDK！']; 福岡市博多区博多駅前(29㎡): ['・博多駅まで徒歩10分（JR・地下鉄空港線・地下鉄七隈線の3路線） ・2023年8月より賃貸中', 'ロワールマンション博多駅南 601'] ... +10 more
+- [WARN] qa_market_name_cross_reference: 15件の物件名クロスリファレンス不一致: 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分', 'ピュアドームエクセル博多']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区比恵町(20㎡): ['ふれんず物件(博多区)', '■■■【福岡']; 福岡市博多区千代(34㎡): ['ふれんず物件(博多区)', '人気上昇中の博多エリア【吉塚駅】築浅の1LDK！']; 福岡市博多区博多駅前(29㎡): ['ロワールマンション博多駅南 601', '・博多駅まで徒歩10分（JR・地下鉄空港線・地下鉄七隈線の3路線） ・2023年8月より賃貸中'] ... +10 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 12.2% (14/115件)。パイプライン変換バグの可能性。例: 800.0万円/43.88㎡; 800.0万円/43.4㎡; 1000.0万円/46.75㎡; 850.0万円/68.3㎡; 950.0万円/59.65㎡
+- [WARN] visual_regression: [desktop] render failed: Traceback (most recent call last):
+  File "<string>", line 92, in <module>
+    results = check_page(url, width)
+  File "<string>", line 16, in check_page
+    page.goto(url, wait_until="networkidle", t
 
 ## Last Updated
 2026-04-09

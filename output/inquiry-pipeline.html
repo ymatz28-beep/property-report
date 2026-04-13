@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pipeline</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@500&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #0f1117;
@@ -69,9 +69,9 @@
   --fs-h1: clamp(20px, 2.5vw, 26px);
   --fs-h2: clamp(16px, 2vw, 22px);
   --fs-h3: clamp(14px, 1.8vw, 18px);
-  --fs-body: 14px;
+  --fs-body: clamp(14px, 3.6vw, 15px);
   --fs-small: 12px;
-  --fs-xs: 10px;
+  --fs-xs: clamp(11px, 3vw, 12px);
 }
 
 /* === Reset === */
@@ -533,7 +533,7 @@ document.addEventListener('click', function(e) {
       <div class="stat"><div class="stat-val" style="color:var(--green)">0</div><div class="stat-label">完了</div></div>
       <div class="stat"><div class="stat-val" style="color:var(--red)">11</div><div class="stat-label">要アクション</div></div>
     </div>
-    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 8 / 見送り 40</div>
+    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 8 / 見送り 42</div>
   </div>
 
   <div class="section-nav"><div class="section-nav-inner"><a class="stage-tab active" data-stage="active" style="--tab-color:var(--accent-amber)" onclick="showStage('active')">進行中 <span class="tab-count">11</span></a><a class="stage-tab" data-stage="viewing" style="--tab-color:var(--accent-purple)" onclick="showStage('viewing')">内見 <span class="tab-count">1</span></a><a class="stage-tab" data-stage="appraisal" style="--tab-color:#6366f1" onclick="showStage('appraisal')">査定中 <span class="tab-count">3</span></a><a class="stage-tab" data-stage="done" style="--tab-color:var(--accent-green)" onclick="showStage('done')">完了 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="candidates" style="--tab-color:#71717a" onclick="showStage('candidates')">候補 <span class="tab-count">8</span></a></div></div>
@@ -548,7 +548,7 @@ document.addEventListener('click', function(e) {
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.f-takken.com/freins/items/99781409" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">トピレック博多 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 2日前</span>
+      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 5日前</span>
       <span class="status-pill" style="background:var(--accent-amber)">問い合わせ済</span>
       <span class="card-score">100pt</span>
     </div>
@@ -602,7 +602,7 @@ document.addEventListener('click', function(e) {
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.f-takken.com/freins/items/99358163" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">博多ニッコーハイツ 5階 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし 8日</span>
+      <span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし 11日</span>
       <span class="status-pill" style="background:#f97316">やり取り中</span>
       <span class="card-score">93pt</span>
     </div>
@@ -655,7 +655,7 @@ document.addEventListener('click', function(e) {
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.f-takken.com/freins/items/99804693" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">第3シャトー高宮 101 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 2日前</span>
+      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 5日前</span>
       <span class="status-pill" style="background:var(--accent-amber)">問い合わせ済</span>
       <span class="card-score">77pt</span>
     </div>
@@ -816,7 +816,7 @@ inquired (2026-04-09)</div>
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20370839/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">大名サンハイツ ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし 8日</span>
+      <span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし 11日</span>
       <span class="status-pill" style="background:#f97316">やり取り中</span>
       <span class="card-score">0pt</span>
     </div>
@@ -835,7 +835,7 @@ inquired (2026-04-09)</div>
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.athome.co.jp/mansion/6989571305/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">美野島シャトー ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし 8日</span>
+      <span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし 11日</span>
       <span class="status-pill" style="background:#f97316">やり取り中</span>
       <span class="card-score">0pt</span>
     </div>
@@ -854,7 +854,7 @@ inquired (2026-04-09)</div>
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3574963/show.html" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ロワールマンション大橋7 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 1日前</span>
+      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 4日前</span>
       <span class="status-pill" style="background:var(--accent-amber)">問い合わせ済</span>
       <span class="card-score">0pt</span>
     </div>
@@ -903,7 +903,7 @@ inquired (2026-04-09)</div>
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3557171/show.html" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ライオンズステーションプラザ箱崎 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 1日前</span>
+      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 4日前</span>
       <span class="status-pill" style="background:var(--accent-amber)">問い合わせ済</span>
       <span class="card-score">0pt</span>
     </div>
@@ -952,7 +952,7 @@ inquired (2026-04-09)</div>
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3559348/show.html" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ステイツ天神東 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 1日前</span>
+      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 4日前</span>
       <span class="status-pill" style="background:var(--accent-amber)">問い合わせ済</span>
       <span class="card-score">0pt</span>
     </div>
@@ -1001,7 +1001,7 @@ inquired (2026-04-09)</div>
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3571959/show.html" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">エスポワール箱崎 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 1日前</span>
+      <span style="background:var(--blue);color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">送信 4日前</span>
       <span class="status-pill" style="background:var(--accent-amber)">問い合わせ済</span>
       <span class="card-score">0pt</span>
     </div>
@@ -1580,7 +1580,7 @@ viewing (2026-04-09)</div>
   
 <details style="margin-top:32px">
   <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
-    見送り 40件（クリックで展開）
+    見送り 42件（クリックで展開）
   </summary>
   <div class="stage-cards" style="margin-top:8px"><div class="inq-card" style="opacity:0.4">
   <div style="display:flex;justify-content:space-between;align-items:center">
@@ -2126,7 +2126,7 @@ function showStage(stage) {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-04-10 19:44</div>
+  <div style="margin-top:4px;">Generated at 2026-04-13 11:19</div>
 </footer>
 </body>
 </html>

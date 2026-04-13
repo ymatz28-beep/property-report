@@ -968,6 +968,68 @@ def main():
         except Exception:
             pass  # truly nothing we can do
 
+    # Gmail notify on partial/total failure (silent on full success to avoid noise)
+    if fail_count > 0:
+        try:
+            _notify_gmail_patrol_failure(start, elapsed, all_steps, diff)
+        except Exception as e:
+            log(f"  ⚠️ Gmail notify skipped: {e}")
+
+
+def _notify_gmail_patrol_failure(start: datetime, elapsed: float,
+                                 all_steps: list[dict], diff: dict) -> None:
+    """Send Gmail notification when patrol has failures. Subject keywords match
+    lib/digest/collectors_inbox.py so the digest picks up the alert inbound."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from lib.digest.delivery_gmail import send_gmail_html
+
+    failure_details = _build_failure_details(all_steps)
+    fail_count = len(failure_details)
+    ok_count = sum(1 for s in all_steps if s.get("ok"))
+    step_count = len(all_steps)
+    failed_names = [d["step"] for d in failure_details]
+
+    severity = "FAIL" if ok_count == 0 else "PARTIAL"
+    subject = f"パトロール{'失敗' if severity=='FAIL' else '部分失敗'}: property-analyzer — {', '.join(failed_names[:3])}"
+
+    # 3-choice reply shortcuts (Phase B groundwork — reply body is parsed by future dispatcher)
+    reply_choices = [
+        ("1", "fix", "Claude Codeで修正を開始（推奨）"),
+        ("2", "defer", "明日のパトロールで再試行（今は保留）"),
+        ("3", "ignore", "次回から無視（ホワイトリスト化）"),
+    ]
+
+    rows = []
+    for d in failure_details:
+        rows.append(
+            f"<tr>"
+            f"<td style='padding:6px 10px;border-bottom:1px solid #eee;font-weight:600'>{d.get('label', d['step'])}</td>"
+            f"<td style='padding:6px 10px;border-bottom:1px solid #eee;color:#666'>{d.get('impact','')}</td>"
+            f"<td style='padding:6px 10px;border-bottom:1px solid #eee;font-family:ui-monospace,monospace;color:#c00;font-size:12px'>{(d.get('stderr_tail') or d.get('reason') or '')[:200]}</td>"
+            f"</tr>"
+        )
+    table_html = "<table style='border-collapse:collapse;width:100%;margin:12px 0'>" + \
+                 "<tr style='background:#f5f5f5'><th style='padding:6px 10px;text-align:left'>失敗ステップ</th><th style='padding:6px 10px;text-align:left'>影響</th><th style='padding:6px 10px;text-align:left'>エラー</th></tr>" + \
+                 "".join(rows) + "</table>"
+
+    choices_html = "<ol style='padding-left:20px;margin:12px 0'>" + \
+                   "".join(f"<li><code>{code}</code> — {label}</li>" for _, code, label in reply_choices) + \
+                   "</ol>"
+
+    html = f"""<!DOCTYPE html><html><body style="font-family:-apple-system,'Hiragino Sans',sans-serif;max-width:640px;margin:0 auto;padding:20px;color:#222">
+<h2 style="margin:0 0 4px 0">物件パトロール {severity}</h2>
+<p style="color:#666;margin:0 0 16px 0;font-size:13px">{start:%Y-%m-%d %H:%M} JST・{elapsed:.0f}秒・{ok_count}/{step_count} 成功・新規{len(diff.get('new',[]))}件</p>
+{table_html}
+<h3 style="margin:20px 0 8px 0;font-size:15px">対応を選んで返信してください</h3>
+{choices_html}
+<p style="color:#999;font-size:12px;margin-top:16px">返信本文に <code>1</code>、<code>2</code>、<code>3</code> のいずれか1つを書くだけで動作します（作文不要）。
+Phase B 実装後に reply_dispatcher が拾って各プロジェクトの fix_queue.yaml に投入します。</p>
+<p style="color:#aaa;font-size:11px;margin-top:8px">property-analyzer / run_daily_patrol.py / Phase A Gmail notify</p>
+</body></html>"""
+
+    ok = send_gmail_html(subject, html)
+    log(f"  📧 Gmail notify: {'送信OK' if ok else '送信失敗'} ({severity}, {fail_count} failed steps)")
+
 
 if __name__ == "__main__":
     main()

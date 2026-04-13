@@ -1672,7 +1672,7 @@ def generate_naiken_analysis() -> Path | None:
     # Group by viewing_date
     by_date: dict[str, list[dict]] = {}
     for v in viewing:
-        d = v.get("viewing_date", "未定")
+        d = v.get("viewing_date") or "未定"
         by_date.setdefault(d, []).append(v)
 
     # Agent contacts from agent_memory

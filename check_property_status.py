@@ -371,6 +371,15 @@ def deploy_to_gh_pages():
             dest.write_text(report.read_text(encoding="utf-8"), encoding="utf-8")
             updated = True
 
+        # Copy data/ JSON files (hub_summary.json etc.) consumed by the hub page
+        data_src = OUTPUT_DIR / "data"
+        if data_src.is_dir():
+            data_dst = deploy_dir / "data"
+            data_dst.mkdir(exist_ok=True)
+            for item in data_src.glob("*.json"):
+                (data_dst / item.name).write_text(item.read_text(encoding="utf-8"), encoding="utf-8")
+                updated = True
+
         if not updated:
             print("  デプロイ対象なし")
             return False

@@ -77,6 +77,7 @@ STEP_LABELS = {
     "generate_tokyo_report.py": ("東京レポート生成", "東京レポートが古いまま"),
     "generate_ittomono_report.py": ("一棟ものレポート生成", "一棟ものレポートが古いまま"),
     "generate_inquiry_messages.py": ("問い合わせ文面生成", "問い合わせ文面が未更新"),
+    "write_hub_summary.py": ("Hub KPI JSON生成", "ハブのKPIが前日値のまま表示"),
     "first_seen": ("初回検出日記録", "新規物件の初回検出日が未記録"),
     "url_check": ("掲載終了チェック", "売却済み物件の検出が未実行"),
     "pipeline_flag": ("自動フラグ付与", "高スコア物件の自動フラグが未実行"),
@@ -521,6 +522,11 @@ def generate_reports() -> list[dict]:
     results.append({"step": "generate_market.py", **result})
     if not result["ok"]:
         log("  ⚠️ generate_market.py 失敗 — 続��")
+    # Write hub KPI summary JSON (consumed by property-report/index.html)
+    result = run_script("write_hub_summary.py")
+    results.append({"step": "write_hub_summary.py", **result})
+    if not result["ok"]:
+        log("  ⚠️ write_hub_summary.py 失敗 — 続行")
     return results
 
 

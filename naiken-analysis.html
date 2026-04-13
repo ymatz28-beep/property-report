@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>内覧分析 — 福岡</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@500&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #0f1117;
@@ -53,7 +53,7 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
-  --focus-ring: 2px solid #6366f1;
+  --focus-ring: 2px solid var(--accent);
   --focus-offset: 2px;
   --active-scale: 0.97;
   --transition-fast: 150ms ease;
@@ -69,9 +69,9 @@
   --fs-h1: clamp(20px, 2.5vw, 26px);
   --fs-h2: clamp(16px, 2vw, 22px);
   --fs-h3: clamp(14px, 1.8vw, 18px);
-  --fs-body: clamp(14px, 3.6vw, 15px);
+  --fs-body: 14px;
   --fs-small: 12px;
-  --fs-xs: clamp(11px, 3vw, 12px);
+  --fs-xs: 10px;
 }
 
 /* === Reset === */
@@ -302,10 +302,10 @@ td { padding: 5px 8px; border-bottom: 1px solid rgba(255,255,255,.04); }
 .revenue-block { background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 14px; margin: 14px 0; }
 .rv-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .rv-title { font-size: 12px; font-weight: 800; } .rv-verdict { padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; }
-.rv-high { background: rgba(34,197,94,.15); color: #22c55e; border: 1px solid rgba(34,197,94,.3); }
+.rv-high { background: rgba(34,197,94,.15); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
 .rv-stable { background: rgba(52,211,153,.15); color: #34d399; border: 1px solid rgba(52,211,153,.3); }
 .rv-thin { background: rgba(250,204,21,.15); color: #facc15; border: 1px solid rgba(250,204,21,.3); }
-.rv-red { background: rgba(248,113,113,.15); color: #f87171; border: 1px solid rgba(248,113,113,.3); }
+.rv-red { background: rgba(248,113,113,.15); color: var(--red-light); border: 1px solid rgba(248,113,113,.3); }
 .rv-assumptions { font-size: 10px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
 .rv-section { margin-bottom: 12px; } .rv-section-title { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 6px; padding-bottom: 3px; border-bottom: 1px solid rgba(201,168,76,.2); }
 .rv-row { display: flex; align-items: baseline; padding: 3px 0; font-size: 11px; gap: 6px; }
@@ -340,7 +340,7 @@ details[open] > .archive-header::before { content: '▾ '; }
   border-bottom: 1px solid rgba(255,255,255,0.08);
   position: sticky; top: 0; z-index: var(--z-nav, 100);
 }
-.site-nav { display: flex; gap: 4px; align-items: center; }
+.site-nav { display: flex; gap: 4px; }
 .site-nav a {
   color: #71717a; text-decoration: none; font-size: 13px; font-weight: 500;
   padding: 6px 14px; border-radius: 6px; transition: background .15s, color .15s;
@@ -348,34 +348,6 @@ details[open] > .archive-header::before { content: '▾ '; }
 .site-nav a:hover, .site-nav a[aria-current="page"] {
   background: rgba(255,255,255,0.065); color: #f5f5f7;
 }
-
-/* Overflow dropdown */
-.nav-more { position: relative; }
-.nav-more-btn {
-  color: #71717a; font-size: 18px; font-weight: 700; letter-spacing: 2px;
-  padding: 6px 12px; border-radius: 6px; cursor: pointer;
-  background: none; border: none; transition: background .15s, color .15s;
-  line-height: 1;
-}
-.nav-more-btn:hover { background: rgba(255,255,255,0.065); color: #f5f5f7; }
-.nav-more-menu {
-  display: none; position: absolute; right: 0; top: calc(100% + 8px);
-  background: rgba(22,24,31,0.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-  padding: 6px; min-width: 180px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-}
-.nav-more-menu a {
-  display: block; padding: 10px 14px; border-radius: 6px;
-  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
-  transition: background .15s, color .15s; white-space: nowrap;
-}
-.nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
-  background: rgba(255,255,255,0.065); color: #f5f5f7;
-}
-.nav-more.open .nav-more-menu { display: block; }
-
-/* Hamburger toggle */
 .nav-toggle { display: none; }
 .nav-toggle-label { display: none; cursor: pointer; padding: 8px; }
 .nav-toggle-label span,
@@ -388,12 +360,10 @@ details[open] > .archive-header::before { content: '▾ '; }
 .nav-toggle-label span::after { content: ''; position: absolute; }
 .nav-toggle-label span::before { top: -6px; }
 .nav-toggle-label span::after { top: 6px; }
-
-/* Mobile: all items in hamburger (flat list, no dropdown) */
 @media (max-width: 640px) {
   .nav-toggle-label { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
   .site-nav {
-    display: none; flex-direction: column; align-items: stretch; gap: 0;
+    display: none; flex-direction: column; gap: 0;
     position: absolute; top: var(--gnav-height, 52px); left: 0; right: 0; z-index: var(--z-modal, 200);
     background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -404,11 +374,6 @@ details[open] > .archive-header::before { content: '▾ '; }
   .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
   .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
   .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
-  /* Hide dropdown container on mobile — items show as flat list */
-  .nav-more { display: contents; }
-  .nav-more-btn { display: none; }
-  .nav-more-menu { display: contents !important; position: static; background: none; border: none; box-shadow: none; padding: 0; min-width: auto; }
-  .nav-more-menu a { padding: 12px 24px; border-radius: 0; font-size: 14px; color: #71717a; }
 }
 </style>
 
@@ -428,17 +393,8 @@ details[open] > .archive-header::before { content: '▾ '; }
 >
       Travel
     </a>
-
   </nav>
 </header>
-
-<script>
-// Close dropdown when clicking outside
-document.addEventListener('click', function(e) {
-  var m = document.querySelector('.nav-more');
-  if (m && !m.contains(e.target)) m.classList.remove('open');
-});
-</script>
 
 
 <style>
@@ -496,7 +452,7 @@ document.addEventListener('click', function(e) {
 
 <div class="wrap">
   <h1>内覧分析 — 福岡 3物件</h1>
-  <p class="meta">自動生成: 2026-04-14 08:37 / 3件の内覧予定物件</p>
+  <p class="meta">自動生成: 2026-04-08 14:36 / 3件の内覧予定物件</p>
 
 
     <div class="schedule-banner">
@@ -631,7 +587,7 @@ document.addEventListener('click', function(e) {
         <div class="rv-row rv-total"><span class="rv-desc">年間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:#facc15">+4万</span></div>
         <div class="rv-row rv-highlight"><span class="rv-desc">月間キャッシュフロー</span><span class="rv-note"></span><span class="rv-amount" style="color:#facc15">+0.3万/月</span></div>
         <div class="rv-row rv-minus"><span class="rv-desc">管理費・修繕積立金</span><span class="rv-note">21,900円/月</span><span class="rv-amount">-2.2万/月</span></div>
-        <div class="rv-row rv-highlight"><span class="rv-desc">管理費込み月間CF</span><span class="rv-note"></span><span class="rv-amount" style="color:var(--accent-red-light)">-1.9万/月</span></div>
+        <div class="rv-row rv-highlight"><span class="rv-desc">管理費込み月間CF</span><span class="rv-note"></span><span class="rv-amount" style="color:var(--red-light)">-1.9万/月</span></div>
       </div>
 
       <div class="rv-section">
@@ -815,7 +771,7 @@ document.addEventListener('click', function(e) {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-04-14 08:37</div>
+  <div style="margin-top:4px;">Generated at 2026-04-08 14:36</div>
 </footer>
 </body>
 </html>

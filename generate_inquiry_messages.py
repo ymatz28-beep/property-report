@@ -11,8 +11,15 @@
 
 import html as html_mod
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
+
+_PROJECT_ROOT = Path(__file__).resolve().parent
+_LIB_PARENT = _PROJECT_ROOT.parent
+for p in [str(_PROJECT_ROOT), str(_LIB_PARENT)]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 from lib.styles.design_tokens import get_css_tokens, get_google_fonts_url
 

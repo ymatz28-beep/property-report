@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>内覧分析 — 福岡</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@500&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #0f1117;
@@ -53,7 +53,7 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
-  --focus-ring: 2px solid #6366f1;
+  --focus-ring: 2px solid var(--accent);
   --focus-offset: 2px;
   --active-scale: 0.97;
   --transition-fast: 150ms ease;
@@ -69,9 +69,9 @@
   --fs-h1: clamp(20px, 2.5vw, 26px);
   --fs-h2: clamp(16px, 2vw, 22px);
   --fs-h3: clamp(14px, 1.8vw, 18px);
-  --fs-body: clamp(14px, 3.6vw, 15px);
+  --fs-body: 14px;
   --fs-small: 12px;
-  --fs-xs: clamp(11px, 3vw, 12px);
+  --fs-xs: 10px;
 }
 
 /* === Reset === */
@@ -161,7 +161,6 @@ button:active, .btn:active, [role="button"]:active {
   transform: scale(var(--active-scale));
 }
 
-<!-- iuma:ssot:components-start -->
 /* === Skeleton Loading === */
 .skeleton {
   background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 50%, var(--skeleton-base) 75%);
@@ -230,7 +229,10 @@ button:active, .btn:active, [role="button"]:active {
 .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
 .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
 .badge-muted { background: rgba(124,130,147,0.15); color: var(--text-muted); }
-<!-- iuma:ssot:components-end -->
+
+/* === Animations === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -396,11 +398,10 @@ details[open] > .archive-header::before { content: '▾ '; }
 
 
 <style>
-<!-- iuma:ssot:gnav-start -->
 .gnav {
   position: sticky;
   top: var(--gnav-height, 52px);
-  z-index: var(--z-subnav, 90);
+  z-index: 95;
   background: rgba(10,12,18,0.92);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -417,9 +418,7 @@ details[open] > .archive-header::before { content: '▾ '; }
   padding: 0 16px;
   overflow-x: auto;
   white-space: nowrap;
-  scrollbar-width: none;
 }
-.gnav-inner::-webkit-scrollbar { display: none; }
 .gnav a {
   display: inline-block;
   padding: 8px 14px;
@@ -439,7 +438,6 @@ details[open] > .archive-header::before { content: '▾ '; }
   .gnav-inner { padding: 0 8px; }
   .gnav a { padding: 10px 8px; font-size: 9px; }
 }
-<!-- iuma:ssot:gnav-end -->
 </style>
 
 <div class="gnav">

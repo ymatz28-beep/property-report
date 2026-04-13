@@ -161,7 +161,6 @@ button:active, .btn:active, [role="button"]:active {
   transform: scale(var(--active-scale));
 }
 
-<!-- iuma:ssot:components-start -->
 /* === Skeleton Loading === */
 .skeleton {
   background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 50%, var(--skeleton-base) 75%);
@@ -230,7 +229,10 @@ button:active, .btn:active, [role="button"]:active {
 .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
 .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
 .badge-muted { background: rgba(124,130,147,0.15); color: var(--text-muted); }
-<!-- iuma:ssot:components-end -->
+
+/* === Animations === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -463,7 +465,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 }
 .nav-more-menu a {
   display: block; padding: 10px 14px; border-radius: 6px;
-  color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
+  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
   transition: background .15s, color .15s; white-space: nowrap;
 }
 .nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
@@ -538,11 +540,10 @@ document.addEventListener('click', function(e) {
 
 
 <style>
-<!-- iuma:ssot:gnav-start -->
 .gnav {
   position: sticky;
   top: var(--gnav-height, 52px);
-  z-index: var(--z-subnav, 90);
+  z-index: 95;
   background: rgba(10,12,18,0.92);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -559,9 +560,7 @@ document.addEventListener('click', function(e) {
   padding: 0 16px;
   overflow-x: auto;
   white-space: nowrap;
-  scrollbar-width: none;
 }
-.gnav-inner::-webkit-scrollbar { display: none; }
 .gnav a {
   display: inline-block;
   padding: 8px 14px;
@@ -581,7 +580,6 @@ document.addEventListener('click', function(e) {
   .gnav-inner { padding: 0 8px; }
   .gnav a { padding: 10px 8px; font-size: 9px; }
 }
-<!-- iuma:ssot:gnav-end -->
 </style>
 
 <div class="gnav">
@@ -1187,7 +1185,7 @@ document.addEventListener('click', function(e) {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-04-10 19:44</div>
+  <div style="margin-top:4px;">Generated at 2026-04-13 11:19</div>
 </footer>
 <script>
 function switchLetter(btn, targetId) {

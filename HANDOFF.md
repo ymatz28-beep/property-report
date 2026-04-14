@@ -7,8 +7,8 @@
 - [WARN] structural_reform: Stale temp/debug file (10 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (10 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (10 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (13 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (17 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (14 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (18 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
@@ -16,15 +16,42 @@
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
-- [ERROR] property_patrol_steps: [ESCALATED: 17d unresolved] 物件パトロール失敗ステップ (2026-04-13 10:49): 【内覧分析レポート】異常終了: '<' not supported between instances of 'str' and 'NoneType' → Fix: エラーログを確認
-- [ERROR] blank_cells: [ESCALATED: 16d unresolved] ダッシュ「—」171個 (閾値20) — データ欠損の可能性
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 4% (5/141) — 閾値80%
+- [ERROR] property_patrol_steps: [ESCALATED: 17d unresolved] 物件パトロール失敗ステップ (2026-04-14 08:03): 【パイプラインライフサイクル】異常終了: mapping values are not allowed here
+  in "/Users/yumatejima/Documents/Projects/property-analyzer/dat → Fix: エラーログを確認
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 399: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 532: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 533: hardcoded #22c55e should be var(--green)
+- [WARN] design_token_compliance: Line 534: hardcoded #ef4444 should be var(--red)
+- [WARN] design_token_compliance: Line 665: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 674: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 730: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 785: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 343: hardcoded #4ade80 should be var(--green-light)
+- [WARN] design_token_compliance: Line 344: hardcoded #f87171 should be var(--red-light)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 305: hardcoded #22c55e should be var(--green)
+- [WARN] design_token_compliance: Line 308: hardcoded #f87171 should be var(--red-light)
+- [WARN] design_token_compliance: Line 370: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 753: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 109: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 468: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] blank_cells: [ESCALATED: 16d unresolved] ダッシュ「—」170個 (閾値20) — データ欠損の可能性
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 4% (5/142) — 閾値80%
 - [ERROR] qa_market_duplicate_detection: [ESCALATED: 16d unresolved] 2 duplicate (price, area) pairs: [(('4980', '55.72'), ['fukuoka-kubun', 'fukuoka-kubun']), (('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
-- [ERROR] qa_market_data_accuracy: [ESCALATED: 14d unresolved] 5/92 (5.4%) — price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: ふれんず物件(南区) raw=650.0 html=690.0; price mismatch: “仕事が早い・対応が早い”　九州不動産にご連絡ください! raw=800.0 html=950.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=980.0
-- [WARN] qa_market_oc_income_coverage: OC 309件中 199件が年間収入欠落 (64%) — 利回り逆算で補完
+- [ERROR] qa_market_data_accuracy: [ESCALATED: 14d unresolved] 6/93 (6.5%) — price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: 令和2年2月築の築浅マンション　ペット飼育可（2匹可）　敷地内駐車場1住戸1台利用可能　インターネッ raw=3600.0 html=3500.0; price mismatch: ふれんず物件(中央区) raw=3295.0 html=3290.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: ふれんず物件(南区) raw=650.0 html=690.0 ... +1 more
+- [WARN] qa_market_oc_income_coverage: OC 276件中 185件が年間収入欠落 (67%) — 利回り逆算で補完
 - [ERROR] qa_market_yield_consistency: 1件の利回り/年間収入乖離(>20%): プレサンス難波南アーバニッシュ: expected=30.8万 actual=72.0万 (57%乖離)
-- [WARN] qa_market_name_cross_reference: 24件の物件名クロスリファレンス不一致: 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ピュアドームエクセル博多']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区比恵町(20㎡): ['■■■【福岡', 'ふれんず物件(博多区)']; 福岡市博多区千代(34㎡): ['人気上昇中の博多エリア【吉塚駅】築浅の1LDK！', 'ふれんず物件(博多区)']; 福岡市博多区博多駅前(23㎡): ['博多駅徒歩5分\u30006月上旬空室\u3000新家賃設定', '西鉄バス\u3000駅前四丁目停まで徒歩 3分'] ... +19 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 23.3% (28/120件)。パイプライン変換バグの可能性。例: 3082.0万円/56.22㎡; 1499.0万円/41.78㎡; 3080.0万円/40.75㎡; 4280.0万円/45.0㎡; 4980.0万円/60.61㎡
+- [WARN] qa_market_name_cross_reference: 30件の物件名クロスリファレンス不一致: 福岡市博多区美野島(18㎡): ['朝日プラザ博多Ⅱ', 'エステート・モア・博多グラン A棟 211']; 福岡市博多区千代(26㎡): ['■■■【福岡', 'JGM県庁口 502']; 福岡市博多区吉塚(24㎡): ['ふれんず物件(博多区)', 'アイランドシティオーシャンフォレストタワーレジデンスＥＡＳＴ']; 福岡市博多区博多駅前(19㎡): ['・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・', 'ライオンズマンシヨン博多']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分', 'ピュアドームエクセル博多'] ... +25 more
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 25.8% (31/120件)。パイプライン変換バグの可能性。例: 3082.0万円/56.22㎡; 1499.0万円/41.78㎡; 3080.0万円/40.75㎡; 4280.0万円/45.0㎡; 4980.0万円/60.61㎡
 
 ## Last Updated
 2026-04-09

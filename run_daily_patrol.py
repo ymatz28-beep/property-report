@@ -976,12 +976,50 @@ def main():
             log(f"  ⚠️ Gmail notify skipped: {e}")
 
 
+def _mint_dispatch_token(project: str, failed_steps: list[str]) -> str:
+    """Issue a one-shot token for reply routing. Persists to dispatch_tokens.yaml
+    with 72h TTL so the future reply_dispatcher can validate + mark consumed."""
+    import hashlib, secrets, yaml
+    tok = secrets.token_hex(6)  # 12-char hex, short enough for subject
+    token_file = BASE_DIR / "data" / "dispatch_tokens.yaml"
+    try:
+        existing = yaml.safe_load(token_file.read_text(encoding="utf-8")) if token_file.exists() else []
+        existing = existing or []
+    except Exception:
+        existing = []
+    # Prune expired (>72h old) while here
+    now = datetime.now()
+    kept = []
+    for rec in existing:
+        try:
+            created = datetime.fromisoformat(rec.get("created_at", ""))
+            if (now - created).total_seconds() < 72 * 3600 and not rec.get("consumed"):
+                kept.append(rec)
+        except Exception:
+            pass
+    kept.append({
+        "token": tok,
+        "project": project,
+        "failed_steps": failed_steps,
+        "created_at": now.isoformat(timespec="seconds"),
+        "consumed": False,
+    })
+    try:
+        token_file.write_text(yaml.safe_dump(kept, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    except Exception as e:
+        log(f"  ⚠️ dispatch_tokens.yaml write failed: {e}")
+    return tok
+
+
 def _notify_gmail_patrol_failure(start: datetime, elapsed: float,
                                  all_steps: list[dict], diff: dict) -> None:
-    """Send Gmail notification when patrol has failures. Subject keywords match
-    lib/digest/collectors_inbox.py so the digest picks up the alert inbound."""
+    """Send Gmail notification when patrol has failures. Mobile-first stacked
+    cards (DESIGN.md §Email) + 3 tappable mailto: CTA buttons with prefilled
+    subject/body carrying a one-shot token for Phase B reply-dispatcher."""
+    import urllib.parse as _up
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
     from lib.digest.delivery_gmail import send_gmail_html
+    from lib.digest.core import get_cred
 
     failure_details = _build_failure_details(all_steps)
     fail_count = len(failure_details)
@@ -990,45 +1028,71 @@ def _notify_gmail_patrol_failure(start: datetime, elapsed: float,
     failed_names = [d["step"] for d in failure_details]
 
     severity = "FAIL" if ok_count == 0 else "PARTIAL"
-    subject = f"パトロール{'失敗' if severity=='FAIL' else '部分失敗'}: property-analyzer — {', '.join(failed_names[:3])}"
+    token = _mint_dispatch_token("property-analyzer", failed_names)
+    token_tag = f"[patrol:{token}]"
+    subject = f"パトロール{'失敗' if severity=='FAIL' else '部分失敗'}: property-analyzer {token_tag} — {', '.join(failed_names[:3])}"
 
-    # 3-choice reply shortcuts (Phase B groundwork — reply body is parsed by future dispatcher)
-    reply_choices = [
-        ("1", "fix", "Claude Codeで修正を開始（推奨）"),
-        ("2", "defer", "明日のパトロールで再試行（今は保留）"),
-        ("3", "ignore", "次回から無視（ホワイトリスト化）"),
-    ]
+    # mailto: targets the same address that sent the mail (self-notify default)
+    reply_addr = get_cred("GMAIL_NOTIFY_ADDRESS") or get_cred("GMAIL_ADDRESS") or ""
 
-    rows = []
-    for d in failure_details:
-        rows.append(
-            f"<tr>"
-            f"<td style='padding:6px 10px;border-bottom:1px solid #eee;font-weight:600'>{d.get('label', d['step'])}</td>"
-            f"<td style='padding:6px 10px;border-bottom:1px solid #eee;color:#666'>{d.get('impact','')}</td>"
-            f"<td style='padding:6px 10px;border-bottom:1px solid #eee;font-family:ui-monospace,monospace;color:#c00;font-size:12px'>{(d.get('stderr_tail') or d.get('reason') or '')[:200]}</td>"
-            f"</tr>"
+    def _mailto(action_digit: str, action_name: str) -> str:
+        body = f"{action_digit}\n\n-- token: {token} / action: {action_name} / steps: {', '.join(failed_names)} --"
+        return (
+            f"mailto:{reply_addr}"
+            f"?subject={_up.quote(f'Re: {token_tag} {action_name}')}"
+            f"&body={_up.quote(body)}"
         )
-    table_html = "<table style='border-collapse:collapse;width:100%;margin:12px 0'>" + \
-                 "<tr style='background:#f5f5f5'><th style='padding:6px 10px;text-align:left'>失敗ステップ</th><th style='padding:6px 10px;text-align:left'>影響</th><th style='padding:6px 10px;text-align:left'>エラー</th></tr>" + \
-                 "".join(rows) + "</table>"
 
-    choices_html = "<ol style='padding-left:20px;margin:12px 0'>" + \
-                   "".join(f"<li><code>{code}</code> — {label}</li>" for _, code, label in reply_choices) + \
-                   "</ol>"
+    # ── Stacked cards (one per failed step) — NO data tables ────────────────
+    card_blocks = []
+    for d in failure_details:
+        label = d.get("label") or d["step"]
+        impact = d.get("impact", "")
+        err = (d.get("stderr_tail") or d.get("reason") or "").strip()
+        card_blocks.append(f"""
+<div style="background:#fff;border:1px solid #e5e7eb;border-left:4px solid #ef4444;border-radius:8px;padding:14px 16px;margin:10px 0">
+  <div style="font-weight:700;font-size:16px;color:#111;line-height:1.4;overflow-wrap:anywhere;line-break:strict">{label}</div>
+  <div style="display:inline-block;background:#fef3c7;color:#92400e;font-size:11px;padding:3px 8px;border-radius:999px;margin-top:6px;overflow-wrap:anywhere">{impact}</div>
+  <pre style="background:#f9fafb;color:#991b1b;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;padding:10px 12px;margin:10px 0 0 0;border-radius:6px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5;max-height:200px;overflow-y:auto">{err[:500]}</pre>
+</div>""".strip())
 
-    html = f"""<!DOCTYPE html><html><body style="font-family:-apple-system,'Hiragino Sans',sans-serif;max-width:640px;margin:0 auto;padding:20px;color:#222">
-<h2 style="margin:0 0 4px 0">物件パトロール {severity}</h2>
-<p style="color:#666;margin:0 0 16px 0;font-size:13px">{start:%Y-%m-%d %H:%M} JST・{elapsed:.0f}秒・{ok_count}/{step_count} 成功・新規{len(diff.get('new',[]))}件</p>
-{table_html}
-<h3 style="margin:20px 0 8px 0;font-size:15px">対応を選んで返信してください</h3>
-{choices_html}
-<p style="color:#999;font-size:12px;margin-top:16px">返信本文に <code>1</code>、<code>2</code>、<code>3</code> のいずれか1つを書くだけで動作します（作文不要）。
-Phase B 実装後に reply_dispatcher が拾って各プロジェクトの fix_queue.yaml に投入します。</p>
-<p style="color:#aaa;font-size:11px;margin-top:8px">property-analyzer / run_daily_patrol.py / Phase A Gmail notify</p>
-</body></html>"""
+    # ── 3 CTA buttons: mailto-prefilled, mobile full-width stacked ───────────
+    btn_style = "display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;font-weight:700;font-size:15px;padding:14px 16px;border-radius:8px;margin:8px 0;min-height:44px;line-height:1.4"
+    ctas = f"""
+<a href="{_mailto('1', 'fix')}"    style="{btn_style};background:#22c55e;color:#fff">1 ・ Claude Code で修正を開始（推奨）</a>
+<a href="{_mailto('2', 'defer')}"  style="{btn_style};background:#f59e0b;color:#fff">2 ・ 明日のパトロールで再試行</a>
+<a href="{_mailto('3', 'ignore')}" style="{btn_style};background:#6b7280;color:#fff">3 ・ 次回から無視（ホワイトリスト）</a>
+"""
+
+    html = f"""<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:20px 12px;background:#f3f4f6;font-family:-apple-system,'Hiragino Sans',sans-serif;color:#111">
+<table role="presentation" style="max-width:600px;margin:0 auto;width:100%;border-collapse:collapse"><tr><td style="padding:0">
+<h1 style="margin:0 0 2px 0;font-size:20px;line-height:1.3">物件パトロール {severity}</h1>
+<p style="color:#6b7280;margin:0 0 18px 0;font-size:13px;line-height:1.5;overflow-wrap:anywhere">
+  {start:%Y-%m-%d %H:%M} JST・{elapsed:.0f}秒・<strong style="color:#111">{ok_count}/{step_count}</strong> 成功・新規{len(diff.get('new',[]))}件
+</p>
+
+{''.join(card_blocks)}
+
+<h2 style="margin:28px 0 6px 0;font-size:15px;line-height:1.4">対応を1タップで選択</h2>
+<p style="color:#6b7280;margin:0 0 10px 0;font-size:12px;line-height:1.5">
+  ボタンをタップ → 送信ボタンを押すだけ（作文不要・2タップ）
+</p>
+{ctas}
+
+<p style="color:#9ca3af;font-size:11px;margin-top:18px;line-height:1.6">
+  ボタンが効かない環境では、このメールに返信して本文に <code style="background:#e5e7eb;padding:2px 6px;border-radius:4px">1</code> / <code style="background:#e5e7eb;padding:2px 6px;border-radius:4px">2</code> / <code style="background:#e5e7eb;padding:2px 6px;border-radius:4px">3</code> のどれか1文字書いて送信してください。
+</p>
+<p style="color:#c7c9d1;font-size:10px;margin-top:10px;line-height:1.4;overflow-wrap:anywhere">
+  token: {token} / valid 72h / property-analyzer run_daily_patrol.py
+</p>
+</td></tr></table>
+</body>
+</html>"""
 
     ok = send_gmail_html(subject, html)
-    log(f"  📧 Gmail notify: {'送信OK' if ok else '送信失敗'} ({severity}, {fail_count} failed steps)")
+    log(f"  📧 Gmail notify: {'送信OK' if ok else '送信失敗'} ({severity}, {fail_count} failed, token={token})")
 
 
 if __name__ == "__main__":

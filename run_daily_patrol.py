@@ -640,6 +640,31 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
     import os
     source = "gha" if os.environ.get("GITHUB_ACTIONS") == "true" else "local"
 
+    summary_file = BASE_DIR / "data" / "patrol_summary.json"
+
+    # Carry forward per-step success/failure timestamps so a transient failure
+    # that self-heals on the next run is recognized by Daily Digest.
+    prev_step_status: dict[str, dict] = {}
+    try:
+        if summary_file.exists():
+            prev = json.loads(summary_file.read_text(encoding="utf-8"))
+            prev_step_status = prev.get("step_status", {}) or {}
+    except Exception:
+        pass
+
+    now_iso = datetime.now().isoformat(timespec="seconds")
+    step_status = dict(prev_step_status)
+    for s in all_steps:
+        name = s.get("step") or s.get("name")
+        if not name:
+            continue
+        entry = dict(step_status.get(name, {}))
+        if s.get("ok"):
+            entry["last_success_at"] = now_iso
+        else:
+            entry["last_failure_at"] = now_iso
+        step_status[name] = entry
+
     summary = {
         "date": start.strftime("%Y-%m-%d %H:%M"),
         "source": source,
@@ -653,13 +678,14 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
         "failure_details": failure_details,
         "step_count": len(all_steps),
         "ok_count": sum(1 for s in all_steps if s.get("ok")),
+        "step_status": step_status,
         "new_items": new_items,
         "report_url": "https://ymatz28-beep.github.io/property-report/",
     }
 
-    summary_file = BASE_DIR / "data" / "patrol_summary.json"
     try:
-        summary_file.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+        from lib.state_io import atomic_write_json
+        atomic_write_json(summary_file, summary)
         log(f"  patrol_summary.json 保存 (total={summary['total']}, +{summary['new_count']}/-{summary['removed_count']})")
     except Exception as e:
         # Last resort: write minimal summary so downstream consumers never see stale data
@@ -670,10 +696,14 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
             "ok_count": sum(1 for s in all_steps if s.get("ok")),
             "elapsed_min": round(elapsed / 60),
             "new_count": 0, "total": 0, "failed_steps": failed_names,
-            "failure_details": [], "new_items": [],
+            "failure_details": [], "step_status": step_status, "new_items": [],
             "error": str(e),
         }
-        summary_file.write_text(json.dumps(minimal, ensure_ascii=False, indent=2), encoding="utf-8")
+        try:
+            from lib.state_io import atomic_write_json
+            atomic_write_json(summary_file, minimal)
+        except Exception:
+            summary_file.write_text(json.dumps(minimal, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def retry_failed_searches(search_results: list[dict], start_time: datetime,
@@ -963,8 +993,12 @@ def main():
                 "failure_details": [], "new_items": [],
                 "error": f"save_patrol_summary crash: {e}",
             }
-            (BASE_DIR / "data" / "patrol_summary.json").write_text(
-                json.dumps(minimal, ensure_ascii=False, indent=2), encoding="utf-8")
+            try:
+                from lib.state_io import atomic_write_json
+                atomic_write_json(BASE_DIR / "data" / "patrol_summary.json", minimal)
+            except Exception:
+                (BASE_DIR / "data" / "patrol_summary.json").write_text(
+                    json.dumps(minimal, ensure_ascii=False, indent=2), encoding="utf-8")
         except Exception:
             pass  # truly nothing we can do
 

@@ -196,18 +196,13 @@ def _sync_to_registry(inquiries: list[dict]) -> None:
 
 
 def save_inquiries(inquiries: list[dict]) -> None:
-    INQUIRIES_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(INQUIRIES_PATH, "w", encoding="utf-8") as f:
-        f.write("# Property Inquiry Pipeline — State Tracking\n")
-        f.write(f"# Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n")
-        f.write("# Status: discovered → flagged → inquired → in_discussion → viewing → viewed → decided | passed\n\n")
-        yaml.dump(
-            {"inquiries": inquiries},
-            f,
-            allow_unicode=True,
-            default_flow_style=False,
-            sort_keys=False,
-        )
+    from lib.state_io import atomic_write_yaml
+    header = (
+        "# Property Inquiry Pipeline — State Tracking\n"
+        f"# Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
+        "# Status: discovered → flagged → inquired → in_discussion → viewing → viewed → decided | passed\n\n"
+    )
+    atomic_write_yaml(INQUIRIES_PATH, {"inquiries": inquiries}, header=header)
     _sync_to_registry(inquiries)
 
 

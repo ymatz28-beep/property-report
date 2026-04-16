@@ -6,77 +6,16 @@ on:
 
 jobs:
   update:
-    if: contains(github.event.issue.labels.*.name, 'update')
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: write
-      issues: write
+    uses: ymatz28-beep/shared-workflows/.github/workflows/claude-issue-handler.yml@main
+    with:
+      checkout_ref: gh-pages
+      claude_prompt: |
+        あなたはproperty-analyzerプロジェクトのメンテナーです。
+        以下のGitHub Issueの指示に従い、ファイルを編集してください。
+        ※ 現在gh-pagesブランチです。
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-
-      - name: Install Claude Code
-        run: npm install -g @anthropic-ai/claude-code
-
-      - name: Apply update
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          claude -p --dangerously-skip-permissions "
-          あなたはproperty-analyzerプロジェクトのメンテナーです。
-          以下のGitHub Issueの指示に従い、ファイルを編集してください。
-          ※ 現在gh-pagesブランチです。
-
-          ## 指示内容
-          タイトル: ${{ github.event.issue.title }}
-          本文:
-          ${{ github.event.issue.body }}
-
-          ## ルール
-          - HANDOFF.md があれば読んで現状を把握してから編集
-          - inquiries.yaml のステータス更新、物件メモ追記、HTMLダッシュボード修正等が対象
-          - 編集が終わったら変更内容のサマリを出力
-          "
-
-      - name: Commit and push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then
-            echo "No changes to commit"
-            echo "NO_CHANGES=true" >> $GITHUB_ENV
-          else
-            git add -A
-            git commit -m "update: ${{ github.event.issue.title }}
-
-          Triggered by #${{ github.event.issue.number }}
-          Co-Authored-By: Claude Code <noreply@anthropic.com>"
-            git push
-            echo "NO_CHANGES=false" >> $GITHUB_ENV
-          fi
-
-      - name: Comment on issue
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const noChanges = process.env.NO_CHANGES === 'true';
-            const body = noChanges
-              ? '変更対象が見つかりませんでした。指示内容を確認してください。'
-              : '反映完了 ✅';
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body
-            });
-            if (!noChanges) {
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                state: 'closed'
-              });
-            }
+        ## ルール
+        - HANDOFF.md があれば読んで現状を把握してから編集
+        - inquiries.yaml のステータス更新、物件メモ追記、HTMLダッシュボード修正等が対象
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

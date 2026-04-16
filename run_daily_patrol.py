@@ -1084,8 +1084,8 @@ def _notify_gmail_patrol_failure(start: datetime, elapsed: float,
         impact = d.get("impact", "")
         err = (d.get("stderr_tail") or d.get("reason") or "").strip()
         card_blocks.append(f"""
-<div style="background:#fff;border:1px solid #e5e7eb;border-left:4px solid #ef4444;border-radius:8px;padding:14px 16px;margin:10px 0">
-  <div style="font-weight:700;font-size:16px;color:#111;line-height:1.4;overflow-wrap:anywhere;line-break:strict">{label}</div>
+<div style="background:#fff;border:1px solid #e5e7eb;border-left:4px solid var(--accent-red);border-radius:8px;padding:14px 16px;margin:10px 0">
+  <div style="font-weight:700;font-size:16px;color:var(--bg-secondary);line-height:1.4;overflow-wrap:anywhere;line-break:strict">{label}</div>
   <div style="display:inline-block;background:#fef3c7;color:#92400e;font-size:11px;padding:3px 8px;border-radius:999px;margin-top:6px;overflow-wrap:anywhere">{impact}</div>
   <pre style="background:#f9fafb;color:#991b1b;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;padding:10px 12px;margin:10px 0 0 0;border-radius:6px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5;max-height:200px;overflow-y:auto">{err[:500]}</pre>
 </div>""".strip())
@@ -1093,18 +1093,18 @@ def _notify_gmail_patrol_failure(start: datetime, elapsed: float,
     # ── 3 CTA buttons: mailto-prefilled, mobile full-width stacked ───────────
     btn_style = "display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;font-weight:700;font-size:15px;padding:14px 16px;border-radius:8px;margin:8px 0;min-height:44px;line-height:1.4"
     ctas = f"""
-<a href="{_mailto('1', 'fix')}"    style="{btn_style};background:#22c55e;color:#fff">1 ・ Claude Code で修正を開始（推奨）</a>
-<a href="{_mailto('2', 'defer')}"  style="{btn_style};background:#f59e0b;color:#fff">2 ・ 明日のパトロールで再試行</a>
+<a href="{_mailto('1', 'fix')}"    style="{btn_style};background:var(--accent-green);color:#fff">1 ・ Claude Code で修正を開始（推奨）</a>
+<a href="{_mailto('2', 'defer')}"  style="{btn_style};background:var(--accent-amber);color:#fff">2 ・ 明日のパトロールで再試行</a>
 <a href="{_mailto('3', 'ignore')}" style="{btn_style};background:#6b7280;color:#fff">3 ・ 次回から無視（ホワイトリスト）</a>
 """
 
     html = f"""<!DOCTYPE html>
 <html>
-<body style="margin:0;padding:20px 12px;background:#f3f4f6;font-family:-apple-system,'Hiragino Sans',sans-serif;color:#111">
+<body style="margin:0;padding:20px 12px;background:#f3f4f6;font-family:-apple-system,'Hiragino Sans',sans-serif;color:var(--bg-secondary)">
 <table role="presentation" style="max-width:600px;margin:0 auto;width:100%;border-collapse:collapse"><tr><td style="padding:0">
 <h1 style="margin:0 0 2px 0;font-size:20px;line-height:1.3">物件パトロール {severity}</h1>
 <p style="color:#6b7280;margin:0 0 18px 0;font-size:13px;line-height:1.5;overflow-wrap:anywhere">
-  {start:%Y-%m-%d %H:%M} JST・{elapsed:.0f}秒・<strong style="color:#111">{ok_count}/{step_count}</strong> 成功・新規{len(diff.get('new',[]))}件
+  {start:%Y-%m-%d %H:%M} JST・{elapsed:.0f}秒・<strong style="color:var(--bg-secondary)">{ok_count}/{step_count}</strong> 成功・新規{len(diff.get('new',[]))}件
 </p>
 
 {''.join(card_blocks)}

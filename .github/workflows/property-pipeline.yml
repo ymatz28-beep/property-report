@@ -1,0 +1,269 @@
+name: Property Pipeline
+
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "実行するアクション"
+        required: true
+        type: choice
+        options:
+          - analyze_url
+          - update_status
+          - regenerate
+          - lifecycle
+      url:
+        description: "物件URL（analyze_url時）"
+        required: false
+        type: string
+      property_id:
+        description: "物件ID（update_status時）"
+        required: false
+        type: string
+      new_status:
+        description: "新しいステータス（update_status時）"
+        required: false
+        type: choice
+        options:
+          - inquired
+          - in_discussion
+          - viewing
+          - viewed
+          - decided
+          - passed
+      viewing_date:
+        description: "内覧日 YYYY-MM-DD（viewing時）"
+        required: false
+        type: string
+      notes:
+        description: "メモ（viewed/decided時）"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+  TZ: "Asia/Tokyo"
+
+jobs:
+  # ─── Issue駆動: 物件URL分析 (Claude) ───
+  issue-analyze:
+    if: >-
+      github.event_name == 'issues' &&
+      contains(github.event.issue.labels.*.name, 'analyze')
+    uses: ymatz28-beep/shared-workflows/.github/workflows/claude-issue-handler.yml@main
+    with:
+      claude_prompt: |
+        あなたはproperty-analyzerプロジェクトの物件分析エージェントです。
+
+        ## ルール
+        - Issue本文に物件URL（楽待・健美家・SUUMO・LIFULL等）があればスクレイピングして分析
+        - data/inquiries.yaml に新規物件として追記（status: discovered）
+        - 以下を算出: 表面利回り、実質利回り、CF/月、CCR、築年数、駅徒歩
+        - ペット可（3kg小型犬）でなければその旨をnotesに記載
+        - サブリースは即除外（notes: "サブリース除外"）
+        - 分析結果のサマリを出力
+      success_comment: |
+        物件分析完了 ✅
+        ダッシュボードに反映済み: https://ymatz28-beep.github.io/property-report/
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  # ─── Issue駆動: 汎用編集 (Claude) ───
+  issue-update:
+    if: >-
+      github.event_name == 'issues' &&
+      contains(github.event.issue.labels.*.name, 'update')
+    uses: ymatz28-beep/shared-workflows/.github/workflows/claude-issue-handler.yml@main
+    with:
+      checkout_ref: gh-pages
+      claude_prompt: |
+        あなたはproperty-analyzerプロジェクトのメンテナーです。
+        以下のGitHub Issueの指示に従い、ファイルを編集してください。
+        ※ 現在gh-pagesブランチです。
+
+        ## ルール
+        - HANDOFF.md があれば読んで現状を把握してから編集
+        - inquiries.yaml のステータス更新、物件メモ追記、HTMLダッシュボード修正等が対象
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  # ─── dispatch: 物件URL分析 (Claude) ───
+  dispatch-analyze:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      inputs.action == 'analyze_url'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Analyze property URL
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PROPERTY_URL: ${{ inputs.url }}
+        run: |
+          claude -p --dangerously-skip-permissions "
+          あなたはproperty-analyzerプロジェクトの物件分析エージェントです。
+
+          以下のURLの物件を分析してください: ${PROPERTY_URL}
+
+          ## ルール
+          - URLにアクセスして物件情報をスクレイピング
+          - data/inquiries.yaml に新規物件として追記（status: discovered）
+          - 以下を算出: 表面利回り、実質利回り、CF/月、CCR、築年数、駅徒歩
+          - ペット可（3kg小型犬）でなければその旨をnotesに記載
+          - サブリースは即除外（notes: サブリース除外）
+          - 分析結果のサマリを出力
+          "
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes"
+          else
+            git add -A
+            git commit -m "analyze: ${{ inputs.url }}
+
+          Co-Authored-By: Claude Code <noreply@anthropic.com>"
+            git push
+          fi
+
+  # ─── dispatch: ステータス更新 (Python直接, コストゼロ) ───
+  dispatch-status:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      inputs.action == 'update_status'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Update status
+        run: |
+          STATUS="${{ inputs.new_status }}"
+          ID="${{ inputs.property_id }}"
+          NOTES="${{ inputs.notes }}"
+          DATE="${{ inputs.viewing_date }}"
+
+          case "$STATUS" in
+            viewing)
+              python3 property_pipeline.py --viewing "$ID" "$DATE"
+              ;;
+            viewed)
+              python3 property_pipeline.py --viewed "$ID" "$NOTES"
+              ;;
+            decided)
+              python3 property_pipeline.py --decide "$ID" go
+              ;;
+            passed)
+              python3 property_pipeline.py --decide "$ID" pass
+              ;;
+            *)
+              python3 property_pipeline.py --inquire "$ID"
+              ;;
+          esac
+
+      - name: Regenerate dashboard
+        run: python3 property_pipeline.py --dashboard || true
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes"
+          else
+            git add -A
+            git commit -m "pipeline: ${{ inputs.property_id }} → ${{ inputs.new_status }}"
+            git push
+          fi
+
+  # ─── dispatch: レポート再生成 (Python直接, コストゼロ) ───
+  dispatch-regenerate:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      inputs.action == 'regenerate'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Regenerate all reports
+        run: |
+          python3 property_pipeline.py --dashboard
+          python3 generate_market.py || true
+          python3 generate_fukuoka_report.py || true
+          python3 generate_tokyo_report.py || true
+          python3 generate_osaka_report.py || true
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes"
+          else
+            git add -A
+            git commit -m "regenerate: all reports $(date +%Y-%m-%d)"
+            git push
+          fi
+
+  # ─── dispatch: ライフサイクル管理 (Python直接, コストゼロ) ───
+  dispatch-lifecycle:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      inputs.action == 'lifecycle'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Run lifecycle
+        run: python3 property_pipeline.py --lifecycle
+
+      - name: Regenerate dashboard
+        run: python3 property_pipeline.py --dashboard || true
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes"
+          else
+            git add -A
+            git commit -m "lifecycle: auto-sweep $(date +%Y-%m-%d)"
+            git push
+          fi

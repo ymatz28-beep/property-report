@@ -587,6 +587,12 @@ def _build_failure_details(all_steps: list[dict]) -> list[dict]:
     return details
 
 
+def _count_by_key(items: list[dict], key: str) -> dict[str, int]:
+    """Count items grouped by a key field."""
+    from collections import Counter
+    return dict(Counter(item.get(key, "unknown") for item in items))
+
+
 def _safe_price_man(price_text: str) -> int:
     """Parse price text to 万円 int, returning 0 on failure.
 
@@ -610,7 +616,8 @@ def _safe_price_man(price_text: str) -> int:
 
 
 def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report: dict,
-                        all_steps: list[dict] | None = None) -> None:
+                        all_steps: list[dict] | None = None,
+                        flagged_items: list[dict] | None = None) -> None:
     """Save patrol summary as JSON (structured data for Daily Digest + notifications).
 
     Crash-safe: if new_items serialization fails, writes summary without items
@@ -680,11 +687,15 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
         "ok_count": sum(1 for s in all_steps if s.get("ok")),
         "step_status": step_status,
         "new_items": new_items,
+        "removed_items": [{"source": p.get("source", "")} for p in removed],
+        "flagged_count": len(flagged_items or []),
+        "flagged_by_city": _count_by_key(flagged_items or [], "city"),
         "report_url": "https://ymatz28-beep.github.io/property-report/",
     }
 
     try:
         from lib.state_io import atomic_write_json
+        assert isinstance(summary, dict), "patrol_summary.json must be dict"
         atomic_write_json(summary_file, summary)
         log(f"  patrol_summary.json 保存 (total={summary['total']}, +{summary['new_count']}/-{summary['removed_count']})")
     except Exception as e:
@@ -879,9 +890,10 @@ def main():
         log(f"  ❌ レポート生成全体エラー: {e} — デプロイは試行")
 
     # 5.5. Pipeline lifecycle: auto-flag + sweep stale + price tracking + agent sync
+    flagged_items: list[dict] = []
     try:
         from property_pipeline import auto_flag, generate_dashboard, generate_naiken_analysis, lifecycle
-        auto_flag()
+        flagged_items = auto_flag() or []
         all_steps.append({"step": "pipeline_flag", "ok": True})
         log("  Pipeline auto-flag 完了")
     except Exception as e:
@@ -898,6 +910,14 @@ def main():
         all_steps.append({"step": "pipeline_lifecycle", "ok": False, "reason": "crash",
                           "stderr_tail": str(e)})
         log(f"  ⚠️ Pipeline lifecycle skipped: {e}")
+
+    # 5.6.0. Early save patrol_summary so generate_market.py reads current run's date
+    try:
+        save_patrol_summary(start, (datetime.now() - start).total_seconds(),
+                            diff, url_report, all_steps=all_steps,
+                            flagged_items=flagged_items)
+    except Exception as e:
+        log(f"  ⚠️ early patrol_summary save failed: {e}")
 
     # 5.6.1. Re-generate market.html after lifecycle sweep (to reflect removed properties)
     try:
@@ -979,7 +999,8 @@ def main():
 
     # Write structured summary (always — even on partial failure)
     try:
-        save_patrol_summary(start, elapsed, diff, url_report, all_steps=all_steps)
+        save_patrol_summary(start, elapsed, diff, url_report, all_steps=all_steps,
+                            flagged_items=flagged_items)
     except Exception as e:
         log(f"  ❌ save_patrol_summary crashed: {e}")
         # Emergency fallback: write minimal summary so downstream never sees stale data

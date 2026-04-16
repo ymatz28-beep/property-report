@@ -196,13 +196,20 @@ def _sync_to_registry(inquiries: list[dict]) -> None:
 
 
 def save_inquiries(inquiries: list[dict]) -> None:
-    from lib.state_io import atomic_write_yaml
     header = (
         "# Property Inquiry Pipeline — State Tracking\n"
         f"# Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
         "# Status: discovered → flagged → inquired → in_discussion → viewing → viewed → decided | passed\n\n"
     )
-    atomic_write_yaml(INQUIRIES_PATH, {"inquiries": inquiries}, header=header)
+    try:
+        from lib.state_io import atomic_write_yaml
+        atomic_write_yaml(INQUIRIES_PATH, {"inquiries": inquiries}, header=header)
+    except ImportError:
+        import yaml
+        INQUIRIES_PATH.write_text(
+            header + yaml.dump({"inquiries": inquiries}, allow_unicode=True, default_flow_style=False, sort_keys=False),
+            encoding="utf-8",
+        )
     _sync_to_registry(inquiries)
 
 

@@ -112,10 +112,6 @@ def parse_listing_page(html: str) -> list[dict]:
     cards = re.split(r'<div class="property_unit[ "]', html)
 
     for card in cards[1:]:  # Skip first (before first card)
-        # Skip sponsored/ad listings
-        if 'property_unit--osusume' in card[:100]:
-            continue
-
         # Detail URL
         url_m = re.search(r'href="(/ms/chuko/[^"]+/nc_\d+/)"', card)
         if not url_m:

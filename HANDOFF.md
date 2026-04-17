@@ -1,12 +1,12 @@
 # HANDOFF
 
-## [Constancy] 2026-04-16
+## [Constancy] 2026-04-17
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON.
 - [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
-- [WARN] structural_reform: property_pipeline.py is 2272 lines (threshold: 800). Consider splitting.
-- [WARN] structural_reform: Stale temp/debug file (12 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (12 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (12 days old). Delete it.
+- [WARN] structural_reform: property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
+- [WARN] structural_reform: Stale temp/debug file (13 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (13 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (13 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (16 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (20 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
@@ -16,25 +16,38 @@
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
-- [WARN] blank_cells: ダッシュ「—」171個 (閾値20) — データ欠損の可能性
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 3% (5/145) — 閾値80%
-- [WARN] qa_market_duplicate_detection: 2 duplicate (price, area) pairs: [(('4980', '55.72'), ['fukuoka-kubun', 'fukuoka-kubun']), (('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
-- [WARN] qa_market_data_accuracy: 4/96 (4.2%) — price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: トピレック博多 raw=990.0 html=1000.0; price mismatch: ふれんず物件(中央区) raw=800.0 html=950.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=980.0
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 399: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 532: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 533: hardcoded #22c55e should be var(--green)
+- [WARN] design_token_compliance: Line 534: hardcoded #ef4444 should be var(--red)
+- [WARN] design_token_compliance: Line 665: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 674: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 730: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 785: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 343: hardcoded #4ade80 should be var(--green-light)
+- [WARN] design_token_compliance: Line 344: hardcoded #f87171 should be var(--red-light)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 305: hardcoded #22c55e should be var(--green)
+- [WARN] design_token_compliance: Line 308: hardcoded #f87171 should be var(--red-light)
+- [WARN] design_token_compliance: Line 370: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 753: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 109: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 468: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] blank_cells: ダッシュ「—」160個 (閾値20) — データ欠損の可能性
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 4% (5/123) — 閾値80%
+- [WARN] qa_market_duplicate_detection: 1 duplicate (price, area) pairs: [(('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
 - [WARN] qa_market_oc_income_coverage: OC 304件中 196件が年間収入欠落 (64%) — 利回り逆算で補完
-- [WARN] qa_market_name_cross_reference: 35件の物件名クロスリファレンス不一致: 福岡市博多区博多駅東(18㎡): ['メゾン・ド・ミラージュ【サブリース・博多駅７分・角部屋】', 'メゾン・ド・ミラージュ 808']; 福岡市博多区吉塚(24㎡): ['アイランドシティオーシャンフォレストタワーレジデンスＥＡＳＴ', 'ステイタスマンション吉塚']; 福岡市博多区博多駅前(19㎡): ['・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・', 'ライオンズマンシヨン博多']; 福岡市博多区博多駅前(22㎡): ['ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)'] ... +30 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 23.1% (28/121件)。パイプライン変換バグの可能性。例: 3082.0万円/56.22㎡; 1499.0万円/41.78㎡; 3080.0万円/40.75㎡; 4280.0万円/45.0㎡; 4980.0万円/60.61㎡
-- [ERROR] visual_regression: [mobile] console_error: 2 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED', 'Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [desktop] console_error: 2 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED', 'Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [mobile] console_error: 2 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED', 'Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [desktop] console_error: 2 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED', 'Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [mobile] console_error: 2 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED', 'Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [desktop] console_error: 2 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED', 'Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [mobile] console_error: 1 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [desktop] console_error: 1 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [mobile] console_error: 1 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [desktop] console_error: 1 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [mobile] console_error: 1 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
-- [ERROR] visual_regression: [desktop] console_error: 1 JS errors: ['Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
+- [WARN] qa_market_name_cross_reference: 25件の物件名クロスリファレンス不一致: 福岡市博多区博多駅東(18㎡): ['メゾン・ド・ミラージュ【サブリース・博多駅７分・角部屋】', 'メゾン・ド・ミラージュ 808']; 福岡市博多区吉塚(24㎡): ['ステイタスマンション吉塚', 'アイランドシティオーシャンフォレストタワーレジデンスＥＡＳＴ']; 福岡市博多区博多駅前(19㎡): ['・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・', 'ライオンズマンシヨン博多']; 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ピュアドームエクセル博多', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)'] ... +20 more
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 14.0% (14/100件)。パイプライン変換バグの可能性。例: 800.0万円/43.88㎡; 800.0万円/43.4㎡; 1000.0万円/46.75㎡; 850.0万円/68.3㎡; 580.0万円/55.2㎡
 
 ## Last Updated
 2026-04-09

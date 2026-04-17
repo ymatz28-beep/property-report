@@ -550,8 +550,16 @@ def deploy() -> None:
         log("  デプロイ不要（変更なし）またはエラー")
 
 
-def _build_failure_details(all_steps: list[dict]) -> list[dict]:
-    """Build human-readable failure details from step results."""
+def _build_failure_details(all_steps: list[dict],
+                           failed_sources: list[str] | None = None) -> list[dict]:
+    """Build human-readable failure details from step results.
+
+    Also elevates source-level degradations (detected by ``diff_properties``
+    when a source drops >70% of its listings) into failure cards so the
+    one-click Gmail CTA UI fires. A scraper that returns 13/148 listings is
+    technically "ok" but functionally an outage — the notification layer must
+    see it.
+    """
     details = []
     for s in all_steps:
         if s.get("ok"):
@@ -584,6 +592,16 @@ def _build_failure_details(all_steps: list[dict]) -> list[dict]:
         detail["fix"] = fix_map.get(reason_key, fix_map.get("default", "エラーログを確認"))
 
         details.append(detail)
+
+    for src in (failed_sources or []):
+        details.append({
+            "step": f"source_degraded:{src}",
+            "label": f"{src}（取得件数が急減）",
+            "impact": "前回比>70%減 — diff計算から除外（サイト側の一時障害 or セレクタ変化の疑い）",
+            "reason": "source_degraded",
+            "stderr_tail": f"ソース {src} がフォールバック動作中。スクレイパーはOKだが取得件数が急減し、差分計算から自動除外された。",
+            "fix": "1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加",
+        })
     return details
 
 
@@ -629,7 +647,7 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
 
     all_steps = all_steps or []
     failed_names = [s["step"] for s in all_steps if not s.get("ok")]
-    failure_details = _build_failure_details(all_steps)
+    failure_details = _build_failure_details(all_steps, diff.get("failed_sources", []))
 
     # Build new_items safely — never let a single bad record kill the summary
     new_items: list[dict] = []
@@ -1023,8 +1041,11 @@ def main():
         except Exception:
             pass  # truly nothing we can do
 
-    # Gmail notify on partial/total failure (silent on full success to avoid noise)
-    if fail_count > 0:
+    # Gmail notify on partial/total failure OR source-level degradation.
+    # A scraper that returns 13/148 listings is "ok" at the step level but is
+    # functionally an outage — the notification must fire so the one-click CTA
+    # UI reaches the user instead of being silently swallowed.
+    if fail_count > 0 or diff.get("failed_sources"):
         try:
             _notify_gmail_patrol_failure(start, elapsed, all_steps, diff)
         except Exception as e:
@@ -1076,7 +1097,7 @@ def _notify_gmail_patrol_failure(start: datetime, elapsed: float,
     from lib.digest.delivery_gmail import send_gmail_html
     from lib.digest.core import get_cred
 
-    failure_details = _build_failure_details(all_steps)
+    failure_details = _build_failure_details(all_steps, diff.get("failed_sources", []))
     fail_count = len(failure_details)
     ok_count = sum(1 for s in all_steps if s.get("ok"))
     step_count = len(all_steps)

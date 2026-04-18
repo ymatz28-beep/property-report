@@ -21,10 +21,15 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "output"
 STATUS_FILE = DATA_DIR / "property_status.json"
+
+# Make shared lib/ importable under launchd (cwd=property-analyzer → parent not on sys.path)
+for _p in (str(BASE_DIR), str(BASE_DIR.parent)):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
 FIRST_SEEN_FILE = DATA_DIR / "first_seen.json"
 
 HEADERS = {

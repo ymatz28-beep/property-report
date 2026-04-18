@@ -716,6 +716,26 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
         assert isinstance(summary, dict), "patrol_summary.json must be dict"
         atomic_write_json(summary_file, summary)
         log(f"  patrol_summary.json 保存 (total={summary['total']}, +{summary['new_count']}/-{summary['removed_count']})")
+        # Append-only history for weekly trend (Weekly Review → W3).
+        # Keep one compact record per run; jsonl avoids partial-write corruption.
+        try:
+            history_file = BASE_DIR / "data" / "patrol_history.jsonl"
+            compact = {
+                "date": summary.get("date"),
+                "source": summary.get("source"),
+                "total": summary.get("total", 0),
+                "new_count": summary.get("new_count", 0),
+                "removed_count": summary.get("removed_count", 0),
+                "elapsed_min": summary.get("elapsed_min", 0),
+                "failed_sources": summary.get("failed_sources", []),
+                "ok_count": summary.get("ok_count", 0),
+                "step_count": summary.get("step_count", 0),
+                "flagged_count": summary.get("flagged_count", 0),
+            }
+            with history_file.open("a", encoding="utf-8") as fp:
+                fp.write(json.dumps(compact, ensure_ascii=False) + "\n")
+        except Exception as e:
+            log(f"  ⚠️ patrol_history.jsonl append failed: {e}")
     except Exception as e:
         # Last resort: write minimal summary so downstream consumers never see stale data
         log(f"  ❌ patrol_summary.json 書き込みエラー: {e}")

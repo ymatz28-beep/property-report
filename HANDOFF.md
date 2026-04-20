@@ -1,14 +1,14 @@
 # HANDOFF
 
-## [Constancy] 2026-04-20
+## [Constancy] 2026-04-21
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [WARN] structural_reform: property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [WARN] structural_reform: Stale temp/debug file (16 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (16 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (16 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (17 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (17 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (17 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (20 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (23 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (24 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
@@ -16,38 +16,13 @@
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
-- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 399: hardcoded #9ca3af should be var(--text-secondary)
-- [WARN] design_token_compliance: Line 532: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 533: hardcoded #22c55e should be var(--green)
-- [WARN] design_token_compliance: Line 534: hardcoded #ef4444 should be var(--red)
-- [WARN] design_token_compliance: Line 665: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 674: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 730: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 785: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 343: hardcoded #4ade80 should be var(--green-light)
-- [WARN] design_token_compliance: Line 344: hardcoded #f87171 should be var(--red-light)
-- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
-- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
-- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 305: hardcoded #22c55e should be var(--green)
-- [WARN] design_token_compliance: Line 308: hardcoded #f87171 should be var(--red-light)
-- [WARN] design_token_compliance: Line 370: hardcoded #9ca3af should be var(--text-secondary)
-- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 753: hardcoded #9ca3af should be var(--text-secondary)
-- [WARN] design_token_compliance: Line 109: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 468: hardcoded #9ca3af should be var(--text-secondary)
-- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 639: hardcoded #9ca3af should be var(--text-secondary)
 - [WARN] blank_cells: ダッシュ「—」173個 (閾値20) — データ欠損の可能性
 - [ERROR] first_seen_coverage: 掲載日カバレッジ 0% (0/146) — 閾値80%
 - [WARN] qa_market_duplicate_detection: 2 duplicate (price, area) pairs: [(('950', '55.43'), ['fukuoka-kubun', 'fukuoka-budget']), (('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
+- [WARN] qa_market_data_accuracy: 2/85 (2.4%) — price mismatch: アルス心斎橋ＵＮＡＧＩＤＡＮＩ raw=4198.0 html=4398.0; price mismatch: エステムプラザ心斎橋ＥＡＳＴⅣブランディア raw=4280.0 html=4480.0
 - [WARN] qa_market_oc_income_coverage: OC 304件中 196件が年間収入欠落 (64%) — 利回り逆算で補完
-- [WARN] qa_market_name_cross_reference: 27件の物件名クロスリファレンス不一致: 福岡市博多区博多駅東(18㎡): ['メゾン・ド・ミラージュ【サブリース・博多駅７分・角部屋】', 'メゾン・ド・ミラージュ 808']; 福岡市博多区吉塚(24㎡): ['ふれんず物件(博多区)', 'アイランドシティオーシャンフォレストタワーレジデンスＥＡＳＴ']; 福岡市博多区博多駅前(19㎡): ['・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・', 'ライオンズマンシヨン博多']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分', 'ピュアドームエクセル博多']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分'] ... +22 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 11.4% (14/123件)。パイプライン変換バグの可能性。例: 800.0万円/43.88㎡; 800.0万円/43.4㎡; 1000.0万円/46.75㎡; 850.0万円/68.3㎡; 580.0万円/55.2㎡
+- [WARN] qa_market_name_cross_reference: 27件の物件名クロスリファレンス不一致: 福岡市博多区博多駅東(18㎡): ['メゾン・ド・ミラージュ 808', 'メゾン・ド・ミラージュ【サブリース・博多駅７分・角部屋】']; 福岡市博多区吉塚(24㎡): ['ふれんず物件(博多区)', 'アイランドシティオーシャンフォレストタワーレジデンスＥＡＳＴ']; 福岡市博多区博多駅前(19㎡): ['ライオンズマンシヨン博多', '・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分'] ... +22 more
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 20.3% (25/123件)。パイプライン変換バグの可能性。例: 4398.0万円/43.97㎡; 3980.0万円/54.17㎡; 4380.0万円/45.51㎡; 4580.0万円/57.59㎡; 14000.0万円/453.36㎡
 
 ## Last Updated
 2026-04-09

@@ -22,14 +22,16 @@ PATROL_SUMMARY = ROOT / "property-analyzer" / "data" / "patrol_summary.json"
 DASHBOARD_URL = "https://ymatz28-beep.github.io/property-report/"
 MAX_NEW_ITEMS_SHOWN = 10
 
+# Literal hex required — email clients strip <style>/<link> and cannot
+# resolve CSS custom properties (var(--*)). Do NOT replace with tokens.
 C_BG = "#f5f5f7"
 C_CARD = "#ffffff"
-C_TEXT = "var(--bg-secondary)"
+C_TEXT = "#111111"
 C_MUTED = "#6b7280"
-C_ERROR = "var(--accent-red)"
-C_WARN = "var(--accent-amber)"
-C_SUCCESS = "var(--accent-green)"
-C_INFO = "#6366f1"
+C_ERROR = "#ef4444"
+C_WARN = "#f59e0b"
+C_SUCCESS = "#22c55e"
+C_INFO = "#4f46e5"  # deeper indigo — higher contrast against Gmail dark-mode inversion
 FONT = "-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif"
 JP_CSS = "overflow-wrap:anywhere;line-break:strict;"
 
@@ -153,14 +155,21 @@ def render_email(summary: dict) -> str:
     cta = (
         f'<div style="text-align:center;margin-top:8px;">'
         f'<a href="{DASHBOARD_URL}" '
-        f'style="display:inline-block;background:{C_INFO};color:#fff;'
-        f"text-decoration:none;padding:12px 24px;border-radius:8px;"
-        f"font-weight:600;font-size:14px;min-height:44px;line-height:20px;"
-        f'">property-report で詳細を見る →</a></div>'
+        f'style="display:inline-block;background-color:{C_INFO};'
+        f"color:#ffffff !important;text-decoration:none;"
+        f"padding:14px 28px;border-radius:8px;"
+        f"border:2px solid {C_INFO};"
+        f"font-weight:700;font-size:15px;min-height:44px;line-height:20px;"
+        f'mso-padding-alt:0;-webkit-text-fill-color:#ffffff;">'
+        f"property-report で詳細を見る →</a></div>"
     )
 
     return (
-        f'<html><body style="margin:0;padding:0;background:{C_BG};">'
+        f'<html><head>'
+        f'<meta name="color-scheme" content="light only">'
+        f'<meta name="supported-color-schemes" content="light">'
+        f'</head>'
+        f'<body style="margin:0;padding:0;background:{C_BG};">'
         f'<div style="max-width:600px;margin:0 auto;padding:16px;'
         f'font-family:{FONT};color:{C_TEXT};">'
         f"{hero}{new_card}{err_card}{health}{cta}"

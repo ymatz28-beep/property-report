@@ -1,12 +1,12 @@
 # HANDOFF
 
-## [Constancy] 2026-04-21
+## [Constancy] 2026-04-22
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [WARN] structural_reform: property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [WARN] structural_reform: Stale temp/debug file (17 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (17 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (17 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (18 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (18 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (18 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (21 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (25 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
@@ -21,10 +21,23 @@
 - [WARN] qa_market_duplicate_detection: 2 duplicate (price, area) pairs: [(('950', '55.43'), ['fukuoka-kubun', 'fukuoka-budget']), (('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
 - [WARN] qa_market_data_accuracy: 2/85 (2.4%) — price mismatch: アルス心斎橋ＵＮＡＧＩＤＡＮＩ raw=4198.0 html=4398.0; price mismatch: エステムプラザ心斎橋ＥＡＳＴⅣブランディア raw=4280.0 html=4480.0
 - [WARN] qa_market_oc_income_coverage: OC 304件中 196件が年間収入欠落 (64%) — 利回り逆算で補完
-- [WARN] qa_market_name_cross_reference: 27件の物件名クロスリファレンス不一致: 福岡市博多区博多駅東(18㎡): ['メゾン・ド・ミラージュ【サブリース・博多駅７分・角部屋】', 'メゾン・ド・ミラージュ 808']; 福岡市博多区吉塚(24㎡): ['ふれんず物件(博多区)', 'アイランドシティオーシャンフォレストタワーレジデンスＥＡＳＴ']; 福岡市博多区博多駅前(19㎡): ['ライオンズマンシヨン博多', '・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・']; 福岡市博多区博多駅前(22㎡): ['ピュアドームエクセル博多', 'ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分'] ... +22 more
+- [WARN] qa_market_name_cross_reference: 27件の物件名クロスリファレンス不一致: 福岡市博多区博多駅東(18㎡): ['メゾン・ド・ミラージュ【サブリース・博多駅７分・角部屋】', 'メゾン・ド・ミラージュ 808']; 福岡市博多区吉塚(24㎡): ['ふれんず物件(博多区)', 'アイランドシティオーシャンフォレストタワーレジデンスＥＡＳＴ']; 福岡市博多区博多駅前(19㎡): ['・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・', 'ライオンズマンシヨン博多']; 福岡市博多区博多駅前(22㎡): ['ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)'] ... +22 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 20.3% (25/123件)。パイプライン変換バグの可能性。例: 4398.0万円/43.97㎡; 3980.0万円/54.17㎡; 4380.0万円/45.51㎡; 4580.0万円/57.59㎡; 14000.0万円/453.36㎡
 
 ## Last Updated
+2026-04-22 (plist PYTHONPATH 追加で subprocess import 修復)
+
+## Completed (2026-04-22 深夜 property-patrol subprocess import 修復)
+- **Before**: `run_daily_patrol.py` が走る subprocess 子 (`generate_osaka/fukuoka/tokyo_report.py` 等10件) が `No module named 'lib.state_io'` で失敗。patrol_summary.json: 18/28 ok、failed_steps 10件。原因は親の sys.path 設定が subprocess に継承されないこと
+- **After**: plist (`property-analyzer/com.yuma.property-patrol.plist` SSoT + `~/Library/LaunchAgents/` 実配置) の `EnvironmentVariables` に `PYTHONPATH=/Users/yumatejima/Documents/Projects` 追加。bootout → bootstrap で reload、launchctl print で env var 反映確認、RunAtLoad 後の `/tmp/property_patrol.err` 0 bytes
+- **SSoT 同期確認**: property-analyzer 配下 plist と `~/Library/LaunchAgents/` が完全一致 (2C Consistency 違反解消)
+- **Commits**: `d5d9eb9 fix(plist): add PYTHONPATH so subprocess steps import lib` (property-report repo)
+
+## Next Actions (次セッション候補)
+- **schedule drift 解消**: infra-manifest.yaml 記載 "every 6h (21600s)" vs plist の 86400s (24h) の乖離。pipeline-doctor指摘。頻度変更は Twitter/SUUMO API 負荷影響あるため要判断
+- hardcoded_data / 1664行 generate_market / 2279行 property_pipeline 分割は継続課題
+
+## Last Updated (prev)
 2026-04-09
 
 ## Completed (横断監査: APIキー除去+デッドコード削除+gnav SSoT化 2026-04-09)

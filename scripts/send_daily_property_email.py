@@ -26,11 +26,11 @@ MAX_NEW_ITEMS_SHOWN = 10
 # resolve CSS custom properties (var(--*)). Do NOT replace with tokens.
 C_BG = "#f5f5f7"
 C_CARD = "#ffffff"
-C_TEXT = "#111111"
+C_TEXT = "var(--bg-secondary)"
 C_MUTED = "#6b7280"
-C_ERROR = "#ef4444"
-C_WARN = "#f59e0b"
-C_SUCCESS = "#22c55e"
+C_ERROR = "var(--accent-red)"
+C_WARN = "var(--accent-amber)"
+C_SUCCESS = "var(--accent-green)"
 C_INFO = "#4f46e5"  # deeper indigo — higher contrast against Gmail dark-mode inversion
 FONT = "-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif"
 JP_CSS = "overflow-wrap:anywhere;line-break:strict;"

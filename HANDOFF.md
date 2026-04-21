@@ -7,8 +7,8 @@
 - [WARN] structural_reform: Stale temp/debug file (17 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (17 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (17 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (20 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (24 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (21 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (25 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
@@ -21,7 +21,7 @@
 - [WARN] qa_market_duplicate_detection: 2 duplicate (price, area) pairs: [(('950', '55.43'), ['fukuoka-kubun', 'fukuoka-budget']), (('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
 - [WARN] qa_market_data_accuracy: 2/85 (2.4%) — price mismatch: アルス心斎橋ＵＮＡＧＩＤＡＮＩ raw=4198.0 html=4398.0; price mismatch: エステムプラザ心斎橋ＥＡＳＴⅣブランディア raw=4280.0 html=4480.0
 - [WARN] qa_market_oc_income_coverage: OC 304件中 196件が年間収入欠落 (64%) — 利回り逆算で補完
-- [WARN] qa_market_name_cross_reference: 27件の物件名クロスリファレンス不一致: 福岡市博多区博多駅東(18㎡): ['メゾン・ド・ミラージュ 808', 'メゾン・ド・ミラージュ【サブリース・博多駅７分・角部屋】']; 福岡市博多区吉塚(24㎡): ['ふれんず物件(博多区)', 'アイランドシティオーシャンフォレストタワーレジデンスＥＡＳＴ']; 福岡市博多区博多駅前(19㎡): ['ライオンズマンシヨン博多', '・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分'] ... +22 more
+- [WARN] qa_market_name_cross_reference: 27件の物件名クロスリファレンス不一致: 福岡市博多区博多駅東(18㎡): ['メゾン・ド・ミラージュ【サブリース・博多駅７分・角部屋】', 'メゾン・ド・ミラージュ 808']; 福岡市博多区吉塚(24㎡): ['ふれんず物件(博多区)', 'アイランドシティオーシャンフォレストタワーレジデンスＥＡＳＴ']; 福岡市博多区博多駅前(19㎡): ['ライオンズマンシヨン博多', '・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・']; 福岡市博多区博多駅前(22㎡): ['ピュアドームエクセル博多', 'ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分'] ... +22 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 20.3% (25/123件)。パイプライン変換バグの可能性。例: 4398.0万円/43.97㎡; 3980.0万円/54.17㎡; 4380.0万円/45.51㎡; 4580.0万円/57.59㎡; 14000.0万円/453.36㎡
 
 ## Last Updated

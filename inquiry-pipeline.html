@@ -53,7 +53,7 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
-  --focus-ring: 2px solid #6366f1;
+  --focus-ring: 2px solid var(--accent);
   --focus-offset: 2px;
   --active-scale: 0.97;
   --transition-fast: 150ms ease;
@@ -396,7 +396,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 }
 .nav-more-menu a {
   display: block; padding: 10px 14px; border-radius: 6px;
-  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
+  color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
   transition: background .15s, color .15s; white-space: nowrap;
 }
 .nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
@@ -529,9 +529,9 @@ document.addEventListener('click', function(e) {
     <div class="stats">
       <div class="stat"><div class="stat-val" style="color:#f59e0b">1</div><div class="stat-label">進行中</div></div>
       <div class="stat"><div class="stat-val" style="color:#a78bfa">0</div><div class="stat-label">内見</div></div>
-      <div class="stat"><div class="stat-val" style="color:#6366f1">3</div><div class="stat-label">査定中</div></div>
-      <div class="stat"><div class="stat-val" style="color:#22c55e">0</div><div class="stat-label">完了</div></div>
-      <div class="stat"><div class="stat-val" style="color:#ef4444">1</div><div class="stat-label">要アクション</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--accent)">3</div><div class="stat-label">査定中</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--green)">0</div><div class="stat-label">完了</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--red)">1</div><div class="stat-label">要アクション</div></div>
     </div>
     <div style="color:#71717a;font-size:12px;margin-top:8px">候補 3 / 見送り 22</div>
   </div>
@@ -608,7 +608,7 @@ document.addEventListener('click', function(e) {
 </div>
       
 <div class="stage-section hidden" data-stage="appraisal">
-  <div class="stage-header" style="border-left:3px solid #6366f1">
+  <div class="stage-header" style="border-left:3px solid var(--accent)">
     <h2>査定中</h2>
     <div class="stage-stats"><span>3件</span></div>
   </div>
@@ -617,7 +617,7 @@ document.addEventListener('click', function(e) {
     <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20310107/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">プレイスポットしんばしビル本館 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#6366f1">内見済</span>
+      <span class="status-pill" style="background:var(--accent)">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -673,7 +673,7 @@ document.addEventListener('click', function(e) {
     <a href="https://www.f-takken.com/freins/items/99718694" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">GSハイム博多 10階 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#6366f1">内見済</span>
+      <span class="status-pill" style="background:var(--accent)">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -728,7 +728,7 @@ document.addEventListener('click', function(e) {
     <a href="https://www.f-takken.com/freins/items/99770725" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ローズマンション第2博多 1308 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#6366f1">内見済</span>
+      <span class="status-pill" style="background:var(--accent)">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>

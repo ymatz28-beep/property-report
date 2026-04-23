@@ -1,5 +1,10 @@
 # property-report HANDOFF
 
+## Completed (パトロール結果反映 2026-04-22 23:48)
+- **Before**: hub_summary.json が 2026-04-21 の古い値のまま（candidates: "8", updated_at: "2026-04-21T06:56:00+09:00"）
+- **After**: パトロール結果反映（candidates: "1330", updated_at: "2026-04-22T23:48:00+09:00"）。追跡件数1330件、新着314件、削除287件、ソース28/28 OK
+- **新着物件トップ10**: multi_site_osaka 2480万円、yahoo_fukuoka 1790万円、yahoo_fukuoka 2490万円、yahoo_fukuoka 2590万円、yahoo_fukuoka 2250万円、多賀ハウス yahoo_fukuoka 1860万円、yahoo_fukuoka 1860万円、アデレイド新福島 multi_site_osaka 4998万円、大久保マンション yahoo_tokyo 3160万円、アステルコート新町 multi_site_osaka 4790万円
+
 ## [Auto-Kaizen] 2026-04-20
 - [WARN] property-report/HANDOFF.md not updated in 7 days (threshold: 7).
 
@@ -7,7 +12,7 @@
 
 
 ## Last Updated
-2026-03-29
+2026-04-22
 
 ## Completed (プレイスポットCF損益分岐シミュレーション + 銀行リフォーム融資相談 2026-03-29 x-ref)
 - **Before**: プレイスポットしんばしビル本館（SRC造/1975年築/2,480万）のCF損益分岐が不明。リフォーム費用の融資方法も未相談
@@ -124,6 +129,7 @@
 ## History
 | 日付 | サマリー |
 |------|----------|
+| 2026-04-22 | パトロール結果反映：hub_summary.json更新（candidates: 8→1330, updated_at: 04-21→04-22 23:48）。新着314件、削除287件、ソース28/28 OK。property-report直接変更なし（data更新のみ） |
 | 2026-03-29 x-ref | Before: プレイスポットCF損益分岐不明+リフォーム融資未相談 → After: 4シナリオCFシミュレーション完了（20年+14万→▲100万でトントン）+澤畠さんにリフォーム融資相談メール送信済 |
 | 2026-03-27 x-ref | Before: スキル発火がコマンド暗記式、story-intakeトリガー不足 → After: Skill Routing 8パターン自動発火+story-intakeに「インタビューして」追加。property-report直接変更なし |
 | 2026-03-25 x-ref | dotfiles Brewfile拡張(10→15pkg) + setup.sh 4→8ステップ + launchd 7plist移行 + kaizen-agent環境drift自動検出追加(`3553059`)。property-report直接変更なし |

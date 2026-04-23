@@ -1160,8 +1160,8 @@ def _notify_gmail_patrol_failure(start: datetime, elapsed: float,
     # ── 3 CTA buttons: mailto-prefilled, mobile full-width stacked ───────────
     btn_style = "display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;font-weight:700;font-size:15px;padding:14px 16px;border-radius:8px;margin:8px 0;min-height:44px;line-height:1.4"
     ctas = f"""
-<a href="{_mailto('1', 'fix')}"    style="{btn_style};background:#059669;color:#ffffff">1 ・ Claude Code で修正を開始（推奨）</a>
-<a href="{_mailto('2', 'defer')}"  style="{btn_style};background:#d97706;color:#ffffff">2 ・ 明日のパトロールで再試行</a>
+<a href="{_mailto('1', 'fix')}"    style="{btn_style};background:var(--accent-green);color:#ffffff">1 ・ Claude Code で修正を開始（推奨）</a>
+<a href="{_mailto('2', 'defer')}"  style="{btn_style};background:var(--accent-amber);color:#ffffff">2 ・ 明日のパトロールで再試行</a>
 <a href="{_mailto('3', 'ignore')}" style="{btn_style};background:#4b5563;color:#ffffff">3 ・ 次回から無視（ホワイトリスト）</a>
 """
 

@@ -54,7 +54,7 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
-  --focus-ring: 2px solid #6366f1;
+  --focus-ring: 2px solid var(--accent);
   --focus-offset: 2px;
   --active-scale: 0.97;
   --transition-fast: 150ms ease;
@@ -636,7 +636,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 }
 .nav-more-menu a {
   display: block; padding: 10px 14px; border-radius: 6px;
-  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
+  color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
   transition: background .15s, color .15s; white-space: nowrap;
 }
 .nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
@@ -730,20 +730,20 @@ document.addEventListener('click', function(e) {
     <h1>福岡 民泊向け中古マンション候補レポート</h1>
     <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
     <div class="badge-row">
-      <span class="badge">検索日 2026-04-24</span>
-      <span class="badge">厳選 71件 / 643件</span>
+      <span class="badge">検索日 2026-04-22</span>
+      <span class="badge">厳選 73件 / 667件</span>
       <span class="badge">データソース: SUUMO, rakumachi, yahoo, athome, ftakken, restate</span>
     </div>
     <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
     <div class="collapsible-content is-collapsed">
       <div class="badge-row" style="margin-top:8px;">
-        <span class="badge">原データ 643件</span>
-        <span class="badge">重複除外 183件</span>
-        <span class="badge">売却済除外 3件</span>
+        <span class="badge">原データ 667件</span>
+        <span class="badge">重複除外 197件</span>
+        <span class="badge">売却済除外 2件</span>
         <span class="badge">OC除外 4件</span>
         <span class="badge">ペット不可除外 1件</span>
         <span class="badge">民泊不可除外 0件</span>
-        <span class="badge">低スコア除外 249件</span>
+        <span class="badge">低スコア除外 253件</span>
       </div>
       <div class="badge-row">
         <span class="badge">福岡市博多区・中央区・南区中心</span>
@@ -755,14 +755,14 @@ document.addEventListener('click', function(e) {
   </section>
 
   <div class="freshness-bar">
-    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 04-22 23:48 処理28分</span>
-    <span class="fb-chip">掲載中 1330件</span>
-<span class="fb-chip fb-new">+314 新規</span><span class="fb-chip fb-removed">-287 終了</span>  </div>
+    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 04-21 06:56 処理25分</span>
+    <span class="fb-chip">掲載中 0件</span>
+  </div>
 
   <section id="sec-stats" class="grid-4">
-    <div class="card stat"><div class="label">総候補数</div><div class="value">71</div><div class="sub">重複排除後</div></div>
-    <div class="card stat"><div class="label">平均価格</div><div class="value">3129.7万円</div><div class="sub">全候補平均</div></div>
-    <div class="card stat"><div class="label">平均面積</div><div class="value">56.36㎡</div><div class="sub">全候補平均</div></div>
+    <div class="card stat"><div class="label">総候補数</div><div class="value">73</div><div class="sub">重複排除後</div></div>
+    <div class="card stat"><div class="label">平均価格</div><div class="value">3117.8万円</div><div class="sub">全候補平均</div></div>
+    <div class="card stat"><div class="label">平均面積</div><div class="value">56.35㎡</div><div class="sub">全候補平均</div></div>
     <div class="card stat"><div class="label">最高スコア</div><div class="value">110</div><div class="sub">第一プリンスビル</div></div>
   </section>
 
@@ -851,8 +851,23 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+3 立地+20 間取+5 ペト+15 管理+7 リノ+0 仲介+0 民泊+0">100</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="4" data-name="サングレート薬院駅ロイヤルウィン" data-location="福岡県福岡市中央区平尾１" data-layout="2LDK" data-tier="強く推奨" data-price="4980" data-area="55.72" data-score="100" data-year="2003" data-walk="5" data-firstseen="3/30">
+          <tr class="tier-strong" data-index="4" data-name="オープンレジデンシア天神今泉" data-location="福岡県福岡市中央区今泉２" data-layout="2LDK" data-tier="強く推奨" data-price="4900" data-area="46.01" data-score="100" data-year="2023" data-walk="6" data-firstseen="3/2">
             <td>4</td>
+            <td class="first-seen-col">3/2</td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/" target="_blank" rel="noopener noreferrer">オープンレジデンシア天神今泉</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
+            <td>4,900万円</td>
+            <td>46.01㎡</td>
+            <td><div class="clamp2">福岡県福岡市中央区今泉２</div></td>
+            <td><div class="clamp2">薬院大通 徒歩6分</div></td>
+            <td class="year-col">2023年</td>
+            <td class="layout-col">2LDK</td>
+            <td class="maint-col"><span title="管理費5,000円 + 修繕3,800円">8,800円</span><span class="maint-detail">管理5,000 + 修繕3,800</span></td>
+            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+10 立地+20 間取+10 ペト+10 管理+10 リノ+0 仲介+0 民泊+0">100</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
+          </tr>
+          <tr class="tier-strong" data-index="5" data-name="サングレート薬院駅ロイヤルウィン" data-location="福岡県福岡市中央区平尾１" data-layout="2LDK" data-tier="強く推奨" data-price="4980" data-area="55.72" data-score="100" data-year="2003" data-walk="5" data-firstseen="3/30">
+            <td>5</td>
             <td class="first-seen-col">3/30</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/" target="_blank" rel="noopener noreferrer">サングレート薬院駅ロイヤルウィン</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,980万円</td>
@@ -866,8 +881,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+15 立地+18 間取+10 ペト+10 管理+7 リノ+0 仲介+0 民泊+0">100</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="5" data-name="ふれんず物件(中央区)" data-location="福岡市中央区大名１丁目" data-layout="1LDK" data-tier="強く推奨" data-price="4280" data-area="45.00" data-score="98" data-year="1994" data-walk="5" data-firstseen="3/15">
-            <td>5</td>
+          <tr class="tier-strong" data-index="6" data-name="ふれんず物件(中央区)" data-location="福岡市中央区大名１丁目" data-layout="1LDK" data-tier="強く推奨" data-price="4280" data-area="45.00" data-score="98" data-year="1994" data-walk="5" data-firstseen="3/15">
+            <td>6</td>
             <td class="first-seen-col">3/15</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99813399" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><span class="pet-tag pet-ok">ペット可</span><div class="source-tag">ふれんず</div></td>
             <td>4,280万円</td>
@@ -881,8 +896,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+15 立地+20 間取+5 ペト+15 管理+3 リノ+0 仲介+0 民泊+0">98</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="6" data-name="ダイアパレス平尾第3 504号室" data-location="福岡市中央区平尾２丁目" data-layout="3LDK" data-tier="強く推奨" data-price="3980" data-area="64.00" data-score="96" data-year="1984" data-walk="4" data-firstseen="2/27">
-            <td>6</td>
+          <tr class="tier-strong" data-index="7" data-name="ダイアパレス平尾第3 504号室" data-location="福岡市中央区平尾２丁目" data-layout="3LDK" data-tier="強く推奨" data-price="3980" data-area="64.00" data-score="96" data-year="1984" data-walk="4" data-firstseen="2/27">
+            <td>7</td>
             <td class="first-seen-col">2/27</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99784607" target="_blank" rel="noopener noreferrer">ダイアパレス平尾第3 504号室</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">ふれんず</div></td>
             <td>3,980万円</td>
@@ -896,8 +911,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+15 面積+10 耐震+15 駅距+15 立地+18 間取+10 ペト+10 管理+3 リノ+0 仲介+0 民泊+0">96</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="7" data-name="103大稲マンション 706" data-location="福岡市中央区薬院２丁目" data-layout="2LDK" data-tier="強く推奨" data-price="1890" data-area="55.62" data-score="95" data-year="1984" data-walk="1" data-firstseen="2/27">
-            <td>7</td>
+          <tr class="tier-strong" data-index="8" data-name="103大稲マンション 706" data-location="福岡市中央区薬院２丁目" data-layout="2LDK" data-tier="強く推奨" data-price="1890" data-area="55.62" data-score="95" data-year="1984" data-walk="1" data-firstseen="2/27">
+            <td>8</td>
             <td class="first-seen-col">2/27</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99791987" target="_blank" rel="noopener noreferrer">103大稲マンション 706</a></div><div class="source-tag">ふれんず</div></td>
             <td>1,890万円</td>
@@ -911,11 +926,26 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+18 間取+10 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">95</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="8" data-name="大名サンハイツ" data-location="福岡県福岡市中央区大名１-11-5" data-layout="3LDK" data-tier="強く推奨" data-price="2820" data-area="62.32" data-score="95" data-year="1981" data-walk="6" data-firstseen="3/21">
-            <td>8</td>
+          <tr class="tier-strong" data-index="9" data-name="ロワールマンション西公園2" data-location="福岡県福岡市中央区港３" data-layout="2LDK" data-tier="強く推奨" data-price="1890" data-area="55.04" data-score="95" data-year="1984" data-walk="15" data-firstseen="2/22">
+            <td>9</td>
+            <td class="first-seen-col">2/22</td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_79102560/" target="_blank" rel="noopener noreferrer">ロワールマンション西公園2</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
+            <td>1,890万円</td>
+            <td>55.04㎡</td>
+            <td><div class="clamp2">福岡県福岡市中央区港３</div></td>
+            <td><div class="clamp2">大濠公園 徒歩15分</div></td>
+            <td class="year-col">1984年</td>
+            <td class="layout-col">2LDK</td>
+            <td class="maint-col"><span title="管理費5,800円 + 修繕8,700円">14,500円</span><span class="maint-detail">管理5,800 + 修繕8,700</span></td>
+            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+3</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+3 立地+15 間取+10 ペト+10 管理+7 リノ+0 仲介+0 民泊+0">95</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
+          </tr>
+          <tr class="tier-strong" data-index="10" data-name="大名サンハイツ" data-location="福岡県福岡市中央区大名１-11-5" data-layout="3LDK" data-tier="強く推奨" data-price="2830" data-area="62.32" data-score="95" data-year="1981" data-walk="6" data-firstseen="3/21">
+            <td>10</td>
             <td class="first-seen-col">3/21</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20370839/" target="_blank" rel="noopener noreferrer">大名サンハイツ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>2,820万円</td>
+            <td>2,830万円</td>
             <td>62.32㎡</td>
             <td><div class="clamp2">福岡県福岡市中央区大名１-11-5</div></td>
             <td><div class="clamp2">赤坂 徒歩6分</div></td>
@@ -926,8 +956,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+10 立地+15 間取+10 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">95</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="9" data-name="東峰マンション渡辺通 906" data-location="福岡市中央区春吉２丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3490" data-area="49.64" data-score="95" data-year="1984" data-walk="5" data-firstseen="NEW">
-            <td>9</td>
+          <tr class="tier-strong" data-index="11" data-name="東峰マンション渡辺通 906" data-location="福岡市中央区春吉２丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3490" data-area="49.64" data-score="95" data-year="1984" data-walk="5" data-firstseen="NEW">
+            <td>11</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99827190" target="_blank" rel="noopener noreferrer">東峰マンション渡辺通 906</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,490万円</td>
@@ -941,8 +971,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+20 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">95</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="10" data-name="シティマンション薬院Ⅱ 304" data-location="福岡市中央区大宮１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="2880" data-area="48.80" data-score="93" data-year="1985" data-walk="4" data-firstseen="3/3">
-            <td>10</td>
+          <tr class="tier-strong" data-index="12" data-name="シティマンション薬院Ⅱ 304" data-location="福岡市中央区大宮１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="2880" data-area="48.80" data-score="93" data-year="1985" data-walk="4" data-firstseen="3/3">
+            <td>12</td>
             <td class="first-seen-col">3/3</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99807292" target="_blank" rel="noopener noreferrer">シティマンション薬院Ⅱ 304</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,880万円</td>
@@ -956,8 +986,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+18 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">93</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="11" data-name="チサンマンション祇園" data-location="福岡市博多区祇園町" data-layout="1LDK" data-tier="強く推奨" data-price="1850" data-area="40.08" data-score="92" data-year="1992" data-walk="4" data-firstseen="2/26">
-            <td>11</td>
+          <tr class="tier-strong" data-index="13" data-name="チサンマンション祇園" data-location="福岡市博多区祇園町" data-layout="1LDK" data-tier="強く推奨" data-price="1850" data-area="40.08" data-score="92" data-year="1992" data-walk="4" data-firstseen="2/26">
+            <td>13</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99748036" target="_blank" rel="noopener noreferrer">チサンマンション祇園</a></div><div class="source-tag">ふれんず</div></td>
             <td>1,850万円</td>
@@ -971,8 +1001,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+20 間取+5 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">92</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="12" data-name="ふれんず物件(博多区)" data-location="福岡市博多区上川端町" data-layout="3LDK" data-tier="強く推奨" data-price="2899" data-area="66.69" data-score="92" data-year="1995" data-walk="1" data-firstseen="NEW">
-            <td>12</td>
+          <tr class="tier-strong" data-index="14" data-name="ふれんず物件(博多区)" data-location="福岡市博多区上川端町" data-layout="3LDK" data-tier="強く推奨" data-price="2899" data-area="66.69" data-score="92" data-year="1995" data-walk="1" data-firstseen="NEW">
+            <td>14</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99750004" target="_blank" rel="noopener noreferrer">ふれんず物件(博多区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,899万円</td>
@@ -986,8 +1016,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+15 立地+20 間取+10 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">92</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="13" data-name="ふれんず物件(中央区)" data-location="福岡市中央区薬院１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3082" data-area="56.22" data-score="91" data-year="1982" data-walk="3" data-firstseen="3/13">
-            <td>13</td>
+          <tr class="tier-strong" data-index="15" data-name="ふれんず物件(中央区)" data-location="福岡市中央区薬院１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3082" data-area="56.22" data-score="91" data-year="1982" data-walk="3" data-firstseen="3/13">
+            <td>15</td>
             <td class="first-seen-col">3/13</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99813076" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,082万円</td>
@@ -1001,8 +1031,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+18 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">91</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="14" data-name="シャンボール桜坂 707" data-location="福岡市中央区古小烏町" data-layout="2LDK" data-tier="強く推奨" data-price="1680" data-area="51.93" data-score="90" data-year="1981" data-walk="7" data-firstseen="4/6">
-            <td>14</td>
+          <tr class="tier-strong" data-index="16" data-name="シャンボール桜坂 707" data-location="福岡市中央区古小烏町" data-layout="2LDK" data-tier="強く推奨" data-price="1680" data-area="51.93" data-score="90" data-year="1981" data-walk="7" data-firstseen="4/6">
+            <td>16</td>
             <td class="first-seen-col">4/6</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99821640" target="_blank" rel="noopener noreferrer">シャンボール桜坂 707</a></div><div class="source-tag">ふれんず</div></td>
             <td>1,680万円</td>
@@ -1016,8 +1046,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+18 間取+10 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">90</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="15" data-name="皐月マンション奈良屋 302" data-location="福岡市博多区奈良屋町" data-layout="2LDK" data-tier="強く推奨" data-price="2250" data-area="53.28" data-score="90" data-year="1982" data-walk="8" data-firstseen="2/26">
-            <td>15</td>
+          <tr class="tier-strong" data-index="17" data-name="皐月マンション奈良屋 302" data-location="福岡市博多区奈良屋町" data-layout="2LDK" data-tier="強く推奨" data-price="2250" data-area="53.28" data-score="90" data-year="1982" data-walk="8" data-firstseen="2/26">
+            <td>17</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99752757" target="_blank" rel="noopener noreferrer">皐月マンション奈良屋 302</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,250万円</td>
@@ -1031,8 +1061,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+20 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">90</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="16" data-name="ふれんず物件(博多区)" data-location="福岡市博多区" data-layout="1LDK" data-tier="強く推奨" data-price="3290" data-area="44.66" data-score="90" data-year="1989" data-walk="3" data-firstseen="2/26">
-            <td>16</td>
+          <tr class="tier-strong" data-index="18" data-name="ふれんず物件(博多区)" data-location="福岡市博多区" data-layout="1LDK" data-tier="強く推奨" data-price="3290" data-area="44.66" data-score="90" data-year="1989" data-walk="3" data-firstseen="2/26">
+            <td>18</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99800708" target="_blank" rel="noopener noreferrer">ふれんず物件(博多区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,290万円</td>
@@ -1046,8 +1076,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+20 間取+5 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">90</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="17" data-name="令和2年2月築の築浅マンション　ペット飼育可（2匹可）　敷地内駐車場1住戸1台利用可能　インターネッ" data-location="福岡市南区高木３丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3500" data-area="58.46" data-score="90" data-year="2002" data-walk="9" data-firstseen="3/13">
-            <td>17</td>
+          <tr class="tier-strong" data-index="19" data-name="令和2年2月築の築浅マンション　ペット飼育可（2匹可）　敷地内駐車場1住戸1台利用可能　インターネッ" data-location="福岡市南区高木３丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3500" data-area="58.46" data-score="90" data-year="2002" data-walk="9" data-firstseen="3/13">
+            <td>19</td>
             <td class="first-seen-col">3/13</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99809566" target="_blank" rel="noopener noreferrer">令和2年2月築の築浅マンション　ペット飼育可（2匹可）　敷地内駐車場1住戸1台利用可能　インターネッ</a></div><span class="pet-tag pet-ok">ペット可</span><div class="source-tag">ふれんず</div></td>
             <td>3,500万円</td>
@@ -1061,8 +1091,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+5 間取+10 ペト+15 管理+0 リノ+0 仲介+0 民泊+0">90</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="18" data-name="ふれんず物件(南区)" data-location="福岡市南区" data-layout="2LDK" data-tier="強く推奨" data-price="1299" data-area="50.66" data-score="88" data-year="1987" data-walk="8" data-firstseen="2/26">
-            <td>18</td>
+          <tr class="tier-strong" data-index="20" data-name="ふれんず物件(南区)" data-location="福岡市南区" data-layout="2LDK" data-tier="強く推奨" data-price="1299" data-area="50.66" data-score="88" data-year="1987" data-walk="8" data-firstseen="2/26">
+            <td>20</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99606414" target="_blank" rel="noopener noreferrer">ふれんず物件(南区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>1,299万円</td>
@@ -1076,8 +1106,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+18 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">88</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="19" data-name="ライオンズマンション薬院第５" data-location="福岡県福岡市中央区薬院２" data-layout="2LDK" data-tier="強く推奨" data-price="3180" data-area="65.31" data-score="88" data-year="1982" data-walk="3" data-firstseen="3/2">
-            <td>19</td>
+          <tr class="tier-strong" data-index="21" data-name="ライオンズマンション薬院第５" data-location="福岡県福岡市中央区薬院２" data-layout="2LDK" data-tier="強く推奨" data-price="3180" data-area="65.31" data-score="88" data-year="1982" data-walk="3" data-firstseen="3/2">
+            <td>21</td>
             <td class="first-seen-col">3/2</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78355670/" target="_blank" rel="noopener noreferrer">ライオンズマンション薬院第５</a></div><div class="source-tag">SUUMO</div></td>
             <td>3,180万円</td>
@@ -1091,8 +1121,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+15 立地+18 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">88</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="20" data-name="ライオンズマンション舞鶴第2" data-location="福岡県福岡市中央区舞鶴３" data-layout="2DK+S（納戸）" data-tier="強く推奨" data-price="3290" data-area="52.72" data-score="88" data-year="1982" data-walk="6" data-firstseen="4/6">
-            <td>20</td>
+          <tr class="tier-strong" data-index="22" data-name="ライオンズマンション舞鶴第2" data-location="福岡県福岡市中央区舞鶴３" data-layout="2DK+S（納戸）" data-tier="強く推奨" data-price="3290" data-area="52.72" data-score="88" data-year="1982" data-walk="6" data-firstseen="4/6">
+            <td>22</td>
             <td class="first-seen-col">4/6</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20591721/" target="_blank" rel="noopener noreferrer">ライオンズマンション舞鶴第2</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,290万円</td>
@@ -1106,8 +1136,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+15 間取+0 ペト+10 管理+3 リノ+0 仲介+0 民泊+0">88</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="21" data-name="東峰マンション博多駅・東 604" data-location="福岡市博多区比恵町" data-layout="1LDK" data-tier="強く推奨" data-price="1980" data-area="42.82" data-score="87" data-year="1989" data-walk="8" data-firstseen="2/26">
-            <td>21</td>
+          <tr class="tier-strong" data-index="23" data-name="東峰マンション博多駅・東 604" data-location="福岡市博多区比恵町" data-layout="1LDK" data-tier="強く推奨" data-price="1980" data-area="42.82" data-score="87" data-year="1989" data-walk="8" data-firstseen="2/26">
+            <td>23</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99722218" target="_blank" rel="noopener noreferrer">東峰マンション博多駅・東 604</a></div><div class="source-tag">ふれんず</div></td>
             <td>1,980万円</td>
@@ -1121,8 +1151,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+20 間取+5 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">87</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="22" data-name="プレイスポットしんばしビル本館 905" data-location="福岡市博多区中洲２丁目" data-layout="1DK" data-tier="強く推奨" data-price="2300" data-area="40.63" data-score="87" data-year="2001" data-walk="2" data-firstseen="2/26">
-            <td>22</td>
+          <tr class="tier-strong" data-index="24" data-name="プレイスポットしんばしビル本館 905" data-location="福岡市博多区中洲２丁目" data-layout="1DK" data-tier="強く推奨" data-price="2300" data-area="40.63" data-score="87" data-year="2001" data-walk="2" data-firstseen="2/26">
+            <td>24</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99758573" target="_blank" rel="noopener noreferrer">プレイスポットしんばしビル本館 905</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,300万円</td>
@@ -1136,8 +1166,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+20 間取+0 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">87</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="23" data-name="プレイスポットしんばしビル本館" data-location="福岡県福岡市博多区中洲２" data-layout="1DK" data-tier="強く推奨" data-price="2330" data-area="40.63" data-score="87" data-year="1975" data-walk="2" data-firstseen="4/4">
-            <td>23</td>
+          <tr class="tier-strong" data-index="25" data-name="プレイスポットしんばしビル本館" data-location="福岡県福岡市博多区中洲２" data-layout="1DK" data-tier="強く推奨" data-price="2330" data-area="40.63" data-score="87" data-year="1975" data-walk="2" data-firstseen="4/4">
+            <td>25</td>
             <td class="first-seen-col">4/4</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20310107/" target="_blank" rel="noopener noreferrer">プレイスポットしんばしビル本館</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>2,330万円</td>
@@ -1151,8 +1181,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+0 駅距+15 立地+20 間取+0 ペト+10 管理+7 リノ+0 仲介+0 民泊+0">87</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="24" data-name="詳細エリアを選択" data-location="福岡市中央区" data-layout="1SLDK" data-tier="強く推奨" data-price="4980" data-area="62.44" data-score="87" data-year="2003" data-walk="3" data-firstseen="4/6">
-            <td>24</td>
+          <tr class="tier-strong" data-index="26" data-name="詳細エリアを選択" data-location="福岡市中央区" data-layout="1SLDK" data-tier="強く推奨" data-price="4980" data-area="62.44" data-score="87" data-year="2003" data-walk="3" data-firstseen="4/6">
+            <td>26</td>
             <td class="first-seen-col">4/6</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99821709" target="_blank" rel="noopener noreferrer">詳細エリアを選択</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">ふれんず</div></td>
             <td>4,980万円</td>
@@ -1166,8 +1196,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+10 耐震+15 駅距+15 立地+20 間取+0 ペト+10 管理+7 リノ+0 仲介+0 民泊+0">87</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="25" data-name="ふれんず物件(中央区)" data-location="福岡市中央区大宮２丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3080" data-area="64.10" data-score="86" data-year="1983" data-walk="5" data-firstseen="3/13">
-            <td>25</td>
+          <tr class="tier-strong" data-index="27" data-name="ふれんず物件(中央区)" data-location="福岡市中央区大宮２丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3080" data-area="64.10" data-score="86" data-year="1983" data-walk="5" data-firstseen="3/13">
+            <td>27</td>
             <td class="first-seen-col">3/13</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99813082" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,080万円</td>
@@ -1181,8 +1211,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+15 立地+18 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">86</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="26" data-name="ライオンズマンション薬院第3" data-location="福岡県福岡市中央区薬院３" data-layout="2LDK" data-tier="強く推奨" data-price="3090" data-area="56.10" data-score="86" data-year="1980" data-walk="6" data-firstseen="4/5">
-            <td>26</td>
+          <tr class="tier-strong" data-index="28" data-name="ライオンズマンション薬院第3" data-location="福岡県福岡市中央区薬院３" data-layout="2LDK" data-tier="強く推奨" data-price="3090" data-area="56.10" data-score="86" data-year="1980" data-walk="6" data-firstseen="4/5">
+            <td>28</td>
             <td class="first-seen-col">4/5</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20589240/" target="_blank" rel="noopener noreferrer">ライオンズマンション薬院第3</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,090万円</td>
@@ -1196,8 +1226,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+0 駅距+10 立地+18 間取+10 ペト+10 管理+3 リノ+0 仲介+0 民泊+0">86</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="27" data-name="シティマンション薬院" data-location="福岡県福岡市中央区薬院１" data-layout="2DK" data-tier="強く推奨" data-price="1900" data-area="43.82" data-score="85" data-year="1984" data-walk="3" data-firstseen="3/21">
-            <td>27</td>
+          <tr class="tier-strong" data-index="29" data-name="シティマンション薬院" data-location="福岡県福岡市中央区薬院１" data-layout="2DK" data-tier="強く推奨" data-price="1900" data-area="43.82" data-score="85" data-year="1984" data-walk="3" data-firstseen="3/21">
+            <td>29</td>
             <td class="first-seen-col">3/21</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20407977/" target="_blank" rel="noopener noreferrer">シティマンション薬院</a></div><div class="source-tag">SUUMO</div></td>
             <td>1,900万円</td>
@@ -1211,8 +1241,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+18 間取+0 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="28" data-name="シティマンション平尾Ⅰ" data-location="福岡県福岡市中央区平尾２" data-layout="2LDK" data-tier="強く推奨" data-price="2780" data-area="55.00" data-score="85" data-year="1984" data-walk="5" data-firstseen="4/18">
-            <td>28</td>
+          <tr class="tier-strong" data-index="30" data-name="シティマンション平尾Ⅰ" data-location="福岡県福岡市中央区平尾２" data-layout="2LDK" data-tier="強く推奨" data-price="2780" data-area="55.00" data-score="85" data-year="1984" data-walk="5" data-firstseen="4/18">
+            <td>30</td>
             <td class="first-seen-col">4/18</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20666448/" target="_blank" rel="noopener noreferrer">シティマンション平尾Ⅰ</a></div><div class="source-tag">SUUMO</div></td>
             <td>2,780万円</td>
@@ -1226,8 +1256,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+10 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="29" data-name="ユーハイム大濠西 701" data-location="福岡市中央区黒門" data-layout="1LDK" data-tier="強く推奨" data-price="2820" data-area="48.09" data-score="85" data-year="1981" data-walk="1" data-firstseen="2/27">
-            <td>29</td>
+          <tr class="tier-strong" data-index="31" data-name="ユーハイム大濠西 701" data-location="福岡市中央区黒門" data-layout="1LDK" data-tier="強く推奨" data-price="2820" data-area="48.09" data-score="85" data-year="1981" data-walk="1" data-firstseen="2/27">
+            <td>31</td>
             <td class="first-seen-col">2/27</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99707849" target="_blank" rel="noopener noreferrer">ユーハイム大濠西 701</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,820万円</td>
@@ -1241,8 +1271,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+15 間取+5 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="30" data-name="ふれんず物件(中央区)" data-location="福岡市中央区" data-layout="1LDK" data-tier="強く推奨" data-price="2890" data-area="58.91" data-score="85" data-year="1985" data-walk="6" data-firstseen="2/27">
-            <td>30</td>
+          <tr class="tier-strong" data-index="32" data-name="ふれんず物件(中央区)" data-location="福岡市中央区" data-layout="1LDK" data-tier="強く推奨" data-price="2890" data-area="58.91" data-score="85" data-year="1985" data-walk="6" data-firstseen="2/27">
+            <td>32</td>
             <td class="first-seen-col">2/27</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99768458" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,890万円</td>
@@ -1256,8 +1286,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+20 間取+5 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="31" data-name="エバーライフ東平尾公園Ⅱ" data-location="福岡県福岡市博多区青木１" data-layout="3LDK" data-tier="強く推奨" data-price="2899" data-area="64.39" data-score="85" data-year="1995" data-walk="11" data-firstseen="4/14">
-            <td>31</td>
+          <tr class="tier-strong" data-index="33" data-name="エバーライフ東平尾公園Ⅱ" data-location="福岡県福岡市博多区青木１" data-layout="3LDK" data-tier="強く推奨" data-price="2899" data-area="64.39" data-score="85" data-year="1995" data-walk="11" data-firstseen="4/14">
+            <td>33</td>
             <td class="first-seen-col">4/14</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20647670/" target="_blank" rel="noopener noreferrer">エバーライフ東平尾公園Ⅱ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>2,899万円</td>
@@ -1271,8 +1301,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+3 立地+10 間取+10 ペト+10 管理+7 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="32" data-name="ダイナコート六本松" data-location="福岡県福岡市中央区谷１" data-layout="2LDK" data-tier="強く推奨" data-price="2980" data-area="59.90" data-score="85" data-year="1987" data-walk="6" data-firstseen="3/21">
-            <td>32</td>
+          <tr class="tier-strong" data-index="34" data-name="ダイナコート六本松" data-location="福岡県福岡市中央区谷１" data-layout="2LDK" data-tier="強く推奨" data-price="2980" data-area="59.90" data-score="85" data-year="1987" data-walk="6" data-firstseen="3/21">
+            <td>34</td>
             <td class="first-seen-col">3/21</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20460207/" target="_blank" rel="noopener noreferrer">ダイナコート六本松</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>2,980万円</td>
@@ -1286,8 +1316,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+10 間取+10 ペト+10 管理-5 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="33" data-name="ハイツ大手門" data-location="福岡県福岡市中央区大手門２" data-layout="3LDK" data-tier="強く推奨" data-price="3180" data-area="67.63" data-score="85" data-year="1982" data-walk="5" data-firstseen="4/8">
-            <td>33</td>
+          <tr class="tier-strong" data-index="35" data-name="ハイツ大手門" data-location="福岡県福岡市中央区大手門２" data-layout="3LDK" data-tier="強く推奨" data-price="3180" data-area="67.63" data-score="85" data-year="1982" data-walk="5" data-firstseen="4/8">
+            <td>35</td>
             <td class="first-seen-col">4/8</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20605983/" target="_blank" rel="noopener noreferrer">ハイツ大手門</a></div><div class="source-tag">SUUMO</div></td>
             <td>3,180万円</td>
@@ -1301,8 +1331,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+15 立地+15 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="34" data-name="ふれんず物件(中央区)" data-location="福岡市中央区警固１丁目" data-layout="3LDK" data-tier="強く推奨" data-price="3180" data-area="66.00" data-score="85" data-year="1982" data-walk="9" data-firstseen="3/13">
-            <td>34</td>
+          <tr class="tier-strong" data-index="36" data-name="ふれんず物件(中央区)" data-location="福岡市中央区警固１丁目" data-layout="3LDK" data-tier="強く推奨" data-price="3180" data-area="66.00" data-score="85" data-year="1982" data-walk="9" data-firstseen="3/13">
+            <td>36</td>
             <td class="first-seen-col">3/13</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99724577" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,180万円</td>
@@ -1316,8 +1346,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+10 立地+20 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="35" data-name="アンピール天神南" data-location="福岡県福岡市中央区今泉１" data-layout="2LDK" data-tier="強く推奨" data-price="3399" data-area="52.80" data-score="85" data-year="1986" data-walk="6" data-firstseen="4/13">
-            <td>35</td>
+          <tr class="tier-strong" data-index="37" data-name="アンピール天神南" data-location="福岡県福岡市中央区今泉１" data-layout="2LDK" data-tier="強く推奨" data-price="3399" data-area="52.80" data-score="85" data-year="1986" data-walk="6" data-firstseen="4/13">
+            <td>37</td>
             <td class="first-seen-col">4/13</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20632329/" target="_blank" rel="noopener noreferrer">アンピール天神南</a></div><div class="source-tag">SUUMO</div></td>
             <td>3,399万円</td>
@@ -1331,8 +1361,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+20 間取+10 ペト-5 管理+0 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="36" data-name="ふれんず物件(中央区)" data-location="福岡市中央区赤坂３丁目" data-layout="3LDK" data-tier="強く推奨" data-price="4080" data-area="65.61" data-score="85" data-year="1983" data-walk="9" data-firstseen="2/27">
-            <td>36</td>
+          <tr class="tier-strong" data-index="38" data-name="ふれんず物件(中央区)" data-location="福岡市中央区赤坂３丁目" data-layout="3LDK" data-tier="強く推奨" data-price="4080" data-area="65.61" data-score="85" data-year="1983" data-walk="9" data-firstseen="2/27">
+            <td>38</td>
             <td class="first-seen-col">2/27</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99782845" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><span class="pet-tag pet-ok">ペット可</span><div class="source-tag">ふれんず</div></td>
             <td>4,080万円</td>
@@ -1346,8 +1376,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+10 耐震+15 駅距+10 立地+15 間取+10 ペト+15 管理+0 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="37" data-name="コモダスパッソ天神" data-location="福岡県福岡市中央区渡辺通５-6－18" data-layout="2LDK" data-tier="強く推奨" data-price="4980" data-area="60.87" data-score="85" data-year="2000" data-walk="3" data-firstseen="3/21">
-            <td>37</td>
+          <tr class="tier-strong" data-index="39" data-name="コモダスパッソ天神" data-location="福岡県福岡市中央区渡辺通５-6－18" data-layout="2LDK" data-tier="強く推奨" data-price="4980" data-area="60.87" data-score="85" data-year="2000" data-walk="3" data-firstseen="3/21">
+            <td>39</td>
             <td class="first-seen-col">3/21</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20350288/" target="_blank" rel="noopener noreferrer">コモダスパッソ天神</a></div><div class="source-tag">SUUMO</div></td>
             <td>4,980万円</td>
@@ -1361,8 +1391,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+10 耐震+15 駅距+15 立地+20 間取+10 ペト-5 管理+10 リノ+0 仲介+0 民泊+0">85</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="38" data-name="シティマンション輝国" data-location="福岡県福岡市中央区輝国２" data-layout="3DK" data-tier="強く推奨" data-price="950" data-area="55.43" data-score="83" data-year="1984" data-walk="15" data-firstseen="3/2">
-            <td>38</td>
+          <tr class="tier-strong" data-index="40" data-name="シティマンション輝国" data-location="福岡県福岡市中央区輝国２" data-layout="3DK" data-tier="強く推奨" data-price="950" data-area="55.43" data-score="83" data-year="1984" data-walk="15" data-firstseen="3/2">
+            <td>40</td>
             <td class="first-seen-col">3/2</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20230915/" target="_blank" rel="noopener noreferrer">シティマンション輝国</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>950万円</td>
@@ -1376,8 +1406,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+3 立地+10 間取+0 ペト+10 管理+10 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="39" data-name="博多ニッコーハイツ 5階" data-location="福岡市博多区博多駅東３丁目" data-layout="3LDK" data-tier="強く推奨" data-price="1949" data-area="62.91" data-score="83" data-year="1984" data-walk="8" data-firstseen="2/26">
-            <td>39</td>
+          <tr class="tier-strong" data-index="41" data-name="博多ニッコーハイツ 5階" data-location="福岡市博多区博多駅東３丁目" data-layout="3LDK" data-tier="強く推奨" data-price="1949" data-area="62.91" data-score="83" data-year="1984" data-walk="8" data-firstseen="2/26">
+            <td>41</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99358163" target="_blank" rel="noopener noreferrer">博多ニッコーハイツ 5階</a></div><span class="pet-tag pet-ok">ペット可</span><div class="source-tag">ふれんず</div></td>
             <td>1,949万円</td>
@@ -1391,8 +1421,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+10 立地+0 間取+10 ペト+15 管理+3 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="40" data-name="ステイツ天神東 201" data-location="福岡市博多区奈良屋町" data-layout="1LDK" data-tier="強く推奨" data-price="1999" data-area="40.97" data-score="83" data-year="1988" data-walk="10" data-firstseen="2/26">
-            <td>40</td>
+          <tr class="tier-strong" data-index="42" data-name="ステイツ天神東 201" data-location="福岡市博多区奈良屋町" data-layout="1LDK" data-tier="強く推奨" data-price="1999" data-area="40.97" data-score="83" data-year="1988" data-walk="10" data-firstseen="2/26">
+            <td>42</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99800235" target="_blank" rel="noopener noreferrer">ステイツ天神東 201</a></div><div class="source-tag">ふれんず</div></td>
             <td>1,999万円</td>
@@ -1406,8 +1436,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+20 間取+5 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="41" data-name="ライオンズマンション南薬院" data-location="福岡県福岡市中央区薬院３" data-layout="1LDK" data-tier="強く推奨" data-price="2380" data-area="47.79" data-score="83" data-year="1983" data-walk="5" data-firstseen="3/21">
-            <td>41</td>
+          <tr class="tier-strong" data-index="43" data-name="ライオンズマンション南薬院" data-location="福岡県福岡市中央区薬院３" data-layout="1LDK" data-tier="強く推奨" data-price="2380" data-area="47.79" data-score="83" data-year="1983" data-walk="5" data-firstseen="3/21">
+            <td>43</td>
             <td class="first-seen-col">3/21</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20354638/" target="_blank" rel="noopener noreferrer">ライオンズマンション南薬院</a></div><div class="source-tag">SUUMO</div></td>
             <td>2,380万円</td>
@@ -1421,8 +1451,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+18 間取+5 ペト-5 管理+0 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="42" data-name="西鉄バス　薬院駅前 4分" data-location="福岡市中央区大宮１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="2850" data-area="48.80" data-score="83" data-year="1985" data-walk="4" data-firstseen="NEW">
-            <td>42</td>
+          <tr class="tier-strong" data-index="44" data-name="西鉄バス　薬院駅前 4分" data-location="福岡市中央区大宮１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="2850" data-area="48.80" data-score="83" data-year="1985" data-walk="4" data-firstseen="NEW">
+            <td>44</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99827922" target="_blank" rel="noopener noreferrer">西鉄バス　薬院駅前 4分</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,850万円</td>
@@ -1436,8 +1466,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+18 間取+10 ペト-5 管理-5 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="43" data-name="東洋マンション大名 804" data-location="福岡市中央区大名２丁目" data-layout="3LDK" data-tier="強く推奨" data-price="2980" data-area="65.70" data-score="83" data-year="1984" data-walk="7" data-firstseen="3/5">
-            <td>43</td>
+          <tr class="tier-strong" data-index="45" data-name="東洋マンション大名 804" data-location="福岡市中央区大名２丁目" data-layout="3LDK" data-tier="強く推奨" data-price="2980" data-area="65.70" data-score="83" data-year="1984" data-walk="7" data-firstseen="3/5">
+            <td>45</td>
             <td class="first-seen-col">3/5</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99808964" target="_blank" rel="noopener noreferrer">東洋マンション大名 804</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,980万円</td>
@@ -1451,8 +1481,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+10 立地+20 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="44" data-name="日商岩井今泉マンション 210" data-location="福岡市中央区今泉２丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3290" data-area="68.75" data-score="83" data-year="1982" data-walk="8" data-firstseen="2/27">
-            <td>44</td>
+          <tr class="tier-strong" data-index="46" data-name="日商岩井今泉マンション 210" data-location="福岡市中央区今泉２丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3290" data-area="68.75" data-score="83" data-year="1982" data-walk="8" data-firstseen="2/27">
+            <td>46</td>
             <td class="first-seen-col">2/27</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99795724" target="_blank" rel="noopener noreferrer">日商岩井今泉マンション 210</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,290万円</td>
@@ -1466,8 +1496,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+10 立地+20 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="45" data-name="藤和コープソシエ大名 703" data-location="福岡市中央区大名１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3490" data-area="67.00" data-score="83" data-year="1986" data-walk="8" data-firstseen="NEW">
-            <td>45</td>
+          <tr class="tier-strong" data-index="47" data-name="藤和コープソシエ大名 703" data-location="福岡市中央区大名１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3490" data-area="67.00" data-score="83" data-year="1986" data-walk="8" data-firstseen="NEW">
+            <td>47</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99827294" target="_blank" rel="noopener noreferrer">藤和コープソシエ大名 703</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,490万円</td>
@@ -1481,8 +1511,23 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+10 立地+20 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="46" data-name="ふれんず物件(中央区)" data-location="福岡市中央区" data-layout="3LDK" data-tier="強く推奨" data-price="3680" data-area="68.34" data-score="83" data-year="1983" data-walk="5" data-firstseen="NEW">
-            <td>46</td>
+          <tr class="tier-strong" data-index="48" data-name="藤和コープソシエ薬院" data-location="福岡県福岡市中央区薬院２" data-layout="3LDK" data-tier="強く推奨" data-price="3490" data-area="69.16" data-score="83" data-year="1984" data-walk="9" data-firstseen="3/21">
+            <td>48</td>
+            <td class="first-seen-col">3/21</td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20450108/" target="_blank" rel="noopener noreferrer">藤和コープソシエ薬院</a></div><div class="source-tag">SUUMO</div></td>
+            <td>3,490万円</td>
+            <td>69.16㎡</td>
+            <td><div class="clamp2">福岡県福岡市中央区薬院２</div></td>
+            <td><div class="clamp2">薬院 徒歩9分</div></td>
+            <td class="year-col">1984年</td>
+            <td class="layout-col">3LDK</td>
+            <td class="maint-col"><span title="管理費8,800円 + 修繕6,230円">15,030円</span><span class="maint-detail">管理8,800 + 修繕6,230</span></td>
+            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+10 立地+18 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">83</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
+          </tr>
+          <tr class="tier-strong" data-index="49" data-name="ふれんず物件(中央区)" data-location="福岡市中央区" data-layout="3LDK" data-tier="強く推奨" data-price="3680" data-area="68.34" data-score="83" data-year="1983" data-walk="5" data-firstseen="NEW">
+            <td>49</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99827304" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,680万円</td>
@@ -1496,8 +1541,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+15 面積+10 耐震+15 駅距+15 立地+20 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="47" data-name="ステイツ天神 205" data-location="福岡市中央区警固１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3750" data-area="46.80" data-score="83" data-year="1983" data-walk="9" data-firstseen="3/21">
-            <td>47</td>
+          <tr class="tier-strong" data-index="50" data-name="ステイツ天神 205" data-location="福岡市中央区警固１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3750" data-area="46.80" data-score="83" data-year="1983" data-walk="9" data-firstseen="3/21">
+            <td>50</td>
             <td class="first-seen-col">3/21</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99815483" target="_blank" rel="noopener noreferrer">ステイツ天神 205</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,750万円</td>
@@ -1511,8 +1556,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+15 面積+15 耐震+15 駅距+10 立地+20 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="48" data-name="1フロア2戸（全戸角部屋）2026年3月オープンのロピアまで210ｍです" data-location="福岡市中央区桜坂１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3799" data-area="69.30" data-score="83" data-year="1984" data-walk="1" data-firstseen="3/29">
-            <td>48</td>
+          <tr class="tier-strong" data-index="51" data-name="1フロア2戸（全戸角部屋）2026年3月オープンのロピアまで210ｍです" data-location="福岡市中央区桜坂１丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3799" data-area="69.30" data-score="83" data-year="1984" data-walk="1" data-firstseen="3/29">
+            <td>51</td>
             <td class="first-seen-col">3/29</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99818981" target="_blank" rel="noopener noreferrer">1フロア2戸（全戸角部屋）2026年3月オープンのロピアまで210ｍです</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,799万円</td>
@@ -1526,10 +1571,10 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+15 面積+10 耐震+15 駅距+15 立地+18 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="49" data-name="プレサンスロジェ博多駅北【築浅7年☆駅近】" data-location="福岡県福岡市博多区吉塚３-6-12" data-layout="3LDK" data-tier="強く推奨" data-price="4380" data-area="64.14" data-score="83" data-year="2019" data-walk="13" data-firstseen="NEW">
-            <td>49</td>
+          <tr class="tier-strong" data-index="52" data-name="プレサンスロジェ博多駅北" data-location="福岡県福岡市博多区吉塚３-6-12" data-layout="3LDK" data-tier="強く推奨" data-price="4380" data-area="64.14" data-score="83" data-year="2019" data-walk="13" data-firstseen="NEW">
+            <td>52</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20690206/" target="_blank" rel="noopener noreferrer">プレサンスロジェ博多駅北【築浅7年☆駅近】</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20690206/" target="_blank" rel="noopener noreferrer">プレサンスロジェ博多駅北</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,380万円</td>
             <td>64.14㎡</td>
             <td><div class="clamp2">福岡県福岡市博多区吉塚３-6-12</div></td>
@@ -1541,8 +1586,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+10 耐震+15 駅距+3 立地+20 間取+10 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="50" data-name="アウルステージアン・シオ博多駅南" data-location="福岡県福岡市博多区博多駅南５" data-layout="3LDK" data-tier="強く推奨" data-price="4790" data-area="69.70" data-score="83" data-year="2013" data-walk="13" data-firstseen="4/10">
-            <td>50</td>
+          <tr class="tier-strong" data-index="53" data-name="アウルステージアン・シオ博多駅南" data-location="福岡県福岡市博多区博多駅南５" data-layout="3LDK" data-tier="強く推奨" data-price="4790" data-area="69.70" data-score="83" data-year="2013" data-walk="13" data-firstseen="4/10">
+            <td>53</td>
             <td class="first-seen-col">4/10</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20613624/" target="_blank" rel="noopener noreferrer">アウルステージアン・シオ博多駅南</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,790万円</td>
@@ -1556,8 +1601,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+10 耐震+15 駅距+3 立地+20 間取+10 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="51" data-name="109" data-location="福岡市博多区東光２丁目" data-layout="3DK" data-tier="強く推奨" data-price="1280" data-area="51.26" data-score="82" data-year="1990" data-walk="7" data-firstseen="2/26">
-            <td>51</td>
+          <tr class="tier-strong" data-index="54" data-name="109" data-location="福岡市博多区東光２丁目" data-layout="3DK" data-tier="強く推奨" data-price="1280" data-area="51.26" data-score="82" data-year="1990" data-walk="7" data-firstseen="2/26">
+            <td>54</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/98717881" target="_blank" rel="noopener noreferrer">109</a></div><span class="pet-tag pet-ok">ペット可</span><div class="source-tag">ふれんず</div></td>
             <td>1,280万円</td>
@@ -1571,8 +1616,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+0 間取+0 ペト+15 管理+7 リノ+0 仲介+0 民泊+0">82</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="52" data-name="クレアランドマーク" data-location="福岡県福岡市博多区冷泉町" data-layout="1LDK" data-tier="強く推奨" data-price="3580" data-area="40.43" data-score="82" data-year="2001" data-walk="4" data-firstseen="4/15">
-            <td>52</td>
+          <tr class="tier-strong" data-index="55" data-name="クレアランドマーク" data-location="福岡県福岡市博多区冷泉町" data-layout="1LDK" data-tier="強く推奨" data-price="3580" data-area="40.43" data-score="82" data-year="2001" data-walk="4" data-firstseen="4/15">
+            <td>55</td>
             <td class="first-seen-col">4/15</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20658743/" target="_blank" rel="noopener noreferrer">クレアランドマーク</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,580万円</td>
@@ -1586,8 +1631,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+15 面積+15 耐震+15 駅距+15 立地+0 間取+5 ペト+10 管理+7 リノ+0 仲介+0 民泊+0">82</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="53" data-name="ふれんず物件(中央区)" data-location="福岡市中央区大名１丁目" data-layout="3LDK" data-tier="強く推奨" data-price="4400" data-area="63.00" data-score="82" data-year="1996" data-walk="5" data-firstseen="4/2">
-            <td>53</td>
+          <tr class="tier-strong" data-index="56" data-name="ふれんず物件(中央区)" data-location="福岡市中央区大名１丁目" data-layout="3LDK" data-tier="強く推奨" data-price="4400" data-area="63.00" data-score="82" data-year="1996" data-walk="5" data-firstseen="4/2">
+            <td>56</td>
             <td class="first-seen-col">4/2</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99820052" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>4,400万円</td>
@@ -1601,8 +1646,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+10 耐震+15 駅距+15 立地+20 間取+10 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">82</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="54" data-name="ららぽーと福岡まで徒歩約１２分の利便性　２沿線利用可" data-location="福岡市南区高宮３丁目" data-layout="2LDK" data-tier="強く推奨" data-price="1780" data-area="68.79" data-score="81" data-year="1984" data-walk="8" data-firstseen="3/23">
-            <td>54</td>
+          <tr class="tier-strong" data-index="57" data-name="ららぽーと福岡まで徒歩約１２分の利便性　２沿線利用可" data-location="福岡市南区高宮３丁目" data-layout="2LDK" data-tier="強く推奨" data-price="1780" data-area="68.79" data-score="81" data-year="1984" data-walk="8" data-firstseen="3/23">
+            <td>57</td>
             <td class="first-seen-col">3/23</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99816592" target="_blank" rel="noopener noreferrer">ららぽーと福岡まで徒歩約１２分の利便性　２沿線利用可</a></div><div class="source-tag">ふれんず</div></td>
             <td>1,780万円</td>
@@ -1616,8 +1661,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+10 立地+18 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">81</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="55" data-name="ハイライフ平尾 302" data-location="福岡市中央区平尾４丁目" data-layout="1LDK" data-tier="強く推奨" data-price="2199" data-area="44.71" data-score="81" data-year="1981" data-walk="9" data-firstseen="4/13">
-            <td>55</td>
+          <tr class="tier-strong" data-index="58" data-name="ハイライフ平尾 302" data-location="福岡市中央区平尾４丁目" data-layout="1LDK" data-tier="強く推奨" data-price="2199" data-area="44.71" data-score="81" data-year="1981" data-walk="9" data-firstseen="4/13">
+            <td>58</td>
             <td class="first-seen-col">4/13</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99823587" target="_blank" rel="noopener noreferrer">ハイライフ平尾 302</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,199万円</td>
@@ -1631,8 +1676,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+18 間取+5 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">81</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="56" data-name="ふれんず物件(南区)" data-location="福岡市南区高宮２丁目" data-layout="3LDK" data-tier="強く推奨" data-price="2390" data-area="68.17" data-score="81" data-year="1999" data-walk="8" data-firstseen="2/26">
-            <td>56</td>
+          <tr class="tier-strong" data-index="59" data-name="ふれんず物件(南区)" data-location="福岡市南区高宮２丁目" data-layout="3LDK" data-tier="強く推奨" data-price="2390" data-area="68.17" data-score="81" data-year="1999" data-walk="8" data-firstseen="2/26">
+            <td>59</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99639330" target="_blank" rel="noopener noreferrer">ふれんず物件(南区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,390万円</td>
@@ -1646,8 +1691,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+10 立地+18 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">81</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="57" data-name="ふれんず物件(中央区)" data-location="福岡市中央区平尾４丁目" data-layout="1LDK" data-tier="強く推奨" data-price="2680" data-area="57.13" data-score="81" data-year="1992" data-walk="9" data-firstseen="2/27">
-            <td>57</td>
+          <tr class="tier-strong" data-index="60" data-name="ふれんず物件(中央区)" data-location="福岡市中央区平尾４丁目" data-layout="1LDK" data-tier="強く推奨" data-price="2680" data-area="57.13" data-score="81" data-year="1992" data-walk="9" data-firstseen="2/27">
+            <td>60</td>
             <td class="first-seen-col">2/27</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99713306" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,680万円</td>
@@ -1661,8 +1706,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+18 間取+5 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">81</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="58" data-name="リファレンス天神南" data-location="福岡県福岡市中央区清川２" data-layout="3LDK" data-tier="強く推奨" data-price="4399" data-area="65.32" data-score="81" data-year="2002" data-walk="13" data-firstseen="3/2">
-            <td>58</td>
+          <tr class="tier-strong" data-index="61" data-name="リファレンス天神南" data-location="福岡県福岡市中央区清川２" data-layout="3LDK" data-tier="強く推奨" data-price="4399" data-area="65.32" data-score="81" data-year="2002" data-walk="13" data-firstseen="3/2">
+            <td>61</td>
             <td class="first-seen-col">3/2</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20033456/" target="_blank" rel="noopener noreferrer">リファレンス天神南</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,399万円</td>
@@ -1676,13 +1721,13 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+10 耐震+15 駅距+3 立地+20 間取+10 ペト+10 管理+3 リノ+0 仲介+0 民泊+0">81</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="59" data-name="ダイナコート赤坂南" data-location="福岡県福岡市中央区桜坂２-5-43" data-layout="3LDK" data-tier="強く推奨" data-price="2100" data-area="63.30" data-score="80" data-year="1988" data-walk="5" data-firstseen="3/2">
-            <td>59</td>
+          <tr class="tier-strong" data-index="62" data-name="ダイナコート赤坂南" data-location="福岡県福岡市中央区桜坂２" data-layout="3LDK" data-tier="強く推奨" data-price="2100" data-area="63.30" data-score="80" data-year="1988" data-walk="5" data-firstseen="3/2">
+            <td>62</td>
             <td class="first-seen-col">3/2</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_78138910/" target="_blank" rel="noopener noreferrer">ダイナコート赤坂南</a></div><div class="source-tag">SUUMO</div></td>
             <td>2,100万円</td>
             <td>63.30㎡</td>
-            <td><div class="clamp2">福岡県福岡市中央区桜坂２-5-43</div></td>
+            <td><div class="clamp2">福岡県福岡市中央区桜坂２</div></td>
             <td><div class="clamp2">桜坂 徒歩5分</div></td>
             <td class="year-col">1988年</td>
             <td class="layout-col">3LDK</td>
@@ -1691,8 +1736,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+15 立地+15 間取+10 ペト-5 管理+0 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="60" data-name="ふれんず物件(中央区)" data-location="福岡市中央区六本松３丁目" data-layout="1LDK" data-tier="強く推奨" data-price="2198" data-area="51.66" data-score="80" data-year="1990" data-walk="7" data-firstseen="2/27">
-            <td>60</td>
+          <tr class="tier-strong" data-index="63" data-name="ふれんず物件(中央区)" data-location="福岡市中央区六本松３丁目" data-layout="1LDK" data-tier="強く推奨" data-price="2198" data-area="51.66" data-score="80" data-year="1990" data-walk="7" data-firstseen="2/27">
+            <td>63</td>
             <td class="first-seen-col">2/27</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99760294" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,198万円</td>
@@ -1706,8 +1751,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+15 間取+5 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="61" data-name="ふれんず物件(中央区)" data-location="福岡市中央区" data-layout="2LDK" data-tier="強く推奨" data-price="2930" data-area="65.65" data-score="80" data-year="1983" data-walk="2" data-firstseen="2/27">
-            <td>61</td>
+          <tr class="tier-strong" data-index="64" data-name="ふれんず物件(中央区)" data-location="福岡市中央区" data-layout="2LDK" data-tier="強く推奨" data-price="2930" data-area="65.65" data-score="80" data-year="1983" data-walk="2" data-firstseen="2/27">
+            <td>64</td>
             <td class="first-seen-col">2/27</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99744725" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>2,930万円</td>
@@ -1721,8 +1766,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+15 立地+10 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="62" data-name="ダイアパレス平尾Ⅱ" data-location="福岡県福岡市中央区大宮２" data-layout="1LDK+S（納戸）" data-tier="強く推奨" data-price="2930" data-area="55.62" data-score="80" data-year="1983" data-walk="4" data-firstseen="NEW">
-            <td>62</td>
+          <tr class="tier-strong" data-index="65" data-name="ダイアパレス平尾Ⅱ" data-location="福岡県福岡市中央区大宮２" data-layout="1LDK+S（納戸）" data-tier="強く推奨" data-price="2930" data-area="55.62" data-score="80" data-year="1983" data-walk="4" data-firstseen="NEW">
+            <td>65</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20690457/" target="_blank" rel="noopener noreferrer">ダイアパレス平尾Ⅱ</a></div><div class="source-tag">SUUMO</div></td>
             <td>2,930万円</td>
@@ -1736,8 +1781,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+10 間取+5 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="63" data-name="チサンマンション祇園" data-location="福岡県福岡市博多区祇園町" data-layout="2LDK" data-tier="強く推奨" data-price="3180" data-area="52.98" data-score="80" data-year="1980" data-walk="4" data-firstseen="3/21">
-            <td>63</td>
+          <tr class="tier-strong" data-index="66" data-name="チサンマンション祇園" data-location="福岡県福岡市博多区祇園町" data-layout="2LDK" data-tier="強く推奨" data-price="3180" data-area="52.98" data-score="80" data-year="1980" data-walk="4" data-firstseen="3/21">
+            <td>66</td>
             <td class="first-seen-col">3/21</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20372579/" target="_blank" rel="noopener noreferrer">チサンマンション祇園</a></div><div class="source-tag">SUUMO</div></td>
             <td>3,180万円</td>
@@ -1751,8 +1796,23 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+0 駅距+15 立地+20 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="64" data-name="アルファシオサウスフォンテ" data-location="福岡県福岡市博多区元町２" data-layout="2LDK" data-tier="強く推奨" data-price="3490" data-area="50.12" data-score="80" data-year="2017" data-walk="3" data-firstseen="3/2">
-            <td>64</td>
+          <tr class="tier-strong" data-index="67" data-name="ふれんず物件(中央区)" data-location="福岡市中央区舞鶴２丁目" data-layout="2LDK" data-tier="強く推奨" data-price="3490" data-area="56.70" data-score="80" data-year="1979" data-walk="3" data-firstseen="2/28">
+            <td>67</td>
+            <td class="first-seen-col">2/28</td>
+            <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99806230" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
+            <td>3,490万円</td>
+            <td>56.70㎡</td>
+            <td><div class="clamp2">福岡市中央区舞鶴２丁目</div></td>
+            <td><div class="clamp2">赤坂 徒歩3分 / 天神 徒歩12分 / 西鉄福岡（天神） 徒歩15分</div></td>
+            <td class="year-col">1979年</td>
+            <td class="layout-col">2LDK</td>
+            <td class="maint-col"><span title="管理費19,590円（修繕不明）">19,590円</span><span class="maint-detail">管理のみ</span></td>
+            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+0 駅距+15 立地+20 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
+          </tr>
+          <tr class="tier-strong" data-index="68" data-name="アルファシオサウスフォンテ" data-location="福岡県福岡市博多区元町２" data-layout="2LDK" data-tier="強く推奨" data-price="3490" data-area="50.12" data-score="80" data-year="2017" data-walk="3" data-firstseen="3/2">
+            <td>68</td>
             <td class="first-seen-col">3/2</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20260636/" target="_blank" rel="noopener noreferrer">アルファシオサウスフォンテ</a></div><div class="source-tag">SUUMO</div></td>
             <td>3,490万円</td>
@@ -1766,25 +1826,10 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+15 立地+0 間取+10 ペト-5 管理+10 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="65" data-name="ふれんず物件(中央区)" data-location="福岡市中央区薬院２丁目" data-layout="3LDK" data-tier="強く推奨" data-price="3490" data-area="69.16" data-score="80" data-year="1981" data-walk="4" data-firstseen="3/15">
-            <td>65</td>
-            <td class="first-seen-col">3/15</td>
-            <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99813741" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
-            <td>3,490万円</td>
-            <td>69.16㎡</td>
-            <td><div class="clamp2">福岡市中央区薬院２丁目</div></td>
-            <td><div class="clamp2">薬院大通 徒歩4分 / 薬院 徒歩9分 / 西鉄福岡（天神） 徒歩14分</div></td>
-            <td class="year-col">1981年</td>
-            <td class="layout-col">3LDK</td>
-            <td class="maint-col"><span title="管理費31,720円（修繕不明）">31,720円</span><span class="maint-detail">管理のみ</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-neg">管理-5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+15 立地+20 間取+10 ペト-5 管理-5 リノ+0 仲介+0 民泊+0">80</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="66" data-name="コスモテール吉塚" data-location="福岡県福岡市博多区吉塚２" data-layout="3LDK" data-tier="強く推奨" data-price="3490" data-area="69.66" data-score="80" data-year="1989" data-walk="8" data-firstseen="3/2">
-            <td>66</td>
+          <tr class="tier-strong" data-index="69" data-name="コスモテール吉塚" data-location="福岡県福岡市博多区吉塚２" data-layout="3LDK" data-tier="強く推奨" data-price="3490" data-area="69.66" data-score="80" data-year="1989" data-walk="8" data-firstseen="3/2">
+            <td>69</td>
             <td class="first-seen-col">3/2</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79014188/" target="_blank" rel="noopener noreferrer">コスモテール吉塚</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20164178/" target="_blank" rel="noopener noreferrer">コスモテール吉塚</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>3,490万円</td>
             <td>69.66㎡</td>
             <td><div class="clamp2">福岡県福岡市博多区吉塚２</div></td>
@@ -1796,8 +1841,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+10 立地+0 間取+10 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="67" data-name="ツインタワー博多駅前 ３０２" data-location="福岡市博多区博多駅前４丁目" data-layout="3LDK" data-tier="強く推奨" data-price="3890" data-area="67.46" data-score="80" data-year="1985" data-walk="8" data-firstseen="2/26">
-            <td>67</td>
+          <tr class="tier-strong" data-index="70" data-name="ツインタワー博多駅前 ３０２" data-location="福岡市博多区博多駅前４丁目" data-layout="3LDK" data-tier="強く推奨" data-price="3890" data-area="67.46" data-score="80" data-year="1985" data-walk="8" data-firstseen="2/26">
+            <td>70</td>
             <td class="first-seen-col">2/26</td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99752336" target="_blank" rel="noopener noreferrer">ツインタワー博多駅前 ３０２</a></div><div class="source-tag">ふれんず</div></td>
             <td>3,890万円</td>
@@ -1811,8 +1856,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+15 面積+10 耐震+15 駅距+10 立地+20 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="68" data-name="ふれんず物件(博多区)" data-location="福岡市博多区" data-layout="2LDK" data-tier="強く推奨" data-price="4680" data-area="55.39" data-score="80" data-year="2000" data-walk="6" data-firstseen="NEW">
-            <td>68</td>
+          <tr class="tier-strong" data-index="71" data-name="ふれんず物件(博多区)" data-location="福岡市博多区" data-layout="2LDK" data-tier="強く推奨" data-price="4680" data-area="55.39" data-score="80" data-year="2000" data-walk="6" data-firstseen="NEW">
+            <td>71</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99827307" target="_blank" rel="noopener noreferrer">ふれんず物件(博多区)</a></div><div class="source-tag">ふれんず</div></td>
             <td>4,680万円</td>
@@ -1826,8 +1871,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+10 立地+20 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="69" data-name="東急ドエル・アルス博多・古門戸町" data-location="福岡県福岡市博多区古門戸町" data-layout="2LDK" data-tier="強く推奨" data-price="4690" data-area="55.39" data-score="80" data-year="1997" data-walk="6" data-firstseen="4/18">
-            <td>69</td>
+          <tr class="tier-strong" data-index="72" data-name="東急ドエル・アルス博多・古門戸町" data-location="福岡県福岡市博多区古門戸町" data-layout="2LDK" data-tier="強く推奨" data-price="4690" data-area="55.39" data-score="80" data-year="1997" data-walk="6" data-firstseen="4/18">
+            <td>72</td>
             <td class="first-seen-col">4/18</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20667143/" target="_blank" rel="noopener noreferrer">東急ドエル・アルス博多・古門戸町</a></div><div class="source-tag">SUUMO</div></td>
             <td>4,690万円</td>
@@ -1841,10 +1886,10 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+10 立地+20 間取+10 ペト-5 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-strong" data-index="70" data-name="アルファライフ博多" data-location="福岡県福岡市博多区住吉５-5-22" data-layout="1LDK" data-tier="強く推奨" data-price="4699" data-area="53.04" data-score="80" data-year="2011" data-walk="14" data-firstseen="4/3">
-            <td>70</td>
-            <td class="first-seen-col">4/3</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20201860/" target="_blank" rel="noopener noreferrer">アルファライフ博多</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
+          <tr class="tier-strong" data-index="73" data-name="アルファライフ博多" data-location="福岡県福岡市博多区住吉５-5-22" data-layout="1LDK" data-tier="強く推奨" data-price="4699" data-area="53.04" data-score="80" data-year="2011" data-walk="14" data-firstseen="3/2">
+            <td>73</td>
+            <td class="first-seen-col">3/2</td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20163293/" target="_blank" rel="noopener noreferrer">アルファライフ博多</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,699万円</td>
             <td>53.04㎡</td>
             <td><div class="clamp2">福岡県福岡市博多区住吉５-5-22</div></td>
@@ -1854,21 +1899,6 @@ document.addEventListener('click', function(e) {
             <td class="maint-col"><span title="管理費3,200円 + 修繕8,100円">11,300円</span><span class="maint-detail">管理3,200 + 修繕8,100</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+3</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+3 立地+15 間取+5 ペト+10 管理+7 リノ+0 仲介+0 民泊+0">80</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="71" data-name="ふれんず物件(中央区)" data-location="福岡市中央区" data-layout="2LDK" data-tier="強く推奨" data-price="4900" data-area="46.01" data-score="80" data-year="2020" data-walk="6" data-firstseen="2/27">
-            <td>71</td>
-            <td class="first-seen-col">2/27</td>
-            <td class="name-col"><div class="clamp2"><a href="https://www.f-takken.com/freins/items/99752121" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></div><div class="source-tag">ふれんず</div></td>
-            <td>4,900万円</td>
-            <td>46.01㎡</td>
-            <td><div class="clamp2">福岡市中央区</div></td>
-            <td><div class="clamp2">薬院大通 徒歩6分 / 薬院 徒歩10分 / 赤坂 徒歩13分</div></td>
-            <td class="year-col">2020年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費12,140円（修繕不明）">12,140円</span><span class="maint-detail">管理のみ</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+10 立地+18 間取+10 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">80</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
         </tbody>
@@ -1970,6 +2000,35 @@ document.addEventListener('click', function(e) {
         <div class="focus-head">
           <div class="focus-rank">#4</div>
           <div>
+            <h3><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20313483/" target="_blank" rel="noopener noreferrer">オープンレジデンシア天神今泉</a></h3>
+            <p>4,900万円 / 46.01㎡ / 福岡県福岡市中央区今泉２</p>
+          </div>
+          <div class="focus-score" style="--accent:var(--accent-green)">100<span>強く推奨</span></div>
+        </div>
+        <div class="chip-row">
+          <span class="chip ">予算 +10</span>
+          <span class="chip ">面積 +15</span>
+          <span class="chip ">耐震 +15</span>
+          <span class="chip ">駅 +10</span>
+          <span class="chip ">立地 +20</span>
+          <span class="chip ">間取り +10</span>
+          <span class="chip ">ペット +10</span>
+          <span class="chip ">管理費修繕 +10</span>
+          <span class="chip ">リノベ +0</span>
+          <span class="chip ">仲介 +0</span>
+          <span class="chip ">民泊規約 +0</span>
+        </div>
+        <p class="focus-comment">ペット相談可 / 駅近 / 観光導線が強い立地 / 新耐震</p>
+        <div class="focus-meta">
+          <span>薬院大通 徒歩6分</span>
+          <span>2023年9月</span>
+          <span>2LDK</span>
+        </div>
+      </article>
+      <article class="focus-card">
+        <div class="focus-head">
+          <div class="focus-rank">#5</div>
+          <div>
             <h3><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20538366/" target="_blank" rel="noopener noreferrer">サングレート薬院駅ロイヤルウィン</a></h3>
             <p>4,980万円 / 55.72㎡ / 福岡県福岡市中央区平尾１</p>
           </div>
@@ -1993,35 +2052,6 @@ document.addEventListener('click', function(e) {
           <span>薬院 徒歩5分</span>
           <span>2003年11月</span>
           <span>2LDK</span>
-        </div>
-      </article>
-      <article class="focus-card">
-        <div class="focus-head">
-          <div class="focus-rank">#5</div>
-          <div>
-            <h3><a href="https://www.f-takken.com/freins/items/99813399" target="_blank" rel="noopener noreferrer">ふれんず物件(中央区)</a></h3>
-            <p>4,280万円 / 45.00㎡ / 福岡市中央区大名１丁目</p>
-          </div>
-          <div class="focus-score" style="--accent:var(--accent-green)">98<span>強く推奨</span></div>
-        </div>
-        <div class="chip-row">
-          <span class="chip ">予算 +10</span>
-          <span class="chip ">面積 +15</span>
-          <span class="chip ">耐震 +15</span>
-          <span class="chip ">駅 +15</span>
-          <span class="chip ">立地 +20</span>
-          <span class="chip ">間取り +5</span>
-          <span class="chip ">ペット +15</span>
-          <span class="chip ">管理費修繕 +3</span>
-          <span class="chip ">リノベ +0</span>
-          <span class="chip ">仲介 +0</span>
-          <span class="chip ">民泊規約 +0</span>
-        </div>
-        <p class="focus-comment">ペット可確定 / 駅近 / 観光導線が強い立地 / 新耐震</p>
-        <div class="focus-meta">
-          <span>赤坂 徒歩5分 / 西鉄福岡（天神） 徒歩11分 / 薬院大通 徒歩13分</span>
-          <span>1994年10月</span>
-          <span>1LDK</span>
         </div>
       </article>
     </div>
@@ -2053,7 +2083,7 @@ document.addEventListener('click', function(e) {
     <div style="margin-bottom:8px">
       <a href="index.html">Hub</a> &middot;       <a href="market.html">Market</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a> &middot;       <a href="inquiry-pipeline.html">Pipeline</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, athome, ftakken, restate (data/suumo_fukuoka_raw.txt + data/rakumachi_fukuoka_raw.txt, data/yahoo_fukuoka_raw.txt, data/athome_fukuoka_raw.txt, data/ftakken_fukuoka_raw.txt, data/restate_fukuoka_raw.txt)</div>
-    <div>Generated on 2026-04-24 17:22</div>
+    <div>Generated on 2026-04-23 00:17</div>
   </div>
 </div>
 
@@ -2062,7 +2092,7 @@ document.addEventListener('click', function(e) {
 const chartAccent = 'rgba(255,107,107, 1)';
 const chartAccentFill = 'rgba(255,107,107, 0.18)';
 const radarLabels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "管理費修繕", "リノベ余地", "仲介手数料", "民泊規約"];
-const radarDatasets = [{"label": "1. 第一プリンスビル", "data": [100, 100, 100, 67, 133, 100, 100, 50, 0, 0, 100], "borderWidth": 2}, {"label": "2. ヒューマインド博多駅東ネクスタイル", "data": [50, 100, 100, 100, 133, 100, 67, 70, 0, 0, 100], "borderWidth": 2}, {"label": "3. ふれんず物件(博多区)", "data": [100, 100, 100, 20, 133, 50, 100, 70, 0, 0, 100], "borderWidth": 2}, {"label": "4. サングレート薬院駅ロイヤルウィン", "data": [50, 100, 100, 100, 120, 100, 67, 70, 0, 0, 100], "borderWidth": 2}, {"label": "5. ふれんず物件(中央区)", "data": [50, 100, 100, 100, 133, 50, 100, 30, 0, 0, 100], "borderWidth": 2}].map((d, i) => {
+const radarDatasets = [{"label": "1. 第一プリンスビル", "data": [100, 100, 100, 67, 133, 100, 100, 50, 0, 0, 100], "borderWidth": 2}, {"label": "2. ヒューマインド博多駅東ネクスタイル", "data": [50, 100, 100, 100, 133, 100, 67, 70, 0, 0, 100], "borderWidth": 2}, {"label": "3. ふれんず物件(博多区)", "data": [100, 100, 100, 20, 133, 50, 100, 70, 0, 0, 100], "borderWidth": 2}, {"label": "4. オープンレジデンシア天神今泉", "data": [50, 100, 100, 67, 133, 100, 67, 100, 0, 0, 100], "borderWidth": 2}, {"label": "5. サングレート薬院駅ロイヤルウィン", "data": [50, 100, 100, 100, 120, 100, 67, 70, 0, 0, 100], "borderWidth": 2}].map((d, i) => {
   const hueShift = [0, 18, 35, 52, 70][i] || 0;
   const alpha = 0.14 + i * 0.03;
   return {
@@ -2074,9 +2104,9 @@ const radarDatasets = [{"label": "1. 第一プリンスビル", "data": [100, 10
   };
 });
 const bucketLabels = ["博多駅/祇園", "天神/中洲/春吉", "薬院", "赤坂/大濠/大手門", "大橋/高宮", "平尾/舞鶴", "六本松", "Other", "渡辺通/住吉/上川端"];
-const bucketValues = [9, 23, 19, 7, 1, 3, 3, 5, 1];
+const bucketValues = [9, 24, 19, 8, 1, 3, 3, 5, 1];
 const priceLabels = ["500-999万円", "1000-1499万円", "1500-1999万円", "2000-2499万円", "2500-2999万円", "3000-3499万円", "3500-3999万円", "4000-4499万円", "4500-4999万円"];
-const priceValues = [1, 3, 8, 8, 13, 17, 7, 6, 8];
+const priceValues = [1, 3, 9, 8, 13, 18, 7, 6, 8];
 
 const commonGrid = { color: 'rgba(255,255,255,0.08)', drawBorder: false };
 const commonTicks = { color: 'rgba(220,230,245,0.8)', font: { family: 'Inter, Noto Sans JP, sans-serif' } };

@@ -53,7 +53,7 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
-  --focus-ring: 2px solid #6366f1;
+  --focus-ring: 2px solid var(--accent);
   --focus-offset: 2px;
   --active-scale: 0.97;
   --transition-fast: 150ms ease;
@@ -396,7 +396,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 }
 .nav-more-menu a {
   display: block; padding: 10px 14px; border-radius: 6px;
-  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
+  color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
   transition: background .15s, color .15s; white-space: nowrap;
 }
 .nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
@@ -529,11 +529,11 @@ document.addEventListener('click', function(e) {
     <div class="stats">
       <div class="stat"><div class="stat-val" style="color:#f59e0b">1</div><div class="stat-label">進行中</div></div>
       <div class="stat"><div class="stat-val" style="color:#a78bfa">0</div><div class="stat-label">内見</div></div>
-      <div class="stat"><div class="stat-val" style="color:#6366f1">3</div><div class="stat-label">査定中</div></div>
-      <div class="stat"><div class="stat-val" style="color:#22c55e">0</div><div class="stat-label">完了</div></div>
-      <div class="stat"><div class="stat-val" style="color:#ef4444">1</div><div class="stat-label">要アクション</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--accent)">3</div><div class="stat-label">査定中</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--green)">0</div><div class="stat-label">完了</div></div>
+      <div class="stat"><div class="stat-val" style="color:var(--red)">1</div><div class="stat-label">要アクション</div></div>
     </div>
-    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 3 / 見送り 26</div>
+    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 3 / 見送り 22</div>
   </div>
 
   <div class="section-nav"><div class="section-nav-inner"><a class="stage-tab active" data-stage="active" style="--tab-color:var(--accent-amber)" onclick="showStage('active')">進行中 <span class="tab-count">1</span></a><a class="stage-tab" data-stage="viewing" style="--tab-color:var(--accent-purple)" onclick="showStage('viewing')">内見 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="appraisal" style="--tab-color:#6366f1" onclick="showStage('appraisal')">査定中 <span class="tab-count">3</span></a><a class="stage-tab" data-stage="done" style="--tab-color:var(--accent-green)" onclick="showStage('done')">完了 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="candidates" style="--tab-color:#71717a" onclick="showStage('candidates')">候補 <span class="tab-count">3</span></a></div></div>
@@ -548,7 +548,7 @@ document.addEventListener('click', function(e) {
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.f-takken.com/freins/items/99358163" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">博多ニッコーハイツ 5階 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし 22日</span>
+      <span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし 21日</span>
       <span class="status-pill" style="background:#f97316">やり取り中</span>
       <span class="card-score">93pt</span>
     </div>
@@ -608,7 +608,7 @@ document.addEventListener('click', function(e) {
 </div>
       
 <div class="stage-section hidden" data-stage="appraisal">
-  <div class="stage-header" style="border-left:3px solid #6366f1">
+  <div class="stage-header" style="border-left:3px solid var(--accent)">
     <h2>査定中</h2>
     <div class="stage-stats"><span>3件</span></div>
   </div>
@@ -617,7 +617,7 @@ document.addEventListener('click', function(e) {
     <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20310107/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">プレイスポットしんばしビル本館 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#6366f1">内見済</span>
+      <span class="status-pill" style="background:var(--accent)">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -673,7 +673,7 @@ document.addEventListener('click', function(e) {
     <a href="https://www.f-takken.com/freins/items/99718694" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">GSハイム博多 10階 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#6366f1">内見済</span>
+      <span class="status-pill" style="background:var(--accent)">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -728,7 +728,7 @@ document.addEventListener('click', function(e) {
     <a href="https://www.f-takken.com/freins/items/99770725" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ローズマンション第2博多 1308 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:#6366f1">内見済</span>
+      <span class="status-pill" style="background:var(--accent)">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -957,7 +957,7 @@ document.addEventListener('click', function(e) {
   
 <details style="margin-top:32px">
   <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
-    見送り 26件（クリックで展開）
+    見送り 22件（クリックで展開）
   </summary>
   <div class="stage-cards" style="margin-top:8px"><div class="inq-card" style="opacity:0.4">
   <div style="display:flex;justify-content:space-between;align-items:center">
@@ -1503,7 +1503,7 @@ function showStage(stage) {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-04-24 17:22</div>
+  <div style="margin-top:4px;">Generated at 2026-04-23 00:17</div>
 </footer>
 </body>
 </html>

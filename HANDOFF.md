@@ -1,15 +1,14 @@
 # HANDOFF
 
 ## [Constancy] 2026-04-24
-- [WARN] data_freshness: Property Status: last updated 32h ago (threshold: 28h)
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [WARN] structural_reform: property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
 - [WARN] structural_reform: Stale temp/debug file (20 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (20 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (20 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (23 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (27 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (24 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (28 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px

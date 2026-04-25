@@ -4,11 +4,11 @@
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [WARN] structural_reform: property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [WARN] structural_reform: Stale temp/debug file (21 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (21 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (21 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (22 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (22 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (22 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (25 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (28 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (29 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
@@ -31,7 +31,7 @@
 - [WARN] qa_market_data_accuracy: 3/93 (3.2%) — price mismatch: コーポラス東光 206 raw=650.0 html=800.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=990.0; price mismatch: ふれんず物件(中央区) raw=800.0 html=950.0
 - [ERROR] qa_market_oc_income_coverage: OC 334件中 302件が年間収入欠落 (90%) — 利回り逆算で補完
 - [ERROR] qa_market_yield_consistency: 4件の利回り/年間収入乖離(>20%): プレサンス梅田東ディアロ: expected=38.6万 actual=85.8万 (55%乖離); ラナップスクエア福島: expected=28.5万 actual=75.6万 (62%乖離); ワールドアイ難波南PORTA: expected=48.8万 actual=90.0万 (46%乖離); プレサンス福島吉野ミナージ: expected=54.6万 actual=101.5万 (46%乖離)
-- [WARN] qa_market_name_cross_reference: 27件の物件名クロスリファレンス不一致: 福岡市博多区千代(26㎡): ['JGM県庁口 502', '■■■【福岡']; 福岡市博多区博多駅前(19㎡): ['ソシオス平尾', '・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・']; 福岡市博多区博多駅前(22㎡): ['ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区博多駅前(23㎡): ['福岡市博多区のオーナーチェンジ物件！呉服町駅【徒歩９分】', '西鉄バス\u3000駅前四丁目停まで徒歩 3分']; 福岡市中央区高砂(19㎡): ['東峰マンションアーバンクルーザー高砂 402', 'アーバンシティ天神南 604'] ... +22 more
+- [WARN] qa_market_name_cross_reference: 27件の物件名クロスリファレンス不一致: 福岡市博多区千代(26㎡): ['JGM県庁口 502', '■■■【福岡']; 福岡市博多区博多駅前(19㎡): ['・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・', 'ソシオス平尾']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区博多駅前(23㎡): ['西鉄バス\u3000駅前四丁目停まで徒歩 3分', '福岡市博多区のオーナーチェンジ物件！呉服町駅【徒歩９分】']; 福岡市中央区高砂(19㎡): ['アーバンシティ天神南 604', '東峰マンションアーバンクルーザー高砂 402'] ... +22 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 27.0% (31/115件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 3080.0万円/40.75㎡; 4280.0万円/45.0㎡; 3980.0万円/64.0㎡; 1890.0万円/55.62㎡
 
 ## Last Updated

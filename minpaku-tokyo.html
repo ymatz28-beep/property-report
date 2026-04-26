@@ -54,7 +54,7 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
-  --focus-ring: 2px solid var(--accent);
+  --focus-ring: 2px solid #6366f1;
   --focus-offset: 2px;
   --active-scale: 0.97;
   --transition-fast: 150ms ease;
@@ -633,16 +633,40 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
   padding: 6px; min-width: 180px;
   box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  max-height: calc(100vh - var(--gnav-height, 52px) - 24px);
+  overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
 }
 .nav-more-menu a {
   display: block; padding: 10px 14px; border-radius: 6px;
-  color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
+  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
   transition: background .15s, color .15s; white-space: nowrap;
 }
 .nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
   background: rgba(255,255,255,0.065); color: #f5f5f7;
 }
 .nav-more.open .nav-more-menu { display: block; }
+
+/* ── Section Nav (sibling tabs) ── */
+.section-nav {
+  display: flex; gap: 4px; align-items: center;
+  padding: 8px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: rgba(22,24,31,0.70); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: sticky; top: var(--gnav-height, 52px); z-index: calc(var(--z-nav, 100) - 1);
+  scrollbar-width: none;
+}
+.section-nav::-webkit-scrollbar { display: none; }
+.section-nav a {
+  flex-shrink: 0; color: #9ca3af; text-decoration: none;
+  font-size: 12px; font-weight: 500;
+  padding: 6px 12px; border-radius: 6px;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+.section-nav a:hover { background: rgba(255,255,255,0.065); color: #f5f5f7; }
+.section-nav a[aria-current="page"] {
+  background: rgba(99,102,241,0.18); color: #c7d2fe;
+}
 
 /* Hamburger toggle */
 .nav-toggle { display: none; }
@@ -667,6 +691,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
     background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
     padding: 8px 0;
+    max-height: calc(100vh - var(--gnav-height, 52px));
+    overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
   }
   .site-nav a { padding: 12px 24px; border-radius: 0; font-size: 14px; }
   .nav-toggle:checked ~ .site-nav { display: flex; }
@@ -701,6 +727,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   </nav>
 </header>
 
+
 <script>
 // Close dropdown when clicking outside
 document.addEventListener('click', function(e) {
@@ -730,20 +757,20 @@ document.addEventListener('click', function(e) {
     <h1>東京 民泊向け中古マンション候補レポート</h1>
     <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
     <div class="badge-row">
-      <span class="badge">検索日 2026-04-22</span>
-      <span class="badge">厳選 20件 / 164件</span>
+      <span class="badge">検索日 2026-04-26</span>
+      <span class="badge">厳選 20件 / 165件</span>
       <span class="badge">データソース: SUUMO, rakumachi, yahoo, cowcamo, restate</span>
     </div>
     <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
     <div class="collapsible-content is-collapsed">
       <div class="badge-row" style="margin-top:8px;">
-        <span class="badge">原データ 164件</span>
-        <span class="badge">重複除外 54件</span>
+        <span class="badge">原データ 165件</span>
+        <span class="badge">重複除外 65件</span>
         <span class="badge">売却済除外 2件</span>
-        <span class="badge">OC除外 2件</span>
+        <span class="badge">OC除外 0件</span>
         <span class="badge">ペット不可除外 5件</span>
         <span class="badge">民泊不可除外 0件</span>
-        <span class="badge">低スコア除外 72件</span>
+        <span class="badge">低スコア除外 67件</span>
       </div>
       <div class="badge-row">
         <span class="badge">渋谷区・新宿区・目黒区・台東区・豊島区中心</span>
@@ -755,14 +782,14 @@ document.addEventListener('click', function(e) {
   </section>
 
   <div class="freshness-bar">
-    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 04-21 06:56 処理25分</span>
-    <span class="fb-chip">掲載中 0件</span>
-  </div>
+    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 04-24 17:06 処理16分</span>
+    <span class="fb-chip">掲載中 1324件</span>
+<span class="fb-chip fb-new">+206 新規</span><span class="fb-chip fb-removed">-191 終了</span><span class="fb-chip" style="color:var(--warning)">⚠️ ittomono_osaka, rakumachi_fukuoka 一時障害</span>  </div>
 
   <section id="sec-stats" class="grid-4">
     <div class="card stat"><div class="label">総候補数</div><div class="value">20</div><div class="sub">重複排除後</div></div>
-    <div class="card stat"><div class="label">平均価格</div><div class="value">4044.6万円</div><div class="sub">全候補平均</div></div>
-    <div class="card stat"><div class="label">平均面積</div><div class="value">50.30㎡</div><div class="sub">全候補平均</div></div>
+    <div class="card stat"><div class="label">平均価格</div><div class="value">3989.7万円</div><div class="sub">全候補平均</div></div>
+    <div class="card stat"><div class="label">平均面積</div><div class="value">51.36㎡</div><div class="sub">全候補平均</div></div>
     <div class="card stat"><div class="label">最高スコア</div><div class="value">85</div><div class="sub">メゾンニシムラ</div></div>
   </section>
 
@@ -836,14 +863,14 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+0 間取+10 ペト+10 管理+3 リノ+0 仲介+0 民泊+0">83</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="3" data-name="グランドパレス沼袋" data-location="東京都中野区沼袋１-36-10" data-layout="2LDK" data-tier="推奨" data-price="3888" data-area="46.62" data-score="78" data-year="1982" data-walk="2" data-firstseen="3/23">
+          <tr class="tier-good" data-index="3" data-name="グランドパレス沼袋" data-location="東京都中野区沼袋１" data-layout="2LDK" data-tier="推奨" data-price="3888" data-area="46.62" data-score="78" data-year="1982" data-walk="1" data-firstseen="3/23">
             <td>3</td>
             <td class="first-seen-col">3/23</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20477856/" target="_blank" rel="noopener noreferrer">グランドパレス沼袋</a></div><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20480093/" target="_blank" rel="noopener noreferrer">グランドパレス沼袋</a></div><div class="source-tag">SUUMO</div></td>
             <td>3,888万円</td>
             <td>46.62㎡</td>
-            <td><div class="clamp2">東京都中野区沼袋１-36-10</div></td>
-            <td><div class="clamp2">沼袋 徒歩2分</div></td>
+            <td><div class="clamp2">東京都中野区沼袋１</div></td>
+            <td><div class="clamp2">沼袋 徒歩1分</div></td>
             <td class="year-col">1982年</td>
             <td class="layout-col">2LDK</td>
             <td class="maint-col"><span title="管理費8,134円 + 修繕14,208円">22,342円</span><span class="maint-detail">管理8,134 + 修繕14,208</span></td>
@@ -896,38 +923,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+15 駅距+15 立地+20 間取+10 ペト-5 管理-3 リノ+0 仲介+0 民泊+0">77</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="7" data-name="フォースター浅草今戸" data-location="東京都台東区今戸２-20-4" data-layout="1LDK" data-tier="推奨" data-price="4698" data-area="50.19" data-score="76" data-year="2015" data-walk="15" data-firstseen="NEW">
+          <tr class="tier-good" data-index="7" data-name="キャニオンマンション上鷺宮" data-location="東京都中野区上鷺宮４" data-layout="3LDK" data-tier="推奨" data-price="3150" data-area="59.40" data-score="72" data-year="1978" data-walk="3" data-firstseen="3/2">
             <td>7</td>
-            <td class="first-seen-col"><span class="new-badge">NEW</span></td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20692158/" target="_blank" rel="noopener noreferrer">フォースター浅草今戸</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,698万円</td>
-            <td>50.19㎡</td>
-            <td><div class="clamp2">東京都台東区今戸２-20-4</div></td>
-            <td><div class="clamp2">浅草 徒歩15分</div></td>
-            <td class="year-col">2015年</td>
-            <td class="layout-col">1LDK</td>
-            <td class="maint-col"><span title="管理費14,350円 + 修繕12,050円">26,400円</span><span class="maint-detail">管理14,350 + 修繕12,050</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+3</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+15 駅距+3 立地+18 間取+5 ペト+10 管理+0 リノ+0 仲介+0 民泊+0">76</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
-          </tr>
-          <tr class="tier-good" data-index="8" data-name="大江戸コーポ" data-location="東京都中野区中央２" data-layout="1LDK" data-tier="推奨" data-price="2980" data-area="46.28" data-score="75" data-year="1970" data-walk="1" data-firstseen="3/2">
-            <td>8</td>
-            <td class="first-seen-col">3/2</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78515092/" target="_blank" rel="noopener noreferrer">大江戸コーポ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>2,980万円</td>
-            <td>46.28㎡</td>
-            <td><div class="clamp2">東京都中野区中央２</div></td>
-            <td><div class="clamp2">中野坂上 徒歩1分</div></td>
-            <td class="year-col">1970年</td>
-            <td class="layout-col">1LDK</td>
-            <td class="maint-col"><span title="管理費15,000円 + 修繕13,000円">28,000円</span><span class="maint-detail">管理15,000 + 修繕13,000</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+0 駅距+15 立地+10 間取+5 ペト+10 管理+0 リノ+0 仲介+0 民泊+0">75</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
-          </tr>
-          <tr class="tier-good" data-index="9" data-name="キャニオンマンション上鷺宮" data-location="東京都中野区上鷺宮４" data-layout="3LDK" data-tier="推奨" data-price="3150" data-area="59.40" data-score="72" data-year="1978" data-walk="3" data-firstseen="3/2">
-            <td>9</td>
             <td class="first-seen-col">3/2</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_78764639/" target="_blank" rel="noopener noreferrer">キャニオンマンション上鷺宮</a></div><div class="source-tag">SUUMO</div></td>
             <td>3,150万円</td>
@@ -941,8 +938,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+0 駅距+15 立地+10 間取+10 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">72</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="10" data-name="エクセルシィオール五條" data-location="東京都中野区本町３" data-layout="2LDK" data-tier="推奨" data-price="3499" data-area="49.23" data-score="72" data-year="1980" data-walk="4" data-firstseen="3/2">
-            <td>10</td>
+          <tr class="tier-good" data-index="8" data-name="エクセルシィオール五條" data-location="東京都中野区本町３" data-layout="2LDK" data-tier="推奨" data-price="3499" data-area="49.23" data-score="72" data-year="1980" data-walk="4" data-firstseen="3/2">
+            <td>8</td>
             <td class="first-seen-col">3/2</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20255704/" target="_blank" rel="noopener noreferrer">エクセルシィオール五條</a></div><div class="source-tag">SUUMO</div></td>
             <td>3,499万円</td>
@@ -956,9 +953,9 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+0 駅距+15 立地+10 間取+10 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">72</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="11" data-name="ビィ・フォルマ亀戸" data-location="東京都墨田区文花３" data-layout="2DK" data-tier="推奨" data-price="4500" data-area="43.06" data-score="72" data-year="2021" data-walk="4" data-firstseen="NEW">
-            <td>11</td>
-            <td class="first-seen-col"><span class="new-badge">NEW</span></td>
+          <tr class="tier-good" data-index="9" data-name="ビィ・フォルマ亀戸" data-location="東京都墨田区文花３" data-layout="2DK" data-tier="推奨" data-price="4500" data-area="43.06" data-score="72" data-year="2021" data-walk="4" data-firstseen="4/21">
+            <td>9</td>
+            <td class="first-seen-col">4/21</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20690860/" target="_blank" rel="noopener noreferrer">ビィ・フォルマ亀戸</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,500万円</td>
             <td>43.06㎡</td>
@@ -971,8 +968,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+15 駅距+15 立地+0 間取+0 ペト+10 管理+7 リノ+0 仲介+0 民泊+0">72</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="12" data-name="蔵前コヤマハイツ" data-location="東京都台東区寿3丁目" data-layout="3LDK" data-tier="推奨" data-price="2780" data-area="57.96" data-score="70" data-year="1971" data-walk="2" data-firstseen="4/13">
-            <td>12</td>
+          <tr class="tier-good" data-index="10" data-name="蔵前コヤマハイツ" data-location="東京都台東区寿3丁目" data-layout="3LDK" data-tier="推奨" data-price="2780" data-area="57.96" data-score="70" data-year="1971" data-walk="2" data-firstseen="4/13">
+            <td>10</td>
             <td class="first-seen-col">4/13</td>
             <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024631498/" target="_blank" rel="noopener noreferrer">蔵前コヤマハイツ</a></div><div class="source-tag">Yahoo不動産</div></td>
             <td>2,780万円</td>
@@ -986,28 +983,13 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+0 駅距+15 立地+18 間取+10 ペト-5 管理-3 リノ+0 仲介+0 民泊+0">70</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="13" data-name="ステージグランデ蔵前" data-location="東京都台東区蔵前4" data-layout="" data-tier="推奨" data-price="3800" data-area="40.52" data-score="70" data-year="2013" data-walk="2" data-firstseen="NEW">
-            <td>13</td>
+          <tr class="tier-good" data-index="11" data-name="サニーハウスさぎの宮303号室" data-location="東京都中野区白鷺１" data-layout="3LDK" data-tier="推奨" data-price="4198" data-area="59.40" data-score="70" data-year="1974" data-walk="6" data-firstseen="NEW">
+            <td>11</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
-            <td class="name-col"><div class="clamp2"><a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3602161/show.html" target="_blank" rel="noopener noreferrer">ステージグランデ蔵前</a></div><div class="source-tag">楽待</div></td>
-            <td>3,800万円</td>
-            <td>40.52㎡</td>
-            <td><div class="clamp2">東京都台東区蔵前4</div></td>
-            <td><div class="clamp2">蔵前駅徒歩2分・5分、田原町駅徒歩10分</div></td>
-            <td class="year-col">2013年</td>
-            <td class="layout-col"></td>
-            <td class="maint-col"><span class="maint-na">データなし</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-neg">管理-3</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+15 耐震+15 駅距+15 立地+18 間取+0 ペト-5 管理-3 リノ+0 仲介+0 民泊+0">70</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
-          </tr>
-          <tr class="tier-good" data-index="14" data-name="サニーハウスさぎの宮" data-location="東京都中野区白鷺１-15-5" data-layout="3LDK" data-tier="推奨" data-price="4198" data-area="59.40" data-score="70" data-year="1974" data-walk="6" data-firstseen="NEW">
-            <td>14</td>
-            <td class="first-seen-col"><span class="new-badge">NEW</span></td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20695953/" target="_blank" rel="noopener noreferrer">サニーハウスさぎの宮</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20722881/" target="_blank" rel="noopener noreferrer">サニーハウスさぎの宮303号室</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,198万円</td>
             <td>59.40㎡</td>
-            <td><div class="clamp2">東京都中野区白鷺１-15-5</div></td>
+            <td><div class="clamp2">東京都中野区白鷺１</div></td>
             <td><div class="clamp2">鷺ノ宮 徒歩6分</div></td>
             <td class="year-col">1974年</td>
             <td class="layout-col">3LDK</td>
@@ -1016,8 +998,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+0 駅距+10 立地+10 間取+10 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">70</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="15" data-name="沼袋コーポラス" data-location="東京都中野区新井４" data-layout="3LDK" data-tier="推奨" data-price="4290" data-area="56.70" data-score="70" data-year="1970" data-walk="4" data-firstseen="3/23">
-            <td>15</td>
+          <tr class="tier-good" data-index="12" data-name="沼袋コーポラス" data-location="東京都中野区新井４" data-layout="3LDK" data-tier="推奨" data-price="4290" data-area="56.70" data-score="70" data-year="1970" data-walk="4" data-firstseen="3/23">
+            <td>12</td>
             <td class="first-seen-col">3/23</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20347986/" target="_blank" rel="noopener noreferrer">沼袋コーポラス</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,290万円</td>
@@ -1031,9 +1013,9 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+0 駅距+15 立地+10 間取+10 ペト+10 管理+0 リノ+0 仲介+0 民泊+0">70</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="16" data-name="プリマドムス立花" data-location="東京都墨田区立花３" data-layout="2LDK" data-tier="推奨" data-price="4480" data-area="53.70" data-score="70" data-year="1990" data-walk="5" data-firstseen="NEW">
-            <td>16</td>
-            <td class="first-seen-col"><span class="new-badge">NEW</span></td>
+          <tr class="tier-good" data-index="13" data-name="プリマドムス立花" data-location="東京都墨田区立花３" data-layout="2LDK" data-tier="推奨" data-price="4480" data-area="53.70" data-score="70" data-year="1990" data-walk="5" data-firstseen="4/21">
+            <td>13</td>
+            <td class="first-seen-col">4/21</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_20689547/" target="_blank" rel="noopener noreferrer">プリマドムス立花</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,480万円</td>
             <td>53.70㎡</td>
@@ -1046,9 +1028,9 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+15 駅距+15 立地+0 間取+10 ペト+10 管理-5 リノ+0 仲介+0 民泊+0">70</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="17" data-name="東中野ハイム「中野区」「東中野」「落合」「下落合」" data-location="東京都中野区東中野５-23-6" data-layout="2LDK" data-tier="推奨" data-price="4580" data-area="53.08" data-score="70" data-year="1974" data-walk="9" data-firstseen="NEW">
-            <td>17</td>
-            <td class="first-seen-col"><span class="new-badge">NEW</span></td>
+          <tr class="tier-good" data-index="14" data-name="東中野ハイム「中野区」「東中野」「落合」「下落合」" data-location="東京都中野区東中野５-23-6" data-layout="2LDK" data-tier="推奨" data-price="4580" data-area="53.08" data-score="70" data-year="1974" data-walk="9" data-firstseen="4/21">
+            <td>14</td>
+            <td class="first-seen-col">4/21</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20495433/" target="_blank" rel="noopener noreferrer">東中野ハイム「中野区」「東中野」「落合」「下落合」</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,580万円</td>
             <td>53.08㎡</td>
@@ -1061,8 +1043,8 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+0 駅距+10 立地+10 間取+10 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">70</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="18" data-name="サンハイツ中野" data-location="東京都中野区中野２" data-layout="1LDK" data-tier="推奨" data-price="4980" data-area="40.70" data-score="68" data-year="1978" data-walk="3" data-firstseen="4/14">
-            <td>18</td>
+          <tr class="tier-good" data-index="15" data-name="サンハイツ中野" data-location="東京都中野区中野２" data-layout="1LDK" data-tier="推奨" data-price="4980" data-area="40.70" data-score="68" data-year="1978" data-walk="3" data-firstseen="4/14">
+            <td>15</td>
             <td class="first-seen-col">4/14</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20648644/" target="_blank" rel="noopener noreferrer">サンハイツ中野</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
             <td>4,980万円</td>
@@ -1076,11 +1058,11 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+0 駅距+15 立地+10 間取+5 ペト+10 管理+3 リノ+0 仲介+0 民泊+0">68</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="19" data-name="大久保マンション" data-location="東京都新宿区北新宿1丁目" data-layout="2LDK" data-tier="推奨" data-price="3160" data-area="55.02" data-score="67" data-year="1964" data-walk="7" data-firstseen="NEW">
-            <td>19</td>
+          <tr class="tier-good" data-index="16" data-name="大久保マンション" data-location="東京都新宿区北新宿1丁目" data-layout="2LDK" data-tier="推奨" data-price="2700" data-area="55.02" data-score="67" data-year="1964" data-walk="7" data-firstseen="NEW">
+            <td>16</td>
             <td class="first-seen-col"><span class="new-badge">NEW</span></td>
             <td class="name-col"><div class="clamp2"><a href="https://realestate.yahoo.co.jp/used/mansion/detail_corp/b0024687565/" target="_blank" rel="noopener noreferrer">大久保マンション</a></div><div class="source-tag">Yahoo不動産</div></td>
-            <td>3,160万円</td>
+            <td>2,700万円</td>
             <td>55.02㎡</td>
             <td><div class="clamp2">東京都新宿区北新宿1丁目</div></td>
             <td><div class="clamp2">大久保 徒歩7分</div></td>
@@ -1091,8 +1073,23 @@ document.addEventListener('click', function(e) {
             <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+0 駅距+10 立地+20 間取+10 ペト-5 管理-3 リノ+0 仲介+0 民泊+0">67</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
-          <tr class="tier-good" data-index="20" data-name="マンション宮" data-location="東京都台東区西浅草３" data-layout="2LDK" data-tier="推奨" data-price="4980" data-area="58.30" data-score="66" data-year="1975" data-walk="5" data-firstseen="3/2">
-            <td>20</td>
+          <tr class="tier-good" data-index="17" data-name="中野ダイヤモンドマンション" data-location="東京都中野区新井１" data-layout="2LDK" data-tier="推奨" data-price="3580" data-area="49.89" data-score="66" data-year="1970" data-walk="12" data-firstseen="3/2">
+            <td>17</td>
+            <td class="first-seen-col">3/2</td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20050815/" target="_blank" rel="noopener noreferrer">中野ダイヤモンドマンション</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
+            <td>3,580万円</td>
+            <td>49.89㎡</td>
+            <td><div class="clamp2">東京都中野区新井１</div></td>
+            <td><div class="clamp2">中野 徒歩12分</div></td>
+            <td class="year-col">1970年</td>
+            <td class="layout-col">2LDK</td>
+            <td class="maint-col"><span title="管理費15,030円 + 修繕7,100円">22,130円</span><span class="maint-detail">管理15,030 + 修繕7,100</span></td>
+            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+3</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+            <td><span class="score-badge" style="--badge:#facc15" title="予算+15 面積+15 耐震+0 駅距+3 立地+10 間取+10 ペト+10 管理+3 リノ+0 仲介+0 民泊+0">66</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+          </tr>
+          <tr class="tier-good" data-index="18" data-name="マンション宮" data-location="東京都台東区西浅草３" data-layout="2LDK" data-tier="推奨" data-price="4980" data-area="58.30" data-score="66" data-year="1975" data-walk="5" data-firstseen="3/2">
+            <td>18</td>
             <td class="first-seen-col">3/2</td>
             <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20117413/" target="_blank" rel="noopener noreferrer">マンション宮</a></div><div class="source-tag">SUUMO</div></td>
             <td>4,980万円</td>
@@ -1104,6 +1101,36 @@ document.addEventListener('click', function(e) {
             <td class="maint-col"><span title="管理費13,000円 + 修繕8,000円">21,000円</span><span class="maint-detail">管理13,000 + 修繕8,000</span></td>
             <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
             <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+0 駅距+15 立地+18 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">66</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+          </tr>
+          <tr class="tier-good" data-index="19" data-name="ヴィラロイヤル東中野" data-location="東京都中野区東中野５" data-layout="2LDK" data-tier="推奨" data-price="2980" data-area="62.94" data-score="65" data-year="1969" data-walk="7" data-firstseen="4/4">
+            <td>19</td>
+            <td class="first-seen-col">4/4</td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20581560/" target="_blank" rel="noopener noreferrer">ヴィラロイヤル東中野</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
+            <td>2,980万円</td>
+            <td>62.94㎡</td>
+            <td><div class="clamp2">東京都中野区東中野５</div></td>
+            <td><div class="clamp2">東中野 徒歩7分</div></td>
+            <td class="year-col">1969年</td>
+            <td class="layout-col">2LDK</td>
+            <td class="maint-col"><span title="管理費16,100円 + 修繕19,000円">35,100円</span><span class="maint-detail">管理16,100 + 修繕19,000</span></td>
+            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-neg">管理-5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+            <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+10 耐震+0 駅距+10 立地+10 間取+10 ペト+10 管理-5 リノ+0 仲介+0 民泊+0">65</span></td>
+            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
+          </tr>
+          <tr class="tier-good" data-index="20" data-name="ミニカムマンション" data-location="東京都目黒区中根２" data-layout="1LDK+S（納戸）" data-tier="推奨" data-price="4280" data-area="45.20" data-score="65" data-year="1968" data-walk="5" data-firstseen="4/4">
+            <td>20</td>
+            <td class="first-seen-col">4/4</td>
+            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_20581702/" target="_blank" rel="noopener noreferrer">ミニカムマンション</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
+            <td>4,280万円</td>
+            <td>45.20㎡</td>
+            <td><div class="clamp2">東京都目黒区中根２</div></td>
+            <td><div class="clamp2">都立大学 徒歩5分</div></td>
+            <td class="year-col">1968年</td>
+            <td class="layout-col">1LDK+S（納戸）</td>
+            <td class="maint-col"><span title="管理費11,310円 + 修繕16,130円">27,440円</span><span class="maint-detail">管理11,310 + 修繕16,130</span></td>
+            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
+            <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+0 駅距+15 立地+10 間取+5 ペト+10 管理+0 リノ+0 仲介+0 民泊+0">65</span></td>
             <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
           </tr>
         </tbody>
@@ -1176,8 +1203,8 @@ document.addEventListener('click', function(e) {
         <div class="focus-head">
           <div class="focus-rank">#3</div>
           <div>
-            <h3><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20477856/" target="_blank" rel="noopener noreferrer">グランドパレス沼袋</a></h3>
-            <p>3,888万円 / 46.62㎡ / 東京都中野区沼袋１-36-10</p>
+            <h3><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20480093/" target="_blank" rel="noopener noreferrer">グランドパレス沼袋</a></h3>
+            <p>3,888万円 / 46.62㎡ / 東京都中野区沼袋１</p>
           </div>
           <div class="focus-score" style="--accent:#facc15">78<span>推奨</span></div>
         </div>
@@ -1196,7 +1223,7 @@ document.addEventListener('click', function(e) {
         </div>
         <p class="focus-comment">予算適合 / 駅近 / 新耐震 / 2-3LDKで運用幅あり。注意: ペット条件要確認</p>
         <div class="focus-meta">
-          <span>沼袋 徒歩2分</span>
+          <span>沼袋 徒歩1分</span>
           <span>1982年4月</span>
           <span>2LDK</span>
         </div>
@@ -1288,7 +1315,7 @@ document.addEventListener('click', function(e) {
     <div style="margin-bottom:8px">
       <a href="index.html">Hub</a> &middot;       <a href="market.html">Market</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a> &middot;       <a href="inquiry-pipeline.html">Pipeline</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, cowcamo, restate (data/suumo_tokyo_raw.txt + data/rakumachi_tokyo_raw.txt, data/yahoo_tokyo_raw.txt, data/cowcamo_tokyo_raw.txt, data/restate_tokyo_raw.txt)</div>
-    <div>Generated on 2026-04-23 00:17</div>
+    <div>Generated on 2026-04-26 18:26</div>
   </div>
 </div>
 
@@ -1308,10 +1335,10 @@ const radarDatasets = [{"label": "1. メゾンニシムラ", "data": [50, 100, 1
     pointHoverRadius: 4,
   };
 });
-const bucketLabels = ["浅草/蔵前/押上", "Other", "中野/高円寺", "上野/御徒町", "新宿/神宮前"];
-const bucketValues = [5, 3, 9, 1, 2];
+const bucketLabels = ["浅草/蔵前/押上", "Other", "中野/高円寺", "上野/御徒町", "新宿/神宮前", "目黒/学芸大学"];
+const bucketValues = [3, 3, 10, 1, 2, 1];
 const priceLabels = ["2500-2999万円", "3000-3499万円", "3500-3999万円", "4000-4499万円", "4500-4999万円"];
-const priceValues = [2, 4, 3, 4, 7];
+const priceValues = [3, 3, 3, 5, 6];
 
 const commonGrid = { color: 'rgba(255,255,255,0.08)', drawBorder: false };
 const commonTicks = { color: 'rgba(220,230,245,0.8)', font: { family: 'Inter, Noto Sans JP, sans-serif' } };

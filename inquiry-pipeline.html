@@ -53,7 +53,7 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
-  --focus-ring: 2px solid var(--accent);
+  --focus-ring: 2px solid #6366f1;
   --focus-offset: 2px;
   --active-scale: 0.97;
   --transition-fast: 150ms ease;
@@ -393,16 +393,40 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
   padding: 6px; min-width: 180px;
   box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  max-height: calc(100vh - var(--gnav-height, 52px) - 24px);
+  overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
 }
 .nav-more-menu a {
   display: block; padding: 10px 14px; border-radius: 6px;
-  color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
+  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
   transition: background .15s, color .15s; white-space: nowrap;
 }
 .nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
   background: rgba(255,255,255,0.065); color: #f5f5f7;
 }
 .nav-more.open .nav-more-menu { display: block; }
+
+/* ── Section Nav (sibling tabs) ── */
+.section-nav {
+  display: flex; gap: 4px; align-items: center;
+  padding: 8px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: rgba(22,24,31,0.70); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: sticky; top: var(--gnav-height, 52px); z-index: calc(var(--z-nav, 100) - 1);
+  scrollbar-width: none;
+}
+.section-nav::-webkit-scrollbar { display: none; }
+.section-nav a {
+  flex-shrink: 0; color: #9ca3af; text-decoration: none;
+  font-size: 12px; font-weight: 500;
+  padding: 6px 12px; border-radius: 6px;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+.section-nav a:hover { background: rgba(255,255,255,0.065); color: #f5f5f7; }
+.section-nav a[aria-current="page"] {
+  background: rgba(99,102,241,0.18); color: #c7d2fe;
+}
 
 /* Hamburger toggle */
 .nav-toggle { display: none; }
@@ -427,6 +451,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
     padding: 8px 0;
+    max-height: calc(100vh - var(--gnav-height, 52px));
+    overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
   }
   .site-nav a { padding: 12px 24px; border-radius: 0; font-size: 14px; }
   .nav-toggle:checked ~ .site-nav { display: flex; }
@@ -460,6 +486,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
   </nav>
 </header>
+
 
 <script>
 // Close dropdown when clicking outside
@@ -529,14 +556,14 @@ document.addEventListener('click', function(e) {
     <div class="stats">
       <div class="stat"><div class="stat-val" style="color:#f59e0b">1</div><div class="stat-label">進行中</div></div>
       <div class="stat"><div class="stat-val" style="color:#a78bfa">0</div><div class="stat-label">内見</div></div>
-      <div class="stat"><div class="stat-val" style="color:var(--accent)">3</div><div class="stat-label">査定中</div></div>
-      <div class="stat"><div class="stat-val" style="color:var(--green)">0</div><div class="stat-label">完了</div></div>
-      <div class="stat"><div class="stat-val" style="color:var(--red)">1</div><div class="stat-label">要アクション</div></div>
+      <div class="stat"><div class="stat-val" style="color:#6366f1">3</div><div class="stat-label">査定中</div></div>
+      <div class="stat"><div class="stat-val" style="color:#22c55e">0</div><div class="stat-label">完了</div></div>
+      <div class="stat"><div class="stat-val" style="color:#ef4444">1</div><div class="stat-label">要アクション</div></div>
     </div>
-    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 3 / 見送り 22</div>
+    <div style="color:#71717a;font-size:12px;margin-top:8px">候補 4 / 見送り 30</div>
   </div>
 
-  <div class="section-nav"><div class="section-nav-inner"><a class="stage-tab active" data-stage="active" style="--tab-color:var(--accent-amber)" onclick="showStage('active')">進行中 <span class="tab-count">1</span></a><a class="stage-tab" data-stage="viewing" style="--tab-color:var(--accent-purple)" onclick="showStage('viewing')">内見 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="appraisal" style="--tab-color:#6366f1" onclick="showStage('appraisal')">査定中 <span class="tab-count">3</span></a><a class="stage-tab" data-stage="done" style="--tab-color:var(--accent-green)" onclick="showStage('done')">完了 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="candidates" style="--tab-color:#71717a" onclick="showStage('candidates')">候補 <span class="tab-count">3</span></a></div></div>
+  <div class="section-nav"><div class="section-nav-inner"><a class="stage-tab active" data-stage="active" style="--tab-color:var(--accent-amber)" onclick="showStage('active')">進行中 <span class="tab-count">1</span></a><a class="stage-tab" data-stage="viewing" style="--tab-color:var(--accent-purple)" onclick="showStage('viewing')">内見 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="appraisal" style="--tab-color:#6366f1" onclick="showStage('appraisal')">査定中 <span class="tab-count">3</span></a><a class="stage-tab" data-stage="done" style="--tab-color:var(--accent-green)" onclick="showStage('done')">完了 <span class="tab-count">0</span></a><a class="stage-tab" data-stage="candidates" style="--tab-color:#71717a" onclick="showStage('candidates')">候補 <span class="tab-count">4</span></a></div></div>
 
       
 <div class="stage-section" data-stage="active">
@@ -548,7 +575,7 @@ document.addEventListener('click', function(e) {
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.f-takken.com/freins/items/99358163" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">博多ニッコーハイツ 5階 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
-      <span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし 21日</span>
+      <span style="background:#71717a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">動きなし 24日</span>
       <span class="status-pill" style="background:#f97316">やり取り中</span>
       <span class="card-score">93pt</span>
     </div>
@@ -608,7 +635,7 @@ document.addEventListener('click', function(e) {
 </div>
       
 <div class="stage-section hidden" data-stage="appraisal">
-  <div class="stage-header" style="border-left:3px solid var(--accent)">
+  <div class="stage-header" style="border-left:3px solid #6366f1">
     <h2>査定中</h2>
     <div class="stage-stats"><span>3件</span></div>
   </div>
@@ -617,7 +644,7 @@ document.addEventListener('click', function(e) {
     <a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20310107/" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">プレイスポットしんばしビル本館 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:var(--accent)">内見済</span>
+      <span class="status-pill" style="background:#6366f1">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -673,7 +700,7 @@ document.addEventListener('click', function(e) {
     <a href="https://www.f-takken.com/freins/items/99718694" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">GSハイム博多 10階 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:var(--accent)">内見済</span>
+      <span class="status-pill" style="background:#6366f1">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -728,7 +755,7 @@ document.addEventListener('click', function(e) {
     <a href="https://www.f-takken.com/freins/items/99770725" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ローズマンション第2博多 1308 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
       
-      <span class="status-pill" style="background:var(--accent)">内見済</span>
+      <span class="status-pill" style="background:#6366f1">内見済</span>
       <span class="card-score">0pt</span>
     </div>
   </div>
@@ -790,9 +817,62 @@ document.addEventListener('click', function(e) {
 <div class="stage-section hidden" data-stage="candidates">
   <div class="stage-header" style="border-left:3px solid #71717a">
     <h2>候補</h2>
-    <div class="stage-stats"><span>3件</span></div>
+    <div class="stage-stats"><span>4件</span></div>
   </div>
   <div class="stage-cards"><div class="inq-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <a href="https://www.f-takken.com/freins/items/99830758" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">ライオンズマンション高宮第2 303 ↗</a>
+    <div style="display:flex;gap:6px;align-items:center">
+      
+      <span class="status-pill" style="background:#3b9eff">候補</span>
+      <span class="card-score">101pt</span>
+    </div>
+  </div>
+  <div class="card-detail">1,260万 / 66.0㎡ / 3LDK / 築39年 / 高宮 徒歩7分 / 西鉄平尾 徒歩16分 / 薬院 徒歩29分</div>
+  <div class="card-filters">
+    <span>ペット ✅</span>
+    <span>短期賃貸 ⏳</span>
+    
+  </div>
+  <details class="card-notes-wrap" onclick="event.stopPropagation()">
+  <summary class="card-notes-preview">自動フラグ: CF 2.1万/月, CCR 7.3%</summary>
+  <div class="card-notes-full">自動フラグ: CF 2.1万/月, CCR 7.3%
+⚠️ 掲載未確認</div>
+</details>
+  <div class="card-meta">ふれんず / inq-097</div>
+  <div class="card-kpi-strip">
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--accent-green)">+3.3万</div><div class="card-kpi-label">月CF</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--accent-green)">8.8%</div><div class="card-kpi-label">CCR</div></div>
+  <div class="card-kpi"><div class="card-kpi-val" style="color:var(--accent-green)">10.5〜13.3%</div><div class="card-kpi-label">利回り</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">1,008万</div><div class="card-kpi-label">融資（想定）</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">80%</div><div class="card-kpi-label">LTV</div></div>
+  <div class="card-kpi"><div class="card-kpi-val">340万</div><div class="card-kpi-label">初期必要</div></div>
+  <div class="card-kpi verdict" style="--v-color:#facc15"><div class="card-kpi-val">薄利</div><div class="card-kpi-label">判定</div></div>
+</div><details class="card-analysis" onclick="event.stopPropagation()">
+  <summary style="font-size:11px;color:#71717a;cursor:pointer;padding:4px 0">▸ 詳細分析</summary>
+  <div style="font-size:11px;padding:6px 0;border-top:1px solid #27272a;margin-top:4px;display:flex;flex-direction:column;gap:3px">
+    <div style="display:flex;justify-content:space-between"><span>想定賃料</span><span>11〜14万/月（年150万）</span></div>
+    <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　空室控除（7%）</span><span>-10万/年</span></div>
+    <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　管理費・修繕</span><span>-24.4万/年</span></div>
+    <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　その他経費</span><span>-11.2万/年</span></div>
+    <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border-secondary);padding-top:2px"><span>NOI（営業利益）</span><span>104万/年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>ローン返済</span><span>-64万/年（月5.3万 × 21年）</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid var(--border-secondary);padding-top:2px"><span>月間CF</span><span style="color:var(--accent-green)">+3.3万/月</span></div>
+    
+    <div style="display:flex;justify-content:space-between"><span>表面利回り</span><span>10.5〜13.3%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>CCR（自己資本利回り）</span><span>8.8%</span></div>
+    <div style="display:flex;justify-content:space-between"><span>回収</span><span>11.3年</span></div>
+    <div style="display:flex;justify-content:space-between"><span>判定</span><span style="color:#facc15;font-weight:600">薄利</span></div>
+    <div style="border-top:1px solid var(--border-secondary);padding-top:3px;margin-top:2px">
+      <div style="display:flex;justify-content:space-between"><span>頭金</span><span>252万（20%）</span></div>
+      <div style="display:flex;justify-content:space-between;color:#a1a1aa"><span>　諸費用（7%）</span><span>88万</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:600"><span>初期必要資金</span><span>340万</span></div>
+    </div>
+    <div style="color:#52525b;font-size:10px;margin-top:2px">金利2.85% / 空室7%</div>
+  </div>
+</details>
+</div>
+<div class="inq-card">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <a href="https://www.f-takken.com/freins/items/99804693" target="_blank" rel="noopener" class="card-name" style="text-decoration:none;color:inherit">第3シャトー高宮 101 ↗</a>
     <div style="display:flex;gap:6px;align-items:center">
@@ -957,7 +1037,7 @@ document.addEventListener('click', function(e) {
   
 <details style="margin-top:32px">
   <summary style="color:#71717a;cursor:pointer;font-size:13px;padding:8px 0">
-    見送り 22件（クリックで展開）
+    見送り 30件（クリックで展開）
   </summary>
   <div class="stage-cards" style="margin-top:8px"><div class="inq-card" style="opacity:0.4">
   <div style="display:flex;justify-content:space-between;align-items:center">
@@ -1503,7 +1583,7 @@ function showStage(stage) {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-04-23 00:17</div>
+  <div style="margin-top:4px;">Generated at 2026-04-26 18:26</div>
 </footer>
 </body>
 </html>

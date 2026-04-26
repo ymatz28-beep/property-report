@@ -53,7 +53,7 @@
   --bp-desktop: 1200px;
   --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
   --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
-  --focus-ring: 2px solid var(--accent);
+  --focus-ring: 2px solid #6366f1;
   --focus-offset: 2px;
   --active-scale: 0.97;
   --transition-fast: 150ms ease;
@@ -462,16 +462,40 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
   padding: 6px; min-width: 180px;
   box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  max-height: calc(100vh - var(--gnav-height, 52px) - 24px);
+  overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
 }
 .nav-more-menu a {
   display: block; padding: 10px 14px; border-radius: 6px;
-  color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
+  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
   transition: background .15s, color .15s; white-space: nowrap;
 }
 .nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
   background: rgba(255,255,255,0.065); color: #f5f5f7;
 }
 .nav-more.open .nav-more-menu { display: block; }
+
+/* ── Section Nav (sibling tabs) ── */
+.section-nav {
+  display: flex; gap: 4px; align-items: center;
+  padding: 8px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: rgba(22,24,31,0.70); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: sticky; top: var(--gnav-height, 52px); z-index: calc(var(--z-nav, 100) - 1);
+  scrollbar-width: none;
+}
+.section-nav::-webkit-scrollbar { display: none; }
+.section-nav a {
+  flex-shrink: 0; color: #9ca3af; text-decoration: none;
+  font-size: 12px; font-weight: 500;
+  padding: 6px 12px; border-radius: 6px;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+.section-nav a:hover { background: rgba(255,255,255,0.065); color: #f5f5f7; }
+.section-nav a[aria-current="page"] {
+  background: rgba(99,102,241,0.18); color: #c7d2fe;
+}
 
 /* Hamburger toggle */
 .nav-toggle { display: none; }
@@ -496,6 +520,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.08);
     padding: 8px 0;
+    max-height: calc(100vh - var(--gnav-height, 52px));
+    overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
   }
   .site-nav a { padding: 12px 24px; border-radius: 0; font-size: 14px; }
   .nav-toggle:checked ~ .site-nav { display: flex; }
@@ -529,6 +555,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
   </nav>
 </header>
+
 
 <script>
 // Close dropdown when clicking outside
@@ -605,7 +632,7 @@ document.addEventListener('click', function(e) {
   </div>
 
 
-  <div class="section-heading">対象物件一覧（3件）</div>
+  <div class="section-heading">対象物件一覧（1件）</div>
   <div class="prop-table-wrap">
     <table class="prop-table">
       <thead>
@@ -631,7 +658,7 @@ document.addEventListener('click', function(e) {
             </a>
           </td>
           <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
-1100万
+1030万
           </td>
           <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
             4.9万
@@ -656,71 +683,6 @@ document.addEventListener('click', function(e) {
 +134.1万/年          </td>
           <td style="font-size:10px;color:rgba(255,255,255,0.5)">
 3ヶ月で回収          </td>
-        </tr>
-        <tr>
-          <td><span class="badge badge-city">福岡</span></td>
-          <td>
-            <a href="https://www.rakumachi.jp/syuuekibukken/kyushu/fukuoka/dim2001/3575532/show.html" target="_blank" rel="noopener" title="福岡県福岡市">
-              福岡県福岡市
-            </a>
-          </td>
-          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
-740万          </td>
-          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
-            4.0万
-          </td>
-          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
-            6.1万
-<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">祇園</span>          </td>
-          <td>
-            <span class="badge badge-red">-35%</span>
-          </td>
-          <td>
-            <div class="steps-chip">
-              <span>4.0万</span>
-              <span>→</span><span style="color:var(--green)">5.1万</span>
-              <span>→</span><span style="color:var(--green)">6.1万</span>
-            </div>
-          </td>
-          <td style="font-size:11px;white-space:nowrap">
-24.0万          </td>
-          <td style="font-size:11px;color:var(--green);font-weight:600">
-+25.7万/年          </td>
-          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
-11ヶ月で回収          </td>
-        </tr>
-        <tr>
-          <td><span class="badge badge-city">東京</span></td>
-          <td>
-            <a href="https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim2001/3602448/show.html" target="_blank" rel="noopener" title="メゾン・ド・アストル">
-              メゾン・ド・アストル
-            </a>
-          </td>
-          <td style="white-space:nowrap;font-family:var(--font-mono,monospace);font-size:11px">
-1250万
-          </td>
-          <td style="font-family:var(--font-mono,monospace);color:var(--yellow);font-weight:700;font-size:11px">
-            8.6万
-          </td>
-          <td style="font-family:var(--font-mono,monospace);color:var(--green);font-size:11px">
-            11.6万
-<br><span style="font-size:9px;color:rgba(255,255,255,0.35)">中野</span>          </td>
-          <td>
-            <span class="badge badge-red">-26%</span>
-          </td>
-          <td>
-            <div class="steps-chip">
-              <span>8.6万</span>
-              <span>→</span><span style="color:var(--green)">10.1万</span>
-              <span>→</span><span style="color:var(--green)">11.6万</span>
-            </div>
-          </td>
-          <td style="font-size:11px;white-space:nowrap">
-51.6万          </td>
-          <td style="font-size:11px;color:var(--green);font-weight:600">
-+36.5万/年          </td>
-          <td style="font-size:10px;color:rgba(255,255,255,0.5)">
-約1.4年で回収          </td>
         </tr>
       </tbody>
     </table>
@@ -925,208 +887,6 @@ document.addEventListener('click', function(e) {
     </div>
   </div>
 
-  <div class="prop-letter-group">
-    <div class="prop-letter-name">
-      福岡県福岡市
-      <span class="badge badge-city">福岡</span>
-<span class="badge badge-red">乖離-35%</span>    </div>
-    <div class="prop-letter-meta">
-      実家賃 4.0万/月 → 相場 6.1万/月
-｜年間増収想定 +25.7万    </div>
-
-    <div class="letter-tabs">
-      <button class="letter-tab active" onclick="switchLetter(this, 'letter-2-a')">A: 初回相談</button>
-      <button class="letter-tab" onclick="switchLetter(this, 'letter-2-b')">B: 値上げ交渉</button>
-      <button class="letter-tab" onclick="switchLetter(this, 'letter-2-c')">C: 合意解約打診</button>
-    </div>
-
-    <div id="letter-2-a" class="letter-block">
-      <div class="letter-header">
-        <div>
-          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
-          <div class="letter-type">管理会社への現状確認メール</div>
-        </div>
-        <button class="copy-btn" onclick="copyLetter(this, 'text-2-a')">📋 コピー</button>
-      </div>
-      <div class="letter-body" id="text-2-a">件名: 【ご相談】福岡県福岡市 テナント状況の確認
-
-管理会社 御中
-
-お世話になっております。福岡県福岡市のオーナーの手嶋と申します。
-
-下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
-
-物件: 福岡県福岡市所在地: 福岡県福岡市博多区千代2丁目
-確認事項:
-1. 現在の契約形態（普通借家 / 定期借家）
-2. 契約開始日と次回更新日
-3. 過去の賃料改定履歴
-4. テナント様の入居期間
-
-現行賃料4.0万に対し、周辺相場が6.1万と乖離が生じております。
-次回更新時の賃料改定について、ご相談させていただければ幸いです。
-
-何卒よろしくお願いいたします。</div>
-    </div>
-
-    <div id="letter-2-b" class="letter-block" style="display:none">
-      <div class="letter-header">
-        <div>
-          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
-          <div class="letter-type">段階的賃料改定の依頼メール</div>
-        </div>
-        <button class="copy-btn" onclick="copyLetter(this, 'text-2-b')">📋 コピー</button>
-      </div>
-      <div class="letter-body" id="text-2-b">件名: 【賃料改定のお願い】福岡県福岡市 次回更新時
-
-管理会社 御中
-
-お世話になっております。福岡県福岡市のオーナーの手嶋です。
-
-周辺相場調査の結果、現行賃料との乖離が確認されましたため、
-次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
-
-物件: 福岡県福岡市
-現行賃料: 4.0万/月
-周辺相場: 6.1万/月
-
-改定案（段階的）:
-  第1段階: 4.0万 → 5.1万  第2段階: 5.1万 → 6.1万段階的な改定とすることで、テナント様のご負担にも配慮しております。
-テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
-
-何卒よろしくお願いいたします。</div>
-    </div>
-
-    <div id="letter-2-c" class="letter-block" style="display:none">
-      <div class="letter-header">
-        <div>
-          <div class="letter-title">通知文面C — 合意解約の打診</div>
-          <div class="letter-type">立退料提示・合意解約の相談メール</div>
-        </div>
-        <button class="copy-btn" onclick="copyLetter(this, 'text-2-c')">📋 コピー</button>
-      </div>
-      <div class="letter-body" id="text-2-c">件名: 【ご相談】福岡県福岡市 退去条件について
-
-管理会社 御中
-
-お世話になっております。福岡県福岡市のオーナーの手嶋です。
-
-テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
-合意解約の可能性についてご相談させていただきたくご連絡いたしました。
-
-物件: 福岡県福岡市
-立退料（提示額）: 24.0万円（家賃6ヶ月分相当）
-
-上記には引越し費用の一部も含む想定です。
-テナント様のご意向を確認いただくことは可能でしょうか。
-
-退去後は周辺相場の6.1万/月で新規募集予定です。
-年間増収見込み: +25.7万（11ヶ月で回収）
-何卒よろしくお願いいたします。</div>
-    </div>
-  </div>
-
-  <div class="prop-letter-group">
-    <div class="prop-letter-name">
-      メゾン・ド・アストル
-      <span class="badge badge-city">東京</span>
-<span class="badge badge-red">乖離-26%</span>    </div>
-    <div class="prop-letter-meta">
-      実家賃 8.6万/月 → 相場 11.6万/月
-｜年間増収想定 +36.5万    </div>
-
-    <div class="letter-tabs">
-      <button class="letter-tab active" onclick="switchLetter(this, 'letter-3-a')">A: 初回相談</button>
-      <button class="letter-tab" onclick="switchLetter(this, 'letter-3-b')">B: 値上げ交渉</button>
-      <button class="letter-tab" onclick="switchLetter(this, 'letter-3-c')">C: 合意解約打診</button>
-    </div>
-
-    <div id="letter-3-a" class="letter-block">
-      <div class="letter-header">
-        <div>
-          <div class="letter-title">通知文面A — 初回相談（情報収集）</div>
-          <div class="letter-type">管理会社への現状確認メール</div>
-        </div>
-        <button class="copy-btn" onclick="copyLetter(this, 'text-3-a')">📋 コピー</button>
-      </div>
-      <div class="letter-body" id="text-3-a">件名: 【ご相談】メゾン・ド・アストル テナント状況の確認
-
-管理会社 御中
-
-お世話になっております。メゾン・ド・アストルのオーナーの手嶋と申します。
-
-下記の物件について、テナント様の契約状況をご確認いただけますでしょうか。
-
-物件: メゾン・ド・アストル所在地: 東京都中野区江原町１−４７−１０
-確認事項:
-1. 現在の契約形態（普通借家 / 定期借家）
-2. 契約開始日と次回更新日
-3. 過去の賃料改定履歴
-4. テナント様の入居期間
-
-現行賃料8.6万に対し、周辺相場が11.6万と乖離が生じております。
-次回更新時の賃料改定について、ご相談させていただければ幸いです。
-
-何卒よろしくお願いいたします。</div>
-    </div>
-
-    <div id="letter-3-b" class="letter-block" style="display:none">
-      <div class="letter-header">
-        <div>
-          <div class="letter-title">通知文面B — 値上げ交渉依頼</div>
-          <div class="letter-type">段階的賃料改定の依頼メール</div>
-        </div>
-        <button class="copy-btn" onclick="copyLetter(this, 'text-3-b')">📋 コピー</button>
-      </div>
-      <div class="letter-body" id="text-3-b">件名: 【賃料改定のお願い】メゾン・ド・アストル 次回更新時
-
-管理会社 御中
-
-お世話になっております。メゾン・ド・アストルのオーナーの手嶋です。
-
-周辺相場調査の結果、現行賃料との乖離が確認されましたため、
-次回更新時に以下の段階的な賃料改定をお願いしたくご連絡いたしました。
-
-物件: メゾン・ド・アストル
-現行賃料: 8.6万/月
-周辺相場: 11.6万/月
-
-改定案（段階的）:
-  第1段階: 8.6万 → 10.1万  第2段階: 10.1万 → 11.6万段階的な改定とすることで、テナント様のご負担にも配慮しております。
-テナント様へのご連絡方法・時期について、ご相談させていただければ幸いです。
-
-何卒よろしくお願いいたします。</div>
-    </div>
-
-    <div id="letter-3-c" class="letter-block" style="display:none">
-      <div class="letter-header">
-        <div>
-          <div class="letter-title">通知文面C — 合意解約の打診</div>
-          <div class="letter-type">立退料提示・合意解約の相談メール</div>
-        </div>
-        <button class="copy-btn" onclick="copyLetter(this, 'text-3-c')">📋 コピー</button>
-      </div>
-      <div class="letter-body" id="text-3-c">件名: 【ご相談】メゾン・ド・アストル 退去条件について
-
-管理会社 御中
-
-お世話になっております。メゾン・ド・アストルのオーナーの手嶋です。
-
-テナント様の現行賃料と周辺相場の乖離が大きい状況を踏まえ、
-合意解約の可能性についてご相談させていただきたくご連絡いたしました。
-
-物件: メゾン・ド・アストル
-立退料（提示額）: 51.6万円（家賃6ヶ月分相当）
-
-上記には引越し費用の一部も含む想定です。
-テナント様のご意向を確認いただくことは可能でしょうか。
-
-退去後は周辺相場の11.6万/月で新規募集予定です。
-年間増収見込み: +36.5万（約1.4年で回収）
-何卒よろしくお願いいたします。</div>
-    </div>
-  </div>
-
   <div class="section-heading">注意事項・法的制約</div>
   <div class="notes-card">
     <h3>借地借家法の制約と対処法</h3>
@@ -1186,7 +946,7 @@ document.addEventListener('click', function(e) {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-04-23 00:17</div>
+  <div style="margin-top:4px;">Generated at 2026-04-26 18:26</div>
 </footer>
 <script>
 function switchLetter(btn, targetId) {

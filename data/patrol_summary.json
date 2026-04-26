@@ -1,254 +1,212 @@
 {
-  "date": "2026-04-24 17:06",
+  "date": "2026-04-26 17:56",
   "source": "local",
-  "total": 1324,
-  "prev_total": 1309,
-  "new_count": 206,
-  "removed_count": 191,
-  "elapsed_min": 16,
-  "failed_sources": [
-    "ittomono_osaka",
-    "rakumachi_fukuoka"
-  ],
-  "failed_steps": [
-    "search_ftakken.py --mode kubun",
-    "search_ftakken.py --mode ittomono",
-    "search_ftakken.py --mode budget",
-    "search_lifull.py",
-    "enrich_maintenance.py"
-  ],
-  "failure_details": [
-    {
-      "step": "search_ftakken.py --mode kubun",
-      "label": "search_ftakken.py --mode kubun",
-      "impact": "詳細不明",
-      "stderr_tail": "═════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
-      "reason": "エラー終了 (exit 1)",
-      "fix": "エラーログを確認"
-    },
-    {
-      "step": "search_ftakken.py --mode ittomono",
-      "label": "search_ftakken.py --mode ittomono",
-      "impact": "詳細不明",
-      "stderr_tail": "═════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
-      "reason": "エラー終了 (exit 1)",
-      "fix": "エラーログを確認"
-    },
-    {
-      "step": "search_ftakken.py --mode budget",
-      "label": "search_ftakken.py --mode budget",
-      "impact": "詳細不明",
-      "stderr_tail": "═════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
-      "reason": "エラー終了 (exit 1)",
-      "fix": "エラーログを確認"
-    },
-    {
-      "step": "search_lifull.py",
-      "label": "LIFULL検索",
-      "impact": "LIFULLの物件データが未更新",
-      "stderr_tail": "═════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
-      "reason": "エラー終了 (exit 1)",
-      "fix": "エラーログを確認"
-    },
-    {
-      "step": "enrich_maintenance.py",
-      "label": "管理費データ取得",
-      "impact": "管理費・修繕積立金が未更新",
-      "stderr_tail": "═════════════════════════════════════════════════════════╗\n║ Looks like Playwright was just installed or updated.       ║\n║ Please run the following command to download new browsers: ║\n║                                                            ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝",
-      "reason": "エラー終了 (exit 1)",
-      "fix": "管理費ページのHTML構造変化の可能性。パーサー確認"
-    },
-    {
-      "step": "source_degraded:ittomono_osaka",
-      "label": "ittomono_osaka（取得件数が急減）",
-      "impact": "前回比>70%減 — diff計算から除外（サイト側の一時障害 or セレクタ変化の疑い）",
-      "reason": "source_degraded",
-      "stderr_tail": "ソース ittomono_osaka がフォールバック動作中。スクレイパーはOKだが取得件数が急減し、差分計算から自動除外された。",
-      "fix": "1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加"
-    },
-    {
-      "step": "source_degraded:rakumachi_fukuoka",
-      "label": "rakumachi_fukuoka（取得件数が急減）",
-      "impact": "前回比>70%減 — diff計算から除外（サイト側の一時障害 or セレクタ変化の疑い）",
-      "reason": "source_degraded",
-      "stderr_tail": "ソース rakumachi_fukuoka がフォールバック動作中。スクレイパーはOKだが取得件数が急減し、差分計算から自動除外された。",
-      "fix": "1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加"
-    }
-  ],
+  "total": 1313,
+  "prev_total": 1325,
+  "new_count": 221,
+  "removed_count": 233,
+  "elapsed_min": 30,
+  "failed_sources": [],
+  "failed_steps": [],
+  "failure_details": [],
   "step_count": 28,
-  "ok_count": 23,
+  "ok_count": 28,
   "step_status": {
     "search_suumo.py (osaka)": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "search_suumo.py (fukuoka)": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "search_suumo.py (tokyo)": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "search_multi_site.py": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "search_restate.py": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "search_ftakken.py --mode kubun": {
-      "last_success_at": "2026-04-23T00:17:09",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-24T17:22:11"
     },
     "search_ftakken.py --mode ittomono": {
-      "last_success_at": "2026-04-23T00:17:09",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-24T17:22:11"
     },
     "search_ftakken.py --mode budget": {
-      "last_success_at": "2026-04-23T00:17:09",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-24T17:22:11"
     },
     "search_lifull.py": {
-      "last_success_at": "2026-04-23T00:17:09",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-24T17:22:11"
     },
     "search_ittomono.py": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "search_yield_focused.py": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "enrich_maintenance.py": {
-      "last_success_at": "2026-04-23T00:17:09",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-24T17:22:11"
     },
     "first_seen": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "url_check": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "generate_osaka_report.py": {
-      "last_success_at": "2026-04-24T17:22:11",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-21T07:21:21"
     },
     "generate_fukuoka_report.py": {
-      "last_success_at": "2026-04-24T17:22:11",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-21T07:21:21"
     },
     "generate_tokyo_report.py": {
-      "last_success_at": "2026-04-24T17:22:11",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-21T07:21:21"
     },
     "generate_ittomono_report.py": {
-      "last_success_at": "2026-04-24T17:22:11",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-21T07:21:21"
     },
     "generate_inquiry_messages.py": {
-      "last_success_at": "2026-04-24T17:22:11",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-21T07:21:21"
     },
     "generate_market.py": {
-      "last_success_at": "2026-04-24T17:22:11",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-21T07:21:21"
     },
     "write_hub_summary.py": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "pipeline_flag": {
-      "last_success_at": "2026-04-24T17:22:11",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-21T07:21:21"
     },
     "pipeline_lifecycle": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "generate_market_post_sweep": {
-      "last_success_at": "2026-04-24T17:22:11",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-21T07:21:21"
     },
     "pipeline_dashboard": {
-      "last_success_at": "2026-04-24T17:22:11",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-21T07:21:21"
     },
     "naiken_analysis": {
-      "last_success_at": "2026-04-24T17:22:11",
+      "last_success_at": "2026-04-26T18:26:29",
       "last_failure_at": "2026-04-21T07:21:21"
     },
     "qa_gate": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     },
     "deploy": {
-      "last_success_at": "2026-04-24T17:22:11"
+      "last_success_at": "2026-04-26T18:26:29"
     }
   },
   "new_items": [
     {
-      "name": "グランドメゾン靭",
-      "price_text": "780万円",
-      "price_man": 780,
-      "source": "multi_site_osaka"
-    },
-    {
       "name": "物件画像",
-      "price_text": "2080万円",
-      "price_man": 2080,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "物件画像",
-      "price_text": "4290万円",
-      "price_man": 4290,
+      "price_text": "2590万円",
+      "price_man": 2590,
       "source": "yahoo_fukuoka"
     },
     {
       "name": "物件画像",
-      "price_text": "1749万円",
-      "price_man": 1749,
+      "price_text": "3490万円",
+      "price_man": 3490,
       "source": "yahoo_fukuoka"
     },
     {
       "name": "物件画像",
-      "price_text": "3690万円",
-      "price_man": 3690,
+      "price_text": "3499万円",
+      "price_man": 3499,
+      "source": "yahoo_fukuoka"
+    },
+    {
+      "name": "エスポワール南福岡",
+      "price_text": "2250万円",
+      "price_man": 2250,
       "source": "yahoo_fukuoka"
     },
     {
       "name": "物件画像",
-      "price_text": "2090万円",
-      "price_man": 2090,
+      "price_text": "2390万円",
+      "price_man": 2390,
       "source": "yahoo_fukuoka"
     },
     {
-      "name": "多賀ハウス",
-      "price_text": "1050万円",
-      "price_man": 1050,
+      "name": "物件画像",
+      "price_text": "2390万円",
+      "price_man": 2390,
       "source": "yahoo_fukuoka"
+    },
+    {
+      "name": "バロンハイツ大塚",
+      "price_text": "4690万円",
+      "price_man": 4690,
+      "source": "yahoo_tokyo"
+    },
+    {
+      "name": "朝日プラザ大濠",
+      "price_text": "3680万円",
+      "price_man": 3680,
+      "source": "yahoo_fukuoka"
+    },
+    {
+      "name": "スカイハイツ神松寺",
+      "price_text": "3190万円",
+      "price_man": 3190,
+      "source": "yahoo_fukuoka"
+    },
+    {
+      "name": "ネオハイツ南公園",
+      "price_text": "2790万円",
+      "price_man": 2790,
+      "source": "yahoo_fukuoka"
+    },
+    {
+      "name": "アムール吉塚",
+      "price_text": "3199万円",
+      "price_man": 3199,
+      "source": "yahoo_fukuoka"
+    },
+    {
+      "name": "ユーハイム大濠西",
+      "price_text": "2840万円",
+      "price_man": 2840,
+      "source": "suumo_fukuoka"
+    },
+    {
+      "name": "大名サンハイツ",
+      "price_text": "2820万円",
+      "price_man": 2820,
+      "source": "suumo_fukuoka"
+    },
+    {
+      "name": "アメックス博多筑紫通り",
+      "price_text": "3190万円",
+      "price_man": 3190,
+      "source": "suumo_fukuoka"
+    },
+    {
+      "name": "シティライフ美野島Ⅱ",
+      "price_text": "4399万円",
+      "price_man": 4399,
+      "source": "suumo_fukuoka"
     },
     {
       "name": "ブライトクロス博多SOUTH",
       "price_text": "4199万円",
       "price_man": 4199,
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "name": "ユーハイム大濠西（賃貸中）",
-      "price_text": "2870万円",
-      "price_man": 2870,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション平尾I",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロワールマンション・アール板付壱番館",
-      "price_text": "2380万円",
-      "price_man": 2380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ネストピア博多グランドステージⅢ",
-      "price_text": "4980万円",
-      "price_man": 4980,
       "source": "suumo_fukuoka"
     },
     {
@@ -258,46 +216,88 @@
       "source": "suumo_fukuoka"
     },
     {
-      "name": "三愛シティライフ野間レイクビュー",
-      "price_text": "2290万円",
-      "price_man": 2290,
+      "name": "エンクレスト博多ＥＡＳＴ　ＰＡＲＫ",
+      "price_text": "4499万円",
+      "price_man": 4499,
       "source": "suumo_fukuoka"
     },
     {
-      "name": "朝日プラザ末吉橋",
-      "price_text": "3590万円",
-      "price_man": 3590,
+      "name": "アーベインルネス諸岡、壱号棟",
+      "price_text": "2680万円",
+      "price_man": 2680,
+      "source": "suumo_fukuoka"
+    },
+    {
+      "name": "朝日プラザ大橋南",
+      "price_text": "1260万円",
+      "price_man": 1260,
+      "source": "suumo_fukuoka"
+    },
+    {
+      "name": "モントーレ井尻",
+      "price_text": "3298万円",
+      "price_man": 3298,
+      "source": "suumo_fukuoka"
+    },
+    {
+      "name": "ロイヤルスクウェア福島",
+      "price_text": "4798万円",
+      "price_man": 4798,
       "source": "suumo_osaka"
     },
     {
-      "name": "ドルミ堂島",
-      "price_text": "3998万円",
-      "price_man": 3998,
+      "name": "ユニライフ福島Ｃ棟",
+      "price_text": "3680万円",
+      "price_man": 3680,
       "source": "suumo_osaka"
     },
     {
-      "name": "アデレイド新福島",
-      "price_text": "4998万円",
-      "price_man": 4998,
+      "name": "野田パークマンション",
+      "price_text": "1530万円",
+      "price_man": 1530,
       "source": "suumo_osaka"
     },
     {
-      "name": "中津グランドハイツ",
-      "price_text": "3280万円",
-      "price_man": 3280,
+      "name": "ブールバール南森町",
+      "price_text": "3798万円",
+      "price_man": 3798,
       "source": "suumo_osaka"
     },
     {
-      "name": "朝日プラザ南堀江",
-      "price_text": "2390万円",
-      "price_man": 2390,
+      "name": "朝日プラザ梅田東パートⅠ",
+      "price_text": "4198万円",
+      "price_man": 4198,
       "source": "suumo_osaka"
     },
     {
-      "name": "ドミニ目黒",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_tokyo"
+      "name": "アークレジデンス梅田北",
+      "price_text": "4500万円",
+      "price_man": 4500,
+      "source": "suumo_osaka"
+    },
+    {
+      "name": "アークレジデンス梅田北",
+      "price_text": "4500万円",
+      "price_man": 4500,
+      "source": "suumo_osaka"
+    },
+    {
+      "name": "アークレジデンス梅田北",
+      "price_text": "4500万円",
+      "price_man": 4500,
+      "source": "suumo_osaka"
+    },
+    {
+      "name": "アークレジデンス梅田北",
+      "price_text": "4500万円",
+      "price_man": 4500,
+      "source": "suumo_osaka"
+    },
+    {
+      "name": "エスポアール江戸堀",
+      "price_text": "1980万円",
+      "price_man": 1980,
+      "source": "suumo_osaka"
     },
     {
       "name": "パシフィック中野",
@@ -306,19 +306,7 @@
       "source": "suumo_tokyo"
     },
     {
-      "name": "ヴェラハイツ中野坂上",
-      "price_text": "4880万円",
-      "price_man": 4880,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "東中野第2マンション",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "サニーハウスさぎの宮",
+      "name": "サニーハウスさぎの宮303号室",
       "price_text": "4198万円",
       "price_man": 4198,
       "source": "suumo_tokyo"
@@ -330,21 +318,27 @@
       "source": "suumo_tokyo"
     },
     {
-      "name": "シェトワ大森",
-      "price_text": "4490万円",
-      "price_man": 4490,
+      "name": "パラスト野方",
+      "price_text": "2800万円",
+      "price_man": 2800,
       "source": "suumo_tokyo"
     },
     {
-      "name": "隅田グリーンマンション",
-      "price_text": "4199万円",
-      "price_man": 4199,
+      "name": "東中野第2マンション",
+      "price_text": "2980万円",
+      "price_man": 2980,
       "source": "suumo_tokyo"
     },
     {
       "name": "ジュウエル錦糸町",
       "price_text": "4599万円",
       "price_man": 4599,
+      "source": "suumo_tokyo"
+    },
+    {
+      "name": "朝日プラザ東向島",
+      "price_text": "3780万円",
+      "price_man": 3780,
       "source": "suumo_tokyo"
     },
     {
@@ -354,39 +348,9 @@
       "source": "suumo_tokyo"
     },
     {
-      "name": "ジュウエル錦糸町",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "隅田グリーンマンション",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "ドルミ錦糸町長谷川ビル",
-      "price_text": "4580万円",
-      "price_man": 4580,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "隅田グリーンマンション",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "隅田グリーンマンション",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "隅田グリーンマンション",
-      "price_text": "4199万円",
-      "price_man": 4199,
+      "name": "モアステージ墨田",
+      "price_text": "3980万円",
+      "price_man": 3980,
       "source": "suumo_tokyo"
     },
     {
@@ -396,9 +360,15 @@
       "source": "suumo_tokyo"
     },
     {
-      "name": "■■隅田グリーンマンション■■",
-      "price_text": "4199万円",
-      "price_man": 4199,
+      "name": "シュロス錦糸町",
+      "price_text": "3580万円",
+      "price_man": 3580,
+      "source": "suumo_tokyo"
+    },
+    {
+      "name": "向島リリエンハイム",
+      "price_text": "4000万円",
+      "price_man": 4000,
       "source": "suumo_tokyo"
     },
     {
@@ -408,21 +378,27 @@
       "source": "suumo_tokyo"
     },
     {
-      "name": "フォースター浅草今戸",
-      "price_text": "4698万円",
-      "price_man": 4698,
+      "name": "隅田グリーンマンション",
+      "price_text": "4199万円",
+      "price_man": 4199,
       "source": "suumo_tokyo"
     },
     {
-      "name": "浅草ロイヤルマンション",
-      "price_text": "4198万円",
-      "price_man": 4198,
+      "name": "プリマドムス立花",
+      "price_text": "4980万円",
+      "price_man": 4980,
       "source": "suumo_tokyo"
     },
     {
-      "name": "福島グランドヴィラ 1階 ２ＳＬＤＫ",
-      "price_text": "2580万円",
-      "price_man": 2580,
+      "name": "竹中シャルム",
+      "price_text": "4290万円",
+      "price_man": 4290,
+      "source": "suumo_tokyo"
+    },
+    {
+      "name": "野田パークマンション 2階 ２ＬＤＫ",
+      "price_text": "1530万円",
+      "price_man": 1530,
       "source": "multi_site_osaka"
     },
     {
@@ -438,982 +414,1030 @@
       "source": "multi_site_osaka"
     },
     {
-      "name": "健美家 練馬区豊玉1丁目#9zvf",
+      "name": "第2Nハイツ",
+      "price_text": "7000万円",
+      "price_man": 7000,
+      "source": "ftakken_ittomono_fukuoka"
+    },
+    {
+      "name": "フォレスト平和",
+      "price_text": "7000万円",
+      "price_man": 7000,
+      "source": "ftakken_ittomono_fukuoka"
+    },
+    {
+      "name": "沿線・駅・交通",
+      "price_text": "7000万円",
+      "price_man": 7000,
+      "source": "ftakken_ittomono_fukuoka"
+    },
+    {
+      "name": "博多区金の隈 木造",
+      "price_text": "2298万円",
+      "price_man": 2298,
+      "source": "ftakken_kodate_fukuoka"
+    },
+    {
+      "name": "健美家 中野区鷺宮1#0zvi",
+      "price_text": "1億4700万円",
+      "price_man": 14700,
+      "source": "ittomono_tokyo"
+    },
+    {
+      "name": "健美家 世田谷区世田谷1丁目#9lz0",
+      "price_text": "1億4800万円",
+      "price_man": 14800,
+      "source": "ittomono_tokyo"
+    },
+    {
+      "name": "健美家 世田谷区世田谷1丁目#9lhf",
+      "price_text": "1億5000万円",
+      "price_man": 15000,
+      "source": "ittomono_tokyo"
+    },
+    {
+      "name": "東京都杉並区 一棟売りマンション",
       "price_text": "1億9500万円",
       "price_man": 19500,
       "source": "ittomono_tokyo"
     },
     {
-      "name": "東京都練馬区　一棟マンション",
-      "price_text": "1億6500万円",
-      "price_man": 16500,
+      "name": "東池袋2丁目マンション",
+      "price_text": "1億9000万円",
+      "price_man": 19000,
       "source": "ittomono_tokyo"
     },
     {
-      "name": "朝日プラザ長堀東パサージュ",
-      "price_text": "940万円",
-      "price_man": 940,
+      "name": "【満室表面利回り 5.21％！】大阪市福島区　一棟アパート",
+      "price_text": "3300万円",
+      "price_man": 3300,
+      "source": "yield_ittomono_osaka"
+    },
+    {
+      "name": "メゾン・ド・スマーユ",
+      "price_text": "1680万円",
+      "price_man": 1680,
       "source": "yield_osaka"
     },
     {
-      "name": "GE4098",
-      "price_text": "1300万円",
-      "price_man": 1300,
+      "name": "【専属",
+      "price_text": "1800万円",
+      "price_man": 1800,
       "source": "yield_osaka"
     },
     {
-      "name": "グラングリーン大阪THE",
-      "price_text": "1450万円",
-      "price_man": 1450,
+      "name": "【難波7分】平成26年・賃貸中・1950万円・4.49％",
+      "price_text": "1950万円",
+      "price_man": 1950,
       "source": "yield_osaka"
     },
     {
-      "name": "グランドメゾン新梅田タワーTHE",
-      "price_text": "1350万円",
-      "price_man": 1350,
+      "name": "【中津6分】平成28年・賃貸中・1800万円・4.5％",
+      "price_text": "1800万円",
+      "price_man": 1800,
       "source": "yield_osaka"
     },
     {
-      "name": "ST　【単身者の多い中央区】　谷町線・天満橋駅徒歩8分",
-      "price_text": "930万円",
-      "price_man": 930,
+      "name": "【新福島2分】平成22年・賃貸中・2350万円・4.31％",
+      "price_text": "2350万円",
+      "price_man": 2350,
       "source": "yield_osaka"
     },
     {
-      "name": "ST　【単身者の多い中央区】谷町線・天満橋駅徒歩8分",
-      "price_text": "950万円",
-      "price_man": 950,
+      "name": "ST【単身者が多い中央区】””堺筋本町駅徒歩3分””賃貸中・",
+      "price_text": "1000万円",
+      "price_man": 1000,
       "source": "yield_osaka"
     },
     {
-      "name": "関大前スカイハイツ",
-      "price_text": "1350万円",
-      "price_man": 1350,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "【福島3分】平成24年・賃貸中・1750万円・4.52％",
-      "price_text": "1750万円",
-      "price_man": 1750,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "【天王寺7分】平成28年・賃貸中・1910万円・4.08％",
-      "price_text": "1910万円",
-      "price_man": 1910,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "【野田阪神6分】平成20年・賃貸中・1660万円・4.84％",
-      "price_text": "1660万円",
-      "price_man": 1660,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "【南森町3分】平成20年・賃貸中・2200万円・4.39％",
-      "price_text": "2200万円",
-      "price_man": 2200,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "GE4114 「鶴橋」駅徒歩5分の区分マンション",
-      "price_text": "2880万円",
-      "price_man": 2880,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "北浜駅徒歩5分、中央区の区分マンション",
-      "price_text": "930万円",
-      "price_man": 930,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "プレサンス本町リアルシティ",
-      "price_text": "1880万円",
-      "price_man": 1880,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "3線2駅利用可築浅オーナーチェンジ物件",
-      "price_text": "1690万円",
-      "price_man": 1690,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "通勤アクセス立地築浅オーナーチェンジ",
-      "price_text": "1820万円",
-      "price_man": 1820,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "天満橋駅徒歩5分30平米以上オーナーチェンジ物件",
-      "price_text": "2340万円",
-      "price_man": 2340,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "肥後橋駅徒歩5分28平米広め1Kオーナーチェンジ物件",
-      "price_text": "1600万円",
-      "price_man": 1600,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "なんばエリア角部屋1LDKオーナーチェンジ",
-      "price_text": "2630万円",
-      "price_man": 2630,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "御堂筋線大国町駅徒歩4分角部屋1LDKオーナーチェンジ",
-      "price_text": "2988万円",
-      "price_man": 2988,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "南住戸緑にかこまれ生活利便の高い阿波座駅徒歩2分1LDK",
-      "price_text": "4500万円",
-      "price_man": 4500,
-      "source": "rakumachi_osaka"
-    },
-    {
-      "name": "大阪西区 1LDK",
-      "price_text": "4250万円",
-      "price_man": 4250,
-      "source": "rakumachi_osaka"
-    },
-    {
-      "name": "人気マンションシリーズ1LDKオーナーチェンジ物件",
-      "price_text": "1980万円",
-      "price_man": 1980,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "駅徒歩１分単身需要エリアオーナーチェンジ物件",
-      "price_text": "1900万円",
-      "price_man": 1900,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "南向き角部屋南森町駅徒歩6分オーナーチェンジ物件",
-      "price_text": "2050万円",
-      "price_man": 2050,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "大阪北区 0LDK",
-      "price_text": "3320万円",
-      "price_man": 3320,
-      "source": "rakumachi_osaka"
-    },
-    {
-      "name": "角部屋南向き4駅4路線1DK38平米オーナーチェンジ物件",
-      "price_text": "2900万円",
-      "price_man": 2900,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "大阪北区",
-      "price_text": "2990万円",
-      "price_man": 2990,
-      "source": "rakumachi_osaka"
-    },
-    {
-      "name": "【大阪市北区】2018築・「扇町駅」徒歩1分という資産。",
+      "name": "GE4128 扇町駅徒歩1分の区分マンション",
       "price_text": "2980万円",
       "price_man": 2980,
       "source": "yield_osaka"
     },
     {
-      "name": "アルス心斎橋",
-      "price_text": "4260万円",
-      "price_man": 4260,
+      "name": "GE4128",
+      "price_text": "1550万円",
+      "price_man": 1550,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "ファミールハイツ北大阪５号棟",
+      "price_text": "1880万円",
+      "price_man": 1880,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "GE4136",
+      "price_text": "2880万円",
+      "price_man": 2880,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "GE4137",
+      "price_text": "1190万円",
+      "price_man": 1190,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "中津リバーサイドコーポＤ棟",
+      "price_text": "2580万円",
+      "price_man": 2580,
       "source": "rakumachi_osaka"
     },
     {
-      "name": "シエリアタワー大阪堀江",
-      "price_text": "750万円",
-      "price_man": 750,
+      "name": "エスリード難波",
+      "price_text": "980万円",
+      "price_man": 980,
       "source": "yield_osaka"
     },
     {
-      "name": "エステムコート大阪福島Ⅱレイヤー",
-      "price_text": "860万円",
-      "price_man": 860,
+      "name": "エステムコート難波Ⅴブロード　15階",
+      "price_text": "2650万円",
+      "price_man": 2650,
       "source": "yield_osaka"
     },
     {
-      "name": "ST 【これからの方】　単身者が多い　桜川駅徒歩1分・",
+      "name": "エステムコート難波Ⅴブロード",
+      "price_text": "2000万円",
+      "price_man": 2000,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "【野田10分】平成28年・賃貸中・2270万円・4.07％",
+      "price_text": "2270万円",
+      "price_man": 2270,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "【谷町四丁目5分】令和2年・賃貸中・2630万円・4.01％",
+      "price_text": "2630万円",
+      "price_man": 2630,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "【大国町1分】平成26年・賃貸中・2000万円・4.18％",
+      "price_text": "2000万円",
+      "price_man": 2000,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "【堺筋本町5分】平成20年・賃貸中・2150万円・4.35％",
+      "price_text": "2150万円",
+      "price_man": 2150,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "大阪市北区 賃貸中 仲介",
       "price_text": "1350万円",
       "price_man": 1350,
       "source": "yield_osaka"
     },
     {
-      "name": "ST　【これからの方】　単身者が多い福島区　野田駅・",
-      "price_text": "1500万円",
-      "price_man": 1500,
+      "name": "【大阪市中央区】「堺筋本町駅」徒歩4分・ビジネス街ド真ん中！",
+      "price_text": "1880万円",
+      "price_man": 1880,
       "source": "yield_osaka"
     },
     {
-      "name": "サンハイツ都",
-      "price_text": "1630万円",
-      "price_man": 1630,
+      "name": "プレサンス南堀江ザ・センス",
+      "price_text": "2180万円",
+      "price_man": 2180,
       "source": "yield_osaka"
     },
     {
-      "name": "ST【人気の南堀江】””西長堀駅徒歩3分””現在賃貸中・",
-      "price_text": "750万円",
-      "price_man": 750,
+      "name": "エイペックス心斎橋東",
+      "price_text": "3290万円",
+      "price_man": 3290,
+      "source": "rakumachi_osaka"
+    },
+    {
+      "name": "メゾン・ド・ティユール",
+      "price_text": "599万円",
+      "price_man": 599,
       "source": "yield_osaka"
     },
     {
-      "name": "クレール常盤台",
+      "name": "コスモハイツ新大阪",
+      "price_text": "1580万円",
+      "price_man": 1580,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "ネオハイツ新淀川",
+      "price_text": "1660万円",
+      "price_man": 1660,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "【エステム認定中古物件】エステムプラザ福島ジェネル",
+      "price_text": "2080万円",
+      "price_man": 2080,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "大阪府大阪市中央区区分マンション",
+      "price_text": "2230万円",
+      "price_man": 2230,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "大阪府大阪市中央区区分マンション",
+      "price_text": "800万円",
+      "price_man": 800,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "大阪府大阪市中央区区分マンション",
+      "price_text": "1180万円",
+      "price_man": 1180,
+      "source": "yield_osaka"
+    },
+    {
+      "name": "蓮根",
       "price_text": "1億9500万円",
       "price_man": 19500,
       "source": "ittomono_tokyo"
     },
     {
-      "name": "《積算70％》ファミリータイプ×高稼働中×修繕歴あり",
-      "price_text": "1億6500万円",
-      "price_man": 16500,
+      "name": "【リバーサイド石神井】練馬区！上石神井駅徒歩18分！",
+      "price_text": "1億6900万円",
+      "price_man": 16900,
       "source": "ittomono_tokyo"
     },
     {
-      "name": "中野区本町4丁目　1棟売アパート（連棟式）",
-      "price_text": "5280万円",
-      "price_man": 5280,
+      "name": "蓮根 一棟マンション",
+      "price_text": "7900万円",
+      "price_man": 7900,
       "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "久我山ハイツ",
-      "price_text": "5200万円",
-      "price_man": 5200,
+      "name": "≪葛飾区≫京成高砂駅歩7分！1R×12戸・満室≪M424≫",
+      "price_text": "3480万円",
+      "price_man": 3480,
       "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "練馬区南大泉4丁目《アートヒルズ南大泉》",
-      "price_text": "4980万円",
-      "price_man": 4980,
+      "name": "山手線内側「利回り8.1％」満室稼働　大塚駅7分　１K×6戸",
+      "price_text": "4800万円",
+      "price_man": 4800,
       "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "西武新宿線「鷺ノ宮」駅徒歩6分　正将閣",
-      "price_text": "5900万円",
-      "price_man": 5900,
+      "name": "大森 一棟アパート",
+      "price_text": "5000万円",
+      "price_man": 5000,
       "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "都立家政 一棟アパート",
+      "name": "蓮根 一棟アパート",
+      "price_text": "5980万円",
+      "price_man": 5980,
+      "source": "yield_ittomono_tokyo"
+    },
+    {
+      "name": "都立家政駅徒歩3分・満室稼働中・全室角部屋",
       "price_text": "4500万円",
       "price_man": 4500,
       "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "バニーユ3号館",
-      "price_text": "3680万円",
-      "price_man": 3680,
+      "name": "ＢＯＸＹ南長﨑",
+      "price_text": "5280万円",
+      "price_man": 5280,
       "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "レルシア志村坂上",
-      "price_text": "3280万円",
-      "price_man": 3280,
+      "name": "ショコラハウゼ大塚",
+      "price_text": "8000万円",
+      "price_man": 8000,
       "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "楽待 板橋区栄町２１#4330",
-      "price_text": "2100万円",
-      "price_man": 2100,
-      "source": "yield_tokyo"
+      "name": "◆不動産投資のPLAC◆中野区◆4.5％◆鷺ノ宮駅徒歩5分◆",
+      "price_text": "5900万円",
+      "price_man": 5900,
+      "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "【板橋区】人気の独立洗面台付き1DK！【#2632】",
-      "price_text": "2880万円",
-      "price_man": 2880,
-      "source": "yield_tokyo"
+      "name": "大塚・帝京大学駅徒歩6分◇2024年築アパート",
+      "price_text": "7980万円",
+      "price_man": 7980,
+      "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "【北区】2022年築！複数路線利用可能【#2647】",
-      "price_text": "1500万円",
-      "price_man": 1500,
-      "source": "yield_tokyo"
+      "name": "大塚・帝京大学駅利用可！R6年築！三方角地！",
+      "price_text": "7980万円",
+      "price_man": 7980,
+      "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "【新宿区】山手線利用可能！高利回り南向き1R【#2648】",
-      "price_text": "2480万円",
-      "price_man": 2480,
-      "source": "yield_tokyo"
+      "name": "【2024年築】×【駅徒歩6分】×【近隣に大学あり】",
+      "price_text": "7980万円",
+      "price_man": 7980,
+      "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "GE4101",
+      "name": "久我山・一棟売アパート",
+      "price_text": "5200万円",
+      "price_man": 5200,
+      "source": "yield_ittomono_tokyo"
+    },
+    {
+      "name": "【中野区】1R×6戸・丸の内線『新中野』駅徒歩8分AP",
+      "price_text": "3740万円",
+      "price_man": 3740,
+      "source": "yield_ittomono_tokyo"
+    },
+    {
+      "name": "八王子7,980万円１棟アパート 仲介",
+      "price_text": "7980万円",
+      "price_man": 7980,
+      "source": "yield_ittomono_tokyo"
+    },
+    {
+      "name": "ハーモニーレジデンス文京白山",
       "price_text": "2080万円",
       "price_man": 2080,
       "source": "yield_tokyo"
     },
     {
-      "name": "【江東区】駅徒歩2分！独立洗面台あり・南向き【#2659】",
-      "price_text": "2300万円",
-      "price_man": 2300,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "GE4104",
-      "price_text": "1500万円",
-      "price_man": 1500,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "GE4109",
-      "price_text": "905万円",
-      "price_man": 905,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ハイネス野方",
-      "price_text": "1830万円",
-      "price_man": 1830,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京都渋谷区区分マンション",
-      "price_text": "2930万円",
-      "price_man": 2930,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "大江戸線「赤羽橋駅」徒歩1分",
-      "price_text": "1650万円",
-      "price_man": 1650,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "駅近",
+      "name": "クレヴィスタ綾瀬",
       "price_text": "1380万円",
       "price_man": 1380,
       "source": "yield_tokyo"
     },
     {
-      "name": "▶西日暮里駅徒歩9分！新耐震！角部屋！",
-      "price_text": "1680万円",
-      "price_man": 1680,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ガラ・ステージ日本橋",
-      "price_text": "1560万円",
-      "price_man": 1560,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "山手線鶯谷駅徒歩６分",
-      "price_text": "1090万円",
-      "price_man": 1090,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "▶新大久保駅徒歩10分！平成築！AL有！",
-      "price_text": "1360万円",
-      "price_man": 1360,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "日比谷線入谷駅徒歩５分",
-      "price_text": "2500万円",
-      "price_man": 2500,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "大江戸線「大門駅」徒歩１分",
-      "price_text": "1560万円",
-      "price_man": 1560,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【板橋区】バストイレ別・商店街近い・ペット可【#1622】",
-      "price_text": "2880万円",
-      "price_man": 2880,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "総武線「馬喰町駅」徒歩５分",
-      "price_text": "2100万円",
-      "price_man": 2100,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "GE4112",
-      "price_text": "1670万円",
-      "price_man": 1670,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【江東区】パークホームズシリーズ！安定2LDK【#1666】",
-      "price_text": "1300万円",
-      "price_man": 1300,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京都新宿区区分マンション",
-      "price_text": "1680万円",
-      "price_man": 1680,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "楽待 新宿区西新宿4#4709",
-      "price_text": "2950万円",
-      "price_man": 2950,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京都新宿区区分マンション",
-      "price_text": "1800万円",
-      "price_man": 1800,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "CQレジデンス赤羽西",
-      "price_text": "2500万円",
-      "price_man": 2500,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "江戸川橋駅徒歩1分",
-      "price_text": "2500万円",
-      "price_man": 2500,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京都新宿区区分マンション",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ヴェルステージ高田馬場",
+      "name": "リヴイントキワ台",
       "price_text": "2930万円",
       "price_man": 2930,
       "source": "yield_tokyo"
     },
     {
       "name": "サンテミリオン東麻布",
-      "price_text": "2680万円",
-      "price_man": 2680,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "メインステージ日本橋箱崎4",
-      "price_text": "2100万円",
-      "price_man": 2100,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【北区】山手線駅まで徒歩5分！バストイレ別【#3619】",
-      "price_text": "2480万円",
-      "price_man": 2480,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【中野区】月額賃料20万円",
-      "price_text": "2000万円",
-      "price_man": 2000,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【品川区】五反田１分",
-      "price_text": "2260万円",
-      "price_man": 2260,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "〇京急本線大森海岸駅",
-      "price_text": "2200万円",
-      "price_man": 2200,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "港区芝浦エリア1Kオーナーチェンジ物件",
-      "price_text": "2820万円",
-      "price_man": 2820,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "人気の浅草エリアオーナーチェンジ",
-      "price_text": "3000万円",
-      "price_man": 3000,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "4駅6路線が利用可能な立地オーナーチェンジ",
-      "price_text": "2700万円",
-      "price_man": 2700,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "穏やかな住宅地ペット飼育可能築浅1LDKオーナーチェンジ",
-      "price_text": "2280万円",
-      "price_man": 2280,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "最寄駅徒歩3分（JR京浜東北線・東京メトロ南北線利用可）",
-      "price_text": "2450万円",
-      "price_man": 2450,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ニューハイム池上",
       "price_text": "2980万円",
       "price_man": 2980,
       "source": "yield_tokyo"
     },
     {
-      "name": "文京区江戸川橋駅徒歩5分1LDKオーナーチェンジ物件",
-      "price_text": "2100万円",
-      "price_man": 2100,
+      "name": "九段フラワーホーム",
+      "price_text": "1580万円",
+      "price_man": 1580,
       "source": "yield_tokyo"
     },
     {
-      "name": "都市開発真っ只中！！オーナーチェンジ物件",
-      "price_text": "2500万円",
-      "price_man": 2500,
+      "name": "真和ハイツ",
+      "price_text": "1680万円",
+      "price_man": 1680,
       "source": "yield_tokyo"
     },
     {
-      "name": "1LDK30平米以上駅徒歩2分オーナーチェンジ物件",
-      "price_text": "1000万円",
-      "price_man": 1000,
+      "name": "シンエイ赤羽マンション",
+      "price_text": "2280万円",
+      "price_man": 2280,
       "source": "yield_tokyo"
     },
     {
-      "name": "■■利7.4％■駅歩4分の立地■16平米■賃中■117戸■",
-      "price_text": "2480万円",
-      "price_man": 2480,
+      "name": "ワコー高田馬場マンション",
+      "price_text": "1350万円",
+      "price_man": 1350,
       "source": "yield_tokyo"
     },
     {
-      "name": "グランフォース五反田",
-      "price_text": "1999万円",
-      "price_man": 1999,
+      "name": "多摩川住宅",
+      "price_text": "2880万円",
+      "price_man": 2880,
       "source": "yield_tokyo"
     },
     {
-      "name": "ライオンズマンション千駄木第２",
+      "name": "グランドメゾン開栄",
+      "price_text": "2980万円",
+      "price_man": 2980,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "グランドコート駒込",
+      "price_text": "1080万円",
+      "price_man": 1080,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ニューアバンダントハウス",
+      "price_text": "1480万円",
+      "price_man": 1480,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "エクセレント聖蹟桜ヶ丘",
+      "price_text": "770万円",
+      "price_man": 770,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "メインステージ田園調布",
+      "price_text": "850万円",
+      "price_man": 850,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "エトワール武蔵小山",
+      "price_text": "780万円",
+      "price_man": 780,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "メゾン・ド・スリジェ",
+      "price_text": "2400万円",
+      "price_man": 2400,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "大成建設施工・南東角部屋出窓・ハイシティ学芸大学第２",
       "price_text": "1990万円",
       "price_man": 1990,
       "source": "yield_tokyo"
     },
     {
-      "name": "中央区",
-      "price_text": "1680万円",
-      "price_man": 1680,
+      "name": "【目黒区】大手分譲＆利便性！大規模レジ【#1640】",
+      "price_text": "1230万円",
+      "price_man": 1230,
       "source": "yield_tokyo"
     },
     {
-      "name": "アランシア方南町",
-      "price_text": "800万円",
-      "price_man": 800,
+      "name": "【北区】駅徒歩2分！広めの1SLDK【#1647】",
+      "price_text": "2700万円",
+      "price_man": 2700,
       "source": "yield_tokyo"
     },
     {
-      "name": "日興パレセゾン田園調布",
-      "price_text": "2350万円",
-      "price_man": 2350,
+      "name": "パレステージ西新井みどり公園",
+      "price_text": "2680万円",
+      "price_man": 2680,
       "source": "yield_tokyo"
     },
     {
-      "name": "メゾン・ド・ヴィレ本駒込",
-      "price_text": "1190万円",
-      "price_man": 1190,
+      "name": "トーコープラザ",
+      "price_text": "1630万円",
+      "price_man": 1630,
       "source": "yield_tokyo"
     },
     {
-      "name": "ライオンズマンション柴又第２",
+      "name": "ラ・エテルノ菊川",
       "price_text": "2600万円",
       "price_man": 2600,
       "source": "yield_tokyo"
     },
     {
-      "name": "プレジール北新宿",
-      "price_text": "850万円",
-      "price_man": 850,
+      "name": "ラ・エテルノ菊川",
+      "price_text": "1020万円",
+      "price_man": 1020,
       "source": "yield_tokyo"
     },
     {
-      "name": "マンション国分寺",
-      "price_text": "1790万円",
-      "price_man": 1790,
+      "name": "パレ・ドール豊玉中",
+      "price_text": "2300万円",
+      "price_man": 2300,
       "source": "yield_tokyo"
     },
     {
-      "name": "南青山高樹町ハイツ",
-      "price_text": "2100万円",
-      "price_man": 2100,
+      "name": "港区高輪",
+      "price_text": "1430万円",
+      "price_man": 1430,
       "source": "yield_tokyo"
     },
     {
-      "name": "アルカーデンシティリンクス新宿",
-      "price_text": "2580万円",
-      "price_man": 2580,
+      "name": "リガーレ新板橋",
+      "price_text": "2300万円",
+      "price_man": 2300,
       "source": "yield_tokyo"
     },
     {
-      "name": "パレ・ドール八王子",
+      "name": "朝日綾瀬マンション",
+      "price_text": "2150万円",
+      "price_man": 2150,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "グラントゥルース大森プレミオ",
+      "price_text": "2250万円",
+      "price_man": 2250,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都目黒区区分マンション",
+      "price_text": "1290万円",
+      "price_man": 1290,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都目黒区区分マンション",
       "price_text": "1580万円",
       "price_man": 1580,
       "source": "yield_tokyo"
     },
     {
-      "name": "楽待 世田谷区駒沢3#5260",
-      "price_text": "1350万円",
-      "price_man": 1350,
+      "name": "東京都目黒区区分マンション",
+      "price_text": "779万円",
+      "price_man": 779,
       "source": "yield_tokyo"
     },
     {
-      "name": "都心へ出やすい2駅3路線が徒歩圏。賃貸中で家賃収入が見込みやすい区分マンション",
-      "price_text": "1900万円",
-      "price_man": 1900,
+      "name": "東京都目黒区区分マンション",
+      "price_text": "2600万円",
+      "price_man": 2600,
       "source": "yield_tokyo"
     },
     {
-      "name": "【75㎡3LDK×駅徒歩6分】パークホームズ",
-      "price_text": "2200万円",
-      "price_man": 2200,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ザ・サンメゾン駒場エルド",
-      "price_text": "2410万円",
-      "price_man": 2410,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【練馬区】安心の駅徒歩4分！3LDK・角部屋【#1678】",
-      "price_text": "2080万円",
-      "price_man": 2080,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【文京区】安心の文京区！バストイレ別・大学近い【#1679】",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "▶▶大田区・駅徒歩4分！新耐震・高層階",
-      "price_text": "2350万円",
-      "price_man": 2350,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【文京区】高利回り！山手線含む3駅3路線利用可【#2684】",
-      "price_text": "1580万円",
-      "price_man": 1580,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ロイズスクエア東陽町13階",
-      "price_text": "2340万円",
-      "price_man": 2340,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "メゾン・ド・ヴィレ松原",
-      "price_text": "990万円",
-      "price_man": 990,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "オーナーチェンジ物件",
-      "price_text": "850万円",
-      "price_man": 850,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京渋谷区",
-      "price_text": "3960万円",
-      "price_man": 3960,
-      "source": "rakumachi_tokyo"
-    },
-    {
-      "name": "オーナーチェンジ物件",
-      "price_text": "1080万円",
-      "price_man": 1080,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ライオンズマンション大森北",
-      "price_text": "2610万円",
-      "price_man": 2610,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "オーナーチェンジ物件",
-      "price_text": "1270万円",
-      "price_man": 1270,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "▶▶渋谷区・駅徒歩5分！新耐震・賃貸中",
-      "price_text": "1000万円",
-      "price_man": 1000,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "▲利回り7.2%！駅徒歩4分・新耐震・南東向き・賃貸中！",
-      "price_text": "1350万円",
-      "price_man": 1350,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "楽待 板橋区南常盤台1丁目#5699",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京都板橋区",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京都新宿区区分マンション",
-      "price_text": "1980万円",
-      "price_man": 1980,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "▲利回り6.92%！平成築・2階部分・賃貸中！",
-      "price_text": "1790万円",
-      "price_man": 1790,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京ベイビュウ",
-      "price_text": "2770万円",
-      "price_man": 2770,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "オーナーチェンジ物件",
-      "price_text": "850万円",
-      "price_man": 850,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京都台東区",
-      "price_text": "3500万円",
-      "price_man": 3500,
-      "source": "rakumachi_tokyo"
-    },
-    {
-      "name": "東京都新宿区区分マンション",
-      "price_text": "1080万円",
-      "price_man": 1080,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "清澄庭園・隅田川テラス至近・生活利便性投資物件",
-      "price_text": "1000万円",
-      "price_man": 1000,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京都新宿区区分マンション",
-      "price_text": "1490万円",
-      "price_man": 1490,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "▼駅徒歩3分、大田区、32.69平米、賃貸中",
-      "price_text": "1680万円",
-      "price_man": 1680,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "▲利回り6.42%！町田駅徒歩6分・平成6年築・4階部分！",
-      "price_text": "2000万円",
-      "price_man": 2000,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京都新宿区区分マンション",
-      "price_text": "1270万円",
-      "price_man": 1270,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "▲利回り9.81%！駅徒歩14分・平成築・賃貸中！",
-      "price_text": "1500万円",
-      "price_man": 1500,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "トップ大塚第4",
-      "price_text": "1000万円",
-      "price_man": 1000,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "▼笹塚駅、徒歩4分！室内洗濯機、管積5千以下",
+      "name": "杉並区 賃貸中 仲介",
       "price_text": "980万円",
       "price_man": 980,
       "source": "yield_tokyo"
     },
     {
-      "name": "▼台東区、新耐震RC造、最上階、賃貸中",
-      "price_text": "1000万円",
-      "price_man": 1000,
+      "name": "Ｍｉｎｄ久我山は久我山駅徒歩6分、2025年4月築の賃貸中区分マンション",
+      "price_text": "2480万円",
+      "price_man": 2480,
       "source": "yield_tokyo"
     },
     {
-      "name": "東京都新宿区区分マンション",
+      "name": "東京都目黒区区分マンション",
+      "price_text": "1320万円",
+      "price_man": 1320,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "スカイコート市ヶ谷",
+      "price_text": "2430万円",
+      "price_man": 2430,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "スカイコート市ヶ谷",
+      "price_text": "1580万円",
+      "price_man": 1580,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【中野区】149戸大規模レジ＆高層階・角部屋【#2653】",
+      "price_text": "1400万円",
+      "price_man": 1400,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【目黒区】複数駅・路線利用可能！新耐震1K【#2604】",
+      "price_text": "1250万円",
+      "price_man": 1250,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【杉並区】駅徒歩1分！角部屋・3面採光・リノベ【#2610】",
+      "price_text": "2290万円",
+      "price_man": 2290,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【目黒区】利回り5％！都立大学・バストイレ別【#2615】",
+      "price_text": "1850万円",
+      "price_man": 1850,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【板橋区】駅徒歩３分　１０５戸　角部屋【#3548】",
+      "price_text": "1250万円",
+      "price_man": 1250,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【世田谷区】45㎡用賀ブランド　田園都市線【#3535】",
+      "price_text": "2680万円",
+      "price_man": 2680,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ネオ八イシティ南大塚",
+      "price_text": "470万円",
+      "price_man": 470,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "◆月々85,000円で賃貸中　駅徒歩5分　オーナーチェンジ◆",
+      "price_text": "2250万円",
+      "price_man": 2250,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "▶奥沢駅徒歩8分！新耐震！最上階！",
+      "price_text": "800万円",
+      "price_man": 800,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "◆月々70,200円で賃貸中　駅徒歩9分　オーナーチェンジ◆",
+      "price_text": "1500万円",
+      "price_man": 1500,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "日神パレステージ御徒町",
+      "price_text": "2300万円",
+      "price_man": 2300,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東十条マンション",
+      "price_text": "1480万円",
+      "price_man": 1480,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東十条マンション",
+      "price_text": "2080万円",
+      "price_man": 2080,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都目黒区区分マンション",
+      "price_text": "1980万円",
+      "price_man": 1980,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "◆月々82,000円で賃貸中　駅徒歩3分　オーナーチェンジ◆",
+      "price_text": "2220万円",
+      "price_man": 2220,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "◆月々59,500円で賃貸中　駅徒歩8分　オーナーチェンジ◆",
+      "price_text": "1750万円",
+      "price_man": 1750,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都目黒区区分マンション",
+      "price_text": "2500万円",
+      "price_man": 2500,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都目黒区区分マンション",
+      "price_text": "1790万円",
+      "price_man": 1790,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都目黒区区分マンション",
+      "price_text": "2880万円",
+      "price_man": 2880,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ソアブール西早稲田【3駅5沿線利用可能】",
+      "price_text": "2630万円",
+      "price_man": 2630,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "パレドール池袋【総戸数105戸×空室につき内見可能】",
+      "price_text": "2680万円",
+      "price_man": 2680,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都目黒区区分マンション",
+      "price_text": "1980万円",
+      "price_man": 1980,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都目黒区区分マンション",
+      "price_text": "1850万円",
+      "price_man": 1850,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ハイライフ大森（駅から徒歩5分・5階部分東向き）",
+      "price_text": "1650万円",
+      "price_man": 1650,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "入谷駅徒歩3分、上野駅も徒歩圏の賃貸中区分マンション",
+      "price_text": "2940万円",
+      "price_man": 2940,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ウィンシティ上野タワー（駅徒歩3分・9階部分・角部屋東向き）",
+      "price_text": "779万円",
+      "price_man": 779,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "スカイコート荻窪第３",
+      "price_text": "2930万円",
+      "price_man": 2930,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ワコーレ中井　室内洗濯機置場　デザイン性ある外観",
+      "price_text": "1250万円",
+      "price_man": 1250,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "日神パレス下落合",
+      "price_text": "2430万円",
+      "price_man": 2430,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ザ・パークハウス",
+      "price_text": "2650万円",
+      "price_man": 2650,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "スカイコート新宿曙橋",
+      "price_text": "2560万円",
+      "price_man": 2560,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "スカイコートヴィーダ五反田ウエスト",
+      "price_text": "1690万円",
+      "price_man": 1690,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ニューサイトマンション足立",
+      "price_text": "1450万円",
+      "price_man": 1450,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "スカイコート蒲田第４",
       "price_text": "2900万円",
       "price_man": 2900,
       "source": "yield_tokyo"
     },
     {
-      "name": "GE4115",
-      "price_text": "3000万円",
-      "price_man": 3000,
+      "name": "フローラル上野松が谷",
+      "price_text": "1680万円",
+      "price_man": 1680,
       "source": "yield_tokyo"
     },
     {
-      "name": "ジュネス引野",
-      "price_text": "7500万円",
-      "price_man": 7500,
-      "source": "yield_ittomono_fukuoka"
-    },
-    {
-      "name": "アイセレブ高砂ベネフィス703号(退去予定あり)",
-      "price_text": "2230万円",
-      "price_man": 2230,
-      "source": "yield_fukuoka"
-    },
-    {
-      "name": "福岡市博多区のオーナーチェンジ物件！呉服町駅【徒歩９分】",
-      "price_text": "1100万円",
-      "price_man": 1100,
-      "source": "yield_fukuoka"
-    },
-    {
-      "name": "福岡市中央区",
-      "price_text": "710万円",
-      "price_man": 710,
-      "source": "yield_fukuoka"
-    },
-    {
-      "name": "ホワイトパレス北九大前",
-      "price_text": "1250万円",
-      "price_man": 1250,
-      "source": "yield_fukuoka"
-    },
-    {
-      "name": "メゾン・ド・ソワール",
-      "price_text": "200万円",
-      "price_man": 200,
-      "source": "yield_fukuoka"
-    },
-    {
-      "name": "グレイスフルマンション愛宕",
-      "price_text": "500万円",
-      "price_man": 500,
-      "source": "yield_fukuoka"
-    },
-    {
-      "name": "アーバンシティ天神南",
-      "price_text": "560万円",
-      "price_man": 560,
-      "source": "yield_fukuoka"
-    },
-    {
-      "name": "フレックス博多Ⅴ",
-      "price_text": "900万円",
-      "price_man": 900,
-      "source": "yield_fukuoka"
-    },
-    {
-      "name": "クレアウォーターマーク",
-      "price_text": "600万円",
-      "price_man": 600,
-      "source": "yield_fukuoka"
-    },
-    {
-      "name": "ドリーム津福",
+      "name": "ルーブル学芸大学六番館",
       "price_text": "2500万円",
       "price_man": 2500,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ライオンズマンション江古田第２",
+      "price_text": "890万円",
+      "price_man": 890,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ライオンズマンション江古田第２",
+      "price_text": "940万円",
+      "price_man": 940,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ライオンズマンションときわ台",
+      "price_text": "900万円",
+      "price_man": 900,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ライオンズマンションときわ台",
+      "price_text": "1500万円",
+      "price_man": 1500,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ブランメゾン",
+      "price_text": "2500万円",
+      "price_man": 2500,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ブランメゾン",
+      "price_text": "2770万円",
+      "price_man": 2770,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "メインステージ入谷Ⅱ（担当：堀江）",
+      "price_text": "2870万円",
+      "price_man": 2870,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "品川Vタワー",
+      "price_text": "1780万円",
+      "price_man": 1780,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都練馬区　区分マンション",
+      "price_text": "1580万円",
+      "price_man": 1580,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ダイアパレス御徒町（担当：堀江）",
+      "price_text": "2180万円",
+      "price_man": 2180,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "◆中野区・駅徒歩5分！新宿まで直通・新耐震・賃貸中",
+      "price_text": "850万円",
+      "price_man": 850,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "練馬区　区分マンション",
+      "price_text": "1430万円",
+      "price_man": 1430,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都中野区　区分マンション",
+      "price_text": "2890万円",
+      "price_man": 2890,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "エンクレストベイサイド通り",
+      "price_text": "4200万円",
+      "price_man": 4200,
+      "source": "rakumachi_fukuoka"
+    },
+    {
+      "name": "ダイアパレス平尾２",
+      "price_text": "3080万円",
+      "price_man": 3080,
+      "source": "rakumachi_fukuoka"
+    },
+    {
+      "name": "秀和警固レジデンス",
+      "price_text": "3280万円",
+      "price_man": 3280,
+      "source": "rakumachi_fukuoka"
+    },
+    {
+      "name": "藤和シティコープ平尾駅前",
+      "price_text": "3700万円",
+      "price_man": 3700,
+      "source": "rakumachi_fukuoka"
+    },
+    {
+      "name": "アクタス博多アネックス",
+      "price_text": "3400万円",
+      "price_man": 3400,
+      "source": "rakumachi_fukuoka"
+    },
+    {
+      "name": "サークコート大濠公園駅",
+      "price_text": "1680万円",
+      "price_man": 1680,
+      "source": "rakumachi_fukuoka"
+    },
+    {
+      "name": "エンクレスト南福岡奏の杜",
+      "price_text": "3080万円",
+      "price_man": 3080,
+      "source": "rakumachi_fukuoka"
+    },
+    {
+      "name": "オープンレジデンシア博多空港通り",
+      "price_text": "4780万円",
+      "price_man": 4780,
+      "source": "rakumachi_fukuoka"
+    },
+    {
+      "name": "サヴォイエイペックス",
+      "price_text": "1620万円",
+      "price_man": 1620,
       "source": "yield_fukuoka"
     },
     {
-      "name": "【弊社売主物件】ライオンズマンション博多",
-      "price_text": "2200万円",
-      "price_man": 2200,
+      "name": "エンクレスト博多駅前南ＧＲＡＣＥ",
+      "price_text": "4300万円",
+      "price_man": 4300,
+      "source": "rakumachi_fukuoka"
+    },
+    {
+      "name": "グランピア天神",
+      "price_text": "680万円",
+      "price_man": 680,
       "source": "yield_fukuoka"
     },
     {
-      "name": "アソシアグロッツォ博多サウスガーデン",
-      "price_text": "2200万円",
-      "price_man": 2200,
+      "name": "グランピア天神",
+      "price_text": "550万円",
+      "price_man": 550,
       "source": "yield_fukuoka"
     },
     {
-      "name": "アソシアグロッツォ博多サウスガーデン",
-      "price_text": "620万円",
-      "price_man": 620,
+      "name": "ダイナコート西公園トレンドゥ",
+      "price_text": "980万円",
+      "price_man": 980,
       "source": "yield_fukuoka"
     },
     {
-      "name": "グリーンマンション長尾",
-      "price_text": "650万円",
-      "price_man": 650,
+      "name": "エステート・モア・博多グラン",
+      "price_text": "499万円",
+      "price_man": 499,
       "source": "yield_fukuoka"
     },
     {
-      "name": "メゾン・ド・ルソール",
-      "price_text": "260万円",
-      "price_man": 260,
+      "name": "ルエ・メゾン・ロワール城南２",
+      "price_text": "720万円",
+      "price_man": 720,
       "source": "yield_fukuoka"
     },
     {
-      "name": "リゾートビラ西戸崎",
-      "price_text": "580万円",
-      "price_man": 580,
+      "name": "じゅうグランドモア福大前",
+      "price_text": "570万円",
+      "price_man": 570,
       "source": "yield_fukuoka"
     },
     {
-      "name": "ロワールマンション・アール板付弐番館",
-      "price_text": "1320万円",
-      "price_man": 1320,
+      "name": "ダイアパレス姪浜",
+      "price_text": "1080万円",
+      "price_man": 1080,
       "source": "yield_fukuoka"
     },
     {
-      "name": "ロワールマンションアール板付壱番館",
-      "price_text": "750万円",
-      "price_man": 750,
+      "name": "ビブレマンション城野",
+      "price_text": "980万円",
+      "price_man": 980,
       "source": "yield_fukuoka"
     },
     {
-      "name": "フォルム博多ステーション",
-      "price_text": "750万円",
-      "price_man": 750,
+      "name": "エンクレスト博多駅南",
+      "price_text": "960万円",
+      "price_man": 960,
       "source": "yield_fukuoka"
     },
     {
-      "name": "スカイ・クリエート天神南",
-      "price_text": "780万円",
-      "price_man": 780,
+      "name": "ライオンズステーションプラザ博多 7階部分",
+      "price_text": "550万円",
+      "price_man": 550,
       "source": "yield_fukuoka"
     },
     {
-      "name": "エステート・モア天神AXIS",
-      "price_text": "780万円",
-      "price_man": 780,
+      "name": "ライオンズマンション大手門第２",
+      "price_text": "980万円",
+      "price_man": 980,
       "source": "yield_fukuoka"
     },
     {
-      "name": "エステート・モア天神AXIS",
-      "price_text": "1850万円",
-      "price_man": 1850,
+      "name": "ロマネスクヴューコート植物園",
+      "price_text": "2180万円",
+      "price_man": 2180,
       "source": "yield_fukuoka"
+    },
+    {
+      "name": "ロマネスクヴューコート植物園",
+      "price_text": "670万円",
+      "price_man": 670,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "ライオンズマンション大名",
+      "price_text": "930万円",
+      "price_man": 930,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "ライオンズマンション大名",
+      "price_text": "1740万円",
+      "price_man": 1740,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "グランフォーレプライム博多",
+      "price_text": "1200万円",
+      "price_man": 1200,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "ピュアドームアートフル平尾",
+      "price_text": "1780万円",
+      "price_man": 1780,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "甦る小さな戸建て",
+      "price_text": "4480万円",
+      "price_man": 4480,
+      "source": "restate_tokyo"
     }
   ],
   "removed_items": [
@@ -1430,9 +1454,6 @@
       "source": "yahoo_fukuoka"
     },
     {
-      "source": "yahoo_tokyo"
-    },
-    {
       "source": "yahoo_fukuoka"
     },
     {
@@ -1445,7 +1466,13 @@
       "source": "yahoo_fukuoka"
     },
     {
-      "source": "suumo_fukuoka"
+      "source": "yahoo_fukuoka"
+    },
+    {
+      "source": "yahoo_fukuoka"
+    },
+    {
+      "source": "yahoo_fukuoka"
     },
     {
       "source": "suumo_fukuoka"
@@ -1503,6 +1530,42 @@
     },
     {
       "source": "suumo_osaka"
+    },
+    {
+      "source": "suumo_osaka"
+    },
+    {
+      "source": "suumo_osaka"
+    },
+    {
+      "source": "suumo_tokyo"
+    },
+    {
+      "source": "suumo_tokyo"
+    },
+    {
+      "source": "suumo_tokyo"
+    },
+    {
+      "source": "suumo_tokyo"
+    },
+    {
+      "source": "suumo_tokyo"
+    },
+    {
+      "source": "suumo_tokyo"
+    },
+    {
+      "source": "suumo_tokyo"
+    },
+    {
+      "source": "suumo_tokyo"
+    },
+    {
+      "source": "suumo_tokyo"
+    },
+    {
+      "source": "suumo_tokyo"
     },
     {
       "source": "suumo_tokyo"
@@ -1544,10 +1607,106 @@
       "source": "multi_site_osaka"
     },
     {
+      "source": "multi_site_osaka"
+    },
+    {
+      "source": "multi_site_osaka"
+    },
+    {
+      "source": "ftakken_ittomono_fukuoka"
+    },
+    {
+      "source": "ftakken_ittomono_fukuoka"
+    },
+    {
+      "source": "ftakken_ittomono_fukuoka"
+    },
+    {
+      "source": "ftakken_kodate_fukuoka"
+    },
+    {
       "source": "ittomono_tokyo"
     },
     {
       "source": "ittomono_tokyo"
+    },
+    {
+      "source": "ittomono_tokyo"
+    },
+    {
+      "source": "ittomono_tokyo"
+    },
+    {
+      "source": "yield_ittomono_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
+    },
+    {
+      "source": "yield_osaka"
     },
     {
       "source": "yield_osaka"
@@ -1586,10 +1745,10 @@
       "source": "yield_osaka"
     },
     {
-      "source": "yield_osaka"
+      "source": "rakumachi_osaka"
     },
     {
-      "source": "yield_osaka"
+      "source": "rakumachi_osaka"
     },
     {
       "source": "yield_osaka"
@@ -1607,28 +1766,7 @@
       "source": "yield_osaka"
     },
     {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
+      "source": "rakumachi_osaka"
     },
     {
       "source": "ittomono_tokyo"
@@ -1652,6 +1790,15 @@
       "source": "yield_ittomono_tokyo"
     },
     {
+      "source": "ittomono_tokyo"
+    },
+    {
+      "source": "yield_ittomono_tokyo"
+    },
+    {
+      "source": "yield_ittomono_tokyo"
+    },
+    {
       "source": "yield_ittomono_tokyo"
     },
     {
@@ -1661,7 +1808,7 @@
       "source": "yield_ittomono_tokyo"
     },
     {
-      "source": "yield_tokyo"
+      "source": "yield_ittomono_tokyo"
     },
     {
       "source": "yield_tokyo"
@@ -1677,9 +1824,6 @@
     },
     {
       "source": "yield_tokyo"
-    },
-    {
-      "source": "rakumachi_tokyo"
     },
     {
       "source": "yield_tokyo"
@@ -1706,9 +1850,6 @@
       "source": "yield_tokyo"
     },
     {
-      "source": "rakumachi_tokyo"
-    },
-    {
       "source": "yield_tokyo"
     },
     {
@@ -1743,9 +1884,6 @@
     },
     {
       "source": "yield_tokyo"
-    },
-    {
-      "source": "rakumachi_tokyo"
     },
     {
       "source": "yield_tokyo"
@@ -1770,9 +1908,6 @@
     },
     {
       "source": "yield_tokyo"
-    },
-    {
-      "source": "rakumachi_tokyo"
     },
     {
       "source": "yield_tokyo"
@@ -1850,9 +1985,6 @@
       "source": "yield_tokyo"
     },
     {
-      "source": "rakumachi_tokyo"
-    },
-    {
       "source": "yield_tokyo"
     },
     {
@@ -1910,7 +2042,7 @@
       "source": "yield_tokyo"
     },
     {
-      "source": "rakumachi_tokyo"
+      "source": "yield_tokyo"
     },
     {
       "source": "yield_tokyo"
@@ -1943,7 +2075,7 @@
       "source": "yield_tokyo"
     },
     {
-      "source": "yield_ittomono_fukuoka"
+      "source": "yield_tokyo"
     },
     {
       "source": "yield_fukuoka"
@@ -1989,6 +2121,24 @@
     },
     {
       "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "restate_tokyo"
     }
   ],
   "flagged_count": 0,

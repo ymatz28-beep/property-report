@@ -4,9 +4,9 @@
 - [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [WARN] structural_reform: property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [WARN] structural_reform: Stale temp/debug file (22 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (22 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (22 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (23 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (23 days old). Delete it.
+- [WARN] structural_reform: Stale temp/debug file (23 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (26 days old). Delete it.
 - [WARN] structural_reform: Stale temp/debug file (30 days old). Delete it.
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
@@ -17,21 +17,48 @@
 - [WARN] html_ui: Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Font size violation(s): line 191: fixed 48px
 - [ERROR] github_actions_health: Property Patrol: 'Property Pipeline' 10回連続失敗. `gh run view --repo ymatz28-beep/property-report --log-failed` で確認
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-24 17:06): 【search_ftakken.py --mode kubun】エラー終了 (exit 1) → Fix: エラーログを確認
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-24 17:06): 【search_ftakken.py --mode ittomono】エラー終了 (exit 1) → Fix: エラーログを確認
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-24 17:06): 【search_ftakken.py --mode budget】エラー終了 (exit 1) → Fix: エラーログを確認
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-24 17:06): 【LIFULL検索】エラー終了 (exit 1) → Fix: エラーログを確認
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-24 17:06): 【管理費データ取得】エラー終了 (exit 1) → Fix: 管理費ページのHTML構造変化の可能性。パーサー確認
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-24 17:06): 【ittomono_osaka（取得件数が急減）】source_degraded → Fix: 1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-04-24 17:06): 【rakumachi_fukuoka（取得件数が急減）】source_degraded → Fix: 1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加
-- [WARN] blank_cells: ダッシュ「—」169個 (閾値20) — データ欠損の可能性
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 1% (2/135) — 閾値80%
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 401: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 420: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 559: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 560: hardcoded #22c55e should be var(--green)
+- [WARN] design_token_compliance: Line 561: hardcoded #ef4444 should be var(--red)
+- [WARN] design_token_compliance: Line 638: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 647: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 703: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 758: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 343: hardcoded #4ade80 should be var(--green-light)
+- [WARN] design_token_compliance: Line 344: hardcoded #f87171 should be var(--red-light)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 641: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 660: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 641: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 660: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 305: hardcoded #22c55e should be var(--green)
+- [WARN] design_token_compliance: Line 308: hardcoded #f87171 should be var(--red-light)
+- [WARN] design_token_compliance: Line 372: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 391: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 755: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 774: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 109: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 56: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 470: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 489: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 57: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 641: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 660: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] blank_cells: ダッシュ「—」164個 (閾値20) — データ欠損の可能性
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 5% (7/133) — 閾値80%
+- [ERROR] property_name_quality: 駅名が物件名になっている: 1件 — ['ウィンシティ上野タワー（駅徒歩3分・9階部分・角部屋東向き）']
 - [WARN] qa_market_duplicate_detection: 1 duplicate (price, area) pairs: [(('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
-- [WARN] qa_market_data_accuracy: 3/93 (3.2%) — price mismatch: コーポラス東光 206 raw=650.0 html=800.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=990.0; price mismatch: ふれんず物件(中央区) raw=800.0 html=950.0
-- [ERROR] qa_market_oc_income_coverage: OC 334件中 302件が年間収入欠落 (90%) — 利回り逆算で補完
-- [ERROR] qa_market_yield_consistency: 4件の利回り/年間収入乖離(>20%): プレサンス梅田東ディアロ: expected=38.6万 actual=85.8万 (55%乖離); ラナップスクエア福島: expected=28.5万 actual=75.6万 (62%乖離); ワールドアイ難波南PORTA: expected=48.8万 actual=90.0万 (46%乖離); プレサンス福島吉野ミナージ: expected=54.6万 actual=101.5万 (46%乖離)
-- [WARN] qa_market_name_cross_reference: 27件の物件名クロスリファレンス不一致: 福岡市博多区千代(26㎡): ['JGM県庁口 502', '■■■【福岡']; 福岡市博多区博多駅前(19㎡): ['・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・', 'ソシオス平尾']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区博多駅前(23㎡): ['福岡市博多区のオーナーチェンジ物件！呉服町駅【徒歩９分】', '西鉄バス\u3000駅前四丁目停まで徒歩 3分']; 福岡市中央区高砂(19㎡): ['アーバンシティ天神南 604', '東峰マンションアーバンクルーザー高砂 402'] ... +22 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 27.0% (31/115件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 3080.0万円/40.75㎡; 4280.0万円/45.0㎡; 3980.0万円/64.0㎡; 1890.0万円/55.62㎡
+- [WARN] qa_market_data_accuracy: 4/91 (4.4%) — price mismatch: コーポラス東光 206 raw=650.0 html=800.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=990.0; price mismatch: ふれんず物件(中央区) raw=800.0 html=950.0; price mismatch: 第一大楠マンション 507 raw=580.0 html=650.0
+- [WARN] qa_market_oc_income_coverage: OC 309件中 201件が年間収入欠落 (65%) — 利回り逆算で補完
+- [ERROR] qa_market_yield_consistency: 3件の利回り/年間収入乖離(>20%): ST【人気の南堀江】””西長堀駅徒歩3分””現在賃貸中・: expected=180.5万 actual=57.6万 (213%乖離); プレサンス梅田東ディアロ: expected=38.6万 actual=85.8万 (55%乖離); ラナップスクエア福島: expected=28.5万 actual=75.6万 (62%乖離)
+- [WARN] qa_market_name_cross_reference: 31件の物件名クロスリファレンス不一致: 福岡市博多区千代(26㎡): ['■■■【福岡', 'JGM県庁口 502']; 福岡市博多区博多駅前(19㎡): ['ソシオス平尾', '・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・']; 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)', 'ピュアドームエクセル博多']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区(25㎡): ['ふれんず物件(博多区)', '◆月々62,000円で賃貸中\u3000駅徒歩13分\u3000オーナーチェンジ'] ... +26 more
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 25.0% (28/112件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 1260.0万円/66.0㎡; 3080.0万円/40.75㎡; 4280.0万円/45.0㎡; 3490.0万円/49.64㎡
 
 ## Last Updated
 2026-04-22 (plist PYTHONPATH 追加で subprocess import 修復)

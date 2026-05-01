@@ -1,5 +1,9 @@
 # property-report HANDOFF
 
+## Completed (パトロール結果反映 2026-05-01 21:00)
+- **Before**: hub_summary.json が 2026-04-24 の値のまま（candidates: "8", updated_at: "2026-04-24T17:06:00+09:00"）
+- **After**: パトロール結果反映（candidates: "0", updated_at: "2026-05-01T21:00:00+09:00"）。総件数0件、新規0件、消失0件、所要時間14分
+
 ## Completed (パトロール結果反映 2026-04-22 23:48)
 - **Before**: hub_summary.json が 2026-04-21 の古い値のまま（candidates: "8", updated_at: "2026-04-21T06:56:00+09:00"）
 - **After**: パトロール結果反映（candidates: "1330", updated_at: "2026-04-22T23:48:00+09:00"）。追跡件数1330件、新着314件、削除287件、ソース28/28 OK
@@ -12,7 +16,7 @@
 
 
 ## Last Updated
-2026-04-22
+2026-05-01
 
 ## Completed (プレイスポットCF損益分岐シミュレーション + 銀行リフォーム融資相談 2026-03-29 x-ref)
 - **Before**: プレイスポットしんばしビル本館（SRC造/1975年築/2,480万）のCF損益分岐が不明。リフォーム費用の融資方法も未相談
@@ -129,6 +133,7 @@
 ## History
 | 日付 | サマリー |
 |------|----------|
+| 2026-05-01 | パトロール結果反映：hub_summary.json更新（candidates: 8→0, updated_at: 04-24→05-01 21:00）。総件数0件、新規0件、消失0件、所要時間14分。変更なし |
 | 2026-04-22 | パトロール結果反映：hub_summary.json更新（candidates: 8→1330, updated_at: 04-21→04-22 23:48）。新着314件、削除287件、ソース28/28 OK。property-report直接変更なし（data更新のみ） |
 | 2026-03-29 x-ref | Before: プレイスポットCF損益分岐不明+リフォーム融資未相談 → After: 4シナリオCFシミュレーション完了（20年+14万→▲100万でトントン）+澤畠さんにリフォーム融資相談メール送信済 |
 | 2026-03-27 x-ref | Before: スキル発火がコマンド暗記式、story-intakeトリガー不足 → After: Skill Routing 8パターン自動発火+story-intakeに「インタビューして」追加。property-report直接変更なし |

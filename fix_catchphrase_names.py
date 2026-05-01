@@ -7,7 +7,7 @@ import re
 import time
 import requests
 
-DATA_FILE = "/Users/yumatejima/Documents/Projects/property-analyzer/data/ftakken_fukuoka_raw.txt"
+DATA_FILE = "/Users/ytejima/Documents/Projects/property-analyzer/data/ftakken_fukuoka_raw.txt"
 DELAY = 0.5  # seconds between requests
 
 CATCHPHRASE_CHARS = set("。♪！☆◆◇■▲●★「」")

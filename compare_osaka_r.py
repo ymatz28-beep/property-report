@@ -682,7 +682,7 @@ output_data = {
     "results": results,
 }
 
-with open("/Users/yumatejima/Documents/Projects/property-analyzer/data/osaka_r_comparison.json", "w", encoding="utf-8") as f:
+with open("/Users/ytejima/Documents/Projects/property-analyzer/data/osaka_r_comparison.json", "w", encoding="utf-8") as f:
     json.dump(output_data, f, ensure_ascii=False, indent=2, default=str)
 
 print("  データ保存: data/osaka_r_comparison.json")

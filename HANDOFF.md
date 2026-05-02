@@ -1,5 +1,9 @@
 # property-report HANDOFF
 
+## Completed (パトロール結果反映 2026-05-03 21:00)
+- **Before**: hub_summary.json が 2026-05-01 の値のまま（candidates: "8", updated_at: "2026-05-01T13:38:00+09:00"）
+- **After**: パトロール結果反映（candidates: "0", updated_at: "2026-05-03T21:00:00+09:00"）。総件数0件、新規0件、消失0件、所要時間15分
+
 ## Completed (パトロール結果反映 2026-05-01 21:00)
 - **Before**: hub_summary.json が 2026-04-24 の値のまま（candidates: "8", updated_at: "2026-04-24T17:06:00+09:00"）
 - **After**: パトロール結果反映（candidates: "0", updated_at: "2026-05-01T21:00:00+09:00"）。総件数0件、新規0件、消失0件、所要時間14分

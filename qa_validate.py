@@ -21,8 +21,10 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import sys
 from dataclasses import asdict, dataclass, field
+from datetime import date
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -470,8 +472,54 @@ def validate_html_outputs(report: QAReport) -> None:
 # Main
 # ---------------------------------------------------------------------------
 
+def validate_raw_data_freshness(report: QAReport, max_stale_days: int = 2) -> None:
+    """Fail if any key scraper raw file hasn't been updated within max_stale_days.
+
+    This catches the silent-failure case where the guard in search_suumo.py
+    fires (0 results, old data preserved) but the patrol marks the step ok.
+    """
+    base = Path(__file__).parent / "data"
+    key_files = {
+        "suumo_osaka_raw.txt": "SUUMO大阪",
+        "suumo_fukuoka_raw.txt": "SUUMO福岡",
+        "suumo_tokyo_raw.txt": "SUUMO東京",
+    }
+    today = date.today()
+    for fname, label in key_files.items():
+        fpath = base / fname
+        if not fpath.exists():
+            report.checks.append(CheckResult(
+                f"raw_freshness_{fname}", "FAIL",
+                detail=f"{label}: ファイルが存在しない"
+            ))
+            continue
+        content = fpath.read_text(encoding="utf-8")
+        m = re.search(r"## 取得日: (\d{4}-\d{2}-\d{2})", content)
+        if not m:
+            report.checks.append(CheckResult(
+                f"raw_freshness_{fname}", "WARN",
+                detail=f"{label}: 取得日ヘッダが見つからない"
+            ))
+            continue
+        file_date = date.fromisoformat(m.group(1))
+        stale_days = (today - file_date).days
+        if stale_days > max_stale_days:
+            report.checks.append(CheckResult(
+                f"raw_freshness_{fname}", "FAIL",
+                detail=f"{label}: {stale_days}日前のデータ (閾値={max_stale_days}日) — guardが発動している可能性"
+            ))
+        else:
+            report.checks.append(CheckResult(
+                f"raw_freshness_{fname}", "PASS",
+                detail=f"{label}: {stale_days}日前 (ok)"
+            ))
+
+
 def run_all(include_module: bool = False) -> QAReport:
     report = QAReport()
+
+    # 0. Raw data freshness (catches silent guard-firing = scraper returning 0)
+    validate_raw_data_freshness(report)
 
     # 1. Portfolio data (properties.yaml) checks
     validate_portfolio_data(report)

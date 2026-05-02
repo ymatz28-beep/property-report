@@ -112,9 +112,9 @@ def parse_listing_page(html: str) -> list[dict]:
     cards = re.split(r'<div class="property_unit[ "]', html)
 
     for card in cards[1:]:  # Skip first (before first card)
-        # Skip sponsored/ad listings
-        if 'property_unit--osusume' in card[:100]:
-            continue
+        # Note: property_unit--osusume was previously treated as sponsored/ad,
+        # but SUUMO now uses this class for all recommended (affordable) listings.
+        # Do NOT skip it — these are regular properties.
 
         # Detail URL
         url_m = re.search(r'href="(/ms/chuko/[^"]+/nc_\d+/)"', card)
@@ -350,13 +350,25 @@ def save_results(properties: list[dict], city_key: str) -> Path:
     DATA_DIR.mkdir(exist_ok=True)
     out_path = DATA_DIR / f"suumo_{city_key}_raw.txt"
 
-    # Guard: never overwrite existing data with 0 results (scrape failure)
+    # Guard: never overwrite existing data with 0 results (scrape failure).
+    # Exits with code 2 so the caller (patrol script) can detect stale data
+    # and distinguish it from a clean scrape (exit 0).
     if not properties and out_path.exists():
         existing_lines = [l for l in out_path.read_text(encoding="utf-8").splitlines()
                          if l and not l.startswith("#")]
         if existing_lines:
-            print(f"  [GUARD] {out_path.name}: 0件取得 — 既存{len(existing_lines)}件を保護、上書きスキップ")
-            return out_path
+            # Check how stale the existing data is
+            import re as _re
+            content = out_path.read_text(encoding="utf-8")
+            date_m = _re.search(r"## 取得日: (\d{4}-\d{2}-\d{2})", content)
+            stale_days = 0
+            if date_m:
+                from datetime import date as _date
+                last_date = _date.fromisoformat(date_m.group(1))
+                stale_days = (_date.today() - last_date).days
+            print(f"  [GUARD:STALE] {out_path.name}: 0件取得 — 既存{len(existing_lines)}件を保護 (データ {stale_days}日前)")
+            import sys as _sys
+            _sys.exit(2)  # exit code 2 = guard fired (stale data preserved)
 
     lines = [
         f"## SUUMO検索結果 - {city_key}",

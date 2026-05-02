@@ -41,14 +41,17 @@ HEADERS = {
 STEP_FIX: dict[str, dict[str, str]] = {
     "search_suumo.py (osaka)": {
         "timeout": "SUUMO大阪タイムアウト。4区×詳細取得が遅延",
+        "stale_data": "SUUMO大阪: 0件取得(guard発動)。HTMLセレクタ変化の疑い。search_suumo.pyのparse_listing_pageを確認",
         "default": "SUUMO側のブロック可能性。User-Agent or wait時間を見直す",
     },
     "search_suumo.py (fukuoka)": {
         "timeout": "SUUMO福岡タイムアウト。3区×詳細取得が遅延",
+        "stale_data": "SUUMO福岡: 0件取得(guard発動)。HTMLセレクタ変化の疑い。search_suumo.pyのparse_listing_pageを確認",
         "default": "SUUMO側のブロック可能性。User-Agent or wait時間を見直す",
     },
     "search_suumo.py (tokyo)": {
         "timeout": "SUUMO東京タイムアウト。10区×詳細取得が遅延",
+        "stale_data": "SUUMO東京: 0件取得(guard発動)。HTMLセレクタ変化の疑い。search_suumo.pyのparse_listing_pageを確認",
         "default": "SUUMO側のブロック可能性。User-Agent or wait時間を見直す",
     },
     "enrich_maintenance.py": {
@@ -409,6 +412,15 @@ def search_all_sites() -> list[dict]:
             if proc.returncode == 0:
                 results.append({"step": step_name, "ok": True, "reason": "",
                                 "stderr_tail": "", "elapsed_sec": elapsed, "exit_code": 0})
+            elif proc.returncode == 2:
+                # exit code 2 = guard fired: scraper returned 0 results, old data preserved
+                # Mark as failed so it surfaces in notifications, but don't retry (not a timeout)
+                suumo_ok = False
+                stderr_tail = _read_stderr_tail(stderr_path)
+                log(f"  ⚠️ {step_name} データ鮮度エラー (guard fired — 0件取得, 旧データ保護中)")
+                results.append({"step": step_name, "ok": False, "reason": "stale_data",
+                                "stderr_tail": stderr_tail, "elapsed_sec": elapsed,
+                                "exit_code": 2})
             else:
                 suumo_ok = False
                 stderr_tail = _read_stderr_tail(stderr_path)

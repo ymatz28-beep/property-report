@@ -66,6 +66,9 @@ STEP_FIX: dict[str, dict[str, str]] = {
     "generate_fukuoka_report.py": {"default": "レポートデータ不整合。手動で python3 generate_fukuoka_report.py を実行"},
     "generate_tokyo_report.py": {"default": "レポートデータ不整合。手動で python3 generate_tokyo_report.py を実行"},
     "generate_ittomono_report.py": {"default": "一棟ものデータ不整合。手動で python3 generate_ittomono_report.py を実行"},
+    "count_anomaly_check": {
+        "count_anomaly": "件数急落検知。search_suumo.pyのstdoutで[CANARY:STRUCTURE_CHANGE]または[CANARY:PARSE_ZERO]を確認し、HTMLクラス名変更 or サイトブロックを調査してparse_listing_pageを修正",
+    },
 }
 
 # Human-readable labels: step_name -> (label, impact_when_failed)
@@ -748,6 +751,7 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
                 "ok_count": summary.get("ok_count", 0),
                 "step_count": summary.get("step_count", 0),
                 "flagged_count": summary.get("flagged_count", 0),
+                "city_counts": _read_raw_city_counts(),
             }
             with history_file.open("a", encoding="utf-8") as fp:
                 fp.write(json.dumps(compact, ensure_ascii=False) + "\n")
@@ -806,6 +810,80 @@ def retry_failed_searches(search_results: list[dict], start_time: datetime,
             r["retried"] = True  # Mark as retried-and-failed
 
         remaining_min = (budget_min * 60 - (datetime.now() - start_time).total_seconds()) / 60
+
+
+def _check_count_anomaly(current_total: int) -> list[dict]:
+    """Compare today's total against 14-day rolling baseline using 2σ + 40% threshold.
+
+    Returns a list with one anomaly step record if a drop is detected, else [].
+    This catches silent partial failures (e.g. 50 results instead of 400) that
+    the 0-result guard misses.
+    """
+    history_file = BASE_DIR / "data" / "patrol_history.jsonl"
+    if not history_file.exists():
+        return []
+    try:
+        raw_entries = []
+        for line in history_file.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                raw_entries.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+
+        # Deduplicate by date (patrol may write 2 entries per run)
+        seen: set[str] = set()
+        unique: list[dict] = []
+        for e in reversed(raw_entries):
+            d = e.get("date", "")[:10]
+            if d and d not in seen:
+                seen.add(d)
+                unique.append(e)
+            if len(unique) >= 14:
+                break
+
+        if len(unique) < 3:
+            return []  # not enough history to judge
+
+        totals = [e.get("total", 0) for e in unique if e.get("total", 0) > 100]
+        if len(totals) < 3:
+            return []
+
+        mean = sum(totals) / len(totals)
+        variance = sum((t - mean) ** 2 for t in totals) / len(totals)
+        std = variance ** 0.5
+
+        # Alert if below mean-2σ OR below 60% of mean (whichever is more lenient)
+        threshold = max(mean - 2 * std, mean * 0.60)
+
+        if current_total < threshold:
+            pct_drop = round((1 - current_total / mean) * 100)
+            detail = (f"件数急落: 現在{current_total}件 vs 14日平均{mean:.0f}件 "
+                      f"({pct_drop}%減少, 閾値={threshold:.0f}件) — "
+                      f"スクレイパーのHTML構造変化またはサイトブロックの疑い")
+            log(f"  ⚠️ [COUNT_ANOMALY] {detail}")
+            return [{"step": "count_anomaly_check", "ok": False,
+                     "reason": "count_anomaly", "detail": detail, "elapsed_sec": 0}]
+    except Exception as e:
+        log(f"  ⚠️ count_anomaly_check skipped: {e}")
+    return []
+
+
+def _read_raw_city_counts() -> dict[str, int]:
+    """Read per-city property counts from ## 件数: header in raw files."""
+    counts: dict[str, int] = {}
+    for city in ["osaka", "fukuoka", "tokyo"]:
+        fpath = DATA_DIR / f"suumo_{city}_raw.txt"
+        if not fpath.exists():
+            continue
+        for line in fpath.read_text(encoding="utf-8").splitlines():
+            m = re.match(r"## 件数: (\d+)件", line)
+            if m:
+                counts[f"suumo_{city}"] = int(m.group(1))
+                break
+    return counts
 
 
 def send_line_if_new(diff: dict) -> None:
@@ -914,6 +992,14 @@ def main():
     after = parse_raw_files()
     diff = diff_properties(before, after)
     log(f"  差分: 新規{len(diff['new'])}件, 消失{len(diff['removed'])}件")
+
+    # 2.5. Count anomaly detection: compare today's total against 14-day rolling baseline.
+    # Catches partial scraper failures (e.g. 50 results instead of 400) that the
+    # 0-result guard misses. Adds a failing step so Gmail notification fires.
+    anomaly_steps = _check_count_anomaly(len(after))
+    all_steps.extend(anomaly_steps)
+    if not anomaly_steps:
+        log(f"  件数チェック: {len(after)}件 (正常範囲)")
 
     # 3. Update first-seen registry (non-critical)
     try:

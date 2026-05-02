@@ -272,8 +272,29 @@ def scrape_ward(pref_slug: str, ward_slug: str, ward_name: str, enrich: bool = T
         if page == 1:
             total = get_total_count(html)
             print(f"    合計: {total}件")
+            # STRUCTURAL CANARY: SUUMO reports results but our CSS selector is gone.
+            # If SUUMO has listings but 'property_unit' doesn't appear at all,
+            # the HTML class name changed — same root cause as the 6-day silent failure.
+            if total > 10 and 'class="property_unit' not in html:
+                import sys as _sys
+                _sys.stderr.write(
+                    f"  [CANARY:STRUCTURE_CHANGE] {ward_name}: SUUMO={total}件を表示しているが"
+                    f"'property_unit'クラスが消滅 — HTMLクラス名変更の疑い (要パーサー修正)\n"
+                )
+                print(f"  [CANARY:STRUCTURE_CHANGE] {ward_name}: 0件 (構造変化検知)")
 
         props = parse_listing_page(html)
+
+        # PARSE CANARY: SUUMO says it has listings but we parsed none.
+        # Triggers when class exists but field extraction regexes stopped matching.
+        if page == 1 and total > 10 and not props and 'class="property_unit' in html:
+            import sys as _sys
+            _sys.stderr.write(
+                f"  [CANARY:PARSE_ZERO] {ward_name}: property_unitは存在するが"
+                f"0件解析 — フィールドの正規表現が壊れた可能性\n"
+            )
+            print(f"  [CANARY:PARSE_ZERO] {ward_name}: 0件 (解析失敗)")
+
         if not props:
             break
 

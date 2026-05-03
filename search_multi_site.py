@@ -201,6 +201,16 @@ def search_rakumachi(city_key: str) -> list[dict]:
         time.sleep(1)  # Rate limiting
 
     print(f"  楽待 合計: {len(properties)}件")
+
+    # Phase 3: detail enrichment (サブリース判定 + 複数駅補完)
+    print(f"  詳細ページ取得中 (サブリース判定 + 複数駅補完)...")
+    for i, prop in enumerate(properties):
+        properties[i] = _enrich_rakumachi_detail(prop)
+        if i < len(properties) - 1:
+            time.sleep(1.5)
+    sublease_count = sum(1 for p in properties if p.get("sublease"))
+    print(f"  → サブリース: {sublease_count}件検出")
+
     return properties
 
 
@@ -389,6 +399,48 @@ def _extract_rakumachi_fields(context: str, url: str, prop_id: str, city_key: st
         "maintenance": maintenance,
         "url": url,
     }
+
+
+def _enrich_rakumachi_detail(prop: dict) -> dict:
+    """Fetch 楽待 detail page and enrich prop with Point text, 掲載日, multi-station, サブリース flag."""
+    url = prop.get("url", "")
+    if not url:
+        return prop
+
+    html = fetch_page(url)
+    if not html:
+        return prop
+
+    text = re.sub(r"<[^>]+>", " ", html)
+    text = re.sub(r"\s+", " ", text).strip()
+
+    # Point section → サブリース detection
+    point_m = re.search(r"Point\s+(.{10,600}?)(?=Point|物件情報に誤り|$)", text)
+    point_text = point_m.group(1).strip() if point_m else ""
+    prop["sublease"] = "サブリース" in (point_text + text[:5000])
+
+    # 情報登録日 (掲載日)
+    date_m = re.search(r"情報登録日\s*([\d/]{8,10})", text)
+    if date_m and not prop.get("first_seen_text"):
+        prop["first_seen_text"] = date_m.group(1)
+
+    # Multiple stations — deduplicate, keep up to 2
+    raw_stations = re.findall(
+        r"(?:地下鉄|西鉄|JR|私鉄)?[^\s<\"]{2,15}(?:線)\s*[^\s<\"]{2,10}駅\s*徒歩\s*\d+\s*分",
+        html,
+    )
+    seen, stations = set(), []
+    for s in raw_stations:
+        s = s.strip().lstrip(">")
+        if s not in seen:
+            seen.add(s)
+            stations.append(s)
+        if len(stations) >= 2:
+            break
+    if stations:
+        prop["station_text"] = " / ".join(stations)
+
+    return prop
 
 
 # ============================================================
@@ -775,9 +827,12 @@ def save_results(properties: list[dict], city_key: str, source_name: str) -> Pat
     ]
 
     for prop in properties:
+        name = prop["name"]
+        if prop.get("sublease"):
+            name = f"[サブリース]{name}"
         line = "|".join([
             prop["source"],
-            prop["name"],
+            name,
             prop["price_text"],
             prop["location"],
             prop["area_text"],
@@ -813,9 +868,12 @@ def save_combined(all_properties: list[dict], city_key: str) -> Path:
     ]
 
     for prop in all_properties:
+        name = prop["name"]
+        if prop.get("sublease"):
+            name = f"[サブリース]{name}"
         line = "|".join([
             prop["source"],
-            prop["name"],
+            name,
             prop["price_text"],
             prop["location"],
             prop["area_text"],

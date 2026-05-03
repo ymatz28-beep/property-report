@@ -4,10 +4,10 @@
 - [ERROR] hardcoded_data: [ESCALATED: 18d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] structural_reform: [ESCALATED: 18d unresolved] generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 18d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 18d unresolved] Stale temp/debug file (29 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 18d unresolved] Stale temp/debug file (29 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 18d unresolved] Stale temp/debug file (29 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 18d unresolved] Stale temp/debug file (32 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 18d unresolved] Stale temp/debug file (30 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 18d unresolved] Stale temp/debug file (30 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 18d unresolved] Stale temp/debug file (30 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 18d unresolved] Stale temp/debug file (33 days old). Delete it.
 - [ERROR] html_ui: [ESCALATED: 18d unresolved] Font size violation(s): line 190: fixed 48px
 - [ERROR] html_ui: [ESCALATED: 18d unresolved] Font size violation(s): line 191: fixed 48px
 - [ERROR] html_ui: [ESCALATED: 18d unresolved] Font size violation(s): line 191: fixed 48px
@@ -55,7 +55,7 @@
 - [ERROR] qa_market_duplicate_detection: [ESCALATED: 18d unresolved] 1 duplicate (price, area) pairs: [(('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
 - [ERROR] qa_market_data_accuracy: [ESCALATED: 18d unresolved] 5/90 (5.6%) — price mismatch: 第3シャトー高宮 101 raw=820.0 html=850.0; price mismatch: コーポラス東光 206 raw=650.0 html=800.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=990.0; price mismatch: 第3シャトー高宮 101 raw=820.0 html=850.0; price mismatch: チサンマンション野間 503 raw=650.0 html=680.0
 - [ERROR] qa_market_oc_income_coverage: [ESCALATED: 18d unresolved] OC 305件中 198件が年間収入欠落 (65%) — 利回り逆算で補完
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 18d unresolved] 39件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 福岡市博多区千代(26㎡): ['JGM県庁口 502', '■■■【福岡']; 福岡市博多区博多駅前(19㎡): ['・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・', 'ソシオス平尾']; 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)', 'ピュアドームエクセル博多']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)'] ... +34 more
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 18d unresolved] 39件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 福岡市博多区千代(26㎡): ['■■■【福岡', 'JGM県庁口 502']; 福岡市博多区博多駅前(19㎡): ['ソシオス平尾', '・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・']; 福岡市博多区博多駅前(22㎡): ['ピュアドームエクセル博多', 'ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)'] ... +34 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 18.6% (21/113件)。パイプライン変換バグの可能性。例: 1490.0万円/41.78㎡; 3082.0万円/56.1㎡; 1260.0万円/66.0㎡; 3080.0万円/52.98㎡; 1890.0万円/55.62㎡
 
 ## Last Updated

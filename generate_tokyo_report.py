@@ -1,3 +1,5 @@
+import subprocess
+import sys
 from pathlib import Path
 
 from generate_search_report_common import ReportConfig, generate_report
@@ -59,6 +61,8 @@ def main() -> None:
     )
     out = generate_report(config)
     print(f"Generated: {out}")
+    if sys.stdout.isatty():
+        subprocess.run(["open", str(out)])
 
 
 if __name__ == "__main__":

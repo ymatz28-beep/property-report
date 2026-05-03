@@ -315,7 +315,10 @@ def scrape_ward(pref_slug: str, ward_slug: str, ward_name: str, enrich: bool = T
 
         def _fetch_detail(idx_prop):
             idx, prop = idx_prop
-            time.sleep(idx * 0.2)  # stagger to avoid burst (0.2s * worker_count ≒ 1s effective)
+            # Stagger the initial 5 worker slots to avoid burst; subsequent tasks
+            # rely on pool cycling cadence (HTTP roundtrip ~2s is spacing enough).
+            # Old: idx * 0.2 → O(n²) total sleep; task #300 slept 60s before any request.
+            time.sleep(idx * 0.2 if idx < 5 else 0)
             return idx, enrich_detail(prop["url"])
 
         with ThreadPoolExecutor(max_workers=5) as executor:

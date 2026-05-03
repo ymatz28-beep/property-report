@@ -98,6 +98,14 @@ STEP_LABELS = {
     "deploy": ("デプロイ", "レポートが公開されていない"),
 }
 
+# Maps step keys (used as labels) to the actual (script, args) needed to retry them.
+# Required because SUUMO step names like "search_suumo.py (osaka)" are labels, not filenames.
+STEP_COMMANDS: dict[str, tuple[str, list[str]]] = {
+    "search_suumo.py (osaka)": ("search_suumo.py", ["osaka"]),
+    "search_suumo.py (fukuoka)": ("search_suumo.py", ["fukuoka"]),
+    "search_suumo.py (tokyo)": ("search_suumo.py", ["tokyo"]),
+}
+
 
 def log(msg: str) -> None:
     ts = datetime.now().strftime("%H:%M:%S")
@@ -800,7 +808,8 @@ def retry_failed_searches(search_results: list[dict], start_time: datetime,
 
         label = STEP_LABELS.get(step, (step, ""))[0]
         log(f"  🔄 {label} リトライ中 (timeout={retry_timeout}s)...")
-        result = run_script(step, timeout=retry_timeout)
+        script, script_args = STEP_COMMANDS.get(step, (step, []))
+        result = run_script(script, args=script_args or None, timeout=retry_timeout)
 
         if result["ok"]:
             log(f"  ✅ {label} リトライ成功")

@@ -963,15 +963,6 @@ def main():
         print(f"[{datetime.now():%Y-%m-%d %H:%M}] 前回実行から20h未満 — スキップ")
         return
 
-    # Idle guard: wait for user to be idle before heavy scraping
-    try:
-        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-        from lib.idle_guard import wait_for_idle
-        reason = wait_for_idle(min_idle_sec=300, max_wait_sec=7200, label="property-patrol")
-        print(f"[{datetime.now():%Y-%m-%d %H:%M}] idle_guard: {reason}")
-    except Exception as e:
-        print(f"[{datetime.now():%Y-%m-%d %H:%M}] idle_guard skipped: {e}")
-
     start = datetime.now()
     log(f"===== 物件巡回パトロール開始 {start.strftime('%Y-%m-%d %H:%M')} =====")
 

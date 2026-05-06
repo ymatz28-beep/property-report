@@ -14,12 +14,22 @@
     <key>WorkingDirectory</key>
     <string>/Users/ytejima/Documents/Projects/property-analyzer</string>
 
-    <!-- Every 24h + RunAtLoad: PC wake → immediate catch-up -->
-    <key>StartInterval</key>
-    <integer>86400</integer>
+    <!-- Fixed clock: fires at 01:00 AM every night regardless of when last run completed.
+         StartInterval (relative 24h) caused drift: if a run completed at 9AM, the next
+         fire was 9AM next day → idle guard spun 2h → completion at 11AM → cascade worse.
+         StartCalendarInterval + night-hours idle_guard = always runs clean at 1:00 AM. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>1</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
 
+    <!-- RunAtLoad disabled: was triggering extra runs on reboot/login during daytime,
+         which started the drift cascade. Manual catch-up: run_daily_patrol.py --force -->
     <key>RunAtLoad</key>
-    <true/>
+    <false/>
 
     <key>StandardOutPath</key>
     <string>/tmp/property_patrol.log</string>

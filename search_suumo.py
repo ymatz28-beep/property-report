@@ -83,8 +83,8 @@ def fetch_page(url: str, retries: int = 2) -> str | None:
             if e.code == 403:
                 print(f"  [WARN] 403 Forbidden: {url[:80]}")
                 return None
-            if e.code == 429 and attempt < retries:
-                time.sleep(5 * (attempt + 1))
+            if e.code in (429, 503) and attempt < retries:
+                time.sleep(8 * (attempt + 1))
                 continue
             print(f"  [WARN] HTTP {e.code}: {url[:80]}")
             return None

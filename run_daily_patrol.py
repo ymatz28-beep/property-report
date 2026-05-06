@@ -401,7 +401,9 @@ def search_all_sites() -> list[dict]:
     log("=== 物件検索: SUUMO (3都市並列) ===")
     suumo_cities = [("osaka", 600), ("fukuoka", 500), ("tokyo", 900)]
     suumo_procs: dict[str, tuple[subprocess.Popen, Path, float]] = {}
-    for city, _timeout in suumo_cities:
+    for i, (city, _timeout) in enumerate(suumo_cities):
+        if i > 0:
+            time.sleep(30)  # stagger city starts: avoid SUUMO 503 burst
         stderr_path = DATA_DIR / f".stderr_suumo_{city}.tmp"
         cmd = [sys.executable, "search_suumo.py", city]
         log(f"  Starting: search_suumo.py {city}")

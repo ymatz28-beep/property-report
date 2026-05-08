@@ -1266,8 +1266,13 @@ def _notify_gmail_patrol_failure(start: datetime, elapsed: float,
 """
 
     html = f"""<!DOCTYPE html>
-<html>
-<body style="margin:0;padding:20px 12px;background:#f3f4f6;font-family:-apple-system,'Hiragino Sans',sans-serif;color:#111827">
+<html style="color-scheme:light">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+</head>
+<body style="margin:0;padding:20px 12px;background:#f3f4f6;font-family:-apple-system,'Hiragino Sans',sans-serif;color:#111827;color-scheme:light">
 <table role="presentation" style="max-width:600px;margin:0 auto;width:100%;border-collapse:collapse"><tr><td style="padding:0">
 <h1 style="margin:0 0 2px 0;font-size:20px;line-height:1.3">物件パトロール {severity}</h1>
 <p style="color:#6b7280;margin:0 0 18px 0;font-size:13px;line-height:1.5;overflow-wrap:anywhere">

@@ -165,11 +165,11 @@ def render_email(summary: dict) -> str:
     )
 
     return (
-        f'<html><head>'
+        f'<html style="color-scheme:light"><head>'
         f'<meta name="color-scheme" content="light only">'
         f'<meta name="supported-color-schemes" content="light">'
         f'</head>'
-        f'<body style="margin:0;padding:0;background:{C_BG};">'
+        f'<body style="margin:0;padding:0;background:{C_BG};color-scheme:light;">'
         f'<div style="max-width:600px;margin:0 auto;padding:16px;'
         f'font-family:{FONT};color:{C_TEXT};">'
         f"{hero}{new_card}{err_card}{health}{cta}"

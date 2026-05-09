@@ -1,88 +1,70 @@
 # HANDOFF
 
 <<<<<<< HEAD
-## [Constancy] 2026-05-08
-- [ERROR] hardcoded_data: [ESCALATED: 23d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
-- [ERROR] structural_reform: [ESCALATED: 23d unresolved] generate_market.py is 1664 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 23d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 23d unresolved] Stale temp/debug file (34 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 23d unresolved] Stale temp/debug file (34 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 23d unresolved] Stale temp/debug file (34 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 23d unresolved] Stale temp/debug file (38 days old). Delete it.
-- [ERROR] html_ui: [ESCALATED: 23d unresolved] Font size violation(s): line 190: fixed 48px
-- [ERROR] html_ui: [ESCALATED: 23d unresolved] Font size violation(s): line 191: fixed 48px
-- [ERROR] html_ui: [ESCALATED: 23d unresolved] Font size violation(s): line 191: fixed 48px
-- [ERROR] html_ui: [ESCALATED: 23d unresolved] Font size violation(s): line 190: fixed 48px
-- [ERROR] html_ui: [ESCALATED: 23d unresolved] Font size violation(s): line 190: fixed 48px
-- [ERROR] html_ui: [ESCALATED: 23d unresolved] Font size violation(s): line 190: fixed 48px
-- [ERROR] html_ui: [ESCALATED: 23d unresolved] Font size violation(s): line 191: fixed 48px
-- [WARN] git_uncommitted: Property Analyzer: 36 uncommitted file(s), oldest 38h ago (threshold: 24h). GHA runs on old code until pushed.
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 401: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 420: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 559: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 560: hardcoded #22c55e should be var(--green)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 561: hardcoded #ef4444 should be var(--red)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 638: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 647: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 703: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 758: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 344: hardcoded #f87171 should be var(--red-light)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 57: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 641: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 660: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 57: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 641: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 660: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 305: hardcoded #22c55e should be var(--green)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 308: hardcoded #f87171 should be var(--red-light)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 372: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 23d unresolved] Line 391: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 755: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 774: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 109: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 470: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 489: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 57: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 641: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 21d unresolved] Line 660: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] blank_cells: [ESCALATED: 23d unresolved] ダッシュ「—」165個 (閾値20) — データ欠損の可能性
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 3% (4/136) — 閾値80%
-- [ERROR] qa_market_duplicate_detection: [ESCALATED: 23d unresolved] 1 duplicate (price, area) pairs: [(('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
-- [ERROR] qa_market_data_accuracy: [ESCALATED: 23d unresolved] 6/94 (6.4%) — price mismatch: 第3シャトー高宮 101 raw=820.0 html=850.0; price mismatch: コーポラス東光 206 raw=650.0 html=800.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=990.0; price mismatch: 第3シャトー高宮 101 raw=820.0 html=850.0; price mismatch: ふれんず物件(中央区) raw=800.0 html=950.0 ... +1 more
-- [ERROR] qa_market_oc_income_coverage: [ESCALATED: 23d unresolved] OC 332件中 225件が年間収入欠落 (68%) — 利回り逆算で補完
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 23d unresolved] 39件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 福岡市博多区千代(26㎡): ['■■■【福岡', 'JGM県庁口 502']; 福岡市博多区博多駅前(19㎡): ['ソシオス平尾', '・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分', 'ピュアドームエクセル博多']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分'] ... +34 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 17.1% (20/117件)。パイプライン変換バグの可能性。例: 2880.0万円/66.69㎡; 3082.0万円/56.1㎡; 1260.0万円/66.0㎡; 3080.0万円/52.98㎡; 1750.0万円/51.93㎡
-=======
-## [Constancy] 2026-04-23
-- [WARN] hardcoded_data: Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
-- [WARN] structural_reform: generate_market.py is 1664 lines (threshold: 800). Consider splitting.
-- [WARN] structural_reform: property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [WARN] structural_reform: Stale temp/debug file (19 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (19 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (19 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (23 days old). Delete it.
-- [WARN] structural_reform: Stale temp/debug file (27 days old). Delete it.
-- [WARN] html_ui: Font size violation(s): line 190: fixed 48px
-- [WARN] html_ui: Font size violation(s): line 191: fixed 48px
-- [WARN] html_ui: Font size violation(s): line 191: fixed 48px
-- [WARN] html_ui: Font size violation(s): line 190: fixed 48px
-- [WARN] html_ui: Font size violation(s): line 190: fixed 48px
-- [WARN] html_ui: Font size violation(s): line 190: fixed 48px
-- [WARN] html_ui: Font size violation(s): line 191: fixed 48px
-- [WARN] blank_cells: ダッシュ「—」169個 (閾値20) — データ欠損の可能性
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 6% (8/145) — 閾値80%
-- [WARN] qa_market_duplicate_detection: 1 duplicate (price, area) pairs: [(('19500', '419.4'), ['tokyo-ittomono', 'tokyo-ittomono'])]
-- [WARN] qa_market_data_accuracy: 3/95 (3.2%) — price mismatch: コーポラス東光 206 raw=650.0 html=800.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=990.0; price mismatch: ふれんず物件(中央区) raw=800.0 html=950.0
-- [WARN] qa_market_oc_income_coverage: OC 312件中 201件が年間収入欠落 (64%) — 利回り逆算で補完
-- [ERROR] qa_market_yield_consistency: 7件の利回り/年間収入乖離(>20%): プレサンス梅田東ディアロ: expected=38.6万 actual=85.8万 (55%乖離); ラナップスクエア福島: expected=28.5万 actual=75.6万 (62%乖離); ワールドアイ難波南PORTA: expected=48.8万 actual=90.0万 (46%乖離); プレサンス福島吉野ミナージ: expected=54.6万 actual=101.5万 (46%乖離); エステムプラザミッドプレイス: expected=32.6万 actual=78.0万 (58%乖離) ... +2 more
-- [WARN] qa_market_name_cross_reference: 32件の物件名クロスリファレンス不一致: 福岡市博多区千代(26㎡): ['■■■【福岡', 'JGM県庁口 502']; 福岡市博多区博多駅前(19㎡): ['ライオンズマンシヨン博多', '・38,000円/月にて賃貸中・保証会社有り・三駅にも近いため、賃貸退居後の自己使用も可能・']; 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)', 'ピュアドームエクセル博多']; 福岡市博多区千代(21㎡): ['■■【手数料0円！】博多駅徒歩圏！20平米以上！224戸！', 'ふれんず物件(博多区)']; 福岡市博多区(25㎡): ['◆月々62,000円で賃貸中\u3000駅徒歩13分\u3000オーナーチェンジ', 'ふれんず物件(博多区)'] ... +27 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 24.4% (30/123件)。パイプライン変換バグの可能性。例: 1499.0万円/41.78㎡; 3080.0万円/40.75㎡; 4280.0万円/45.0㎡; 3980.0万円/64.0㎡; 1890.0万円/55.62㎡
->>>>>>> c81d57c0c1163e1799bacb018e3f9b65c6aab609
+## [Constancy] 2026-05-09
+- [ERROR] hardcoded_data: [ESCALATED: 24d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
+- [ERROR] structural_reform: [ESCALATED: 24d unresolved] generate_market.py is 1664 lines (threshold: 800). Consider splitting.
+- [ERROR] structural_reform: [ESCALATED: 24d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
+- [ERROR] structural_reform: [ESCALATED: 24d unresolved] Stale temp/debug file (36 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 24d unresolved] Stale temp/debug file (36 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 24d unresolved] Stale temp/debug file (36 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 24d unresolved] Stale temp/debug file (39 days old). Delete it.
+- [ERROR] html_ui: [ESCALATED: 24d unresolved] Font size violation(s): line 190: fixed 48px
+- [ERROR] html_ui: [ESCALATED: 24d unresolved] Font size violation(s): line 191: fixed 48px
+- [ERROR] html_ui: [ESCALATED: 24d unresolved] Font size violation(s): line 191: fixed 48px
+- [ERROR] html_ui: [ESCALATED: 24d unresolved] Font size violation(s): line 190: fixed 48px
+- [ERROR] html_ui: [ESCALATED: 24d unresolved] Font size violation(s): line 190: fixed 48px
+- [ERROR] html_ui: [ESCALATED: 24d unresolved] Font size violation(s): line 190: fixed 48px
+- [ERROR] html_ui: [ESCALATED: 24d unresolved] Font size violation(s): line 191: fixed 48px
+- [ERROR] property_patrol_steps: [ESCALATED: 15d unresolved] 物件パトロール失敗ステップ (2026-05-09 01:04): 【Hub KPI JSON生成】エラー終了 (exit 1) → Fix: エラーログを確認
+- [ERROR] property_patrol_steps: [ESCALATED: 15d unresolved] 物件パトロール失敗ステップ (2026-05-09 01:04): 【自動フラグ付与】異常終了: expected '<document start>', but found '<scalar>'
+  in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
+- [ERROR] property_patrol_steps: [ESCALATED: 15d unresolved] 物件パトロール失敗ステップ (2026-05-09 01:04): 【パイプラインライフサイクル】異常終了: expected '<document start>', but found '<scalar>'
+  in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
+- [ERROR] property_patrol_steps: [ESCALATED: 15d unresolved] 物件パトロール失敗ステップ (2026-05-09 01:04): 【問い合わせダッシュボード】異常終了: expected '<document start>', but found '<scalar>'
+  in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
+- [ERROR] property_patrol_steps: [ESCALATED: 15d unresolved] 物件パトロール失敗ステップ (2026-05-09 01:04): 【内覧分析レポート】異常終了: expected '<document start>', but found '<scalar>'
+  in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 401: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 420: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 559: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 560: hardcoded #22c55e should be var(--green)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 561: hardcoded #ef4444 should be var(--red)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 638: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 647: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 703: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 758: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 344: hardcoded #f87171 should be var(--red-light)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 57: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 641: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 660: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 57: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 641: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 660: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 305: hardcoded #22c55e should be var(--green)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 308: hardcoded #f87171 should be var(--red-light)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 372: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 24d unresolved] Line 391: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 755: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 774: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 109: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 470: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 489: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 57: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 641: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 22d unresolved] Line 660: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] blank_cells: [ESCALATED: 24d unresolved] ダッシュ「—」162個 (閾値20) — データ欠損の可能性
+- [WARN] numeric_outliers: 利回り: 異常値 1件 — 26.2>25
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 34% (50/147) — 閾値80%
+- [ERROR] qa_market_data_accuracy: [ESCALATED: 24d unresolved] 2/97 (2.1%) — price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=990.0; price mismatch: ふれんず物件(中央区) raw=800.0 html=950.0
+- [ERROR] qa_market_oc_income_coverage: [ESCALATED: 24d unresolved] OC 297件中 188件が年間収入欠落 (63%) — 利回り逆算で補完
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 24d unresolved] 24件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 福岡市中央区春吉(16㎡): ['ピュアドームサクセス平尾', '令和4年7月より法人契約にて賃貸中（42,900/月額\u3000消費税込）']; 福岡市中央区平尾(17㎡): ['▶大橋駅徒歩6分！新耐震！総戸数66戸！', '37,000円で賃貸中です']; 福岡市中央区本松(24㎡): ['護国神社前バス停 徒歩2分', '中央区六本松 木造']; 福岡市中央区清川(20㎡): ['ふれんず物件(中央区)', '■■■【福岡\u3000投資クリフ】■■■ルエメゾンロワール渡辺通り'] ... +19 more
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 12.2% (15/123件)。パイプライン変換バグの可能性。例: 3082.0万円/56.1㎡; 1750.0万円/51.93㎡; 3080.0万円/56.72㎡; 4180.0万円/65.61㎡; 798.0万円/43.88㎡
 
 ## Last Updated
 2026-04-22 (plist PYTHONPATH 追加で subprocess import 修復)

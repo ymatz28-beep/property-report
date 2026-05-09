@@ -1,5 +1,17 @@
 # property-report HANDOFF
 
+## In Progress / Blocked (パトロール部分失敗 2026-05-10 01:10)
+- **Status**: PARTIAL 失敗（23/28 成功）
+- **Error**: YAML ParserError in inquiries.yaml line 4 — `expected '', but found ''`
+  - Hub KPI JSON生成: ハブのKPIが前日値のまま
+  - 自動フラグ付与: 高スコア物件の自動フラグが未実行
+  - パイプラインライフサイクル: 掲載終了・価格変動・ステータス同期が未実行
+  - 問い合わせダッシュボード: inquiry-pipeline.html が未更新
+  - 内覧分析レポート: naiken-analysis.html が未更新
+- **Impact**: hub_summary.json未更新（2026-05-08の値のまま）、報告書類3ファイル未更新、新規199件の処理未完了
+- **Root Cause**: property-analyzer側のinquiries.ymlまたはpipeline関連ファイルのYAML構文エラー
+- **Next Action**: property-analyzerの write_hub_summary.py, pipeline_flag, pipeline_lifecycle処理の修正 & 明日再試行（token: dd43c2c4091c, valid 72h）
+
 ## Completed (パトロール結果反映 2026-05-08 21:00)
 - **Before**: hub_summary.json が 2026-05-06 の値のまま（candidates: "8", updated_at: "2026-05-06T21:57:00+09:00"）
 - **After**: パトロール結果反映（candidates: "0", updated_at: "2026-05-08T21:00:00+09:00"）。総件数0件、新規0件、消失0件、所要時間16分
@@ -36,7 +48,7 @@
 
 
 ## Last Updated
-2026-05-08
+2026-05-10
 
 ## Completed (プレイスポットCF損益分岐シミュレーション + 銀行リフォーム融資相談 2026-03-29 x-ref)
 - **Before**: プレイスポットしんばしビル本館（SRC造/1975年築/2,480万）のCF損益分岐が不明。リフォーム費用の融資方法も未相談

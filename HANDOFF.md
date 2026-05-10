@@ -1,5 +1,22 @@
 # property-report HANDOFF
 
+## Pending (パトロール部分失敗 2026-05-11 01:00)
+- **Status**: PARTIAL (22/28 success, 新規143件)
+- **Failing modules**: enrich_maintenance.py (http.client.IncompleteRead), write_hub_summary.py (KPI not updated), pipeline_flag (flag not executed), pipeline_lifecycle, pipeline_dashboard, naiken_analysis
+- **Issues detected**:
+  - 管理費・修繕積立金が未更新 (http.client.IncompleteRead: ネットワーク接続中断)
+  - ハブのKPIが前日値のまま表示
+  - 高スコア物件の自動フラグが未実行
+  - YAML parse error in inquiries.yaml (line 4) — property-analyzer側の問題
+- **Root cause**: 
+  1. ネットワーク接続不安定（manage fee API timeout/incomplete read）
+  2. YAML 構造エラー（property-analyzer/data/inquiries.yaml line 4）
+  3. パイプラインライフサイクル処理の一部モジュール未実行
+- **Action needed**: 
+  - property-analyzer側で http client retry / timeout設定強化
+  - inquiries.yaml の YAML 形式修正（property-analyzer側）
+  - 各モジュールのエラーハンドリング改善
+
 ## Completed (パトロール結果反映 2026-05-10 21:00)
 - **Before**: hub_summary.json が 2026-05-06 の値のまま（candidates: "8", updated_at: "2026-05-06T21:57:00+09:00" / "2026-05-06T22:26:00+09:00"のマージコンフリクト）
 - **After**: パトロール結果反映（candidates: "0", updated_at: "2026-05-10T21:00:00+09:00"）。総件数0件、新規0件、消失0件、所要時間21分
@@ -40,7 +57,7 @@
 
 
 ## Last Updated
-2026-05-10 21:00 (パトロール完了反映)
+2026-05-11 01:00 (パトロール部分失敗を記録)
 
 ## Completed (プレイスポットCF損益分岐シミュレーション + 銀行リフォーム融資相談 2026-03-29 x-ref)
 - **Before**: プレイスポットしんばしビル本館（SRC造/1975年築/2,480万）のCF損益分岐が不明。リフォーム費用の融資方法も未相談
@@ -157,6 +174,7 @@
 ## History
 | 日付 | サマリー |
 |------|----------|
+| 2026-05-11 | パトロール部分失敗 PARTIAL（22/28成功, 新規143件）。enrich_maintenance/write_hub_summary/pipeline_flag/lifecycle/dashboard/naiken_analysis 複数モジュール失敗。管理費API IncompleteRead + inquiries.yaml YAML parse error（property-analyzer側）。原因：ネットワーク接続不安定＋YAML形式エラー |
 | 2026-05-10 | パトロール結果反映：hub_summary.json更新（candidates: 8→0, updated_at: 05-06→05-10 21:00）。総件数0件、新規0件、消失0件、所要時間21分。マージコンフリクト解決 |
 | 2026-05-06 | パトロール結果反映：hub_summary.json更新（candidates: 0→0, updated_at: 05-05→05-06 21:00）。総件数0件、新規0件、消失0件、所要時間15分。変更なし |
 | 2026-05-05 | パトロール結果反映：hub_summary.json更新（candidates: 0→0, updated_at: 05-04→05-05 21:00）。総件数0件、新規0件、消失0件、所要時間15分。変更なし |

@@ -12,6 +12,24 @@
 - **Before**: hub_summary.json が 2026-05-10 の値のまま（candidates: "8", updated_at: "2026-05-10T21:00:00+09:00"）。マージコンフリクト残存
 - **After**: パトロール結果反映（candidates: "0", updated_at: "2026-05-11T21:00:00+09:00"）。総件数0件、新規0件、消失0件、所要時間23分
 
+## Pending (パトロール部分失敗 2026-05-13 01:14 PARTIAL - 自動復旧)
+- **Status**: PARTIAL (23/28 success, 新規175件) → 自動復旧（21:00パトロール成功）
+- **Failing modules**: write_hub_summary.py (KPI not updated), pipeline_flag (flag not executed), pipeline_lifecycle, pipeline_dashboard, naiken_analysis
+- **Issues detected**:
+  - ハブのKPIが前日値のまま表示
+  - 高スコア物件の自動フラグが未実行
+  - YAML parse error in inquiries.yaml (line 4) — property-analyzer側の問題
+  - 問い合わせダッシュボード未更新
+  - 内覧分析レポート未更新
+- **Root cause**: 
+  1. YAML 構造エラー（property-analyzer/data/inquiries.yaml line 4）
+  2. パイプラインライフサイクル処理の一部モジュール未実行
+  3. property-analyzerの自動復旧により 21:00 パトロール時に正常化
+- **Resolution**: 
+  - 2026-05-13 21:00 のパトロール成功で自動復旧（hub_summary.json更新済）
+  - inquiries.yaml の YAML 形式修正は property-analyzer側で対応が必要
+  - 次回の自動復旧に向けて property-analyzer のエラーハンドリング改善が推奨
+
 ## Pending (パトロール部分失敗 2026-05-11 01:00)
 - **Status**: PARTIAL (22/28 success, 新規143件)
 - **Failing modules**: enrich_maintenance.py (http.client.IncompleteRead), write_hub_summary.py (KPI not updated), pipeline_flag (flag not executed), pipeline_lifecycle, pipeline_dashboard, naiken_analysis

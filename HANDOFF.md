@@ -8,7 +8,7 @@
 - [ERROR] structural_reform: [ESCALATED: 29d unresolved] Stale temp/debug file (40 days old). Delete it.
 - [ERROR] structural_reform: [ESCALATED: 29d unresolved] Stale temp/debug file (40 days old). Delete it.
 - [ERROR] structural_reform: [ESCALATED: 29d unresolved] Stale temp/debug file (40 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 29d unresolved] Stale temp/debug file (43 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 29d unresolved] Stale temp/debug file (44 days old). Delete it.
 - [ERROR] html_ui: [ESCALATED: 29d unresolved] Font size violation(s): line 190: fixed 48px
 - [ERROR] html_ui: [ESCALATED: 29d unresolved] Font size violation(s): line 190: fixed 48px
 - [ERROR] property_patrol_steps: [ESCALATED: 20d unresolved] 物件パトロール失敗ステップ (2026-05-14 01:15): 【SUUMO物件検索(大阪)】エラー終了 (exit 2) → Fix: SUUMO大阪: 0件取得(guard発動)。HTMLセレクタ変化の疑い。search_suumo.pyのparse_listing_pageを確認
@@ -32,6 +32,8 @@
 - [ERROR] design_token_compliance: [ESCALATED: 29d unresolved] Line 647: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 29d unresolved] Line 703: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 29d unresolved] Line 758: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 173: hardcoded #fbbf24 should be var(--amber)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 304: hardcoded #fbbf24 should be var(--amber)
 - [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
 - [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 344: hardcoded #f87171 should be var(--red-light)
 - [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 57: hardcoded #6366f1 should be var(--accent)
@@ -60,7 +62,7 @@
 - [ERROR] qa_market_data_accuracy: [ESCALATED: 29d unresolved] 2/92 (2.2%) — price mismatch: チサンマンション野間 503 raw=650.0 html=680.0; price mismatch: 野間台住宅 ４ raw=698.0 html=760.0
 - [ERROR] qa_market_oc_income_coverage: [ESCALATED: 29d unresolved] OC 308件中 204件が年間収入欠落 (66%) — 利回り逆算で補完
 - [ERROR] qa_market_yield_consistency: 3件の利回り/年間収入乖離(>20%): プレサンス大国町ラヴェニール: expected=45.8万 actual=99.6万 (54%乖離); フォーリアライズ福島ウエスト: expected=40.6万 actual=90.6万 (55%乖離); エステムコート大阪WEST2: expected=34.1万 actual=76.1万 (55%乖離)
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 29d unresolved] 33件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 福岡市博多区美野島(18㎡): ['エステート・モア・博多グラン A棟 211', 'ピュアドームディア県庁前']; 福岡市博多区美野島(20㎡): ['弊社は創業23年目をむかえた、福岡ワンルームマンション', 'ふれんず物件(博多区)']; 福岡市博多区博多駅前(19㎡): ['家賃43000円', '■■■【福岡\u3000投資クリフ】■■■ロマネスク博多駅前']; 福岡市博多区千代(25㎡): ['ウェルブライト博多', '県庁前シティピアエクセル３０ 1107', 'ＡＬＦＡＣＩＯ ＭＩＬＡＮＩ（アルファシオミラーニ）'] ... +28 more
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 29d unresolved] 33件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 福岡市博多区美野島(18㎡): ['エステート・モア・博多グラン A棟 211', 'ピュアドームディア県庁前']; 福岡市博多区美野島(20㎡): ['弊社は創業23年目をむかえた、福岡ワンルームマンション', 'ふれんず物件(博多区)']; 福岡市博多区博多駅前(19㎡): ['■■■【福岡\u3000投資クリフ】■■■ロマネスク博多駅前', '家賃43000円']; 福岡市博多区千代(25㎡): ['ウェルブライト博多', 'ＡＬＦＡＣＩＯ ＭＩＬＡＮＩ（アルファシオミラーニ）', '県庁前シティピアエクセル３０ 1107'] ... +28 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 15.3% (17/111件)。パイプライン変換バグの可能性。例: 2880.0万円/66.69㎡; 3082.0万円/56.1㎡; 1260.0万円/66.0㎡; 3050.0万円/52.98㎡; 2980.0万円/52.55㎡
 
 ## Last Updated

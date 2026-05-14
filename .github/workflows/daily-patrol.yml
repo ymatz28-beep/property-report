@@ -1,10 +1,6 @@
 name: Daily Property Patrol
 
 on:
-  schedule:
-    # Fallback only — launchd is primary (6h interval + RunAtLoad)
-    # GHA skips if local ran within 24h (fallback guard in job)
-    - cron: '0 21 * * *'   # JST 06:00 — morning catch-up if PC was off overnight
   workflow_dispatch:
 
 permissions:

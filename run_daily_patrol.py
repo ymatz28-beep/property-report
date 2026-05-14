@@ -959,6 +959,29 @@ def _should_skip() -> bool:
     return False
 
 
+def hc_ping() -> None:
+    """Ping Healthchecks.io dead-man's switch. Skip silently if HC_PATROL_URL not set."""
+    try:
+        from lib.healthchecks import hc_ping as _hc_ping
+        _hc_ping("HC_PATROL_URL", "property-patrol")
+    except ImportError:
+        import os, urllib.request
+        url = os.environ.get("HC_PATROL_URL", "")
+        if not url:
+            return
+        try:
+            urllib.request.urlopen(url, timeout=5)
+            log("  ✓ Healthchecks.io ping OK")
+        except Exception as e:
+            log(f"  ⚠️ Healthchecks.io ping failed (non-blocking): {e}")
+    try:
+        from pathlib import Path
+        from datetime import date as _date
+        Path(f"/tmp/com.yuma.property-patrol_ran_{_date.today()}").touch()
+    except Exception:
+        pass
+
+
 def main():
     # Cooldown guard: skip if last run was recent (for short StartInterval)
     if _should_skip() and "--force" not in sys.argv:
@@ -1165,6 +1188,8 @@ def main():
                     json.dumps(minimal, ensure_ascii=False, indent=2), encoding="utf-8")
         except Exception:
             pass  # truly nothing we can do
+
+    hc_ping()
 
     # Gmail notify on partial/total failure OR source-level degradation.
     # A scraper that returns 13/148 listings is "ok" at the step level but is

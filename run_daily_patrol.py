@@ -1191,15 +1191,9 @@ def main():
 
     hc_ping()
 
-    # Gmail notify on partial/total failure OR source-level degradation.
-    # A scraper that returns 13/148 listings is "ok" at the step level but is
-    # functionally an outage — the notification must fire so the one-click CTA
-    # UI reaches the user instead of being silently swallowed.
-    if fail_count > 0 or diff.get("failed_sources"):
-        try:
-            _notify_gmail_patrol_failure(start, elapsed, all_steps, diff)
-        except Exception as e:
-            log(f"  ⚠️ Gmail notify skipped: {e}")
+    # Pipeline health failures surface as warn in Daily Digest only.
+    # Does not meet alert criteria (3h irreversibility test). See:
+    # .claude/guidelines/notification-ecosystem.md
 
 
 def _mint_dispatch_token(project: str, failed_steps: list[str]) -> str:

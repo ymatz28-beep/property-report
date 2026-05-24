@@ -1,67 +1,67 @@
 # HANDOFF
 
 <<<<<<< HEAD
-## [Constancy] 2026-05-22
-- [ERROR] hardcoded_data: [ESCALATED: 37d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
-- [ERROR] structural_reform: [ESCALATED: 37d unresolved] generate_market.py is 1664 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 37d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 37d unresolved] Stale temp/debug file (49 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 37d unresolved] Stale temp/debug file (49 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 37d unresolved] Stale temp/debug file (49 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 37d unresolved] Stale temp/debug file (52 days old). Delete it.
-- [ERROR] html_ui: [ESCALATED: 37d unresolved] Font size violation(s): line 190: fixed 48px
-- [ERROR] html_ui: [ESCALATED: 37d unresolved] Font size violation(s): line 190: fixed 48px
-- [ERROR] property_patrol_steps: [ESCALATED: 28d unresolved] 物件パトロール失敗ステップ (2026-05-22 15:15): 【Hub KPI JSON生成】エラー終了 (exit 1) → Fix: エラーログを確認
-- [ERROR] property_patrol_steps: [ESCALATED: 28d unresolved] 物件パトロール失敗ステップ (2026-05-22 15:15): 【自動フラグ付与】異常終了: expected '<document start>', but found '<scalar>'
+## [Constancy] 2026-05-24
+- [ERROR] hardcoded_data: [ESCALATED: 39d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
+- [ERROR] structural_reform: [ESCALATED: 39d unresolved] generate_market.py is 1664 lines (threshold: 800). Consider splitting.
+- [ERROR] structural_reform: [ESCALATED: 39d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
+- [ERROR] structural_reform: [ESCALATED: 39d unresolved] Stale temp/debug file (51 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 39d unresolved] Stale temp/debug file (51 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 39d unresolved] Stale temp/debug file (51 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 39d unresolved] Stale temp/debug file (54 days old). Delete it.
+- [ERROR] html_ui: [ESCALATED: 39d unresolved] Font size violation(s): line 190: fixed 48px
+- [ERROR] html_ui: [ESCALATED: 39d unresolved] Font size violation(s): line 190: fixed 48px
+- [ERROR] property_patrol_steps: [ESCALATED: 30d unresolved] 物件パトロール失敗ステップ (2026-05-24 05:32): 【Hub KPI JSON生成】エラー終了 (exit 1) → Fix: エラーログを確認
+- [ERROR] property_patrol_steps: [ESCALATED: 30d unresolved] 物件パトロール失敗ステップ (2026-05-24 05:32): 【自動フラグ付与】異常終了: expected '<document start>', but found '<scalar>'
   in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
-- [ERROR] property_patrol_steps: [ESCALATED: 28d unresolved] 物件パトロール失敗ステップ (2026-05-22 15:15): 【パイプラインライフサイクル】異常終了: expected '<document start>', but found '<scalar>'
+- [ERROR] property_patrol_steps: [ESCALATED: 30d unresolved] 物件パトロール失敗ステップ (2026-05-24 05:32): 【パイプラインライフサイクル】異常終了: expected '<document start>', but found '<scalar>'
   in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
-- [ERROR] property_patrol_steps: [ESCALATED: 28d unresolved] 物件パトロール失敗ステップ (2026-05-22 15:15): 【問い合わせダッシュボード】異常終了: expected '<document start>', but found '<scalar>'
+- [ERROR] property_patrol_steps: [ESCALATED: 30d unresolved] 物件パトロール失敗ステップ (2026-05-24 05:32): 【問い合わせダッシュボード】異常終了: expected '<document start>', but found '<scalar>'
   in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
-- [ERROR] property_patrol_steps: [ESCALATED: 28d unresolved] 物件パトロール失敗ステップ (2026-05-22 15:15): 【内覧分析レポート】異常終了: expected '<document start>', but found '<scalar>'
+- [ERROR] property_patrol_steps: [ESCALATED: 30d unresolved] 物件パトロール失敗ステップ (2026-05-24 05:32): 【内覧分析レポート】異常終了: expected '<document start>', but found '<scalar>'
   in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 401: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 420: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 559: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 560: hardcoded #22c55e should be var(--green)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 561: hardcoded #ef4444 should be var(--red)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 638: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 647: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 703: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 758: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 173: hardcoded #fbbf24 should be var(--amber)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 304: hardcoded #fbbf24 should be var(--amber)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 344: hardcoded #f87171 should be var(--red-light)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 62: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 646: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 665: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 62: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 646: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 665: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 305: hardcoded #22c55e should be var(--green)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 308: hardcoded #f87171 should be var(--red-light)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 372: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 391: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 760: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 779: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 114: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 475: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 494: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 62: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 646: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 35d unresolved] Line 665: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] blank_cells: [ESCALATED: 37d unresolved] ダッシュ「—」145個 (閾値20) — データ欠損の可能性
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 1% (1/131) — 閾値80%
-- [ERROR] qa_market_data_accuracy: [ESCALATED: 37d unresolved] 2/88 (2.3%) — price mismatch: チサンマンション野間 503 raw=650.0 html=680.0; price mismatch: 野間台住宅 ４ raw=698.0 html=760.0
-- [ERROR] qa_market_oc_income_coverage: [ESCALATED: 37d unresolved] OC 310件中 207件が年間収入欠落 (67%) — 利回り逆算で補完
-- [ERROR] qa_market_yield_consistency: 2件の利回り/年間収入乖離(>20%): スワンズシティ梅田ウエスト: expected=38.6万 actual=82.8万 (53%乖離); エスライズ天満橋: expected=44.9万 actual=100.8万 (56%乖離)
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 37d unresolved] 27件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 墨田区向島(44㎡): ['本所吾妻橋駅 / 1LDK / 44.61㎡', '向島パークハイツ']; 中野区鷺宮(42㎡): ['都立家政駅 / 1SLDK / 42.90㎡', '日神シルバーパレス鷺宮']; 新宿区中落合(46㎡): ['中落合マンション', '落合南長崎駅 / 2DK / 46.08㎡']; 福岡市中央区春吉(16㎡): ['ピュアドームサクセス平尾', 'オーナーチェンジ物件・利回り8％・天神まで徒歩圏内・バス・トイレ別'] ... +22 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 11.7% (13/111件)。パイプライン変換バグの可能性。例: 3072.0万円/56.1㎡; 2820.0万円/48.8㎡; 3050.0万円/56.72㎡; 3490.0万円/56.7㎡; 3790.0万円/57.32㎡
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 401: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 420: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 559: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 560: hardcoded #22c55e should be var(--green)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 561: hardcoded #ef4444 should be var(--red)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 638: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 647: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 703: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 758: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 173: hardcoded #fbbf24 should be var(--amber)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 304: hardcoded #fbbf24 should be var(--amber)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 344: hardcoded #f87171 should be var(--red-light)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 62: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 646: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 665: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 62: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 646: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 665: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 305: hardcoded #22c55e should be var(--green)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 308: hardcoded #f87171 should be var(--red-light)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 372: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 39d unresolved] Line 391: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 760: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 779: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 114: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 475: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 494: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 62: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 646: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 665: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] blank_cells: [ESCALATED: 39d unresolved] ダッシュ「—」170個 (閾値20) — データ欠損の可能性
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 3% (4/144) — 閾値80%
+- [ERROR] qa_market_data_accuracy: [ESCALATED: 39d unresolved] 1/100 (1.0%) — price mismatch: チサンマンション野間 503 raw=650.0 html=680.0
+- [ERROR] qa_market_oc_income_coverage: [ESCALATED: 39d unresolved] OC 309件中 199件が年間収入欠落 (64%) — 利回り逆算で補完
+- [ERROR] qa_market_yield_consistency: 3件の利回り/年間収入乖離(>20%): スワンズシティ梅田ウエスト: expected=38.6万 actual=82.8万 (53%乖離); エスライズ天満橋: expected=44.9万 actual=100.8万 (56%乖離); GE4288 利回り7.2%、天神橋筋六丁目の区分マンション: expected=130.7万 actual=60.0万 (118%乖離)
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 39d unresolved] 28件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 墨田区向島(44㎡): ['本所吾妻橋駅 / 1LDK / 44.61㎡', '向島パークハイツ']; 中野区鷺宮(42㎡): ['日神シルバーパレス鷺宮', '都立家政駅 / 1SLDK / 42.90㎡']; 新宿区中落合(46㎡): ['落合南長崎駅 / 2DK / 46.08㎡', '中落合マンション']; 福岡市博多区美野島(17㎡): ['メゾン・ド・ルソール', '現在賃料45,000円にて賃貸中\u3000お問い合わせは営業部092-738-8500まで'] ... +23 more
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 14.3% (17/119件)。パイプライン変換バグの可能性。例: 1850.0万円/40.08㎡; 2880.0万円/66.69㎡; 3290.0万円/44.66㎡; 3050.0万円/52.98㎡; 2980.0万円/52.55㎡
 - [WARN] freeze_candidates: プロジェクト 'property-analyzer' は 9999d 非活性 (凍結閾値 90d)。 _archived/ への移動または Phase 0 再定義を検討。
 
 ## Last Updated

@@ -1,0 +1,94 @@
+# ============================================================
+# Deal Underwriting SSoT — プレイスポットしんばしビル
+# ------------------------------------------------------------
+# 1物件を深掘りして投資判断するための単一物件データ。
+# 今後の物件は このファイルを複製して値を差し替えるだけで
+# build_deal_cockpit.py が対話型シミュレーターHTMLを再生成する。
+# スキーマ詳細 → deals/_schema.md
+# ============================================================
+
+deal:
+  id: placespot-shinbashi
+  name: プレイスポットしんばしビル
+  address: 福岡県福岡市博多区中洲2-1-11
+  area_sqm: 49.23
+  layout: 1DK+和室（DK 9.6帖 / 和室 7.2帖）
+  max_guests: 5
+  area_note: 中洲（観光・宿泊需要が極めて強い福岡の一等地）。区分1ユニット。
+  is_minpaku_special_zone: false   # 福岡市は特区民泊エリアではない → 民泊新法180日上限が効く
+  source_docs:
+    - 改装工事 御見積書 (悠悠ホーム MT06529, 2026/05/24)
+    - 改装工事 ご提案書 / デザインイメージ (モダンジャパニーズ民泊リノベ)
+    - 中洲2丁目物件 収支計画表 民泊 (F-area, 2026/05/17)
+    - 中洲2丁目物件 収支計画表 旅館業 (F-area, 2026/05/17)
+    - 中洲2丁目物件 御見積書 (F-area 初期費用, 2026/05/18)
+
+# --- 取得・初期投資（円） ---
+acquisition:
+  asking_price_yen: 25000000        # ベースライン（提示は2,000万円台 → 中央値2,500万で初期化。スライダーで可変）
+  acquisition_cost_rate: 0.07       # 取得諸費用率（仲介+登記+不取得税+印紙+司書）property-analyzer既定と統一
+  renovation_yen: 7260000           # 改装工事 税込（悠悠ホーム見積 7,260,000）
+  minpaku_setup_yen: 1903990        # 民泊/旅館 セットアップ（家具家電/スマートロック/許認可代行/消防 等 F-area見積）
+  renovation_note: フルリノベ（解体〜内装〜住設）。49.23㎡=14.9坪の全面改装。
+  setup_note: 民泊・旅館のみ必要。賃貸は不要（needs_setup=false）。
+
+# --- 融資前提（property-analyzer revenue_calc.py 既定と統一） ---
+financing:
+  down_payment_ratio: 0.20          # 頭金/自己資金比率（総事業費に対して）
+  loan_rate_annual: 0.0285          # 金利 年2.85%（筑波銀行 中洲/博多 実績レンジ）
+  loan_years: 25                    # 返済年数
+
+# --- 運用シナリオ別前提 ---
+# 民泊・旅館の数値はF-area収支計画表から逆算（変動経費率は売上比で実測）
+scenarios:
+  rental:                           # 賃貸（業者提示なし → 当方推計）
+    label: 賃貸（長期）
+    is_estimate: true               # ★推計フラグ：実賃料は要確認
+    monthly_rent_yen: 132000        # 49㎡リノベ済1LDK相当 @中洲/博多区中心 ㎡2,700円想定
+    vacancy_rate: 0.05              # 空室率5%
+    pm_fee_rate: 0.05               # 賃貸管理委託料5%
+    fixed_annual_yen: 200000        # 固都税+保険+修繕（年額概算）
+    needs_setup: false
+    rent_psm_note: 132,000 ÷ 49.23㎡ ≈ 2,681円/㎡。中洲・祇園エリアのリノベ済1LDK相場想定。
+
+  minpaku:                          # 民泊（住宅宿泊事業法・180日上限）
+    label: 民泊（新法・180日上限）
+    is_estimate: false
+    adr_yen: 36600                  # 平均宿泊単価（民泊計画 平均36,627から）
+    occupancy: 0.80                 # 業者想定 年平均80%（スライダー初期値）
+    legal_day_cap: 180              # ★民泊新法の年間営業上限。福岡市は特区外
+    var_opex_rate: 0.491            # 変動経費率（運営18+OTA15+清掃+消耗+光熱+宿泊税+修繕+決済）実測5,275,303/10,744,370
+    fixed_annual_yen: 142800        # 固定費（管理/タブレット/ロック/ネット/申請代行）11,900×12
+    needs_setup: true
+    cap_note: 業者計画は80%×365≒292泊で180日上限を超過。法的に純民泊は年180泊が上限のため、cap適用時は売上が約6割に縮小する。
+
+  ryokan:                           # 旅館業（簡易宿所許可・日数上限なし）
+    label: 旅館業（簡易宿所・上限なし）
+    is_estimate: false
+    adr_yen: 38400                  # 平均宿泊単価（旅館計画 平均38,386から）
+    occupancy: 0.50                 # 業者想定 年平均50%（スライダー初期値）
+    legal_day_cap: 365              # 簡易宿所許可は日数上限なし
+    var_opex_rate: 0.484            # 実測3,412,188/7,048,875
+    fixed_annual_yen: 142800
+    needs_setup: true
+    cap_note: 簡易宿所許可で通年営業可。消防設備・許認可コストはセットアップ費に含む。中洲は旅館業の実需が厚い。
+
+# --- 薬院物件（現拠点）の比較枠：数値は後で投入（プレースホルダー） ---
+# 「賃貸に出す」「売却して自分が移動」「現状維持」を並べて意思決定するための器。
+yakuin:
+  enabled: true
+  status: placeholder               # 数値未投入。HTMLでは入力欄として表示
+  current_value_yen: null           # 現在の想定売却価格
+  remaining_loan_yen: null          # 残債
+  monthly_rent_if_let_yen: null     # 賃貸に出した場合の想定家賃
+  monthly_holding_cost_yen: null    # 保有コスト（ローン返済+管理費+固都税 月額）
+  monthly_living_cost_now_yen: null # 今ここに住む生活コスト（移動判断の機会費用）
+  note: |
+    しんばしへ自分が移動する場合、薬院を「賃貸（家賃収入）」か「売却（一括資金→しんばし頭金/繰上返済）」で運用。
+    数値が揃い次第ここに投入すると、しんばし投資との合算CFで最適パスを判定する。
+
+# --- 判断の閾値（化ける/見送りの基準線） ---
+thresholds:
+  target_ccr_pct: 10.0              # 自己資金配当率の目標（これ以上で「化ける」）
+  min_acceptable_ccr_pct: 5.0       # 最低許容ライン
+  payback_years_good: 10            # 自己資金回収 これ以下が良

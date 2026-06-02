@@ -88,7 +88,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px}
 .kpi .k{font-size:12px;color:var(--text-secondary)}
 .kpi .v{font-family:var(--mono);font-weight:700;font-size:14px}
 .kpi .v.big{font-size:18px}
-.pos{color:var(--green-light)} .neg{color:var(--red-light)} .neu{color:var(--text)}
+.pos{color:var(--green-light)} .neg{color:var(--red-light)} .neu{color:var(--text)} .amberv{color:var(--amber)}
 .hero{margin:10px 0 4px;padding:12px;background:var(--surface2);border-radius:10px;text-align:center}
 .hero .label{font-size:11px;color:var(--text-muted)}
 .hero .num{font-family:var(--mono);font-size:26px;font-weight:800;margin-top:2px}
@@ -126,7 +126,7 @@ footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-
   <h2>前提を動かす（スライダー＝即再計算）</h2>
   <div class="controls">
     <div class="ctrl"><label>取得価格 <span class="val" id="lblPrice"></span></label>
-      <input type="range" id="price" min="15000000" max="40000000" step="500000"></div>
+      <input type="range" id="price" min="15000000" max="40000000" step="100000"></div>
     <div class="ctrl"><label>金利（年） <span class="val" id="lblRate"></span></label>
       <input type="range" id="rate" min="1.0" max="4.5" step="0.05"></div>
     <div class="ctrl"><label>返済年数 <span class="val" id="lblYears"></span></label>
@@ -171,8 +171,9 @@ footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-
 <!-- Break-even -->
 <section class="card">
   <h2>損益分岐：いくらまで下がれば「化ける」か</h2>
+  <div class="note" id="beAnchor" style="margin-bottom:10px"></div>
   <table id="beTable">
-    <thead><tr><th>シナリオ</th><th>今の前提で月CF</th><th>CF黒字化する取得価格</th><th>CCR10%達成価格</th><th>今の2,500万との差</th></tr></thead>
+    <thead><tr><th>シナリオ</th><th>今の月CF</th><th>① 黒字化ライン<br><span style="font-weight:400;text-transform:none">これ以下で買えば黒字</span></th><th>② 化けるライン<br><span style="font-weight:400;text-transform:none">これ以下で年利10%</span></th><th>今の価格での評価</th></tr></thead>
     <tbody></tbody>
   </table>
   <div class="note" id="beNote"></div>
@@ -370,20 +371,22 @@ function render(){
   verdict.innerHTML = v;
 
   // break-even table
+  beAnchor.innerHTML = `今の取得価格は <b style="color:var(--gold)">${manFmt(c.price)}</b>。これが下の2つのライン（①黒字化／②化ける）より安いほど良い。<b>① > ②</b> の関係（黒字化より、化けるラインの方がさらに安く買う必要がある）。`;
   const tbody = beTable.querySelector('tbody');
   tbody.innerHTML = keys.map(k=>{
     const s=CFG.scenarios[k], r=res[k];
     const be = breakevenPrice(k,c,th.target_ccr_pct/100);
-    const delta = be.target - c.price; // 化ける価格 vs 現価格
-    const dcls = be.target>=c.price ? 'delta-up':'delta-dn';
-    const dtxt = be.target>=c.price ? `今の価格でOK（+${manFmt(be.target-c.price).replace('¥','')}余裕）` : `あと ${manFmt(c.price-be.target).replace('¥','')} 下げたい`;
+    let verdict, vcls;
+    if(c.price <= be.target){ verdict = `✓ この価格で化けてる（年利${pct(r.ccr)}）`; vcls='pos'; }
+    else if(c.price <= be.cf0){ verdict = `△ 黒字だが妙味薄。化けるには あと${manFmt(c.price-be.target)}下げ`; vcls='amberv'; }
+    else { verdict = `✗ 赤字。黒字化まで あと${manFmt(c.price-be.cf0)}下げ`; vcls='neg'; }
     return `<tr><td>${s.label}</td>
       <td class="mono ${cls(r.cf)}">${yen(r.cf/12)}</td>
       <td class="mono">${be.cf0>0?manFmt(be.cf0):'—'}</td>
       <td class="mono">${be.target>0?manFmt(be.target):'—'}</td>
-      <td class="mono ${dcls}">${dtxt}</td></tr>`;
+      <td class="mono ${vcls}" style="text-align:left">${verdict}</td></tr>`;
   }).join('');
-  beNote.innerHTML = `「CF黒字化する取得価格」=この価格以下なら月CFがプラスに転じる線。「CCR10%達成価格」=自己資金に対し年10%回る＝<b>化ける</b>と判断する線（閾値はYAMLで調整可）。改装726万・諸費用${(CFG.acquisition.acquisition_cost_rate*100)}%・現在の金利/稼働率を織り込み済み。`;
+  beNote.innerHTML = `<b>①黒字化ライン</b>=この価格以下で買えれば、毎月の収入がローン返済を上回り手残りがプラスになる線。<b>②化けるライン</b>=さらに厳しく、自己資金に対し年10%回る＝「投資として旨味あり」と判断する線（基準%はYAMLで変更可）。どちらも改装726万・諸費用${(CFG.acquisition.acquisition_cost_rate*100).toFixed(0)}%・今の金利と稼働率/ADRを織り込み済み。プリセットやスライダーを動かすと全部再計算される。`;
 
   renderYakuin(c, res);
 }

@@ -3,12 +3,12 @@
 <<<<<<< HEAD
 ## [Constancy] 2026-06-02
 - [ERROR] hardcoded_data: [ESCALATED: 48d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
-- [WARN] hardcoded_data: Large inline data (78 lines) at line 312. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
+- [WARN] hardcoded_data: Large inline data (80 lines) at line 313. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] structural_reform: [ESCALATED: 48d unresolved] generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 48d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 48d unresolved] Stale temp/debug file (59 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 48d unresolved] Stale temp/debug file (59 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 48d unresolved] Stale temp/debug file (59 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 48d unresolved] Stale temp/debug file (60 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 48d unresolved] Stale temp/debug file (60 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 48d unresolved] Stale temp/debug file (60 days old). Delete it.
 - [ERROR] structural_reform: [ESCALATED: 48d unresolved] Stale temp/debug file (63 days old). Delete it.
 - [ERROR] html_ui: [ESCALATED: 48d unresolved] Font size violation(s): line 190: fixed 48px
 - [ERROR] html_ui: [ESCALATED: 48d unresolved] Font size violation(s): line 190: fixed 48px
@@ -61,7 +61,7 @@
 - [ERROR] first_seen_coverage: 掲載日カバレッジ 1% (2/139) — 閾値80%
 - [ERROR] qa_market_data_accuracy: [ESCALATED: 48d unresolved] 2/93 (2.2%) — price mismatch: 高木団地住宅 二号棟 raw=698.0 html=710.0; price mismatch: チサンマンション野間 503 raw=650.0 html=680.0
 - [ERROR] qa_market_oc_income_coverage: [ESCALATED: 48d unresolved] OC 330件中 274件が年間収入欠落 (83%) — 利回り逆算で補完
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 48d unresolved] 35件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 福岡市博多区御供所町(16㎡): ['ふれんず物件(博多区)', '【売主物件・利回り8.2％\u3000博多駅が生活圏】メゾンド祇園']; 福岡市博多区美野島(18㎡): ['エステート・モア・博多グラン A棟 211', '◆人気のライオンズ・博多まで直通・平成築・賃貸中']; 福岡市博多区美野島(25㎡): ['ふれんず物件(博多区)', '『博多駅・天神・キャナル・中州まで徒歩圏内』']; 福岡市博多区博多駅南(22㎡): ['博多駅やバス停が近く、スーパーやコンビニも充実した立地が魅力', '詳細エリアを選択'] ... +30 more
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 48d unresolved] 35件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 福岡市博多区御供所町(16㎡): ['ふれんず物件(博多区)', '【売主物件・利回り8.2％\u3000博多駅が生活圏】メゾンド祇園']; 福岡市博多区美野島(18㎡): ['◆人気のライオンズ・博多まで直通・平成築・賃貸中', 'エステート・モア・博多グラン A棟 211']; 福岡市博多区美野島(25㎡): ['ふれんず物件(博多区)', '『博多駅・天神・キャナル・中州まで徒歩圏内』']; 福岡市博多区博多駅南(22㎡): ['博多駅やバス停が近く、スーパーやコンビニも充実した立地が魅力', '詳細エリアを選択'] ... +30 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 13.7% (16/117件)。パイプライン変換バグの可能性。例: 3290.0万円/44.66㎡; 3050.0万円/52.98㎡; 2980.0万円/52.55㎡; 2820.0万円/48.8㎡; 3050.0万円/66.6㎡
 - [WARN] renderer_compliance: Missing gnav (site-header / site-nav) — no navigation
 - [ERROR] freeze_candidates: [ESCALATED: 14d unresolved] プロジェクト 'property-analyzer' は 9999d 非活性 (凍結閾値 90d)。 _archived/ への移動または Phase 0 再定義を検討。

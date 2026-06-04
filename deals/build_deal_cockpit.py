@@ -218,7 +218,7 @@ footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-
   <div class="note" id="finHead"></div>
   <div class="callout" id="finRules" style="background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.4);color:var(--text)"></div>
   <table id="finTargets" style="margin-top:14px">
-    <thead><tr><th>優先</th><th>打診先</th><th>狙い</th><th>金利目安</th></tr></thead>
+    <thead><tr><th>区分</th><th>打診先</th><th>狙い・特徴</th><th>金利目安</th></tr></thead>
     <tbody></tbody>
   </table>
   <div class="grid3" id="finPrep" style="margin-top:14px"></div>
@@ -447,10 +447,18 @@ function renderStatic(){
   }
   const F = CFG.financing_strategy;
   if(F){
-    finHead.innerHTML = `<b>借入主体：</b>${F.borrower}。<b>既存実績：</b>${F.existing_track_record}<br><b style="color:var(--gold)">${F.headline}</b>`;
-    finRules.innerHTML = '<b>打診の鉄則：</b><br>' + F.critical_rules.map(r=>'・'+r).join('<br>') + `<br><span style="color:var(--text-muted);font-size:12px">${F.saison_note}</span>`;
-    finTargets.querySelector('tbody').innerHTML = F.targets.map(t=>
-      `<tr><td>${t.tier}</td><td><b>${t.name}</b></td><td style="text-align:left">${t.why}</td><td class="mono">${t.rate_hint}</td></tr>`).join('');
+    const appr = (F.approach_options||[]).map(a=>
+      `<div style="margin-top:8px"><b style="color:var(--gold)">${a.title}</b><br><span style="font-size:12px">${a.detail}</span>`
+      + (a.caveat?`<br><span style="font-size:12px;color:var(--amber)">⚠ ${a.caveat}</span>`:'')
+      + (a.data_note?`<br><span style="font-size:12px;color:var(--text-muted)">${a.data_note}</span>`:'')+`</div>`).join('');
+    finHead.innerHTML = `<b>借入主体：</b>${F.borrower}<br><span style="color:var(--text-muted)">${F.existing_track_record}</span><br><b style="color:var(--gold)">${F.headline}</b>`
+      + (F.saison_is_guarantor?`<br><span style="font-size:12px;color:var(--text-muted)">※セゾンファンデックスは保証会社（貸し手ではない）。下表は「セゾン保証が付く銀行」＋福岡プロパー＋公的＋ノンバンクを全部並べた選択肢。各行へ直接照会を。</span>`:'') + appr;
+    finRules.innerHTML = '<b>打診の鉄則：</b><br>' + F.critical_rules.map(r=>'・'+r).join('<br>');
+    let lastG='';
+    finTargets.querySelector('tbody').innerHTML = F.targets.map(t=>{
+      const head = t.group!==lastG ? (lastG=t.group, `<tr><td colspan="4" style="background:var(--surface2);font-weight:700;color:var(--gold);text-align:left">${t.group}</td></tr>`) : '';
+      return head + `<tr><td></td><td><b>${t.name}</b></td><td style="text-align:left">${t.why}</td><td class="mono">${t.rate_hint}</td></tr>`;
+    }).join('');
     finPrep.innerHTML = `<div class="card" style="grid-column:span 3"><h3 style="font-size:14px;margin-bottom:8px">打診前の準備チェックリスト（目標DSCR ${F.dscr_target}以上）</h3>
       ${F.prep_checklist.map(p=>`<div style="font-size:12px;color:var(--text-secondary);padding:3px 0;border-bottom:1px dashed var(--border)">☐ ${p}</div>`).join('')}</div>`;
     finSources.innerHTML = '出典：' + F.sources.map(s=>{const m=s.match(/(https?:\/\/\S+)/);const u=m?m[1]:'';const t=s.replace(u,'').trim();return u?`<a href="${u}" target="_blank" style="color:var(--blue)">${t}</a>`:t;}).join(' ／ ');

@@ -127,6 +127,8 @@ footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-
   <div class="controls">
     <div class="ctrl"><label>取得価格 <span class="val" id="lblPrice"></span></label>
       <input type="range" id="price" min="15000000" max="40000000" step="100000"></div>
+    <div class="ctrl"><label>改装費（見積精査で可変） <span class="val" id="lblReno"></span></label>
+      <input type="range" id="reno" min="3500000" max="8000000" step="100000"></div>
     <div class="ctrl"><label>金利（年） <span class="val" id="lblRate"></span></label>
       <input type="range" id="rate" min="1.0" max="4.5" step="0.05"></div>
     <div class="ctrl"><label>返済年数 <span class="val" id="lblYears"></span></label>
@@ -210,6 +212,14 @@ footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-
   <div class="note" id="licReq"></div>
 </section>
 
+<!-- Renovation review -->
+<section class="card">
+  <h2>リノベ見積もり精査（726万は妥当か）</h2>
+  <div class="note" id="renoVerdict"></div>
+  <div class="grid3" id="renoLevers"></div>
+  <div class="note" id="renoSources"></div>
+</section>
+
 <!-- Occupancy basis / research -->
 <section class="card">
   <h2>稼働率「183日」の根拠とゼロベース見込み</h2>
@@ -246,7 +256,7 @@ function readControls(){
     down:+down.value/100, occM:+occM.value/100, occR:+occR.value/100,
     adrM:+adrM.value, adrR:+adrR.value,
     rent:+rent.value, applyCap:capToggle.checked, renoRental:renoRental.checked,
-    lic:licToggle.checked
+    lic:licToggle.checked, reno:+reno.value
   };
 }
 
@@ -271,7 +281,7 @@ function noiOf(key, c){
 
 function setupCost(key, c){
   const s = CFG.scenarios[key], acq = CFG.acquisition;
-  let reno = acq.renovation_yen;
+  let reno = c.reno;
   if(key==='rental' && !c.renoRental) reno = 2000000; // 軽改装試算
   let setup = s.needs_setup ? acq.minpaku_setup_yen : 0;
   if(c.lic && s.needs_setup && CFG.licensing) setup += (CFG.licensing.init_cost_extra_yen||0); // 旅館業追加許可コスト
@@ -314,6 +324,7 @@ function render(){
   const c = readControls();
   // labels
   lblPrice.textContent = manFmt(c.price);
+  lblReno.textContent = manFmt(c.reno);
   lblRate.textContent = (c.rate*100).toFixed(2)+'%';
   lblYears.textContent = c.years+'年';
   lblDown.textContent = (c.down*100).toFixed(0)+'%';
@@ -420,6 +431,18 @@ function renderStatic(){
         ${L.requirements_ryokan.map(r=>`<div style="font-size:12px;color:var(--text-secondary);padding:3px 0;border-bottom:1px dashed var(--border)">・${r}</div>`).join('')}</div>`;
     licReq.innerHTML = `推奨スキーム：<b>${sc[L.recommended_scheme].label}</b>。出典：` + L.sources.map(s=>{const m=s.match(/(https?:\/\/\S+)/);const u=m?m[1]:'';const t=s.replace(u,'').trim();return u?`<a href="${u}" target="_blank" style="color:var(--blue)">${t}</a>`:t;}).join(' ／ ');
   }
+  const RV = CFG.renovation_review;
+  if(RV){
+    renoVerdict.innerHTML = `見積総額 <b>${manFmt(RV.quote_total_yen)}</b>（坪${(RV.ptsubo_yen/10000).toFixed(0)}万）の判定：<b style="color:var(--green-light)">${RV.verdict}</b>。${RV.verdict_detail} 現実的な着地は <b style="color:var(--gold)">${manFmt(RV.target_after_yen)}前後</b>（強気で${manFmt(RV.target_aggressive_yen)}）。上のスライダーで改装費を動かすと収支が再計算される。`;
+    renoLevers.innerHTML = RV.reduction_levers.map(l=>{
+      const cc = l.confidence==='要確認'?'var(--amber)':'var(--text-secondary)';
+      return `<div class="card"><h3 style="font-size:14px;margin-bottom:8px">${l.title}</h3>
+        <div class="hero"><div class="label">削減見込み</div><div class="num pos" style="font-size:20px">−${manFmt(l.saving_yen)}</div></div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:8px">${l.detail}</div>
+        <div style="font-size:11px;color:${cc};margin-top:6px">確度: ${l.confidence}</div></div>`;
+    }).join('');
+    renoSources.innerHTML = `<span style="color:var(--text-muted)">${RV.note}</span><br>出典：` + RV.sources.map(s=>{const m=s.match(/(https?:\/\/\S+)/);const u=m?m[1]:'';const t=s.replace(u,'').trim();return u?`<a href="${u}" target="_blank" style="color:var(--blue)">${t}</a>`:t;}).join(' ／ ');
+  }
   if(R){
     occBasis.innerHTML = `<b>「年183日」の正体：</b>${R.occupancy_basis.replace(/\n/g,' ')}`;
     // zero-base scenarios from presets research_*
@@ -475,7 +498,7 @@ function init(){
   years.value=fin.loan_years; down.value=(fin.down_payment_ratio*100);
   occM.value=(s.minpaku.occupancy*100); occR.value=(s.ryokan.occupancy*100);
   adrM.value=s.minpaku.adr_yen; adrR.value=s.ryokan.adr_yen;
-  rent.value=s.rental.monthly_rent_yen;
+  rent.value=s.rental.monthly_rent_yen; reno.value=acq.renovation_yen;
   // preset buttons
   if(CFG.presets){
     presetBtns.innerHTML = Object.keys(CFG.presets).map(k=>
@@ -483,7 +506,7 @@ function init(){
     presetBtns.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>applyPreset(b.dataset.k)));
   }
   ['input','change'].forEach(ev=>{
-    [price,rate,years,down,occM,occR,adrM,adrR,rent,capToggle,renoRental,licToggle,yk_value,yk_loan,yk_rent,yk_hold]
+    [price,reno,rate,years,down,occM,occR,adrM,adrR,rent,capToggle,renoRental,licToggle,yk_value,yk_loan,yk_rent,yk_hold]
       .forEach(el=>el.addEventListener(ev, render));
   });
   renderStatic();

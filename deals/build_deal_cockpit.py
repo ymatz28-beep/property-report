@@ -216,6 +216,10 @@ footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-
 <section class="card">
   <h2>融資戦略：法人名義で銀行に打診する（DSCRは上のカード参照）</h2>
   <div id="finPack" style="margin-bottom:12px"></div>
+  <table id="finLadder" style="margin-bottom:14px">
+    <thead><tr><th>順</th><th>打診先（金利の低い順）</th><th>用途</th><th>金利</th><th>メモ</th></tr></thead>
+    <tbody></tbody>
+  </table>
   <div class="note" id="finHead"></div>
   <div class="callout" id="finRules" style="background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.4);color:var(--text)"></div>
   <table id="finTargets" style="margin-top:14px">
@@ -232,6 +236,12 @@ footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-
   <div class="note" id="renoVerdict"></div>
   <div class="grid3" id="renoLevers"></div>
   <div class="note" id="renoSources"></div>
+  <h2 style="margin-top:22px">リノベ圧縮の効き目（726万→550万→賃貸軽改装400万）</h2>
+  <table id="renoCompare">
+    <thead><tr><th>リノベ額</th><th>初期投資総額</th><th>自己資金</th><th>旅館・月CF</th><th>旅館DSCR</th><th>賃貸・月CF</th><th>賃貸DSCR</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class="note" id="renoCompareNote"></div>
 </section>
 
 <!-- Occupancy basis / research -->
@@ -293,19 +303,19 @@ function noiOf(key, c){
   return {revenue, noi, nights};
 }
 
-function setupCost(key, c){
+function setupCost(key, c, renoOverride){
   const s = CFG.scenarios[key], acq = CFG.acquisition;
-  let reno = c.reno;
-  if(key==='rental' && !c.renoRental) reno = 2000000; // 軽改装試算
+  let reno = (renoOverride!=null) ? renoOverride : c.reno;
+  if(renoOverride==null && key==='rental' && !c.renoRental) reno = 2000000; // 軽改装試算
   let setup = s.needs_setup ? acq.minpaku_setup_yen : 0;
   if(c.lic && s.needs_setup && CFG.licensing) setup += (CFG.licensing.init_cost_extra_yen||0); // 旅館業追加許可コスト
   return {reno, setup};
 }
 
-function finance(key, c, price){
+function finance(key, c, price, renoOverride){
   const acq = CFG.acquisition;
   const {revenue, noi, nights} = noiOf(key, c);
-  const {reno, setup} = setupCost(key, c);
+  const {reno, setup} = setupCost(key, c, renoOverride);
   const acqCost = price*acq.acquisition_cost_rate;
   const total = price + acqCost + reno + setup;
   const selfCap = total*c.down;
@@ -414,7 +424,30 @@ function render(){
   }).join('');
   beNote.innerHTML = `<b>①黒字化ライン</b>=この価格以下で買えれば、毎月の収入がローン返済を上回り手残りがプラスになる線。<b>②化けるライン</b>=さらに厳しく、自己資金に対し年10%回る＝「投資として旨味あり」と判断する線（基準%はYAMLで変更可）。どちらも改装726万・諸費用${(CFG.acquisition.acquisition_cost_rate*100).toFixed(0)}%・今の金利と稼働率/ADRを織り込み済み。プリセットやスライダーを動かすと全部再計算される。`;
 
+  renderRenoCompare(c);
   renderYakuin(c, res);
+}
+
+function renderRenoCompare(c){
+  if(!document.querySelector('#renoCompare')) return;
+  const levels = [
+    {yen:7260000, label:'726万（業者見積）'},
+    {yen:5500000, label:'550万（精査・推奨）'},
+    {yen:4000000, label:'400万（賃貸軽改装）'},
+  ];
+  const dcls = v => isFinite(v)&&v>=1.3?'pos':(v>=1.0?'amberv':'neg');
+  renoCompare.querySelector('tbody').innerHTML = levels.map(L=>{
+    const ry = finance('ryokan', c, c.price, L.yen);
+    const rt = finance('rental', c, c.price, L.yen);
+    return `<tr><td><b>${L.label}</b></td>
+      <td class="mono">${manFmt(ry.total)}</td>
+      <td class="mono">${manFmt(ry.selfCap)}</td>
+      <td class="mono ${cls(ry.cf)}">${yen(ry.cf/12)}</td>
+      <td class="mono ${dcls(ry.dscr)}">${isFinite(ry.dscr)?ry.dscr.toFixed(2):'—'}</td>
+      <td class="mono ${cls(rt.cf)}">${yen(rt.cf/12)}</td>
+      <td class="mono ${dcls(rt.dscr)}">${isFinite(rt.dscr)?rt.dscr.toFixed(2):'—'}</td></tr>`;
+  }).join('');
+  renoCompareNote.innerHTML = `今の取得価格 <b>${manFmt(c.price)}</b>・金利${(c.rate*100).toFixed(2)}%・自己資金${(c.down*100).toFixed(0)}%・現在の稼働/ADRプリセットで計算。リノベを<b>726万→550万に削るだけで借入が約176万減り、DSCRが上向く</b>。賃貸は軽改装でも家賃次第でDSCRが伸び悩むため、賃貸で出すなら取得価格の指値か自己資金厚めが要る。DSCR<span class="pos">1.3↑緑</span>/<span class="amberv">1.0↑琥珀</span>/<span class="neg">未満赤</span>。`;
 }
 
 // --- static sections (rendered once): licensing, scheme, research ---
@@ -449,6 +482,15 @@ function renderStatic(){
   const F = CFG.financing_strategy;
   if(F){
     finPack.innerHTML = `<a href="financing-${CFG.deal.id}.html" target="_blank" style="display:inline-block;background:var(--gold);color:#1a1207;font-weight:700;padding:10px 18px;border-radius:10px;text-decoration:none">📄 融資打診パッケージ（公庫・滋賀の事業計画書＋必要書類＋手順）を開く</a>`;
+    if(F.rate_order){
+      finLadder.querySelector('tbody').innerHTML = F.rate_order.map(r=>{
+        const last = r.rank>=6;
+        return `<tr><td class="mono ${last?'neg':'pos'}" style="font-weight:800">${r.rank}</td>
+          <td><b>${r.name}</b></td><td>${r.use}</td>
+          <td class="mono ${last?'neg':''}">${r.rate}</td>
+          <td style="text-align:left;font-size:12px;color:var(--text-secondary)">${r.note}</td></tr>`;
+      }).join('');
+    }
     const appr = (F.approach_options||[]).map(a=>
       `<div style="margin-top:8px"><b style="color:var(--gold)">${a.title}</b><br><span style="font-size:12px">${a.detail}</span>`
       + (a.caveat?`<br><span style="font-size:12px;color:var(--amber)">⚠ ${a.caveat}</span>`:'')

@@ -212,6 +212,19 @@ footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-
   <div class="note" id="licReq"></div>
 </section>
 
+<!-- Financing strategy -->
+<section class="card">
+  <h2>融資戦略：法人名義で銀行に打診する（DSCRは上のカード参照）</h2>
+  <div class="note" id="finHead"></div>
+  <div class="callout" id="finRules" style="background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.4);color:var(--text)"></div>
+  <table id="finTargets" style="margin-top:14px">
+    <thead><tr><th>優先</th><th>打診先</th><th>狙い</th><th>金利目安</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class="grid3" id="finPrep" style="margin-top:14px"></div>
+  <div class="note" id="finSources"></div>
+</section>
+
 <!-- Renovation review -->
 <section class="card">
   <h2>リノベ見積もり精査（726万は妥当か）</h2>
@@ -301,7 +314,7 @@ function finance(key, c, price){
   const cf = noi - debt;
   return {revenue, noi, nights, reno, setup, acqCost, total, selfCap, loan, debt, cf, af,
     grossYield: revenue/price, fcr: noi/total, ccr: selfCap>0? cf/selfCap : Infinity,
-    payback: cf>0? selfCap/cf : Infinity};
+    payback: cf>0? selfCap/cf : Infinity, dscr: debt>0? noi/debt : Infinity};
 }
 
 // break-even acquisition price for CF=0 and for target CCR
@@ -362,6 +375,7 @@ function render(){
       <div class="kpi"><span class="k">実質利回り(FCR)</span><span class="v">${pct(r.fcr)}</span></div>
       <div class="kpi"><span class="k">自己資金配当率(CCR)</span><span class="v ${cls(r.ccr)}">${isFinite(r.ccr)?pct(r.ccr):'—'}</span></div>
       <div class="kpi"><span class="k">自己資金回収年数</span><span class="v">${isFinite(r.payback)?r.payback.toFixed(1)+'年':'回収不能'}</span></div>
+      <div class="kpi"><span class="k">DSCR（銀行が見る返済余力）</span><span class="v ${isFinite(r.dscr)&&r.dscr>=1.3?'pos':(r.dscr>=1.0?'amberv':'neg')}">${isFinite(r.dscr)?r.dscr.toFixed(2):'—'}</span></div>
       ${capWarn}
     </div>`;
   }).join('');
@@ -430,6 +444,16 @@ function renderStatic(){
       <div class="card"><h3 style="font-size:15px;margin-bottom:10px">許可の要件（簡易宿所）</h3>
         ${L.requirements_ryokan.map(r=>`<div style="font-size:12px;color:var(--text-secondary);padding:3px 0;border-bottom:1px dashed var(--border)">・${r}</div>`).join('')}</div>`;
     licReq.innerHTML = `推奨スキーム：<b>${sc[L.recommended_scheme].label}</b>。出典：` + L.sources.map(s=>{const m=s.match(/(https?:\/\/\S+)/);const u=m?m[1]:'';const t=s.replace(u,'').trim();return u?`<a href="${u}" target="_blank" style="color:var(--blue)">${t}</a>`:t;}).join(' ／ ');
+  }
+  const F = CFG.financing_strategy;
+  if(F){
+    finHead.innerHTML = `<b>借入主体：</b>${F.borrower}。<b>既存実績：</b>${F.existing_track_record}<br><b style="color:var(--gold)">${F.headline}</b>`;
+    finRules.innerHTML = '<b>打診の鉄則：</b><br>' + F.critical_rules.map(r=>'・'+r).join('<br>') + `<br><span style="color:var(--text-muted);font-size:12px">${F.saison_note}</span>`;
+    finTargets.querySelector('tbody').innerHTML = F.targets.map(t=>
+      `<tr><td>${t.tier}</td><td><b>${t.name}</b></td><td style="text-align:left">${t.why}</td><td class="mono">${t.rate_hint}</td></tr>`).join('');
+    finPrep.innerHTML = `<div class="card" style="grid-column:span 3"><h3 style="font-size:14px;margin-bottom:8px">打診前の準備チェックリスト（目標DSCR ${F.dscr_target}以上）</h3>
+      ${F.prep_checklist.map(p=>`<div style="font-size:12px;color:var(--text-secondary);padding:3px 0;border-bottom:1px dashed var(--border)">☐ ${p}</div>`).join('')}</div>`;
+    finSources.innerHTML = '出典：' + F.sources.map(s=>{const m=s.match(/(https?:\/\/\S+)/);const u=m?m[1]:'';const t=s.replace(u,'').trim();return u?`<a href="${u}" target="_blank" style="color:var(--blue)">${t}</a>`:t;}).join(' ／ ');
   }
   const RV = CFG.renovation_review;
   if(RV){

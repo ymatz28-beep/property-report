@@ -112,6 +112,19 @@ td.mono{font-family:var(--mono);font-weight:700}
 .callout b{color:#fff}
 footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted)}
 @media(max-width:900px){.grid3,.controls{grid-template-columns:1fr}.yk-grid{grid-template-columns:1fr}}
+/* mobile: 横長テーブルはスクロール、余白と文字を小画面向けに */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:700px){
+  body{padding:12px}
+  h1{font-size:19px} h2{font-size:13px}
+  .ctrl .val{font-size:13px}
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;font-size:12px}
+  table thead,table tbody{display:table;width:100%;min-width:560px}
+  th,td{padding:7px 8px}
+  .hero .num{font-size:22px}
+  .controls{gap:14px}
+  .kpi .v.big{font-size:16px}
+}
 </style>
 </head>
 <body>
@@ -509,7 +522,8 @@ function renderStatic(){
   }
   const RV = CFG.renovation_review;
   if(RV){
-    renoVerdict.innerHTML = `見積総額 <b>${manFmt(RV.quote_total_yen)}</b>（坪${(RV.ptsubo_yen/10000).toFixed(0)}万）の判定：<b style="color:var(--green-light)">${RV.verdict}</b>。${RV.verdict_detail} 現実的な着地は <b style="color:var(--gold)">${manFmt(RV.target_after_yen)}前後</b>（強気で${manFmt(RV.target_aggressive_yen)}）。上のスライダーで改装費を動かすと収支が再計算される。`;
+    renoVerdict.innerHTML = `見積総額 <b>${manFmt(RV.quote_total_yen)}</b>（坪${(RV.ptsubo_yen/10000).toFixed(0)}万）の判定：<b style="color:var(--green-light)">${RV.verdict}</b>。${RV.verdict_detail} 現実的な着地は <b style="color:var(--gold)">${manFmt(RV.target_after_yen)}前後</b>（強気で${manFmt(RV.target_aggressive_yen)}）。上のスライダーで改装費を動かすと収支が再計算される。`
+      + (RV.style_note?`<br><span style="color:var(--amber)">${RV.style_note}</span>`:'');
     renoLevers.innerHTML = RV.reduction_levers.map(l=>{
       const cc = l.confidence==='要確認'?'var(--amber)':'var(--text-secondary)';
       return `<div class="card"><h3 style="font-size:14px;margin-bottom:8px">${l.title}</h3>
@@ -602,12 +616,18 @@ def build_index_html(all_cfgs: list[dict]) -> str:
     for cfg in all_cfgs:
         d, acq = cfg["deal"], cfg["acquisition"]
         price_man = round(acq["asking_price_yen"] / 10000)
-        cards.append(f"""<a class="dcard" href="deal-{d['id']}.html">
-      <div class="dn">{d['name']}</div>
-      <div class="da">{d['address']}</div>
-      <div class="dm"><span>{d['area_sqm']}㎡</span><span>{d['layout']}</span><span class="price">¥{price_man:,}万</span></div>
-      <div class="dnote">{d.get('area_note','')}</div>
-    </a>""")
+        cards.append(f"""<div class="dcard">
+      <a class="dlink" href="deal-{d['id']}.html">
+        <div class="dn">{d['name']}</div>
+        <div class="da">{d['address']}</div>
+        <div class="dm"><span>{d['area_sqm']}㎡</span><span>{d['layout']}</span><span class="price">¥{price_man:,}万</span></div>
+        <div class="dnote">{d.get('area_note','')}</div>
+      </a>
+      <div class="dactions">
+        <a class="dbtn" href="deal-{d['id']}.html">📊 投資判断シミュレーター</a>
+        <a class="dbtn gold" href="financing-{d['id']}.html">📄 融資打診パッケージ（公庫・滋賀ほか）</a>
+      </div>
+    </div>""")
     cards_html = "\n".join(cards)
     return f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -619,14 +639,20 @@ def build_index_html(all_cfgs: list[dict]) -> str:
 body{{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans JP',sans-serif;padding:24px;max-width:880px;margin:0 auto;line-height:1.6}}
 h1{{font-size:22px;font-weight:800}}
 .sub{{color:var(--text-muted);font-size:13px;margin:4px 0 22px}}
-.dcard{{display:block;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px;text-decoration:none;color:inherit;transition:border-color .15s}}
+.dcard{{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px;transition:border-color .15s}}
 .dcard:hover{{border-color:var(--gold)}}
+.dlink{{display:block;text-decoration:none;color:inherit}}
 .dn{{font-size:17px;font-weight:700}}
 .da{{font-size:13px;color:var(--text-secondary);margin-top:2px}}
 .dm{{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text-secondary);margin-top:8px}}
 .dm .price{{color:var(--gold);font-weight:700}}
 .dnote{{font-size:12px;color:var(--text-muted);margin-top:8px}}
+.dactions{{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}}
+.dbtn{{flex:1;min-width:200px;text-align:center;text-decoration:none;background:var(--surface2);border:1px solid var(--border-light);color:var(--text);padding:11px 14px;border-radius:10px;font-size:13px;font-weight:600}}
+.dbtn.gold{{background:var(--gold);color:#1a1207;border-color:var(--gold)}}
+.dbtn:active{{opacity:.8}}
 footer{{margin-top:24px;font-size:11px;color:var(--text-muted);border-top:1px solid var(--border);padding-top:14px}}
+@media(max-width:600px){{body{{padding:14px}}.dbtn{{flex:1 1 100%}}}}
 </style></head><body>
 <h1>物件投資判断ハブ</h1>
 <div class="sub">賃貸 / 民泊 / 旅館業の収支を1物件ずつ深掘り。カードをタップで対話型シミュレーターへ。</div>

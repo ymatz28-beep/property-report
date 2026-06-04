@@ -17,8 +17,18 @@ li{margin:3px 0}
 hr{border:none;border-top:1px solid #ddd;margin:16px 0}
 hr.sec{border-top:2px dashed #c9a84c;margin:36px 0}
 a{color:#1e5fb4;word-break:break-all}
-@media print{body{padding:0}h2{page-break-before:auto}a{color:#1a1a1a}}
+.toolbar{position:sticky;top:0;background:#1a1d27;margin:-28px -20px 18px;padding:12px 20px;display:flex;gap:10px;flex-wrap:wrap;z-index:10}
+.toolbar button,.toolbar a{background:#c9a84c;color:#1a1207;font-weight:700;border:none;padding:10px 16px;border-radius:9px;font-size:14px;text-decoration:none;cursor:pointer}
+.toolbar a.alt{background:#242836;color:#e4e4e7}
+@media print{.toolbar{display:none}body{padding:0}h2{page-break-before:auto}a{color:#1a1a1a}}
+@media(max-width:700px){body{padding:14px}.toolbar{margin:-14px -14px 16px;padding:10px 14px}h1{font-size:19px}h2{font-size:16px}
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table thead,table tbody{display:table;width:100%;min-width:520px}}
 </style></head><body>
+<div class="toolbar">
+  <button onclick="window.print()">🖨 印刷 / PDFで保存</button>
+  <a class="alt" href="financing-placespot-shinbashi.pdf" download>⬇ PDFをダウンロード</a>
+</div>
 <h1>融資打診プレイブック — プレイスポットしんばし（中洲2-1-11）</h1>
 <p><strong>方針：金利の低いところから順に打診する。2路線を並行で進める。高金利ノンバンクは最終手段。</strong></p>
 <table><thead><tr><th>順</th><th>打診先（金利の低い順）</th><th>用途</th><th>金利目安</th><th>担当資料</th></tr></thead><tbody><tr><td>1</td><td>日本政策金融公庫 福岡支店（生活衛生/振興事業貸付）</td><td><strong>旅館業</strong></td><td>約1.5〜2.5%（組合＋振興で −0.3%）= 最安</td><td><code>01_jfc_旅館業_事業計画書.md</code></td></tr><tr><td>2</td><td>滋賀銀行（セゾン保証・ジャストサポート）</td><td><strong>賃貸投資区分</strong></td><td>1.95〜4.875%</td><td><code>02_shiga_賃貸_打診パッケージ.md</code></td></tr><tr><td>3</td><td>福岡県信用保証協会＋地元銀行（制度融資）／関西みらい銀行</td><td>両方</td><td>2.55%〜（開業支援で実質低）</td><td>制度融資は宿泊開業支援あり</td></tr><tr><td>4</td><td>スルガ銀行／三井住友トラストL&amp;F</td><td><strong>賃貸</strong></td><td>2.9%〜（推定）</td><td>法人・全国・区分可</td></tr><tr><td>5</td><td>大垣共立銀行（キラット）／商工中金</td><td>両方</td><td>3.4%〜</td><td>上位不調時の中位</td></tr><tr><td>6</td><td>L&amp;F／セゾン直接／オリックス</td><td>両方</td><td>3.3〜8.8%</td><td><strong>最終手段</strong>（高金利・妙味を削る）</td></tr></tbody></table>
@@ -49,13 +59,15 @@ a{color:#1e5fb4;word-break:break-all}
 <ul><li>[ ] 自己資金の額と出所</li><li>[ ] 法人決算3期の要点（売上・利益・純資産）</li><li>[ ] 筑波の既存借入：物件ごとの残債・月返済・金利・残期間</li><li>[ ] 物件の最終取得価格（指値交渉の結果）</li><li>[ ] リノベ最終見積（精査後の確定額・550万目標）</li><li>[x] 管理規約の民泊/事業使用の可否 → 確認済み（可）</li></ul>
 <hr class="sec">
 <h1>日本政策金融公庫 福岡支店 向け 事業計画書（旅館業・簡易宿所）</h1>
+<blockquote><strong>⚠ 仮の数値を含む完成ドラフト。提出前に下記4点だけ実数へ差し替える（★仮 と表記）：</strong> 1. 自己資金の額・出所　2. 法人決算3期の実数　3. 手嶋耕一（代表社員）・手嶋翼真（運営）の年収・資産　4. 筑波銀行の残債・返済額。 物件・収支・稼働根拠・資金計画の構造・経営者の経歴（CVより）は記入済み。</blockquote>
 <blockquote>公式の「創業計画書」Excelに転記する下書き。空欄[要記入]はYumaの実数を入れる。 公式様式: <a href="https://www.jfc.go.jp/n/service/dl_kokumin.html">https://www.jfc.go.jp/n/service/dl_kokumin.html</a> ／ 創業計画書Excel: <a href="https://www.jfc.go.jp/n/service/xls/kaigyou00_190507a.xlsx">https://www.jfc.go.jp/n/service/xls/kaigyou00_190507a.xlsx</a> 制度: 生活衛生貸付（一般貸付/振興事業貸付）・国民生活事業。福岡支店(国民生活事業) 092-411-9111 博多駅前3-21-12。 低利ルート: 福岡県旅館ホテル生活衛生同業組合 加入 → 振興事業貸付（基準利率より低利＋振興事業計画で −0.3%）。</blockquote>
+<blockquote><strong>【重要】旅館業の認可前でも申込・審査はOK。</strong> 設備資金は「物件取得＋改装」のための資金で、実務も「改装完了→許可取得」の順。許可は申請して受理番号と取得スケジュールを示せば、申請中の状態で審査を進められる。ただし通常、<strong>融資実行（資金交付）時に許可取得 or 取得確実が条件（特約）</strong>になる。＝今の段階（未認可）で打診して問題ない。</blockquote>
 <h2>申込者</h2>
-<ul><li>法人名：iUMAプロパティマネジメント合同会社（代表社員 手嶋[フルネーム要記入]）</li><li>事業：不動産賃貸・宿泊事業（簡易宿所）</li><li>既存取引：筑波銀行で収益不動産の融資実績（複数物件・滞納ゼロ）[残債等は要記入]</li></ul>
+<ul><li>法人名：iUMAプロパティマネジメント合同会社</li><li>代表社員：手嶋 耕一</li><li>事業の運営担当：手嶋 翼真（てじま ゆうま）※下記「経営者の経歴」の本人。賃貸運営・宿泊事業の実務を担う</li><li>事業：不動産賃貸・宿泊事業（簡易宿所）</li><li>既存取引：筑波銀行で収益不動産の融資実績（複数物件・滞納ゼロ）★仮 残債○○円・月返済○○円（要差し替え）</li></ul>
 <h2>1. 創業（新規事業）の動機</h2>
 <p>中洲（博多区）は福岡随一の観光・繁華街で、インバウンドを含む宿泊需要が通年で厚い。当社は既に不動産賃貸を法人で運営しており、保有運用のノウハウを宿泊事業（簡易宿所）に展開する。対象物件は中洲2-1-11の49.23㎡区分（1DK＋和室、最大5名）で、家族・グループ・訪日客の滞在に適する。民泊新法は年180日上限で事業が不安定なため、<strong>通年営業できる旅館業（簡易宿所）許可</strong>を取得して恒久事業として運営する。</p>
-<h2>2. 経営者の経歴</h2>
-<ul><li>代表社員 手嶋[要記入：氏名・職務経歴]。不動産投資・賃貸運営の実績（iUMA法人で筑波銀行融資により複数物件を取得・運営、滞納なし）。</li><li>宿泊運営：運営代行会社（F-area 等）に清掃・予約・チェックインを委託し、未経験領域を補完。</li></ul>
+<h2>2. 経営者の経歴（運営担当 手嶋翼真／CVより抜粋）</h2>
+<ul><li><strong>学歴</strong>：関西大学 商学部 卒業（1998）、ビジネス・ブレークスルー大学院 経営管理修士（MBA）修了（2017）。</li><li><strong>現職</strong>：Cisco Systems（Cisco Meraki）Senior Network Support Manager（2018〜現在）。日本のカスタマーサポートチームを2名から18名へ立ち上げ・育成（来期24名体制見込み）。安定した給与収入あり。</li><li><strong>マネジメント実績</strong>：2004年以降一貫して外資系IT（Genesys／Arkadin＝現NTT／Cisco Webex／Cisco Meraki）でチーム立ち上げ・人材採用・KPI管理を担当。Arkadin時代は前年比10%のコスト（TCO）削減、ベンダー価格交渉・契約管理の実績。シンガポール赴任でアジア複数キャリアと折衝（2007-2010）。</li><li><strong>強み</strong>：ゼロからの事業・チーム立ち上げと、数値目標を立てて実行・改善する運営力。『7つの習慣』に基づくコーチングで200名以上に講座実施。→ 宿泊事業の立ち上げ・継続運営に直結。</li><li><strong>不動産の実績</strong>：iUMAプロパティマネジメント合同会社で収益不動産を取得・賃貸運営（筑波銀行融資・滞納ゼロ）。</li><li><strong>宿泊運営体制</strong>：運営代行（F-area 等）に清掃・予約・チェックインを委託し、未経験領域を補完。OTA集客とスマートロックで非対面運営。</li></ul>
 <h2>3. 取扱商品・サービス</h2>
 <ul><li>簡易宿所（旅館業許可）。49.23㎡・定員5名（ダブル2＋シングル1）。モダンジャパニーズ内装。</li><li>販路：Booking.com / Airbnb / Agoda / Expedia（OTA）。スマートロックで非対面チェックイン。</li><li>差別化：中洲中心の立地、5名対応の広さ、グループ・訪日客向け価格。</li></ul>
 <h2>4. 取引先・取引関係</h2>
@@ -63,13 +75,13 @@ a{color:#1e5fb4;word-break:break-all}
 <h2>5. 従業員</h2>
 <ul><li>当面0名（運営代行・外注で対応）。拡大時に検討。</li></ul>
 <h2>6. お借入の状況（法人・代表者）</h2>
-<ul><li>筑波銀行：[要記入：物件ごとの残債・月返済・金利・残期間]。返済は滞りなし。</li><li>今回の公庫借入と既存返済を合算しても返済可能であることを資金繰り表で示す。</li></ul>
+<ul><li>筑波銀行（セゾン保証）：★仮 — 物件ごとに 残債○○円／月返済○○円／金利2.40-2.85%／残期間○年（要差し替え）。<strong>返済は滞りなし（信用力の核）</strong>。</li><li>今回の公庫借入と既存返済を合算しても返済可能であることを資金繰り表で示す。</li></ul>
 <h2>7. 必要な資金と調達方法（設備資金）</h2>
-<table><thead><tr><th>必要資金</th><th>金額</th><th>調達方法</th><th>金額</th></tr></thead><tbody><tr><td>物件取得費（中洲2-1-11 49.23㎡）</td><td>22,400,000</td><td>自己資金</td><td>[要記入]</td></tr><tr><td>リノベーション工事（精査後目標）</td><td>5,500,000</td><td>公庫 生活衛生貸付（設備資金・希望）</td><td>[要記入]</td></tr><tr><td>取得諸費用（約7%）</td><td>約1,568,000</td><td>（既存筑波融資は本件と別）</td><td>—</td></tr><tr><td>民泊/旅館 セットアップ（家具家電・スマートロック・許認可・消防）</td><td>1,903,990</td><td></td><td></td></tr><tr><td>予備費</td><td>[要記入]</td><td></td><td></td></tr><tr><td><strong>合計</strong></td><td><strong>約31,400,000</strong></td><td><strong>合計</strong></td><td>一致させる</td></tr></tbody></table>
-<blockquote>自己資金は総事業費の2〜3割あると審査が通りやすい（制度上の最低要件は撤廃済みだが実務目安）。</blockquote>
+<table><thead><tr><th>必要資金</th><th>金額</th><th>調達方法</th><th>金額</th></tr></thead><tbody><tr><td>物件取得費（中洲2-1-11 49.23㎡）</td><td>22,400,000</td><td>自己資金 ★仮</td><td>8,000,000</td></tr><tr><td>リノベーション工事（精査後目標）</td><td>5,500,000</td><td>公庫 生活衛生貸付（設備資金・希望）★仮</td><td>23,400,000</td></tr><tr><td>取得諸費用（約7%）</td><td>1,568,000</td><td></td><td></td></tr><tr><td>民泊/旅館 セットアップ（家具家電・スマートロック・許認可・消防）</td><td>1,903,990</td><td></td><td></td></tr><tr><td>予備費</td><td>300,000</td><td></td><td></td></tr><tr><td><strong>合計</strong></td><td><strong>31,671,990</strong></td><td><strong>合計</strong></td><td><strong>31,400,000</strong></td></tr></tbody></table>
+<blockquote>★仮の自己資金800万（総事業費の約25%）・公庫希望2,340万。自己資金は2〜3割あると通りやすい（制度上の最低要件は撤廃済みだが実務目安）。実際の自己資金額が決まり次第、公庫希望額を調整（合計と一致させる）。公庫国民生活事業の上限7,200万円内。</blockquote>
 <h2>8. 事業の見通し（収支計画・月額）</h2>
 <p>前提：稼働率 初年度55%→2年目65%、ADR 18,000円（中洲実勢12-15k＋5名定員グループ割増。要AirDNA等で実測）。</p>
-<table><thead><tr><th>項目</th><th>当初（55%）</th><th>軌道後（65%）</th><th>根拠</th></tr></thead><tbody><tr><td>月間売上</td><td>約301,000</td><td>約356,000</td><td>ADR18,000×365×稼働÷12</td></tr><tr><td>運営代行18%＋OTA15%＋清掃＋消耗＋光熱＋宿泊税（変動 約48%）</td><td>約146,000</td><td>約172,000</td><td>F-area収支計画の実測比率</td></tr><tr><td>固定（管理/スマートロック/ネット/宿泊税申請）</td><td>約11,900</td><td>約11,900</td><td></td></tr><tr><td>旅館業ランニング（消防点検・許可維持）</td><td>約7,500</td><td>約7,500</td><td></td></tr><tr><td><strong>営業利益（返済前）</strong></td><td><strong>約135,000</strong></td><td><strong>約164,000</strong></td><td></td></tr><tr><td>想定返済（例：2,500万・年2.0%・20年）</td><td>約126,000</td><td>約126,000</td><td>公庫設備資金</td></tr><tr><td><strong>返済後の手残り</strong></td><td><strong>約9,000</strong></td><td><strong>約38,000</strong></td><td></td></tr><tr><td><strong>DSCR（営業利益÷返済）</strong></td><td><strong>約1.07</strong></td><td><strong>約1.30</strong></td><td>目標1.3以上</td></tr></tbody></table>
+<table><thead><tr><th>項目</th><th>当初（55%）</th><th>軌道後（65%）</th><th>根拠</th></tr></thead><tbody><tr><td>月間売上</td><td>約301,000</td><td>約356,000</td><td>ADR18,000×365×稼働÷12</td></tr><tr><td>運営代行18%＋OTA15%＋清掃＋消耗＋光熱＋宿泊税（変動 約48%）</td><td>約146,000</td><td>約172,000</td><td>F-area収支計画の実測比率</td></tr><tr><td>固定（管理/スマートロック/ネット/宿泊税申請）</td><td>約11,900</td><td>約11,900</td><td></td></tr><tr><td>旅館業ランニング（消防点検・許可維持）</td><td>約7,500</td><td>約7,500</td><td></td></tr><tr><td><strong>営業利益（返済前）</strong></td><td><strong>約135,000</strong></td><td><strong>約164,000</strong></td><td></td></tr><tr><td>想定返済（公庫希望2,340万・年2.0%・20年）★仮</td><td>約118,000</td><td>約118,000</td><td>金利は申込時の基準利率で更新</td></tr><tr><td><strong>返済後の手残り</strong></td><td><strong>約17,000</strong></td><td><strong>約46,000</strong></td><td></td></tr><tr><td><strong>DSCR（営業利益÷返済）</strong></td><td><strong>約1.14</strong></td><td><strong>約1.39</strong></td><td>目標1.3以上（軌道で達成）</td></tr></tbody></table>
 <blockquote>当初は薄いが、稼働が中洲標準(65%)に乗ればDSCR1.3。<strong>ADRと稼働の実測根拠</strong>を添えるほど審査に強い。リノベを精査額（550万）に抑えるほど借入が減りDSCRが改善する。</blockquote>
 <h2>9. 旅館業許可の取得見通し</h2>
 <ul><li>福岡市保健所（中央区）に簡易宿所営業許可を申請。申込時点で[取得済/申請中/申請予定：要記入]。</li><li>消防法令適合通知書・用途の確認（49㎡＝200㎡未満で建築確認申請は不要だが適合義務は残る）。</li><li>公庫は申請中でも申込可。許可取得スケジュールを明記する。</li></ul>
@@ -96,6 +108,33 @@ a{color:#1e5fb4;word-break:break-all}
 <ol><li>まず電話/問い合わせフォームで上記「最初に確認する2点」を確認</li><li>通る前提なら仮審査 → 物件・収支・法人決算を提出 → 本審査</li><li>公庫（旅館業）と並行可。ただし最終的にどちらで実行するか（賃貸 or 旅館業）を決め、実行先には実態を正しく伝える（資金使途違反を避ける）</li></ol>
 <h2>滋賀がNG/条件悪い場合の次（金利が近い順）</h2>
 <ul><li>大垣共立銀行「キラット」（セゾン保証・上限5億・3.4-5.2%）</li><li>関西みらい銀行（セゾン保証・2.55-4.55%）</li><li>東京スター銀行 不動産担保ビジネスローン（1.25-7.5%）</li><li>L&amp;Fアセットファイナンス（民泊専用ノンバンク・3.3-4.55%／旅館業で出すとき）</li></ul>
+<hr class="sec">
+<h1>リノベ相見積もり — インダストリアルで安く（福岡）</h1>
+<blockquote>業者の「モダンジャパニーズ726万」は叩き台。<strong>本命はインダストリアル（躯体現し・配管露出・黒鉄・塗装仕上げ）</strong>。 インダストリアルは「仕上げ材・隠蔽工事・造作を削る」ほど安くなる美学なので、賃貸/民泊と相性が良い。 公庫へは今ある見積（726万）を設備資金の根拠として持参可。ベストプラクティスは、出向く前にインダストリアルの相見積を1社でも取り、<strong>低い方の金額で出す</strong>（借入が減りDSCRが上がる）。</blockquote>
+<h2>なぜインダストリアルは安く仕上がるか（原価構造）</h2>
+<ul><li>躯体現し → 天井・壁の仕上げ材と大工賃を削減（10-20%）</li><li>配管・配線の露出 → 天井裏の隠蔽工事が不要（8-15%）</li><li>塗装仕上げ中心 → クロス/タイル張りを削減（12-18%）</li><li>造作家具をスチール什器/パイプラックで代替（5-10%）</li><li>合計でフル工事費の <strong>30-40%圧縮余地</strong></li><li>逆に高くつく：鉄骨造作・特注ダクト・特殊塗装・躯体補修（爆裂/クラックは別途見積）</li></ul>
+<h2>相見積もり先 優先リスト（福岡・インダストリアル）</h2>
+<table><thead><tr><th>Tier</th><th>会社</th><th>所在/連絡</th><th>特徴</th><th>想定坪/㎡単価</th></tr></thead><tbody><tr><td>1</td><td>Proceed Design</td><td>福岡市中央区 092-791-4080</td><td>インダストリアル特化・躯体現し。49㎡で総額100万円台の事例</td><td>㎡10-12万 ≈ 490-590万</td></tr><tr><td>1</td><td>RenoLIVING</td><td>福岡市南区（サイト問合せ）</td><td>躯体現し設計に強い・賃貸リノベ専門・10年保証</td><td>㎡13万→交渉で10万も</td></tr><tr><td>1</td><td>はぴりの！</td><td>福岡市（資料請求）</td><td>インダストリアル実績多・コスパ感覚近い</td><td>㎡10.5万 ≈ 515万</td></tr><tr><td>2</td><td>SOSHIN工務店</td><td>福岡市早良区</td><td>自社施工で中間マージン削減</td><td>要見積（民泊実績要確認）</td></tr><tr><td>2</td><td>ナショナルリファイン／ジャパンテクニカル研創</td><td>博多区</td><td>地元・小規模リフォーム</td><td>要見積</td></tr></tbody></table>
+<blockquote>出典: Proceed Design <a href="https://re-proceeddesign.com/works_type/industrial/">https://re-proceeddesign.com/works_type/industrial/</a> ／ RenoLIVING <a href="https://www.renoliving.jp/">https://www.renoliving.jp/</a> ／ はぴりの <a href="https://www.happy-renovation.com/works/index.php">https://www.happy-renovation.com/works/index.php</a> ／ SOSHIN <a href="https://soshin-fab.co.jp/">https://soshin-fab.co.jp/</a></blockquote>
+<h2>コスパ型工務店の見分け方</h2>
+<ul><li>自社施工率80%以上／坪単価を明示／「直営・マージン無し」を謳う／民泊・店舗実績／工事項目ごとの内訳見積／10年保証・瑕疵保険</li></ul>
+<h2>相見積もり仕様書（49㎡・インダストリアル・そのまま渡せる）</h2>
+<ul><li>用途：簡易宿所/民泊＋賃貸併用想定。予算枠 550〜700万（内装・電気・給排水まで。設備機器別）</li><li>スケルトン解体＋躯体現し（爆裂/クラック補修は別途金額提示）</li><li>床：コンクリート研ぎ出し＋透明ウレタン塗装</li><li>壁：躯体＋艶なし塗装（黒/グレー2回塗り）。大面積クロス禁止、局所補修ボードのみ</li><li>天井：躯体現し（配管・ダクト露出）、仕上げ塗装のみ</li><li>建具：既存サッシ/ドア再利用（ペイント）、新規は鉄フレーム＋ガラス</li><li>電気：配線露出（黒PF管）、照明はスポット/ペンダント（ダウンライト不可）</li><li>給排水：配管露出（黒鉄/アイアン塗装）、キッチン・UBは既存位置維持</li><li>見積依頼項目：総額(税抜)/坪・㎡単価/工期/仮設・廃棄内訳/保証・瑕疵保険/追加費用の基準/検査方法</li><li>条件：相見積3社比較中。同額なら「内訳の透明性」と「民泊知見」で評価</li></ul>
+<h2>躯体現しの落とし穴（相見積時に必ず質問）</h2>
+<ul><li>爆裂・クラック補修費（別途か）／古い配管は塗装防錆か交換か／躯体現しで遮音性が落ちる→床補強の提案／天井高の実測／露出部の定期メンテ頻度</li></ul>
+<hr class="sec">
+<h1>運営代行 — 候補と相場（福岡・中洲 簡易宿所/民泊）</h1>
+<blockquote>本業があるため、清掃・予約管理・チェックイン・ゲスト対応・価格調整を委託する前提。集客はOTA（Booking/Airbnb/Agoda/Expedia）。</blockquote>
+<h2>手数料の相場</h2>
+<ul><li><strong>完全代行（集客+予約+ゲスト対応+価格調整）：売上の 15〜20%</strong>（中洲もこのレンジ。20%超は割高、サイト運営のみなら10-15%）</li><li>月額固定型：部分委託で月1.9〜3.5万、完全代行は月10万〜（売上大の物件）</li><li>清掃料：1回 3,500〜5,000円（49㎡）。リネン・消耗品は清掃料込みが多い</li><li>チェックインシステム：OTA連携で無料が多い</li><li>月10日稼働・売上50万の例：代行7.5〜10万＋清掃3.5万 ＝ <strong>月11〜13.5万</strong></li></ul>
+<blockquote>業者計画の「運営代行18%＋OTA15%」の18%は相場レンジ内。ただし「総売上の%か、OTA控除後の%か」「清掃込みか別か」は要確認（二重計上の有無）。</blockquote>
+<h2>打診すべき運営代行 優先候補（福岡）</h2>
+<table><thead><tr><th>Tier</th><th>会社</th><th>特徴</th><th>問合せ</th></tr></thead><tbody><tr><td>1</td><td>F-area（株式会社F-area・中央区赤坂/薬院）</td><td>既存見積の運営元。福岡特化・簡易宿所対応・多言語24h・Booking 9.3/10・スーパーホスト・黒字運営保証を標榜</td><td><a href="https://www.f-area-site.com/">https://www.f-area-site.com/</a></td></tr><tr><td>1</td><td>Airstar</td><td>福岡10年・全国展開・全OTA統合・収益レポート</td><td><a href="https://airbnb-star.com/">https://airbnb-star.com/</a></td></tr><tr><td>2</td><td>Unison Ever</td><td>民泊新法前からの実績・福岡市内知見</td><td><a href="https://unisonever.com/">https://unisonever.com/</a></td></tr><tr><td>2</td><td>Samp. / SmartInn / &amp;Host</td><td>オーダーメイド（部分委託でコスト調整可）</td><td>民泊管理バンク掲載</td></tr><tr><td>3</td><td>民泊管理バンク</td><td>月額19,800円〜の最安・自由度高</td><td><a href="https://bizpato.com/minpaku/fukuoka/">https://bizpato.com/minpaku/fukuoka/</a></td></tr></tbody></table>
+<blockquote>出典: 福岡の運営代行おすすめ(民泊管理バンク) <a href="https://bizpato.com/minpaku/fukuoka/">https://bizpato.com/minpaku/fukuoka/</a> ／ F-area口コミ <a href="https://privatelodging-agency.com/pickup/f-area/">https://privatelodging-agency.com/pickup/f-area/</a> ／ 費用相場(tabilmo) <a href="https://tabilmo.com/tips/minpaku-agency/">https://tabilmo.com/tips/minpaku-agency/</a></blockquote>
+<h2>選ぶ時のチェックポイント（料率以外）</h2>
+<ul><li>同規模・同地区の平均稼働率の開示／レビュー対応品質（自社OTAスコア）／多言語・24時間対応／ダイナミックプライシング／トラブルSLA／<strong>解約条件（契約期間・違約金・最低稼働保証）</strong>／会計・行政報告サポート</li></ul>
+<h2>各社への確認テンプレート（49㎡1室・簡易宿所・フルスコープで見積取得）</h2>
+<ol><li>手数料は総売上の%か、OTA控除後の%か。清掃費は込みか別か。月額固定の選択肢</li><li>清掃料（1回）・リネン/消耗品の明細・清掃品質保証</li><li>対応言語と対応時間、トラブル時のSLA</li><li>初期設定費（OTA登録・写真）・チェックイン方式・鍵管理</li><li>最低契約期間・違約金・低稼働時の対応</li><li>同地区の平均稼働率・オーナー平均月収・継続率</li><li>F-area には加えて「黒字運営保証」の条件（保証額・期間・例外）を必ず確認</li></ol>
 <hr class="sec">
 <p style="font-size:11px;color:#888">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
 </body></html>

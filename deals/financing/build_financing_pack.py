@@ -15,7 +15,32 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]   # property-analyzer/
 FIN_DIR = ROOT / "deals" / "financing"
 OUT = ROOT / "output" / "financing-placespot-shinbashi.html"
-FILES = ["00_playbook.md", "01_jfc_旅館業_事業計画書.md", "02_shiga_賃貸_打診パッケージ.md"]
+PDF_OUT = ROOT / "output" / "financing-placespot-shinbashi.pdf"
+PDF_NAME = PDF_OUT.name
+FILES = ["00_playbook.md", "01_jfc_旅館業_事業計画書.md", "02_shiga_賃貸_打診パッケージ.md",
+         "03_リノベ相見積_インダストリアル.md", "04_運営代行_候補と相場.md"]
+
+CHROME_CANDIDATES = [
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+]
+
+
+def make_pdf() -> bool:
+    """HTMLからChrome headlessでPDFを生成（印刷・提出用）。Chrome無ければスキップ。"""
+    chrome = next((c for c in CHROME_CANDIDATES if Path(c).exists()), None)
+    if not chrome:
+        print("[pdf] Chrome未検出のためPDF生成スキップ（HTMLの🖨ボタンで保存可）")
+        return False
+    r = subprocess.run([
+        chrome, "--headless", "--disable-gpu", "--no-sandbox",
+        f"--print-to-pdf={PDF_OUT}", "--no-pdf-header-footer",
+        f"file://{OUT}",
+    ], capture_output=True)
+    ok = PDF_OUT.exists() and r.returncode == 0
+    print(f"[pdf] {'generated: '+str(PDF_OUT.resolve()) if ok else 'failed'}")
+    return ok
 
 
 def md_to_html(md: str) -> str:
@@ -92,14 +117,25 @@ li{{margin:3px 0}}
 hr{{border:none;border-top:1px solid #ddd;margin:16px 0}}
 hr.sec{{border-top:2px dashed #c9a84c;margin:36px 0}}
 a{{color:#1e5fb4;word-break:break-all}}
-@media print{{body{{padding:0}}h2{{page-break-before:auto}}a{{color:#1a1a1a}}}}
+.toolbar{{position:sticky;top:0;background:#1a1d27;margin:-28px -20px 18px;padding:12px 20px;display:flex;gap:10px;flex-wrap:wrap;z-index:10}}
+.toolbar button,.toolbar a{{background:#c9a84c;color:#1a1207;font-weight:700;border:none;padding:10px 16px;border-radius:9px;font-size:14px;text-decoration:none;cursor:pointer}}
+.toolbar a.alt{{background:#242836;color:#e4e4e7}}
+@media print{{.toolbar{{display:none}}body{{padding:0}}h2{{page-break-before:auto}}a{{color:#1a1a1a}}}}
+@media(max-width:700px){{body{{padding:14px}}.toolbar{{margin:-14px -14px 16px;padding:10px 14px}}h1{{font-size:19px}}h2{{font-size:16px}}
+  table{{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}
+  table thead,table tbody{{display:table;width:100%;min-width:520px}}}}
 </style></head><body>
+<div class="toolbar">
+  <button onclick="window.print()">🖨 印刷 / PDFで保存</button>
+  <a class="alt" href="{PDF_NAME}" download>⬇ PDFをダウンロード</a>
+</div>
 {body}
 <hr class="sec">
 <p style="font-size:11px;color:#888">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
 </body></html>"""
     OUT.write_text(doc, encoding="utf-8")
     print(f"generated: {OUT.resolve()}")
+    make_pdf()
     subprocess.run(["open", str(OUT.resolve())])
     return 0
 

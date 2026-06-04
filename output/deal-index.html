@@ -8,22 +8,34 @@
 body{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans JP',sans-serif;padding:24px;max-width:880px;margin:0 auto;line-height:1.6}
 h1{font-size:22px;font-weight:800}
 .sub{color:var(--text-muted);font-size:13px;margin:4px 0 22px}
-.dcard{display:block;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px;text-decoration:none;color:inherit;transition:border-color .15s}
+.dcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px;transition:border-color .15s}
 .dcard:hover{border-color:var(--gold)}
+.dlink{display:block;text-decoration:none;color:inherit}
 .dn{font-size:17px;font-weight:700}
 .da{font-size:13px;color:var(--text-secondary);margin-top:2px}
 .dm{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text-secondary);margin-top:8px}
 .dm .price{color:var(--gold);font-weight:700}
 .dnote{font-size:12px;color:var(--text-muted);margin-top:8px}
+.dactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.dbtn{flex:1;min-width:200px;text-align:center;text-decoration:none;background:var(--surface2);border:1px solid var(--border-light);color:var(--text);padding:11px 14px;border-radius:10px;font-size:13px;font-weight:600}
+.dbtn.gold{background:var(--gold);color:#1a1207;border-color:var(--gold)}
+.dbtn:active{opacity:.8}
 footer{margin-top:24px;font-size:11px;color:var(--text-muted);border-top:1px solid var(--border);padding-top:14px}
+@media(max-width:600px){body{padding:14px}.dbtn{flex:1 1 100%}}
 </style></head><body>
 <h1>物件投資判断ハブ</h1>
 <div class="sub">賃貸 / 民泊 / 旅館業の収支を1物件ずつ深掘り。カードをタップで対話型シミュレーターへ。</div>
-<a class="dcard" href="deal-placespot-shinbashi.html">
-      <div class="dn">プレイスポットしんばしビル</div>
-      <div class="da">福岡県福岡市博多区中洲2-1-11</div>
-      <div class="dm"><span>49.23㎡</span><span>1DK+和室（DK 9.6帖 / 和室 7.2帖）</span><span class="price">¥2,240万</span></div>
-      <div class="dnote">中洲（観光・宿泊需要が極めて強い福岡の一等地）。区分1ユニット。</div>
-    </a>
+<div class="dcard">
+      <a class="dlink" href="deal-placespot-shinbashi.html">
+        <div class="dn">プレイスポットしんばしビル</div>
+        <div class="da">福岡県福岡市博多区中洲2-1-11</div>
+        <div class="dm"><span>49.23㎡</span><span>1DK+和室（DK 9.6帖 / 和室 7.2帖）</span><span class="price">¥2,240万</span></div>
+        <div class="dnote">中洲（観光・宿泊需要が極めて強い福岡の一等地）。区分1ユニット。</div>
+      </a>
+      <div class="dactions">
+        <a class="dbtn" href="deal-placespot-shinbashi.html">📊 投資判断シミュレーター</a>
+        <a class="dbtn gold" href="financing-placespot-shinbashi.html">📄 融資打診パッケージ（公庫・滋賀ほか）</a>
+      </div>
+    </div>
 <footer>各物件＝1 YAML（deals/）。前提はスライダーで可変。投資判断は実地確認・税理士/金融機関の確認を要する。</footer>
 </body></html>

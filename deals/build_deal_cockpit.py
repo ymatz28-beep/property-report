@@ -497,6 +497,45 @@ init();
 """
 
 
+def build_index_html(all_cfgs: list[dict]) -> str:
+    """物件一覧ハブ。各物件をカードで並べ、個別コックピットへリンク（4S横展開）。"""
+    cards = []
+    for cfg in all_cfgs:
+        d, acq = cfg["deal"], cfg["acquisition"]
+        price_man = round(acq["asking_price_yen"] / 10000)
+        cards.append(f"""<a class="dcard" href="deal-{d['id']}.html">
+      <div class="dn">{d['name']}</div>
+      <div class="da">{d['address']}</div>
+      <div class="dm"><span>{d['area_sqm']}㎡</span><span>{d['layout']}</span><span class="price">¥{price_man:,}万</span></div>
+      <div class="dnote">{d.get('area_note','')}</div>
+    </a>""")
+    cards_html = "\n".join(cards)
+    return f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>物件投資判断ハブ</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{{--bg:#0f1117;--card:#1a1d27;--border:#2d3348;--border-light:#3d4460;--gold:#c9a84c;--text:#e4e4e7;--text-secondary:#9ca3af;--text-muted:#7c8293}}
+*{{box-sizing:border-box;margin:0;padding:0}}
+body{{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans JP',sans-serif;padding:24px;max-width:880px;margin:0 auto;line-height:1.6}}
+h1{{font-size:22px;font-weight:800}}
+.sub{{color:var(--text-muted);font-size:13px;margin:4px 0 22px}}
+.dcard{{display:block;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px;text-decoration:none;color:inherit;transition:border-color .15s}}
+.dcard:hover{{border-color:var(--gold)}}
+.dn{{font-size:17px;font-weight:700}}
+.da{{font-size:13px;color:var(--text-secondary);margin-top:2px}}
+.dm{{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text-secondary);margin-top:8px}}
+.dm .price{{color:var(--gold);font-weight:700}}
+.dnote{{font-size:12px;color:var(--text-muted);margin-top:8px}}
+footer{{margin-top:24px;font-size:11px;color:var(--text-muted);border-top:1px solid var(--border);padding-top:14px}}
+</style></head><body>
+<h1>物件投資判断ハブ</h1>
+<div class="sub">賃貸 / 民泊 / 旅館業の収支を1物件ずつ深掘り。カードをタップで対話型シミュレーターへ。</div>
+{cards_html}
+<footer>各物件＝1 YAML（deals/）。前提はスライダーで可変。投資判断は実地確認・税理士/金融機関の確認を要する。</footer>
+</body></html>"""
+
+
 def main(argv: list[str]) -> int:
     OUTPUT_DIR.mkdir(exist_ok=True)
     if len(argv) > 1:
@@ -514,7 +553,12 @@ def main(argv: list[str]) -> int:
         out.write_text(html, encoding="utf-8")
         out_files.append(out)
         print(f"generated: {out.resolve()}")
-    # open the first one
+    # 一覧ハブは常に全 deals/*.yaml から再構築（単一物件指定でも完全な一覧を保つ）
+    all_cfgs = [load_deal(p) for p in sorted(DEALS_DIR.glob("*.yaml"))]
+    index_out = OUTPUT_DIR / "deal-index.html"
+    index_out.write_text(build_index_html(all_cfgs), encoding="utf-8")
+    print(f"generated: {index_out.resolve()} (hub: {len(all_cfgs)} deals)")
+    # open the first deal
     subprocess.run(["open", str(out_files[0].resolve())])
     print(f"フォルダを表示した: {out_files[0].resolve()}")
     return 0

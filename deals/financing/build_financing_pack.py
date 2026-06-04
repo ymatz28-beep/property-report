@@ -131,7 +131,7 @@ a{{color:#1e5fb4;word-break:break-all}}
 </div>
 {body}
 <hr class="sec">
-<p style="font-size:11px;color:#888">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
+<p style="font-size:11px;color:var(--text-muted)">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
 </body></html>"""
     OUT.write_text(doc, encoding="utf-8")
     print(f"generated: {OUT.resolve()}")

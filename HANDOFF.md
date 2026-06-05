@@ -12,7 +12,7 @@
 - 物件: 仙台市太白区茂ケ崎3-3-22・木造一棟8戸・1985年築・延床198.74㎡・Robot Home仙台支店管理・公庫融資（残債約1,860万・完済2038年12月・年1.9%元金均等）。家賃月246,000円（2026送金明細実額）・NOI年約281万。
 - 売出方針: 高値アンカー2,950万円（表面10.0%）。売り急ぎ不要（毎月黒字）。
 - 成果物フォルダ: `/Users/ytejima/Documents/Projects/property-report/crestmall-sale/`
-  - `crestmall_sale_teaser.pdf`（買主/業者向け売り込み2枚・昨日6/4作成・完成）
+  - `crestmall_gaiyo.pdf`（物件概要書＝買主/業者向け売り込み2枚・旧名teaser・完成）
   - `crestmall_factsheet.pdf`（査定用1枚シート・本日作成・号室別は転記欄・1K23㎡確定）
   - `outreach_drafts.md`（Robot Home打診＋楽待査定＋仙台ローカル業者の問い合わせ文3本・署名【氏名/電話/メール】差し替え要）
 - 残タスク: Robot Home仙台支店へ打診＋楽待で査定（複数社・一般媒介）。送るだけの状態。

@@ -497,7 +497,7 @@ function renderStatic(){
   }
   const F = CFG.financing_strategy;
   if(F){
-    finPack.innerHTML = `<a href="financing-${CFG.deal.id}.html" target="_blank" style="display:inline-block;background:var(--gold);color:#1a1207;font-weight:700;padding:10px 18px;border-radius:10px;text-decoration:none">📄 融資打診パッケージ（公庫・滋賀の事業計画書＋必要書類＋手順）を開く</a>`;
+    finPack.innerHTML = `<a href="financing.html" target="_blank" style="display:inline-block;background:var(--gold);color:#1a1207;font-weight:700;padding:10px 18px;border-radius:10px;text-decoration:none">📄 融資打診パッケージ（公庫・滋賀の事業計画書＋必要書類＋手順）を開く</a>`;
     if(F.rate_order){
       finLadder.querySelector('tbody').innerHTML = F.rate_order.map(r=>{
         const last = r.rank>=6;
@@ -619,16 +619,17 @@ def build_index_html(all_cfgs: list[dict]) -> str:
     for cfg in all_cfgs:
         d, acq = cfg["deal"], cfg["acquisition"]
         price_man = round(acq["asking_price_yen"] / 10000)
+        slug = d.get("url_slug", d["id"])   # 配信先サブパス /property/<slug>/
         cards.append(f"""<div class="dcard">
-      <a class="dlink" href="deal-{d['id']}.html">
+      <a class="dlink" href="{slug}/">
         <div class="dn">{d['name']}</div>
         <div class="da">{d['address']}</div>
         <div class="dm"><span>{d['area_sqm']}㎡</span><span>{d['layout']}</span><span class="price">¥{price_man:,}万</span></div>
         <div class="dnote">{d.get('area_note','')}</div>
       </a>
       <div class="dactions">
-        <a class="dbtn" href="deal-{d['id']}.html">📊 投資判断シミュレーター</a>
-        <a class="dbtn gold" href="financing-{d['id']}.html">📄 融資打診パッケージ（公庫・滋賀ほか）</a>
+        <a class="dbtn" href="{slug}/">📊 投資判断シミュレーター</a>
+        <a class="dbtn gold" href="{slug}/financing.html">📄 融資打診パッケージ（公庫・滋賀ほか）</a>
       </div>
     </div>""")
     cards_html = "\n".join(cards)

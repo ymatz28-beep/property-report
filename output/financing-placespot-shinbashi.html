@@ -1,34 +1,85 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>融資打診パッケージ — プレイスポットしんばし</title>
+<title>融資・補助金パッケージ — プレイスポットしんばし</title>
 <style>
-body{font-family:'Hiragino Sans','Noto Sans JP',sans-serif;max-width:840px;margin:0 auto;padding:28px 20px;color:#1a1a1a;line-height:1.7;background:#fff}
-h1{font-size:22px;border-bottom:3px solid #c9a84c;padding-bottom:6px;margin-top:8px}
-h2{font-size:18px;border-left:5px solid #c9a84c;padding-left:10px;margin-top:28px}
+:root{--gold:#c9a84c;--ink:#1a1a1a}
+html{scroll-behavior:smooth}
+body{font-family:'Hiragino Sans','Noto Sans JP',sans-serif;max-width:840px;margin:0 auto;padding:0 20px 60px;color:var(--ink);line-height:1.7;background:#fff}
+h1{font-size:22px;border-bottom:3px solid var(--gold);padding-bottom:6px;margin-top:8px}
+h2{font-size:18px;border-left:5px solid var(--gold);padding-left:10px;margin-top:28px}
 h3{font-size:15px;margin-top:20px;color:#333}
 h4{font-size:14px;margin-top:14px;color:#555}
+section.doc{scroll-margin-top:120px}
+.flowwrap{scroll-margin-top:120px}
 table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
 th,td{border:1px solid #ccc;padding:6px 9px;text-align:left;vertical-align:top}
 th{background:#f4efe2}
-blockquote{background:#fff8e6;border-left:4px solid #c9a84c;margin:12px 0;padding:8px 14px;font-size:13px;color:#5a4a1a}
+blockquote{background:#fff8e6;border-left:4px solid var(--gold);margin:12px 0;padding:8px 14px;font-size:13px;color:#5a4a1a}
 code{background:#f0f0f0;padding:1px 5px;border-radius:4px;font-size:12px}
 ul,ol{padding-left:22px}
 li{margin:3px 0}
 hr{border:none;border-top:1px solid #ddd;margin:16px 0}
-hr.sec{border-top:2px dashed #c9a84c;margin:36px 0}
+hr.sec{border-top:2px dashed var(--gold);margin:36px 0}
 a{color:#1e5fb4;word-break:break-all}
-.toolbar{position:sticky;top:0;background:#1a1d27;margin:-28px -20px 18px;padding:12px 20px;display:flex;gap:10px;flex-wrap:wrap;z-index:10}
-.toolbar button,.toolbar a{background:#c9a84c;color:#1a1207;font-weight:700;border:none;padding:10px 16px;border-radius:9px;font-size:14px;text-decoration:none;cursor:pointer}
+/* sticky header: toolbar + toc chips */
+.sticky{position:sticky;top:0;z-index:20;background:#1a1d27;margin:0 -20px 18px;padding:10px 20px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.toolbar button,.toolbar a.btn{background:var(--gold);color:#1a1207;font-weight:700;border:none;padding:9px 15px;border-radius:9px;font-size:14px;text-decoration:none;cursor:pointer}
 .toolbar a.alt{background:#242836;color:#e4e4e7}
-@media print{.toolbar{display:none}body{padding:0}h2{page-break-before:auto}a{color:#1a1a1a}}
-@media(max-width:700px){body{padding:14px}.toolbar{margin:-14px -14px 16px;padding:10px 14px}h1{font-size:19px}h2{font-size:16px}
+.toc{display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:9px;padding-bottom:3px}
+.toc .chip{flex:0 0 auto;background:#242836;color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}
+.toc .chip.active{background:var(--gold);color:#1a1207;border-color:var(--gold)}
+/* flowchart */
+.flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:14px 0 6px}
+.fbox{display:block;width:100%;max-width:640px;background:#fffdf7;border:2px solid var(--gold);border-radius:12px;padding:11px 15px;text-decoration:none;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.fbox b{display:block;font-size:14.5px}
+.fbox small{display:block;color:#5a4a1a;font-size:11.5px;margin-top:3px;line-height:1.5}
+.fbox.start{background:#fff4cf;border-color:#b8902a}
+.fbox.gate{background:#ffe9e3;border-color:#e0623a}
+.fbox.end{background:#e7f6ea;border-color:#2faa55}
+.fbox.first{background:#1a1d27;border-color:#1a1d27}
+.fbox.first b{color:#ffd86b} .fbox.first small{color:#cfd2da}
+.frow{display:flex;gap:12px;width:100%;max-width:640px}
+.frow .fbox{flex:1}
+.farrow{color:#b8902a;font-weight:700;font-size:12.5px;padding:6px 0;text-align:center}
+/* back to top */
+#totop{position:fixed;right:16px;bottom:16px;z-index:30;background:var(--gold);color:#1a1207;border:none;width:46px;height:46px;border-radius:50%;font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s}
+#totop.show{opacity:.95;pointer-events:auto}
+@media print{.sticky,#totop{display:none}body{padding:0}.fbox{box-shadow:none}a{color:#1a1a1a}.flowwrap{page-break-after:always}}
+@media(max-width:700px){body{padding:0 14px 60px}.sticky{margin:0 -14px 16px;padding:9px 14px}h1{font-size:19px}h2{font-size:16px}
+  .frow{flex-direction:column}
   table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
   table thead,table tbody{display:table;width:100%;min-width:520px}}
 </style></head><body>
-<div class="toolbar">
-  <button onclick="window.print()">🖨 印刷 / PDFで保存</button>
-  <a class="alt" href="financing-placespot-shinbashi.pdf" download>⬇ PDFをダウンロード</a>
+<div class="sticky">
+  <div class="toolbar">
+    <button onclick="window.print()">🖨 印刷 / PDF</button>
+    <a class="btn alt" href="financing-placespot-shinbashi.pdf" download>⬇ PDF</a>
+    <a class="btn alt" href="#flow">🗺 全体図</a>
+  </div>
+  <nav class="toc" id="toc"><a class="chip" href="#s0" data-target="s0">融資プレイブック</a><a class="chip" href="#s1" data-target="s1">公庫(旅館業)</a><a class="chip" href="#s2" data-target="s2">滋賀(賃貸)</a><a class="chip" href="#s3" data-target="s3">リノベ相見積</a><a class="chip" href="#s4" data-target="s4">運営代行</a><a class="chip" href="#s5" data-target="s5">補助金まとめ</a><a class="chip" href="#s6" data-target="s6">発注カレンダー</a><a class="chip" href="#s7" data-target="s7">相談メール</a></nav>
 </div>
+
+<section class="flowwrap" id="flow">
+  <h1>全体の流れ（ここから各章へ飛べる）</h1>
+  <div class="flow">
+    <a class="fbox start" href="#s1"><b>1. 旅館業（簡易宿所）許可を取る</b><small>すべての低金利と補助金を同時に開く"スイッチ"。賃貸のままだと両方とも全滅</small></a>
+    <div class="farrow">▼ この1手が、下の2つを同時に開く</div>
+    <div class="frow">
+      <a class="fbox" href="#s0"><b>2A. 融資（低金利の梯子）</b><small>公庫 振興事業貸付＝組合加入で18-20年→DSCR成立。次に商工中金。法人の受け皿はセゾン直接</small></a>
+      <a class="fbox" href="#s5"><b>2B. 補助金・税優遇</b><small>福岡市 受入環境補助(半額・上限40万)／省力化補助／経営強化税制(即時償却・10%控除)</small></a>
+    </div>
+    <div class="farrow">▼ どちらも「決定の紙が出る前に発注したら対象外」</div>
+    <a class="fbox gate" href="#s6"><b>3. ★発注ゲート</b><small>計画認定・交付決定を確認してから、鍵・端末・家具・空調を発注。リノベ本体は対象外なので先行してよい</small></a>
+    <div class="farrow">▼</div>
+    <a class="fbox" href="#s6"><b>4. 工事 → 旅館業 許可取得 → 開業（OTA掲載）</b></a>
+    <div class="farrow">▼</div>
+    <a class="fbox end" href="#s6"><b>5. 実績報告で補助金が後払い入金 ＋ 確定申告で節税</b><small>立て替えた分を、補助金と即時償却/税額控除で回収する</small></a>
+    <div class="farrow">▼ いま踏む最初の一歩</div>
+    <a class="fbox first" href="#s7"><b>▶ 相談メール3本を送る</b><small>福岡市 観光部／保健所／商工会議所＋事業者ID(gBizID)申請</small></a>
+  </div>
+</section>
+<section id="s0" class="doc">
 <h1>融資打診プレイブック — プレイスポットしんばし（中洲2-1-11）</h1>
 <p><strong>方針：金利の低いところから順に打診する。2路線を並行で進める。高金利ノンバンクは最終手段。</strong></p>
 <blockquote><strong>★★ 2026-06-05 一次ソース裏取りで前提を2点修正（下の「裏取りで変わった2点」を必ず読む）★★</strong></blockquote>
@@ -61,7 +112,9 @@ a{color:#1e5fb4;word-break:break-all}
 <hr>
 <h2>要記入チェックリスト（Yumaが埋める空欄）</h2>
 <ul><li>[ ] 自己資金の額と出所</li><li>[ ] 法人決算3期の要点（売上・利益・純資産）</li><li>[ ] 筑波の既存借入：物件ごとの残債・月返済・金利・残期間</li><li>[ ] 物件の最終取得価格（指値交渉の結果）</li><li>[ ] リノベ最終見積（精査後の確定額・550万目標）</li><li>[x] 管理規約の民泊/事業使用の可否 → 確認済み（可）</li></ul>
+</section>
 <hr class="sec">
+<section id="s1" class="doc">
 <h1>日本政策金融公庫 福岡支店 向け 事業計画書（旅館業・簡易宿所）</h1>
 <blockquote><strong>⚠ 仮の数値を含む完成ドラフト。提出前に下記4点だけ実数へ差し替える（★仮 と表記）：</strong> 1. 自己資金の額・出所　2. 法人決算3期の実数　3. 手嶋耕一（代表社員）・手嶋翼真（運営）の年収・資産　4. 筑波銀行の残債・返済額。 物件・収支・稼働根拠・資金計画の構造・経営者の経歴（CVより）は記入済み。</blockquote>
 <blockquote>公式の「創業計画書」Excelに転記する下書き。空欄[要記入]はYumaの実数を入れる。 公式様式: <a href="https://www.jfc.go.jp/n/service/dl_kokumin.html">https://www.jfc.go.jp/n/service/dl_kokumin.html</a> ／ 創業計画書Excel: <a href="https://www.jfc.go.jp/n/service/xls/kaigyou00_190507a.xlsx">https://www.jfc.go.jp/n/service/xls/kaigyou00_190507a.xlsx</a> 制度: 生活衛生貸付（一般貸付/振興事業貸付）・国民生活事業。福岡支店(国民生活事業) 092-411-9111 博多駅前3-21-12。 低利ルート: 福岡県旅館ホテル生活衛生同業組合 加入 → 振興事業貸付（基準利率より低利＋振興事業計画で −0.3%）。  <strong>★★ 最重要・2026-06-05 一次ソース裏取りで判明 ★★</strong> 生活衛生貸付は返済年数が2系統で別物：<strong>一般貸付＝13年以内</strong> / <strong>振興事業貸付（生活衛生同業組合 加入が条件）＝18年以内・特別20年</strong>。 この物件は借入2,340万・金利2.0%で月返済が <strong>13年≒17.0万 / 18年≒12.9万 / 20年≒11.8万</strong>。軌道65%稼働の営業利益16.4万に対しDSCRは <strong>13年=0.96（赤字で回らない）/ 18年=1.27 / 20年=1.39</strong>。 → <strong>組合に加入して振興事業貸付（18-20年）を取ることが、公庫で成立する必須条件。一般貸付（13年）では成立しない。</strong> まず福岡県旅館ホテル生活衛生同業組合への加入相談を先行する。 出典: 一般貸付（生活衛生）13年 <a href="https://www.jfc.go.jp/n/finance/search/32_ippankashitsuke_m.html">https://www.jfc.go.jp/n/finance/search/32_ippankashitsuke_m.html</a> ／ 振興事業貸付18-20年（生活衛生営業指導センター） <a href="https://www.seiei.or.jp/miyagi/yuushi.php">https://www.seiei.or.jp/miyagi/yuushi.php</a> ／ 金利情報 <a href="https://www.jfc.go.jp/n/rate/">https://www.jfc.go.jp/n/rate/</a></blockquote>
@@ -95,7 +148,9 @@ a{color:#1e5fb4;word-break:break-all}
 <ul><li>借入申込書（国民生活事業）／企業概要書／本創業計画書</li><li>設備見積書（物件売買契約 or 見積＋リノベ施工見積 内訳付き）</li><li>履歴事項全部証明書（原本）・定款コピー・代表者本人確認</li><li>自己資金の証明（通帳コピー等）</li><li>旅館業許可証 or 申請受理票（申請中の場合）</li><li>都道府県知事推薦書（設備500万超で必要）or 同業組合の資金証明書（振興事業ルート）</li><li>既存筑波借入の返済状況がわかる書類</li></ul>
 <h2>進め方（時系列）</h2>
 <ol><li>同業組合へ加入相談（低利ルート）＋保健所で簡易宿所事前相談</li><li>公庫事業資金相談ダイヤル 0120-154-505 で書類チェック → 福岡支店 092-411-9111 に相談予約</li><li>プレ面談（書類確認）→ 申込 → 本面談（稼働根拠・現地視察あり得る）→ 審査2-3週 → 決定・契約・実行</li></ol>
+</section>
 <hr class="sec">
+<section id="s2" class="doc">
 <h1>滋賀銀行（セゾン保証・ジャストサポート）向け 賃貸投資区分 打診パッケージ</h1>
 <blockquote><strong>★★ 2026-06-05 一次ソース裏取りで前提が崩れた。先に必ず読む ★★</strong> ジャストサポートは<strong>個人向け専用</strong>で、<strong>法人名義の不動産は担保にできない＝iUMA法人では使えない</strong>。さらに収益物件目的は「<strong>給与収入＞不動産収入</strong>」が条件で、不動産賃貸業が主業の人は申込不可。4,999万以下の借入は前年給与収入800万以上が条件。金利も1.95%は旧情報で、現行は<strong>2.600/3.225/4.375/5.525%（2026-04）</strong>の4段階、3,000万以上で最優遇2.500%。 → <strong>使うなら手嶋翼真 個人名義</strong>（Cisco給与所得者・給与＞不動産収入を満たす前提）で組む。<strong>法人で通すなら滋賀は外し、法人OKのセゾンファンデックス直接（変動3.4-5.2%/2026-05・5億・5-25年）に差し替える</strong>。 出典: 滋賀銀行ジャストサポート <a href="https://mcl.sbk.jp/lp/fudosantanpo/">https://mcl.sbk.jp/lp/fudosantanpo/</a> ／ 法人NG解説 <a href="https://www.bluebox.co.jp/colum/housing-loan/shigaginko-hyoban/">https://www.bluebox.co.jp/colum/housing-loan/shigaginko-hyoban/</a> ／ セゾン直接 <a href="https://www.fundex.co.jp/business/product/f/lp4.html">https://www.fundex.co.jp/business/product/f/lp4.html</a></blockquote>
 <blockquote>用途は<strong>賃貸投資区分</strong>として出す（旅館業許可不要・打診の間口が広い）。 商品: 不動産担保型ローン「ジャストサポート」。全国対応・福岡可・最大9,500万・オンライン可・最長35年。 保証会社=セゾンファンデックス（5,000万超の借入で保証申請必須）。申込: <a href="https://mcl.sbk.jp/lp/fudosantanpo/">https://mcl.sbk.jp/lp/fudosantanpo/</a></blockquote>
@@ -115,7 +170,9 @@ a{color:#1e5fb4;word-break:break-all}
 <ol><li>まず電話/問い合わせフォームで上記「最初に確認する2点」を確認</li><li>通る前提なら仮審査 → 物件・収支・法人決算を提出 → 本審査</li><li>公庫（旅館業）と並行可。ただし最終的にどちらで実行するか（賃貸 or 旅館業）を決め、実行先には実態を正しく伝える（資金使途違反を避ける）</li></ol>
 <h2>滋賀がNG/条件悪い場合の次（金利が近い順）</h2>
 <ul><li>大垣共立銀行「キラット」（セゾン保証・上限5億・3.4-5.2%）</li><li>関西みらい銀行（セゾン保証・2.55-4.55%）</li><li>東京スター銀行 不動産担保ビジネスローン（1.25-7.5%）</li><li>L&amp;Fアセットファイナンス（民泊専用ノンバンク・3.3-4.55%／旅館業で出すとき）</li></ul>
+</section>
 <hr class="sec">
+<section id="s3" class="doc">
 <h1>リノベ相見積もり — インダストリアルで安く（福岡）</h1>
 <blockquote>業者の「モダンジャパニーズ726万」は叩き台。<strong>本命はインダストリアル（躯体現し・配管露出・黒鉄・塗装仕上げ）</strong>。 インダストリアルは「仕上げ材・隠蔽工事・造作を削る」ほど安くなる美学なので、賃貸/民泊と相性が良い。 公庫へは今ある見積（726万）を設備資金の根拠として持参可。ベストプラクティスは、出向く前にインダストリアルの相見積を1社でも取り、<strong>低い方の金額で出す</strong>（借入が減りDSCRが上がる）。</blockquote>
 <h2>なぜインダストリアルは安く仕上がるか（原価構造）</h2>
@@ -129,7 +186,9 @@ a{color:#1e5fb4;word-break:break-all}
 <ul><li>用途：簡易宿所/民泊＋賃貸併用想定。予算枠 550〜700万（内装・電気・給排水まで。設備機器別）</li><li>スケルトン解体＋躯体現し（爆裂/クラック補修は別途金額提示）</li><li>床：コンクリート研ぎ出し＋透明ウレタン塗装</li><li>壁：躯体＋艶なし塗装（黒/グレー2回塗り）。大面積クロス禁止、局所補修ボードのみ</li><li>天井：躯体現し（配管・ダクト露出）、仕上げ塗装のみ</li><li>建具：既存サッシ/ドア再利用（ペイント）、新規は鉄フレーム＋ガラス</li><li>電気：配線露出（黒PF管）、照明はスポット/ペンダント（ダウンライト不可）</li><li>給排水：配管露出（黒鉄/アイアン塗装）、キッチン・UBは既存位置維持</li><li>見積依頼項目：総額(税抜)/坪・㎡単価/工期/仮設・廃棄内訳/保証・瑕疵保険/追加費用の基準/検査方法</li><li>条件：相見積3社比較中。同額なら「内訳の透明性」と「民泊知見」で評価</li></ul>
 <h2>躯体現しの落とし穴（相見積時に必ず質問）</h2>
 <ul><li>爆裂・クラック補修費（別途か）／古い配管は塗装防錆か交換か／躯体現しで遮音性が落ちる→床補強の提案／天井高の実測／露出部の定期メンテ頻度</li></ul>
+</section>
 <hr class="sec">
+<section id="s4" class="doc">
 <h1>運営代行 — 候補と相場（福岡・中洲 簡易宿所/民泊）</h1>
 <blockquote>本業があるため、清掃・予約管理・チェックイン・ゲスト対応・価格調整を委託する前提。集客はOTA（Booking/Airbnb/Agoda/Expedia）。</blockquote>
 <h2>手数料の相場</h2>
@@ -142,7 +201,9 @@ a{color:#1e5fb4;word-break:break-all}
 <ul><li>同規模・同地区の平均稼働率の開示／レビュー対応品質（自社OTAスコア）／多言語・24時間対応／ダイナミックプライシング／トラブルSLA／<strong>解約条件（契約期間・違約金・最低稼働保証）</strong>／会計・行政報告サポート</li></ul>
 <h2>各社への確認テンプレート（49㎡1室・簡易宿所・フルスコープで見積取得）</h2>
 <ol><li>手数料は総売上の%か、OTA控除後の%か。清掃費は込みか別か。月額固定の選択肢</li><li>清掃料（1回）・リネン/消耗品の明細・清掃品質保証</li><li>対応言語と対応時間、トラブル時のSLA</li><li>初期設定費（OTA登録・写真）・チェックイン方式・鍵管理</li><li>最低契約期間・違約金・低稼働時の対応</li><li>同地区の平均稼働率・オーナー平均月収・継続率</li><li>F-area には加えて「黒字運営保証」の条件（保証額・期間・例外）を必ず確認</li></ol>
+</section>
 <hr class="sec">
+<section id="s5" class="doc">
 <h1>補助金・税優遇 — 使えるものを全部積む（中洲しんばし / 旅館業）</h1>
 <blockquote>専門チーム4レーン（国の主要補助金 / 福岡の宿泊・観光 / 省エネ・防災改修 / 税制優遇）で2026-06-05 にリサーチ・議論。出典は各項目に明記。 ★大原則がひとつ：<strong>ほぼ全部「旅館業（簡易宿所）許可」が前提で、「賃貸のまま」だと全滅する</strong>。許可を取る一手が、低金利融資（公庫・商工中金）と補助金（省力化・福岡市・税制）を<strong>同時に開ける一本の鍵</strong>。</blockquote>
 <hr>
@@ -176,7 +237,9 @@ a{color:#1e5fb4;word-break:break-all}
 <p>D. gBizIDプライムを取得（省力化補助の申請に必須・発行に日数）</p>
 <p>E. 省力化補助・観光庁インバウンド補助の2026年度公募要領を毎月チェック</p>
 <blockquote>注：本書は公開情報の一般情報で、個別の税務・行政判断ではない。福岡市・商工会議所・税理士に実装前確認。金額・公募時期に『要確認』とあるものは申請前に一次窓口で最新を取る。</blockquote>
+</section>
 <hr class="sec">
+<section id="s6" class="doc">
 <h1>発注タイミング表 — 補助金・税優遇を取りこぼさない時系列（中洲しんばし / 旅館業）</h1>
 <blockquote>大原則ふたつ。<strong>①補助金も税制も「決定の&quot;前&quot;に発注・工事したら対象外」。②支払いは2バケツに分ける。</strong> リノベ本体（どの補助も対象外）は決定を待たず進めてよい。スマートロック・PMS・家具家電・空調など「補助/税制の対象になりうる設備」は、認定・交付決定が出てから発注する。</blockquote>
 <hr>
@@ -205,7 +268,9 @@ a{color:#1e5fb4;word-break:break-all}
 <hr>
 <h2>このカレンダーの使い方</h2>
 <ul><li>「決定の紙が出たか？」を発注の唯一のゲートにする。出る前に発注しない。</li><li>不確実な公募時期（省力化・観光庁）は、毎月 公募要領を確認して日付が出たらこのカレンダーに差し込む。</li><li>金額・締切に『要確認』が付くものは、フェーズ0の相談で一次窓口から最新を取って確定させる。</li></ul>
+</section>
 <hr class="sec">
+<section id="s7" class="doc">
 <h1>相談先メール下書き — 補助金・許可・税優遇の入口（中洲しんばし）</h1>
 <blockquote>そのまま送れる下書き。[ ]はYumaの実数を入れる箇所。役所・商工会議所への正式な問い合わせのため丁寧な文体。 送る順番はフェーズ0（6月）。返信で公募時期・必要書類の最新を取って <code>06_スケジュール_発注タイミング.md</code> に差し込む。</blockquote>
 <hr>
@@ -263,6 +328,27 @@ a{color:#1e5fb4;word-break:break-all}
 <h2>4. あわせて動く（メール不要・手続き系）</h2>
 <ul><li><strong>gBizIDプライムの申請</strong>: 省力化補助の申請に必須。発行に2〜3週かかるので今すぐ。 <a href="https://gbiz-id.go.jp/">https://gbiz-id.go.jp/</a></li><li><strong>生活衛生同業組合 加入相談</strong>: 公庫の振興事業貸付（18-20年・低利）の鍵。福岡県旅館ホテル生活衛生同業組合へ。融資の打診と並行。</li><li><strong>日本政策金融公庫 事業資金相談ダイヤル 0120-154-505</strong> → 福岡支店(国民生活事業) 092-411-9111 で書類チェック・相談予約（旅館業は許可申請中でも申込可）。</li></ul>
 <blockquote>送付後、各窓口からの回答（公募時期・上限・必要書類）で <code>06_スケジュール_発注タイミング.md</code> と <code>placespot-shinbashi.yaml</code> の subsidies を更新する。</blockquote>
+</section>
 <hr class="sec">
-<p style="font-size:11px;color:var(--text-muted)">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
+<p style="font-size:11px;color:#999">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
+<button id="totop" aria-label="先頭へ" onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+(function(){
+  var chips=[].slice.call(document.querySelectorAll('.toc .chip'));
+  var map={}; chips.forEach(function(c){map[c.dataset.target]=c;});
+  var secs=[].slice.call(document.querySelectorAll('section[id]'));
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){
+        chips.forEach(function(c){c.classList.remove('active');});
+        var c=map[e.target.id]; if(c){c.classList.add('active');
+          c.scrollIntoView({inline:'center',block:'nearest'});}
+      }
+    });
+  },{rootMargin:'-120px 0px -65% 0px',threshold:0});
+  secs.forEach(function(s){io.observe(s);});
+  var tt=document.getElementById('totop');
+  addEventListener('scroll',function(){tt.classList.toggle('show',scrollY>500);},{passive:true});
+})();
+</script>
 </body></html>

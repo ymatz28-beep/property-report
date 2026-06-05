@@ -131,7 +131,7 @@ footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-
 </style>
 </head>
 <body>
-<nav class="pjnav"><a href="simulator.html" class="on">🎛 シミュレータ</a><a href="yakuin.html">🏠 薬院 売る/貸す</a><a href="financing.html">💰 融資戦略</a></nav>
+<nav class="pjnav"><a href="simulator.html" class="on">🎛 シミュレータ</a><a href="financing.html">💰 融資戦略</a><a href="yakuin.html">🏠 薬院 売る/貸す</a></nav>
 <header>
   <h1 id="dealName"></h1>
   <div class="sub" id="dealAddr"></div>

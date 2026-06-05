@@ -233,7 +233,7 @@ pre.code{{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:
   table{{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}
   table thead,table tbody{{display:table;width:100%;min-width:520px}}}}
 </style></head><body>
-<nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="yakuin.html">🏠 薬院 売る/貸す</a><a href="financing.html" class="on">💰 融資戦略</a></nav>
+<nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a><a href="yakuin.html">🏠 薬院 売る/貸す</a></nav>
 <div class="sticky">
   <div class="toolbar">
     <button onclick="window.print()">🖨 印刷 / PDF</button>

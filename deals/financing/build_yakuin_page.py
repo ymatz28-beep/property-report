@@ -32,8 +32,8 @@ a{color:#1e5fb4;word-break:break-all}
 """
 
 NAV = ('<nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a>'
-       '<a href="yakuin.html" class="on">🏠 薬院 売る/貸す</a>'
-       '<a href="financing.html">💰 融資戦略</a></nav>')
+       '<a href="financing.html">💰 融資戦略</a>'
+       '<a href="yakuin.html" class="on">🏠 薬院 売る/貸す</a></nav>')
 
 
 def main() -> int:

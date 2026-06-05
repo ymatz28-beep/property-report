@@ -1,6 +1,29 @@
 # HANDOFF
 
-<<<<<<< HEAD
+---
+**📍 今どこ**: 不動産2件の出口判断。仙台クレストモールは「売る」で資料完成・あとは業者へ送るだけ。福岡薬院は「貸す」方向で家賃相場と管理会社まで調査済み、次セッションで詰める段階。
+**✅ 前回(2026-06-05)**: 薬院（福岡市中央区薬院2-44-904・55㎡リノベ済デザイナーズ区分・薬院大通3分・SRC築約50年）を貸す前提で調査。家賃相場=標準11万/強気13万、福岡の管理手数料最安=集金代行3〜4%（デザイナーズ客付けはgoodroom/スタイルプラス）。実ローン（筑波2.85%/15年・月返済約10万）＋区分管理費2.5万を入れると、貸しても現金は月3万持ち出し・純資産は月4万増の「長期戦」と判明。
+**▶ 次(薬院・別セッション)**: (1)筑波銀行の返済予定表が届いたら残債を入れて「売る vs 貸す」の手取りを確定（返済表は現状ローカル未保存・Yumaが後で追加）、(2)固定資産税の実額（ドライブ `wealth-strategy/drive-data/chisan-hakata/kotei-shisan-zei-*.pdf`）を試算に反映、(3)薬院の賃貸査定問い合わせ文＋更新版「売却vs賃貸」試算を作成。
+---
+
+## 2026-06-05 セッション記録: 不動産2件の出口判断
+
+### 仙台クレストモール = 「売る」で確定（資料完成・送付待ち）
+- 物件: 仙台市太白区茂ケ崎3-3-22・木造一棟8戸・1985年築・延床198.74㎡・Robot Home仙台支店管理・公庫融資（残債約1,860万・完済2038年12月・年1.9%元金均等）。家賃月246,000円（2026送金明細実額）・NOI年約281万。
+- 売出方針: 高値アンカー2,950万円（表面10.0%）。売り急ぎ不要（毎月黒字）。
+- 成果物フォルダ: `/Users/ytejima/Documents/Projects/property-report/crestmall-sale/`
+  - `crestmall_sale_teaser.pdf`（買主/業者向け売り込み2枚・昨日6/4作成・完成）
+  - `crestmall_factsheet.pdf`（査定用1枚シート・本日作成・号室別は転記欄・1K23㎡確定）
+  - `outreach_drafts.md`（Robot Home打診＋楽待査定＋仙台ローカル業者の問い合わせ文3本・署名【氏名/電話/メール】差し替え要）
+- 残タスク: Robot Home仙台支店へ打診＋楽待で査定（複数社・一般媒介）。送るだけの状態。
+
+### 福岡薬院 = 「貸す」方向で検討中（次セッション）
+- 物件: チサンマンション第3博多 904号室＝薬院2-44-904・区分・55㎡・SRC11階建9階・1974年築・約8年前フルリノベ（インダストリアル）・薬院大通3分/薬院7分・商業地域/住居兼事務所可・購入参考1,980万・管理費12,600+修繕積立12,800=月25,400・現状は自社事務所利用。
+- 実ローン: 筑波銀行1,540万・15年・2.85%・月返済約10万（※残債未確定＝返済予定表待ち）。
+- 調査結果: 家賃相場 標準11万/強気13万（goodroom実例で薬院大通近接50㎡台が10〜15万）。管理手数料 福岡相場=集金代行3〜4%/フル4〜5%/サブリース10〜20%。福岡R不動産は仲介専門で管理はやらない。
+- 既存資産: `property-analyzer/deals/financing/11_薬院_売却vs賃貸_試算.md`（旧・家賃16万/金利2.0%20年の推計版→実数で要更新）、`output/yakuin-sell-or-rent.html`、`deals/financing/build_yakuin_page.py`、ドライブ `wealth-strategy/drive-data/chisan-hakata/`（物件広告・固定資産税・重説等）。
+- 注意: 貸すと別の事務所が必要（現在この部屋が自社事務所）。この前提の確認が未済。
+
 ## [Constancy] 2026-06-05
 - [ERROR] hardcoded_data: [ESCALATED: 51d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [WARN] hardcoded_data: Large inline data (83 lines) at line 360. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.

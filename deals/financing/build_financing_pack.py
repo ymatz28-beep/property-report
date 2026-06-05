@@ -18,6 +18,7 @@ OUT = ROOT / "output" / "financing-placespot-shinbashi.html"
 PDF_OUT = ROOT / "output" / "financing-placespot-shinbashi.pdf"
 PDF_NAME = PDF_OUT.name
 FILES = ["00_playbook.md", "01_jfc_旅館業_事業計画書.md",
+         "14_公庫_申請パック.md",
          "10_生活衛生同業組合_公庫低利の鍵.md",
          "02_shiga_賃貸_打診パッケージ.md",
          "08_旅館業_許可申請の詳細.md", "13_旅館業許可_申請パック.md",
@@ -113,6 +114,7 @@ def md_to_html(md: str) -> str:
 NAV_LABELS = {
     "00_playbook.md": "融資プレイブック",
     "01_jfc_旅館業_事業計画書.md": "公庫(旅館業)",
+    "14_公庫_申請パック.md": "公庫(申請パック)",
     "10_生活衛生同業組合_公庫低利の鍵.md": "組合(公庫低利)",
     "02_shiga_賃貸_打診パッケージ.md": "滋賀(賃貸)",
     "08_旅館業_許可申請の詳細.md": "旅館業許可",

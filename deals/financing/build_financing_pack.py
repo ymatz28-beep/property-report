@@ -18,6 +18,7 @@ OUT = ROOT / "output" / "financing-placespot-shinbashi.html"
 PDF_OUT = ROOT / "output" / "financing-placespot-shinbashi.pdf"
 PDF_NAME = PDF_OUT.name
 FILES = ["00_playbook.md", "01_jfc_旅館業_事業計画書.md", "02_shiga_賃貸_打診パッケージ.md",
+         "08_旅館業_許可申請の詳細.md",
          "03_リノベ相見積_インダストリアル.md", "04_運営代行_候補と相場.md",
          "05_補助金_使えるもの全部.md", "06_スケジュール_発注タイミング.md",
          "07_相談先メール下書き.md"]
@@ -98,6 +99,7 @@ NAV_LABELS = {
     "00_playbook.md": "融資プレイブック",
     "01_jfc_旅館業_事業計画書.md": "公庫(旅館業)",
     "02_shiga_賃貸_打診パッケージ.md": "滋賀(賃貸)",
+    "08_旅館業_許可申請の詳細.md": "旅館業許可",
     "03_リノベ相見積_インダストリアル.md": "リノベ相見積",
     "04_運営代行_候補と相場.md": "運営代行",
     "05_補助金_使えるもの全部.md": "補助金まとめ",
@@ -111,27 +113,28 @@ def build_flowchart(idmap: dict) -> str:
     g = idmap.get  # filename -> "sN"
     fin = g("00_playbook.md", "")
     jfc = g("01_jfc_旅館業_事業計画書.md", "")
+    perm = g("08_旅館業_許可申請の詳細.md", "")
     sub = g("05_補助金_使えるもの全部.md", "")
     sch = g("06_スケジュール_発注タイミング.md", "")
     mail = g("07_相談先メール下書き.md", "")
     return f"""
 <section class="flowwrap" id="flow">
-  <h1>全体の流れ（ここから各章へ飛べる）</h1>
+  <h1>全体の流れ（上から着手順。各箱から章へ飛べる）</h1>
   <div class="flow">
-    <a class="fbox start" href="#{jfc}"><b>1. 旅館業（簡易宿所）許可を取る</b><small>すべての低金利と補助金を同時に開く"スイッチ"。賃貸のままだと両方とも全滅</small></a>
+    <a class="fbox first" href="#{mail}"><span class="badge">▶ いまここから</span><b>1. 相談メール3本を送る ＋ 事業者ID申請</b><small>福岡市 観光部／保健所／商工会議所へ。並行で事業者ID(gBizID)申請。ここが全部の入口</small></a>
+    <div class="farrow">▼ 相談で段取りが見えたら</div>
+    <a class="fbox start" href="#{perm}"><b>2. 旅館業（簡易宿所）許可を取る</b><small>すべての低金利と補助金を同時に開く"スイッチ"。福岡市は手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。賃貸のままだと両方とも全滅</small></a>
     <div class="farrow">▼ この1手が、下の2つを同時に開く</div>
     <div class="frow">
-      <a class="fbox" href="#{fin}"><b>2A. 融資（低金利の梯子）</b><small>公庫 振興事業貸付＝組合加入で18-20年→DSCR成立。次に商工中金。法人の受け皿はセゾン直接</small></a>
-      <a class="fbox" href="#{sub}"><b>2B. 補助金・税優遇</b><small>福岡市 受入環境補助(半額・上限40万)／省力化補助／経営強化税制(即時償却・10%控除)</small></a>
+      <a class="fbox" href="#{fin}"><b>3A. 融資（低金利の梯子）</b><small>公庫 振興事業貸付＝組合加入で18-20年→DSCR成立。次に商工中金。法人の受け皿はセゾン直接。※相見積は打診と並行で取る</small></a>
+      <a class="fbox" href="#{sub}"><b>3B. 補助金・税優遇</b><small>福岡市 受入環境補助(半額・上限40万)／省力化補助／経営強化税制(即時償却・10%控除)</small></a>
     </div>
     <div class="farrow">▼ どちらも「決定の紙が出る前に発注したら対象外」</div>
-    <a class="fbox gate" href="#{sch}"><b>3. ★発注ゲート</b><small>計画認定・交付決定を確認してから、鍵・端末・家具・空調を発注。リノベ本体は対象外なので先行してよい</small></a>
+    <a class="fbox gate" href="#{sch}"><b>4. ★発注ゲート</b><small>計画認定・交付決定を確認してから、鍵・端末・家具・空調を発注。リノベ本体は対象外なので先行してよい</small></a>
     <div class="farrow">▼</div>
-    <a class="fbox" href="#{sch}"><b>4. 工事 → 旅館業 許可取得 → 開業（OTA掲載）</b></a>
-    <div class="farrow">▼</div>
-    <a class="fbox end" href="#{sch}"><b>5. 実績報告で補助金が後払い入金 ＋ 確定申告で節税</b><small>立て替えた分を、補助金と即時償却/税額控除で回収する</small></a>
-    <div class="farrow">▼ いま踏む最初の一歩</div>
-    <a class="fbox first" href="#{mail}"><b>▶ 相談メール3本を送る</b><small>福岡市 観光部／保健所／商工会議所＋事業者ID(gBizID)申請</small></a>
+    <a class="fbox" href="#{sch}"><b>5. 工事 → 旅館業 許可取得 → 開業（OTA掲載）</b></a>
+    <div class="farrow">▼ ゴール</div>
+    <a class="fbox end" href="#{sch}"><b>6. 実績報告で補助金が後払い入金 ＋ 確定申告で節税</b><small>立て替えた分を、補助金と即時償却/税額控除で回収する</small></a>
   </div>
 </section>"""
 
@@ -189,8 +192,9 @@ a{{color:#1e5fb4;word-break:break-all}}
 .fbox.start{{background:#fff4cf;border-color:#b8902a}}
 .fbox.gate{{background:#ffe9e3;border-color:#e0623a}}
 .fbox.end{{background:#e7f6ea;border-color:#2faa55}}
-.fbox.first{{background:#1a1d27;border-color:#1a1d27}}
+.fbox.first{{background:#1a1d27;border-color:#1a1d27;position:relative}}
 .fbox.first b{{color:#ffd86b}} .fbox.first small{{color:#cfd2da}}
+.fbox.first .badge{{display:inline-block;background:#ffd86b;color:#1a1207;font-weight:800;font-size:11px;padding:2px 9px;border-radius:999px;margin-bottom:5px}}
 .frow{{display:flex;gap:12px;width:100%;max-width:640px}}
 .frow .fbox{{flex:1}}
 .farrow{{color:#b8902a;font-weight:700;font-size:12.5px;padding:6px 0;text-align:center}}

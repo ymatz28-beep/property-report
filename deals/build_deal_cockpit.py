@@ -484,8 +484,7 @@ function renderStatic(){
       <div class="card"><h3 style="font-size:15px;margin-bottom:10px">初期コスト（フルレンジ・参考）</h3>${initRef}
         <div class="note">※太字の一部はF-areaセットアップ190万に既に含む。重複を避けた<b>追加分だけで約${manFmt(L.init_cost_extra_yen)}</b>を試算に算入（トグルON時）。</div></div>
       <div class="card"><h3 style="font-size:15px;margin-bottom:10px">年間ランニング（旅館業特有の追加）</h3>
-        <div class="kpi"><span class="k">消防設備 法定点検</span><span class="v">¥36,000〜48,000</span></div>
-        <div class="kpi"><span class="k">許可更新(3年/16,500)按分</span><span class="v">¥5,500</span></div>
+        <div class="kpi"><span class="k">消防設備 法定点検（〜100㎡）</span><span class="v">¥40,000〜70,000</span></div>
         <div class="kpi"><span class="k">衛生備品ほか</span><span class="v">¥30,000〜50,000</span></div>
         <div class="note">合計 約${manFmt(L.running_cost_extra_yen)}/年を算入。光熱・清掃・宿泊税・OTAは各シナリオの変動経費率に既に算入済（二重計上しない）。</div></div>
       <div class="card"><h3 style="font-size:15px;margin-bottom:10px">許可の要件（簡易宿所）</h3>

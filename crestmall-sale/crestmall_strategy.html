@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>クレストモール 売却戦略（仙台）</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1117; --card:#1a1d27; --border:#2d3348; --border-light:#3d4460;
+  --gold:#c9a84c; --green:#3fb27f; --red:#e0726b;
+  --text:#e4e4e7; --text-secondary:#9ca3af; --text-muted:#7c8293;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans JP',sans-serif;
+  line-height:1.65;padding:24px;max-width:880px;margin:0 auto;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.back{display:inline-block;font-size:12px;color:var(--text-muted);text-decoration:none;margin-bottom:14px}
+.back:hover{color:var(--gold)}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-size:23px;font-weight:800;letter-spacing:.01em}
+.addr{font-size:13px;color:var(--text-secondary);margin-top:3px}
+.badge{background:rgba(201,168,76,.14);color:var(--gold);border:1px solid rgba(201,168,76,.35);
+  font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 6px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px 16px}
+.kpi .l{font-size:11px;color:var(--text-muted)}
+.kpi .v{font-size:21px;font-weight:800;margin-top:4px}
+.kpi .v .u{font-size:12px;color:var(--gold);font-weight:700;margin-left:2px}
+.kpi .s{font-size:10.5px;color:var(--text-secondary);margin-top:3px}
+section{margin-top:22px}
+h2{font-size:14px;font-weight:800;letter-spacing:.04em;display:flex;align-items:center;gap:9px;margin-bottom:11px}
+h2::before{content:"";width:4px;height:16px;background:var(--gold);border-radius:2px}
+.concl{background:linear-gradient(135deg,rgba(63,178,127,.10),rgba(201,168,76,.06));
+  border:1px solid var(--border-light);border-radius:14px;padding:16px 18px}
+.concl b{color:var(--green)}
+.concl p{font-size:13.5px;color:var(--text-secondary)}
+.concl p+p{margin-top:7px}
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);
+  border:1px solid var(--border);border-radius:13px;overflow:hidden}
+th,td{padding:9px 13px;text-align:right;border-bottom:1px solid var(--border)}
+th:first-child,td:first-child{text-align:left}
+thead th{background:#222637;color:var(--text-secondary);font-weight:700;font-size:11.5px;letter-spacing:.03em}
+tbody tr:last-child td{border-bottom:none}
+tr.rec td{background:rgba(201,168,76,.10);color:var(--gold);font-weight:800}
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;background:var(--card);
+  border:1px solid var(--border);border-radius:13px;padding:6px 16px}
+.spec .row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.spec .row:nth-last-child(-n+2){border-bottom:none}
+.spec .k{color:var(--text-muted)}
+.spec .va{color:var(--text);text-align:right}
+ol.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:9px}
+ol.steps li{counter-increment:s;position:relative;padding:12px 14px 12px 44px;background:var(--card);
+  border:1px solid var(--border);border-radius:12px;font-size:13px;color:var(--text-secondary)}
+ol.steps li::before{content:counter(s);position:absolute;left:13px;top:12px;width:22px;height:22px;
+  background:var(--gold);color:#1a1207;border-radius:50%;font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center}
+ol.steps li b{color:var(--text)}
+.dl{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.dlbtn{display:flex;flex-direction:column;gap:4px;text-decoration:none;background:var(--card);
+  border:1px solid var(--border-light);border-radius:14px;padding:16px 18px;transition:border-color .15s,background .15s}
+.dlbtn:hover{border-color:var(--gold);background:#20242f}
+.dlbtn.gold{background:var(--gold);border-color:var(--gold)}
+.dlbtn.gold .t,.dlbtn.gold .d{color:#1a1207}
+.dlbtn .t{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px}
+.dlbtn .d{font-size:11.5px;color:var(--text-secondary)}
+.note{font-size:11.5px;color:var(--text-muted);margin-top:10px;line-height:1.55}
+footer{margin-top:28px;border-top:1px solid var(--border);padding-top:13px;
+  font-size:10.5px;color:var(--text-muted);text-align:right;letter-spacing:.05em}
+@media(max-width:600px){
+  body{padding:16px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .spec{grid-template-columns:1fr}
+  .spec .row:nth-last-child(-n+2){border-bottom:1px solid var(--border)}
+  .spec .row:last-child{border-bottom:none}
+  .dl{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<a class="back" href="/property/">← 物件ハブ</a>
+
+<div class="head">
+  <div>
+    <h1>クレストモール｜売却戦略</h1>
+    <div class="addr">宮城県仙台市太白区茂ケ崎3-3-22 ｜ 木造一棟アパート（全8戸）・1985年築・法人名義</div>
+  </div>
+  <span class="badge">方針確定：売る</span>
+</div>
+
+<div class="kpis">
+  <div class="kpi"><div class="l">推奨 売出（アスキング）</div><div class="v">2,950<span class="u">万円</span></div><div class="s">表面10.0% / 実質9.5%</div></div>
+  <div class="kpi"><div class="l">税引後の想定手取り</div><div class="v">約 818<span class="u">万円</span></div><div class="s">2,950万成約時・法人税のみ</div></div>
+  <div class="kpi"><div class="l">残債（2026年6月）</div><div class="v">約 1,860<span class="u">万円</span></div><div class="s">公庫・完済2038年12月</div></div>
+</div>
+
+<section>
+  <h2>結論</h2>
+  <div class="concl">
+    <p><b>売る。高値アンカー2,950万円（表面10.0%）で広く出して、反応を見て調整する。</b></p>
+    <p>毎月キャッシュフローが黒字で保有コストがゼロのため、売り急ぐ必要はない。一方で築41年の木造は、待つほど売値が下がり修繕が増えるため、表面10%という強気の売値を堂々と出せる今が出口のピーク。安く即現金化する「買取」は、別の投資先で現金が急ぎ要る時だけの保険に留める。</p>
+  </div>
+</section>
+
+<section>
+  <h2>価格戦略（売主＝高値優先）</h2>
+  <table>
+    <thead><tr><th>想定売出価格</th><th>表面利回り</th><th>実質(NOI)</th><th>位置づけ</th></tr></thead>
+    <tbody>
+      <tr><td>3,280万円</td><td>9.0%</td><td>8.6%</td><td>チャレンジ上限</td></tr>
+      <tr class="rec"><td>2,950万円</td><td>10.0%</td><td>9.5%</td><td>★ 推奨 売出</td></tr>
+      <tr><td>2,680万円</td><td>11.0%</td><td>10.5%</td><td>交渉の着地目安</td></tr>
+      <tr><td>2,460万円</td><td>12.0%</td><td>11.4%</td><td>標準</td></tr>
+      <tr><td>1,980万円</td><td>14.9%</td><td>14.2%</td><td>下限（即売）</td></tr>
+    </tbody>
+  </table>
+  <div class="note">利回りは年間賃料2,952,000円（表面）・純収益2,810,000円（実質）を各価格で除して算出。築年（1985年）で金融機関融資が限定されるため、現金または土地値評価の買主が中心。</div>
+</section>
+
+<section>
+  <h2>物件サマリー（2026年実績ベース）</h2>
+  <div class="spec">
+    <div class="row"><span class="k">家賃収入</span><span class="va">月246,000円 / 年295万</span></div>
+    <div class="row"><span class="k">純収益(NOI)</span><span class="va">年 約281万円</span></div>
+    <div class="row"><span class="k">手取りCF（売主向け表記）</span><span class="va">月+9.1万 / 年+109万</span></div>
+    <div class="row"><span class="k">構造 / 戸数</span><span class="va">木造2階 / 全8戸（1K・23㎡）</span></div>
+    <div class="row"><span class="k">管理</span><span class="va">Robot Home 仙台支店</span></div>
+    <div class="row"><span class="k">融資</span><span class="va">公庫 年1.9%・元金均等</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>売却ルートと次アクション</h2>
+  <ol class="steps">
+    <li><b>Robot Home 仙台支店に打診</b> — 管理会社なので物件を一番知っている。買取/買主紹介の可否＋管理契約の解約条件を確認。</li>
+    <li><b>楽待で売却査定（複数社・一般媒介）</b> — 一棟投資の買主が一番集まる。査定を3〜5社から取り、価格を確かめる。</li>
+    <li><b>2,950万アンカーで売出 → 反応を見て調整</b> — 下の売り込み資料PDFをそのまま業者に渡せる。</li>
+  </ol>
+</section>
+
+<section>
+  <h2>資料ダウンロード</h2>
+  <div class="dl">
+    <a class="dlbtn gold" href="teaser.pdf" download>
+      <span class="t">📄 売り込み資料（買主・業者向け）</span>
+      <span class="d">2ページ／売出2,950万・利回り比較・媒介アピール</span>
+    </a>
+    <a class="dlbtn" href="factsheet.pdf" download>
+      <span class="t">📋 査定用シート（業者向け）</span>
+      <span class="d">1枚／物件概要・レントロール・収支・融資</span>
+    </a>
+  </div>
+  <div class="note">数値は決算書・2026年送金明細・公庫返済予定表・火災保険証券の実数に基づく。査定依頼時はこのPDFを添付して送付。</div>
+</section>
+
+<footer>CONFIDENTIAL ｜ iUMAプロパティマネジメント合同会社 ｜ クレストモール売却戦略</footer>
+</body>
+</html>

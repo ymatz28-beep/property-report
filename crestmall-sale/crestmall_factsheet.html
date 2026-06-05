@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>クレストモール｜物件概要・レントロール（査定用）</title>
+<style>
+  :root{
+    --ink:#1a2230; --ink-2:#3a4658; --muted:#6b7686;
+    --line:#e3e7ee; --line-2:#eef1f6; --bg:#ffffff; --soft:#f6f8fb;
+    --accent:#b9892f; --accent-d:#9a6f1f; --navy:#16243b; --pos:#1f8a55;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;
+    color:var(--ink);background:#dfe3ea;line-height:1.55;font-feature-settings:"palt";letter-spacing:.01em;
+    -webkit-font-smoothing:antialiased;}
+  .page{width:210mm;min-height:297mm;background:var(--bg);margin:0 auto;position:relative;overflow:hidden;}
+  .pad{padding:5mm 14mm 6mm;}
+
+  .head{background:linear-gradient(135deg,#15243c 0%,#243a5b 100%);color:#fff;padding:6mm 14mm 5mm;position:relative;}
+  .head::after{content:"";position:absolute;right:-30mm;top:-30mm;width:70mm;height:70mm;border-radius:50%;
+    background:radial-gradient(circle,rgba(185,137,47,.22),transparent 65%);}
+  .eyebrow{font-size:10px;letter-spacing:.32em;color:#cdb98a;font-weight:700;text-transform:uppercase;}
+  .head h1{font-size:27px;font-weight:800;margin:6px 0 2px;}
+  .head .sub{font-size:12px;color:#c6d0de;font-weight:500;}
+  .head .doc{position:absolute;right:14mm;bottom:7mm;font-size:10px;color:#aebbcd;letter-spacing:.04em;}
+
+  .sec{margin-top:7px;}
+  .sec-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--ink);
+    margin:0 0 7px;letter-spacing:.04em;}
+  .sec-title::before{content:"";width:4px;height:15px;background:var(--accent);border-radius:2px;display:inline-block;}
+
+  table.spec{width:100%;border-collapse:collapse;font-size:11px;}
+  table.spec th,table.spec td{border-bottom:1px solid var(--line);padding:3.5px 9px;text-align:left;vertical-align:top;}
+  table.spec th{background:var(--soft);color:var(--ink-2);font-weight:700;width:30%;white-space:nowrap;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;}
+  .two-col table.spec th{width:40%;}
+
+  table.fin{width:100%;border-collapse:collapse;font-size:11px;}
+  table.fin th,table.fin td{padding:3.5px 9px;border-bottom:1px solid var(--line);}
+  table.fin thead th{background:var(--navy);color:#fff;font-weight:700;font-size:10.5px;text-align:left;}
+  table.fin td.r,table.fin th.r{text-align:right;font-variant-numeric:tabular-nums;}
+  table.fin tr.total td{background:var(--soft);font-weight:800;color:var(--ink);border-top:2px solid var(--accent);}
+  table.fin .pos{color:var(--pos);font-weight:800;}
+
+  table.rr{width:100%;border-collapse:collapse;font-size:10.5px;}
+  table.rr th,table.rr td{padding:3.5px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;}
+  table.rr th{background:var(--navy);color:#fff;font-weight:700;font-size:10px;text-align:right;}
+  table.rr th:first-child,table.rr td:first-child,table.rr th:nth-child(2),table.rr td:nth-child(2){text-align:left;}
+  table.rr tr.total td{background:var(--soft);font-weight:800;border-top:2px solid var(--accent);}
+  table.rr td.fill{color:#b6bdc8;}
+
+  .note-box{border:1px dashed var(--line);border-radius:8px;padding:7px 12px;background:#fcfdff;margin-top:6px;}
+  .note-box p{font-size:9.5px;color:var(--muted);line-height:1.5;}
+  .pricebar{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-top:2px;}
+  .pb{padding:7px 12px;background:#fbf6ec;}
+  .pb + .pb{border-left:1px solid var(--line);}
+  .pb .lab{font-size:9.5px;color:var(--muted);font-weight:600;}
+  .pb .val{font-size:19px;font-weight:800;color:var(--accent-d);margin-top:2px;}
+  .pb .val .u{font-size:11px;}
+
+  .footer{border-top:1px solid var(--line);margin-top:9px;padding-top:6px;
+    display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--muted);}
+  .brand{font-weight:800;color:var(--ink);letter-spacing:.04em;}
+  @page{size:A4;margin:0;}
+  @media print{body{background:#fff;}.page{margin:0;box-shadow:none;min-height:auto;}}
+</style>
+</head>
+<body>
+<section class="page">
+  <div class="head">
+    <div class="eyebrow">Property Fact Sheet &nbsp;/&nbsp; Rent Roll</div>
+    <h1>クレストモール</h1>
+    <div class="sub">宮城県仙台市太白区茂ケ崎3-3-22 ｜ 木造一棟アパート（全8戸）</div>
+    <div class="doc">作成 2026年6月 ／ iUMAプロパティマネジメント合同会社</div>
+  </div>
+
+  <div class="pad">
+    <div class="sec">
+      <div class="sec-title">物件概要</div>
+      <div class="two-col">
+        <table class="spec">
+          <tr><th>物件名称</th><td>クレストモール</td></tr>
+          <tr><th>所在地</th><td>宮城県仙台市太白区茂ケ崎3-3-22</td></tr>
+          <tr><th>最寄駅</th><td>地下鉄南北線「長町一丁目」駅 約1,123m／「河原町」駅 約1,215m</td></tr>
+          <tr><th>種別 / 用途</th><td>一棟アパート（共同住宅）</td></tr>
+          <tr><th>構造 / 階数</th><td>木造2階建</td></tr>
+        </table>
+        <table class="spec">
+          <tr><th>総戸数</th><td>8戸</td></tr>
+          <tr><th>延床面積</th><td>198.74㎡</td></tr>
+          <tr><th>建築年月</th><td>1985年（昭和60年）4月</td></tr>
+          <tr><th>管理</th><td>株式会社robot home 仙台支店（管理委託中・稼働中）</td></tr>
+          <tr><th>所有形態</th><td>土地・建物 一括所有（法人名義）</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">レントロール（号室別）</div>
+      <table class="rr">
+        <thead>
+          <tr><th>号室</th><th>タイプ/面積</th><th>賃料</th><th>共益費</th><th>駐車</th><th>入居状況</th><th>契約更新</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>101</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td></tr>
+          <tr><td>102</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td></tr>
+          <tr><td>103</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td></tr>
+          <tr><td>104</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td></tr>
+          <tr><td>201</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td></tr>
+          <tr><td>202</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td></tr>
+          <tr><td>203</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td></tr>
+          <tr><td>204</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td><td class="fill">―</td></tr>
+          <tr class="total"><td>合計（8戸）</td><td></td><td>246,000</td><td>10,000</td><td>6,000</td><td>稼働中</td><td>―</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        <p>※ 号室別の内訳（賃料・面積・入居状況・契約更新日）は、robot home の「年間送金明細2026」「賃貸借契約」より転記して埋める欄です。<b>合計欄の月額（賃料246,000円＋共益10,000円＋駐車6,000円＝262,000円）は2026年送金明細の実額</b>。号室別を空欄のまま提出せず、査定依頼前に転記してください。</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">収支サマリー（2026年 実績ベース）</div>
+      <table class="fin">
+        <thead><tr><th>区分</th><th class="r">月額</th><th class="r">年額</th><th>備考</th></tr></thead>
+        <tbody>
+          <tr><td>賃料収入</td><td class="r">246,000</td><td class="r">2,952,000</td><td>住戸賃料</td></tr>
+          <tr><td>共益費・駐車料</td><td class="r">16,000</td><td class="r">192,000</td><td>共益10,000／駐車6,000</td></tr>
+          <tr><td>運営費（管理・保険・固定資産税ほか）</td><td class="r">−21,000</td><td class="r">−約252,000</td><td>固定資産税 年34,100円ほか</td></tr>
+          <tr class="total"><td>純収益（NOI）</td><td class="r">約 234,000</td><td class="r">約 2,810,000</td><td>運営純利益</td></tr>
+          <tr><td>ローン返済（参考）</td><td class="r">−152,000</td><td class="r">−1,824,000</td><td>日本政策金融公庫</td></tr>
+          <tr class="total"><td>手取りキャッシュフロー</td><td class="r"><span class="pos">+ 約 91,000</span></td><td class="r"><span class="pos">+ 約 1,090,000</span></td><td>ローン控除後・黒字</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">融資・権利関係</div>
+      <div class="two-col">
+        <table class="spec">
+          <tr><th>借入先</th><td>日本政策金融公庫</td></tr>
+          <tr><th>当初借入</th><td>29,500,000円（2019年2月）</td></tr>
+          <tr><th>金利 / 方式</th><td>年1.9% ／ 元金均等</td></tr>
+        </table>
+        <table class="spec">
+          <tr><th>残債（2026年6月）</th><td>約 18,600,000円</td></tr>
+          <tr><th>完済予定</th><td>2038年12月</td></tr>
+          <tr><th>抵当権</th><td>上記公庫のみ。係争なし・抹消スムーズ</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">売出希望価格</div>
+      <div class="pricebar">
+        <div class="pb"><div class="lab">売出（アスキング）</div><div class="val">2,950<span class="u">万円</span></div></div>
+        <div class="pb"><div class="lab">表面利回り</div><div class="val">10.0<span class="u">%</span></div></div>
+        <div class="pb"><div class="lab">実質利回り（NOI）</div><div class="val">9.5<span class="u">%</span></div></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div><span class="brand">CRESTMALL</span> ｜ 仙台市太白区茂ケ崎 ｜ 物件概要・レントロール（査定用）</div>
+      <div>数値は決算書・2026年送金明細・公庫返済予定表・火災保険証券の実数に基づく</div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>クレストモール｜売却物件資料（仙台市太白区）</title>
+<style>
+  :root{
+    --ink:#1a2230;       /* charcoal navy */
+    --ink-2:#3a4658;
+    --muted:#6b7686;
+    --line:#e3e7ee;
+    --line-2:#eef1f6;
+    --bg:#ffffff;
+    --soft:#f6f8fb;
+    --accent:#b9892f;    /* refined gold */
+    --accent-d:#9a6f1f;
+    --navy:#16243b;      /* deep hero navy */
+    --pos:#1f8a55;       /* positive green */
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;
+    color:var(--ink);background:#dfe3ea;line-height:1.6;
+    font-feature-settings:"palt";letter-spacing:.01em;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    width:210mm;min-height:297mm;background:var(--bg);margin:0 auto;
+    padding:0;position:relative;overflow:hidden;
+  }
+  .page + .page{margin-top:10mm;}
+  .pad{padding:10mm 15mm;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:linear-gradient(135deg,#15243c 0%,#243a5b 100%);
+    color:#fff;padding:11mm 15mm 9mm;position:relative;
+  }
+  .hero::after{content:"";position:absolute;right:-40mm;top:-40mm;width:90mm;height:90mm;
+    border-radius:50%;background:radial-gradient(circle,rgba(185,137,47,.22),transparent 65%);}
+  .eyebrow{font-size:10.5px;letter-spacing:.34em;color:#cdb98a;font-weight:700;text-transform:uppercase;}
+  .hero h1{font-size:33px;font-weight:800;letter-spacing:.02em;margin:7px 0 3px;line-height:1.18;}
+  .hero .sub{font-size:13px;color:#c6d0de;font-weight:500;}
+  .hero-tags{margin-top:13px;display:flex;gap:8px;flex-wrap:wrap;}
+  .tag{font-size:11px;font-weight:700;color:#1a2230;background:#e8c87e;
+    padding:4px 11px;border-radius:999px;letter-spacing:.02em;}
+  .tag.ghost{background:rgba(255,255,255,.10);color:#e7eefb;border:1px solid rgba(255,255,255,.28);}
+
+  .hero-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:12px;
+    border:1px solid rgba(255,255,255,.16);border-radius:10px;overflow:hidden;}
+  .hk{padding:12px 14px;background:rgba(255,255,255,.04);}
+  .hk + .hk{border-left:1px solid rgba(255,255,255,.13);}
+  .hk .lab{font-size:10px;color:#aebbcd;letter-spacing:.08em;font-weight:600;}
+  .hk .val{font-size:25px;font-weight:800;color:#fff;margin-top:3px;line-height:1;}
+  .hk .val .u{font-size:13px;font-weight:700;color:#e8c87e;margin-left:2px;}
+  .hk .note{font-size:9.5px;color:#9fb0c6;margin-top:3px;}
+
+  /* ---------- SECTIONS ---------- */
+  .sec-title{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:800;
+    color:var(--ink);margin:0 0 8px;letter-spacing:.04em;}
+  .sec-title::before{content:"";width:4px;height:16px;background:var(--accent);border-radius:2px;display:inline-block;}
+  .sec + .sec{margin-top:11px;}
+
+  /* spec table */
+  table.spec{width:100%;border-collapse:collapse;font-size:11.5px;}
+  table.spec th,table.spec td{border-bottom:1px solid var(--line);padding:5.5px 10px;text-align:left;vertical-align:top;}
+  table.spec th{background:var(--soft);color:var(--ink-2);font-weight:700;width:26%;white-space:nowrap;}
+  table.spec td{color:var(--ink);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;}
+  .two-col table.spec th{width:38%;}
+
+  /* highlight cards */
+  .hl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .hl{border:1px solid var(--line);border-radius:10px;padding:13px 13px 14px;background:#fff;position:relative;}
+  .hl .n{font-size:11px;font-weight:800;color:var(--accent-d);letter-spacing:.1em;}
+  .hl h3{font-size:13.5px;font-weight:800;margin:5px 0 4px;color:var(--ink);}
+  .hl p{font-size:10.8px;color:var(--muted);line-height:1.55;}
+
+  /* income table */
+  table.fin{width:100%;border-collapse:collapse;font-size:11.5px;}
+  table.fin th,table.fin td{padding:5.5px 10px;border-bottom:1px solid var(--line);}
+  table.fin thead th{background:var(--navy);color:#fff;font-weight:700;font-size:11px;text-align:left;letter-spacing:.03em;}
+  table.fin td.r,table.fin th.r{text-align:right;font-variant-numeric:tabular-nums;}
+  table.fin tr.total td{background:var(--soft);font-weight:800;color:var(--ink);border-top:2px solid var(--accent);}
+  table.fin .pos{color:var(--pos);font-weight:800;}
+  .mono{font-variant-numeric:tabular-nums;}
+
+  /* yield table */
+  table.yield{width:100%;border-collapse:collapse;font-size:11.5px;}
+  table.yield th,table.yield td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;}
+  table.yield th{background:var(--soft);color:var(--ink-2);font-weight:700;font-size:10.5px;text-align:right;}
+  table.yield th:first-child,table.yield td:first-child{text-align:left;}
+  table.yield tr.rec td{background:#fbf6ec;font-weight:800;color:var(--accent-d);}
+  table.yield tr.rec td:first-child{color:var(--accent-d);}
+
+  /* yield compare banner */
+  .compare{border:1px solid var(--line);border-radius:11px;padding:13px 15px;background:#fbfcfe;margin-bottom:11px;}
+  .cmp-row{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+  .cmp-lab{width:36%;font-size:10.5px;font-weight:700;color:var(--ink-2);}
+  .cmp-bar{flex:1;background:#eef1f6;border-radius:6px;height:21px;position:relative;overflow:hidden;}
+  .cmp-bar span{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;
+    padding-left:11px;color:#fff;font-size:11px;font-weight:800;letter-spacing:.02em;
+    background:linear-gradient(90deg,#8a97a8,#aab4c2);white-space:nowrap;}
+  .cmp-row.hot .cmp-bar span{background:linear-gradient(90deg,#9a6f1f,#cda14a);}
+  .compare p{font-size:10.5px;color:var(--ink-2);margin-top:4px;font-weight:600;}
+  .compare p b{color:var(--accent-d);}
+  .compare p.cmp-src{font-size:9px;color:var(--muted);font-weight:500;line-height:1.45;margin-top:7px;
+    border-top:1px solid var(--line-2);padding-top:6px;}
+
+  /* seller note */
+  .seller{background:var(--navy);color:#eef3fb;border-radius:12px;padding:16px 18px;}
+  .seller h3{color:#fff;font-size:13.5px;font-weight:800;margin-bottom:8px;display:flex;gap:8px;align-items:center;}
+  .seller h3::before{content:"";width:4px;height:15px;background:var(--accent);border-radius:2px;}
+  .seller ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:7px 18px;}
+  .seller li{font-size:11px;color:#d4ddec;padding-left:16px;position:relative;line-height:1.5;}
+  .seller li::before{content:"◆";color:#e8c87e;position:absolute;left:0;font-size:8px;top:3px;}
+  .seller li b{color:#fff;}
+
+  .note-box{border:1px dashed var(--line);border-radius:9px;padding:10px 13px;background:#fcfdff;}
+  .note-box .t{font-size:10.5px;font-weight:800;color:var(--ink-2);margin-bottom:4px;letter-spacing:.04em;}
+  .note-box p{font-size:9.8px;color:var(--muted);line-height:1.55;}
+
+  .footer{border-top:1px solid var(--line);margin-top:16px;padding-top:9px;
+    display:flex;justify-content:space-between;align-items:center;font-size:9.5px;color:var(--muted);}
+  .brand{font-weight:800;color:var(--ink);letter-spacing:.04em;}
+
+  @page{size:A4;margin:0;}
+  @media print{
+    body{background:#fff;}
+    .page{margin:0;box-shadow:none;min-height:auto;height:auto;}
+    .page-break{page-break-before:always;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ PAGE 1 ============ -->
+<section class="page">
+  <div class="hero">
+    <div class="eyebrow">Investment Property &nbsp;/&nbsp; For Sale</div>
+    <h1>クレストモール</h1>
+    <div class="sub">宮城県仙台市太白区茂ケ崎3-3-22 ｜ 木造一棟アパート（全8戸）</div>
+    <div class="hero-tags">
+      <span class="tag">表面利回り 約10%</span>
+      <span class="tag ghost">新築相場の約1.7倍</span>
+      <span class="tag ghost">インカム黒字（毎月キャッシュフロー +）</span>
+      <span class="tag ghost">仙台・長町エリア</span>
+    </div>
+    <div class="hero-kpis">
+      <div class="hk">
+        <div class="lab">現行 年間賃料収入</div>
+        <div class="val">295<span class="u">万円</span></div>
+        <div class="note">月額 246,000円（2026年実績）</div>
+      </div>
+      <div class="hk">
+        <div class="lab">表面利回り（売出2,950万円）</div>
+        <div class="val">10.0<span class="u">%</span></div>
+        <div class="note">新築区分の約1.7倍の利回り</div>
+      </div>
+      <div class="hk">
+        <div class="lab">月間キャッシュフロー</div>
+        <div class="val">+9.1<span class="u">万円</span></div>
+        <div class="note">ローン・経費控除後（黒字）</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pad">
+    <div class="sec">
+      <div class="sec-title">物件概要</div>
+      <div class="two-col">
+        <table class="spec">
+          <tr><th>物件名称</th><td>クレストモール</td></tr>
+          <tr><th>所在地</th><td>宮城県仙台市太白区茂ケ崎3-3-22</td></tr>
+          <tr><th>最寄駅</th><td>地下鉄南北線「長町一丁目」駅 約1,123m<br>同「河原町」駅 約1,215m</td></tr>
+          <tr><th>種別 / 用途</th><td>一棟アパート（共同住宅）</td></tr>
+          <tr><th>構造 / 階数</th><td>木造2階建</td></tr>
+        </table>
+        <table class="spec">
+          <tr><th>総戸数</th><td>8戸</td></tr>
+          <tr><th>延床面積</th><td>198.74㎡</td></tr>
+          <tr><th>建築年月</th><td>1985年（昭和60年）4月</td></tr>
+          <tr><th>管理</th><td>株式会社 robot home 仙台支店（管理委託中）</td></tr>
+          <tr><th>所有形態</th><td>土地・建物 一括所有（法人名義）</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">投資ハイライト</div>
+      <div class="hl-grid">
+        <div class="hl">
+          <div class="n">01</div>
+          <h3>高利回り × 黒字運用</h3>
+          <p>表面利回り二桁（売出2,950万円で10.0%）。ローン返済後も毎月プラスのキャッシュフローを生む、持ち出しゼロの稼働中物件です。</p>
+        </div>
+        <div class="hl">
+          <div class="n">02</div>
+          <h3>仙台・長町の土地</h3>
+          <p>再開発が進む人気サブ都心「長町」エリア。地下鉄2駅が徒歩圏。建物価値に依存しない土地値が下支え。</p>
+        </div>
+        <div class="hl">
+          <div class="n">03</div>
+          <h3>手離れの良さ</h3>
+          <p>管理会社（Robot Home）が稼働中。賃料は直近で181,000円→246,000円へ上昇基調。引継ぎ後すぐ収益化。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">収益概要（2026年 実績ベース）</div>
+      <table class="fin">
+        <thead>
+          <tr><th>区分</th><th class="r">月額</th><th class="r">年額</th><th>備考</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>賃料収入</td><td class="r">246,000</td><td class="r">2,952,000</td><td>住戸賃料</td></tr>
+          <tr><td>共益費・駐車料</td><td class="r">16,000</td><td class="r">192,000</td><td>共益10,000／駐車6,000</td></tr>
+          <tr><td>運営費（管理・保険・固定資産税ほか）</td><td class="r">−21,000</td><td class="r">−約252,000</td><td>固定資産税 年34,100円ほか</td></tr>
+          <tr class="total"><td>純収益（NOI）</td><td class="r mono">約 234,000</td><td class="r mono">約 2,810,000</td><td>運営純利益</td></tr>
+          <tr><td>ローン返済（参考）</td><td class="r">−152,000</td><td class="r">−1,824,000</td><td>日本政策金融公庫</td></tr>
+          <tr class="total"><td>手取りキャッシュフロー</td><td class="r"><span class="pos">+ 約 91,000</span></td><td class="r"><span class="pos">+ 約 1,090,000</span></td><td>ローン控除後・黒字</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAGE 2 ============ -->
+<section class="page page-break">
+  <div class="pad">
+    <div class="sec">
+      <div class="sec-title">中古収益物件の利回り相場と本物件の位置づけ</div>
+      <div class="compare">
+        <div class="cmp-row">
+          <span class="cmp-lab">中古 区分マンション（全国平均）</span>
+          <div class="cmp-bar"><span style="width:50%">表面 6.5%</span></div>
+        </div>
+        <div class="cmp-row">
+          <span class="cmp-lab">中古 一棟アパート（全国平均）</span>
+          <div class="cmp-bar"><span style="width:62%">表面 8.0%</span></div>
+        </div>
+        <div class="cmp-row">
+          <span class="cmp-lab">中古 一棟・築20年以上（全国）</span>
+          <div class="cmp-bar"><span style="width:73%">表面 9.5%</span></div>
+        </div>
+        <div class="cmp-row hot">
+          <span class="cmp-lab">本物件（売出2,950万円）</span>
+          <div class="cmp-bar"><span style="width:78%">表面 10.0%</span></div>
+        </div>
+        <p>売出2,950万円でも<b>表面10.0%</b>。新築（約6%）・中古区分（6.5%）・中古一棟の全国平均（8.0%）をいずれも上回る、駅近（長町）の高利回り一棟物件です。</p>
+        <p class="cmp-src">出典：健美家「収益物件 市場動向レポート」2026年3月期（中古区分マンション 6.54%／中古一棟アパート 8.01%）、同四半期レポート2026年1〜3月期（築20年以上 9.51%）。参考：新築区分は5〜7%、地方の築古一棟は11.5〜12.5%（会社設立のミチシルベ「中古アパート投資2026年版」）。</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">価格戦略と利回り（売主＝高値優先）</div>
+      <table class="yield">
+        <thead>
+          <tr><th>想定売出価格</th><th>表面利回り</th><th>実質(NOI)</th><th>m²単価(延床)</th><th>位置づけ</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>3,280万円</td><td>9.0%</td><td>8.6%</td><td>16.50万円</td><td>チャレンジ上限</td></tr>
+          <tr class="rec"><td>2,950万円</td><td>10.0%</td><td>9.5%</td><td>14.84万円</td><td>★ 推奨 売出（アスキング）</td></tr>
+          <tr><td>2,680万円</td><td>11.0%</td><td>10.5%</td><td>13.49万円</td><td>交渉の着地目安</td></tr>
+          <tr><td>2,460万円</td><td>12.0%</td><td>11.4%</td><td>12.38万円</td><td>標準</td></tr>
+          <tr><td>1,980万円</td><td>14.9%</td><td>14.2%</td><td>9.96万円</td><td>下限（即売・最低ライン）</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:10px;color:#6b7686;margin-top:7px;line-height:1.5;">
+        ※ 毎月キャッシュフロー黒字のため保有コストは発生せず、売主に売り急ぎの必要なし。<b style="color:#9a6f1f;">高値で売出し→反応を見て調整</b>が最適。利回りは年間賃料 2,952,000円（表面）・純収益 2,810,000円（実質）を各価格で除して算出。
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">融資・権利関係</div>
+      <div class="two-col">
+        <table class="spec">
+          <tr><th>借入先</th><td>日本政策金融公庫</td></tr>
+          <tr><th>当初借入</th><td>29,500,000円（2019年2月）</td></tr>
+          <tr><th>金利 / 方式</th><td>年1.9% ／ 元金均等</td></tr>
+        </table>
+        <table class="spec">
+          <tr><th>残債（2026年6月）</th><td>約 18,600,000円</td></tr>
+          <tr><th>完済予定</th><td>2038年12月</td></tr>
+          <tr><th>抵当権</th><td>上記公庫のみ。残債が小さく抹消スムーズ</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">媒介業者様へ（売主より）</div>
+      <div class="seller">
+        <h3>この案件をおすすめする理由</h3>
+        <ul>
+          <li><b>意思決定が速い：</b>売主は法人。社内決裁のみで即応します</li>
+          <li><b>価格に柔軟性：</b>適正水準であれば早期成約を優先します</li>
+          <li><b>権利関係がクリーン：</b>抵当権は公庫残債のみ・係争なし</li>
+          <li><b>稼働中で収益が見える：</b>管理会社の送金明細を開示可能</li>
+          <li><b>現金買い投資家に強い商品：</b>高利回り×インカム黒字</li>
+          <li><b>資料完備：</b>賃貸借・返済予定表・固定資産税通知を提出可</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="note-box">
+        <div class="t">買主候補へ提示前の確認事項（売主にて手配可）</div>
+        <p>土地面積・公図・現況入居率（満室想定賃料）・用途地域・接道状況・耐震/設備状況は、媒介契約後に売主より速やかにご提出します。本資料の数値は決算書・賃料送金明細・公庫返済予定表・火災保険証券の実数に基づきます。築年（1985年）により金融機関融資が限定されるため、現金または土地値評価での買主が中心となります。</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div><span class="brand">CRESTMALL</span> ｜ 仙台市太白区茂ケ崎 ｜ 売却物件資料</div>
+      <div>所有：iUMAプロパティマネジメント合同会社 ／ 作成 2026年6月</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

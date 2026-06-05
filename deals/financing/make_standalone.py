@@ -47,7 +47,8 @@ JS = """
 def main() -> int:
     if len(sys.argv) < 4:
         print("Usage: make_standalone.py <input.md> <output.html> <title>"); return 1
-    src, out, title = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
+    src, out, title = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve(), sys.argv[3]
+    out.parent.mkdir(parents=True, exist_ok=True)
     body = md_to_html(src.read_text(encoding="utf-8"))
     doc = (f'<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'
            f'<meta name="viewport" content="width=device-width, initial-scale=1.0">'

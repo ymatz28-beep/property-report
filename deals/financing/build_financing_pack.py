@@ -180,8 +180,8 @@ h1{{font-size:22px;border-bottom:3px solid var(--gold);padding-bottom:6px;margin
 h2{{font-size:18px;border-left:5px solid var(--gold);padding-left:10px;margin-top:28px}}
 h3{{font-size:15px;margin-top:20px;color:#333}}
 h4{{font-size:14px;margin-top:14px;color:#555}}
-section.doc{{scroll-margin-top:120px}}
-.flowwrap{{scroll-margin-top:120px}}
+section.doc{{scroll-margin-top:160px}}
+.flowwrap{{scroll-margin-top:160px}}
 table{{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}}
 th,td{{border:1px solid #ccc;padding:6px 9px;text-align:left;vertical-align:top}}
 th{{background:#f4efe2}}
@@ -192,8 +192,12 @@ li{{margin:3px 0}}
 hr{{border:none;border-top:1px solid #ddd;margin:16px 0}}
 hr.sec{{border-top:2px dashed var(--gold);margin:36px 0}}
 a{{color:#1e5fb4;word-break:break-all}}
+/* PJ 3ページ切替タブ */
+.pjnav{{position:sticky;top:0;z-index:30;display:flex;background:#0f1117;margin:0 -20px}}
+.pjnav a{{flex:1;text-align:center;color:#cdd4e2;text-decoration:none;font-size:12.5px;font-weight:700;padding:11px 4px;border-bottom:3px solid transparent;white-space:nowrap}}
+.pjnav a.on{{color:#ffd86b;border-bottom-color:#c9a84c;background:#1a1d27}}
 /* sticky header: toolbar + toc chips */
-.sticky{{position:sticky;top:0;z-index:20;background:#1a1d27;margin:0 -20px 18px;padding:10px 20px}}
+.sticky{{position:sticky;top:42px;z-index:20;background:#1a1d27;margin:0 -20px 18px;padding:10px 20px}}
 .toolbar{{display:flex;gap:10px;flex-wrap:wrap;align-items:center}}
 .toolbar button,.toolbar a.btn{{background:var(--gold);color:#1a1207;font-weight:700;border:none;padding:9px 15px;border-radius:9px;font-size:14px;text-decoration:none;cursor:pointer}}
 .toolbar a.alt{{background:#242836;color:#e4e4e7}}
@@ -229,6 +233,7 @@ pre.code{{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:
   table{{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}
   table thead,table tbody{{display:table;width:100%;min-width:520px}}}}
 </style></head><body>
+<nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="yakuin.html">🏠 薬院 売る/貸す</a><a href="financing.html" class="on">💰 融資戦略</a></nav>
 <div class="sticky">
   <div class="toolbar">
     <button onclick="window.print()">🖨 印刷 / PDF</button>

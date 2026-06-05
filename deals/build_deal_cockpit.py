@@ -125,9 +125,13 @@ footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--border);font-
   .controls{gap:14px}
   .kpi .v.big{font-size:16px}
 }
+.pjnav{position:sticky;top:0;z-index:50;display:flex;background:#0f1117;margin:0 0 0 0}
+.pjnav a{flex:1;text-align:center;color:#cdd4e2;text-decoration:none;font-size:12.5px;font-weight:700;padding:11px 4px;border-bottom:3px solid transparent;white-space:nowrap}
+.pjnav a.on{color:#ffd86b;border-bottom-color:#c9a84c;background:#1a1d27}
 </style>
 </head>
 <body>
+<nav class="pjnav"><a href="simulator.html" class="on">🎛 シミュレータ</a><a href="yakuin.html">🏠 薬院 売る/貸す</a><a href="financing.html">💰 融資戦略</a></nav>
 <header>
   <h1 id="dealName"></h1>
   <div class="sub" id="dealAddr"></div>

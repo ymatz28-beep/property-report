@@ -18,7 +18,8 @@ OUT = ROOT / "output" / "financing-placespot-shinbashi.html"
 PDF_OUT = ROOT / "output" / "financing-placespot-shinbashi.pdf"
 PDF_NAME = PDF_OUT.name
 FILES = ["00_playbook.md", "01_jfc_旅館業_事業計画書.md", "02_shiga_賃貸_打診パッケージ.md",
-         "03_リノベ相見積_インダストリアル.md", "04_運営代行_候補と相場.md"]
+         "03_リノベ相見積_インダストリアル.md", "04_運営代行_候補と相場.md",
+         "05_補助金_使えるもの全部.md"]
 
 CHROME_CANDIDATES = [
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",

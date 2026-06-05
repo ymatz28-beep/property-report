@@ -65,6 +65,13 @@ ol.steps li b{color:var(--text)}
 .dlbtn .t{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px}
 .dlbtn .d{font-size:11.5px;color:var(--text-secondary)}
 .note{font-size:11.5px;color:var(--text-muted);margin-top:10px;line-height:1.55}
+.msgwrap{position:relative;background:#11141c;border:1px solid var(--border);border-radius:12px}
+.msgwrap pre{margin:0;padding:16px;padding-top:42px;overflow-x:auto;font-size:12.5px;line-height:1.75;
+  color:var(--text);white-space:pre-wrap;word-break:break-word}
+.copybtn{position:absolute;top:10px;right:10px;background:var(--gold);color:#1a1207;border:none;
+  border-radius:8px;padding:6px 13px;font-size:12px;font-weight:800;cursor:pointer}
+.copybtn:active{opacity:.8}
+.copybtn.done{background:var(--green);color:#0b1f16}
 footer{margin-top:28px;border-top:1px solid var(--border);padding-top:13px;
   font-size:10.5px;color:var(--text-muted);text-align:right;letter-spacing:.05em}
 @media(max-width:600px){
@@ -139,6 +146,32 @@ footer{margin-top:28px;border-top:1px solid var(--border);padding-top:13px;
 </section>
 
 <section>
+  <h2>Robot Home へ売却相談（コピーして送る）</h2>
+  <div class="msgwrap">
+    <button class="copybtn" onclick="copyMsg(this)">コピー</button>
+    <pre id="rhmsg">件名: クレストモール（太白区茂ケ崎）売却検討のご相談
+
+robot home 仙台支店 ご担当者様
+
+いつもクレストモール（仙台市太白区茂ケ崎3-3-22）の管理をお世話になっております。所有者のiUMAプロパティマネジメント合同会社です。
+
+このたび本物件の売却を検討しております。つきましては2点ご相談させてください。
+
+1. 御社にて本物件の買取、または投資家のお客様へのご紹介は可能でしょうか。全8戸満室・収益黒字の一棟アパートです。
+2. 売却に伴う管理委託契約の解約条件・引継ぎ手順（必要な予告期間・精算項目）をご教示ください。
+
+査定のご参考に、レントロール・賃料送金明細・火災保険証券・公庫返済予定表・固定資産税明細をご提供できます。物件概要書（PDF）もございます。
+
+ご検討のほど、よろしくお願いいたします。
+
+iUMAプロパティマネジメント合同会社
+代表社員　手嶋 耕一
+TEL:（電話番号）/ Email:（メールアドレス）</pre>
+  </div>
+  <div class="note">電話・メール欄を埋めてから送信してください。管理会社なので物件を一番把握しており、買取・買主紹介が一番早く出る可能性があります。</div>
+</section>
+
+<section>
   <h2>資料（タップで表示）</h2>
   <div class="dl">
     <a class="dlbtn gold" href="gaiyo.pdf" target="_blank" rel="noopener">
@@ -154,5 +187,17 @@ footer{margin-top:28px;border-top:1px solid var(--border);padding-top:13px;
 </section>
 
 <footer>CONFIDENTIAL ｜ iUMAプロパティマネジメント合同会社 ｜ クレストモール売却戦略</footer>
+<script>
+function copyMsg(btn){
+  var t=document.getElementById('rhmsg').innerText;
+  function done(){btn.textContent='コピー済';btn.classList.add('done');
+    setTimeout(function(){btn.textContent='コピー';btn.classList.remove('done');},1800);}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(done,function(){fallback(t);done();});
+  }else{fallback(t);done();}
+  function fallback(s){var a=document.createElement('textarea');a.value=s;document.body.appendChild(a);
+    a.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(a);}
+}
+</script>
 </body>
 </html>

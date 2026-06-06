@@ -140,20 +140,20 @@ def build_flowchart(idmap: dict) -> str:
 <section class="flowwrap" id="flow">
   <h1>全体の流れ（上から着手順。各箱から章へ飛べる）</h1>
   <div class="flow">
-    <a class="fbox first" href="#{mail}"><span class="badge">▶ いまここから</span><b>1. 相談メール3本を送る ＋ 事業者ID申請</b><small>福岡市 観光部／保健所／商工会議所へ。並行で事業者ID(gBizID)申請。ここが全部の入口</small></a>
+    <a class="fbox first" href="#{perm}"><span class="badge">▶ いまここから</span><b>1. 月曜に電話4本（相談）＋ 事業者ID申請</b><small>① 博多区保健所(衛生課) 092-419-1125＝簡易宿所の事前相談・間取り図持参　② 博多消防署予防課 092-475-0119＝消防設備の要否(最大の費用変動)　③ 福岡県旅館ホテル生活衛生同業組合 092-737-5050＝公庫低利の鍵・加入相談　④ 福岡商工会議所 092-441-1111＝経営力向上計画(税制の前提)。並行でgBizIDプライム申請</small></a>
     <div class="farrow">▼ 相談で段取りが見えたら</div>
-    <a class="fbox start" href="#{perm}"><b>2. 旅館業（簡易宿所）許可を取る</b><small>すべての低金利と補助金を同時に開く"スイッチ"。福岡市は手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。賃貸のままだと両方とも全滅</small></a>
-    <div class="farrow">▼ この1手が、下の2つを同時に開く</div>
+    <a class="fbox start" href="#{perm}"><b>2. 旅館業（簡易宿所）許可を申請</b><small>すべての低金利と（開業後の）補助金を開く"スイッチ"。手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。許可は申請中でも公庫の打診は可。賃貸のままだと全滅</small></a>
+    <div class="farrow">▼ 許可を軸に、下の2つを並行で進める</div>
     <div class="frow">
-      <a class="fbox" href="#{fin}"><b>3A. 融資（低金利の梯子）</b><small>公庫 振興事業貸付＝組合加入で設備20年→DSCR成立。次に商工中金。法人の受け皿はセゾン直接。※相見積は打診と並行で取る</small></a>
-      <a class="fbox" href="#{sub}"><b>3B. 補助金・税優遇</b><small>福岡市 受入環境補助(半額・上限40万)／省力化補助／経営強化税制(即時償却・10%控除)</small></a>
+      <a class="fbox" href="#{fin}"><b>3A. 融資（公庫）</b><small>組合加入 → 公庫 振興事業貸付（設備20年・据置2年）で打診＝DSCR成立。リノベの相見積も並行で取る</small></a>
+      <a class="fbox" href="#{sub}"><b>3B. 税制の前提づくり</b><small>商工会議所で経営力向上計画の認定（中小企業経営強化税制＝即時償却/10%控除の前提）。設備取得の"前"に認定を取る</small></a>
     </div>
-    <div class="farrow">▼ どちらも「決定の紙が出る前に発注したら対象外」</div>
-    <a class="fbox gate" href="#{sch}"><b>4. ★発注ゲート</b><small>計画認定・交付決定を確認してから、鍵・端末・家具・空調を発注。リノベ本体は対象外なので先行してよい</small></a>
+    <div class="farrow">▼ 「決定の紙（融資決定・計画認定）が出る前に発注したら無効」</div>
+    <a class="fbox gate" href="#{sch}"><b>4. ★発注ゲート</b><small>融資決定・計画認定を確認してからリノベ＆設備を発注。リノベ本体はどの補助も対象外なので先行してよい</small></a>
     <div class="farrow">▼</div>
-    <a class="fbox" href="#{sch}"><b>5. 工事 → 旅館業 許可取得 → 開業（OTA掲載）</b></a>
-    <div class="farrow">▼ ゴール</div>
-    <a class="fbox end" href="#{sch}"><b>6. 実績報告で補助金が後払い入金 ＋ 確定申告で節税</b><small>立て替えた分を、補助金と即時償却/税額控除で回収する</small></a>
+    <a class="fbox" href="#{perm}"><b>5. 工事 → 消防適合・旅館業 許可取得 → 開業（OTA掲載）＋ 宿泊税の申告開始</b></a>
+    <div class="farrow">▼ ここで初めて補助金が解禁</div>
+    <a class="fbox end" href="#{sub}"><b>6. 開業後：福岡市 受入環境補助・省力化補助を申請</b><small>開業＋宿泊税申告が要件。交付決定の"後"に対象機器(鍵・端末・Wi-Fi等)を発注→設置→実績報告で後払い入金。確定申告で経営強化税制(即時償却/税額控除)も回収</small></a>
   </div>
 </section>"""
 

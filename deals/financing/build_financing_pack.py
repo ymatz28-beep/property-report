@@ -232,7 +232,20 @@ pre.code{{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:
 /* back to top */
 #totop{{position:fixed;right:16px;bottom:16px;z-index:30;background:var(--gold);color:#1a1207;border:none;width:46px;height:46px;border-radius:50%;font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s}}
 #totop.show{{opacity:.95;pointer-events:auto}}
-@media print{{.sticky,#totop{{display:none}}body{{padding:0}}.fbox{{box-shadow:none}}a{{color:#1a1a1a}}.flowwrap{{page-break-after:always}}}}
+@media print{{
+  .sticky,#totop,.copybtn{{display:none}}
+  body{{padding:0;font-size:10.5pt}}
+  @page{{margin:14mm 12mm}}
+  .fbox{{box-shadow:none}}a{{color:#1a1a1a}}
+  .flowwrap{{page-break-after:always}}
+  .doc{{break-before:page;page-break-before:always}}
+  h1,h2,h3{{break-after:avoid;page-break-after:avoid;break-inside:avoid;page-break-inside:avoid}}
+  table{{break-inside:auto;page-break-inside:auto}}
+  tr,td,th{{break-inside:avoid;page-break-inside:avoid}}
+  thead{{display:table-header-group}}
+  blockquote,pre,.codewrap,li,img{{break-inside:avoid;page-break-inside:avoid}}
+  p{{orphans:3;widows:3}}
+}}
 @media(max-width:700px){{body{{padding:0 14px 60px}}.sticky{{margin:0 -14px 16px;padding:9px 14px}}h1{{font-size:19px}}h2{{font-size:16px}}
   .frow{{flex-direction:column}}
   table{{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}

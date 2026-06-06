@@ -30,7 +30,17 @@ a{color:#1e5fb4;word-break:break-all}
 pre.code{background:#0f1117;color:#e6e8ee;padding:28px 13px 13px;border-radius:9px;overflow-x:auto;font-size:12px;line-height:1.6;white-space:pre-wrap;word-break:break-word;font-family:'SFMono-Regular',Consolas,Menlo,monospace}
 .bar{position:sticky;top:0;background:#1a1d27;margin:-32px -26px 18px;padding:11px 26px;display:flex;gap:10px}
 .bar button{background:#c9a84c;color:#1a1207;font-weight:700;border:none;padding:9px 15px;border-radius:9px;font-size:14px;cursor:pointer}
-@media print{.bar,.copybtn{display:none}body{padding:0}}
+@media print{
+  .bar,.copybtn{display:none}
+  body{padding:0;font-size:10.5pt}
+  @page{margin:14mm 12mm}
+  h1,h2,h3{break-after:avoid;page-break-after:avoid;break-inside:avoid;page-break-inside:avoid}
+  table{break-inside:auto;page-break-inside:auto}
+  tr,td,th{break-inside:avoid;page-break-inside:avoid}
+  thead{display:table-header-group}
+  blockquote,pre,.codewrap,li,img{break-inside:avoid;page-break-inside:avoid}
+  p{orphans:3;widows:3}
+}
 @media(max-width:700px){body{padding:14px}.bar{margin:-14px -14px 14px;padding:10px 14px}table{display:block;overflow-x:auto}}
 """
 

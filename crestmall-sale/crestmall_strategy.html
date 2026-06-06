@@ -148,7 +148,7 @@ footer{margin-top:28px;border-top:1px solid var(--border);padding-top:13px;
 <section>
   <h2>Robot Home へ売却相談（コピーして送る）</h2>
   <div class="msgwrap">
-    <button class="copybtn" onclick="copyMsg(this)">コピー</button>
+    <button class="copybtn" onclick="copyEl(this,'rhmsg')">コピー</button>
     <pre id="rhmsg">件名: クレストモール 売却の相談
 
 robot home 仙台支店 ご担当者様
@@ -171,6 +171,31 @@ TEL: 070-8661-4173 / Email: yma.tz.28@gmail.com</pre>
 </section>
 
 <section>
+  <h2>楽待 掲載用（自分で載せる / Robot Homeに渡す）</h2>
+  <div class="note" style="margin-top:0;margin-bottom:11px">自分で楽待に載せる時は下の紹介文をコピーして貼り付け（基本情報・利回り・レントロールは掲載パッケージ参照）。Robot Homeや業者に任せる時は、掲載パッケージをそのまま渡せます。</div>
+  <div class="dl" style="margin-bottom:13px">
+    <a class="dlbtn gold" href="rakumachi.pdf" target="_blank" rel="noopener">
+      <span class="t">📑 楽待 掲載パッケージ（PDF）</span>
+      <span class="d">基本情報・収益・レントロール・紹介文／渡す用・見ながら入力用</span>
+    </a>
+  </div>
+  <div class="msgwrap">
+    <button class="copybtn" onclick="copyEl(this,'rkmsg')">コピー</button>
+    <pre id="rkmsg">【全8戸満室稼働中／表面利回り10.0%・売出2,950万円の一棟アパート】
+
+仙台市太白区茂ケ崎の木造一棟アパート（全8戸／1K）です。地下鉄南北線「長町一丁目」駅が徒歩圏、再開発の進む人気サブ都心「長町」エリアに立地します。
+
+2026年現在、全8戸満室で稼働中。年間賃料収入 約295万円、運営費控除後の純収益（NOI）は約281万円です。robot home仙台支店が管理しており、引継ぎ後すぐに収益化いただけます。
+
+土地・建物を一括所有（法人名義）。抵当権は日本政策金融公庫のみで残債も小さく、権利関係はクリーンです。売主は法人のため意思決定が速く、レントロール・賃料送金明細・公庫返済予定表・固定資産税通知・火災保険証券など資料も完備しています。
+
+新築区分（約6%）・中古区分（全国平均6.5%）・中古一棟（全国平均8.0%）をいずれも上回る表面10.0%。築年（1985年）のため現金または土地値評価でのご購入が中心となり、高利回り×インカム黒字を狙う投資家様に適した商品です。
+
+ご内覧・資料請求はお気軽にお問い合わせください。</pre>
+  </div>
+</section>
+
+<section>
   <h2>資料（タップで表示）</h2>
   <div class="dl">
     <a class="dlbtn gold" href="gaiyo.pdf" target="_blank" rel="noopener">
@@ -187,8 +212,8 @@ TEL: 070-8661-4173 / Email: yma.tz.28@gmail.com</pre>
 
 <footer>CONFIDENTIAL ｜ iUMAプロパティマネジメント合同会社 ｜ クレストモール売却戦略</footer>
 <script>
-function copyMsg(btn){
-  var t=document.getElementById('rhmsg').innerText;
+function copyEl(btn,id){
+  var t=document.getElementById(id).innerText;
   function done(){btn.textContent='コピー済';btn.classList.add('done');
     setTimeout(function(){btn.textContent='コピー';btn.classList.remove('done');},1800);}
   if(navigator.clipboard&&navigator.clipboard.writeText){

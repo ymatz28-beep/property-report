@@ -11,9 +11,9 @@
 - [WARN] hardcoded_data: Large inline data (83 lines) at line 364. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] structural_reform: [ESCALATED: 53d unresolved] generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 53d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 53d unresolved] Stale temp/debug file (64 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 53d unresolved] Stale temp/debug file (64 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 53d unresolved] Stale temp/debug file (64 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 53d unresolved] Stale temp/debug file (65 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 53d unresolved] Stale temp/debug file (65 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 53d unresolved] Stale temp/debug file (65 days old). Delete it.
 - [ERROR] structural_reform: [ESCALATED: 53d unresolved] Stale temp/debug file (68 days old). Delete it.
 - [WARN] html_ui: Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: [ESCALATED: 53d unresolved] Font size violation(s): line 190: fixed 48px
@@ -34,7 +34,6 @@
   in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
 - [ERROR] property_patrol_steps: [ESCALATED: 44d unresolved] 物件パトロール失敗ステップ (2026-06-07 14:49): 【内覧分析レポート】異常終了: expected '<document start>', but found '<scalar>'
   in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
-- [WARN] git_uncommitted: Property Analyzer: 34 uncommitted file(s), oldest 27h ago (threshold: 24h). GHA runs on old code until pushed.
 - [WARN] design_token_compliance: Line 9: hardcoded #c9a84c should be var(--gold)
 - [ERROR] design_token_compliance: [ESCALATED: 53d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 53d unresolved] Line 401: hardcoded #9ca3af should be var(--text-secondary)
@@ -46,16 +45,18 @@
 - [ERROR] design_token_compliance: [ESCALATED: 53d unresolved] Line 647: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 53d unresolved] Line 703: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 53d unresolved] Line 758: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 25: hardcoded #0f1117 should be var(--bg)
-- [WARN] design_token_compliance: Line 27: hardcoded #c9a84c should be var(--gold)
-- [WARN] design_token_compliance: Line 27: hardcoded #1a1d27 should be var(--surface)
-- [WARN] design_token_compliance: Line 29: hardcoded #1a1d27 should be var(--surface)
-- [WARN] design_token_compliance: Line 32: hardcoded #242836 should be var(--surface2)
-- [WARN] design_token_compliance: Line 32: hardcoded #e4e4e7 should be var(--text)
-- [WARN] design_token_compliance: Line 34: hardcoded #242836 should be var(--surface2)
-- [WARN] design_token_compliance: Line 44: hardcoded #1a1d27 should be var(--surface)
-- [WARN] design_token_compliance: Line 44: hardcoded #1a1d27 should be var(--surface)
-- [WARN] design_token_compliance: Line 52: hardcoded #0f1117 should be var(--bg)
+- [ERROR] design_token_compliance: [SISYPHEAN×11: re-appeared after recent fix] Line 25: hardcoded #0f1117 should be var(--bg)
+- [ERROR] design_token_compliance: [SISYPHEAN×12: re-appeared after recent fix] Line 27: hardcoded #c9a84c should be var(--gold)
+- [ERROR] design_token_compliance: [SISYPHEAN×13: re-appeared after recent fix] Line 27: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×14: re-appeared after recent fix] Line 29: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×15: re-appeared after recent fix] Line 32: hardcoded #242836 should be var(--surface2)
+- [ERROR] design_token_compliance: [SISYPHEAN×16: re-appeared after recent fix] Line 32: hardcoded #e4e4e7 should be var(--text)
+- [ERROR] design_token_compliance: [SISYPHEAN×17: re-appeared after recent fix] Line 34: hardcoded #242836 should be var(--surface2)
+- [ERROR] design_token_compliance: [SISYPHEAN×18: re-appeared after recent fix] Line 44: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×19: re-appeared after recent fix] Line 44: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×20: re-appeared after recent fix] Line 51: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×21: re-appeared after recent fix] Line 61: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×22: re-appeared after recent fix] Line 70: hardcoded #0f1117 should be var(--bg)
 - [ERROR] design_token_compliance: [ESCALATED: 51d unresolved] Line 173: hardcoded #fbbf24 should be var(--amber)
 - [ERROR] design_token_compliance: [ESCALATED: 51d unresolved] Line 304: hardcoded #fbbf24 should be var(--amber)
 - [ERROR] design_token_compliance: [ESCALATED: 51d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
@@ -84,7 +85,7 @@
 - [ERROR] blank_cells: [ESCALATED: 53d unresolved] ダッシュ「—」162個 (閾値20) — データ欠損の可能性
 - [ERROR] first_seen_coverage: 掲載日カバレッジ 1% (2/142) — 閾値80%
 - [ERROR] qa_market_oc_income_coverage: [ESCALATED: 53d unresolved] OC 311件中 233件が年間収入欠落 (75%) — 利回り逆算で補完
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 53d unresolved] 13件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 墨田区向島(44㎡): ['本所吾妻橋駅 / 1LDK / 44.61㎡', '向島パークハイツ']; 福岡市博多区美野島(25㎡): ['『博多駅・天神・キャナル・中州まで徒歩圏内』', 'ふれんず物件(博多区)']; 福岡市博多区比恵町(20㎡): ['スカイハイツ春日（表面利回り：６．９３％）', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)'] ... +8 more
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 53d unresolved] 13件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 墨田区向島(44㎡): ['向島パークハイツ', '本所吾妻橋駅 / 1LDK / 44.61㎡']; 福岡市博多区美野島(25㎡): ['『博多駅・天神・キャナル・中州まで徒歩圏内』', 'ふれんず物件(博多区)']; 福岡市博多区比恵町(20㎡): ['スカイハイツ春日（表面利回り：６．９３％）', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分'] ... +8 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 9.0% (11/122件)。パイプライン変換バグの可能性。例: 960.0万円/51.7㎡; 580.0万円/55.2㎡; 780.0万円/68.3㎡; 650.0万円/40.0㎡; 650.0万円/40.23㎡
 - [WARN] renderer_compliance: Missing gnav (site-header / site-nav) — no navigation
 - [WARN] renderer_compliance: Missing gnav (site-header / site-nav) — no navigation

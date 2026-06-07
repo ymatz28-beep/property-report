@@ -24,7 +24,7 @@
     if (ty === 'radio' || ty === 'checkbox') { var tt = el.value + ' ' + lbl(el); if ((tt.indexOf('満室') >= 0 || tt.indexOf('法人') >= 0) && !el.checked) { el.checked = true; fire(el); n++; } return; }
     if (['hidden', 'submit', 'button', 'file', 'password'].indexOf(ty) >= 0) return;
     var m = meta(el);
-    if (el.tagName === 'TEXTAREA' && /備考|要望|コメント|メッセージ|その他|質問|相談|自由|アピール/.test(m)) { if (!el.value) { setNative(el, D.comment); n++; } return; }
+    if (el.tagName === 'TEXTAREA' && /備考|要望|希望|コメント|メッセージ|その他|質問|相談|自由|アピール|PR/.test(m)) { if (!el.value) { setNative(el, D.comment); n++; } return; }
     var ml = m.toLowerCase();
     TR.some(function (r) { if (new RegExp(r[0], 'i').test(ml)) { if (!el.value) { setNative(el, r[1]); n++; } return true; } return false; });
   });

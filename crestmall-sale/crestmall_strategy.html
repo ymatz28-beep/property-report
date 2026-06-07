@@ -145,10 +145,20 @@ footer{margin-top:28px;border-top:1px solid var(--border);padding-top:13px;
     <li><b>同時に査定を集める</b> — 楽待の売却査定（最大5社）＋健美家＋Robot Home。投資物件に強い会社を一気に当てる。掲載パッケージの数値を使えば入力は数分。</li>
     <li><b>査定を4軸で比較</b> — 査定額／客付け力（投資家網・楽待健美家への掲載力）／仲介手数料／スピード感。額だけで選ばない。</li>
     <li><b>上位2〜3社と一般媒介</b> — 楽待・健美家へ同時掲載させ買主の母数を最大化。Robot Homeは物件熟知＋既存入居者・買主網で1枠。</li>
-    <li><b>2,950万アンカーで売出 → 反応で機動調整</b> — 1〜2週で反応が薄ければ2,680万（表面11%）へ。満室・黒字・資料完備で投資家は即決しやすい。</li>
+    <li><b>2,950万スタート → 2週間ごとに段階値下げ</b> — 強気の高値から始め、反応（問合せ・内覧）が薄ければ下表のラダーで刻んで下げる。満室・黒字・資料完備で投資家は即決しやすい。</li>
     <li><b>買付は条件比較で選ぶ</b> — 価格・決済スピード・融資特約の有無で。早い者勝ちにしない。決済で公庫完済・抵当権抹消。</li>
   </ol>
-  <div class="note">「一番高く」と「一番早く」は時に相反する。両立は“広く同時に出して競争させ、強気スタート→反応で素早く下げる”設計が最適。早期売却を最優先するなら最初から2,680万（表面11%）で出すと反応が速い。</div>
+  <table style="margin-top:11px">
+    <thead><tr><th>段階</th><th>売出価格</th><th>表面利回り</th><th>目安タイミング</th></tr></thead>
+    <tbody>
+      <tr class="rec"><td>スタート</td><td>2,950万円</td><td>10.0%</td><td>掲載開始</td></tr>
+      <tr><td>2回目</td><td>2,800万円</td><td>10.5%</td><td>2週間 反応薄なら</td></tr>
+      <tr><td>3回目</td><td>2,680万円</td><td>11.0%</td><td>さらに2週間</td></tr>
+      <tr><td>4回目</td><td>2,460万円</td><td>12.0%</td><td>さらに2週間</td></tr>
+      <tr><td>下限</td><td>1,980万円</td><td>14.9%</td><td>即売ライン</td></tr>
+    </tbody>
+  </table>
+  <div class="note">高値から徐々に下げるラダー戦略。毎月黒字で保有コストゼロなので、焦らず2週間ごとに反応を見て刻む。問合せが入った段階で値下げは止め、交渉で着地させる。</div>
 </section>
 
 <section>
@@ -189,6 +199,32 @@ TEL: 070-8661-4173 / Email: yma.tz.28@gmail.com</pre>
     <li><b>内覧・交渉 → 売買契約・決済</b>。宅建業者が仲介。公庫残債は決済で一括返済・抵当権抹消。</li>
   </ol>
   <div class="note">※ 業者を一切通さず売るなら個人間売買（家いちば等）になるが、投資家は融資・契約実務で結局プロが要るため、楽待では「査定→媒介→掲載」が実質ルート。出典: 楽待 売却査定 公式（rakumachi.jp/fudousanbaikyaku）。</div>
+</section>
+
+<section>
+  <h2>楽待フォーム 自動入力（ワンクリック）</h2>
+  <div class="note" style="margin-top:0;margin-bottom:11px">楽待の売却査定フォームを、ボタン1つでクレストモールの情報に自動入力。査定トップの3項目（宮城県・太白区・1棟アパート）は確実に入り、詳細ページはラベル推定で埋めます。</div>
+
+  <div style="font-weight:700;font-size:13px;margin:4px 0 6px;color:var(--text)">方法A：ユーザースクリプト（推奨・常駐）</div>
+  <ol class="steps" style="margin-bottom:10px">
+    <li>ブラウザに拡張「<b>Tampermonkey</b>」を入れる（Chrome／Edge／Safari対応）。</li>
+    <li>下のボタンを押す → Tampermonkeyが「インストール」を表示 → インストール。</li>
+    <li>楽待の売却査定ページを開くと右下に「🏠 自動入力」パネルが出る。押すだけ。</li>
+  </ol>
+  <div class="dl" style="margin-bottom:14px">
+    <a class="dlbtn gold" href="rakumachi_autofill.user.js">
+      <span class="t">⚙️ 自動入力スクリプトをインストール</span>
+      <span class="d">Tampermonkey導入後にタップ → インストール画面へ</span>
+    </a>
+  </div>
+
+  <div style="font-weight:700;font-size:13px;margin:4px 0 6px;color:var(--text)">方法B：ブックマークレット（インストール不要・トップ3項目＋コメント）</div>
+  <div class="note" style="margin-top:0;margin-bottom:8px">下をコピー → ブラウザでブックマークを新規作成しURL欄に貼り付け。楽待の査定トップで押すと、宮城県・太白区・1棟アパートをセットし、紹介コメントをコピーします。</div>
+  <div class="msgwrap">
+    <button class="copybtn" onclick="copyEl(this,'bmlet')">コピー</button>
+    <pre id="bmlet">javascript:(function(){var f=document.querySelector('form.assessment_form');if(!f){alert('楽待の売却査定トップで実行してください');return;}function ch(e){e.dispatchEvent(new Event('change',{bubbles:true}));}var p=f.querySelector('.prefecture_id'),c=f.querySelector('.city_id'),d=f.querySelector('.dimension_type');if(p){p.value='4';ch(p);}if(d){d.value='1002';ch(d);}var n=0,t=setInterval(function(){n++;if(c&amp;&amp;c.options.length>1){var o=[].slice.call(c.options).filter(function(x){return x.text.indexOf('太白')>=0;})[0];if(o){c.value=o.value;ch(c);}clearInterval(t);}else if(n>25){clearInterval(t);}},300);var cm='【全8戸満室稼働中／表面利回り10.0%・売出2,950万円の一棟アパート】\n\n仙台市太白区茂ケ崎の木造一棟アパート（全8戸／1K）。地下鉄南北線「長町一丁目」駅徒歩圏。2026年現在 全8戸満室、年間賃料 約295万円、NOI 約281万円。robot home仙台支店が管理。土地建物一括所有（法人）、抵当権は公庫のみ・残債小。資料完備。築1985年のため現金／土地値評価の投資家様向け、表面10.0%。';if(navigator.clipboard)navigator.clipboard.writeText(cm);alert('宮城県・1棟アパートをセット、市区郡(太白区)を選択中。紹介コメントをコピーしました。');})();</pre>
+  </div>
+  <div class="note">⚠️ 自動入力は補助です。<b>送信前に必ず内容を目視で確認</b>してください。詳細ページの推定入力は楽待の画面変更で外れることがあります。</div>
 </section>
 
 <section>

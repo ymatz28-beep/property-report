@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>クレストモール 査定比較トラッカー</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1117; --card:#1a1d27; --border:#2d3348; --border-light:#3d4460;
+  --gold:#c9a84c; --green:#3fb27f; --red:#e0726b;
+  --text:#e4e4e7; --text-secondary:#9ca3af; --text-muted:#7c8293;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans JP',sans-serif;
+  line-height:1.6;padding:24px;max-width:1180px;margin:0 auto;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.back{display:inline-block;font-size:12px;color:var(--text-muted);text-decoration:none;margin-bottom:14px}
+.back:hover{color:var(--gold)}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-size:22px;font-weight:800;letter-spacing:.01em}
+.addr{font-size:12.5px;color:var(--text-secondary);margin-top:3px}
+.badge{background:rgba(201,168,76,.14);color:var(--gold);border:1px solid rgba(201,168,76,.35);
+  font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.note{font-size:12px;color:var(--text-secondary);background:var(--card);border:1px solid var(--border);
+  border-radius:11px;padding:12px 14px;margin:16px 0}
+.note b{color:var(--gold)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.kpi .l{font-size:10.5px;color:var(--text-muted)}
+.kpi .v{font-size:19px;font-weight:800;margin-top:3px}
+.kpi .v .u{font-size:11px;color:var(--gold);font-weight:700;margin-left:2px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px;align-items:center}
+.btn{background:var(--card);border:1px solid var(--border-light);color:var(--text);font-size:12.5px;
+  font-weight:700;padding:8px 14px;border-radius:9px;cursor:pointer;font-family:inherit}
+.btn:hover{border-color:var(--gold)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#1a1207}
+.btn.danger:hover{border-color:var(--red);color:var(--red)}
+.saved{font-size:11.5px;color:var(--green);margin-left:auto}
+.wrap{overflow-x:auto;border:1px solid var(--border);border-radius:13px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--card);min-width:1080px}
+th{background:#161922;color:var(--text-secondary);font-size:11px;font-weight:700;text-align:left;
+  padding:10px 8px;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0}
+td{padding:4px 6px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+input,select,textarea{width:100%;background:transparent;border:1px solid transparent;color:var(--text);
+  font-family:inherit;font-size:12.5px;padding:6px 7px;border-radius:7px;resize:vertical}
+input:hover,select:hover,textarea:hover{border-color:var(--border)}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none;background:#11141c}
+input[type=number]{text-align:right}
+select{cursor:pointer;-webkit-appearance:none}
+select option{background:#161922;color:var(--text)}
+textarea{min-height:32px}
+.amt{color:var(--gold);font-weight:800}
+.del{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:15px;padding:4px 8px}
+.del:hover{color:var(--red)}
+.seed{position:relative}
+.seed::after{content:"管理会社";position:absolute;top:-6px;left:6px;font-size:9px;color:var(--green)}
+.rank{font-size:11px;color:var(--text-muted);font-weight:700;text-align:center}
+.diff{font-size:10px;color:var(--text-muted);display:block;text-align:right;margin-top:1px}
+.diff.up{color:var(--green)} .diff.dn{color:var(--red)}
+footer{font-size:10.5px;color:var(--text-muted);text-align:center;margin-top:24px;letter-spacing:.04em}
+.legend{font-size:11px;color:var(--text-muted);margin-top:8px;line-height:1.7}
+@media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}body{padding:16px}}
+</style>
+</head>
+<body>
+<a class="back" href="./">← 売却戦略ページに戻る</a>
+<div class="head">
+  <div>
+    <h1>査定比較トラッカー</h1>
+    <div class="addr">クレストモール（仙台市太白区茂ケ崎3-3-22）／売出 2,950万円</div>
+  </div>
+  <span class="badge">入力は自動保存（このブラウザ内）</span>
+</div>
+
+<div class="note">
+楽待6社＋Robot Home から査定が返ってきたら、ここに <b>埋めるだけ</b>。査定額を入れると<b>高い順に自動で並び替え</b>、売出2,950万との差も出ます。入力内容はこのブラウザに自動保存されるので、閉じても消えません。<b>絞り込みの軸＝査定額・反応の速さ・売り方の具体性・一般媒介でOKか</b>の4つ。
+</div>
+
+<div class="kpis">
+  <div class="kpi"><div class="l">回答が来た社数</div><div class="v" id="kReplies">0<span class="u">/7</span></div></div>
+  <div class="kpi"><div class="l">最高査定額</div><div class="v amt" id="kMax">—</div></div>
+  <div class="kpi"><div class="l">平均査定額</div><div class="v" id="kAvg">—</div></div>
+  <div class="kpi"><div class="l">一般媒介OKの社数</div><div class="v" id="kGen">0</div></div>
+</div>
+
+<div class="toolbar">
+  <button class="btn gold" onclick="addRow()">＋ 業者を追加</button>
+  <button class="btn" onclick="exportCSV()">CSV書き出し</button>
+  <button class="btn danger" onclick="resetAll()">全消去</button>
+  <span class="saved" id="saved"></span>
+</div>
+
+<div class="wrap">
+<table>
+<thead><tr>
+  <th style="width:34px">順</th>
+  <th style="width:150px">会社名</th>
+  <th style="width:120px">査定額(万円)</th>
+  <th style="width:108px">返信の速さ</th>
+  <th style="width:120px">売り方の具体性</th>
+  <th style="width:96px">媒介の希望</th>
+  <th style="width:150px">担当・連絡先</th>
+  <th style="width:74px">手応え</th>
+  <th style="min-width:180px">メモ</th>
+  <th style="width:34px"></th>
+</tr></thead>
+<tbody id="tb"></tbody>
+</table>
+</div>
+
+<div class="legend">
+返信の速さ＝早いほど本気度が高い目安／媒介は「一般OK」と言う会社を軸にすると複数社に同時に出せる／手応え＝★で直感メモ。<br>
+正式な媒介契約は全社の査定が出揃ってから。今は比べる段階です。
+</div>
+
+<footer>CONFIDENTIAL ｜ iUMAプロパティマネジメント合同会社 ｜ クレストモール査定比較</footer>
+
+<script>
+var KEY='crestmall_tracker_v1';
+var ASK=2950;
+var SPEED=['','即日','1〜2日','3〜5日','1週間+'];
+var DETAIL=['','具体的◎','普通○','ふわっと△'];
+var BAIKAI=['','一般OK','専任推し','専属専任','未確認'];
+var STARS=['','★','★★','★★★','★★★★','★★★★★'];
+
+function seedRows(){
+  return [
+    {co:'Robot Home（管理会社）',amt:'',speed:'',detail:'',baikai:'一般OK',cont:'',star:'',memo:'管理中。直接 売却相談 依頼済み',seed:true},
+    {co:'',amt:'',speed:'',detail:'',baikai:'',cont:'',star:'',memo:''},
+    {co:'',amt:'',speed:'',detail:'',baikai:'',cont:'',star:'',memo:''},
+    {co:'',amt:'',speed:'',detail:'',baikai:'',cont:'',star:'',memo:''},
+    {co:'',amt:'',speed:'',detail:'',baikai:'',cont:'',star:'',memo:''},
+    {co:'',amt:'',speed:'',detail:'',baikai:'',cont:'',star:'',memo:''},
+    {co:'',amt:'',speed:'',detail:'',baikai:'',cont:'',star:'',memo:''}
+  ];
+}
+var data;
+try{data=JSON.parse(localStorage.getItem(KEY))||seedRows();}catch(e){data=seedRows();}
+if(!Array.isArray(data)||!data.length)data=seedRows();
+
+function save(){localStorage.setItem(KEY,JSON.stringify(data));
+  var s=document.getElementById('saved');s.textContent='保存しました '+new Date().toLocaleTimeString('ja-JP');
+  setTimeout(function(){s.textContent='';},1600);}
+
+function opt(arr,v){return arr.map(function(o){return '<option'+(o===v?' selected':'')+'>'+o+'</option>';}).join('');}
+
+function render(){
+  var order=data.map(function(r,i){return i;});
+  order.sort(function(a,b){
+    var av=parseFloat(data[a].amt),bv=parseFloat(data[b].amt);
+    var ae=isNaN(av),be=isNaN(bv);
+    if(ae&&be)return a-b; if(ae)return 1; if(be)return -1; return bv-av;
+  });
+  var tb=document.getElementById('tb');tb.innerHTML='';
+  var rank=0;
+  order.forEach(function(i){
+    var r=data[i],tr=document.createElement('tr');
+    var hasAmt=!isNaN(parseFloat(r.amt));
+    if(hasAmt)rank++;
+    var diff='';
+    if(hasAmt){var d=parseFloat(r.amt)-ASK;diff='<span class="diff '+(d>=0?'up':'dn')+'">'+(d>=0?'+':'')+d+'万</span>';}
+    tr.innerHTML=
+      '<td class="rank">'+(hasAmt?rank:'–')+'</td>'+
+      '<td class="'+(r.seed?'seed':'')+'"><input data-i="'+i+'" data-k="co" value="'+esc(r.co)+'" placeholder="会社名"></td>'+
+      '<td><input type="number" data-i="'+i+'" data-k="amt" value="'+esc(r.amt)+'" placeholder="例 2800">'+diff+'</td>'+
+      '<td><select data-i="'+i+'" data-k="speed">'+opt(SPEED,r.speed)+'</select></td>'+
+      '<td><select data-i="'+i+'" data-k="detail">'+opt(DETAIL,r.detail)+'</select></td>'+
+      '<td><select data-i="'+i+'" data-k="baikai">'+opt(BAIKAI,r.baikai)+'</select></td>'+
+      '<td><input data-i="'+i+'" data-k="cont" value="'+esc(r.cont)+'" placeholder="担当名/TEL"></td>'+
+      '<td><select data-i="'+i+'" data-k="star">'+opt(STARS,r.star)+'</select></td>'+
+      '<td><textarea data-i="'+i+'" data-k="memo" placeholder="感触・条件など">'+esc(r.memo)+'</textarea></td>'+
+      '<td><button class="del" title="削除" onclick="delRow('+i+')">×</button></td>';
+    tb.appendChild(tr);
+  });
+  updateKPI();
+}
+function esc(s){s=(s==null?'':''+s);return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function updateKPI(){
+  var amts=data.map(function(r){return parseFloat(r.amt);}).filter(function(v){return !isNaN(v);});
+  var replies=data.filter(function(r){return r.co&&!isNaN(parseFloat(r.amt));}).length;
+  var gen=data.filter(function(r){return r.baikai==='一般OK';}).length;
+  document.getElementById('kReplies').innerHTML=replies+'<span class="u">/'+data.length+'</span>';
+  document.getElementById('kMax').textContent=amts.length?Math.max.apply(null,amts).toLocaleString()+'万':'—';
+  document.getElementById('kAvg').textContent=amts.length?Math.round(amts.reduce(function(a,b){return a+b;},0)/amts.length).toLocaleString()+'万':'—';
+  document.getElementById('kGen').textContent=gen;
+}
+
+document.getElementById('tb').addEventListener('input',function(e){
+  var el=e.target,i=el.getAttribute('data-i'),k=el.getAttribute('data-k');
+  if(i==null)return; data[i][k]=el.value; save();
+  if(k==='amt'){clearTimeout(window._rt);window._rt=setTimeout(render,500);} else updateKPI();
+});
+
+function addRow(){data.push({co:'',amt:'',speed:'',detail:'',baikai:'',cont:'',star:'',memo:''});save();render();}
+function delRow(i){if(!confirm('この行を削除しますか？'))return;data.splice(i,1);if(!data.length)data=seedRows();save();render();}
+function resetAll(){if(!confirm('入力をすべて消して初期状態に戻します。よろしいですか？'))return;data=seedRows();save();render();}
+function exportCSV(){
+  var h=['会社名','査定額(万)','売出差(万)','返信の速さ','売り方','媒介希望','担当・連絡先','手応え','メモ'];
+  var rows=[h].concat(data.map(function(r){
+    var d=isNaN(parseFloat(r.amt))?'':(parseFloat(r.amt)-ASK);
+    return [r.co,r.amt,d,r.speed,r.detail,r.baikai,r.cont,r.star,(r.memo||'').replace(/\n/g,' ')];
+  }));
+  var csv='﻿'+rows.map(function(row){return row.map(function(c){return '"'+(''+(c==null?'':c)).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='crestmall_assessment.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+render();
+</script>
+</body>
+</html>

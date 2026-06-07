@@ -33,6 +33,15 @@ PHASES = [
     ("p5", "5 開業後に補助金を回収する",
         ["05_補助金_使えるもの全部.md", "12_福岡市補助金_受入環境_申請パック.md"]),
 ]
+# 上部チップの短いラベル（横スクロール最小化）。
+CHIP_SHORT = {
+    "p0": "0 電話4本",
+    "p1": "1 旅館業許可",
+    "p2": "2 公庫融資",
+    "p3": "3 税優遇の前提",
+    "p4": "4 発注ゲート",
+    "p5": "5 開業後の補助金",
+}
 # 電話4本の正本（SSoT）。組合の資金証明書 等の詳細は p2 の組合セクション。
 NAME_LINE = ("中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、"
              "iUMAプロパティマネジメント（代表 手嶋）です。")
@@ -153,67 +162,80 @@ def md_to_html(md: str, demote: int = 0) -> str:
     return "\n".join(out)
 
 
-# 目次チップ用の短いラベル（ファイル名→表示名）。FILESの順にidを s0.. と振る。
-NAV_LABELS = {
-    "00_playbook.md": "融資プレイブック",
-    "01_jfc_旅館業_事業計画書.md": "公庫(旅館業)",
-    "14_公庫_申請パック.md": "公庫(申請パック)",
-    "10_生活衛生同業組合_公庫低利の鍵.md": "組合(公庫低利)",
-    "08_旅館業_許可申請の詳細.md": "旅館業許可",
-    "13_旅館業許可_申請パック.md": "旅館業許可(申請パック)",
-    "03_リノベ相見積_インダストリアル.md": "リノベ相見積",
-    "09_インダストリアル_見積依頼書.md": "見積依頼書",
-    "04_運営代行_候補と相場.md": "運営代行",
-    "05_補助金_使えるもの全部.md": "補助金まとめ",
-    "12_福岡市補助金_受入環境_申請パック.md": "福岡市補助金(申請パック)",
-    "06_スケジュール_発注タイミング.md": "発注カレンダー",
-    "07_相談先メール下書き.md": "相談メール",
-}
+def build_hub() -> str:
+    """フェーズ0: 月曜の電話4本（スクリプト集）。電話番号・地図・聞くことを1か所に。"""
+    cards = []
+    for c in HUB_CALLS:
+        asks = "".join(f"<li>{html.escape(x)}</li>" for x in c["ask"])
+        tel = c["t"].replace("-", "")
+        cards.append(
+            f'<div class="hubcard"><div class="hubh"><b>{c["icon"]} {html.escape(c["n"])}</b>'
+            f'<span class="hublinks"><a class="tel" href="tel:{tel}">☎ {c["t"]}</a>'
+            f'<a class="mapl" href="{_maps(c["mq"])}" target="_blank">📍 地図</a></span></div>'
+            f'<div class="hubsay">名乗り：{html.escape(NAME_LINE)} {html.escape(c["say"])}</div>'
+            f'<div class="huba">聞くこと<ol>{asks}</ol></div></div>')
+    return (
+        '<blockquote>この物件は<b>許可が全部のスイッチ</b>。月曜の朝、ここの4本を鳴らすところから動く。'
+        '各カードは名乗り＋聞くことをそのまま読めばOK。並行で<b>gBizIDプライム</b>（省力化補助の前提・発行に2〜3週）も申請。</blockquote>'
+        f'<div class="hubgrid">{"".join(cards)}</div>')
 
 
-def build_flowchart(idmap: dict) -> str:
-    """全体の流れを1枚のフローチャートに。各ボックスは該当章へジャンプ。"""
-    g = idmap.get  # filename -> "sN"
-    fin = g("00_playbook.md", "")
-    jfc = g("01_jfc_旅館業_事業計画書.md", "")
-    perm = g("08_旅館業_許可申請の詳細.md", "")
-    sub = g("05_補助金_使えるもの全部.md", "")
-    sch = g("06_スケジュール_発注タイミング.md", "")
-    mail = g("07_相談先メール下書き.md", "")
+def build_taxprep() -> str:
+    """フェーズ3: 税優遇の前提（経営力向上計画）。詳細はフェーズ5の補助金まとめ税制部分。"""
+    return (
+        '<blockquote>公庫の融資と<b>並行</b>で進める税金トラック。設備（家具家電・スマートロック等）を'
+        '<b>取得する「前」</b>に、商工会議所（認定支援機関）で<b>経営力向上計画</b>の認定を取っておくと、'
+        '中小企業経営強化税制で<b>即時償却（100%）か10%税額控除</b>が使える。逆（先に買う）だと優遇が消える。</blockquote>'
+        '<h2>やること</h2>'
+        '<ol><li>商工会議所 092-441-1111 に相談（電話スクリプトはフェーズ0の④）</li>'
+        '<li>事業分野別指針（宿泊業）に沿って経営力向上計画を作成・申請</li>'
+        '<li>認定（標準1か月前後）→ そのうえで設備を発注（フェーズ4の発注ゲート）</li></ol>'
+        '<p>税額・即時償却の具体は「フェーズ5：補助金まとめ」の税制パートを正本とする（数字の二重持ちを避けるため、ここでは流れだけ）。</p>')
+
+
+def build_flowchart() -> str:
+    """全体の流れを1枚に。各ボックスはフェーズ（#p0..#p5）へジャンプ。"""
     return f"""
 <section class="flowwrap" id="flow">
-  <h1>全体の流れ（上から着手順。各箱から章へ飛べる）</h1>
+  <h1>全体の流れ（上から着手順。各箱からフェーズへ飛べる）</h1>
   <div class="flow">
-    <a class="fbox first" href="#{perm}"><span class="badge">▶ いまここから</span><b>1. 月曜に電話4本（相談）＋ 事業者ID申請</b><small>① 博多区保健所(衛生課) 092-419-1125＝簡易宿所の事前相談・間取り図持参　② 博多消防署予防課 092-475-0119＝消防設備の要否(最大の費用変動)　③ 福岡県旅館ホテル生活衛生同業組合 092-737-5050＝公庫低利の鍵・加入相談　④ 福岡商工会議所 092-441-1111＝経営力向上計画(税制の前提)。並行でgBizIDプライム申請</small></a>
+    <a class="fbox first" href="#p0"><span class="badge">▶ いまここから</span><b>1. 月曜に電話4本（相談）＋ 事業者ID申請</b><small>① 博多区保健所 092-419-1125　② 博多消防署予防課 092-475-0119　③ 生活衛生同業組合 092-737-5050　④ 商工会議所 092-441-1111。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
     <div class="farrow">▼ 相談で段取りが見えたら</div>
-    <a class="fbox start" href="#{perm}"><b>2. 旅館業（簡易宿所）許可を申請</b><small>すべての低金利と（開業後の）補助金を開く"スイッチ"。手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。許可は申請中でも公庫の打診は可。賃貸のままだと全滅</small></a>
+    <a class="fbox start" href="#p1"><b>2. 旅館業（簡易宿所）許可を申請</b><small>すべての低金利と（開業後の）補助金を開く"スイッチ"。手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。許可は申請中でも公庫の打診は可</small></a>
     <div class="farrow">▼ 許可を軸に、下の2つを並行で進める</div>
     <div class="frow">
-      <a class="fbox" href="#{fin}"><b>3A. 融資（公庫）</b><small>組合加入 → 公庫 振興事業貸付（設備20年・据置2年）で打診＝DSCR成立。リノベの相見積も並行で取る</small></a>
-      <a class="fbox" href="#{sub}"><b>3B. 税制の前提づくり</b><small>商工会議所で経営力向上計画の認定（中小企業経営強化税制＝即時償却/10%控除の前提）。設備取得の"前"に認定を取る</small></a>
+      <a class="fbox" href="#p2"><b>3A. 融資（公庫）</b><small>組合加入 → 公庫 振興事業貸付（設備20年・据置2年）で打診＝返済余裕率(DSCR)成立。相見積も並行</small></a>
+      <a class="fbox" href="#p3"><b>3B. 税制の前提づくり</b><small>商工会議所で経営力向上計画の認定（経営強化税制＝即時償却/10%控除の前提）。設備取得の"前"に</small></a>
     </div>
     <div class="farrow">▼ 「決定の紙（融資決定・計画認定）が出る前に発注したら無効」</div>
-    <a class="fbox gate" href="#{sch}"><b>4. ★発注ゲート</b><small>融資決定・計画認定を確認してからリノベ＆設備を発注。リノベ本体はどの補助も対象外なので先行してよい</small></a>
-    <div class="farrow">▼</div>
-    <a class="fbox" href="#{perm}"><b>5. 工事 → 消防適合・旅館業 許可取得 → 開業（OTA掲載）＋ 宿泊税の申告開始</b></a>
+    <a class="fbox gate" href="#p4"><b>4. ★発注ゲート → 工事 → 消防適合・許可取得 → 開業</b><small>融資決定・計画認定の"後"に発注。リノベ本体はどの補助も対象外なので先行可。開業時に宿泊税の申告を開始</small></a>
     <div class="farrow">▼ ここで初めて補助金が解禁</div>
-    <a class="fbox end" href="#{sub}"><b>6. 開業後：福岡市 受入環境補助・省力化補助を申請</b><small>開業＋宿泊税申告が要件。交付決定の"後"に対象機器(鍵・端末・Wi-Fi等)を発注→設置→実績報告で後払い入金。確定申告で経営強化税制(即時償却/税額控除)も回収</small></a>
+    <a class="fbox end" href="#p5"><b>5. 開業後：福岡市 受入環境補助・省力化補助を申請</b><small>開業＋宿泊税申告が要件。交付決定の"後"に対象機器を発注→設置→実績報告で後払い入金。確定申告で経営強化税制も回収</small></a>
   </div>
 </section>"""
 
 
 def main() -> int:
-    sections, nav, idmap = [], [], {}
-    idx = 0
-    for f in FILES:
-        p = FIN_DIR / f
-        if not p.exists():
-            continue
-        sid = f"s{idx}"; idmap[f] = sid; idx += 1
-        label = NAV_LABELS.get(f, f)
-        nav.append(f'<a class="chip" href="#{sid}" data-target="{sid}">{html.escape(label)}</a>')
-        sections.append(f'<section id="{sid}" class="doc">\n{md_to_html(p.read_text(encoding="utf-8"))}\n</section>')
-    flow = build_flowchart(idmap)
+    sections, nav = [], []
+    for pid, title, content in PHASES:
+        # 中身を生成（HUB/TAXPREP は関数生成、それ以外は md ファイルを束ねて1段下げ内包）
+        if content == "HUB":
+            inner = build_hub()
+        elif content == "TAXPREP":
+            inner = build_taxprep()
+        else:
+            parts = []
+            for f in content:
+                p = FIN_DIR / f
+                if not p.exists():
+                    continue
+                parts.append(md_to_html(p.read_text(encoding="utf-8"), demote=1))
+            inner = '\n<hr>\n'.join(parts)
+        banner = f'<div class="phasebanner"><span class="pnum">{html.escape(title.split(" ", 1)[0])}</span><b>{html.escape(title.split(" ", 1)[1])}</b></div>'
+        sections.append(f'<section id="{pid}" class="doc">\n{banner}\n{inner}\n</section>')
+        chip_label = CHIP_SHORT[pid]
+        nav.append(f'<a class="chip" href="#{pid}" data-target="{pid}">{html.escape(chip_label)}</a>')
+    flow = build_flowchart()
     nav_html = '<nav class="toc" id="toc">' + "".join(nav) + "</nav>"
     body = flow + "\n" + '\n<hr class="sec">\n'.join(sections)
     doc = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
@@ -265,6 +287,24 @@ a{{color:#1e5fb4;word-break:break-all}}
 .frow{{display:flex;gap:12px;width:100%;max-width:640px}}
 .frow .fbox{{flex:1}}
 .farrow{{color:#b8902a;font-weight:700;font-size:12.5px;padding:6px 0;text-align:center}}
+/* phase banner（各フェーズの帯見出し） */
+.phasebanner{{display:flex;align-items:center;gap:12px;background:#1a1d27;color:#fff;border-radius:12px;padding:13px 18px;margin:6px 0 18px}}
+.phasebanner .pnum{{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--gold);color:#1a1207;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center}}
+.phasebanner b{{font-size:17px;color:#ffd86b}}
+/* hub（電話4本カード） */
+.hubgrid{{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}}
+.hubcard{{border:1.5px solid var(--gold);border-radius:12px;padding:12px 14px;background:#fffdf7}}
+.hubh{{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;border-bottom:1px solid #eadfba;padding-bottom:7px;margin-bottom:7px}}
+.hubh b{{font-size:14px}}
+.hublinks{{display:flex;gap:8px;flex-shrink:0}}
+.hublinks a{{text-decoration:none;font-weight:700;font-size:12.5px;padding:3px 9px;border-radius:7px;white-space:nowrap}}
+.hublinks .tel{{background:#1a1d27;color:#ffd86b}}
+.hublinks .mapl{{background:#eef2fb;color:#1e5fb4}}
+.hubsay{{font-size:12px;color:#5a4a1a;background:#fff8e6;border-radius:8px;padding:6px 9px;margin-bottom:6px}}
+.huba{{font-size:12.5px;font-weight:700;color:#333}}
+.huba ol{{font-weight:400;margin:4px 0 0;padding-left:20px}}
+.huba li{{margin:3px 0}}
+@media(max-width:700px){{.hubgrid{{grid-template-columns:1fr}}}}
 /* code blocks (コピー可) */
 .codewrap{{position:relative;margin:12px 0}}
 pre.code{{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:10px;overflow-x:auto;font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;font-family:'SFMono-Regular',Consolas,Menlo,monospace}}

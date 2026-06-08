@@ -9,8 +9,8 @@ h1{font-size:22px;border-bottom:3px solid var(--gold);padding-bottom:6px;margin-
 h2{font-size:18px;border-left:5px solid var(--gold);padding-left:10px;margin-top:28px}
 h3{font-size:15px;margin-top:20px;color:#333}
 h4{font-size:14px;margin-top:14px;color:#555}
-section.doc{scroll-margin-top:calc(var(--gnav-height,0px) + 118px)}
-.flowwrap{scroll-margin-top:calc(var(--gnav-height,0px) + 118px)}
+section.doc{scroll-margin-top:54px}
+.flowwrap{scroll-margin-top:54px}
 table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
 th,td{border:1px solid #ccc;padding:6px 9px;text-align:left;vertical-align:top}
 th{background:#f4efe2}
@@ -22,15 +22,15 @@ hr{border:none;border-top:1px solid #ddd;margin:16px 0}
 hr.sec{border-top:2px dashed var(--gold);margin:36px 0}
 a{color:#1e5fb4;word-break:break-all}
 /* PJ 3ページ切替タブ */
-.pjnav{position:sticky;top:var(--gnav-height,0px);z-index:30;display:flex;background:#0f1117;margin:0 -20px}
+.pjnav{position:static;z-index:30;display:flex;background:#0f1117;margin:0 -20px}
 .pjnav a{flex:1;text-align:center;color:#cdd4e2;text-decoration:none;font-size:12.5px;font-weight:700;padding:11px 4px;border-bottom:3px solid transparent;white-space:nowrap}
 .pjnav a.on{color:#ffd86b;border-bottom-color:#c9a84c;background:#1a1d27}
-/* sticky header: toolbar + toc chips */
-.sticky{position:sticky;top:calc(var(--gnav-height,0px) + 42px);z-index:20;background:#1a1d27;margin:0 -20px 18px;padding:10px 20px}
+/* 上部バー: ツールバー(印刷/PDF/全体図)はスクロールで上へ流す。常時固定はフェーズチップ1本だけ＝読める面積を最大化 */
+.toolbar-wrap{box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:9px 20px}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.toolbar button,.toolbar a.btn{background:var(--gold);color:#1a1207;font-weight:700;border:none;padding:9px 15px;border-radius:9px;font-size:14px;text-decoration:none;cursor:pointer}
+.toolbar button,.toolbar a.btn{background:var(--gold);color:#1a1207;font-weight:700;border:none;padding:8px 14px;border-radius:9px;font-size:13.5px;text-decoration:none;cursor:pointer}
 .toolbar a.alt{background:#242836;color:#e4e4e7}
-.toc{display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:9px;padding-bottom:3px}
+.toc{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:7px 20px;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}
 .toc .chip{flex:0 0 auto;background:#242836;color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}
 .toc .chip.active{background:var(--gold);color:#1a1207;border-color:var(--gold)}
 /* flowchart */
@@ -105,14 +105,12 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
   table thead,table tbody{display:table;width:100%;min-width:520px}}
 </style></head><body>
 <nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a><a href="yakuin.html">🏠 薬院 売る/貸す</a></nav>
-<div class="sticky">
-  <div class="toolbar">
+<div class="toolbar-wrap"><div class="toolbar">
     <button onclick="window.print()">🖨 印刷 / PDF</button>
     <a class="btn alt" href="financing-placespot-shinbashi.pdf" download>⬇ PDF</a>
     <a class="btn alt" href="#flow">🗺 全体図</a>
-  </div>
-  <nav class="toc" id="toc"><a class="chip" href="#p0" data-target="p0">0 電話4本</a><a class="chip" href="#p1" data-target="p1">1 旅館業許可</a><a class="chip" href="#p2" data-target="p2">2 公庫融資</a><a class="chip" href="#p3" data-target="p3">3 税優遇の前提</a><a class="chip" href="#p4" data-target="p4">4 発注ゲート</a><a class="chip" href="#p5" data-target="p5">5 開業後の補助金</a></nav>
-</div>
+</div></div>
+<nav class="toc" id="toc"><a class="chip" href="#p0" data-target="p0">0 電話4本</a><a class="chip" href="#p1" data-target="p1">1 旅館業許可</a><a class="chip" href="#p2" data-target="p2">2 公庫融資</a><a class="chip" href="#p3" data-target="p3">3 税優遇の前提</a><a class="chip" href="#p4" data-target="p4">4 発注ゲート</a><a class="chip" href="#p5" data-target="p5">5 開業後の補助金</a></nav>
 
 <section class="flowwrap" id="flow">
   <h1>全体の流れ（上から着手順。各箱からフェーズへ飛べる）</h1>
@@ -532,7 +530,7 @@ iUMAプロパティマネジメント合同会社
           c.scrollIntoView({inline:'center',block:'nearest'});}
       }
     });
-  },{rootMargin:'-120px 0px -65% 0px',threshold:0});
+  },{rootMargin:'-54px 0px -70% 0px',threshold:0});
   secs.forEach(function(s){io.observe(s);});
   var tt=document.getElementById('totop');
   addEventListener('scroll',function(){tt.classList.toggle('show',scrollY>500);},{passive:true});

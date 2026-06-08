@@ -20,7 +20,7 @@ PDF_NAME = PDF_OUT.name
 # ── ゼロベース再設計（2026-06-07）: journey順の6フェーズにMECE再編 ──
 # 各フェーズ = 1 section（id p0..p5）。中の各資料は見出しを1段下げて内包。
 PHASES = [
-    ("p0", "0 まず月曜、電話4本を鳴らす", "HUB"),          # 生成（電話スクリプト集）
+    ("p0", "0 まず朝イチ、電話で予約・相談", "HUB"),          # 生成（電話スクリプト集）
     ("p1", "1 旅館業の許可を取る",
         ["08_旅館業_許可申請の詳細.md", "13_旅館業許可_申請パック.md"]),
     ("p2", "2 公庫でお金を借りる",
@@ -35,7 +35,7 @@ PHASES = [
 ]
 # 上部チップの短いラベル（横スクロール最小化）。
 CHIP_SHORT = {
-    "p0": "0 電話4本",
+    "p0": "0 朝イチ電話",
     "p1": "1 旅館業許可",
     "p2": "2 公庫融資",
     "p3": "3 税優遇の前提",
@@ -56,6 +56,15 @@ def _maps(q):
     from urllib.parse import quote as _q
     return "https://www.google.com/maps/search/?api=1&query=" + _q(q)
 HUB_CALLS = [
+    dict(icon="🏦", n="日本政策金融公庫（相談予約）", t="0120-154-505",
+         tag="今朝最優先", role="午前中に相談予約を取り切る。旅館業は許可申請中でも申込可",
+         addr="日本政策金融公庫 福岡支店 福岡市博多区博多駅前3-21-12",
+         do="今朝いちばんに、設備資金の相談予約を取る。総合ダイヤル0120-154-505（平日9-17時）が混んだら福岡支店 国民生活事業 092-411-9111へ直接。許可申請中でも申込めるので待たなくていい。融資の詳細はフェーズ2。",
+         hp="制度・必要書類の概要は公庫サイト。予約日と当日の持参書類は電話で確定",
+         say="設備資金の相談予約をお願いします。旅館業は許可申請中です。",
+         ask=["相談日の予約（できれば近日）と、当日の持参書類",
+              "振興事業貸付（組合経由の低利・設備20年）を使う場合の進め方",
+              "自己資金の目安と、申込から実行までのおおよその期間"]),
     dict(icon="🏥", n="福岡市保健所 博多衛生課", t="092-419-1125",
          tag="必須", role="旅館業許可の窓口",
          addr="福岡市博多区博多駅前2-8-1 博多区役所6階",
@@ -186,8 +195,7 @@ def build_hub() -> str:
     for c in HUB_CALLS:
         asks = "".join(f"<li>{html.escape(x)}</li>" for x in c["ask"])
         tel = c["t"].replace("-", "")
-        must = (c["tag"] == "必須")
-        tagcls = "must" if must else "opt"
+        tagcls = {"今朝最優先": "now", "必須": "must"}.get(c["tag"], "opt")
         cards.append(
             f'<div class="hubcard {tagcls}"><div class="hubh">'
             f'<b>{c["icon"]} {html.escape(c["n"])}</b>'
@@ -205,8 +213,9 @@ def build_hub() -> str:
         f'<br>A. <b>読む（HPで完結）</b>：旅館業の<a href="{TEBIKI_URL}" target="_blank">手引きPDF</a>'
         f'（<a href="{RYOKAN_PAGE}" target="_blank">案内ページ</a>）に、構造・面積・必要書類・手数料22,000円・許可まで14営業日が全部載っている。'
         '<br>B. <b>動く（HPでは分からない＝人に聞く／予約する）</b>：下のカードへ。'
+        '<b class="now-i">今朝の最優先</b>は公庫の相談予約（午前中に取り切る・許可申請中でも申込可）。'
         '<b class="must-i">必須</b>は保健所（事前相談の予約・着工前に図面持参）と消防（この建物の設備判断）。'
-        '<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）だけ。'
+        '<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）。'
         '各カードは「やること」と「これだけ聞く」に絞ってある。並行で<b>gBizIDプライム</b>'
         '（省力化補助の前提・発行に2〜3週）も申請。</blockquote>'
         f'<div class="hubgrid">{"".join(cards)}</div>')
@@ -231,7 +240,7 @@ def build_flowchart() -> str:
 <section class="flowwrap" id="flow">
   <h1>全体の流れ（上から着手順。各箱からフェーズへ飛べる）</h1>
   <div class="flow">
-    <a class="fbox first" href="#p0"><span class="badge">▶ いまここから</span><b>1. 月曜に電話4本（相談）＋ 事業者ID申請</b><small>1. 保健所 092-419-1125（必須）　2. 消防 予防課 092-475-0119（必須）　3. 組合 092-737-5050（任意）　4. 商工会議所 092-441-2161（任意）。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
+    <a class="fbox first" href="#p0"><span class="badge">▶ いまここから</span><b>1. 朝イチに電話（予約・相談）＋ 事業者ID申請</b><small>★最優先 公庫の相談予約 0120-154-505／福岡支店092-411-9111（午前中に取り切る）。必須=保健所 092-419-1125・消防 予防課 092-475-0119。任意=組合 092-737-5050・商工会議所 092-441-2161。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
     <div class="farrow">▼ 相談で段取りが見えたら</div>
     <a class="fbox start" href="#p1"><b>2. 旅館業（簡易宿所）許可を申請</b><small>すべての低金利と（開業後の）補助金を開く"スイッチ"。手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。許可は申請中でも公庫の打診は可</small></a>
     <div class="farrow">▼ 許可を軸に、下の2つを並行で進める</div>
@@ -326,6 +335,7 @@ a{{color:#1e5fb4;word-break:break-all}}
 /* hub（電話4本カード） */
 .hubgrid{{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}}
 .hubcard{{border:1.5px solid var(--gold);border-radius:12px;padding:12px 14px;background:#fffdf7}}
+.hubcard.now{{border-color:#c9a84c;border-width:2.5px;background:#fffaf0;grid-column:1 / -1}}
 .hubcard.must{{border-color:#e0623a;border-width:2px}}
 .hubcard.opt{{border-color:#c9c2ac;background:#fbfaf6}}
 .hubh{{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;border-bottom:1px solid #eadfba;padding-bottom:7px;margin-bottom:7px}}
@@ -336,8 +346,8 @@ a{{color:#1e5fb4;word-break:break-all}}
 .hublinks .mapl{{background:#eef2fb;color:#1e5fb4}}
 .hubrole{{font-size:12px;color:#555;margin-bottom:5px}}
 .htag{{display:inline-block;font-weight:800;font-size:10.5px;padding:1px 7px;border-radius:999px;margin-right:6px}}
-.htag.must{{background:#e0623a;color:#fff}} .htag.opt{{background:#e7e2d2;color:#6b6451}}
-.must-i{{color:#e0623a}} .opt-i{{color:#8a8264}}
+.htag.now{{background:#c9a84c;color:#1a1207}} .htag.must{{background:#e0623a;color:#fff}} .htag.opt{{background:#e7e2d2;color:#6b6451}}
+.now-i{{color:#a8821f}} .must-i{{color:#e0623a}} .opt-i{{color:#8a8264}}
 .hubaddr{{font-size:11.5px;color:#777;margin-bottom:7px}}
 .hubdo,.hubhp,.hubsay,.huba{{font-size:12.5px;border-radius:8px;padding:7px 10px;margin-bottom:6px}}
 .hubdo b,.hubhp b,.hubsay b,.huba b{{display:block;font-size:11px;letter-spacing:.02em;margin-bottom:2px;opacity:.85}}

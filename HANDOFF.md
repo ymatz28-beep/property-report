@@ -7,8 +7,10 @@
 ---
 
 ## [Constancy] 2026-06-08
+- [WARN] data_freshness: Property Status: last updated 32h ago (threshold: 28h)
 - [ERROR] hardcoded_data: [ESCALATED: 54d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [WARN] hardcoded_data: Large inline data (83 lines) at line 364. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
+- [WARN] hardcoded_data: Large inline data (50 lines) at line 58. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] structural_reform: [ESCALATED: 54d unresolved] generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 54d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 54d unresolved] Stale temp/debug file (66 days old). Delete it.
@@ -45,18 +47,21 @@
 - [ERROR] design_token_compliance: [ESCALATED: 54d unresolved] Line 647: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 54d unresolved] Line 703: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 54d unresolved] Line 758: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 25: hardcoded #0f1117 should be var(--bg)
-- [WARN] design_token_compliance: Line 27: hardcoded #c9a84c should be var(--gold)
-- [WARN] design_token_compliance: Line 27: hardcoded #1a1d27 should be var(--surface)
-- [WARN] design_token_compliance: Line 29: hardcoded #1a1d27 should be var(--surface)
-- [WARN] design_token_compliance: Line 32: hardcoded #242836 should be var(--surface2)
-- [WARN] design_token_compliance: Line 32: hardcoded #e4e4e7 should be var(--text)
-- [WARN] design_token_compliance: Line 34: hardcoded #242836 should be var(--surface2)
-- [WARN] design_token_compliance: Line 44: hardcoded #1a1d27 should be var(--surface)
-- [WARN] design_token_compliance: Line 44: hardcoded #1a1d27 should be var(--surface)
-- [WARN] design_token_compliance: Line 51: hardcoded #1a1d27 should be var(--surface)
-- [WARN] design_token_compliance: Line 61: hardcoded #1a1d27 should be var(--surface)
-- [WARN] design_token_compliance: Line 70: hardcoded #0f1117 should be var(--bg)
+- [ERROR] design_token_compliance: [SISYPHEAN×23: re-appeared after recent fix] Line 25: hardcoded #0f1117 should be var(--bg)
+- [ERROR] design_token_compliance: [SISYPHEAN×24: re-appeared after recent fix] Line 27: hardcoded #c9a84c should be var(--gold)
+- [ERROR] design_token_compliance: [SISYPHEAN×25: re-appeared after recent fix] Line 27: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×26: re-appeared after recent fix] Line 29: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×27: re-appeared after recent fix] Line 32: hardcoded #242836 should be var(--surface2)
+- [ERROR] design_token_compliance: [SISYPHEAN×28: re-appeared after recent fix] Line 32: hardcoded #e4e4e7 should be var(--text)
+- [ERROR] design_token_compliance: [SISYPHEAN×29: re-appeared after recent fix] Line 33: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×30: re-appeared after recent fix] Line 34: hardcoded #242836 should be var(--surface2)
+- [ERROR] design_token_compliance: [SISYPHEAN×31: re-appeared after recent fix] Line 44: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×32: re-appeared after recent fix] Line 44: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×33: re-appeared after recent fix] Line 51: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×34: re-appeared after recent fix] Line 57: hardcoded #c9a84c should be var(--gold)
+- [ERROR] design_token_compliance: [SISYPHEAN×35: re-appeared after recent fix] Line 64: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [SISYPHEAN×36: re-appeared after recent fix] Line 68: hardcoded #c9a84c should be var(--gold)
+- [ERROR] design_token_compliance: [SISYPHEAN×37: re-appeared after recent fix] Line 82: hardcoded #0f1117 should be var(--bg)
 - [ERROR] design_token_compliance: [ESCALATED: 52d unresolved] Line 173: hardcoded #fbbf24 should be var(--amber)
 - [ERROR] design_token_compliance: [ESCALATED: 52d unresolved] Line 304: hardcoded #fbbf24 should be var(--amber)
 - [ERROR] design_token_compliance: [ESCALATED: 52d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
@@ -85,7 +90,7 @@
 - [ERROR] blank_cells: [ESCALATED: 54d unresolved] ダッシュ「—」162個 (閾値20) — データ欠損の可能性
 - [ERROR] first_seen_coverage: 掲載日カバレッジ 1% (2/142) — 閾値80%
 - [ERROR] qa_market_oc_income_coverage: [ESCALATED: 54d unresolved] OC 311件中 233件が年間収入欠落 (75%) — 利回り逆算で補完
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 54d unresolved] 13件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 墨田区向島(44㎡): ['向島パークハイツ', '本所吾妻橋駅 / 1LDK / 44.61㎡']; 福岡市博多区美野島(25㎡): ['ふれんず物件(博多区)', '『博多駅・天神・キャナル・中州まで徒歩圏内』']; 福岡市博多区比恵町(20㎡): ['スカイハイツ春日（表面利回り：６．９３％）', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)'] ... +8 more
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 54d unresolved] 13件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 墨田区向島(44㎡): ['向島パークハイツ', '本所吾妻橋駅 / 1LDK / 44.61㎡']; 福岡市博多区美野島(25㎡): ['ふれんず物件(博多区)', '『博多駅・天神・キャナル・中州まで徒歩圏内』']; 福岡市博多区比恵町(20㎡): ['ふれんず物件(博多区)', 'スカイハイツ春日（表面利回り：６．９３％）']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)'] ... +8 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 9.0% (11/122件)。パイプライン変換バグの可能性。例: 960.0万円/51.7㎡; 580.0万円/55.2㎡; 780.0万円/68.3㎡; 650.0万円/40.0㎡; 650.0万円/40.23㎡
 - [WARN] renderer_compliance: Missing gnav (site-header / site-nav) — no navigation
 - [WARN] renderer_compliance: Missing gnav (site-header / site-nav) — no navigation

@@ -42,41 +42,59 @@ CHIP_SHORT = {
     "p4": "4 発注ゲート",
     "p5": "5 開業後の補助金",
 }
-# 電話4本の正本（SSoT）。組合の資金証明書 等の詳細は p2 の組合セクション。
+# ── フェーズ0の正本（SSoT）。住所・電話は2026-06-08に公式で裏取り済み ──
+# 設計方針: HPで読めること（基準・必要書類・流れ）は"聞かない"。手引きPDFへ誘導し、
+# 電話/来所は「HPでは分からない＝人に聞くしかないこと」と「やるべき手続き(予約・相談)」に絞る。
 NAME_LINE = ("中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、"
              "iUMAプロパティマネジメント（代表 手嶋）です。")
+# 旅館業の手引き(基準・必要書類・流れ・手数料22,000円・許可まで14営業日は全部ここに記載)
+TEBIKI_URL = ("https://www.city.fukuoka.lg.jp/hofuku/iyakumu-eisei/life/"
+              "kurashinoeisei/documents/ryokangyounimotodukutebiki_R0411.pdf")
+RYOKAN_PAGE = ("https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/"
+               "jigyosya/ryokan/ryokangyounoeigyounituite.html")
 def _maps(q):
     from urllib.parse import quote as _q
     return "https://www.google.com/maps/search/?api=1&query=" + _q(q)
 HUB_CALLS = [
-    dict(icon="🏥", n="博多区保健所（衛生課）", t="092-419-1125",
-         mq="福岡市博多区保健福祉センター 博多駅前2-8-1",
-         say="簡易宿所の事前相談をお願いします。間取り図を見ながら相談したいです。",
-         ask=["区分1室を簡易宿所にする構造・面積・換気・便所・洗面の要件",
-              "玄関帳場をICT代替（顔認証＋10分駆けつけ＋防犯カメラ）で無人運用できるか・要件",
-              "申請に必要な図面・書類一式と、審査期間",
-              "改装・消防工事と許可申請の前後関係（どこまで工事してから申請するか）"]),
+    dict(icon="🏥", n="福岡市保健所 博多衛生課", t="092-419-1125",
+         tag="必須", role="旅館業許可の窓口",
+         addr="福岡市博多区博多駅前2-8-1 博多区役所6階",
+         do="着工前に各階平面図を持って事前相談（来所は予約制・事前相談は公式に必須）。"
+            "基準・必要書類・流れは手引きPDFで読めるので、電話の用件は「相談日の予約」。",
+         hp="構造／面積／換気／便所／洗面の基準・必要書類・手数料22,000円(現金)・許可まで14営業日 ＝ 手引きPDFに記載",
+         say="簡易宿所の事前相談の予約をお願いします。各階平面図を持って伺います。",
+         ask=["玄関帳場のICT代替（顔認証＋10分駆けつけ＋防犯カメラ）で無人運用できるか・福岡市での条件",
+              "区分マンション1室を簡易宿所にする際の、この物件固有の懸念点",
+              "事前相談に伺える日程（予約）"]),
     dict(icon="🚒", n="博多消防署 予防課", t="092-475-0119",
-         mq="博多消防署 福岡市博多区",
+         tag="必須", role="消防法令適合の前提（費用の最大変動要因）",
+         addr="福岡市博多区博多駅前4-19-7",
+         do="この建物で必要な消防設備を事前相談で確認。許可には消防法令適合通知書が要る。"
+            "「この建物で何が要るか」は現場判断なのでHPでは分からない＝相談の価値が一番高い。",
+         hp="一般的な設備の考え方は消防局HP。ただし当該建物の要否は現場判断＝要相談",
          say="区分1室を簡易宿所にする際の消防設備について事前相談したいです。",
-         ask=["必要な消防設備（自動火災報知設備・誘導灯・消火器・防炎物品）",
+         ask=["★マンション全体の自火報への連動接続が要るか（費用が一番変わる）。共用部の感知器追加・管理組合や他住戸の同意の要否",
               "1室を宿泊用途にすると建物が複合用途（16項イ）化するか",
-              "★マンション全体の自火報への連動接続が要るか（費用が一番変わる）。共用部の感知器追加・管理組合や他住戸の同意の要否",
+              "必要な消防設備一式（自火報・誘導灯・消火器・防炎物品）",
               "消防法令適合通知書の手順・必要書類・所要期間"]),
     dict(icon="🤝", n="福岡県旅館ホテル生活衛生同業組合", t="092-737-5050",
-         mq="福岡県旅館ホテル生活衛生同業組合 福岡市中央区渡辺通5-13-12",
-         say="公庫の振興事業貸付を考えており、その前提として組合への加入を相談したいです。",
-         ask=["加入の手順（支部）と、加入にかかる期間",
-              "入会金・組合費（年会費）の金額",
-              "「振興事業に係る資金証明書」の発行条件・必要書類・所要日数（→詳細はフェーズ2の組合）",
+         tag="任意", role="公庫の低利(振興事業貸付)を狙う場合だけ",
+         addr="福岡市中央区渡辺通5-13-12",
+         do="公庫の低利を使うなら組合加入が前提。加入と「資金証明書」の発行条件を相談。狙わないなら不要。",
+         hp="加入案内・会費の一部は組合サイト。「資金証明書」の発行条件は要確認",
+         say="公庫の振興事業貸付を考えており、その前提の組合加入を相談したいです。",
+         ask=["入会金・組合費（年会費）と加入手順・所要期間",
+              "「振興事業に係る資金証明書」の発行条件・必要書類・所要日数",
               "開業前（許可申請中）でも加入・資金証明書の相談は可能か"]),
-    dict(icon="🏛", n="福岡商工会議所（認定支援機関）", t="092-441-1111",
-         mq="福岡商工会議所 博多駅前2-9-28",
-         say="中小企業経営強化税制を使いたく、経営力向上計画の認定について相談したいです。",
-         ask=["経営力向上計画の認定の相談・作成支援の窓口と、申請の流れ",
+    dict(icon="🏛", n="福岡商工会議所（経営相談窓口）", t="092-441-2161",
+         tag="任意", role="経営強化税制(即時償却/控除)を狙う場合だけ",
+         addr="福岡市博多区博多駅前2-9-28",
+         do="設備を買う「前」に経営力向上計画の認定を取る、その支援を相談。狙わないなら不要。代表は092-441-1110。",
+         hp="制度概要は中小企業庁HP。「認定支援機関として支援できるか・段取り」は要相談",
+         say="中小企業経営強化税制を使いたく、経営力向上計画の認定支援を相談したいです。",
+         ask=["認定支援機関として支援可能か、申請の流れ",
               "★認定までの標準期間（設備取得の「前」に認定が要るため）",
-              "必要書類・様式（宿泊業＝事業分野別指針）",
-              "省力化補助やものづくり補助との関係・併用の可否"]),
+              "A類型/B類型の選択と、B類型の税理士事前確認の段取り"]),
 ]
 
 CHROME_CANDIDATES = [
@@ -163,20 +181,34 @@ def md_to_html(md: str, demote: int = 0) -> str:
 
 
 def build_hub() -> str:
-    """フェーズ0: 月曜の電話4本（スクリプト集）。電話番号・地図・聞くことを1か所に。"""
+    """フェーズ0: まずやること。HPで読めることは"読む"、人に聞くことだけ"聞く"。"""
     cards = []
     for c in HUB_CALLS:
         asks = "".join(f"<li>{html.escape(x)}</li>" for x in c["ask"])
         tel = c["t"].replace("-", "")
+        must = (c["tag"] == "必須")
+        tagcls = "must" if must else "opt"
         cards.append(
-            f'<div class="hubcard"><div class="hubh"><b>{c["icon"]} {html.escape(c["n"])}</b>'
+            f'<div class="hubcard {tagcls}"><div class="hubh">'
+            f'<b>{c["icon"]} {html.escape(c["n"])}</b>'
             f'<span class="hublinks"><a class="tel" href="tel:{tel}">☎ {c["t"]}</a>'
-            f'<a class="mapl" href="{_maps(c["mq"])}" target="_blank">📍 地図</a></span></div>'
-            f'<div class="hubsay">名乗り：{html.escape(NAME_LINE)} {html.escape(c["say"])}</div>'
-            f'<div class="huba">聞くこと<ol>{asks}</ol></div></div>')
+            f'<a class="mapl" href="{_maps(c["addr"])}" target="_blank">📍 地図</a></span></div>'
+            f'<div class="hubrole"><span class="htag {tagcls}">{c["tag"]}</span>'
+            f'{html.escape(c["role"])}</div>'
+            f'<div class="hubaddr">📍 {html.escape(c["addr"])}</div>'
+            f'<div class="hubdo"><b>やること</b>{html.escape(c["do"])}</div>'
+            f'<div class="hubhp"><b>HPで分かる（読めば済む）</b>{html.escape(c["hp"])}</div>'
+            f'<div class="hubsay"><b>名乗り</b>{html.escape(NAME_LINE)} {html.escape(c["say"])}</div>'
+            f'<div class="huba"><b>電話/来所でしか分からない＝これだけ聞く</b><ol>{asks}</ol></div></div>')
     return (
-        '<blockquote>この物件は<b>許可が全部のスイッチ</b>。月曜の朝、ここの4本を鳴らすところから動く。'
-        '各カードは名乗り＋聞くことをそのまま読めばOK。並行で<b>gBizIDプライム</b>（省力化補助の前提・発行に2〜3週）も申請。</blockquote>'
+        '<blockquote>この物件は<b>許可が全部のスイッチ</b>。まず<b>① 読む → ② 動く</b>の順。'
+        f'<br>① <b>読む（HPで完結）</b>：旅館業の<a href="{TEBIKI_URL}" target="_blank">手引きPDF</a>'
+        f'（<a href="{RYOKAN_PAGE}" target="_blank">案内ページ</a>）に、構造・面積・必要書類・手数料22,000円・許可まで14営業日が全部載っている。'
+        '<br>② <b>動く（HPでは分からない＝人に聞く／予約する）</b>：下のカードへ。'
+        '<b class="must-i">必須</b>は保健所（事前相談の予約・着工前に図面持参）と消防（この建物の設備判断）。'
+        '<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）だけ。'
+        '各カードは「やること」と「これだけ聞く」に絞ってある。並行で<b>gBizIDプライム</b>'
+        '（省力化補助の前提・発行に2〜3週）も申請。</blockquote>'
         f'<div class="hubgrid">{"".join(cards)}</div>')
 
 
@@ -294,15 +326,26 @@ a{{color:#1e5fb4;word-break:break-all}}
 /* hub（電話4本カード） */
 .hubgrid{{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}}
 .hubcard{{border:1.5px solid var(--gold);border-radius:12px;padding:12px 14px;background:#fffdf7}}
+.hubcard.must{{border-color:#e0623a;border-width:2px}}
+.hubcard.opt{{border-color:#c9c2ac;background:#fbfaf6}}
 .hubh{{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;border-bottom:1px solid #eadfba;padding-bottom:7px;margin-bottom:7px}}
 .hubh b{{font-size:14px}}
 .hublinks{{display:flex;gap:8px;flex-shrink:0}}
 .hublinks a{{text-decoration:none;font-weight:700;font-size:12.5px;padding:3px 9px;border-radius:7px;white-space:nowrap}}
 .hublinks .tel{{background:#1a1d27;color:#ffd86b}}
 .hublinks .mapl{{background:#eef2fb;color:#1e5fb4}}
-.hubsay{{font-size:12px;color:#5a4a1a;background:#fff8e6;border-radius:8px;padding:6px 9px;margin-bottom:6px}}
-.huba{{font-size:12.5px;font-weight:700;color:#333}}
-.huba ol{{font-weight:400;margin:4px 0 0;padding-left:20px}}
+.hubrole{{font-size:12px;color:#555;margin-bottom:5px}}
+.htag{{display:inline-block;font-weight:800;font-size:10.5px;padding:1px 7px;border-radius:999px;margin-right:6px}}
+.htag.must{{background:#e0623a;color:#fff}} .htag.opt{{background:#e7e2d2;color:#6b6451}}
+.must-i{{color:#e0623a}} .opt-i{{color:#8a8264}}
+.hubaddr{{font-size:11.5px;color:#777;margin-bottom:7px}}
+.hubdo,.hubhp,.hubsay,.huba{{font-size:12.5px;border-radius:8px;padding:7px 10px;margin-bottom:6px}}
+.hubdo b,.hubhp b,.hubsay b,.huba b{{display:block;font-size:11px;letter-spacing:.02em;margin-bottom:2px;opacity:.85}}
+.hubdo{{background:#fff4e9;color:#7a3b1e}}
+.hubhp{{background:#eef4ee;color:#3a5a40}}
+.hubsay{{background:#fff8e6;color:#5a4a1a}}
+.huba{{background:#f4f1fb;color:#3a3357;font-weight:400}}
+.huba ol{{margin:2px 0 0;padding-left:20px}}
 .huba li{{margin:3px 0}}
 @media(max-width:700px){{.hubgrid{{grid-template-columns:1fr}}}}
 /* code blocks (コピー可) */

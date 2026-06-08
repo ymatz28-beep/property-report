@@ -9,8 +9,8 @@ h1{font-size:22px;border-bottom:3px solid var(--gold);padding-bottom:6px;margin-
 h2{font-size:18px;border-left:5px solid var(--gold);padding-left:10px;margin-top:28px}
 h3{font-size:15px;margin-top:20px;color:#333}
 h4{font-size:14px;margin-top:14px;color:#555}
-section.doc{scroll-margin-top:calc(var(--gnav-height,0px) + 118px)}
-.flowwrap{scroll-margin-top:calc(var(--gnav-height,0px) + 118px)}
+section.doc{scroll-margin-top:54px}
+.flowwrap{scroll-margin-top:54px}
 table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
 th,td{border:1px solid #ccc;padding:6px 9px;text-align:left;vertical-align:top}
 th{background:#f4efe2}
@@ -22,16 +22,16 @@ hr{border:none;border-top:1px solid #ddd;margin:16px 0}
 hr.sec{border-top:2px dashed var(--gold);margin:36px 0}
 a{color:#1e5fb4;word-break:break-all}
 /* PJ 3ページ切替タブ */
-.pjnav{position:sticky;top:var(--gnav-height,0px);z-index:30;display:flex;background:var(--bg);margin:0 -20px}
+.pjnav{position:static;z-index:30;display:flex;background:#0f1117;margin:0 -20px}
 .pjnav a{flex:1;text-align:center;color:#cdd4e2;text-decoration:none;font-size:12.5px;font-weight:700;padding:11px 4px;border-bottom:3px solid transparent;white-space:nowrap}
-.pjnav a.on{color:#ffd86b;border-bottom-color:var(--gold);background:#1a1d27}
-/* sticky header: toolbar + toc chips */
-.sticky{position:sticky;top:calc(var(--gnav-height,0px) + 42px);z-index:20;background:var(--surface);margin:0 -20px 18px;padding:10px 20px}
+.pjnav a.on{color:#ffd86b;border-bottom-color:#c9a84c;background:#1a1d27}
+/* 上部バー: ツールバー(印刷/PDF/全体図)はスクロールで上へ流す。常時固定はフェーズチップ1本だけ＝読める面積を最大化 */
+.toolbar-wrap{box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:9px 20px}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.toolbar button,.toolbar a.btn{background:var(--gold);color:#1a1207;font-weight:700;border:none;padding:9px 15px;border-radius:9px;font-size:14px;text-decoration:none;cursor:pointer}
-.toolbar a.alt{background:var(--surface2);color:#e4e4e7}
-.toc{display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:9px;padding-bottom:3px}
-.toc .chip{flex:0 0 auto;background:var(--surface2);color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}
+.toolbar button,.toolbar a.btn{background:var(--gold);color:#1a1207;font-weight:700;border:none;padding:8px 14px;border-radius:9px;font-size:13.5px;text-decoration:none;cursor:pointer}
+.toolbar a.alt{background:#242836;color:#e4e4e7}
+.toc{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:7px 20px;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}
+.toc .chip{flex:0 0 auto;background:#242836;color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}
 .toc .chip.active{background:var(--gold);color:#1a1207;border-color:var(--gold)}
 /* flowchart */
 .flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:14px 0 6px}
@@ -41,7 +41,7 @@ a{color:#1e5fb4;word-break:break-all}
 .fbox.start{background:#fff4cf;border-color:#b8902a}
 .fbox.gate{background:#ffe9e3;border-color:#e0623a}
 .fbox.end{background:#e7f6ea;border-color:#2faa55}
-.fbox.first{background:var(--surface);border-color:#1a1d27;position:relative}
+.fbox.first{background:#1a1d27;border-color:#1a1d27;position:relative}
 .fbox.first b{color:#ffd86b} .fbox.first small{color:#cfd2da}
 .fbox.first .badge{display:inline-block;background:#ffd86b;color:#1a1207;font-weight:800;font-size:11px;padding:2px 9px;border-radius:999px;margin-bottom:5px}
 .frow{display:flex;gap:12px;width:100%;max-width:640px}
@@ -54,15 +54,27 @@ a{color:#1e5fb4;word-break:break-all}
 /* hub（電話4本カード） */
 .hubgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
 .hubcard{border:1.5px solid var(--gold);border-radius:12px;padding:12px 14px;background:#fffdf7}
+.hubcard.now{border-color:#c9a84c;border-width:2.5px;background:#fffaf0;grid-column:1 / -1}
+.hubcard.must{border-color:#e0623a;border-width:2px}
+.hubcard.opt{border-color:#c9c2ac;background:#fbfaf6}
 .hubh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;border-bottom:1px solid #eadfba;padding-bottom:7px;margin-bottom:7px}
 .hubh b{font-size:14px}
 .hublinks{display:flex;gap:8px;flex-shrink:0}
 .hublinks a{text-decoration:none;font-weight:700;font-size:12.5px;padding:3px 9px;border-radius:7px;white-space:nowrap}
 .hublinks .tel{background:#1a1d27;color:#ffd86b}
 .hublinks .mapl{background:#eef2fb;color:#1e5fb4}
-.hubsay{font-size:12px;color:#5a4a1a;background:#fff8e6;border-radius:8px;padding:6px 9px;margin-bottom:6px}
-.huba{font-size:12.5px;font-weight:700;color:#333}
-.huba ol{font-weight:400;margin:4px 0 0;padding-left:20px}
+.hubrole{font-size:12px;color:#555;margin-bottom:5px}
+.htag{display:inline-block;font-weight:800;font-size:10.5px;padding:1px 7px;border-radius:999px;margin-right:6px}
+.htag.now{background:#c9a84c;color:#1a1207} .htag.must{background:#e0623a;color:#fff} .htag.opt{background:#e7e2d2;color:#6b6451}
+.now-i{color:#a8821f} .must-i{color:#e0623a} .opt-i{color:#8a8264}
+.hubaddr{font-size:11.5px;color:#777;margin-bottom:7px}
+.hubdo,.hubhp,.hubsay,.huba{font-size:12.5px;border-radius:8px;padding:7px 10px;margin-bottom:6px}
+.hubdo b,.hubhp b,.hubsay b,.huba b{display:block;font-size:11px;letter-spacing:.02em;margin-bottom:2px;opacity:.85}
+.hubdo{background:#fff4e9;color:#7a3b1e}
+.hubhp{background:#eef4ee;color:#3a5a40}
+.hubsay{background:#fff8e6;color:#5a4a1a}
+.huba{background:#f4f1fb;color:#3a3357;font-weight:400}
+.huba ol{margin:2px 0 0;padding-left:20px}
 .huba li{margin:3px 0}
 @media(max-width:700px){.hubgrid{grid-template-columns:1fr}}
 /* code blocks (コピー可) */
@@ -94,19 +106,17 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
   table thead,table tbody{display:table;width:100%;min-width:520px}}
 </style></head><body>
 <nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a><a href="yakuin.html">🏠 薬院 売る/貸す</a></nav>
-<div class="sticky">
-  <div class="toolbar">
+<div class="toolbar-wrap"><div class="toolbar">
     <button onclick="window.print()">🖨 印刷 / PDF</button>
     <a class="btn alt" href="financing-placespot-shinbashi.pdf" download>⬇ PDF</a>
     <a class="btn alt" href="#flow">🗺 全体図</a>
-  </div>
-  <nav class="toc" id="toc"><a class="chip" href="#p0" data-target="p0">0 電話4本</a><a class="chip" href="#p1" data-target="p1">1 旅館業許可</a><a class="chip" href="#p2" data-target="p2">2 公庫融資</a><a class="chip" href="#p3" data-target="p3">3 税優遇の前提</a><a class="chip" href="#p4" data-target="p4">4 発注ゲート</a><a class="chip" href="#p5" data-target="p5">5 開業後の補助金</a></nav>
-</div>
+</div></div>
+<nav class="toc" id="toc"><a class="chip" href="#p0" data-target="p0">0 朝イチ電話</a><a class="chip" href="#p1" data-target="p1">1 旅館業許可</a><a class="chip" href="#p2" data-target="p2">2 公庫融資</a><a class="chip" href="#p3" data-target="p3">3 税優遇の前提</a><a class="chip" href="#p4" data-target="p4">4 発注ゲート</a><a class="chip" href="#p5" data-target="p5">5 開業後の補助金</a></nav>
 
 <section class="flowwrap" id="flow">
   <h1>全体の流れ（上から着手順。各箱からフェーズへ飛べる）</h1>
   <div class="flow">
-    <a class="fbox first" href="#p0"><span class="badge">▶ いまここから</span><b>1. 月曜に電話4本（相談）＋ 事業者ID申請</b><small>① 博多区保健所 092-419-1125　② 博多消防署予防課 092-475-0119　③ 生活衛生同業組合 092-737-5050　④ 商工会議所 092-441-1111。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
+    <a class="fbox first" href="#p0"><span class="badge">▶ いまここから</span><b>1. 朝イチに電話（予約・相談）＋ 事業者ID申請</b><small>★最優先 公庫の相談予約 0120-154-505／福岡支店092-411-9111（午前中に取り切る）。必須=保健所 092-419-1125・消防 予防課 092-475-0119。任意=組合 092-737-5050・商工会議所 092-441-2161。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
     <div class="farrow">▼ 相談で段取りが見えたら</div>
     <a class="fbox start" href="#p1"><b>2. 旅館業（簡易宿所）許可を申請</b><small>すべての低金利と（開業後の）補助金を開く"スイッチ"。手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。許可は申請中でも公庫の打診は可</small></a>
     <div class="farrow">▼ 許可を軸に、下の2つを並行で進める</div>
@@ -121,8 +131,8 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
   </div>
 </section>
 <section id="p0" class="doc">
-<div class="phasebanner"><span class="pnum">0</span><b>まず月曜、電話4本を鳴らす</b></div>
-<blockquote>この物件は<b>許可が全部のスイッチ</b>。月曜の朝、ここの4本を鳴らすところから動く。各カードは名乗り＋聞くことをそのまま読めばOK。並行で<b>gBizIDプライム</b>（省力化補助の前提・発行に2〜3週）も申請。</blockquote><div class="hubgrid"><div class="hubcard"><div class="hubh"><b>🏥 博多区保健所（衛生課）</b><span class="hublinks"><a class="tel" href="tel:0924191125">☎ 092-419-1125</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E4%BF%9D%E5%81%A5%E7%A6%8F%E7%A5%89%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC%20%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D2-8-1" target="_blank">📍 地図</a></span></div><div class="hubsay">名乗り：中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。 簡易宿所の事前相談をお願いします。間取り図を見ながら相談したいです。</div><div class="huba">聞くこと<ol><li>区分1室を簡易宿所にする構造・面積・換気・便所・洗面の要件</li><li>玄関帳場をICT代替（顔認証＋10分駆けつけ＋防犯カメラ）で無人運用できるか・要件</li><li>申請に必要な図面・書類一式と、審査期間</li><li>改装・消防工事と許可申請の前後関係（どこまで工事してから申請するか）</li></ol></div></div><div class="hubcard"><div class="hubh"><b>🚒 博多消防署 予防課</b><span class="hublinks"><a class="tel" href="tel:0924750119">☎ 092-475-0119</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E5%8D%9A%E5%A4%9A%E6%B6%88%E9%98%B2%E7%BD%B2%20%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA" target="_blank">📍 地図</a></span></div><div class="hubsay">名乗り：中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。 区分1室を簡易宿所にする際の消防設備について事前相談したいです。</div><div class="huba">聞くこと<ol><li>必要な消防設備（自動火災報知設備・誘導灯・消火器・防炎物品）</li><li>1室を宿泊用途にすると建物が複合用途（16項イ）化するか</li><li>★マンション全体の自火報への連動接続が要るか（費用が一番変わる）。共用部の感知器追加・管理組合や他住戸の同意の要否</li><li>消防法令適合通知書の手順・必要書類・所要期間</li></ol></div></div><div class="hubcard"><div class="hubh"><b>🤝 福岡県旅館ホテル生活衛生同業組合</b><span class="hublinks"><a class="tel" href="tel:0927375050">☎ 092-737-5050</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E7%9C%8C%E6%97%85%E9%A4%A8%E3%83%9B%E3%83%86%E3%83%AB%E7%94%9F%E6%B4%BB%E8%A1%9B%E7%94%9F%E5%90%8C%E6%A5%AD%E7%B5%84%E5%90%88%20%E7%A6%8F%E5%B2%A1%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%B8%A1%E8%BE%BA%E9%80%9A5-13-12" target="_blank">📍 地図</a></span></div><div class="hubsay">名乗り：中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。 公庫の振興事業貸付を考えており、その前提として組合への加入を相談したいです。</div><div class="huba">聞くこと<ol><li>加入の手順（支部）と、加入にかかる期間</li><li>入会金・組合費（年会費）の金額</li><li>「振興事業に係る資金証明書」の発行条件・必要書類・所要日数（→詳細はフェーズ2の組合）</li><li>開業前（許可申請中）でも加入・資金証明書の相談は可能か</li></ol></div></div><div class="hubcard"><div class="hubh"><b>🏛 福岡商工会議所（認定支援機関）</b><span class="hublinks"><a class="tel" href="tel:0924411111">☎ 092-441-1111</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%95%86%E5%B7%A5%E4%BC%9A%E8%AD%B0%E6%89%80%20%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D2-9-28" target="_blank">📍 地図</a></span></div><div class="hubsay">名乗り：中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。 中小企業経営強化税制を使いたく、経営力向上計画の認定について相談したいです。</div><div class="huba">聞くこと<ol><li>経営力向上計画の認定の相談・作成支援の窓口と、申請の流れ</li><li>★認定までの標準期間（設備取得の「前」に認定が要るため）</li><li>必要書類・様式（宿泊業＝事業分野別指針）</li><li>省力化補助やものづくり補助との関係・併用の可否</li></ol></div></div></div>
+<div class="phasebanner"><span class="pnum">0</span><b>まず朝イチ、電話で予約・相談</b></div>
+<blockquote>この物件は<b>許可が全部のスイッチ</b>。まず<b>A. 読む → B. 動く</b>の順。<br>A. <b>読む（HPで完結）</b>：旅館業の<a href="https://www.city.fukuoka.lg.jp/hofuku/iyakumu-eisei/life/kurashinoeisei/documents/ryokangyounimotodukutebiki_R0411.pdf" target="_blank">手引きPDF</a>（<a href="https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html" target="_blank">案内ページ</a>）に、構造・面積・必要書類・手数料22,000円・許可まで14営業日が全部載っている。<br>B. <b>動く（HPでは分からない＝人に聞く／予約する）</b>：下のカードへ。<b class="now-i">今朝の最優先</b>は公庫の相談予約（午前中に取り切る・許可申請中でも申込可）。<b class="must-i">必須</b>は保健所（事前相談の予約・着工前に図面持参）と消防（この建物の設備判断）。<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）。各カードは「やること」と「これだけ聞く」に絞ってある。並行で<b>gBizIDプライム</b>（省力化補助の前提・発行に2〜3週）も申請。</blockquote><div class="hubgrid"><div class="hubcard now"><div class="hubh"><b>🏦 日本政策金融公庫（相談予約）</b><span class="hublinks"><a class="tel" href="tel:0120154505">☎ 0120-154-505</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E6%97%A5%E6%9C%AC%E6%94%BF%E7%AD%96%E9%87%91%E8%9E%8D%E5%85%AC%E5%BA%AB%20%E7%A6%8F%E5%B2%A1%E6%94%AF%E5%BA%97%20%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D3-21-12" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag now">今朝最優先</span>午前中に相談予約を取り切る。旅館業は許可申請中でも申込可</div><div class="hubaddr">📍 日本政策金融公庫 福岡支店 福岡市博多区博多駅前3-21-12</div><div class="hubdo"><b>やること</b>今朝いちばんに、設備資金の相談予約を取る。総合ダイヤル0120-154-505（平日9-17時）が混んだら福岡支店 国民生活事業 092-411-9111へ直接。許可申請中でも申込めるので待たなくていい。融資の詳細はフェーズ2。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>制度・必要書類の概要は公庫サイト。予約日と当日の持参書類は電話で確定</div><div class="hubsay"><b>名乗り</b>中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。 設備資金の相談予約をお願いします。旅館業は許可申請中です。</div><div class="huba"><b>電話/来所でしか分からない＝これだけ聞く</b><ol><li>相談日の予約（できれば近日）と、当日の持参書類</li><li>振興事業貸付（組合経由の低利・設備20年）を使う場合の進め方</li><li>自己資金の目安と、申込から実行までのおおよその期間</li></ol></div></div><div class="hubcard must"><div class="hubh"><b>🏥 福岡市保健所 博多衛生課</b><span class="hublinks"><a class="tel" href="tel:0924191125">☎ 092-419-1125</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D2-8-1%20%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%BD%B9%E6%89%806%E9%9A%8E" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag must">必須</span>旅館業許可の窓口</div><div class="hubaddr">📍 福岡市博多区博多駅前2-8-1 博多区役所6階</div><div class="hubdo"><b>やること</b>着工前に各階平面図を持って事前相談（来所は予約制・事前相談は公式に必須）。基準・必要書類・流れは手引きPDFで読めるので、電話の用件は「相談日の予約」。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>構造／面積／換気／便所／洗面の基準・必要書類・手数料22,000円(現金)・許可まで14営業日 ＝ 手引きPDFに記載</div><div class="hubsay"><b>名乗り</b>中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。 簡易宿所の事前相談の予約をお願いします。各階平面図を持って伺います。</div><div class="huba"><b>電話/来所でしか分からない＝これだけ聞く</b><ol><li>玄関帳場のICT代替（顔認証＋10分駆けつけ＋防犯カメラ）で無人運用できるか・福岡市での条件</li><li>区分マンション1室を簡易宿所にする際の、この物件固有の懸念点</li><li>事前相談に伺える日程（予約）</li></ol></div></div><div class="hubcard must"><div class="hubh"><b>🚒 博多消防署 予防課</b><span class="hublinks"><a class="tel" href="tel:0924750119">☎ 092-475-0119</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D4-19-7" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag must">必須</span>消防法令適合の前提（費用の最大変動要因）</div><div class="hubaddr">📍 福岡市博多区博多駅前4-19-7</div><div class="hubdo"><b>やること</b>この建物で必要な消防設備を事前相談で確認。許可には消防法令適合通知書が要る。「この建物で何が要るか」は現場判断なのでHPでは分からない＝相談の価値が一番高い。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>一般的な設備の考え方は消防局HP。ただし当該建物の要否は現場判断＝要相談</div><div class="hubsay"><b>名乗り</b>中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。 区分1室を簡易宿所にする際の消防設備について事前相談したいです。</div><div class="huba"><b>電話/来所でしか分からない＝これだけ聞く</b><ol><li>★マンション全体の自火報への連動接続が要るか（費用が一番変わる）。共用部の感知器追加・管理組合や他住戸の同意の要否</li><li>1室を宿泊用途にすると建物が複合用途（16項イ）化するか</li><li>必要な消防設備一式（自火報・誘導灯・消火器・防炎物品）</li><li>消防法令適合通知書の手順・必要書類・所要期間</li></ol></div></div><div class="hubcard opt"><div class="hubh"><b>🤝 福岡県旅館ホテル生活衛生同業組合</b><span class="hublinks"><a class="tel" href="tel:0927375050">☎ 092-737-5050</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%B8%A1%E8%BE%BA%E9%80%9A5-13-12" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag opt">任意</span>公庫の低利(振興事業貸付)を狙う場合だけ</div><div class="hubaddr">📍 福岡市中央区渡辺通5-13-12</div><div class="hubdo"><b>やること</b>公庫の低利を使うなら組合加入が前提。加入と「資金証明書」の発行条件を相談。狙わないなら不要。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>加入案内・会費の一部は組合サイト。「資金証明書」の発行条件は要確認</div><div class="hubsay"><b>名乗り</b>中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。 公庫の振興事業貸付を考えており、その前提の組合加入を相談したいです。</div><div class="huba"><b>電話/来所でしか分からない＝これだけ聞く</b><ol><li>入会金・組合費（年会費）と加入手順・所要期間</li><li>「振興事業に係る資金証明書」の発行条件・必要書類・所要日数</li><li>開業前（許可申請中）でも加入・資金証明書の相談は可能か</li></ol></div></div><div class="hubcard opt"><div class="hubh"><b>🏛 福岡商工会議所（経営相談窓口）</b><span class="hublinks"><a class="tel" href="tel:0924412161">☎ 092-441-2161</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D2-9-28" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag opt">任意</span>経営強化税制(即時償却/控除)を狙う場合だけ</div><div class="hubaddr">📍 福岡市博多区博多駅前2-9-28</div><div class="hubdo"><b>やること</b>設備を買う「前」に経営力向上計画の認定を取る、その支援を相談。狙わないなら不要。代表は092-441-1110。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>制度概要は中小企業庁HP。「認定支援機関として支援できるか・段取り」は要相談</div><div class="hubsay"><b>名乗り</b>中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。 中小企業経営強化税制を使いたく、経営力向上計画の認定支援を相談したいです。</div><div class="huba"><b>電話/来所でしか分からない＝これだけ聞く</b><ol><li>認定支援機関として支援可能か、申請の流れ</li><li>★認定までの標準期間（設備取得の「前」に認定が要るため）</li><li>A類型/B類型の選択と、B類型の税理士事前確認の段取り</li></ol></div></div></div>
 </section>
 <hr class="sec">
 <section id="p1" class="doc">
@@ -212,7 +222,7 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
 <ol><li><strong>今すぐ（Week 0）</strong>：（管理規約の民泊/事業使用可否は確認済み・可）。物件売買の目処（売買契約 or 予約）。リノベ詳細見積（精査後550万目標）。消防の構造要件だけ保健所/消防署に事前確認。</li><li><strong>Week 1-2</strong>：福岡県旅館ホテル生活衛生同業組合へ加入相談（低利ルート確保）。福岡市保健所（中央区）で簡易宿所の事前相談＝消防・構造の可否確認。法人書類一式を取得（登記簿・定款・印鑑証明・納税証明・決算3期）。</li><li><strong>Week 2-3</strong>：公庫の創業計画書を作成（<code>01_jfc…</code> の内容を公式Excelに転記）。滋賀の打診パッケージを用意（<code>02_shiga…</code>）。</li><li><strong>Week 3-4</strong>：公庫福岡支店に相談予約→プレ面談→申込。並行して滋賀銀行に申込（オンライン可）。</li><li><strong>Week 4-7</strong>：本面談・審査（公庫は面談から2〜3週間）。追加書類に即対応。</li><li><strong>Week 7-9</strong>：融資決定→契約→実行。物件決済・リノベ着工。</li></ol>
 <hr>
 <h3>資金計画の動かし方（自己資金・リノベ見積・相見積のタイミング）</h3>
-<ul><li><strong>自己資金は「多めに見せて少なく入れる」はできない</strong>。金融機関は実行時に申告どおり自己資金が入ったかを通帳・領収書で確認する。800万と申告して500万だと資金計画と実態の食い違い（見せ金扱い）になり、減額・否決・条件違反のもと。</li><li><strong>自己資金を圧縮する正攻法は「総事業費を下げる」こと</strong>。リノベ圧縮・指値で総額が下がれば、自己資金も借入も自動で減る。これは歓迎される健全な圧縮。逆に自己資金だけ削って借入を増やすと自己資金比率が下がり、区分1室（担保評価低め）では審査が厳しくなり金利も上振れ（DSCR 800万=1.39 → 500万に削り借入増=約1.26）。削るならリノベ圧縮とセットで。</li><li><strong>相見積もりは&quot;今すぐ・打診と並行&quot;で取る</strong>。「見積を取る」のは自由、「契約・発注」だけが後。理由: ①審査にはリノベ見積が必須で、安い見積ほど借入を減らせて審査に有利 ②審査通過後に見積が大きく下がると借入の組み直し＝再審査・条件変更の二度手間 ③補助金の「発注は交付決定後」ルールに、相見積を取ること自体は当たらない（発注ではない）。</li><li><strong>唯一の順序</strong>: 契約（発注）だけは「融資の承認」＋「補助金/計画認定の決定」の両方が出てから。公庫・銀行とも本承認の前なら見積差し替え・総額調整は可能。</li><li><strong>推奨フロー</strong>: 1. 今ある700万見積で打診開始 → 2. 並行で2〜3社相見積（インダストリアルで圧縮・堅め550万/強気475万）→ 3. 本審査前に最精度の見積へ差し替えて総事業費・借入額を確定 → 4. 融資承認→補助金交付決定/計画認定→契約・発注 → 5. 下がった分は借入減（DSCR改善）か自己資金温存、どちらでも可。</li></ul>
+<ul><li><strong>自己資金は「多めに見せて少なく入れる」はできない</strong>。金融機関は実行時に申告どおり自己資金が入ったかを通帳・領収書で確認する。800万と申告して500万だと資金計画と実態の食い違い（見せ金扱い）になり、減額・否決・条件違反のもと。</li><li><strong>自己資金を圧縮する正攻法は「総事業費を下げる」こと</strong>。リノベ圧縮・指値で総額が下がれば、自己資金も借入も自動で減る。これは歓迎される健全な圧縮。逆に自己資金だけ削って借入を増やすと自己資金比率が下がり、区分1室（担保評価低め）では審査が厳しくなり金利も上振れ（DSCR 800万=1.39 → 500万に削り借入増=約1.26）。削るならリノベ圧縮とセットで。</li><li><strong>相見積もりは&quot;今すぐ・打診と並行&quot;で取る</strong>。「見積を取る」のは自由、「契約・発注」だけが後。理由: 1. 審査にはリノベ見積が必須で、安い見積ほど借入を減らせて審査に有利　2. 審査通過後に見積が大きく下がると借入の組み直し＝再審査・条件変更の二度手間　3. 補助金の「発注は交付決定後」ルールに、相見積を取ること自体は当たらない（発注ではない）。</li><li><strong>唯一の順序</strong>: 契約（発注）だけは「融資の承認」＋「補助金/計画認定の決定」の両方が出てから。公庫・銀行とも本承認の前なら見積差し替え・総額調整は可能。</li><li><strong>推奨フロー</strong>: 1. 今ある700万見積で打診開始 → 2. 並行で2〜3社相見積（インダストリアルで圧縮・堅め550万/強気475万）→ 3. 本審査前に最精度の見積へ差し替えて総事業費・借入額を確定 → 4. 融資承認→補助金交付決定/計画認定→契約・発注 → 5. 下がった分は借入減（DSCR改善）か自己資金温存、どちらでも可。</li></ul>
 <h3>本店・支店の所在地と「福岡の物件」融資（論点）</h3>
 <p>法人iUMAは本店＝東京（中央区明石町・自宅）、支店＝千葉（花見川区花園・所有物件）。福岡に拠点がない。これが効くか効かないかは融資先で分かれる。</p>
 <table><thead><tr><th>融資先</th><th>本店東京・福岡拠点なしの影響</th><th>対策</th></tr></thead><tbody><tr><td>公庫（振興事業/生活衛生）</td><td>影響小。物件・事業（旅館業許可）の所在地＝福岡で、福岡支店で申込める。本店所在地は審査の主因にならない</td><td>「なぜ東京の法人が福岡で宿泊事業を」を事業計画で説明。許可・組合は福岡で取り実態を作る</td></tr><tr><td>セゾン直接／スルガ／L&amp;F等（全国対応）</td><td>影響小。全国対応なので本店所在地はほぼ不問</td><td>通常どおり</td></tr><tr><td>福岡の地銀・信金（福岡銀行/西日本シティ/福岡信金 等）</td><td>★影響あり。地銀・信金は営業エリア内融資が原則で、域内に事業所がないと土俵に乗りにくい</td><td>福岡物件取得を機に<strong>福岡支店を登記</strong>すると枠が開く（iUMAは支店登記の実務経験あり）。登録免許税は要だが地銀枠と引き換え</td></tr><tr><td>滋賀ジャストサポート</td><td>無関係（個人名義専用）。手嶋耕一 個人の住所（東京）で審査</td><td>名義論点（給与&gt;不動産収入）が先。所在地は影響小</td></tr></tbody></table>
@@ -311,13 +321,13 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
 <hr class="sec">
 <section id="p3" class="doc">
 <div class="phasebanner"><span class="pnum">3</span><b>税優遇の前提を作る</b></div>
-<blockquote>公庫の融資と<b>並行</b>で進める税金トラック。設備（家具家電・スマートロック等）を<b>取得する「前」</b>に、商工会議所（認定支援機関）で<b>経営力向上計画</b>の認定を取っておくと、中小企業経営強化税制で<b>即時償却（100%）か10%税額控除</b>が使える。逆（先に買う）だと優遇が消える。</blockquote><h2>やること</h2><ol><li>商工会議所 092-441-1111 に相談（電話スクリプトはフェーズ0の④）</li><li>事業分野別指針（宿泊業）に沿って経営力向上計画を作成・申請</li><li>認定（標準1か月前後）→ そのうえで設備を発注（フェーズ4の発注ゲート）</li></ol><p>税額・即時償却の具体は「フェーズ5：補助金まとめ」の税制パートを正本とする（数字の二重持ちを避けるため、ここでは流れだけ）。</p>
+<blockquote>公庫の融資と<b>並行</b>で進める税金トラック。設備（家具家電・スマートロック等）を<b>取得する「前」</b>に、商工会議所（認定支援機関）で<b>経営力向上計画</b>の認定を取っておくと、中小企業経営強化税制で<b>即時償却（100%）か10%税額控除</b>が使える。逆（先に買う）だと優遇が消える。</blockquote><h2>やること</h2><ol><li>商工会議所 経営相談窓口 092-441-2161 に相談（電話スクリプトはフェーズ0の4本目）</li><li>事業分野別指針（宿泊業）に沿って経営力向上計画を作成・申請</li><li>認定（標準1か月前後）→ そのうえで設備を発注（フェーズ4の発注ゲート）</li></ol><p>税額・即時償却の具体は「フェーズ5：補助金まとめ」の税制パートを正本とする（数字の二重持ちを避けるため、ここでは流れだけ）。</p>
 </section>
 <hr class="sec">
 <section id="p4" class="doc">
 <div class="phasebanner"><span class="pnum">4</span><b>工事を発注する（★発注ゲート）</b></div>
 <h2>発注タイミング表 — 補助金・税優遇を取りこぼさない時系列（中洲しんばし / 旅館業）</h2>
-<blockquote>大原則ふたつ。<strong>①補助金も税制も「決定の&quot;前&quot;に発注・工事したら対象外」。②支払いは2バケツに分ける。</strong> リノベ本体（どの補助も対象外）は決定を待たず進めてよい。スマートロック・PMS・家具家電・空調など「補助/税制の対象になりうる設備」は、認定・交付決定が出てから発注する。</blockquote>
+<blockquote>大原則ふたつ。<strong>1. 補助金も税制も「決定の&quot;前&quot;に発注・工事したら対象外」。2. 支払いは2バケツに分ける。</strong> リノベ本体（どの補助も対象外）は決定を待たず進めてよい。スマートロック・PMS・家具家電・空調など「補助/税制の対象になりうる設備」は、認定・交付決定が出てから発注する。</blockquote>
 <hr>
 <h3>★ いちばん大事な1枚：発注してよい / まだするな</h3>
 <table><thead><tr><th>支払うもの</th><th>補助/税制の対象か</th><th>いつ発注してよいか</th></tr></thead><tbody><tr><td>リノベ本体（解体・内装・床壁・水回り工事）</td><td>✗ どの補助も対象外（省エネ大型は居住用限定・福岡市補助もリノベ本体は対象外）</td><td><strong>契約後すぐ進めてよい</strong>（補助の決定を待つ必要なし）</td></tr><tr><td>スマートロック・自動チェックイン・PMS・防犯カメラ・Wi-Fi・多言語/キャッシュレス</td><td>◎ 福岡市受入環境補助・省力化補助の対象</td><td><strong>交付決定が出てから発注</strong>（前に買うと全額対象外）</td></tr><tr><td>家具・家電・空調・給湯など設備（セットアップ190万の中身）</td><td>◎ 経営強化税制（即時償却/10%控除）・少額償却の対象</td><td><strong>経営力向上計画の認定が出てから取得</strong>（前だと税優遇が消える）</td></tr><tr><td>消防設備工事・許認可代行費</td><td>✗ どの補助でも対象外</td><td>いつでもよい（許可取得の都合で進める）</td></tr></tbody></table>
@@ -497,7 +507,7 @@ iUMAプロパティマネジメント合同会社
 <h3>提出書類チェックリスト（メール提出・原則）</h3>
 <ul><li>[ ] 様式第1号 交付申請書兼事業計画書</li><li>[ ] 様式第1号別紙 事業収支計画書（Excel）</li><li>[ ] 誓約書（指定様式）※開業・宿泊税申告後でないと署名できない</li><li>[ ] 役員名簿（指定様式）</li><li>[ ] 補助対象経費の積算がわかる書類（見積書／ECサイト画面等。1社でも可だが2社以上求められる場合あり）</li><li>宛先: syukuhaku-shien@city.fukuoka.lg.jp ／ 件名「（iUMAプロパティマネジメント合同会社）補助金交付申請」</li><li>問合せ: 観光産業課 横尾・岩﨑 092-711-4353（平日10:00〜17:00）</li></ul>
 <h3>様式第1号 事前記入ドラフト（開業後そのまま転記できる）</h3>
-<table><thead><tr><th>欄</th><th>記入内容</th></tr></thead><tbody><tr><td>所在地</td><td>〒104-0044 東京都中央区明石町（本店）</td></tr><tr><td>社名</td><td>iUMAプロパティマネジメント合同会社</td></tr><tr><td>代表者の役職・氏名</td><td>代表社員　手嶋耕一</td></tr><tr><td>施設名</td><td>プレイスポットしんばし（仮）</td></tr><tr><td>施設所在地</td><td>福岡市博多区中洲2-1-11</td></tr><tr><td>営業種別</td><td>旅館業法・簡易宿所</td></tr><tr><td>客室数</td><td>1室（宿泊税の経営申告書の申告室数に合わせる）</td></tr><tr><td>補助対象事業の区分</td><td>①インバウンド対応強化 ＋ ③生産性向上に向けたデジタル化・業務改善</td></tr><tr><td>事業内容（案）</td><td>中洲で増える外国人個人客の無人受入のため、セルフチェックイン機・スマートロック・多言語館内サイネージ・Wi-Fi増強を導入し、多言語・非対面で安全に受け入れる環境を整える</td></tr><tr><td>対象経費（税抜・案）</td><td>80万円（セルフチェックイン＋多言語＋Wi-Fi一式）</td></tr><tr><td>補助申請額</td><td>40万円（対象経費の1/2、上限40万）</td></tr></tbody></table>
+<table><thead><tr><th>欄</th><th>記入内容</th></tr></thead><tbody><tr><td>所在地</td><td>〒104-0044 東京都中央区明石町（本店）</td></tr><tr><td>社名</td><td>iUMAプロパティマネジメント合同会社</td></tr><tr><td>代表者の役職・氏名</td><td>代表社員　手嶋耕一</td></tr><tr><td>施設名</td><td>プレイスポットしんばし（仮）</td></tr><tr><td>施設所在地</td><td>福岡市博多区中洲2-1-11</td></tr><tr><td>営業種別</td><td>旅館業法・簡易宿所</td></tr><tr><td>客室数</td><td>1室（宿泊税の経営申告書の申告室数に合わせる）</td></tr><tr><td>補助対象事業の区分</td><td>インバウンド対応強化 ＋ 生産性向上に向けたデジタル化・業務改善</td></tr><tr><td>事業内容（案）</td><td>中洲で増える外国人個人客の無人受入のため、セルフチェックイン機・スマートロック・多言語館内サイネージ・Wi-Fi増強を導入し、多言語・非対面で安全に受け入れる環境を整える</td></tr><tr><td>対象経費（税抜・案）</td><td>80万円（セルフチェックイン＋多言語＋Wi-Fi一式）</td></tr><tr><td>補助申請額</td><td>40万円（対象経費の1/2、上限40万）</td></tr></tbody></table>
 <blockquote>★氏名・本店住所は戸籍名・登記どおり。誓約書の宿泊税申告の項目は、開業・申告を済ませてから署名する。</blockquote>
 <h3>ダウンロード済みの原本・記入例（場所）</h3>
 <ul><li>原本一式: <code>deals/financing/福岡市補助金_旅館業/原本/</code>（要綱・募集要項・Q&amp;A・事例集・各様式）</li><li>記入例: <code>deals/financing/福岡市補助金_旅館業/記入例/</code></li></ul>
@@ -521,7 +531,7 @@ iUMAプロパティマネジメント合同会社
           c.scrollIntoView({inline:'center',block:'nearest'});}
       }
     });
-  },{rootMargin:'-120px 0px -65% 0px',threshold:0});
+  },{rootMargin:'-54px 0px -70% 0px',threshold:0});
   secs.forEach(function(s){io.observe(s);});
   var tt=document.getElementById('totop');
   addEventListener('scroll',function(){tt.classList.toggle('show',scrollY>500);},{passive:true});

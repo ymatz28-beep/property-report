@@ -32,6 +32,8 @@ PHASES = [
          "09_インダストリアル_見積依頼書.md", "04_運営代行_候補と相場.md"]),
     ("p5", "5 開業後に補助金を回収する",
         ["05_補助金_使えるもの全部.md", "12_福岡市補助金_受入環境_申請パック.md"]),
+    ("docs", "📄 必要書類（集める物リスト）",
+        ["17_必要書類まとめ.md"]),
 ]
 # 上部チップの短いラベル（横スクロール最小化）。
 CHIP_SHORT = {
@@ -41,11 +43,12 @@ CHIP_SHORT = {
     "p3": "3 税優遇の前提",
     "p4": "4 発注ゲート",
     "p5": "5 開業後の補助金",
+    "docs": "📄 必要書類",
 }
 # ── フェーズ0の正本（SSoT）。住所・電話は2026-06-08に公式で裏取り済み ──
 # 設計方針: HPで読めること（基準・必要書類・流れ）は"聞かない"。手引きPDFへ誘導し、
 # 電話/来所は「HPでは分からない＝人に聞くしかないこと」と「やるべき手続き(予約・相談)」に絞る。
-NAME_LINE = ("中洲2-1-11の区分マンション1室を簡易宿所（旅館業）として開業準備中の、"
+NAME_LINE = ("中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、"
              "iUMAプロパティマネジメント（代表 手嶋）です。")
 # 旅館業の手引き(基準・必要書類・流れ・手数料22,000円・許可まで14営業日は全部ここに記載)
 TEBIKI_URL = ("https://www.city.fukuoka.lg.jp/hofuku/iyakumu-eisei/life/"
@@ -86,6 +89,16 @@ HUB_CALLS = [
               "1室を宿泊用途にすると建物が複合用途（16項イ）化するか",
               "必要な消防設備一式（自火報・誘導灯・消火器・防炎物品）",
               "消防法令適合通知書の手順・必要書類・所要期間"]),
+    dict(icon="🏛", n="福岡市こども未来局 こども健全育成課", t="092-711-4188",
+         tag="必須", role="旅館業許可申請の『前』に必須の事前協議",
+         addr="福岡市中央区天神1-8-1",
+         do="旅館業の許可申請・確認申請の前に、旅館等設置規制指導要綱の事前協議が必須。"
+            "この物件が対象か、手続きの流れと近隣説明の要否を相談する。",
+         hp="要綱・手続きの流れPDFは市HP。当該物件が対象か・所要期間は要相談",
+         say="旅館業許可の前に必要な、旅館等設置規制指導要綱の事前協議について相談したいです。",
+         ask=["この物件（中洲2-1-11）が事前協議の対象か・手続きの流れ",
+              "周辺の学校・保育所等との距離規制に該当しないか",
+              "必要書類・所要期間と、確認申請／許可申請との順番"]),
     dict(icon="🤝", n="福岡県旅館ホテル生活衛生同業組合", t="092-737-5050",
          tag="任意", role="公庫の低利(振興事業貸付)を狙う場合だけ",
          addr="福岡市中央区渡辺通5-13-12",
@@ -138,7 +151,10 @@ def md_to_html(md: str, demote: int = 0) -> str:
         s = html.escape(s)
         s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
         s = re.sub(r"`(.+?)`", r"<code>\1</code>", s)
-        s = re.sub(r"(https?://[^\s)]+)", r'<a href="\1">\1</a>', s)
+        # markdown link [text](url or #anchor) を先に処理（#p2 等のページ内ジャンプも対応）
+        s = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", r'<a href="\2">\1</a>', s)
+        # 残りの裸URLを自動リンク（直前が " の href 内URLは除外＝二重リンク防止）
+        s = re.sub(r'(?<!")(https?://[^\s)<"]+)', r'<a href="\1">\1</a>', s)
         return s
     while i < len(lines):
         ln = lines[i]
@@ -194,6 +210,10 @@ def build_hub() -> str:
     cards = []
     for c in HUB_CALLS:
         asks = "".join(f"<li>{html.escape(x)}</li>" for x in c["ask"])
+        ask_lines = "\n".join(f"{i}. {x}" for i, x in enumerate(c["ask"], 1))
+        script_text = (f"お世話になります。{NAME_LINE}{c['say']}\n"
+                       f"お聞きしたいのは、次の点です。\n{ask_lines}\n"
+                       f"お手数ですが、よろしくお願いいたします。")
         tel = c["t"].replace("-", "")
         tagcls = {"今朝最優先": "now", "必須": "must"}.get(c["tag"], "opt")
         cards.append(
@@ -206,15 +226,18 @@ def build_hub() -> str:
             f'<div class="hubaddr">📍 {html.escape(c["addr"])}</div>'
             f'<div class="hubdo"><b>やること</b>{html.escape(c["do"])}</div>'
             f'<div class="hubhp"><b>HPで分かる（読めば済む）</b>{html.escape(c["hp"])}</div>'
-            f'<div class="hubsay"><b>名乗り</b>{html.escape(NAME_LINE)} {html.escape(c["say"])}</div>'
-            f'<div class="huba"><b>電話/来所でしか分からない＝これだけ聞く</b><ol>{asks}</ol></div></div>')
+            f'<div class="hubscript"><b>📞 そのまま読む台本</b>'
+            f'<pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;'
+            f'border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;'
+            f'font-size:13px;line-height:1.7;color:var(--bg-tertiary)">{html.escape(script_text)}</pre></div>'
+            f'<div class="huba"><b>聞くこと（チェック用）</b><ol>{asks}</ol></div></div>')
     return (
         '<blockquote>この物件は<b>許可が全部のスイッチ</b>。まず<b>A. 読む → B. 動く</b>の順。'
         f'<br>A. <b>読む（HPで完結）</b>：旅館業の<a href="{TEBIKI_URL}" target="_blank">手引きPDF</a>'
         f'（<a href="{RYOKAN_PAGE}" target="_blank">案内ページ</a>）に、構造・面積・必要書類・手数料22,000円・許可まで14営業日が全部載っている。'
         '<br>B. <b>動く（HPでは分からない＝人に聞く／予約する）</b>：下のカードへ。'
         '<b class="now-i">今朝の最優先</b>は公庫の相談予約（午前中に取り切る・許可申請中でも申込可）。'
-        '<b class="must-i">必須</b>は保健所（事前相談の予約・着工前に図面持参）と消防（この建物の設備判断）。'
+        '<b class="must-i">必須</b>は保健所（事前相談の予約・着工前に図面持参）・消防（この建物の設備判断）・こども未来局（許可申請の前の事前協議）。'
         '<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）。'
         '各カードは「やること」と「これだけ聞く」に絞ってある。並行で<b>gBizIDプライム</b>'
         '（省力化補助の前提・発行に2〜3週）も申請。</blockquote>'
@@ -240,7 +263,7 @@ def build_flowchart() -> str:
 <section class="flowwrap" id="flow">
   <h1>全体の流れ（上から着手順。各箱からフェーズへ飛べる）</h1>
   <div class="flow">
-    <a class="fbox first" href="#p0"><span class="badge">▶ いまここから</span><b>1. 朝イチに電話（予約・相談）＋ 事業者ID申請</b><small>★最優先 公庫の相談予約 0120-154-505／福岡支店092-411-9111（午前中に取り切る）。必須=保健所 092-419-1125・消防 予防課 092-475-0119。任意=組合 092-737-5050・商工会議所 092-441-2161。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
+    <a class="fbox first" href="#p0"><span class="badge">▶ いまここから</span><b>1. 朝イチに電話（予約・相談）＋ 事業者ID申請</b><small>★最優先 公庫の相談予約 0120-154-505／福岡支店092-411-9111（午前中に取り切る）。必須=保健所 092-419-1125・消防 予防課 092-475-0119・こども未来局 092-711-4188。任意=組合 092-737-5050・商工会議所 092-441-2161。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
     <div class="farrow">▼ 相談で段取りが見えたら</div>
     <a class="fbox start" href="#p1"><b>2. 旅館業（簡易宿所）許可を申請</b><small>すべての低金利と（開業後の）補助金を開く"スイッチ"。手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。許可は申請中でも公庫の打診は可</small></a>
     <div class="farrow">▼ 許可を軸に、下の2つを並行で進める</div>
@@ -262,6 +285,9 @@ def main() -> int:
         # 中身を生成（HUB/TAXPREP は関数生成、それ以外は md ファイルを束ねて1段下げ内包）
         if content == "HUB":
             inner = build_hub()
+            mail_doc = FIN_DIR / "16_メール問い合わせ文例.md"
+            if mail_doc.exists():
+                inner += '\n<hr>\n' + md_to_html(mail_doc.read_text(encoding="utf-8"), demote=1)
         elif content == "TAXPREP":
             inner = build_taxprep()
         else:
@@ -277,8 +303,16 @@ def main() -> int:
         chip_label = CHIP_SHORT[pid]
         nav.append(f'<a class="chip" href="#{pid}" data-target="{pid}">{html.escape(chip_label)}</a>')
     flow = build_flowchart()
-    nav_html = '<nav class="toc" id="toc">' + "".join(nav) + "</nav>"
-    body = flow + "\n" + '\n<hr class="sec">\n'.join(sections)
+    # 最上部「次にやること」セクション（進展のたびに 18_次のアクション.md を更新）
+    next_doc = FIN_DIR / "18_次のアクション.md"
+    next_html = ""
+    next_chip = ""
+    if next_doc.exists():
+        next_html = ('<section id="next" class="doc next-actions">\n'
+                     + md_to_html(next_doc.read_text(encoding="utf-8")) + '\n</section>\n<hr class="sec">\n')
+        next_chip = '<a class="chip" href="#next" data-target="next">▶ 次にやること</a>'
+    nav_html = '<nav class="toc" id="toc">' + next_chip + "".join(nav) + "</nav>"
+    body = next_html + flow + "\n" + '\n<hr class="sec">\n'.join(sections)
     doc = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>融資・補助金パッケージ — プレイスポットしんばし</title>
@@ -311,6 +345,8 @@ a{{color:#1e5fb4;word-break:break-all}}
 .toolbar{{display:flex;gap:10px;flex-wrap:wrap;align-items:center}}
 .toolbar button,.toolbar a.btn{{background:var(--gold);color:#1a1207;font-weight:700;border:none;padding:8px 14px;border-radius:9px;font-size:13.5px;text-decoration:none;cursor:pointer}}
 .toolbar a.alt{{background:#242836;color:#e4e4e7}}
+.next-actions{{background:#fffdf3;border:2px solid var(--gold);border-radius:12px;padding:4px 18px 10px;margin-top:14px}}
+.next-actions h1{{border:none;color:#7a5c00}}
 .toc{{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:7px 20px;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}}
 .toc .chip{{flex:0 0 auto;background:#242836;color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}}
 .toc .chip.active{{background:var(--gold);color:#1a1207;border-color:var(--gold)}}
@@ -388,9 +424,7 @@ pre.code{{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:
 </style></head><body>
 <nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a><a href="yakuin.html">🏠 薬院 売る/貸す</a></nav>
 <div class="toolbar-wrap"><div class="toolbar">
-    <button onclick="window.print()">🖨 印刷 / PDF</button>
-    <a class="btn alt" href="{PDF_NAME}" download>⬇ PDF</a>
-    <a class="btn alt" href="#flow">🗺 全体図</a>
+    <a class="btn" href="#docs">📄 必要書類</a>
 </div></div>
 {nav_html}
 {body}

@@ -15,7 +15,7 @@
 - [ERROR] structural_reform: [ESCALATED: 56d unresolved] Stale temp/debug file (67 days old). Delete it.
 - [ERROR] structural_reform: [ESCALATED: 56d unresolved] Stale temp/debug file (67 days old). Delete it.
 - [ERROR] structural_reform: [ESCALATED: 56d unresolved] Stale temp/debug file (67 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 56d unresolved] Stale temp/debug file (70 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 56d unresolved] Stale temp/debug file (71 days old). Delete it.
 - [WARN] html_ui: Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: [ESCALATED: 56d unresolved] Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Missing gnav (site-header) — no navigation
@@ -23,15 +23,15 @@
 - [ERROR] html_ui: [ESCALATED: 56d unresolved] Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Missing gnav (site-header) — no navigation
 - [WARN] html_ui: Missing gnav (site-header) — no navigation
-- [WARN] timestamp_format: Date-only timestamp '最終更新 2026-06-09' — should include HH:MM
-- [ERROR] property_patrol_steps: [ESCALATED: 47d unresolved] 物件パトロール失敗ステップ (2026-06-10 00:16): 【Hub KPI JSON生成】エラー終了 (exit 1) → Fix: エラーログを確認
-- [ERROR] property_patrol_steps: [ESCALATED: 47d unresolved] 物件パトロール失敗ステップ (2026-06-10 00:16): 【自動フラグ付与】異常終了: expected '<document start>', but found '<scalar>'
+- [WARN] timestamp_format: Date-only timestamp '最終更新 2026-06-10' — should include HH:MM
+- [ERROR] property_patrol_steps: [ESCALATED: 47d unresolved] 物件パトロール失敗ステップ (2026-06-10 01:07): 【Hub KPI JSON生成】エラー終了 (exit 1) → Fix: エラーログを確認
+- [ERROR] property_patrol_steps: [ESCALATED: 47d unresolved] 物件パトロール失敗ステップ (2026-06-10 01:07): 【自動フラグ付与】異常終了: expected '<document start>', but found '<scalar>'
   in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
-- [ERROR] property_patrol_steps: [ESCALATED: 47d unresolved] 物件パトロール失敗ステップ (2026-06-10 00:16): 【パイプラインライフサイクル】異常終了: expected '<document start>', but found '<scalar>'
+- [ERROR] property_patrol_steps: [ESCALATED: 47d unresolved] 物件パトロール失敗ステップ (2026-06-10 01:07): 【パイプラインライフサイクル】異常終了: expected '<document start>', but found '<scalar>'
   in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
-- [ERROR] property_patrol_steps: [ESCALATED: 47d unresolved] 物件パトロール失敗ステップ (2026-06-10 00:16): 【問い合わせダッシュボード】異常終了: expected '<document start>', but found '<scalar>'
+- [ERROR] property_patrol_steps: [ESCALATED: 47d unresolved] 物件パトロール失敗ステップ (2026-06-10 01:07): 【問い合わせダッシュボード】異常終了: expected '<document start>', but found '<scalar>'
   in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
-- [ERROR] property_patrol_steps: [ESCALATED: 47d unresolved] 物件パトロール失敗ステップ (2026-06-10 00:16): 【内覧分析レポート】異常終了: expected '<document start>', but found '<scalar>'
+- [ERROR] property_patrol_steps: [ESCALATED: 47d unresolved] 物件パトロール失敗ステップ (2026-06-10 01:07): 【内覧分析レポート】異常終了: expected '<document start>', but found '<scalar>'
   in "/Users/ytejima/Documents/Projects/property-a → Fix: エラーログを確認
 - [WARN] design_token_compliance: Line 9: hardcoded #c9a84c should be var(--gold)
 - [ERROR] design_token_compliance: [ESCALATED: 56d unresolved] Line 56: hardcoded #6366f1 should be var(--accent)
@@ -44,8 +44,21 @@
 - [ERROR] design_token_compliance: [ESCALATED: 56d unresolved] Line 647: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 56d unresolved] Line 703: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 56d unresolved] Line 758: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [SISYPHEAN×38: re-appeared after recent fix] Line 59: hardcoded #c9a84c should be var(--gold)
-- [ERROR] design_token_compliance: [SISYPHEAN×39: re-appeared after recent fix] Line 84: hardcoded #0f1117 should be var(--bg)
+- [WARN] design_token_compliance: Line 25: hardcoded #0f1117 should be var(--bg)
+- [WARN] design_token_compliance: Line 27: hardcoded #c9a84c should be var(--gold)
+- [WARN] design_token_compliance: Line 27: hardcoded #1a1d27 should be var(--surface)
+- [WARN] design_token_compliance: Line 29: hardcoded #1a1d27 should be var(--surface)
+- [WARN] design_token_compliance: Line 32: hardcoded #242836 should be var(--surface2)
+- [WARN] design_token_compliance: Line 32: hardcoded #e4e4e7 should be var(--text)
+- [WARN] design_token_compliance: Line 35: hardcoded #1a1d27 should be var(--surface)
+- [WARN] design_token_compliance: Line 36: hardcoded #242836 should be var(--surface2)
+- [WARN] design_token_compliance: Line 46: hardcoded #1a1d27 should be var(--surface)
+- [WARN] design_token_compliance: Line 46: hardcoded #1a1d27 should be var(--surface)
+- [WARN] design_token_compliance: Line 53: hardcoded #1a1d27 should be var(--surface)
+- [WARN] design_token_compliance: Line 59: hardcoded #c9a84c should be var(--gold)
+- [WARN] design_token_compliance: Line 66: hardcoded #1a1d27 should be var(--surface)
+- [WARN] design_token_compliance: Line 70: hardcoded #c9a84c should be var(--gold)
+- [WARN] design_token_compliance: Line 84: hardcoded #0f1117 should be var(--bg)
 - [ERROR] design_token_compliance: [ESCALATED: 54d unresolved] Line 173: hardcoded #fbbf24 should be var(--amber)
 - [ERROR] design_token_compliance: [ESCALATED: 54d unresolved] Line 304: hardcoded #fbbf24 should be var(--amber)
 - [ERROR] design_token_compliance: [ESCALATED: 54d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
@@ -76,7 +89,7 @@
 - [ERROR] qa_market_data_accuracy: [ESCALATED: 56d unresolved] 5/100 (5.0%) — price mismatch: ふれんず物件(博多区) raw=800.0 html=960.0; price mismatch: 福岡市南区 3LDK raw=900.0 html=980.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=990.0; price mismatch: 高木団地住宅 二号棟 raw=698.0 html=710.0; price mismatch: コーポラス東光 206 raw=650.0 html=800.0
 - [ERROR] qa_market_oc_income_coverage: [ESCALATED: 56d unresolved] OC 333件中 275件が年間収入欠落 (83%) — 利回り逆算で補完
 - [ERROR] qa_market_yield_consistency: 1件の利回り/年間収入乖離(>20%): メゾン板橋本町: expected=93.5万 actual=69.6万 (34%乖離)
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 56d unresolved] 35件の物件名クロスリファレンス不一致: 福岡市博多区美野島(18㎡): ['エステート・モア・博多グラン A棟', 'エステート・モア・博多グラン A棟 211']; 福岡市博多区美野島(25㎡): ['ふれんず物件(博多区)', '『博多駅・天神・キャナル・中州まで徒歩圏内』']; 福岡市博多区比恵町(20㎡): ['ふれんず物件(博多区)', 'スカイハイツ春日（表面利回り：６．９３％）']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区住吉(22㎡): ['【売主物件・博多駅前アドレス】ピュアドームパラジオ博多', 'カーサ博多 301'] ... +30 more
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 56d unresolved] 35件の物件名クロスリファレンス不一致: 福岡市博多区美野島(18㎡): ['エステート・モア・博多グラン A棟 211', 'エステート・モア・博多グラン A棟']; 福岡市博多区美野島(25㎡): ['ふれんず物件(博多区)', '『博多駅・天神・キャナル・中州まで徒歩圏内』']; 福岡市博多区比恵町(20㎡): ['ふれんず物件(博多区)', 'スカイハイツ春日（表面利回り：６．９３％）']; 福岡市博多区博多駅南(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区住吉(22㎡): ['カーサ博多 301', '【売主物件・博多駅前アドレス】ピュアドームパラジオ博多'] ... +30 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 15.9% (20/126件)。パイプライン変換バグの可能性。例: 3780.0万円/67.46㎡; 2890.0万円/59.9㎡; 3050.0万円/52.98㎡; 2999.0万円/52.55㎡; 2820.0万円/48.8㎡
 - [WARN] renderer_compliance: Missing gnav (site-header / site-nav) — no navigation
 - [WARN] renderer_compliance: Missing gnav (site-header / site-nav) — no navigation

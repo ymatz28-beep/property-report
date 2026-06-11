@@ -12,10 +12,10 @@
 - [WARN] hardcoded_data: Large inline data (60 lines) at line 61. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] structural_reform: [ESCALATED: 57d unresolved] generate_market.py is 1664 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 57d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 57d unresolved] Stale temp/debug file (68 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 57d unresolved] Stale temp/debug file (68 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 57d unresolved] Stale temp/debug file (68 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 57d unresolved] Stale temp/debug file (71 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 57d unresolved] Stale temp/debug file (69 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 57d unresolved] Stale temp/debug file (69 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 57d unresolved] Stale temp/debug file (69 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 57d unresolved] Stale temp/debug file (72 days old). Delete it.
 - [WARN] html_ui: Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: [ESCALATED: 57d unresolved] Font size violation(s): line 190: fixed 48px
 - [WARN] html_ui: Missing gnav (site-header) — no navigation
@@ -89,7 +89,7 @@
 - [ERROR] qa_market_data_accuracy: [ESCALATED: 57d unresolved] 5/101 (5.0%) — price mismatch: JGM笹丘 402 raw=800.0 html=900.0; price mismatch: 福岡市南区 3LDK raw=900.0 html=980.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=990.0; price mismatch: 高木団地住宅 二号棟 raw=698.0 html=710.0; price mismatch: ふれんず物件(中央区) raw=900.0 html=950.0
 - [ERROR] qa_market_oc_income_coverage: [ESCALATED: 57d unresolved] OC 345件中 232件が年間収入欠落 (67%) — 利回り逆算で補完
 - [ERROR] qa_market_yield_consistency: 1件の利回り/年間収入乖離(>20%): リライア西台: expected=34.7万 actual=91.3万 (62%乖離)
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 57d unresolved] 33件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 福岡市博多区比恵町(20㎡): ['スカイハイツ春日（表面利回り：６．９３％）', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市中央区鳥飼(16㎡): ['鳥飼バス停 徒歩1分', 'ピュアドームアーデンス大濠']; 福岡市中央区輝国(42㎡): ['お問い合わせは営業部092-738-8500まで\u3000現在家賃47,000円にて賃貸中', 'チェリベ輝国'] ... +28 more
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 57d unresolved] 33件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 福岡市博多区比恵町(20㎡): ['スカイハイツ春日（表面利回り：６．９３％）', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市中央区鳥飼(16㎡): ['ピュアドームアーデンス大濠', '鳥飼バス停 徒歩1分']; 福岡市中央区輝国(42㎡): ['お問い合わせは営業部092-738-8500まで\u3000現在家賃47,000円にて賃貸中', 'チェリベ輝国'] ... +28 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 16.0% (20/125件)。パイプライン変換バグの可能性。例: 3780.0万円/67.46㎡; 2890.0万円/59.9㎡; 3050.0万円/52.98㎡; 2999.0万円/52.55㎡; 2820.0万円/48.8㎡
 - [WARN] renderer_compliance: Missing gnav (site-header / site-nav) — no navigation
 - [WARN] renderer_compliance: Missing gnav (site-header / site-nav) — no navigation

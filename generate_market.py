@@ -113,7 +113,10 @@ PROPERTY_PAGES = [
 # Gnav: page-level navigation within property section (SSoT)
 GNAV_PAGES = [
     {"href": "index.html", "label": "Hub"},
-    {"href": "market.html", "label": "Market"},
+    {"href": "minpaku-osaka.html", "label": "民泊・大阪"},
+    {"href": "minpaku-fukuoka.html", "label": "民泊・福岡"},
+    {"href": "minpaku-tokyo.html", "label": "民泊・東京"},
+    {"href": "market.html", "label": "賃貸Market"},
     {"href": "naiken-analysis.html", "label": "内覧分析"},
     {"href": "inquiry-messages.html", "label": "問い合わせ"},
     {"href": "inquiry-pipeline.html", "label": "Pipeline"},

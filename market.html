@@ -30472,6 +30472,11 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCount();
   // Observe all type sections
   document.querySelectorAll('.type-section[data-type]').forEach(s => typeObserver.observe(s));
+  // Hash-based city switching: market.html#osaka / #fukuoka / #tokyo
+  const hash = (window.location.hash || '').replace('#', '');
+  if (['osaka', 'fukuoka', 'tokyo'].indexOf(hash) !== -1) {
+    switchCity(hash);
+  }
 });
 </script>
 </body>

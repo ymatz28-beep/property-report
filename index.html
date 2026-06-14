@@ -218,6 +218,24 @@
 @media(max-width:640px){.gnav a{padding:10px 10px;font-size:10px;min-height:44px;display:inline-flex;align-items:center}}
 @media(max-width:375px){.gnav-inner{padding:0 8px}.gnav a{padding:10px 8px;font-size:9px}}
   </style>
+  <style>
+/* ── Expandable cards ── */
+.report-item.expandable { cursor: pointer; }
+.report-item.expandable:hover .report-arrow { background: var(--surface-hover); border-color: var(--border-hover); color: var(--text); transform: none; }
+.report-item.expandable.open .report-arrow { background: var(--accent); border-color: var(--accent); color: var(--bg); transform: rotate(90deg); }
+.city-expand { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease; }
+.city-expand.open { max-height: 120px; opacity: 1; }
+.city-btns { display: flex; gap: 8px; padding: 12px 0 4px 42px; flex-wrap: wrap; }
+.city-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 600; color: var(--text);
+  padding: 7px 16px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface);
+  text-decoration: none; transition: all 0.2s; letter-spacing: 0.02em;
+}
+.city-btn:hover { background: var(--surface-hover); border-color: var(--accent); color: var(--accent); }
+.city-btn-sub { font-size: 10px; color: var(--muted); font-weight: 400; }
+  </style>
 </head>
 <body>
 <header class="site-header">
@@ -248,34 +266,33 @@
   <script>
     var REPORTS = [
       {
-        label: "旅館業/民泊候補 — 大阪",
-        title: "大阪 旅館業・民泊化候補",
-        desc: "大阪の区分マンションから旅館業（簡易宿所）・民泊化が狙える物件を抽出。管理規約確認済み優先。",
-        tags: ["大阪", "旅館業", "民泊", "区分", "第1優先"],
-        url: "minpaku-osaka.html"
+        num: "01",
+        label: "旅館業 / 民泊候補",
+        title: "旅館業・民泊化 — 大阪 / 福岡 / 東京",
+        desc: "区分マンションから旅館業（簡易宿所）・民泊化が狙える物件を抽出。管理規約確認済み優先。",
+        tags: ["旅館業", "民泊", "区分"],
+        expandable: true,
+        cities: [
+          { name: "大阪", url: "minpaku-osaka.html", sub: "第1優先" },
+          { name: "福岡", url: "minpaku-fukuoka.html", sub: "第2優先" },
+          { name: "東京", url: "minpaku-tokyo.html", sub: "第3優先" }
+        ]
       },
       {
-        label: "旅館業/民泊候補 — 福岡",
-        title: "福岡 旅館業・民泊化候補",
-        desc: "福岡の区分マンションから旅館業（簡易宿所）・民泊化が狙える物件を抽出。天神・博多・薬院エリア中心。",
-        tags: ["福岡", "旅館業", "民泊", "区分", "第2優先"],
-        url: "minpaku-fukuoka.html"
-      },
-      {
-        label: "旅館業/民泊候補 — 東京",
-        title: "東京 旅館業・民泊化候補",
-        desc: "東京の区分マンションから旅館業（簡易宿所）・民泊化が狙える物件を抽出。渋谷・新宿・中目黒エリア。",
-        tags: ["東京", "旅館業", "民泊", "区分", "第3優先"],
-        url: "minpaku-tokyo.html"
-      },
-      {
+        num: "02",
         label: "物件マーケット（賃貸収益）",
-        title: "物件マーケット — 大阪・福岡・東京（賃貸CF）",
+        title: "賃貸CF — 大阪 / 福岡 / 東京",
         desc: "旅館業不可でも賃貸収益で回る区分物件をスコアリング。大阪→福岡→東京の優先順で表示。",
-        tags: ["大阪", "福岡", "東京", "賃貸収益", "スコアリング"],
-        url: "market.html"
+        tags: ["賃貸収益", "スコアリング"],
+        expandable: true,
+        cities: [
+          { name: "大阪", url: "market.html#osaka" },
+          { name: "福岡", url: "market.html#fukuoka" },
+          { name: "東京", url: "market.html#tokyo" }
+        ]
       },
       {
+        num: "03",
         label: "内覧分析",
         title: "内覧分析 — 扇町 & 天満橋",
         desc: "重要事項調査報告書の分析。管理規約・修繕計画・民泊可否の評価。",
@@ -283,6 +300,7 @@
         url: "naiken-analysis.html"
       },
       {
+        num: "04",
         label: "問い合わせ",
         title: "問い合わせメッセージ",
         desc: "スコア上位物件への問い合わせ文面を自動生成。コピーボタン付きで即座に送信可能。",
@@ -291,35 +309,59 @@
       }
     ];
 
-    function pad(n) { return n < 10 ? "0" + n : "" + n; }
+    function toggleExpand(el) {
+      var isOpen = el.classList.contains('open');
+      el.classList.toggle('open', !isOpen);
+      var exp = el.querySelector('.city-expand');
+      if (exp) exp.classList.toggle('open', !isOpen);
+    }
 
     function render() {
       var container = document.getElementById("reports");
       var items = [];
 
-      REPORTS.forEach(function(r, i) {
-        var el = document.createElement("a");
-        el.href = r.url;
-        el.className = "report-item fi";
-
+      REPORTS.forEach(function(r) {
         var tagsHtml = (r.tags || []).map(function(t) {
           return '<span class="report-tag">' + t + '</span>';
         }).join("");
 
-        el.innerHTML =
+        var rowHtml =
           '<div class="report-row">' +
-            '<div class="report-ordinal">' + pad(i + 1) + '</div>' +
+            '<div class="report-ordinal">' + r.num + '</div>' +
             '<div class="report-body">' +
               '<div class="report-label">' + r.label + '</div>' +
               '<div class="report-title">' + r.title + '</div>' +
               '<div class="report-desc">' + r.desc + '</div>' +
               (tagsHtml ? '<div class="report-tags">' + tagsHtml + '</div>' : '') +
             '</div>' +
-            '<div class="report-arrow">\u2192</div>' +
+            '<div class="report-arrow">→</div>' +
           '</div>';
 
-        items.push(el);
-        container.appendChild(el);
+        if (r.expandable) {
+          var el = document.createElement("div");
+          el.className = "report-item expandable fi";
+          el.setAttribute("onclick", "toggleExpand(this)");
+
+          var cityBtns = (r.cities || []).map(function(c) {
+            return '<a href="' + c.url + '" class="city-btn" onclick="event.stopPropagation()">' +
+              c.name +
+              (c.sub ? '<span class="city-btn-sub">' + c.sub + '</span>' : '') +
+              '</a>';
+          }).join("");
+
+          el.innerHTML = rowHtml +
+            '<div class="city-expand"><div class="city-btns">' + cityBtns + '</div></div>';
+
+          items.push(el);
+          container.appendChild(el);
+        } else {
+          var el = document.createElement("a");
+          el.href = r.url;
+          el.className = "report-item fi";
+          el.innerHTML = rowHtml;
+          items.push(el);
+          container.appendChild(el);
+        }
       });
 
       requestAnimationFrame(function() {

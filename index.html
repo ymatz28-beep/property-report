@@ -229,13 +229,13 @@
     <a href="https://ymatz28-beep.github.io/trip-planner/">Travel</a>
   </nav>
 </header>
-<div class="gnav"><div class="gnav-inner"><a href="index.html" class="cur">Hub</a><a href="market.html">Market</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a><a href="inquiry-pipeline.html">Pipeline</a></div></div>
+<div class="gnav"><div class="gnav-inner"><a href="index.html" class="cur">Hub</a><a href="minpaku-osaka.html">民泊・大阪</a><a href="minpaku-fukuoka.html">民泊・福岡</a><a href="minpaku-tokyo.html">民泊・東京</a><a href="market.html">賃貸Market</a><a href="naiken-analysis.html">内覧分析</a><a href="inquiry-messages.html">問い合わせ</a><a href="inquiry-pipeline.html">Pipeline</a></div></div>
   <div class="atmosphere"><div class="atm-orb"></div><div class="atm-orb"></div></div>
   <div class="grain"></div>
   <div class="page">
     <div class="hub-header">
       <h1>物件レポート</h1>
-      <p>毎日自動巡回・スコアリング・レポート生成</p>
+      <p>旅館業/民泊化 → 賃貸収益 の順で区分を探す。大阪 → 福岡 → 東京。毎日自動巡回。</p>
     </div>
     <div class="reports" id="reports"></div>
 
@@ -248,10 +248,31 @@
   <script>
     var REPORTS = [
       {
-        label: "物件マーケット",
-        title: "物件マーケット — 大阪・福岡・東京",
-        desc: "大阪・福岡・東京の中古マンション候補をスコアリング。全都市横断で比較。",
-        tags: ["大阪", "福岡", "東京", "スコアリング"],
+        label: "旅館業/民泊候補 — 大阪",
+        title: "大阪 旅館業・民泊化候補",
+        desc: "大阪の区分マンションから旅館業（簡易宿所）・民泊化が狙える物件を抽出。管理規約確認済み優先。",
+        tags: ["大阪", "旅館業", "民泊", "区分", "第1優先"],
+        url: "minpaku-osaka.html"
+      },
+      {
+        label: "旅館業/民泊候補 — 福岡",
+        title: "福岡 旅館業・民泊化候補",
+        desc: "福岡の区分マンションから旅館業（簡易宿所）・民泊化が狙える物件を抽出。天神・博多・薬院エリア中心。",
+        tags: ["福岡", "旅館業", "民泊", "区分", "第2優先"],
+        url: "minpaku-fukuoka.html"
+      },
+      {
+        label: "旅館業/民泊候補 — 東京",
+        title: "東京 旅館業・民泊化候補",
+        desc: "東京の区分マンションから旅館業（簡易宿所）・民泊化が狙える物件を抽出。渋谷・新宿・中目黒エリア。",
+        tags: ["東京", "旅館業", "民泊", "区分", "第3優先"],
+        url: "minpaku-tokyo.html"
+      },
+      {
+        label: "物件マーケット（賃貸収益）",
+        title: "物件マーケット — 大阪・福岡・東京（賃貸CF）",
+        desc: "旅館業不可でも賃貸収益で回る区分物件をスコアリング。大阪→福岡→東京の優先順で表示。",
+        tags: ["大阪", "福岡", "東京", "賃貸収益", "スコアリング"],
         url: "market.html"
       },
       {

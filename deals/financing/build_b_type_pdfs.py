@@ -19,7 +19,7 @@ CHROME_CANDIDATES = [
 
 CSS = """
 <style>
-@page { size: A4 portrait; margin: 15mm 18mm; }
+@page { size: A4 portrait; margin: 20mm 25mm; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif;
@@ -27,6 +27,9 @@ body {
   color: #111;
   background: #fff;
   line-height: 1.65;
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 20px 30px;
 }
 h1 { font-size: 14pt; text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 14px; page-break-after: avoid; }
 h2 { font-size: 11.5pt; border-left: 5px solid #555; padding-left: 8px; margin: 18px 0 8px; background: #f5f5f5; padding: 4px 8px; page-break-after: avoid; page-break-inside: avoid; }
@@ -64,10 +67,10 @@ SHINSEI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{C
 <table>
   <tr><th>法人名称</th><td class="fill">iUMAプロパティマネジメント合同会社</td></tr>
   <tr><th>代表者名</th><td class="fill">手嶋 耕一</td></tr>
-  <tr><th>本店所在地</th><td class="fill">東京都中央区明石町（番地 ★要記入）</td></tr>
+  <tr><th>本店所在地</th><td class="fill">東京都中央区明石町13-15-405</td></tr>
   <tr><th>電話番号</th><td class="fill">080-5637-5105</td></tr>
-  <tr><th>法人番号</th><td class="fill">★要記入（国税庁法人番号サイトで確認）</td></tr>
-  <tr><th>資本金</th><td class="fill">★要記入（第8期決算書より）</td></tr>
+  <tr><th>法人番号</th><td class="fill">9010003025935</td></tr>
+  <tr><th>資本金</th><td class="fill">1,000,000円</td></tr>
   <tr><th>常時使用従業員数</th><td class="fill">0名（代表1名・従業員なし）</td></tr>
   <tr><th>事業分野</th><td class="fill">旅館業（簡易宿所）　業種コード：7511</td></tr>
 </table>
@@ -75,8 +78,8 @@ SHINSEI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{C
 <h2>2. 計画期間</h2>
 <table>
   <tr><th>計画期間</th><td class="fill">3年間</td></tr>
-  <tr><th>開始年月</th><td class="fill">令和8年　　月（設備取得月・許可取得後に確定）</td></tr>
-  <tr><th>終了年月</th><td class="fill">令和10年　　月</td></tr>
+  <tr><th>開始年月</th><td class="fill">令和8年 10月（暫定・旅館業許可取得後に確定）</td></tr>
+  <tr><th>終了年月</th><td class="fill">令和10年 9月</td></tr>
 </table>
 
 <h2>3. 経営力向上の目標（別紙3 前段）</h2>
@@ -106,28 +109,28 @@ SHINSEI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{C
 <h2>4. 経営力向上の内容（別紙3 後段）</h2>
 
 <h3>（1）導入設備の概要</h3>
-<table>
+<table style="font-size:9.5pt;">
+  <colgroup>
+    <col style="width:30%">
+    <col style="width:32%">
+    <col style="width:13%">
+    <col style="width:25%">
+  </colgroup>
   <tr><th>設備名</th><th>機能・目的</th><th>分類</th><th>取得価額（概算）</th></tr>
   <tr>
-    <td>セルフチェックイン端末</td>
+    <td>セルフチェックイン端末<br>（本体＋スタンド）</td>
     <td>顔認証・本人確認・鍵発行の無人化</td>
     <td>器具備品</td>
-    <td class="fill">★要記入</td>
+    <td class="fill">64,000円</td>
   </tr>
   <tr>
-    <td>スマートロック</td>
+    <td>スマートロック<br>（本体＋設置費）</td>
     <td>遠隔解施錠・PINコード管理</td>
     <td>器具備品</td>
-    <td class="fill">★要記入</td>
+    <td class="fill">103,000円</td>
   </tr>
   <tr>
-    <td>タブレット（2台）</td>
-    <td>客室案内・多言語対応</td>
-    <td>器具備品</td>
-    <td class="fill">★要記入</td>
-  </tr>
-  <tr>
-    <td>防犯カメラ（2台）</td>
+    <td>防犯カメラ<br>（設置工事費込み）</td>
     <td>セキュリティ管理・本人確認補助</td>
     <td>器具備品</td>
     <td class="fill">139,500円</td>
@@ -136,23 +139,35 @@ SHINSEI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{C
     <td>WiFi機器</td>
     <td>高速通信環境（宿泊者向け）</td>
     <td>器具備品</td>
-    <td class="fill">★要記入</td>
+    <td class="fill">★別途調達（未確定）</td>
   </tr>
   <tr>
     <td>PMS（予約管理システム）</td>
     <td>OTA統合・収益管理・自動メッセージ</td>
     <td>ソフトウエア</td>
-    <td class="fill">★要記入</td>
+    <td class="fill">★計上要否確認中<br><span style="font-size:8.5pt;color:var(--text-subtle);">（月額1,400円/月）</span></td>
+  </tr>
+  <tr>
+    <td>消防設備工事一式<br>（火災報知器・誘導灯・消火器等）</td>
+    <td>旅館業許可の法定必須設備・安全確保</td>
+    <td>建物附属設備</td>
+    <td class="fill">★飯塚先生確認中<br><span style="font-size:8.5pt;color:var(--text-subtle);">（要件: 60万円以上）</span></td>
+  </tr>
+  <tr>
+    <td>エアコン（業務用）</td>
+    <td>宿泊環境の空調管理</td>
+    <td>建物附属設備<br><span style="font-size:8.5pt;color:var(--text-subtle);">（または器具備品）</span></td>
+    <td class="fill">★F-area一式内の金額確認中</td>
   </tr>
   <tr>
     <th colspan="3" style="text-align:right">合計取得価額</th>
-    <td class="fill"><strong>★要記入（目安 150〜190万円）</strong></td>
+    <td class="fill"><strong>306,500円</strong>（ICT確定3品）<br><span style="font-size:8.5pt;color:var(--text-subtle);">＋消防設備・エアコン・WiFi 飯塚先生確認中</span></td>
   </tr>
 </table>
 
 <p class="note">
-  ★取得価額はF-area社見積書（MT06529）から「器具備品」に該当する設備費を抽出して記入。
-  設備発注は本計画の認定を受けた後（認定前の発注は税制適用対象外）。
+  出典: F-area社見積書（2026/5/18・株式会社F-area）。設備の発注は本計画の認定を受けた後（認定前の発注は税制適用対象外）。<br>
+  ※ 器具備品1台30万円以上の要件との整合（複数設備のグルーピング・消防設備の建物附属設備計上等）は飯塚税理士に確認中。
 </p>
 
 <h3>（2）設備の所在地</h3>
@@ -162,6 +177,11 @@ SHINSEI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{C
 
 <h3>（3）省力化効果</h3>
 <table>
+  <colgroup>
+    <col style="width:20%">
+    <col style="width:40%">
+    <col style="width:40%">
+  </colgroup>
   <tr><th>項目</th><th>設備導入前（推計）</th><th>設備導入後（本計画）</th></tr>
   <tr>
     <td>チェックイン対応</td>
@@ -211,11 +231,11 @@ TOUSHI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{CS
 <h2>2. 対象設備</h2>
 <table>
   <tr><th>設備の種類</th><td class="fill">器具備品（ICT省力化機器一式）</td></tr>
-  <tr><th>取得価額（合計）</th><td class="fill">★要記入　　　　　　円（見積書添付）</td></tr>
+  <tr><th>取得価額（合計）</th><td class="fill">306,500円（F-area見積書 確定3品）＋WiFi別途</td></tr>
   <tr><th>取得予定時期</th><td class="fill">令和8年　　月（旅館業許可取得後）</td></tr>
   <tr><th>耐用年数</th><td class="fill">5年（器具備品・接客業用機器）</td></tr>
   <tr><th>減価償却方法</th><td class="fill">定額法（法人）</td></tr>
-  <tr><th>年間減価償却費</th><td class="fill">取得価額 × 0.200</td></tr>
+  <tr><th>年間減価償却費</th><td class="fill">61,300円（306,500円 × 0.200）</td></tr>
 </table>
 
 <h2>3. 年平均投資利益率の計算</h2>
@@ -233,27 +253,38 @@ TOUSHI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{CS
   <tr><th>固定費（年）</th><td class="fill">142,800円（管理費・通信費・ロック等）</td></tr>
 </table>
 
-<h3>年度別計画（設備投資額150万円の場合の試算）</h3>
-<table>
+<h3>年度別計画（設備投資額306,500円・確定3品ベース）</h3>
+<table style="font-size:8.5pt;">
+  <colgroup>
+    <col style="width:10%">
+    <col style="width:7%">
+    <col style="width:8%">
+    <col style="width:14%">
+    <col style="width:13%">
+    <col style="width:10%">
+    <col style="width:12%">
+    <col style="width:12%">
+    <col style="width:14%">
+  </colgroup>
   <tr>
-    <th>年度</th><th>稼働率</th><th>ADR（円）</th>
-    <th>年間売上高（円）</th><th>変動経費（円）</th><th>固定費（円）</th>
-    <th>設備減価償却（円）</th><th>営業利益（円）</th><th>営業利益＋減価償却</th>
+    <th>年度</th><th>稼働率</th><th>ADR<br>（円）</th>
+    <th>年間売上高<br>（円）</th><th>変動経費<br>（円）</th><th>固定費<br>（円）</th>
+    <th>設備減価償却<br>（円）</th><th>営業利益<br>（円）</th><th>営業利益<br>＋減価償却</th>
   </tr>
   <tr>
     <td>1年目（R8）</td><td>50%</td><td>16,000</td>
     <td>2,920,000</td><td>1,413,280</td><td>142,800</td>
-    <td>300,000</td><td>1,063,920</td><td class="fill"><strong>1,363,920</strong></td>
+    <td>61,300</td><td>1,302,620</td><td class="fill"><strong>1,363,920</strong></td>
   </tr>
   <tr>
     <td>2年目（R9）</td><td>65%</td><td>18,000</td>
     <td>4,269,750</td><td>2,066,559</td><td>142,800</td>
-    <td>300,000</td><td>1,760,391</td><td class="fill"><strong>2,060,391</strong></td>
+    <td>61,300</td><td>1,999,091</td><td class="fill"><strong>2,060,391</strong></td>
   </tr>
   <tr>
     <td>3年目（R10）</td><td>70%</td><td>18,000</td>
     <td>4,599,000</td><td>2,225,916</td><td>142,800</td>
-    <td>300,000</td><td>1,930,284</td><td class="fill"><strong>2,230,284</strong></td>
+    <td>61,300</td><td>2,168,984</td><td class="fill"><strong>2,230,284</strong></td>
   </tr>
   <tr>
     <th colspan="8" style="text-align:right">3年合計</th>
@@ -262,12 +293,12 @@ TOUSHI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{CS
 </table>
 
 <div class="calc-box">
-  <p><strong>年平均投資利益率の計算（設備投資額150万円の場合）</strong></p>
-  <p>　＝ （5,654,595円 ÷ 3年） ÷ 1,500,000円 × 100</p>
-  <p>　＝ 1,884,865円 ÷ 1,500,000円 × 100</p>
-  <p class="result">　＝ 125.7%　≥　5%（要件）　✓</p>
-  <p style="font-size:9pt;color:#555;margin-top:6px;">
-    ※ 上記は試算。取得価額確定後に税理士が実数で再計算・確認する。
+  <p><strong>年平均投資利益率の計算（設備投資額306,500円）</strong></p>
+  <p>　＝ （5,654,595円 ÷ 3年） ÷ 306,500円 × 100</p>
+  <p>　＝ 1,884,865円 ÷ 306,500円 × 100</p>
+  <p class="result">　＝ 615.0%　≥　5%（要件）　✓</p>
+  <p style="font-size:9pt;color:var(--text-subtle);margin-top:6px;">
+    ※ WiFi追加・グルーピング後の確定額で税理士が実数を再確認する。
   </p>
 </div>
 
@@ -296,7 +327,7 @@ TOUSHI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{CS
   </div>
 </div>
 
-<p style="font-size:9pt; color:#555; margin-top:16px;">
+<p style="font-size:9pt; color:var(--text-subtle); margin-top:16px;">
   添付書類：直近3期分決算書、設備見積書（F-area社 MT06529）
 </p>
 

@@ -426,7 +426,7 @@ pre.code{{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:
 {nav_html}
 {body}
 <hr class="sec">
-<p style="font-size:11px;color:#888">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
+<p style="font-size:11px;color:var(--text-muted)">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
 <button id="totop" aria-label="先頭へ" type="button">↑</button>
 <script>
 (function(){{

@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プレイスポットしんばし — 市場根拠・数字の背景</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #1a2744;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --gray: #6b7280;
+    --gray-light: #f3f4f6;
+    --border: #e5e7eb;
+    --text: #111827;
+    --text-muted: #6b7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    color: var(--text);
+    background: #f8fafc;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  /* Header */
+  .header {
+    background: var(--navy);
+    color: white;
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.03em; }
+  .header .sub { font-size: 13px; color: #93c5fd; margin-top: 4px; }
+  .header .date { font-size: 12px; color: #93c5fd; text-align: right; }
+  /* Sections */
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px 32px; }
+  section { margin-bottom: 40px; }
+  h2 {
+    font-size: 15px; font-weight: 700;
+    color: var(--navy);
+    border-left: 4px solid var(--blue);
+    padding-left: 10px;
+    margin-bottom: 16px;
+  }
+  h3 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  /* Cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .kpi {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .kpi .label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+  .kpi .value { font-size: 26px; font-weight: 800; color: var(--navy); }
+  .kpi .unit { font-size: 12px; color: var(--text-muted); }
+  .kpi .sub { font-size: 11px; color: var(--green); margin-top: 4px; font-weight: 600; }
+  .kpi.amber .value { color: var(--amber); }
+  .kpi.blue .value { color: var(--blue); }
+  .kpi.green .value { color: var(--green); }
+  /* Chart grid */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .chart-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .chart-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .chart-card .chart-title { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .chart-card .chart-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
+  .chart-wrap { position: relative; }
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--navy); color: white; padding: 8px 10px; text-align: center; font-weight: 600; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: center; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .cell-plan { background: #dbeafe !important; font-weight: 700; color: var(--blue); }
+  .cell-safe { background: var(--green-light) !important; color: var(--green); font-weight: 700; }
+  .cell-warn { background: var(--amber-light) !important; color: var(--amber); }
+  .cell-danger { background: var(--red-light) !important; color: var(--red); }
+  /* Story */
+  .story-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .story-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .story-card .step {
+    display: inline-block;
+    background: var(--navy);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+  .story-card .point { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .story-card .desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+  .story-card .stat { font-size: 18px; font-weight: 800; color: var(--blue); margin-bottom: 4px; }
+  /* Positioning */
+  .pos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin: 2px;
+  }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  /* Source */
+  .source { font-size: 10px; color: var(--text-secondary); margin-top: 8px; }
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  /* Note box */
+  .note-box {
+    background: var(--blue-light);
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--navy);
+    margin-top: 12px;
+  }
+  .note-box strong { color: var(--blue); }
+  .warn-box {
+    background: var(--amber-light);
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #92400e;
+    margin-top: 12px;
+  }
+  /* Seasonality */
+  .season-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+  .month-cell {
+    border-radius: 4px;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .season-high { background: #1e40af; color: white; }
+  .season-mid { background: #93c5fd; color: #1e40af; }
+  .season-low { background: #e5e7eb; color: #6b7280; }
+  .month-name { font-size: 10px; margin-bottom: 2px; }
+  .month-occ { font-size: 13px; font-weight: 800; }
+  @media print {
+    body { background: white; }
+    .chart-card, .kpi { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="sub">日本政策金融公庫 生活衛生貸付 — 申請補足資料</div>
+    <h1>プレイスポットしんばし 市場根拠・数字の背景</h1>
+    <div class="sub">中洲2-1-11 49.23㎡ 定員5名 簡易宿所（旅館業）／ iUMAプロパティマネジメント合同会社</div>
+  </div>
+  <div class="date">2026年6月作成<br>申請番号: ——</div>
+</div>
+
+<div class="container">
+
+  <!-- ===== 1. KPI SUMMARY ===== -->
+  <section>
+    <h2>市場を一言で：福岡の宿泊需要は「コロナ前超え」で成長フェーズに入っている</h2>
+    <div class="kpi-grid">
+      <div class="kpi green">
+        <div class="label">福岡市ホテル稼働率 2024年</div>
+        <div class="value">80.4<span class="unit">%</span></div>
+        <div class="sub">▲ 2019年比 +0.8pt（過去最高水準）</div>
+      </div>
+      <div class="kpi blue">
+        <div class="label">福岡県 外国人宿泊者数 2024年</div>
+        <div class="value">691<span class="unit">万人</span></div>
+        <div class="sub">▲ 2019年比 +62.3%</div>
+      </div>
+      <div class="kpi amber">
+        <div class="label">全国 訪日外国人 2024年</div>
+        <div class="value">3,687<span class="unit">万人</span></div>
+        <div class="sub">▲ 過去最高・2019年比 +13%</div>
+      </div>
+      <div class="kpi">
+        <div class="label">外国人1人あたり観光消費額</div>
+        <div class="value">4.4<span class="unit">倍</span></div>
+        <div class="sub">国内観光客比（福岡市推計）</div>
+      </div>
+    </div>
+    <div class="note-box">
+      <strong>計画書の数字との対比：</strong>
+      本計画の稼働率65%は市場平均80.4%の約81%水準（大幅に保守的）。ADR18,000円は高グレードビジネスホテルの平日2万円を下回る保守値。
+      「外れた場合」のバッファーを十分に持たせた計画。
+    </div>
+  </section>
+
+  <!-- ===== 2. 稼働率・インバウンド推移 ===== -->
+  <section>
+    <h2>福岡ホテル稼働率とインバウンド宿泊者数の推移</h2>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">福岡市 ホテル・旅館 客室稼働率（年平均）</div>
+        <div class="chart-sub">出典: 福岡市観光統計2025・フクリパ2025年6月</div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="occChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">福岡県 外国人宿泊者数の推移（万人）</div>
+        <div class="chart-sub">出典: 福岡市観光統計2025・フクリパ2025年6月</div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="inboundChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 3. ADR比較・国籍構成 ===== -->
+  <section>
+    <h2>ADR比較・外国人国籍構成</h2>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">ADR（一泊あたり室料）比較</div>
+        <div class="chart-sub">出典: JLL福岡ホテル市場レポート・民泊業界リサーチ（2025年）</div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="adrChart"></canvas>
+        </div>
+        <div class="note-box" style="margin-top:10px">
+          本計画ADR <strong>18,000円</strong> はビジネスホテル平日の実勢（10,000〜15,000円）より小幅に上。グループ割増（5名・49㎡）の最低限を積み上げた保守値。
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">福岡市 外国人入国者 国籍構成（2024年）</div>
+        <div class="chart-sub">出典: 訪日ラボ・福岡市観光統計2025</div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="natChart"></canvas>
+        </div>
+        <div class="note-box" style="margin-top:10px">
+          韓国・台湾・香港で <strong>80.3%</strong>。いずれも直行便2〜3時間圏内のアジア近隣国。グループ旅行文化が強く、家族・友人複数名での来訪が多い。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. 季節性 ===== -->
+  <section>
+    <h2>需要の季節性（月別）</h2>
+    <div class="chart-card">
+      <div class="chart-title">福岡市 月別宿泊需要イメージ（繁閑パターン）</div>
+      <div class="chart-sub">出典: 福岡市観光統計・AirDNA研究（中洲エリア経験則）</div>
+      <div class="season-grid" style="margin-top:12px">
+        <div class="month-cell season-mid"><div class="month-name">1月</div><div class="month-occ">中</div><div style="font-size:10px;color:#1e40af">前半繁→後半閑</div></div>
+        <div class="month-cell season-low"><div class="month-name">2月</div><div class="month-occ">低</div><div style="font-size:10px">閑散期</div></div>
+        <div class="month-cell season-high"><div class="month-name">3月</div><div class="month-occ">高</div><div style="font-size:10px;color:white">桜・卒業旅行</div></div>
+        <div class="month-cell season-high"><div class="month-name">4月</div><div class="month-occ">高</div><div style="font-size:10px;color:white">桜・GW前半</div></div>
+        <div class="month-cell season-high"><div class="month-name">5月</div><div class="month-occ">高</div><div style="font-size:10px;color:white">GW最高峰</div></div>
+        <div class="month-cell season-low"><div class="month-name">6月</div><div class="month-occ">低</div><div style="font-size:10px">梅雨・閑散</div></div>
+        <div class="month-cell season-mid"><div class="month-name">7月</div><div class="month-occ">中</div><div style="font-size:10px;color:#1e40af">博多祇園山笠</div></div>
+        <div class="month-cell season-high"><div class="month-name">8月</div><div class="month-occ">高</div><div style="font-size:10px;color:white">夏休み・お盆</div></div>
+        <div class="month-cell season-low"><div class="month-name">9月</div><div class="month-occ">低</div><div style="font-size:10px">閑散期</div></div>
+        <div class="month-cell season-mid"><div class="month-name">10月</div><div class="month-occ">中</div><div style="font-size:10px;color:#1e40af">紅葉・連休</div></div>
+        <div class="month-cell season-mid"><div class="month-name">11月</div><div class="month-occ">中</div><div style="font-size:10px;color:#1e40af">紅葉最盛期</div></div>
+        <div class="month-cell season-high"><div class="month-name">12月</div><div class="month-occ">高</div><div style="font-size:10px;color:white">年末・旅行需要</div></div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:12px;font-size:11px">
+        <span style="display:inline-flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:#1e40af;border-radius:2px;display:inline-block"></span>繁忙期（稼働70〜85%想定）</span>
+        <span style="display:inline-flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:#93c5fd;border-radius:2px;display:inline-block"></span>中間期（稼働55〜70%想定）</span>
+        <span style="display:inline-flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:#e5e7eb;border-radius:2px;display:inline-block"></span>閑散期（稼働40〜55%想定）</span>
+      </div>
+      <div class="note-box" style="margin-top:10px">
+        高・中・低が年間でほぼ均等に分布。閑散期（6月・9月・2月）があっても通年平均65%は十分達成可能な水準。民泊・旅館業では<strong>ダイナミックプライシング</strong>で繁忙期のADRを上げて年間収益を安定させる戦略が主流。
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. 本物件の市場ポジション ===== -->
+  <section>
+    <h2>本物件の市場ポジション — なぜこの物件か</h2>
+    <div class="pos-grid">
+      <div class="chart-card">
+        <h3>1室で5名・一人頭コスト優位</h3>
+        <div style="margin-top:12px">
+          <div style="background:#f0fdf4;border-radius:6px;padding:12px;margin-bottom:8px">
+            <div style="font-size:11px;color:#16a34a;font-weight:700">本物件（49㎡・5名）ADR 18,000円</div>
+            <div style="font-size:24px;font-weight:800;color:#16a34a">3,600<span style="font-size:14px">円/人泊</span></div>
+            <div style="font-size:11px;color:#6b7280">家族・グループ5名で宿泊した場合</div>
+          </div>
+          <div style="background:#fef3c7;border-radius:6px;padding:12px;margin-bottom:8px">
+            <div style="font-size:11px;color:#d97706;font-weight:700">ビジネスホテル（1室1〜2名）</div>
+            <div style="font-size:24px;font-weight:800;color:#d97706">10,000〜15,000<span style="font-size:14px">円/室泊</span></div>
+            <div style="font-size:11px;color:#6b7280">5名で利用すると2〜3室必要 → 合計30,000〜45,000円</div>
+          </div>
+          <div class="note-box">
+            グループ旅行の「1人あたり単価」で圧倒的優位。韓国・台湾からの家族旅行・友人グループに刺さる価値提案。
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>立地・差別化の3点</h3>
+        <div style="margin-top:12px">
+          <div style="margin-bottom:12px;padding:10px;background:#f8fafc;border-radius:6px;border-left:3px solid #2563eb">
+            <div style="font-weight:700;font-size:12px;margin-bottom:4px">📍 中洲 — 福岡随一の観光・歓楽街</div>
+            <div style="font-size:11px;color:#6b7280">博多空港から地下鉄直結。中洲川端駅徒歩7分。屋台・繁華街・観光地が全て徒歩圏内。インバウンドが最も集中するエリア</div>
+          </div>
+          <div style="margin-bottom:12px;padding:10px;background:#f8fafc;border-radius:6px;border-left:3px solid #16a34a">
+            <div style="font-weight:700;font-size:12px;margin-bottom:4px">🏠 49㎡・5名 — 中洲に少ないグループ対応</div>
+            <div style="font-size:11px;color:#6b7280">中洲のホテルは1〜2名向けが多い。5名定員の広い物件は希少。家族旅行・グループ訪問客の明確な受け皿</div>
+          </div>
+          <div style="padding:10px;background:#f8fafc;border-radius:6px;border-left:3px solid #d97706">
+            <div style="font-weight:700;font-size:12px;margin-bottom:4px">🔑 旅館業（通年営業） — 民泊との差別化</div>
+            <div style="font-size:11px;color:#6b7280">民泊新法は年180日上限。旅館業（簡易宿所）許可で365日・通年運営可。収益安定性が桁違い</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 6. 変動費48% ===== -->
+  <section>
+    <h2>変動費48%の内訳と根拠</h2>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">変動費の構成（売上比）</div>
+        <div class="chart-sub">出典: F-area旅館業収支計画 実測変動経費率48.4%（3,412,188÷7,048,875）</div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="varCostChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">各費目の根拠</div>
+        <div class="chart-sub">全て契約・実績ベースの数字</div>
+        <div style="margin-top:8px">
+          <table>
+            <thead><tr><th style="text-align:left">費目</th><th>売上比</th><th style="text-align:left">根拠</th></tr></thead>
+            <tbody>
+              <tr><td style="text-align:left;font-weight:600">運営代行（F-area）</td><td>18%</td><td style="text-align:left;font-size:11px">F-area契約レート（確定）</td></tr>
+              <tr><td style="text-align:left;font-weight:600">OTA手数料</td><td>15%</td><td style="text-align:left;font-size:11px">Booking.com/Airbnb標準手数料</td></tr>
+              <tr><td style="text-align:left;font-weight:600">清掃費</td><td>5%</td><td style="text-align:left;font-size:11px">1回3,000〜5,000円×稼働日数換算</td></tr>
+              <tr><td style="text-align:left;font-weight:600">光熱費・通信費</td><td>4%</td><td style="text-align:left;font-size:11px">月固定＋従量（スマートメーター管理）</td></tr>
+              <tr><td style="text-align:left;font-weight:600">宿泊税</td><td>1%</td><td style="text-align:left;font-size:11px">200円/人泊の売上換算値</td></tr>
+              <tr><td style="text-align:left;font-weight:600">消耗品・修繕・決済手数料</td><td>5%</td><td style="text-align:left;font-size:11px">雑費まとめ（F-area実績ベース）</td></tr>
+              <tr style="background:#dbeafe"><td style="text-align:left;font-weight:800;color:#1d4ed8">合計</td><td style="font-weight:800;color:#1d4ed8">48%</td><td style="text-align:left;font-size:11px;color:#1d4ed8">F-area実測48.4%を保守丸め</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note-box" style="margin-top:10px">
+          <strong>なぜF-areaの数字を使うのか：</strong> F-areaは中洲エリアで旅館業の運営実績を持つ代行業者。本計画もF-areaへの委託を前提としており、同社の旅館業収支計画書（実測値）をそのまま採用。外部委託で変動費が固定化されるため、売上が下がっても費用も比例して下がる構造。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7. リノベ550万 ===== -->
+  <section>
+    <h2>リノベーション費用 550万円の算出根拠</h2>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">初期見積726万 → 目標550万 の削減内訳</div>
+        <div class="chart-sub">出典: 悠悠ホーム見積書 MT06529（2026-05-24）＋積算ベース試算</div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="renoChart"></canvas>
+        </div>
+        <div class="note-box" style="margin-top:10px">
+          <strong>初期見積726万について：</strong> 施工業者1社から取得した叩き台（モダンジャパニーズ仕様）。本計画ではインダストリアル仕様への変更と相見積もりにより550万への圧縮を計画。550万の確定見積は相見積もり完了後に提出予定。
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">550万達成に向けた3つの削減レバー</div>
+        <div class="chart-sub">仕様変更＋適正単価＋競争入札で176万以上の圧縮が現実的</div>
+        <div style="margin-top:8px">
+          <div style="margin-bottom:10px;padding:12px;background:#f0fdf4;border-radius:6px;border-left:3px solid #16a34a">
+            <div style="font-weight:700;font-size:12px;color:#16a34a;margin-bottom:4px">A. 仕様変更（インダストリアル転換） 約125万削減</div>
+            <div style="font-size:11px;color:#374151">躯体現し・コンクリート打ちっぱなし・配管露出に変更。モダンジャパニーズの造作工事・仕上げ材を削減。インバウンド向けにむしろ人気の仕様。</div>
+          </div>
+          <div style="margin-bottom:10px;padding:12px;background:#f0fdf4;border-radius:6px;border-left:3px solid #16a34a">
+            <div style="font-weight:700;font-size:12px;color:#16a34a;margin-bottom:4px">B. 床材単価の適正化 約100万削減</div>
+            <div style="font-size:11px;color:#374151">初期見積の床材単価: ㎡37,340円 → 普及品グレード: ㎡12,000〜15,000円。49㎡全面で100万円以上の差。最大の単一削減項目。</div>
+          </div>
+          <div style="padding:12px;background:#f0fdf4;border-radius:6px;border-left:3px solid #16a34a">
+            <div style="font-weight:700;font-size:12px;color:#16a34a;margin-bottom:4px">C. 競争入札（2〜3社から相見積もり） 約80万削減</div>
+            <div style="font-size:11px;color:#374151">福岡の施工市場は競争的。複数社への相見積もりで10〜20%の削減は標準的な実績値。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 8. DSCRとは ===== -->
+  <section>
+    <h2>DSCRとは何か（返済余裕率）</h2>
+    <div class="chart-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
+        <div style="text-align:center">
+          <div style="font-size:13px;font-weight:700;color:#1a2744;margin-bottom:8px">計算式</div>
+          <div style="background:#f8fafc;border-radius:8px;padding:16px;font-size:15px;font-weight:700;color:#1a2744;line-height:2">
+            DSCR =<br>
+            <span style="color:#2563eb">営業利益（返済前）</span><br>
+            ÷<br>
+            <span style="color:#d97706">月返済額</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#1a2744;margin-bottom:8px">ゾーン別の意味</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="padding:8px 12px;background:#dcfce7;border-radius:6px;font-size:12px"><strong style="color:#16a34a">1.3以上</strong> → 安全圏（公庫の目安）</div>
+            <div style="padding:8px 12px;background:#dbeafe;border-radius:6px;font-size:12px"><strong style="color:#2563eb">1.0〜1.3</strong> → 黒字だが余裕が薄い</div>
+            <div style="padding:8px 12px;background:#fef3c7;border-radius:6px;font-size:12px"><strong style="color:#d97706">1.0ちょうど</strong> → 収支均衡（ギリギリ）</div>
+            <div style="padding:8px 12px;background:#fee2e2;border-radius:6px;font-size:12px"><strong style="color:#dc2626">1.0未満</strong> → 赤字（返済額が利益を超える）</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#1a2744;margin-bottom:8px">本計画の数字</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="padding:10px 12px;background:#f8fafc;border-radius:6px;font-size:12px">
+              <div style="font-weight:700;margin-bottom:2px">初年度（55%稼働）</div>
+              <div>135,000 ÷ 127,000 = <strong style="color:#2563eb">1.06</strong></div>
+            </div>
+            <div style="padding:10px 12px;background:#f8fafc;border-radius:6px;font-size:12px">
+              <div style="font-weight:700;margin-bottom:2px">軌道後（65%稼働）</div>
+              <div>164,000 ÷ 127,000 = <strong style="color:#16a34a">1.29</strong></div>
+            </div>
+            <div style="padding:10px 12px;background:#f8fafc;border-radius:6px;font-size:12px">
+              <div style="font-weight:700;margin-bottom:2px">一般貸付13年だったら？</div>
+              <div>164,000 ÷ 183,000 = <strong style="color:#dc2626">0.90（赤字）</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note-box">
+        <strong>振興事業貸付20年が必須な理由：</strong> 月返済が127,000円（20年）vs 183,000円（13年）で56,000円の差。この差がDSCR 1.29と0.90の分かれ目。13年だと営業利益より返済が多くなり赤字化する。<strong>返済期間20年 = 事業の生命線</strong>。
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 9. DSCR感度分析 ===== -->
+  <section>
+    <h2>返済余裕率（DSCR）感度分析</h2>
+    <div class="chart-card">
+      <div class="chart-title">稼働率 × ADR のシナリオ別DSCR（月返済127,000円・振興事業貸付20年前提）</div>
+      <div class="chart-sub">変動費率48%・固定費+ランニング19,400円/月を一定として計算</div>
+      <div style="overflow-x:auto;margin-top:12px">
+        <table>
+          <thead>
+            <tr>
+              <th>ADR ＼ 稼働率</th>
+              <th>50%</th>
+              <th>55%<br><span style="font-size:10px;font-weight:400">（本計画・初年度）</span></th>
+              <th>65%<br><span style="font-size:10px;font-weight:400">（本計画・軌道）</span></th>
+              <th>75%</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:700;text-align:left;padding-left:12px">12,000円<br><span style="font-size:10px;color:#6b7280">中洲実勢下限</span></td>
+              <td class="cell-danger">0.60</td>
+              <td class="cell-danger">0.67</td>
+              <td class="cell-warn">0.82</td>
+              <td class="cell-warn">0.97</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;text-align:left;padding-left:12px">15,000円<br><span style="font-size:10px;color:#6b7280">実勢上限・保守</span></td>
+              <td class="cell-danger">0.78</td>
+              <td class="cell-warn">0.87</td>
+              <td class="cell-warn">1.06</td>
+              <td class="cell-safe">1.25</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;text-align:left;padding-left:12px;background:#eff6ff">18,000円 ★<br><span style="font-size:10px;color:#2563eb">本計画値（グループ割増）</span></td>
+              <td class="cell-warn">0.97</td>
+              <td class="cell-plan">1.08</td>
+              <td class="cell-plan">1.30</td>
+              <td class="cell-safe">1.53</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;text-align:left;padding-left:12px">20,000円<br><span style="font-size:10px;color:#6b7280">ビジネスホテル平日水準</span></td>
+              <td class="cell-warn">1.09</td>
+              <td class="cell-safe">1.22</td>
+              <td class="cell-safe">1.47</td>
+              <td class="cell-safe">1.71</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:10px;font-size:11px;flex-wrap:wrap">
+        <span class="badge badge-blue">★ 本計画（青）</span>
+        <span class="badge badge-green">■ 安全圏（DSCR1.2以上）</span>
+        <span class="badge badge-amber">■ 黄色（DSCR1.0〜1.2）</span>
+        <span style="font-size:11px;color:#dc2626;background:#fee2e2;padding:2px 8px;border-radius:4px">■ 赤（DSCR1.0未満）</span>
+      </div>
+      <div class="note-box" style="margin-top:10px">
+        <strong>読み方：</strong> ADR15,000円・稼働65%でもDSCR1.06（ギリギリ黒字）。本計画ADR18,000に対して実勢ADRが12〜15kに留まっても、
+        稼働率が75%以上に上がればDSCR1.25〜確保。どちらか一方が計画を下回っても、もう一方で補正できる構造。
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 10. DSCR改善シナリオ ===== -->
+  <section>
+    <h2>返済余裕率（DSCR）の改善シナリオ</h2>
+    <div class="chart-card">
+      <div class="chart-title">初年度1.06から軌道後1.29、さらに1.37への改善パス</div>
+      <div style="margin-top:12px">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+          <div style="text-align:center;padding:16px;background:#fef3c7;border-radius:8px">
+            <div style="font-size:11px;color:#92400e;font-weight:700;margin-bottom:6px">初年度（55%稼働）</div>
+            <div style="font-size:32px;font-weight:800;color:#d97706">1.06</div>
+            <div style="font-size:11px;color:#92400e;margin-top:4px">開業直後の保守値<br>135,000 ÷ 127,000</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:#dbeafe;border-radius:8px">
+            <div style="font-size:11px;color:#1e40af;font-weight:700;margin-bottom:6px">軌道後（65%稼働）</div>
+            <div style="font-size:32px;font-weight:800;color:#2563eb">1.29</div>
+            <div style="font-size:11px;color:#1e40af;margin-top:4px">計画の本線<br>164,000 ÷ 127,000</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:#dcfce7;border-radius:8px">
+            <div style="font-size:11px;color:var(--green-dim);font-weight:700;margin-bottom:6px">リノベ550万圧縮後</div>
+            <div style="font-size:32px;font-weight:800;color:#16a34a">1.37</div>
+            <div style="font-size:11px;color:var(--green-dim);margin-top:4px">借入額減 → 月返済減<br>さらに安全圏へ</div>
+          </div>
+        </div>
+        <div class="note-box">
+          <strong>初年度DSCRが1.06である理由：</strong> 開業直後はOTA掲載初期・レビュー未蓄積のため稼働率を55%と保守的に設定。軌道に乗った後（65%稼働）はDSCR1.29。リノベーション費用を550万に圧縮できれば借入額が減り月返済も低下、DSCRは1.37まで改善する。また代表個人の給与収入（令和7年分 約2,091万円）が最終的な返済余力として機能する。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 11. 計画根拠まとめ（6ポイント）===== -->
+  <section>
+    <h2>計画根拠のまとめ（6つのポイント）</h2>
+    <div class="story-cards">
+      <div class="story-card">
+        <div class="step">POINT 1</div>
+        <div class="stat">3,687万人</div>
+        <div class="point">訪日インバウンドが過去最高を更新中</div>
+        <div class="desc">2024年の訪日外国人は3,687万人（2019年比+13%）。コロナ回復ではなく「成長フェーズ」に入っている。円安が追い風で単価も上昇。</div>
+      </div>
+      <div class="story-card">
+        <div class="step">POINT 2</div>
+        <div class="stat">691万人</div>
+        <div class="point">福岡はアジアゲートウェイとして別格の存在</div>
+        <div class="desc">韓国・台湾・香港から直行便2〜3時間。外国人宿泊者は2019年比62.3%増。アジア訪日客にとって福岡は東京・大阪に次ぐ主要宿泊地。</div>
+      </div>
+      <div class="story-card">
+        <div class="step">POINT 3</div>
+        <div class="stat">80.4%</div>
+        <div class="point">福岡のホテル市場は供給不足ぎみ</div>
+        <div class="desc">2024年の稼働率は80.4%でコロナ前（79.6%）を超えた。高グレードは90%超・ADR2〜5万円台。新規供給が追いつかない状態。</div>
+      </div>
+      <div class="story-card">
+        <div class="step">POINT 4</div>
+        <div class="stat">18,000円</div>
+        <div class="point">計画ADRは「市場最安値帯」の保守値</div>
+        <div class="desc">中洲の市場ADR（1〜2名向け）12〜15千円に、5名グループ割増を加えても18千円は保守的。ビジネスホテル平日2万円より低い設定。</div>
+      </div>
+      <div class="story-card">
+        <div class="step">POINT 5</div>
+        <div class="stat">65%</div>
+        <div class="point">計画稼働率は市場平均の81%水準</div>
+        <div class="desc">目標65%は市場80.4%に対してバッファー15pt以上。中洲好立地の民泊実績（60〜75%）の下端相当。開業直後でも達成可能な現実的な水準。</div>
+      </div>
+      <div class="story-card">
+        <div class="step">POINT 6</div>
+        <div class="stat">1.29</div>
+        <div class="point">軌道後のDSCRは1.29、複数のバッファーを確保</div>
+        <div class="desc">ADRが15,000円まで下がっても稼働65%ならDSCR1.06（黒字）。代表の給与収入2,091万円が最終の返済余力。複数のバッファーを保有。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 12. 出典 ===== -->
+  <section>
+    <h2>出典一覧</h2>
+    <div class="chart-card">
+      <table style="font-size:11px">
+        <thead><tr><th style="text-align:left">データ</th><th style="text-align:left">出典</th><th>取得日</th></tr></thead>
+        <tbody>
+          <tr><td style="text-align:left">福岡市ホテル稼働率80.4%・インバウンド宿泊者数691万人</td><td style="text-align:left">福岡市観光統計2025年版・フクリパ2025年6月</td><td>2026-06</td></tr>
+          <tr><td style="text-align:left">高グレードホテル ADR2〜5万円・稼働90%超・インバウンド比率50〜70%</td><td style="text-align:left">JLL「福岡市外資系ホテル整備進む」レポート2025</td><td>2026-06</td></tr>
+          <tr><td style="text-align:left">訪日外国人3,687万人（2024年）・2019年比+13%</td><td style="text-align:left">JATA国際旅行統計2025</td><td>2026-06</td></tr>
+          <tr><td style="text-align:left">外国人国籍構成（韓国57.3%・台湾13.3%・香港9.7%・中国6.4%）</td><td style="text-align:left">訪日ラボ・福岡県インバウンドデータ2024</td><td>2026-06</td></tr>
+          <tr><td style="text-align:left">中洲民泊実績稼働率60〜75%・実勢ADR12〜15k</td><td style="text-align:left">民泊投資情報ナビ・Beds24福岡データ2024</td><td>2026-06</td></tr>
+          <tr><td style="text-align:left">季節性パターン</td><td style="text-align:left">福岡市観光統計・中洲エリア運営代行実績（F-area）</td><td>2026-06</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div><!-- /container -->
+
+<script>
+// Chart defaults
+Chart.defaults.font.family = '"Helvetica Neue", "Hiragino Kaku Gothic ProN", sans-serif';
+Chart.defaults.font.size = 11;
+
+// 1. 稼働率チャート
+new Chart(document.getElementById('occChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2019年', '2020年', '2021年', '2022年', '2023年', '2024年'],
+    datasets: [{
+      label: '客室稼働率（%）',
+      data: [79.6, 28, 32, 55, 73, 80.4],
+      backgroundColor: ['#94a3b8','#fca5a5','#fca5a5','#fcd34d','#60a5fa','#16a34a'],
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.parsed.y + '%' } }
+    },
+    scales: {
+      y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' }, grid: { color: '#f3f4f6' } },
+      x: { grid: { display: false } }
+    },
+    animation: { duration: 600 }
+  }
+});
+
+// 2. インバウンドチャート
+new Chart(document.getElementById('inboundChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2019年', '2020年', '2021年', '2022年', '2023年', '2024年'],
+    datasets: [{
+      label: '外国人宿泊者数（万人）',
+      data: [426, 20, 15, 130, 503, 692],
+      backgroundColor: ['#94a3b8','#fca5a5','#fca5a5','#fcd34d','#60a5fa','#2563eb'],
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.parsed.y + '万人' } }
+    },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => v + '万' }, grid: { color: '#f3f4f6' } },
+      x: { grid: { display: false } }
+    },
+    animation: { duration: 600 }
+  }
+});
+
+// 3. ADRチャート
+new Chart(document.getElementById('adrChart'), {
+  type: 'bar',
+  data: {
+    labels: ['中洲スタジオ\n1〜2名（実勢下限）', '中洲スタジオ\n1〜2名（実勢上限）', '本計画\n★18,000円', 'ビジネスHotel\n高グレード平日'],
+    datasets: [{
+      label: 'ADR（円）',
+      data: [12000, 15000, 18000, 20000],
+      backgroundColor: ['#e5e7eb','#e5e7eb','#2563eb','#94a3b8'],
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => (ctx.parsed.y/1000).toFixed(0) + ',000円' } }
+    },
+    scales: {
+      y: { beginAtZero: true, max: 25000, ticks: { callback: v => (v/1000) + 'k' }, grid: { color: '#f3f4f6' } },
+      x: { grid: { display: false }, ticks: { maxRotation: 0 } }
+    },
+    animation: { duration: 600 }
+  }
+});
+
+// 6. リノベ削減チャート
+new Chart(document.getElementById('renoChart'), {
+  type: 'bar',
+  data: {
+    labels: ['悠悠ホーム\n初期見積\n（叩き台）', '仕様変更\nA削減', '床材単価\nB削減', '相見積もり\nC削減', '目標値\n（計画書）'],
+    datasets: [{
+      label: '金額（万円）',
+      data: [726, -125, -100, -80, null],
+      backgroundColor: ['#dc2626','#16a34a','#16a34a','#16a34a','rgba(0,0,0,0)'],
+      borderRadius: 4,
+    },{
+      label: '目標着地',
+      data: [null, null, null, null, 550],
+      backgroundColor: ['#2563eb'],
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => (ctx.parsed.y > 0 ? '' : '▲') + Math.abs(ctx.parsed.y) + '万円' } }
+    },
+    scales: {
+      y: { ticks: { callback: v => v + '万' }, grid: { color: '#f3f4f6' } },
+      x: { grid: { display: false } }
+    },
+    animation: { duration: 600 }
+  }
+});
+
+// 5. 変動費内訳チャート
+new Chart(document.getElementById('varCostChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['運営代行 18%', 'OTA手数料 15%', '清掃費 5%', '光熱費・通信 4%', '宿泊税 1%', '消耗品・修繕等 5%'],
+    datasets: [{
+      data: [18, 15, 5, 4, 1, 5],
+      backgroundColor: ['#1d4ed8','#3b82f6','#60a5fa','#93c5fd','#bfdbfe','#dbeafe'],
+      borderWidth: 2,
+      borderColor: 'white',
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { font: { size: 11 }, padding: 8 } },
+      tooltip: { callbacks: { label: ctx => ctx.label + '（売上比）' } }
+    },
+    animation: { duration: 600 }
+  }
+});
+
+// 4. 国籍チャート
+new Chart(document.getElementById('natChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['韓国 57.3%', '台湾 13.3%', '香港 9.7%', '中国 6.4%', 'その他 13.3%'],
+    datasets: [{
+      data: [57.3, 13.3, 9.7, 6.4, 13.3],
+      backgroundColor: ['#2563eb','#0ea5e9','#6366f1','#8b5cf6','#d1d5db'],
+      borderWidth: 2,
+      borderColor: 'white',
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { font: { size: 11 }, padding: 8 } },
+      tooltip: { callbacks: { label: ctx => ctx.label } }
+    },
+    animation: { duration: 600 }
+  }
+});
+</script>
+</body>
+</html>

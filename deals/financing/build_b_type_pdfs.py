@@ -1,0 +1,331 @@
+#!/usr/bin/env python3
+"""
+経営力向上計画 B類型 — 提出用PDF 2本を生成
+  1. 経営力向上計画_B類型_申請書.pdf  … 様式第1号 + 別紙3 記入ドラフト
+  2. 投資計画書_飯塚先生確認用.pdf    … B類型 投資計画書（税理士署名欄付き）
+
+Usage: python3 deals/financing/build_b_type_pdfs.py
+"""
+from __future__ import annotations
+import subprocess
+from pathlib import Path
+
+ROOT   = Path(__file__).resolve().parents[2]
+OUT    = ROOT / "output"
+CHROME_CANDIDATES = [
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+]
+
+CSS = """
+<style>
+@page { size: A4 portrait; margin: 15mm 18mm; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+  font-size: 10.5pt;
+  color: #111;
+  background: #fff;
+  line-height: 1.65;
+}
+h1 { font-size: 14pt; text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 14px; page-break-after: avoid; }
+h2 { font-size: 11.5pt; border-left: 5px solid #555; padding-left: 8px; margin: 18px 0 8px; background: #f5f5f5; padding: 4px 8px; page-break-after: avoid; page-break-inside: avoid; }
+h3 { font-size: 10.5pt; margin: 12px 0 4px; font-weight: bold; page-break-after: avoid; }
+table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 10pt; page-break-inside: avoid; }
+tr { page-break-inside: avoid; }
+th, td { border: 1px solid #888; padding: 5px 8px; vertical-align: top; }
+th { background: #e8e8e8; font-weight: bold; width: 32%; }
+.wide-th th { width: 22%; }
+td.fill { background: #fffef8; }
+p { margin: 6px 0; }
+ul { padding-left: 18px; margin: 4px 0; }
+li { margin: 2px 0; }
+.note { font-size: 9pt; color: #555; border: 1px dashed #aaa; padding: 6px 10px; margin: 8px 0; background: #fafafa; page-break-inside: avoid; }
+.sign-box { border: 1px solid #555; padding: 10px 14px; margin-top: 10px; min-height: 80px; page-break-inside: avoid; }
+.sign-row { display: flex; gap: 20px; margin-top: 10px; }
+.sign-cell { flex: 1; border: 1px solid #888; padding: 8px; min-height: 60px; font-size: 9.5pt; }
+.sign-cell label { display: block; font-weight: bold; margin-bottom: 4px; font-size: 9pt; color: #444; }
+.page-break { page-break-before: always; padding-top: 10mm; }
+.calc-box { background: #f8f8f8; border: 1px solid #bbb; padding: 10px 14px; margin: 8px 0; font-size: 10pt; page-break-inside: avoid; }
+.result { font-size: 12pt; font-weight: bold; color: #1a3a1a; margin-top: 6px; }
+.stamp { width: 100%; text-align: right; font-size: 9pt; color: #555; margin-bottom: 12px; }
+@media print { body { padding: 0; } }
+</style>
+"""
+
+# ─── 書類 1: 申請書（様式第1号・別紙3） ──────────────────────────────
+SHINSEI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{CSS}</head><body>
+
+<div class="stamp">※ 中小企業庁「様式第1号」の記入参考ドラフト（2026-06-15作成）</div>
+
+<h1>経営力向上計画に係る認定申請書（様式第1号）</h1>
+
+<h2>1. 申請者情報</h2>
+<table>
+  <tr><th>法人名称</th><td class="fill">iUMAプロパティマネジメント合同会社</td></tr>
+  <tr><th>代表者名</th><td class="fill">手嶋 耕一</td></tr>
+  <tr><th>本店所在地</th><td class="fill">東京都中央区明石町（番地 ★要記入）</td></tr>
+  <tr><th>電話番号</th><td class="fill">080-5637-5105</td></tr>
+  <tr><th>法人番号</th><td class="fill">★要記入（国税庁法人番号サイトで確認）</td></tr>
+  <tr><th>資本金</th><td class="fill">★要記入（第8期決算書より）</td></tr>
+  <tr><th>常時使用従業員数</th><td class="fill">0名（代表1名・従業員なし）</td></tr>
+  <tr><th>事業分野</th><td class="fill">旅館業（簡易宿所）　業種コード：7511</td></tr>
+</table>
+
+<h2>2. 計画期間</h2>
+<table>
+  <tr><th>計画期間</th><td class="fill">3年間</td></tr>
+  <tr><th>開始年月</th><td class="fill">令和8年　　月（設備取得月・許可取得後に確定）</td></tr>
+  <tr><th>終了年月</th><td class="fill">令和10年　　月</td></tr>
+</table>
+
+<h2>3. 経営力向上の目標（別紙3 前段）</h2>
+<table class="wide-th">
+  <tr>
+    <th>現状の課題</th>
+    <td class="fill">
+      中洲（福岡市博多区）の区分マンション（プレイスポットしんばしビル本館905号・49㎡・最大5名）を
+      旅館業（簡易宿所）として開業予定。代表1名での兼業運営のため、フロント対応・鍵管理を
+      手動で行うことは物理的に不可能な状況にある。ICT省力化設備の導入が事業成立の前提条件。
+    </td>
+  </tr>
+  <tr>
+    <th>経営力向上の目標</th>
+    <td class="fill">
+      セルフチェックイン端末・スマートロック・予約管理システム等のICT設備を一括導入し、
+      代表1名でのリモート完結運営を実現する。<br>
+      ・稼働率：1年目 50% → 3年目 70%<br>
+      ・年間売上高：1年目 約292万円 → 3年目 約460万円<br>
+      ・フロント人件費：0円（設備なし場合の月20〜30万相当を削減）
+    </td>
+  </tr>
+</table>
+
+<div class="page-break"></div>
+
+<h2>4. 経営力向上の内容（別紙3 後段）</h2>
+
+<h3>（1）導入設備の概要</h3>
+<table>
+  <tr><th>設備名</th><th>機能・目的</th><th>分類</th><th>取得価額（概算）</th></tr>
+  <tr>
+    <td>セルフチェックイン端末</td>
+    <td>顔認証・本人確認・鍵発行の無人化</td>
+    <td>器具備品</td>
+    <td class="fill">★要記入</td>
+  </tr>
+  <tr>
+    <td>スマートロック</td>
+    <td>遠隔解施錠・PINコード管理</td>
+    <td>器具備品</td>
+    <td class="fill">★要記入</td>
+  </tr>
+  <tr>
+    <td>タブレット（2台）</td>
+    <td>客室案内・多言語対応</td>
+    <td>器具備品</td>
+    <td class="fill">★要記入</td>
+  </tr>
+  <tr>
+    <td>防犯カメラ（2台）</td>
+    <td>セキュリティ管理・本人確認補助</td>
+    <td>器具備品</td>
+    <td class="fill">139,500円</td>
+  </tr>
+  <tr>
+    <td>WiFi機器</td>
+    <td>高速通信環境（宿泊者向け）</td>
+    <td>器具備品</td>
+    <td class="fill">★要記入</td>
+  </tr>
+  <tr>
+    <td>PMS（予約管理システム）</td>
+    <td>OTA統合・収益管理・自動メッセージ</td>
+    <td>ソフトウエア</td>
+    <td class="fill">★要記入</td>
+  </tr>
+  <tr>
+    <th colspan="3" style="text-align:right">合計取得価額</th>
+    <td class="fill"><strong>★要記入（目安 150〜190万円）</strong></td>
+  </tr>
+</table>
+
+<p class="note">
+  ★取得価額はF-area社見積書（MT06529）から「器具備品」に該当する設備費を抽出して記入。
+  設備発注は本計画の認定を受けた後（認定前の発注は税制適用対象外）。
+</p>
+
+<h3>（2）設備の所在地</h3>
+<table>
+  <tr><th>設備設置場所</th><td class="fill">福岡県福岡市博多区中洲2-1-11 プレイスポットしんばしビル本館905号</td></tr>
+</table>
+
+<h3>（3）省力化効果</h3>
+<table>
+  <tr><th>項目</th><th>設備導入前（推計）</th><th>設備導入後（本計画）</th></tr>
+  <tr>
+    <td>チェックイン対応</td>
+    <td>都度現地対応（代表が移動・時間拘束）</td>
+    <td>無人自動（24時間365日対応）</td>
+  </tr>
+  <tr>
+    <td>鍵管理</td>
+    <td>都度受渡し or 現地常駐が必要</td>
+    <td>リモートPINコード発行</td>
+  </tr>
+  <tr>
+    <td>必要人件費（換算）</td>
+    <td>月20〜30万円（業務委託相当）</td>
+    <td>0円</td>
+  </tr>
+  <tr>
+    <td>対応可能時間帯</td>
+    <td>業務時間内（深夜・早朝は困難）</td>
+    <td>24時間制限なし（稼働率向上に直結）</td>
+  </tr>
+</table>
+
+<div style="margin-top:30px; text-align:right;">
+  <p>申請日：令和　　年　　月　　日</p>
+  <p style="margin-top:8px;">申請者：iUMAプロパティマネジメント合同会社</p>
+  <p style="margin-top:4px;">代表社員　手嶋 耕一　　　　　　印</p>
+</div>
+
+</body></html>"""
+
+# ─── 書類 2: 投資計画書（税理士確認用・署名欄付き） ────────────────────
+TOUSHI_HTML = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">{CSS}</head><body>
+
+<div class="stamp">※ 経営力向上計画B類型 投資計画書（認定経営革新等支援機関確認用）</div>
+
+<h1>投資計画書（B類型）</h1>
+
+<h2>1. 申請者</h2>
+<table>
+  <tr><th>法人名称</th><td class="fill">iUMAプロパティマネジメント合同会社</td></tr>
+  <tr><th>代表者名</th><td class="fill">手嶋 耕一</td></tr>
+  <tr><th>事業内容</th><td class="fill">不動産賃貸業・旅館業（簡易宿所）</td></tr>
+  <tr><th>設備設置場所</th><td class="fill">福岡県福岡市博多区中洲2-1-11 プレイスポットしんばしビル本館905号</td></tr>
+</table>
+
+<h2>2. 対象設備</h2>
+<table>
+  <tr><th>設備の種類</th><td class="fill">器具備品（ICT省力化機器一式）</td></tr>
+  <tr><th>取得価額（合計）</th><td class="fill">★要記入　　　　　　円（見積書添付）</td></tr>
+  <tr><th>取得予定時期</th><td class="fill">令和8年　　月（旅館業許可取得後）</td></tr>
+  <tr><th>耐用年数</th><td class="fill">5年（器具備品・接客業用機器）</td></tr>
+  <tr><th>減価償却方法</th><td class="fill">定額法（法人）</td></tr>
+  <tr><th>年間減価償却費</th><td class="fill">取得価額 × 0.200</td></tr>
+</table>
+
+<h2>3. 年平均投資利益率の計算</h2>
+
+<p class="note">
+  計算式（中小企業庁通達）：<br>
+  年平均投資利益率（%）＝ {{ Σ（各年度の 営業利益＋設備減価償却費）÷ 計画年数 }} ÷ 取得価額 × 100
+</p>
+
+<h3>前提条件</h3>
+<table>
+  <tr><th>計画期間</th><td class="fill">3年間（令和8〜10年度）</td></tr>
+  <tr><th>事業内容</th><td class="fill">旅館業（簡易宿所）運営</td></tr>
+  <tr><th>変動経費率</th><td class="fill">48.4%（F-area社実績値）</td></tr>
+  <tr><th>固定費（年）</th><td class="fill">142,800円（管理費・通信費・ロック等）</td></tr>
+</table>
+
+<h3>年度別計画（設備投資額150万円の場合の試算）</h3>
+<table>
+  <tr>
+    <th>年度</th><th>稼働率</th><th>ADR（円）</th>
+    <th>年間売上高（円）</th><th>変動経費（円）</th><th>固定費（円）</th>
+    <th>設備減価償却（円）</th><th>営業利益（円）</th><th>営業利益＋減価償却</th>
+  </tr>
+  <tr>
+    <td>1年目（R8）</td><td>50%</td><td>16,000</td>
+    <td>2,920,000</td><td>1,413,280</td><td>142,800</td>
+    <td>300,000</td><td>1,063,920</td><td class="fill"><strong>1,363,920</strong></td>
+  </tr>
+  <tr>
+    <td>2年目（R9）</td><td>65%</td><td>18,000</td>
+    <td>4,269,750</td><td>2,066,559</td><td>142,800</td>
+    <td>300,000</td><td>1,760,391</td><td class="fill"><strong>2,060,391</strong></td>
+  </tr>
+  <tr>
+    <td>3年目（R10）</td><td>70%</td><td>18,000</td>
+    <td>4,599,000</td><td>2,225,916</td><td>142,800</td>
+    <td>300,000</td><td>1,930,284</td><td class="fill"><strong>2,230,284</strong></td>
+  </tr>
+  <tr>
+    <th colspan="8" style="text-align:right">3年合計</th>
+    <td class="fill"><strong>5,654,595円</strong></td>
+  </tr>
+</table>
+
+<div class="calc-box">
+  <p><strong>年平均投資利益率の計算（設備投資額150万円の場合）</strong></p>
+  <p>　＝ （5,654,595円 ÷ 3年） ÷ 1,500,000円 × 100</p>
+  <p>　＝ 1,884,865円 ÷ 1,500,000円 × 100</p>
+  <p class="result">　＝ 125.7%　≥　5%（要件）　✓</p>
+  <p style="font-size:9pt;color:#555;margin-top:6px;">
+    ※ 上記は試算。取得価額確定後に税理士が実数で再計算・確認する。
+  </p>
+</div>
+
+<p class="note">
+  最も保守的なシナリオ（1年目 稼働率40%・ADR12,000円）でも投資利益率≒51%となり、要件（5%）を大幅に上回る。
+</p>
+
+<h2>4. 認定経営革新等支援機関による確認</h2>
+
+<p>上記投資計画について、年平均投資利益率が5%以上となることを確認しました。</p>
+
+<div class="sign-box">
+  <div class="sign-row">
+    <div class="sign-cell">
+      <label>確認日</label>
+      令和　　年　　月　　日
+    </div>
+    <div class="sign-cell">
+      <label>認定経営革新等支援機関名</label>
+      &nbsp;
+    </div>
+    <div class="sign-cell">
+      <label>担当者名・署名・押印</label>
+      &nbsp;<br>&nbsp;
+    </div>
+  </div>
+</div>
+
+<p style="font-size:9pt; color:#555; margin-top:16px;">
+  添付書類：直近3期分決算書、設備見積書（F-area社 MT06529）
+</p>
+
+</body></html>"""
+
+def make_pdf(html_str: str, out_path: Path) -> None:
+    tmp = out_path.with_suffix(".tmp.html")
+    tmp.write_text(html_str, encoding="utf-8")
+    chrome = next((c for c in CHROME_CANDIDATES if Path(c).exists()), None)
+    if not chrome:
+        print(f"[skip] Chrome未検出 → HTMLのみ保存: {tmp}")
+        return
+    r = subprocess.run([
+        chrome, "--headless", "--disable-gpu", "--no-sandbox",
+        f"--print-to-pdf={out_path}", "--no-pdf-header-footer",
+        "--print-to-pdf-no-header",
+        f"file://{tmp.resolve()}",
+    ], capture_output=True)
+    if out_path.exists() and r.returncode == 0:
+        print(f"[pdf] {out_path.resolve()}")
+    else:
+        print(f"[pdf] 生成失敗 → HTMLを確認: {tmp}")
+    # HTMLも残す（ブラウザでも確認できるよう）
+    import shutil
+    shutil.copy(tmp, out_path.with_suffix(".html"))
+
+if __name__ == "__main__":
+    OUT.mkdir(exist_ok=True)
+    make_pdf(SHINSEI_HTML,  OUT / "経営力向上計画_B類型_申請書ドラフト.pdf")
+    make_pdf(TOUSHI_HTML,   OUT / "投資計画書_飯塚先生確認用.pdf")
+    subprocess.run(["open", str(OUT.resolve())])
+    print("完了: outputフォルダをFinderで開きました")

@@ -229,7 +229,7 @@ def build_hub() -> str:
             f'<div class="hubscript"><b>📞 そのまま読む台本</b>'
             f'<pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;'
             f'border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;'
-            f'font-size:13px;line-height:1.7;color:var(--bg-tertiary)">{html.escape(script_text)}</pre></div>'
+            f'font-size:13px;line-height:1.7;color:#5a3a1a">{html.escape(script_text)}</pre></div>'
             f'<div class="huba"><b>聞くこと（チェック用）</b><ol>{asks}</ol></div></div>')
     return (
         '<blockquote>この物件は<b>許可が全部のスイッチ</b>。まず<b>A. 読む → B. 動く</b>の順。'
@@ -245,16 +245,16 @@ def build_hub() -> str:
 
 
 def build_taxprep() -> str:
-    """フェーズ3: 税優遇の前提（経営力向上計画）。詳細はフェーズ5の補助金まとめ税制部分。"""
-    return (
-        '<blockquote>公庫の融資と<b>並行</b>で進める税金トラック。設備（家具家電・スマートロック等）を'
-        '<b>取得する「前」</b>に、商工会議所（認定支援機関）で<b>経営力向上計画</b>の認定を取っておくと、'
-        '中小企業経営強化税制で<b>即時償却（100%）か10%税額控除</b>が使える。逆（先に買う）だと優遇が消える。</blockquote>'
-        '<h2>やること</h2>'
-        '<ol><li>商工会議所 経営相談窓口 092-441-2161 に相談（電話スクリプトはフェーズ0の4本目）</li>'
-        '<li>事業分野別指針（宿泊業）に沿って経営力向上計画を作成・申請</li>'
-        '<li>認定（標準1か月前後）→ そのうえで設備を発注（フェーズ4の発注ゲート）</li></ol>'
-        '<p>税額・即時償却の具体は「フェーズ5：補助金まとめ」の税制パートを正本とする（数字の二重持ちを避けるため、ここでは流れだけ）。</p>')
+    """フェーズ3: 経営力向上計画B類型の申請パック（2026-06-15 商工会議所相談でB類型に決定）。"""
+    md_path = FIN_DIR / "19_経営力向上計画_B類型_申請パック.md"
+    taxatty_path = FIN_DIR / "20_税理士_相談メッセージ.md"
+    parts = []
+    if md_path.exists():
+        parts.append(md_to_html(md_path.read_text(encoding="utf-8"), demote=1))
+    if taxatty_path.exists():
+        parts.append('<hr>')
+        parts.append(md_to_html(taxatty_path.read_text(encoding="utf-8"), demote=1))
+    return "\n".join(parts) if parts else "<p>（内容準備中）</p>"
 
 
 def build_flowchart() -> str:
@@ -317,9 +317,9 @@ def main() -> int:
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>融資・補助金パッケージ — プレイスポットしんばし</title>
 <style>
-:root{{--gold:#c9a84c;--ink:#1a1a1a}}
-html{{scroll-behavior:smooth}}
-body{{font-family:'Hiragino Sans','Noto Sans JP',sans-serif;max-width:840px;margin:0 auto;padding:0 20px 60px;color:var(--ink);line-height:1.7;background:#fff}}
+:root{{--gold:#c9a84c;--ink:#1a1a1a;color-scheme:light}}
+html{{scroll-behavior:smooth;background:#fff}}
+body{{font-family:'Hiragino Sans','Noto Sans JP',sans-serif;max-width:840px;margin:0 auto;padding:0 20px 60px;color:#1a1a1a;line-height:1.7;background:#fff}}
 h1{{font-size:22px;border-bottom:3px solid var(--gold);padding-bottom:6px;margin-top:8px}}
 h2{{font-size:18px;border-left:5px solid var(--gold);padding-left:10px;margin-top:28px}}
 h3{{font-size:15px;margin-top:20px;color:#333}}
@@ -423,13 +423,10 @@ pre.code{{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:
   table thead,table tbody{{display:table;width:100%;min-width:520px}}}}
 </style></head><body>
 <nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a><a href="yakuin.html">🏠 薬院 売る/貸す</a></nav>
-<div class="toolbar-wrap"><div class="toolbar">
-    <a class="btn" href="#docs">📄 必要書類</a>
-</div></div>
 {nav_html}
 {body}
 <hr class="sec">
-<p style="font-size:11px;color:var(--text-secondary)">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
+<p style="font-size:11px;color:#888">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
 <button id="totop" aria-label="先頭へ" type="button">↑</button>
 <script>
 (function(){{

@@ -2,9 +2,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>融資・補助金パッケージ — プレイスポットしんばし</title>
 <style>
-:root{--gold:#c9a84c;--ink:#1a1a1a}
-html{scroll-behavior:smooth}
-body{font-family:'Hiragino Sans','Noto Sans JP',sans-serif;max-width:840px;margin:0 auto;padding:0 20px 60px;color:var(--ink);line-height:1.7;background:#fff}
+:root{--gold:#c9a84c;--ink:#1a1a1a;color-scheme:light}
+html{scroll-behavior:smooth;background:#fff}
+body{font-family:'Hiragino Sans','Noto Sans JP',sans-serif;max-width:840px;margin:0 auto;padding:0 20px 60px;color:#1a1a1a;line-height:1.7;background:#fff}
 h1{font-size:22px;border-bottom:3px solid var(--gold);padding-bottom:6px;margin-top:8px}
 h2{font-size:18px;border-left:5px solid var(--gold);padding-left:10px;margin-top:28px}
 h3{font-size:15px;margin-top:20px;color:#333}
@@ -22,18 +22,18 @@ hr{border:none;border-top:1px solid #ddd;margin:16px 0}
 hr.sec{border-top:2px dashed var(--gold);margin:36px 0}
 a{color:#1e5fb4;word-break:break-all}
 /* PJ 3ページ切替タブ */
-.pjnav{position:static;z-index:30;display:flex;background:var(--bg);margin:0 -20px}
+.pjnav{position:static;z-index:30;display:flex;background:#0f1117;margin:0 -20px}
 .pjnav a{flex:1;text-align:center;color:#cdd4e2;text-decoration:none;font-size:12.5px;font-weight:700;padding:11px 4px;border-bottom:3px solid transparent;white-space:nowrap}
-.pjnav a.on{color:#ffd86b;border-bottom-color:var(--gold);background:#1a1d27}
+.pjnav a.on{color:#ffd86b;border-bottom-color:#c9a84c;background:#1a1d27}
 /* 上部バー: ツールバー(印刷/PDF/全体図)はスクロールで上へ流す。常時固定はフェーズチップ1本だけ＝読める面積を最大化 */
-.toolbar-wrap{box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:var(--surface);padding:9px 20px}
+.toolbar-wrap{box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:9px 20px}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .toolbar button,.toolbar a.btn{background:var(--gold);color:#1a1207;font-weight:700;border:none;padding:8px 14px;border-radius:9px;font-size:13.5px;text-decoration:none;cursor:pointer}
-.toolbar a.alt{background:var(--surface2);color:#e4e4e7}
+.toolbar a.alt{background:#242836;color:#e4e4e7}
 .next-actions{background:#fffdf3;border:2px solid var(--gold);border-radius:12px;padding:4px 18px 10px;margin-top:14px}
 .next-actions h1{border:none;color:#7a5c00}
-.toc{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:var(--surface);padding:7px 20px;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}
-.toc .chip{flex:0 0 auto;background:var(--surface2);color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}
+.toc{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:7px 20px;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}
+.toc .chip{flex:0 0 auto;background:#242836;color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}
 .toc .chip.active{background:var(--gold);color:#1a1207;border-color:var(--gold)}
 /* flowchart */
 .flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:14px 0 6px}
@@ -43,31 +43,31 @@ a{color:#1e5fb4;word-break:break-all}
 .fbox.start{background:#fff4cf;border-color:#b8902a}
 .fbox.gate{background:#ffe9e3;border-color:#e0623a}
 .fbox.end{background:#e7f6ea;border-color:#2faa55}
-.fbox.first{background:var(--surface);border-color:#1a1d27;position:relative}
+.fbox.first{background:#1a1d27;border-color:#1a1d27;position:relative}
 .fbox.first b{color:#ffd86b} .fbox.first small{color:#cfd2da}
 .fbox.first .badge{display:inline-block;background:#ffd86b;color:#1a1207;font-weight:800;font-size:11px;padding:2px 9px;border-radius:999px;margin-bottom:5px}
 .frow{display:flex;gap:12px;width:100%;max-width:640px}
 .frow .fbox{flex:1}
 .farrow{color:#b8902a;font-weight:700;font-size:12.5px;padding:6px 0;text-align:center}
 /* phase banner（各フェーズの帯見出し） */
-.phasebanner{display:flex;align-items:center;gap:12px;background:var(--surface);color:#fff;border-radius:12px;padding:13px 18px;margin:6px 0 18px}
+.phasebanner{display:flex;align-items:center;gap:12px;background:#1a1d27;color:#fff;border-radius:12px;padding:13px 18px;margin:6px 0 18px}
 .phasebanner .pnum{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--gold);color:#1a1207;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center}
 .phasebanner b{font-size:17px;color:#ffd86b}
 /* hub（電話4本カード） */
 .hubgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
 .hubcard{border:1.5px solid var(--gold);border-radius:12px;padding:12px 14px;background:#fffdf7}
-.hubcard.now{border-color:var(--gold);border-width:2.5px;background:#fffaf0;grid-column:1 / -1}
+.hubcard.now{border-color:#c9a84c;border-width:2.5px;background:#fffaf0;grid-column:1 / -1}
 .hubcard.must{border-color:#e0623a;border-width:2px}
 .hubcard.opt{border-color:#c9c2ac;background:#fbfaf6}
 .hubh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;border-bottom:1px solid #eadfba;padding-bottom:7px;margin-bottom:7px}
 .hubh b{font-size:14px}
 .hublinks{display:flex;gap:8px;flex-shrink:0}
 .hublinks a{text-decoration:none;font-weight:700;font-size:12.5px;padding:3px 9px;border-radius:7px;white-space:nowrap}
-.hublinks .tel{background:var(--surface);color:#ffd86b}
+.hublinks .tel{background:#1a1d27;color:#ffd86b}
 .hublinks .mapl{background:#eef2fb;color:#1e5fb4}
 .hubrole{font-size:12px;color:#555;margin-bottom:5px}
 .htag{display:inline-block;font-weight:800;font-size:10.5px;padding:1px 7px;border-radius:999px;margin-right:6px}
-.htag.now{background:var(--gold);color:#1a1207} .htag.must{background:#e0623a;color:#fff} .htag.opt{background:#e7e2d2;color:#6b6451}
+.htag.now{background:#c9a84c;color:#1a1207} .htag.must{background:#e0623a;color:#fff} .htag.opt{background:#e7e2d2;color:#6b6451}
 .now-i{color:#a8821f} .must-i{color:#e0623a} .opt-i{color:#8a8264}
 .hubaddr{font-size:11.5px;color:#777;margin-bottom:7px}
 .hubdo,.hubhp,.hubsay,.huba{font-size:12.5px;border-radius:8px;padding:7px 10px;margin-bottom:6px}
@@ -81,7 +81,7 @@ a{color:#1e5fb4;word-break:break-all}
 @media(max-width:700px){.hubgrid{grid-template-columns:1fr}}
 /* code blocks (コピー可) */
 .codewrap{position:relative;margin:12px 0}
-pre.code{background:var(--bg);color:#e6e8ee;padding:30px 14px 14px;border-radius:10px;overflow-x:auto;font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;font-family:'SFMono-Regular',Consolas,Menlo,monospace}
+pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:10px;overflow-x:auto;font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;font-family:'SFMono-Regular',Consolas,Menlo,monospace}
 .copybtn{position:absolute;top:7px;right:7px;background:var(--gold);color:#1a1207;border:none;padding:5px 11px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer}
 .copybtn.done{background:#2faa55;color:#fff}
 @media print{.copybtn{display:none}}
@@ -108,9 +108,6 @@ pre.code{background:var(--bg);color:#e6e8ee;padding:30px 14px 14px;border-radius
   table thead,table tbody{display:table;width:100%;min-width:520px}}
 </style></head><body>
 <nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a><a href="yakuin.html">🏠 薬院 売る/貸す</a></nav>
-<div class="toolbar-wrap"><div class="toolbar">
-    <a class="btn" href="#docs">📄 必要書類</a>
-</div></div>
 <nav class="toc" id="toc"><a class="chip" href="#next" data-target="next">▶ 次にやること</a><a class="chip" href="#p0" data-target="p0">0 朝イチ電話</a><a class="chip" href="#p1" data-target="p1">1 旅館業許可</a><a class="chip" href="#p2" data-target="p2">2 公庫融資</a><a class="chip" href="#p3" data-target="p3">3 税優遇の前提</a><a class="chip" href="#p4" data-target="p4">4 発注ゲート</a><a class="chip" href="#p5" data-target="p5">5 開業後の補助金</a><a class="chip" href="#docs" data-target="docs">📄 必要書類</a></nav>
 <section id="next" class="doc next-actions">
 <h1>▶ 次にやること（今ここ → 次の一手）</h1>
@@ -153,33 +150,33 @@ pre.code{background:var(--bg);color:#e6e8ee;padding:30px 14px 14px;border-radius
 </section>
 <section id="p0" class="doc">
 <div class="phasebanner"><span class="pnum">0</span><b>まず朝イチ、電話で予約・相談</b></div>
-<blockquote>この物件は<b>許可が全部のスイッチ</b>。まず<b>A. 読む → B. 動く</b>の順。<br>A. <b>読む（HPで完結）</b>：旅館業の<a href="https://www.city.fukuoka.lg.jp/hofuku/iyakumu-eisei/life/kurashinoeisei/documents/ryokangyounimotodukutebiki_R0411.pdf" target="_blank">手引きPDF</a>（<a href="https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html" target="_blank">案内ページ</a>）に、構造・面積・必要書類・手数料22,000円・許可まで14営業日が全部載っている。<br>B. <b>動く（HPでは分からない＝人に聞く／予約する）</b>：下のカードへ。<b class="now-i">今朝の最優先</b>は公庫の相談予約（午前中に取り切る・許可申請中でも申込可）。<b class="must-i">必須</b>は保健所（事前相談の予約・着工前に図面持参）・消防（この建物の設備判断）・こども未来局（許可申請の前の事前協議）。<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）。各カードは「やること」と「これだけ聞く」に絞ってある。並行で<b>gBizIDプライム</b>（省力化補助の前提・発行に2〜3週）も申請。</blockquote><div class="hubgrid"><div class="hubcard now"><div class="hubh"><b>🏦 日本政策金融公庫（相談予約）</b><span class="hublinks"><a class="tel" href="tel:0120154505">☎ 0120-154-505</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E6%97%A5%E6%9C%AC%E6%94%BF%E7%AD%96%E9%87%91%E8%9E%8D%E5%85%AC%E5%BA%AB%20%E7%A6%8F%E5%B2%A1%E6%94%AF%E5%BA%97%20%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D3-21-12" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag now">今朝最優先</span>午前中に相談予約を取り切る。旅館業は許可申請中でも申込可</div><div class="hubaddr">📍 日本政策金融公庫 福岡支店 福岡市博多区博多駅前3-21-12</div><div class="hubdo"><b>やること</b>今朝いちばんに、設備資金の相談予約を取る。総合ダイヤル0120-154-505（平日9-17時）が混んだら福岡支店 国民生活事業 092-411-9111へ直接。許可申請中でも申込めるので待たなくていい。融資の詳細はフェーズ2。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>制度・必要書類の概要は公庫サイト。予約日と当日の持参書類は電話で確定</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:var(--bg-tertiary)">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。設備資金の相談予約をお願いします。旅館業は許可申請中です。
+<blockquote>この物件は<b>許可が全部のスイッチ</b>。まず<b>A. 読む → B. 動く</b>の順。<br>A. <b>読む（HPで完結）</b>：旅館業の<a href="https://www.city.fukuoka.lg.jp/hofuku/iyakumu-eisei/life/kurashinoeisei/documents/ryokangyounimotodukutebiki_R0411.pdf" target="_blank">手引きPDF</a>（<a href="https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html" target="_blank">案内ページ</a>）に、構造・面積・必要書類・手数料22,000円・許可まで14営業日が全部載っている。<br>B. <b>動く（HPでは分からない＝人に聞く／予約する）</b>：下のカードへ。<b class="now-i">今朝の最優先</b>は公庫の相談予約（午前中に取り切る・許可申請中でも申込可）。<b class="must-i">必須</b>は保健所（事前相談の予約・着工前に図面持参）・消防（この建物の設備判断）・こども未来局（許可申請の前の事前協議）。<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）。各カードは「やること」と「これだけ聞く」に絞ってある。並行で<b>gBizIDプライム</b>（省力化補助の前提・発行に2〜3週）も申請。</blockquote><div class="hubgrid"><div class="hubcard now"><div class="hubh"><b>🏦 日本政策金融公庫（相談予約）</b><span class="hublinks"><a class="tel" href="tel:0120154505">☎ 0120-154-505</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E6%97%A5%E6%9C%AC%E6%94%BF%E7%AD%96%E9%87%91%E8%9E%8D%E5%85%AC%E5%BA%AB%20%E7%A6%8F%E5%B2%A1%E6%94%AF%E5%BA%97%20%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D3-21-12" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag now">今朝最優先</span>午前中に相談予約を取り切る。旅館業は許可申請中でも申込可</div><div class="hubaddr">📍 日本政策金融公庫 福岡支店 福岡市博多区博多駅前3-21-12</div><div class="hubdo"><b>やること</b>今朝いちばんに、設備資金の相談予約を取る。総合ダイヤル0120-154-505（平日9-17時）が混んだら福岡支店 国民生活事業 092-411-9111へ直接。許可申請中でも申込めるので待たなくていい。融資の詳細はフェーズ2。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>制度・必要書類の概要は公庫サイト。予約日と当日の持参書類は電話で確定</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:#5a3a1a">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。設備資金の相談予約をお願いします。旅館業は許可申請中です。
 お聞きしたいのは、次の点です。
 1. 相談日の予約（できれば近日）と、当日の持参書類
 2. 振興事業貸付（組合経由の低利・設備20年）を使う場合の進め方
 3. 自己資金の目安と、申込から実行までのおおよその期間
-お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>相談日の予約（できれば近日）と、当日の持参書類</li><li>振興事業貸付（組合経由の低利・設備20年）を使う場合の進め方</li><li>自己資金の目安と、申込から実行までのおおよその期間</li></ol></div></div><div class="hubcard must"><div class="hubh"><b>🏥 福岡市保健所 博多衛生課</b><span class="hublinks"><a class="tel" href="tel:0924191125">☎ 092-419-1125</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D2-8-1%20%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%BD%B9%E6%89%806%E9%9A%8E" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag must">必須</span>旅館業許可の窓口</div><div class="hubaddr">📍 福岡市博多区博多駅前2-8-1 博多区役所6階</div><div class="hubdo"><b>やること</b>着工前に各階平面図を持って事前相談（来所は予約制・事前相談は公式に必須）。基準・必要書類・流れは手引きPDFで読めるので、電話の用件は「相談日の予約」。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>構造／面積／換気／便所／洗面の基準・必要書類・手数料22,000円(現金)・許可まで14営業日 ＝ 手引きPDFに記載</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:var(--bg-tertiary)">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。簡易宿所の事前相談の予約をお願いします。各階平面図を持って伺います。
+お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>相談日の予約（できれば近日）と、当日の持参書類</li><li>振興事業貸付（組合経由の低利・設備20年）を使う場合の進め方</li><li>自己資金の目安と、申込から実行までのおおよその期間</li></ol></div></div><div class="hubcard must"><div class="hubh"><b>🏥 福岡市保健所 博多衛生課</b><span class="hublinks"><a class="tel" href="tel:0924191125">☎ 092-419-1125</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D2-8-1%20%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%BD%B9%E6%89%806%E9%9A%8E" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag must">必須</span>旅館業許可の窓口</div><div class="hubaddr">📍 福岡市博多区博多駅前2-8-1 博多区役所6階</div><div class="hubdo"><b>やること</b>着工前に各階平面図を持って事前相談（来所は予約制・事前相談は公式に必須）。基準・必要書類・流れは手引きPDFで読めるので、電話の用件は「相談日の予約」。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>構造／面積／換気／便所／洗面の基準・必要書類・手数料22,000円(現金)・許可まで14営業日 ＝ 手引きPDFに記載</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:#5a3a1a">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。簡易宿所の事前相談の予約をお願いします。各階平面図を持って伺います。
 お聞きしたいのは、次の点です。
 1. 玄関帳場のICT代替（顔認証＋10分駆けつけ＋防犯カメラ）で無人運用できるか・福岡市での条件
 2. 区分マンション1室を簡易宿所にする際の、この物件固有の懸念点
 3. 事前相談に伺える日程（予約）
-お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>玄関帳場のICT代替（顔認証＋10分駆けつけ＋防犯カメラ）で無人運用できるか・福岡市での条件</li><li>区分マンション1室を簡易宿所にする際の、この物件固有の懸念点</li><li>事前相談に伺える日程（予約）</li></ol></div></div><div class="hubcard must"><div class="hubh"><b>🚒 博多消防署 予防課</b><span class="hublinks"><a class="tel" href="tel:0924750119">☎ 092-475-0119</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D4-19-7" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag must">必須</span>消防法令適合の前提（費用の最大変動要因）</div><div class="hubaddr">📍 福岡市博多区博多駅前4-19-7</div><div class="hubdo"><b>やること</b>この建物で必要な消防設備を事前相談で確認。許可には消防法令適合通知書が要る。「この建物で何が要るか」は現場判断なのでHPでは分からない＝相談の価値が一番高い。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>一般的な設備の考え方は消防局HP。ただし当該建物の要否は現場判断＝要相談</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:var(--bg-tertiary)">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。区分1室を簡易宿所にする際の消防設備について事前相談したいです。
+お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>玄関帳場のICT代替（顔認証＋10分駆けつけ＋防犯カメラ）で無人運用できるか・福岡市での条件</li><li>区分マンション1室を簡易宿所にする際の、この物件固有の懸念点</li><li>事前相談に伺える日程（予約）</li></ol></div></div><div class="hubcard must"><div class="hubh"><b>🚒 博多消防署 予防課</b><span class="hublinks"><a class="tel" href="tel:0924750119">☎ 092-475-0119</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D4-19-7" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag must">必須</span>消防法令適合の前提（費用の最大変動要因）</div><div class="hubaddr">📍 福岡市博多区博多駅前4-19-7</div><div class="hubdo"><b>やること</b>この建物で必要な消防設備を事前相談で確認。許可には消防法令適合通知書が要る。「この建物で何が要るか」は現場判断なのでHPでは分からない＝相談の価値が一番高い。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>一般的な設備の考え方は消防局HP。ただし当該建物の要否は現場判断＝要相談</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:#5a3a1a">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。区分1室を簡易宿所にする際の消防設備について事前相談したいです。
 お聞きしたいのは、次の点です。
 1. ★マンション全体の自火報への連動接続が要るか（費用が一番変わる）。共用部の感知器追加・管理組合や他住戸の同意の要否
 2. 1室を宿泊用途にすると建物が複合用途（16項イ）化するか
 3. 必要な消防設備一式（自火報・誘導灯・消火器・防炎物品）
 4. 消防法令適合通知書の手順・必要書類・所要期間
-お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>★マンション全体の自火報への連動接続が要るか（費用が一番変わる）。共用部の感知器追加・管理組合や他住戸の同意の要否</li><li>1室を宿泊用途にすると建物が複合用途（16項イ）化するか</li><li>必要な消防設備一式（自火報・誘導灯・消火器・防炎物品）</li><li>消防法令適合通知書の手順・必要書類・所要期間</li></ol></div></div><div class="hubcard must"><div class="hubh"><b>🏛 福岡市こども未来局 こども健全育成課</b><span class="hublinks"><a class="tel" href="tel:0927114188">☎ 092-711-4188</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E5%A4%A9%E7%A5%9E1-8-1" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag must">必須</span>旅館業許可申請の『前』に必須の事前協議</div><div class="hubaddr">📍 福岡市中央区天神1-8-1</div><div class="hubdo"><b>やること</b>旅館業の許可申請・確認申請の前に、旅館等設置規制指導要綱の事前協議が必須。この物件が対象か、手続きの流れと近隣説明の要否を相談する。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>要綱・手続きの流れPDFは市HP。当該物件が対象か・所要期間は要相談</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:var(--bg-tertiary)">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。旅館業許可の前に必要な、旅館等設置規制指導要綱の事前協議について相談したいです。
+お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>★マンション全体の自火報への連動接続が要るか（費用が一番変わる）。共用部の感知器追加・管理組合や他住戸の同意の要否</li><li>1室を宿泊用途にすると建物が複合用途（16項イ）化するか</li><li>必要な消防設備一式（自火報・誘導灯・消火器・防炎物品）</li><li>消防法令適合通知書の手順・必要書類・所要期間</li></ol></div></div><div class="hubcard must"><div class="hubh"><b>🏛 福岡市こども未来局 こども健全育成課</b><span class="hublinks"><a class="tel" href="tel:0927114188">☎ 092-711-4188</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E5%A4%A9%E7%A5%9E1-8-1" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag must">必須</span>旅館業許可申請の『前』に必須の事前協議</div><div class="hubaddr">📍 福岡市中央区天神1-8-1</div><div class="hubdo"><b>やること</b>旅館業の許可申請・確認申請の前に、旅館等設置規制指導要綱の事前協議が必須。この物件が対象か、手続きの流れと近隣説明の要否を相談する。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>要綱・手続きの流れPDFは市HP。当該物件が対象か・所要期間は要相談</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:#5a3a1a">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。旅館業許可の前に必要な、旅館等設置規制指導要綱の事前協議について相談したいです。
 お聞きしたいのは、次の点です。
 1. この物件（中洲2-1-11）が事前協議の対象か・手続きの流れ
 2. 周辺の学校・保育所等との距離規制に該当しないか
 3. 必要書類・所要期間と、確認申請／許可申請との順番
-お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>この物件（中洲2-1-11）が事前協議の対象か・手続きの流れ</li><li>周辺の学校・保育所等との距離規制に該当しないか</li><li>必要書類・所要期間と、確認申請／許可申請との順番</li></ol></div></div><div class="hubcard opt"><div class="hubh"><b>🤝 福岡県旅館ホテル生活衛生同業組合</b><span class="hublinks"><a class="tel" href="tel:0927375050">☎ 092-737-5050</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%B8%A1%E8%BE%BA%E9%80%9A5-13-12" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag opt">任意</span>公庫の低利(振興事業貸付)を狙う場合だけ</div><div class="hubaddr">📍 福岡市中央区渡辺通5-13-12</div><div class="hubdo"><b>やること</b>公庫の低利を使うなら組合加入が前提。加入と「資金証明書」の発行条件を相談。狙わないなら不要。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>加入案内・会費の一部は組合サイト。「資金証明書」の発行条件は要確認</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:var(--bg-tertiary)">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。公庫の振興事業貸付を考えており、その前提の組合加入を相談したいです。
+お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>この物件（中洲2-1-11）が事前協議の対象か・手続きの流れ</li><li>周辺の学校・保育所等との距離規制に該当しないか</li><li>必要書類・所要期間と、確認申請／許可申請との順番</li></ol></div></div><div class="hubcard opt"><div class="hubh"><b>🤝 福岡県旅館ホテル生活衛生同業組合</b><span class="hublinks"><a class="tel" href="tel:0927375050">☎ 092-737-5050</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E4%B8%AD%E5%A4%AE%E5%8C%BA%E6%B8%A1%E8%BE%BA%E9%80%9A5-13-12" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag opt">任意</span>公庫の低利(振興事業貸付)を狙う場合だけ</div><div class="hubaddr">📍 福岡市中央区渡辺通5-13-12</div><div class="hubdo"><b>やること</b>公庫の低利を使うなら組合加入が前提。加入と「資金証明書」の発行条件を相談。狙わないなら不要。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>加入案内・会費の一部は組合サイト。「資金証明書」の発行条件は要確認</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:#5a3a1a">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。公庫の振興事業貸付を考えており、その前提の組合加入を相談したいです。
 お聞きしたいのは、次の点です。
 1. 入会金・組合費（年会費）と加入手順・所要期間
 2. 「振興事業に係る資金証明書」の発行条件・必要書類・所要日数
 3. 開業前（許可申請中）でも加入・資金証明書の相談は可能か
-お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>入会金・組合費（年会費）と加入手順・所要期間</li><li>「振興事業に係る資金証明書」の発行条件・必要書類・所要日数</li><li>開業前（許可申請中）でも加入・資金証明書の相談は可能か</li></ol></div></div><div class="hubcard opt"><div class="hubh"><b>🏛 福岡商工会議所（経営相談窓口）</b><span class="hublinks"><a class="tel" href="tel:0924412161">☎ 092-441-2161</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D2-9-28" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag opt">任意</span>経営強化税制(即時償却/控除)を狙う場合だけ</div><div class="hubaddr">📍 福岡市博多区博多駅前2-9-28</div><div class="hubdo"><b>やること</b>設備を買う「前」に経営力向上計画の認定を取る、その支援を相談。狙わないなら不要。代表は092-441-1110。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>制度概要は中小企業庁HP。「認定支援機関として支援できるか・段取り」は要相談</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:var(--bg-tertiary)">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。中小企業経営強化税制を使いたく、経営力向上計画の認定支援を相談したいです。
+お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>入会金・組合費（年会費）と加入手順・所要期間</li><li>「振興事業に係る資金証明書」の発行条件・必要書類・所要日数</li><li>開業前（許可申請中）でも加入・資金証明書の相談は可能か</li></ol></div></div><div class="hubcard opt"><div class="hubh"><b>🏛 福岡商工会議所（経営相談窓口）</b><span class="hublinks"><a class="tel" href="tel:0924412161">☎ 092-441-2161</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D2-9-28" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag opt">任意</span>経営強化税制(即時償却/控除)を狙う場合だけ</div><div class="hubaddr">📍 福岡市博多区博多駅前2-9-28</div><div class="hubdo"><b>やること</b>設備を買う「前」に経営力向上計画の認定を取る、その支援を相談。狙わないなら不要。代表は092-441-1110。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>制度概要は中小企業庁HP。「認定支援機関として支援できるか・段取り」は要相談</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:#5a3a1a">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。中小企業経営強化税制を使いたく、経営力向上計画の認定支援を相談したいです。
 お聞きしたいのは、次の点です。
 1. 認定支援機関として支援可能か、申請の流れ
 2. ★認定までの標準期間（設備取得の「前」に認定が要るため）
@@ -443,7 +440,104 @@ iUMAプロパティマネジメント合同会社
 <hr class="sec">
 <section id="p3" class="doc">
 <div class="phasebanner"><span class="pnum">3</span><b>税優遇の前提を作る</b></div>
-<blockquote>公庫の融資と<b>並行</b>で進める税金トラック。設備（家具家電・スマートロック等）を<b>取得する「前」</b>に、商工会議所（認定支援機関）で<b>経営力向上計画</b>の認定を取っておくと、中小企業経営強化税制で<b>即時償却（100%）か10%税額控除</b>が使える。逆（先に買う）だと優遇が消える。</blockquote><h2>やること</h2><ol><li>商工会議所 経営相談窓口 092-441-2161 に相談（電話スクリプトはフェーズ0の4本目）</li><li>事業分野別指針（宿泊業）に沿って経営力向上計画を作成・申請</li><li>認定（標準1か月前後）→ そのうえで設備を発注（フェーズ4の発注ゲート）</li></ol><p>税額・即時償却の具体は「フェーズ5：補助金まとめ」の税制パートを正本とする（数字の二重持ちを避けるため、ここでは流れだけ）。</p>
+<h2>経営力向上計画（B類型）申請パック — プレイスポットしんばし</h2>
+<blockquote>申請者: iUMAプロパティマネジメント合同会社 / 代表: 手嶋耕一 根拠法: 中小企業等経営強化法（中小企業経営強化法） 目的: <strong>中小企業経営強化税制</strong>（即時償却100% または 税額控除10%）の適用 商工会議所相談日: 2026-06-15　B類型に決定 税理士確認: 別途依頼（<code>20_税理士_相談メッセージ.md</code> 参照）</blockquote>
+<hr>
+<h3>結論（B類型とは何か）</h3>
+<table><thead><tr><th>区分</th><th>内容</th></tr></thead><tbody><tr><td><strong>何をするか</strong></td><td>ICT省力化設備（スマートロック・チェックイン端末・PMS等）の取得に対して税制優遇を受ける</td></tr><tr><td><strong>何が得られるか</strong></td><td>設備取得価額の<strong>即時償却（100%）or 税額控除（10%）</strong>。150万の設備なら15万の税額控除 or 150万を初年度全額経費化</td></tr><tr><td><strong>B類型の要件</strong></td><td>投資計画で「年平均投資利益率 ≥ 5%」を証明。税理士等の認定支援機関の確認が必須</td></tr><tr><td><strong>順序の鉄則</strong></td><td><strong>計画認定 → 設備取得。逆は無効。設備を先に買ったら適用なし</strong></td></tr><tr><td><strong>申請先</strong></td><td>九州厚生局（旅館業=厚生労働大臣管轄）or 商工会議所経由で確認</td></tr></tbody></table>
+<hr>
+<h3>A. 様式第1号（認定申請書）記入ドラフト</h3>
+<blockquote>中小企業庁の公式様式に転記する下書き。 公式様式DL: <a href="https://www.chusho.meti.go.jp/keiei/kyoka/download.html">https://www.chusho.meti.go.jp/keiei/kyoka/download.html</a></blockquote>
+<h4>申請者基本情報</h4>
+<table><thead><tr><th>項目</th><th>記入内容</th></tr></thead><tbody><tr><td>法人の名称</td><td>iUMAプロパティマネジメント合同会社</td></tr><tr><td>代表者名</td><td>手嶋 耕一</td></tr><tr><td>本店所在地</td><td>東京都中央区明石町（番地★要確認）</td></tr><tr><td>電話番号</td><td>080-5637-5105</td></tr><tr><td>法人番号</td><td>★要確認（国税庁法人番号公表サイトで取得）</td></tr><tr><td>資本金</td><td>★要確認（第8期決算書から）</td></tr><tr><td>常時使用する従業員数</td><td>0名（代表1名・従業員なし）</td></tr><tr><td>事業分野</td><td>旅館業（簡易宿所）/ 業種コード: 7511</td></tr></tbody></table>
+<h4>計画期間</h4>
+<table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td>計画期間</td><td>3年間（令和8年度 〜 令和10年度）</td></tr><tr><td>計画開始</td><td>設備取得月（旅館業許可取得後に確定）</td></tr></tbody></table>
+<hr>
+<h3>B. 別紙3（経営力向上の目標及び内容）記入ドラフト</h3>
+<h4>1. 現状認識</h4>
+<p>当社は不動産賃貸業（法人第8期・黒字）を営んでおり、宿泊業への事業拡張として福岡市博多区中洲に区分マンション（プレイスポットしんばしビル本館905号・専有面積40.63㎡・最大5名）を取得し、旅館業（簡易宿所）許可を取得したうえで宿泊事業を運営する。</p>
+<p>中洲は福岡市随一の観光・繁華街であり、訪日外国人を含む宿泊需要が通年で高水準を維持している（福岡市ホテル稼働率2024年度80.4%）。</p>
+<p>しかし、1名での兼業運営という制約から、フロント対応・チェックイン受付・鍵管理を<strong>手動で行うことは物理的に不可能</strong>であり、ICT設備（セルフチェックイン端末・スマートロック・予約管理システム等）の導入が事業成立の必須条件となっている。</p>
+<h4>2. 経営力向上の目標（KPI）</h4>
+<table><thead><tr><th>指標</th><th>現状（開業前）</th><th>1年目（R8）</th><th>2年目（R9）</th><th>3年目（R10）</th></tr></thead><tbody><tr><td>年間稼働率</td><td>—</td><td>50%</td><td>65%</td><td>70%</td></tr><tr><td>平均客室単価（ADR）</td><td>—</td><td>16,000円</td><td>18,000円</td><td>18,000円</td></tr><tr><td>年間売上高</td><td>—</td><td>2,920,000円</td><td>4,269,750円</td><td>4,599,000円</td></tr><tr><td>営業利益</td><td>—</td><td>1,063,920円</td><td>1,760,391円</td><td>1,930,284円</td></tr><tr><td>労働生産性</td><td>—</td><td>向上</td><td>向上</td><td>向上</td></tr></tbody></table>
+<blockquote>※ADR・稼働率は業者計画（F-area）・リサーチ標準の中間値。確定数値は税理士確認時に調整。</blockquote>
+<h4>3. 経営力向上の内容（取組内容）</h4>
+<p><strong>（1）ICT省力化設備の導入による人手ゼロ運営の実現</strong></p>
+<p>下記設備を一括導入し、代表1名でのリモート管理を実現する。</p>
+<table><thead><tr><th>設備名</th><th>機能</th><th>分類</th><th>取得価額（概算）</th></tr></thead><tbody><tr><td>セルフチェックイン端末</td><td>顔認証・本人確認・鍵発行</td><td>器具備品</td><td>★要確定</td></tr><tr><td>スマートロック</td><td>遠隔解施錠・PIN管理</td><td>器具備品</td><td>★要確定</td></tr><tr><td>タブレット（2台）</td><td>客室案内・多言語対応</td><td>器具備品</td><td>★要確定</td></tr><tr><td>防犯カメラ（2台）</td><td>セキュリティ管理</td><td>器具備品</td><td>139,500円</td></tr><tr><td>WiFi機器</td><td>高速通信環境</td><td>器具備品</td><td>★要確定</td></tr><tr><td>PMS（予約管理システム）</td><td>OTA統合・収益管理</td><td>ソフトウエア</td><td>★要確定</td></tr><tr><td><strong>合計</strong></td><td></td><td></td><td><strong>★要確定（目安150〜190万円）</strong></td></tr></tbody></table>
+<blockquote>★F-area見積書（MT06529）の設備費明細から「器具備品」部分を抽出して確定する。 リノベ本体工事費（建装・左官・床等）は対象外。エアコン・給湯器等の建物附属設備（60万超）は別途計上可否を税理士に確認。</blockquote>
+<p><strong>（2）省力化効果の定量化</strong></p>
+<p>設備なし（手動運営）と比較した場合の生産性向上効果:</p>
+<table><thead><tr><th>項目</th><th>設備なし（推計）</th><th>設備あり（本計画）</th></tr></thead><tbody><tr><td>チェックイン対応</td><td>都度現地対応（代表の移動時間・拘束）</td><td>無人自動（24時間対応可）</td></tr><tr><td>鍵管理</td><td>都度受渡し or 物件に常駐</td><td>リモートPIN発行</td></tr><tr><td>必要人員コスト（換算）</td><td>月20〜30万円（業務委託相当）</td><td>0円</td></tr><tr><td>対応可能チェックイン時間</td><td>業務時間内のみ</td><td>24時間365日</td></tr><tr><td>稼働率への影響</td><td>深夜・早朝チェインオ困難で稼働率低下</td><td>時間制限なし</td></tr></tbody></table>
+<p>設備導入により、年間約240〜360万円相当の人件費を不要とし、24時間対応で稼働率を底上げする。</p>
+<hr>
+<h3>C. B類型 投資計画書（税理士確認用）</h3>
+<blockquote>この表を税理士に持参し、計算の確認・署名をいただく。</blockquote>
+<h4>設備の基本情報</h4>
+<table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td>設備の種類</td><td>器具備品（チェックイン端末・スマートロック・タブレット等の一式）</td></tr><tr><td>設備の設置場所</td><td>福岡県福岡市博多区中洲2-1-11 プレイスポットしんばしビル本館905号</td></tr><tr><td>取得予定時期</td><td>★旅館業許可取得後（令和8年度内を予定）</td></tr><tr><td>取得価額合計</td><td>★要確定（F-area見積書から設備費抽出）</td></tr><tr><td>耐用年数</td><td>5年（器具備品・接客業用機器）</td></tr><tr><td>減価償却方法</td><td>定額法（法人）</td></tr><tr><td>年間減価償却費（定額法）</td><td>取得価額 × 0.200</td></tr></tbody></table>
+<h4>年平均投資利益率の計算</h4>
+<blockquote>B類型の要件式: {Σ(各年度の 営業利益 + 設備減価償却費) ÷ 計画年数} ÷ 取得価額 × 100 ≥ 5%</blockquote>
+<p>以下は設備投資額150万円・計画3年での試算（税理士確認時に実額で置換）:</p>
+<table><thead><tr><th>年度</th><th>稼働率</th><th>ADR（円）</th><th>年間売上高（円）</th><th>変動経費(48.4%)</th><th>固定費（円）</th><th>設備減価償却費</th><th>営業利益（円）</th><th>営業利益+減価償却費</th></tr></thead><tbody><tr><td>1年目（R8）</td><td>50%</td><td>16,000</td><td>2,920,000</td><td>1,413,280</td><td>142,800</td><td>300,000</td><td>1,063,920</td><td><strong>1,363,920</strong></td></tr><tr><td>2年目（R9）</td><td>65%</td><td>18,000</td><td>4,269,750</td><td>2,066,559</td><td>142,800</td><td>300,000</td><td>1,760,391</td><td><strong>2,060,391</strong></td></tr><tr><td>3年目（R10）</td><td>70%</td><td>18,000</td><td>4,599,000</td><td>2,225,916</td><td>142,800</td><td>300,000</td><td>1,930,284</td><td><strong>2,230,284</strong></td></tr><tr><td><strong>合計</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><strong>5,654,595</strong></td></tr></tbody></table>
+<p><strong>年平均投資利益率</strong>  </p>
+<p>= (5,654,595 ÷ 3年) ÷ 1,500,000 × 100  </p>
+<p>= 1,884,865 ÷ 1,500,000 × 100  </p>
+<p>= <strong>125.7% ≥ 5% ✓</strong></p>
+<blockquote>★注: この計算は見通し。税理士が直近決算・実際の設備費・償却計算を確認し、最終署名する。 最も保守的なシナリオ（1年目40%稼働・ADR12,000円）でも投資利益率 ≈ 50% で要件をクリア。</blockquote>
+<hr>
+<h3>D. 税理士への確認事項チェックリスト</h3>
+<p>税理士面談時に確認してもらう内容:</p>
+<ol><li><strong>認定支援機関の役割</strong> — 先生が 認定経営革新等支援機関 として確認書（様式第2号相当）を発行いただけるか、または商工会議所が担当するか</li><li><strong>設備費の分類確認</strong> — F-area見積書から器具備品（B類型対象）と建物附属設備を正確に分離</li><li><strong>最低取得価額の充足</strong> — 器具備品は30万円以上（合計で可）が要件。充足するか確認</li><li><strong>即時償却 vs 税額控除の選択</strong> — 今期の利益状況からどちらが有利か（赤字なら即時償却より税額控除が翌年に活きる）</li><li><strong>投資計画の数値調整</strong> — 上表の ADR・稼働率・変動経費率を決算ベースに合わせる</li><li><strong>計画期間の開始時期</strong> — 設備取得月が計画開始日。許可取得スケジュールと連動</li><li><strong>他制度との重複</strong> — 省力化投資補助金と設備が重複する場合、補助対象分は対象外（分けて計上）</li></ol>
+<hr>
+<h3>E. 申請の流れ（順序厳守）</h3>
+<div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">今ここ → 商工会議所相談（B類型決定）✓ 2026-06-15
+   ↓
+税理士に相談・投資計画確認 → 確認書発行
+   ↓
+様式第1号・別紙3 を完成（このファイルから転記）
+   ↓
+申請書提出（九州厚生局 or 商工会議所経由）
+   ↓
+計画認定（2〜4週間）★これが下りてから設備を発注する
+   ↓
+設備取得（旅館業許可取得後）
+   ↓
+確定申告で即時償却 or 税額控除を適用</pre></div>
+<blockquote>⚠️ <strong>鉄則</strong>: 認定前に設備を1円でも発注したら税制適用が消える。見積書収集・設備選定は今すぐOK。発注は認定後。</blockquote>
+<hr>
+<h3>F. 未確定事項（税理士・実務で埋める）</h3>
+<table><thead><tr><th>項目</th><th>現状</th><th>確定方法</th></tr></thead><tbody><tr><td>設備取得価額（合計）</td><td>150〜190万円概算</td><td>F-area見積書MT06529から器具備品を抽出</td></tr><tr><td>法人番号</td><td>未記載</td><td>国税庁: <a href="https://www.houjin-bangou.nta.go.jp/">https://www.houjin-bangou.nta.go.jp/</a></td></tr><tr><td>資本金</td><td>未記載</td><td>第8期決算書BS</td></tr><tr><td>申請先の確定</td><td>未定</td><td>商工会議所に確認（九州厚生局 か 中小企業庁電子申請か）</td></tr><tr><td>認定支援機関</td><td>税理士 or 商工会議所</td><td>税理士面談で確認</td></tr><tr><td>PMS（ソフトウエア）の取得価額</td><td>未確定</td><td>ソフトウエアは70万以上が要件。SaaS(月額)は対象外が多い</td></tr><tr><td>建物附属設備の計上可否</td><td>未確定</td><td>リノベ内のエアコン等・60万以上で計上可能か税理士確認</td></tr></tbody></table>
+<hr>
+<h2>飯塚先生へのメッセージ — 経営力向上計画B類型の確認署名依頼</h2>
+<blockquote>送付先: 飯塚先生（iUMA担当税理士） 依頼内容: 投資計画書への確認署名のみ（書類一式はこちらで作成済み） 先生にお願いすること: 認定支援機関として投資計画書に署名・押印いただくだけ</blockquote>
+<hr>
+<h3>メール文</h3>
+<hr>
+<p>件名: 経営力向上計画（B類型）確認署名のお願い</p>
+<p>飯塚先生</p>
+<p>お世話になっております。手嶋です。</p>
+<p>中小企業経営強化法の「経営力向上計画（B類型）」を申請することにしました。本日、福岡商工会議所に相談し、B類型での申請が適切と確認しています。</p>
+<p>書類（認定申請書・別紙3・投資計画書）はすべてこちらで用意しましたので、先生には<strong>投資計画書への確認署名・押印</strong>のみお願いできれば幸いです。</p>
+<p><strong>概要</strong></p>
+<p>中洲の区分（プレイスポットしんばし905号）を旅館業（簡易宿所）として開業する際に導入するICT設備（スマートロック・セルフチェックイン端末等、概算150〜190万円）を対象に、中小企業経営強化税制（即時償却100%または税額控除10%）の適用を受けるものです。</p>
+<p>投資利益率は計算済みで、要件（5%以上）を大幅にクリアしています（試算125%超）。</p>
+<p><strong>お持ちするもの</strong></p>
+<ul><li>認定申請書ドラフト（様式第1号・別紙3）</li><li>投資計画書（年平均投資利益率の計算付き）</li><li>設備見積書（F-area社）</li><li>直近決算書（3期分）</li></ul>
+<p>なお設備の発注は計画認定が下りてからにする予定です。</p>
+<p>ご都合のよい日時をお知らせください。よろしくお願いします。</p>
+<p>手嶋</p>
+<hr>
+<h3>LINE版（短い）</h3>
+<hr>
+<p>飯塚先生、お世話になっております。手嶋です。</p>
+<p>福岡の旅館業物件の設備（省力化ICT機器）に対して経営力向上計画B類型を申請します。書類は全部こちらで用意しましたので、先生には投資計画書への確認署名・押印だけお願いできますか？</p>
+<p>お時間いただけますか？</p>
+<hr>
+<h3>面談時のアジェンダ（5〜10分で終わる想定）</h3>
+<ol><li>投資計画書の内容確認（先生に中身をご確認いただく）</li><li>設備: ICT機器一式（スマートロック・チェックイン端末等）</li><li>取得価額: 150〜190万円（要確定・設備見積書から）</li><li>年平均投資利益率: 5%要件に対して125%超（計算済み）</li></ol>
+<ol><li>即時償却 vs 税額控除の選択アドバイス</li><li>今期〜来期の利益状況でどちらが有利か、先生に判断いただく</li></ol>
+<ol><li>署名・押印</li><li>先生が認定経営革新等支援機関として確認書に署名</li></ol>
+<blockquote>申請書本体（様式第1号）は申請者（手嶋）が記入して提出。先生のご負担は署名のみ。</blockquote>
 </section>
 <hr class="sec">
 <section id="p4" class="doc">
@@ -638,7 +732,6 @@ iUMAプロパティマネジメント合同会社
 <hr class="sec">
 <section id="docs" class="doc">
 <div class="phasebanner"><span class="pnum">📄</span><b>必要書類（集める物リスト）</b></div>
-<h2>📄 必要書類（集める物リスト）</h2>
 <blockquote>旅館業許可・公庫融資・組合・補助金で要る書類を一覧化。✅=作成/取得済 / ⏳=これから。作成済みのものは「→」からこのページ内の該当ドラフト、白紙の公式様式は配布元へ飛べる。記入済みの実数版は機密のためローカル保管（公開サイトには載せない）。物件: プレイスポットしんばしビル本館 905号（中洲2-1-11）。</blockquote>
 <h3>📂 作成済み資料の一覧ページ（クリックで各ファイルが開く）</h3>
 <p>記入済み様式・決算書・図面・公式様式を1ページに集約した<strong>提出資料インデックス</strong>を作成済み。記入済み実物や決算書を含むため<strong>機密・ネット非配信</strong>＝この公開ページには載せられない。手元のMacで開くと各資料へクリックで飛べる：</p>
@@ -661,7 +754,7 @@ iUMAプロパティマネジメント合同会社
 <blockquote>記入済みの実物・正本（決算PDF・記入済み様式）の所在は <code>_private/00_提出資料インデックス.md</code>（ローカルのみ・機密）に集約。</blockquote>
 </section>
 <hr class="sec">
-<p style="font-size:11px;color:var(--text-secondary)">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
+<p style="font-size:11px;color:#888">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
 <button id="totop" aria-label="先頭へ" type="button">↑</button>
 <script>
 (function(){

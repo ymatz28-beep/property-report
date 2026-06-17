@@ -197,8 +197,14 @@ def md_to_html(md: str, demote: int = 0) -> str:
             tag = "ol" if ordered else "ul"
             items = []
             while i < len(lines) and (re.match(r"^\s*[-*]\s+", lines[i]) or re.match(r"^\s*\d+\.\s+", lines[i])):
-                items.append(re.sub(r"^\s*(?:[-*]|\d+\.)\s+", "", lines[i])); i += 1
-            out.append(f"<{tag}>" + "".join(f"<li>{inline(x)}</li>" for x in items) + f"</{tag}>"); continue
+                raw = re.sub(r"^\s*(?:[-*]|\d+\.)\s+", "", lines[i])
+                is_done = raw.startswith("✅") or "【完了】" in raw
+                items.append((raw, is_done))
+                i += 1
+            out.append(f"<{tag}>" + "".join(
+                f'<li class="done">{inline(x)}</li>' if done else f"<li>{inline(x)}</li>"
+                for x, done in items
+            ) + f"</{tag}>"); continue
         if re.match(r"^---+$", ln):
             out.append("<hr>"); i += 1; continue
         out.append(f"<p>{inline(ln)}</p>"); i += 1
@@ -334,6 +340,7 @@ code{{background:#f0f0f0;padding:1px 5px;border-radius:4px;font-size:12px}}
 ul,ol{{padding-left:22px}}
 li{{margin:3px 0}}
 hr{{border:none;border-top:1px solid #ddd;margin:16px 0}}
+li.done{{color:#aaa;text-decoration:line-through;opacity:.65}}
 hr.sec{{border-top:2px dashed var(--gold);margin:36px 0}}
 a{{color:#1e5fb4;word-break:break-all}}
 /* PJ 3ページ切替タブ */

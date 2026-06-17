@@ -22,7 +22,7 @@ hr{border:none;border-top:1px solid #ddd;margin:16px 0}
 hr.sec{border-top:2px dashed var(--gold);margin:36px 0}
 a{color:#1e5fb4;word-break:break-all}
 /* PJ 3ページ切替タブ */
-.pjnav{position:static;z-index:30;display:flex;background:var(--bg);margin:0 -20px}
+.pjnav{position:static;z-index:30;display:flex;background:var(--bg);box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
 .pjnav a{flex:1;text-align:center;color:#cdd4e2;text-decoration:none;font-size:12.5px;font-weight:700;padding:11px 4px;border-bottom:3px solid transparent;white-space:nowrap}
 .pjnav a.on{color:#ffd86b;border-bottom-color:var(--gold);background:#1a1d27}
 /* 上部バー: ツールバー(印刷/PDF/全体図)はスクロールで上へ流す。常時固定はフェーズチップ1本だけ＝読める面積を最大化 */
@@ -32,7 +32,7 @@ a{color:#1e5fb4;word-break:break-all}
 .toolbar a.alt{background:var(--surface2);color:#e4e4e7}
 .next-actions{background:#fffdf3;border:2px solid var(--gold);border-radius:12px;padding:4px 18px 10px;margin-top:14px}
 .next-actions h1{border:none;color:#7a5c00}
-.toc{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:var(--surface);padding:7px 20px;display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}
+.toc{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:var(--surface);padding:7px 20px;display:flex;justify-content:center;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}
 .toc .chip{flex:0 0 auto;background:#242836;color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}
 .toc .chip.active{background:var(--gold);color:#1a1207;border-color:var(--gold)}
 /* flowchart */
@@ -754,7 +754,7 @@ iUMAプロパティマネジメント合同会社
 <blockquote>記入済みの実物・正本（決算PDF・記入済み様式）の所在は <code>_private/00_提出資料インデックス.md</code>（ローカルのみ・機密）に集約。</blockquote>
 </section>
 <hr class="sec">
-<p style="font-size:11px;color:#888">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
+<p style="font-size:11px;color:var(--text-muted)">生成: property-analyzer/deals/financing/。数字の[要記入]はYumaの実数で更新する。各金融機関の融資条件は要直接照会。</p>
 <button id="totop" aria-label="先頭へ" type="button">↑</button>
 <script>
 (function(){

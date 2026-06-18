@@ -12,10 +12,10 @@
 - [WARN] hardcoded_data: Large inline data (60 lines) at line 61. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] structural_reform: [ESCALATED: 64d unresolved] generate_market.py is 1667 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 64d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
+- [ERROR] structural_reform: [ESCALATED: 64d unresolved] Stale temp/debug file (76 days old). Delete it.
 - [ERROR] structural_reform: [ESCALATED: 64d unresolved] Stale temp/debug file (75 days old). Delete it.
 - [ERROR] structural_reform: [ESCALATED: 64d unresolved] Stale temp/debug file (75 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 64d unresolved] Stale temp/debug file (75 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 64d unresolved] Stale temp/debug file (78 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 64d unresolved] Stale temp/debug file (79 days old). Delete it.
 - [WARN] html_ui: Missing gnav (site-header) — no navigation
 - [WARN] html_ui: Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
@@ -31,8 +31,9 @@
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
 - [WARN] html_ui: Missing gnav (site-header) — no navigation
 - [WARN] timestamp_format: Date-only timestamp '最終更新 2026-06-15' — should include HH:MM
-- [ERROR] property_patrol_steps: [ESCALATED: 55d unresolved] 物件パトロール失敗ステップ (2026-06-17 09:47): 【athome_osaka（取得件数が急減）】source_degraded → Fix: 1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加
 - [WARN] design_token_compliance: Line 9: hardcoded #c9a84c should be var(--gold)
+- [WARN] design_token_compliance: Line 311: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 327: hardcoded #ef4444 should be var(--red)
 - [ERROR] design_token_compliance: [ESCALATED: 64d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 64d unresolved] Line 406: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 64d unresolved] Line 425: hardcoded #9ca3af should be var(--text-secondary)
@@ -83,12 +84,12 @@
 - [ERROR] design_token_compliance: [ESCALATED: 62d unresolved] Line 62: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 62d unresolved] Line 646: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 62d unresolved] Line 665: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] blank_cells: [ESCALATED: 64d unresolved] ダッシュ「—」120個 (閾値20) — データ欠損の可能性
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 1% (1/124) — 閾値80%
-- [ERROR] qa_market_oc_income_coverage: [ESCALATED: 64d unresolved] OC 324件中 241件が年間収入欠落 (74%) — 利回り逆算で補完
-- [ERROR] qa_market_yield_consistency: 2件の利回り/年間収入乖離(>20%): コーヅ白金台: expected=48.8万 actual=102.0万 (52%乖離); エスティア駒込: expected=34.7万 actual=100.8万 (66%乖離)
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 64d unresolved] 26件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 文京区音羽(42㎡): ['グローリア初穂音羽', '江戸川橋駅 / 1LDK / 42.22㎡']; 中野区弥生町(43㎡): ['中野富士見町駅 / 1LDK / 43.50㎡', '中野弥生町スカイハイツ']; 中野区上鷺宮(59㎡): ['キャニオンマンション上鷺宮', '富士見台駅 / 3LDK / 59.40㎡']; 墨田区業平(58㎡): ['■□■ 業平橋住宅 ■□■ ～ スカイツリー駅5分・…', 'とうきょうスカイツリー駅 / 2SDK / 58.50㎡'] ... +21 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 15.6% (17/109件)。パイプライン変換バグの可能性。例: 2680.0万円/66.69㎡; 3780.0万円/67.46㎡; 3050.0万円/52.98㎡; 2999.0万円/52.55㎡; 1780.0万円/48.33㎡
+- [ERROR] blank_cells: [ESCALATED: 64d unresolved] ダッシュ「—」176個 (閾値20) — データ欠損の可能性
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 1% (2/141) — 閾値80%
+- [ERROR] qa_market_data_accuracy: [ESCALATED: 64d unresolved] 6/91 (6.6%) — price mismatch: ふれんず物件(博多区) raw=800.0 html=960.0; price mismatch: JGM笹丘 402 raw=800.0 html=900.0; price mismatch: 三愛シティライフ小笹 204 raw=950.0 html=990.0; price mismatch: コーポラス東光 206 raw=650.0 html=800.0; price mismatch: 高木団地住宅 二号棟 raw=698.0 html=710.0 ... +1 more
+- [ERROR] qa_market_oc_income_coverage: [ESCALATED: 64d unresolved] OC 336件中 293件が年間収入欠落 (87%) — 利回り逆算で補完
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 64d unresolved] 35件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 文京区音羽(42㎡): ['江戸川橋駅 / 1LDK / 42.22㎡', 'グローリア初穂音羽']; 中野区弥生町(43㎡): ['中野富士見町駅 / 1LDK / 43.50㎡', '中野弥生町スカイハイツ']; 中野区上鷺宮(59㎡): ['キャニオンマンション上鷺宮', '富士見台駅 / 3LDK / 59.40㎡']; 福岡市博多区比恵町(20㎡): ['ふれんず物件(博多区)', 'スカイハイツ春日（表面利回り：６．９３％）'] ... +30 more
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 28.0% (35/125件)。パイプライン変換バグの可能性。例: 2680.0万円/66.69㎡; 3780.0万円/67.46㎡; 2890.0万円/59.9㎡; 3050.0万円/52.98㎡; 2999.0万円/52.55㎡
 - [WARN] renderer_compliance: Missing gnav (site-header / site-nav) — no navigation
 - [ERROR] renderer_compliance: [ESCALATED: 16d unresolved] Missing gnav (site-header / site-nav) — no navigation
 - [ERROR] renderer_compliance: Missing design tokens (var(--bg) / var(--surface)) — page not using renderer.py

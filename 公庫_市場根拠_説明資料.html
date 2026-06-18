@@ -100,15 +100,17 @@
   }
   .story-card .step {
     display: inline-block;
-    background: var(--navy);
-    color: white;
+    background: #dbeafe;
+    color: var(--blue);
     font-size: 10px;
     font-weight: 700;
     padding: 2px 8px;
-    border-radius: 20px;
+    border-radius: 3px;
     margin-bottom: 8px;
+    letter-spacing: 0.04em;
+    border: 1px solid #bfdbfe;
   }
-  .story-card .point { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .story-card .point { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
   .story-card .desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
   .story-card .stat { font-size: 18px; font-weight: 800; color: var(--blue); margin-bottom: 4px; }
   /* Positioning */
@@ -172,7 +174,7 @@
 
 <div class="header">
   <div>
-    <div class="sub">日本政策金融公庫 生活衛生貸付 — 申請補足資料</div>
+    <div class="sub">日本政策金融公庫 振興事業貸付（生活衛生同業組合経由） — 申請補足資料</div>
     <h1>プレイスポットしんばし 市場根拠・数字の背景</h1>
     <div class="sub">中洲2-1-11 49.23㎡ 定員5名 簡易宿所（旅館業）／ iUMAプロパティマネジメント合同会社</div>
   </div>
@@ -299,15 +301,36 @@
       <div class="chart-card">
         <h3>1室で5名・一人頭コスト優位</h3>
         <div style="margin-top:12px">
-          <div style="background:#f0fdf4;border-radius:6px;padding:12px;margin-bottom:8px">
-            <div style="font-size:11px;color:#16a34a;font-weight:700">本物件（49㎡・5名）ADR 18,000円</div>
-            <div style="font-size:24px;font-weight:800;color:#16a34a">3,600<span style="font-size:14px">円/人泊</span></div>
-            <div style="font-size:11px;color:#6b7280">家族・グループ5名で宿泊した場合</div>
+          <!-- ADR室料の直接比較 -->
+          <div style="display:flex;gap:8px;align-items:stretch;margin-bottom:10px">
+            <div style="flex:1;background:#f0fdf4;border-radius:6px;padding:10px;text-align:center">
+              <div style="font-size:9px;color:#16a34a;font-weight:700;margin-bottom:2px">本物件（49㎡・5名定員）</div>
+              <div style="font-size:22px;font-weight:800;color:#16a34a;line-height:1.1">18,000<span style="font-size:11px">円/泊</span></div>
+              <div style="font-size:9px;color:#6b7280;margin-top:2px">1室で5名まで</div>
+            </div>
+            <div style="display:flex;align-items:center;padding:0 4px;font-size:14px;font-weight:700;color:var(--text-secondary)">vs</div>
+            <div style="flex:1;background:#fef3c7;border-radius:6px;padding:10px;text-align:center">
+              <div style="font-size:9px;color:#d97706;font-weight:700;margin-bottom:2px">ビジネスホテル（1〜2名/室）</div>
+              <div style="font-size:22px;font-weight:800;color:#d97706;line-height:1.1">15,000<span style="font-size:11px">円/室泊</span></div>
+              <div style="font-size:9px;color:#6b7280;margin-top:2px">5名には2〜3室必要</div>
+            </div>
           </div>
-          <div style="background:#fef3c7;border-radius:6px;padding:12px;margin-bottom:8px">
-            <div style="font-size:11px;color:#d97706;font-weight:700">ビジネスホテル（1室1〜2名）</div>
-            <div style="font-size:24px;font-weight:800;color:#d97706">10,000〜15,000<span style="font-size:14px">円/室泊</span></div>
-            <div style="font-size:11px;color:#6b7280">5名で利用すると2〜3室必要 → 合計30,000〜45,000円</div>
+          <!-- 5名グループの合計コスト比較 -->
+          <div style="background:#f8fafc;border-radius:6px;padding:10px;margin-bottom:8px;border:1px solid #e2e8f0">
+            <div style="font-size:9px;color:#374151;font-weight:700;margin-bottom:6px;text-align:center">5名グループで1泊した場合の合計</div>
+            <div style="display:flex;justify-content:space-around;align-items:center">
+              <div style="text-align:center">
+                <div style="font-size:9px;color:#6b7280">本物件（1室）</div>
+                <div style="font-size:18px;font-weight:800;color:#16a34a">¥18,000</div>
+                <div style="font-size:8px;color:#16a34a;font-weight:600">= 3,600円/人</div>
+              </div>
+              <div style="font-size:20px;color:var(--red);font-weight:900">＜</div>
+              <div style="text-align:center">
+                <div style="font-size:9px;color:#6b7280">ビジネスホテル（3室）</div>
+                <div style="font-size:18px;font-weight:800;color:#d97706">¥45,000</div>
+                <div style="font-size:8px;color:#d97706;font-weight:600">= 9,000円/人</div>
+              </div>
+            </div>
           </div>
           <div class="note-box">
             グループ旅行の「1人あたり単価」で圧倒的優位。韓国・台湾からの家族旅行・友人グループに刺さる価値提案。
@@ -545,40 +568,40 @@
 
   <!-- ===== 11. 計画根拠まとめ（6ポイント）===== -->
   <section>
-    <h2>計画根拠のまとめ（6つのポイント）</h2>
+    <h2>事業計画の数字的根拠 — 市場・財務エビデンス</h2>
     <div class="story-cards">
       <div class="story-card">
-        <div class="step">POINT 1</div>
+        <div class="step">根拠 1</div>
         <div class="stat">3,687万人</div>
         <div class="point">訪日インバウンドが過去最高を更新中</div>
         <div class="desc">2024年の訪日外国人は3,687万人（2019年比+13%）。コロナ回復ではなく「成長フェーズ」に入っている。円安が追い風で単価も上昇。</div>
       </div>
       <div class="story-card">
-        <div class="step">POINT 2</div>
+        <div class="step">根拠 2</div>
         <div class="stat">691万人</div>
         <div class="point">福岡はアジアゲートウェイとして別格の存在</div>
         <div class="desc">韓国・台湾・香港から直行便2〜3時間。外国人宿泊者は2019年比62.3%増。アジア訪日客にとって福岡は東京・大阪に次ぐ主要宿泊地。</div>
       </div>
       <div class="story-card">
-        <div class="step">POINT 3</div>
+        <div class="step">根拠 3</div>
         <div class="stat">80.4%</div>
         <div class="point">福岡のホテル市場は供給不足ぎみ</div>
         <div class="desc">2024年の稼働率は80.4%でコロナ前（79.6%）を超えた。高グレードは90%超・ADR2〜5万円台。新規供給が追いつかない状態。</div>
       </div>
       <div class="story-card">
-        <div class="step">POINT 4</div>
+        <div class="step">根拠 4</div>
         <div class="stat">18,000円</div>
         <div class="point">計画ADRは「市場最安値帯」の保守値</div>
         <div class="desc">中洲の市場ADR（1〜2名向け）12〜15千円に、5名グループ割増を加えても18千円は保守的。ビジネスホテル平日2万円より低い設定。</div>
       </div>
       <div class="story-card">
-        <div class="step">POINT 5</div>
+        <div class="step">根拠 5</div>
         <div class="stat">65%</div>
         <div class="point">計画稼働率は市場平均の81%水準</div>
         <div class="desc">目標65%は市場80.4%に対してバッファー15pt以上。中洲好立地の民泊実績（60〜75%）の下端相当。開業直後でも達成可能な現実的な水準。</div>
       </div>
       <div class="story-card">
-        <div class="step">POINT 6</div>
+        <div class="step">根拠 6</div>
         <div class="stat">1.29</div>
         <div class="point">軌道後のDSCRは1.29、複数のバッファーを確保</div>
         <div class="desc">ADRが15,000円まで下がっても稼働65%ならDSCR1.06（黒字）。代表の給与収入2,091万円が最終の返済余力。複数のバッファーを保有。</div>

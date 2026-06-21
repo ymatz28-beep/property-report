@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今ここと次の一手 — プレイスポット</title>
+<style>
+:root{--bg:#0f1117;--card:#1a1d27;--bd:#2d3348;--gold:#c9a84c;--tx:#e4e4e7;--mut:#8b91a0;--green:#4caf7d;--amber:#e6a817;--red:#e05c5c;--blue:#5b8dee}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'Hiragino Sans','Noto Sans JP',sans-serif;max-width:820px;margin:0 auto;padding:28px 18px 80px;line-height:1.7}
+h1{font-size:21px;border-bottom:3px solid var(--gold);padding-bottom:8px;margin-bottom:4px}
+.updated{color:var(--mut);font-size:12px;margin-bottom:24px}
+
+/* 今週の予定 */
+.week-box{background:rgba(201,168,76,.08);border:1px solid var(--gold);border-radius:14px;padding:16px 20px;margin-bottom:22px}
+.week-box h2{color:var(--gold);font-size:15px;margin-bottom:10px}
+.week-item{display:flex;align-items:flex-start;gap:14px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.week-item:last-child{border-bottom:none}
+.week-date{background:var(--gold);color:#1a1207;font-weight:700;font-size:12.5px;padding:3px 10px;border-radius:8px;white-space:nowrap;margin-top:2px}
+.week-label{font-size:14.5px}
+
+/* 3本柱 */
+.section{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 20px;margin-bottom:14px}
+.section h2{font-size:15px;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section h2 .letter{background:var(--gold);color:#1a1207;font-weight:700;font-size:12px;padding:2px 8px;border-radius:6px}
+
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{color:var(--mut);font-weight:600;font-size:12px;text-align:left;padding:4px 8px 8px;border-bottom:1px solid var(--bd)}
+td{padding:9px 8px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td:first-child{color:#c8cfe0;font-weight:500;white-space:nowrap;padding-right:16px}
+
+.ok::before{content:"✅ ";font-size:13px}
+.wait::before{content:"⏳ ";font-size:13px}
+.ok{color:#c8cfe0}
+.wait{color:var(--mut)}
+
+.note-box{background:rgba(230,168,23,.08);border-left:3px solid var(--amber);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13px;color:#e8d7a0;margin-top:10px}
+
+/* 次にやること */
+.actions{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 20px;margin-bottom:14px}
+.actions h2{font-size:15px;color:var(--gold);margin-bottom:12px}
+.action-item{display:flex;align-items:flex-start;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.action-item:last-child{border-bottom:none}
+.num{background:var(--gold);color:#1a1207;font-weight:700;font-size:13px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.action-body{font-size:14.5px;line-height:1.6}
+.action-body strong{color:#fff}
+.action-sub{color:var(--mut);font-size:12.5px;margin-top:2px}
+
+/* 窓口一覧 */
+.contacts{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 20px;margin-bottom:14px}
+.contacts h2{font-size:15px;color:var(--gold);margin-bottom:12px}
+.contact-item{display:flex;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px}
+.contact-item:last-child{border-bottom:none}
+.contact-name{min-width:200px;color:#c8cfe0;font-weight:500}
+.contact-tel{font-family:monospace;color:var(--blue);font-size:13.5px}
+.contact-method{color:var(--mut);font-size:12px;margin-left:auto}
+
+footer{color:var(--mut);font-size:11.5px;margin-top:24px;border-top:1px solid var(--bd);padding-top:12px}
+</style>
+</head>
+<body>
+
+<h1>プレイスポット — 今ここと次の一手</h1>
+<div class="updated">最終更新: 2026-06-19</div>
+
+<!-- 今週の予定 -->
+<div class="week-box">
+  <h2>📅 今週の予定（動かせないもの）</h2>
+  <div class="week-item">
+    <span class="week-date">6/24 (水) 15:00</span>
+    <span class="week-label">商工中金 西岡様 — Zoom 面談</span>
+  </div>
+  <div class="week-item">
+    <span class="week-date">6/25 (木)</span>
+    <span class="week-label">公庫 坂本様 — オンライン面談</span>
+  </div>
+</div>
+
+<!-- A. 融資 -->
+<div class="section">
+  <h2><span class="letter">A</span> 融資（金融機関）</h2>
+  <table>
+    <tr><th>機関</th><th>状態</th></tr>
+    <tr><td>公庫 坂本様</td><td class="ok">書類送付済 → 6/25 面談</td></tr>
+    <tr><td>商工中金 西岡様</td><td class="ok">書類送付済 → 6/24 面談</td></tr>
+    <tr><td>遠賀信金 野口様</td><td class="ok">書類送付済 → 連絡待ち（ハードル高い前提）</td></tr>
+    <tr><td>福岡県信用保証協会</td><td class="ok">Webフォーム送信済（6/19）→ 連絡待ち。返信来たら西日本シティ銀行へ電話 0120-713-817</td></tr>
+  </table>
+</div>
+
+<!-- B. 補助金・節税 -->
+<div class="section">
+  <h2><span class="letter">B</span> 補助金・節税（3本柱）</h2>
+  <table>
+    <tr><th></th><th>内容</th><th>状態</th></tr>
+    <tr><td>B類型</td><td>経営力向上計画 → 設備費を税額控除</td><td class="ok">商工会議所で決定。<strong>飯塚先生の署名待ち</strong></td></tr>
+    <tr><td>C. 省力化補助</td><td>スマートロック等 1/2 補助</td><td class="wait">開業後に申請</td></tr>
+    <tr><td>D. 税制（少額特例）</td><td>40万未満設備を全額経費化</td><td class="wait">開業後に処理</td></tr>
+  </table>
+  <div class="note-box">★ 認定が下りる前に設備を発注しないこと（B類型の前提条件）</div>
+</div>
+
+<!-- C. 物件・許認可 -->
+<div class="section">
+  <h2><span class="letter">C</span> 物件・許認可</h2>
+  <table>
+    <tr><th>内容</th><th>状態</th></tr>
+    <tr><td>競合確認</td><td class="ok">905号に申し込みなし（6/15確認）</td></tr>
+    <tr><td>指値申し込み（2,000万）</td><td class="wait"><strong>まだ入れていない</strong></td></tr>
+    <tr><td>保健所</td><td class="ok">種別 = 「旅館営業」で確定</td></tr>
+    <tr><td>消防署</td><td class="ok">1室なら設備は軽い</td></tr>
+    <tr><td>旅館業許可申請</td><td class="wait">物件取得・リノベ後</td></tr>
+    <tr><td>定款に旅館業追加</td><td class="wait">公庫・保健所で要否確認後</td></tr>
+    <tr><td>リノベ相見積</td><td class="wait">6/22 Proceed Design 面談 / RenoLIVING・ANDHEART 折り返し待ち</td></tr>
+  </table>
+</div>
+
+<!-- 次にやること -->
+<div class="actions">
+  <h2>次にやること（優先順）</h2>
+
+  <div class="action-item">
+    <span class="num">1</span>
+    <div class="action-body">
+      <strong>6/24 面談に臨む</strong>（商工中金 西岡様）
+    </div>
+  </div>
+  <div class="action-item">
+    <span class="num">2</span>
+    <div class="action-body">
+      <strong>6/25 面談に臨む</strong>（公庫 坂本様）
+    </div>
+  </div>
+  <div class="action-item">
+    <span class="num">3</span>
+    <div class="action-body">
+      <strong>飯塚先生に連絡</strong> → B類型の投資計画書に署名・押印をもらう
+    </div>
+  </div>
+  <div class="action-item">
+    <span class="num">4</span>
+    <div class="action-body">
+      <strong>指値申し込みを入れる</strong>
+      <div class="action-sub">中野さん（株ハピネス）に 2,000万を正式に伝える → 092-833-7500</div>
+    </div>
+  </div>
+  <div class="action-item">
+    <span class="num">5</span>
+    <div class="action-body">
+      <strong>組合の支部に電話</strong> → 組合費・加入手順を確認
+      <div class="action-sub">博多旅館ホテル組合 092-291-1517</div>
+    </div>
+  </div>
+  <div class="action-item">
+    <span class="num">6</span>
+    <div class="action-body">
+      <strong>信用保証協会の返信待ち</strong> → 来たら西日本シティ銀行へ電話
+    </div>
+  </div>
+</div>
+
+<!-- 窓口一覧 -->
+<div class="contacts">
+  <h2>窓口一覧</h2>
+  <div class="contact-item"><span class="contact-name">公庫 坂本様</span><span class="contact-tel">面談 6/25</span><span class="contact-method">Zoom</span></div>
+  <div class="contact-item"><span class="contact-name">商工中金 西岡様</span><span class="contact-tel">面談 6/24 15:00</span><span class="contact-method">Zoom</span></div>
+  <div class="contact-item"><span class="contact-name">遠賀信金 野口様</span><span class="contact-tel">0926-62-3231</span><span class="contact-method">電話</span></div>
+  <div class="contact-item"><span class="contact-name">博多旅館ホテル組合（支部）</span><span class="contact-tel">092-291-1517</span><span class="contact-method">電話</span></div>
+  <div class="contact-item"><span class="contact-name">飯塚先生（税理士）</span><span class="contact-tel">—</span><span class="contact-method">直接持参</span></div>
+  <div class="contact-item"><span class="contact-name">仲介 中野さん（株ハピネス）</span><span class="contact-tel">092-833-7500</span><span class="contact-method">電話</span></div>
+  <div class="contact-item"><span class="contact-name">博多消防署 予防課</span><span class="contact-tel">092-475-0119</span><span class="contact-method">電話</span></div>
+  <div class="contact-item"><span class="contact-name">保健所 博多衛生課</span><span class="contact-tel">eisei-hawo.PHB@city.fukuoka.lg.jp</span><span class="contact-method">メール</span></div>
+</div>
+
+<div style="margin-top:28px">
+  <!-- 面談書類 -->
+  <div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 20px;margin-bottom:12px">
+    <div style="color:var(--gold);font-size:13px;font-weight:700;margin-bottom:10px">📋 面談書類</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:10px;font-size:13.5px">
+        <span style="background:var(--gold);color:#1a1207;font-weight:700;font-size:11px;padding:2px 8px;border-radius:6px;white-space:nowrap">6/24 商工中金</span>
+        <a href="_private/商工中金_西岡様_0624/12_市場根拠説明資料.html" style="color:#7db1ff;text-decoration:none">市場根拠 説明資料</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:13.5px">
+        <span style="background:var(--gold);color:#1a1207;font-weight:700;font-size:11px;padding:2px 8px;border-radius:6px;white-space:nowrap">6/25 公庫</span>
+        <a href="_private/公庫_坂本様_0623締切/市場根拠_説明資料.html" style="color:#7db1ff;text-decoration:none;margin-right:14px">市場根拠 説明資料</a>
+        <a href="_private/公庫_事業計画書_提出用.html" style="color:#7db1ff;text-decoration:none">事業計画書</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 旅館業許可 申請書類 -->
+  <div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 20px;margin-bottom:12px">
+    <div style="color:var(--gold);font-size:13px;font-weight:700;margin-bottom:10px">🏨 旅館業許可 申請書類（ドラフト）</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px">
+      <a href="_private/旅館業許可申請/01_営業許可申請書_ドラフト.html" style="color:#7db1ff;text-decoration:none">営業許可申請書</a>
+      <a href="_private/旅館業許可申請/02_役員名簿_ドラフト.html" style="color:#7db1ff;text-decoration:none">役員名簿</a>
+      <a href="_private/旅館業許可申請/03_300m地図.html" style="color:#7db1ff;text-decoration:none">300m地図</a>
+      <a href="_private/旅館業許可申請/05_多言語マニュアル.html" style="color:#7db1ff;text-decoration:none">多言語マニュアル</a>
+    </div>
+  </div>
+
+  <!-- 全書類インデックス -->
+  <div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px 20px">
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13.5px">
+      <a href="_private/00_提出資料インデックス.html" style="color:#7db1ff;text-decoration:none">📂 提出資料インデックス（全書類）</a>
+      <a href="_private/物件資料/リノベ見積_B類型対応版.html" style="color:#7db1ff;text-decoration:none">リノベ見積（B類型版）</a>
+      <a href="_private/薬院_売却vs賃貸_試算.html" style="color:#7db1ff;text-decoration:none">薬院 試算</a>
+    </div>
+  </div>
+</div>
+<footer>プレイスポットしんばし 融資パック — ローカル専用</footer>
+</body>
+</html>

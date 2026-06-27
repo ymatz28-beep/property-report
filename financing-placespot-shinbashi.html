@@ -20,7 +20,37 @@ ul,ol{padding-left:22px}
 li{margin:3px 0}
 hr{border:none;border-top:1px solid #ddd;margin:16px 0}
 li.done{color:#aaa;text-decoration:line-through;opacity:.65}
+tr.done td{color:#aaa;font-size:.88em;opacity:.7}
+tr.ng td{color:#b08080;text-decoration:line-through;opacity:.55}
+details.past-section{margin:10px 0}
+details.past-section>summary{cursor:pointer;display:block;padding:7px 12px;color:#888;font-size:13px;background:#f7f5f0;border-radius:8px;border:1px solid #e0d8c8;list-style:none;margin-bottom:6px}
+details.past-section>summary::before{content:"▶ ";font-size:10px;vertical-align:middle}
+details.past-section[open]>summary::before{content:"▼ ";font-size:10px;vertical-align:middle}
 hr.sec{border-top:2px dashed var(--gold);margin:36px 0}
+/* ── phase-state system ── */
+details[id]{scroll-margin-top:54px}
+.phase-wrap{margin:0;border:none;background:transparent}
+.phase-summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:10px;margin:0 0 4px;font-size:14px;font-weight:600}
+.phase-summary::-webkit-details-marker{display:none}
+details.phase-completed>.phase-summary{background:#f3f0ea;border:1px solid #ddd8cc;color:#aaa}
+details.phase-pending>.phase-summary{background:#f6f6f6;border:1px solid #e0e0e0;color:#bbb}
+.ps-sum-num{flex:0 0 28px;height:28px;border-radius:50%;background:rgba(0,0,0,.08);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.ps-sum-title{flex:1}
+.phase-badge{font-size:11px;padding:2px 9px;border-radius:999px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.completed-badge{background:#e5f5e0;color:#2f7a3a;border:1px solid #b0dfa8}
+.pending-badge{background:#f0f0f0;color:#999;border:1px solid #ddd}
+.now-here-badge{background:var(--gold);color:#1a1207;font-size:12px;padding:3px 12px;border-radius:999px;font-weight:800;margin-left:auto;white-space:nowrap;flex-shrink:0}
+section.doc.phase-active{border:2.5px solid var(--gold);border-radius:14px;padding:4px 14px 14px;background:#fffdf5}
+.phase-active-banner{background:#221900!important}
+/* ── progress strip ── */
+.progress-strip{display:flex;align-items:center;flex-wrap:wrap;gap:3px;background:#1a1d27;border-radius:11px;padding:8px 12px;margin:10px 0 20px;overflow-x:auto}
+.ps-step{display:flex;flex-direction:column;align-items:center;padding:5px 9px;border-radius:7px;min-width:50px;text-align:center;line-height:1.3;font-size:11px;font-weight:700}
+.ps-step.completed{background:#1a2e1a;color:#6abf69}
+.ps-step.active{background:var(--gold);color:#1a1207}
+.ps-step.pending{background:#242836;color:#545a6b}
+.ps-step.reference{background:#242836;color:#767d90}
+.ps-arrow{color:#3a4055;font-size:14px;flex-shrink:0;line-height:1}
+.ps-label{font-size:9px;font-weight:600;margin-top:2px;opacity:.75;letter-spacing:.03em}
 a{color:#1e5fb4;word-break:break-all}
 /* PJ 3ページ切替タブ */
 .pjnav{position:static;z-index:30;display:flex;background:#0f1117;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
@@ -108,18 +138,19 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
   table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
   table thead,table tbody{display:table;width:100%;min-width:520px}}
 </style></head><body>
-<nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a><a href="yakuin.html">🏠 薬院 売る/貸す</a></nav>
+<nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a></nav>
 <nav class="toc" id="toc"><a class="chip" href="#next" data-target="next">▶ 次にやること</a><a class="chip" href="#p0" data-target="p0">0 朝イチ電話</a><a class="chip" href="#p1" data-target="p1">1 旅館業許可</a><a class="chip" href="#p2" data-target="p2">2 公庫融資</a><a class="chip" href="#p3" data-target="p3">3 税優遇の前提</a><a class="chip" href="#p4" data-target="p4">4 発注ゲート</a><a class="chip" href="#p5" data-target="p5">5 開業後の補助金</a><a class="chip" href="#docs" data-target="docs">📄 必要書類</a></nav>
 <section id="next" class="doc next-actions">
 <h1>プレイスポット 今ここと次の一手</h1>
 <p>最終更新: 2026-06-27（自動更新）</p>
 <hr>
-<h2>完了イベント</h2>
-<table><thead><tr><th>日時</th><th>内容</th></tr></thead><tbody><tr><td>✅ <strong>6/22 (月) 13:00</strong></td><td>Proceed Design 田代様 初回面談（完了）</td></tr><tr><td>✅ <strong>6/24 (水) 15:00</strong></td><td>商工中金 西岡様 Zoom 面談（完了・消極的）</td></tr><tr><td>✅ <strong>6/25 (木) 10:00</strong></td><td>公庫 坂本様 オンライン面談（完了・消極的）</td></tr><tr><td>✅ <strong>6/25 (木) 12:00</strong></td><td>福岡銀行 高宮支店 山上様 面談（完了・協議中）</td></tr><tr><td>✅ <strong>6/25 (木) 14:00</strong></td><td>Proceed Design 田代様 現地調査（完了・見積待ち）</td></tr></tbody></table>
+<details class="past-section"><summary>完了イベント</summary>
+<table><thead><tr><th>日時</th><th>内容</th></tr></thead><tbody><tr class="done"><td>✅ <strong>6/22 (月) 13:00</strong></td><td>Proceed Design 田代様 初回面談（完了）</td></tr><tr class="done"><td>✅ <strong>6/24 (水) 15:00</strong></td><td>商工中金 西岡様 Zoom 面談（完了・消極的）</td></tr><tr class="done"><td>✅ <strong>6/25 (木) 10:00</strong></td><td>公庫 坂本様 オンライン面談（完了・消極的）</td></tr><tr class="done"><td>✅ <strong>6/25 (木) 12:00</strong></td><td>福岡銀行 高宮支店 山上様 面談（完了・協議中）</td></tr><tr class="done"><td>✅ <strong>6/25 (木) 14:00</strong></td><td>Proceed Design 田代様 現地調査（完了・見積待ち）</td></tr></tbody></table>
+</details>
 <hr>
 <h2>状況マップ（3本柱の今）</h2>
 <h3>A. 融資（金融機関）</h3>
-<table><thead><tr><th>機関</th><th>状態</th></tr></thead><tbody><tr><td>公庫 坂本様</td><td>✅ 6/25 面談完了 → <strong>消極的</strong>（通過困難の可能性。審査結果連絡待ち）</td></tr><tr><td>商工中金 西岡様</td><td>✅ 6/24 面談完了 → <strong>消極的</strong>（可否連絡待ち）</td></tr><tr><td>遠賀信金 野口様</td><td>❌ NG — 福岡に本店がない・従業員がいる営業実績がない</td></tr><tr><td>福岡銀行 高宮支店 山上様</td><td>✅ 6/25 面談完了 → <strong>協議中</strong>（結果連絡待ち）</td></tr><tr><td>福岡県信用保証協会</td><td>✅ Webフォーム送信済（6/19）→ 連絡待ち。返信来たら西日本シティ銀行へ電話 0120-713-817</td></tr></tbody></table>
+<table><thead><tr><th>機関</th><th>状態</th></tr></thead><tbody><tr class="ng"><td>公庫 坂本様</td><td>✅ 6/25 面談完了 → <strong>消極的</strong>（通過困難の可能性。審査結果連絡待ち）</td></tr><tr class="ng"><td>商工中金 西岡様</td><td>✅ 6/24 面談完了 → <strong>消極的</strong>（可否連絡待ち）</td></tr><tr class="ng"><td>遠賀信金 野口様</td><td>❌ NG — 福岡に本店がない・従業員がいる営業実績がない</td></tr><tr><td>福岡銀行 高宮支店 山上様</td><td>✅ 6/25 面談完了 → <strong>協議中</strong>（結果連絡待ち）</td></tr><tr><td>福岡県信用保証協会</td><td>✅ Webフォーム送信済（6/19）→ 連絡待ち。返信来たら西日本シティ銀行へ電話 0120-713-817</td></tr></tbody></table>
 <h3>B. 補助金・節税（3本柱）</h3>
 <table><thead><tr><th></th><th>内容</th><th>状態</th></tr></thead><tbody><tr><td>B類型</td><td>経営力向上計画 → 設備費を税額控除</td><td>✅ 商工会議所で決定。<strong>飯塚先生の署名待ち</strong></td></tr><tr><td>C. 省力化補助</td><td>スマートロック等 1/2 補助</td><td>⏳ 開業後に申請</td></tr><tr><td>D. 税制（少額特例）</td><td>40万未満設備を全額経費化</td><td>⏳ 開業後に処理</td></tr></tbody></table>
 <blockquote>★ 認定が下りる前に設備を発注しないこと（B類型の前提条件）</blockquote>
@@ -160,8 +191,11 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
     <a class="fbox end" href="#p5"><b>5. 開業後：福岡市 受入環境補助・省力化補助を申請</b><small>開業＋宿泊税申告が要件。交付決定の"後"に対象機器を発注→設置→実績報告で後払い入金。確定申告で経営強化税制も回収</small></a>
   </div>
 </section>
-<section id="p0" class="doc">
-<div class="phasebanner"><span class="pnum">0</span><b>まず朝イチ、電話で予約・相談</b></div>
+<div class="progress-strip"><div class="ps-step completed">✅ 0 朝イチ電話<span class="ps-label">完了</span></div><span class="ps-arrow">›</span><div class="ps-step pending">⏳ 1 旅館業許可<span class="ps-label">未着手</span></div><span class="ps-arrow">›</span><div class="ps-step active">★ 2 公庫融資<span class="ps-label">今ここ</span></div><span class="ps-arrow">›</span><div class="ps-step active">★ 3 税優遇の前提<span class="ps-label">今ここ</span></div><span class="ps-arrow">›</span><div class="ps-step pending">⏳ 4 発注ゲート<span class="ps-label">未着手</span></div><span class="ps-arrow">›</span><div class="ps-step pending">⏳ 5 開業後の補助金<span class="ps-label">未着手</span></div><span class="ps-arrow">›</span><div class="ps-step reference">📄 📄 必要書類<span class="ps-label">参照</span></div></div>
+<details class="phase-wrap phase-completed" id="p0">
+<summary class="phase-summary"><span class="ps-sum-num">0</span><span class="ps-sum-title">まず朝イチ、電話で予約・相談</span><span class="phase-badge completed-badge">✅ 完了</span></summary>
+<section class="doc">
+<div class="phasebanner"><span class="pnum" style="opacity:.45">0</span><b style="text-decoration:line-through;opacity:.55">まず朝イチ、電話で予約・相談</b><span class="phase-badge completed-badge" style="margin-left:auto">✅ 完了</span></div>
 <blockquote>この物件は<b>許可が全部のスイッチ</b>。まず<b>A. 読む → B. 動く</b>の順。<br>A. <b>読む（HPで完結）</b>：旅館業の<a href="https://www.city.fukuoka.lg.jp/hofuku/iyakumu-eisei/life/kurashinoeisei/documents/ryokangyounimotodukutebiki_R0411.pdf" target="_blank">手引きPDF</a>（<a href="https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html" target="_blank">案内ページ</a>）に、構造・面積・必要書類・手数料22,000円・許可まで14営業日が全部載っている。<br>B. <b>動く（HPでは分からない＝人に聞く／予約する）</b>：下のカードへ。<b class="now-i">今朝の最優先</b>は公庫の相談予約（午前中に取り切る・許可申請中でも申込可）。<b class="must-i">必須</b>は保健所（事前相談の予約・着工前に図面持参）・消防（この建物の設備判断）・こども未来局（許可申請の前の事前協議）。<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）。各カードは「やること」と「これだけ聞く」に絞ってある。並行で<b>gBizIDプライム</b>（省力化補助の前提・発行に2〜3週）も申請。</blockquote><div class="hubgrid"><div class="hubcard now"><div class="hubh"><b>🏦 日本政策金融公庫（相談予約）</b><span class="hublinks"><a class="tel" href="tel:0120154505">☎ 0120-154-505</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E6%97%A5%E6%9C%AC%E6%94%BF%E7%AD%96%E9%87%91%E8%9E%8D%E5%85%AC%E5%BA%AB%20%E7%A6%8F%E5%B2%A1%E6%94%AF%E5%BA%97%20%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D3-21-12" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag now">今朝最優先</span>午前中に相談予約を取り切る。旅館業は許可申請中でも申込可</div><div class="hubaddr">📍 日本政策金融公庫 福岡支店 福岡市博多区博多駅前3-21-12</div><div class="hubdo"><b>やること</b>今朝いちばんに、設備資金の相談予約を取る。総合ダイヤル0120-154-505（平日9-17時）が混んだら福岡支店 国民生活事業 092-411-9111へ直接。許可申請中でも申込めるので待たなくていい。融資の詳細はフェーズ2。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>制度・必要書類の概要は公庫サイト。予約日と当日の持参書類は電話で確定</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:#5a3a1a">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。設備資金の相談予約をお願いします。旅館業は許可申請中です。
 お聞きしたいのは、次の点です。
 1. 相談日の予約（できれば近日）と、当日の持参書類
@@ -198,7 +232,7 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
 <h2>📧 メール・WEB予約で問い合わせる（電話より確実・そのままコピー）</h2>
 <blockquote>電話は時間が読めないので、メール・WEB予約で済むものはそちらを使う。送信済みのものは早見表に記録し、これから出すものだけ文面を置く。</blockquote>
 <h3>連絡手段の早見表</h3>
-<table><thead><tr><th>窓口</th><th>最良の手段</th><th>宛先</th><th>状況</th></tr></thead><tbody><tr><td>日本政策金融公庫 坂本様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）。面談 6/25 オンライン</td></tr><tr><td>遠賀信用金庫 野口様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）</td></tr><tr><td>商工中金 西岡様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）。面談 6/24 15:00 Zoom</td></tr><tr><td>福岡銀行 高宮支店 山上様</td><td>メール</td><td>プロシードからアドレス取得後送付</td><td>⏳メール送付待ち（昨日電話済み・面談予約済み・プロシード紹介 2026-06-23）</td></tr><tr><td>福岡銀行 西新町支店 石井様</td><td>—</td><td>—</td><td>✗ 除外（電話出ず・中野氏から消極的と聞いていたため 2026-06-23）</td></tr><tr><td>福岡県信用保証協会（制度融資・保証）</td><td>Webフォーム</td><td><a href="https://www.fukuoka-cgc.or.jp/contact/contact_form.php（送信先:">https://www.fukuoka-cgc.or.jp/contact/contact_form.php（送信先:</a> 営業部）</td><td>⏳問い合わせ予定（法人本店が東京でも使えるか確認）</td></tr><tr><td>西日本シティ銀行（制度融資・貸し手）</td><td>電話</td><td>0120-713-817（ビジネスサポートセンター福岡）</td><td>⏳保証協会の確認後に打診。Webフォームは福岡県内事業者限定のため電話</td></tr><tr><td>日本政策金融公庫 福岡支店</td><td>WEB予約フォーム</td><td>公庫サイト「福岡支店 WEB予約」</td><td>✅予約済（6/10 13:00）</td></tr><tr><td>博多衛生課 環境係（旅館業）</td><td>メール（事前相談はメールで受付）</td><td>eisei-hawo.PHB@city.fukuoka.lg.jp</td><td>✅返信あり（種別=旅館で申請の方向・許可2週間+混雑で余裕を）</td></tr><tr><td>こども未来局 こども健全育成課（事前協議）</td><td>メール</td><td>kenzenikusei.CB@city.fukuoka.lg.jp</td><td>✅送信済</td></tr><tr><td>福岡県旅館ホテル生活衛生同業組合（公庫低利の前提）</td><td>FAX または 電話（メール・フォーム無し）</td><td>FAX 092-752-0117 ／ 電話 092-737-5050</td><td>✅連絡済（2026-06-11）→ 組合費は<strong>支部に確認</strong>。振興事業資金証明書は<strong>公庫で詳細確認</strong>。支部連絡先: 博多旅館ホテル組合 092-291-1517 ／ 福岡市ホテル旅館組合 092-431-3001</td></tr><tr><td>福岡市 観光産業課（補助金・開業後）</td><td>メール</td><td>syukuhaku-shien@city.fukuoka.lg.jp</td><td>✅返信あり（6/9 横尾氏）：上限40万は事業者単位／申請は実営業中が要件／来年度未定／問13でマンションタイプの客室内キッチン・洗濯は対象外。チラシ・Q&amp;A・事例集の3点入手済</td></tr><tr><td>福岡商工会議所 中小企業振興グループ（税優遇の前提）</td><td>メール（相談は予約制）</td><td>fkkeiei@fukunet.or.jp ／ 電話 092-441-2161</td><td>✅送信済</td></tr><tr><td>博多消防署 予防課</td><td>電話／来署（建物の現場判断のため）</td><td>092-475-0119</td><td>✅相談済（1室は特例で軽い・下記メモ）</td></tr></tbody></table>
+<table><thead><tr><th>窓口</th><th>最良の手段</th><th>宛先</th><th>状況</th></tr></thead><tbody><tr><td>日本政策金融公庫 坂本様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）。面談 6/25 オンライン</td></tr><tr><td>遠賀信用金庫 野口様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）</td></tr><tr><td>商工中金 西岡様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）。面談 6/24 15:00 Zoom</td></tr><tr><td>福岡銀行 高宮支店 山上様</td><td>メール</td><td>プロシードからアドレス取得後送付</td><td>⏳メール送付待ち（昨日電話済み・面談予約済み・プロシード紹介 2026-06-23）</td></tr><tr class="ng"><td>福岡銀行 西新町支店 石井様</td><td>—</td><td>—</td><td>✗ 除外（電話出ず・中野氏から消極的と聞いていたため 2026-06-23）</td></tr><tr><td>福岡県信用保証協会（制度融資・保証）</td><td>Webフォーム</td><td><a href="https://www.fukuoka-cgc.or.jp/contact/contact_form.php（送信先:">https://www.fukuoka-cgc.or.jp/contact/contact_form.php（送信先:</a> 営業部）</td><td>⏳問い合わせ予定（法人本店が東京でも使えるか確認）</td></tr><tr><td>西日本シティ銀行（制度融資・貸し手）</td><td>電話</td><td>0120-713-817（ビジネスサポートセンター福岡）</td><td>⏳保証協会の確認後に打診。Webフォームは福岡県内事業者限定のため電話</td></tr><tr><td>日本政策金融公庫 福岡支店</td><td>WEB予約フォーム</td><td>公庫サイト「福岡支店 WEB予約」</td><td>✅予約済（6/10 13:00）</td></tr><tr><td>博多衛生課 環境係（旅館業）</td><td>メール（事前相談はメールで受付）</td><td>eisei-hawo.PHB@city.fukuoka.lg.jp</td><td>✅返信あり（種別=旅館で申請の方向・許可2週間+混雑で余裕を）</td></tr><tr><td>こども未来局 こども健全育成課（事前協議）</td><td>メール</td><td>kenzenikusei.CB@city.fukuoka.lg.jp</td><td>✅送信済</td></tr><tr><td>福岡県旅館ホテル生活衛生同業組合（公庫低利の前提）</td><td>FAX または 電話（メール・フォーム無し）</td><td>FAX 092-752-0117 ／ 電話 092-737-5050</td><td>✅連絡済（2026-06-11）→ 組合費は<strong>支部に確認</strong>。振興事業資金証明書は<strong>公庫で詳細確認</strong>。支部連絡先: 博多旅館ホテル組合 092-291-1517 ／ 福岡市ホテル旅館組合 092-431-3001</td></tr><tr><td>福岡市 観光産業課（補助金・開業後）</td><td>メール</td><td>syukuhaku-shien@city.fukuoka.lg.jp</td><td>✅返信あり（6/9 横尾氏）：上限40万は事業者単位／申請は実営業中が要件／来年度未定／問13でマンションタイプの客室内キッチン・洗濯は対象外。チラシ・Q&amp;A・事例集の3点入手済</td></tr><tr><td>福岡商工会議所 中小企業振興グループ（税優遇の前提）</td><td>メール（相談は予約制）</td><td>fkkeiei@fukunet.or.jp ／ 電話 092-441-2161</td><td>✅送信済</td></tr><tr><td>博多消防署 予防課</td><td>電話／来署（建物の現場判断のため）</td><td>092-475-0119</td><td>✅相談済（1室は特例で軽い・下記メモ）</td></tr></tbody></table>
 <h3>福岡銀行 高宮支店 山上様 あてメール（電話済み・資料送付用）</h3>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">件名：資料送付／中洲区分1室・簡易宿所開業の融資相談
 
@@ -312,9 +346,12 @@ iUMAプロパティマネジメント合同会社
 <h3>申請で繰り返し使う会社情報（コピー用）</h3>
 <ul><li>商号：iUMAプロパティマネジメント合同会社（代表社員 手嶋耕一）</li><li>会社法人等番号：0100-03-025935 ／ 法人番号：9010003025935 ／ 資本金：100万円</li><li>設立（会社成立）：平成29年（2017年）8月21日 ／ 決算：6月締め（第8期＝令和6/7/1〜令和7/6/30）</li><li>本店：〒104-0044 東京都中央区明石町13-15-405 ／ 支店：千葉市花見川区花園2434番地61</li><li><strong>⚠ 登記の事業目的が「不動産の売買・仲介・賃貸及び管理」のみ。旅館業（宿泊業）が未記載 → 旅館業許可・公庫の旅館業向け融資の前に「目的追加の変更登記」が要る可能性が高い。保健所・公庫の事前相談で要確認。</strong></li></ul>
 </section>
+</details>
 <hr class="sec">
-<section id="p1" class="doc">
-<div class="phasebanner"><span class="pnum">1</span><b>旅館業の許可を取る</b></div>
+<details class="phase-wrap phase-pending" id="p1">
+<summary class="phase-summary"><span class="ps-sum-num">1</span><span class="ps-sum-title" style="color:#aaa">旅館業の許可を取る</span><span class="phase-badge pending-badge">⏳ 未着手</span></summary>
+<section class="doc">
+<div class="phasebanner"><span class="pnum" style="opacity:.4">1</span><b style="opacity:.5">旅館業の許可を取る</b><span class="phase-badge pending-badge" style="margin-left:auto">⏳ 未着手</span></div>
 <h2>旅館業（簡易宿所）許可申請の詳細と費用（福岡市・中洲しんばし）</h2>
 <blockquote>すべての低金利融資と補助金を開く&quot;スイッチ&quot;がこの許可。福岡市の手続き・要件・費用を一次ソースで整理（2026-06-05）。 ★この物件に効く3点: 福岡市は手数料 <strong>22,000円</strong>／フロントは <strong>ICT代替で無人OK</strong>（条例緩和済み）／49㎡は <strong>用途変更（建築確認）が不要</strong>（200㎡未満）。</blockquote>
 <hr>
@@ -378,9 +415,10 @@ iUMAプロパティマネジメント合同会社
 <h3>窓口</h3>
 <ul><li>申請窓口: 博多区衛生課（中洲＝博多区）</li><li>消防: 博多消防署 予防課 092-475-0119</li><li>事前協議: こども未来局（旅館等設置規制指導要綱）</li><li>手数料: 22,000円（現金のみ・返金不可）</li></ul>
 </section>
+</details>
 <hr class="sec">
-<section id="p2" class="doc">
-<div class="phasebanner"><span class="pnum">2</span><b>公庫でお金を借りる</b></div>
+<section id="p2" class="doc phase-active">
+<div class="phasebanner phase-active-banner"><span class="pnum">2</span><b>公庫でお金を借りる</b><span class="now-here-badge">★ 今ここ</span></div>
 <h2>融資打診プレイブック — プレイスポットしんばし（中洲2-1-11）</h2>
 <p><strong>方針：金利の低いところから順に打診する。2路線を並行で進める。高金利ノンバンクは最終手段。</strong></p>
 <blockquote><strong>★★ 2026-06-05 一次ソース裏取りで前提を2点修正（下の「裏取りで変わった2点」を必ず読む）★★</strong></blockquote>
@@ -504,8 +542,8 @@ iUMAプロパティマネジメント合同会社
 <ul><li><code>deals/financing/公庫様式/</code>（借入申込書・企業概要書・設備投資計画書・月別収支計画書・資金繰り表＋各記入例）</li></ul>
 </section>
 <hr class="sec">
-<section id="p3" class="doc">
-<div class="phasebanner"><span class="pnum">3</span><b>税優遇の前提を作る</b></div>
+<section id="p3" class="doc phase-active">
+<div class="phasebanner phase-active-banner"><span class="pnum">3</span><b>税優遇の前提を作る</b><span class="now-here-badge">★ 今ここ</span></div>
 <h2>経営力向上計画（B類型）申請パック — プレイスポットしんばし</h2>
 <blockquote>申請者: iUMAプロパティマネジメント合同会社 / 代表: 手嶋耕一 根拠法: 中小企業等経営強化法（中小企業経営強化法） 目的: <strong>中小企業経営強化税制</strong>（即時償却100% または 税額控除10%）の適用 商工会議所相談日: 2026-06-15　B類型に決定 税理士確認: 別途依頼（<code>20_税理士_相談メッセージ.md</code> 参照）</blockquote>
 <hr>
@@ -606,8 +644,10 @@ iUMAプロパティマネジメント合同会社
 <blockquote>申請書本体（様式第1号）は申請者（手嶋）が記入して提出。先生のご負担は署名のみ。</blockquote>
 </section>
 <hr class="sec">
-<section id="p4" class="doc">
-<div class="phasebanner"><span class="pnum">4</span><b>工事を発注する（★発注ゲート）</b></div>
+<details class="phase-wrap phase-pending" id="p4">
+<summary class="phase-summary"><span class="ps-sum-num">4</span><span class="ps-sum-title" style="color:#aaa">工事を発注する（★発注ゲート）</span><span class="phase-badge pending-badge">⏳ 未着手</span></summary>
+<section class="doc">
+<div class="phasebanner"><span class="pnum" style="opacity:.4">4</span><b style="opacity:.5">工事を発注する（★発注ゲート）</b><span class="phase-badge pending-badge" style="margin-left:auto">⏳ 未着手</span></div>
 <h2>発注タイミング表 — 補助金・税優遇を取りこぼさない時系列（中洲しんばし / 旅館業）</h2>
 <blockquote>大原則ふたつ。<strong>1. 補助金も税制も「決定の&quot;前&quot;に発注・工事したら対象外」。2. 支払いは2バケツに分ける。</strong> リノベ本体（どの補助も対象外）は決定を待たず進めてよい。スマートロック・PMS・家具家電・空調など「補助/税制の対象になりうる設備」は、認定・交付決定が出てから発注する。</blockquote>
 <hr>
@@ -734,9 +774,12 @@ iUMAプロパティマネジメント合同会社
 <h3>各社への確認テンプレート（49㎡1室・簡易宿所・フルスコープで見積取得）</h3>
 <ol><li>手数料は総売上の%か、OTA控除後の%か。清掃費は込みか別か。月額固定の選択肢</li><li>清掃料（1回）・リネン/消耗品の明細・清掃品質保証</li><li>対応言語と対応時間、トラブル時のSLA</li><li>初期設定費（OTA登録・写真）・チェックイン方式・鍵管理</li><li>最低契約期間・違約金・低稼働時の対応</li><li>同地区の平均稼働率・オーナー平均月収・継続率</li><li>F-area には加えて「黒字運営保証」の条件（保証額・期間・例外）を必ず確認</li></ol>
 </section>
+</details>
 <hr class="sec">
-<section id="p5" class="doc">
-<div class="phasebanner"><span class="pnum">5</span><b>開業後に補助金を回収する</b></div>
+<details class="phase-wrap phase-pending" id="p5">
+<summary class="phase-summary"><span class="ps-sum-num">5</span><span class="ps-sum-title" style="color:#aaa">開業後に補助金を回収する</span><span class="phase-badge pending-badge">⏳ 未着手</span></summary>
+<section class="doc">
+<div class="phasebanner"><span class="pnum" style="opacity:.4">5</span><b style="opacity:.5">開業後に補助金を回収する</b><span class="phase-badge pending-badge" style="margin-left:auto">⏳ 未着手</span></div>
 <h2>補助金・税優遇 — 使えるものを全部積む（中洲しんばし / 旅館業）</h2>
 <blockquote>専門チーム4レーン（国の主要補助金 / 福岡の宿泊・観光 / 省エネ・防災改修 / 税制優遇）で2026-06-05 にリサーチ・議論。出典は各項目に明記。 ★大原則がひとつ：<strong>ほぼ全部「旅館業（簡易宿所）許可」が前提で、「賃貸のまま」だと全滅する</strong>。許可を取る一手が、低金利融資（公庫・商工中金）と補助金（省力化・福岡市・税制）を<strong>同時に開ける一本の鍵</strong>。</blockquote>
 <hr>
@@ -797,6 +840,7 @@ iUMAプロパティマネジメント合同会社
 <h3>ダウンロード済みの原本・記入例（場所）</h3>
 <ul><li>原本一式: <code>deals/financing/福岡市補助金_旅館業/原本/</code>（要綱・募集要項・Q&amp;A・事例集・各様式）</li><li>記入例: <code>deals/financing/福岡市補助金_旅館業/記入例/</code></li></ul>
 </section>
+</details>
 <hr class="sec">
 <section id="docs" class="doc">
 <div class="phasebanner"><span class="pnum">📄</span><b>必要書類（集める物リスト）</b></div>
@@ -831,7 +875,10 @@ iUMAプロパティマネジメント合同会社
   tt0.addEventListener('click', toTop);
   var chips=[].slice.call(document.querySelectorAll('.toc .chip'));
   var map={}; chips.forEach(function(c){map[c.dataset.target]=c;});
-  var secs=[].slice.call(document.querySelectorAll('section[id]'));
+  function openDetails(hash){if(!hash)return;var el=document.querySelector(hash);if(el&&el.tagName==='DETAILS')el.open=true;}
+  openDetails(location.hash);
+  chips.forEach(function(c){c.addEventListener('click',function(){openDetails('#'+c.dataset.target);});});
+  var secs=[].slice.call(document.querySelectorAll('section[id], details[id]'));
   var io=new IntersectionObserver(function(es){
     es.forEach(function(e){
       if(e.isIntersecting){

@@ -45,6 +45,16 @@ CHIP_SHORT = {
     "p5": "5 開業後の補助金",
     "docs": "📄 必要書類",
 }
+# 現在地（18_次のアクション.md を更新したらここも合わせて変える）
+PHASE_STATE = {
+    "p0":   "completed",   # 全電話・初回面談 完了
+    "p1":   "pending",     # 旅館業許可 未着手（物件取得後）
+    "p2":   "active",      # 融資活動中（福岡銀行協議中・信用保証協会待ち）
+    "p3":   "active",      # B類型 飯塚先生署名待ち（並行）
+    "p4":   "pending",     # 発注ゲート 未着手
+    "p5":   "pending",     # 開業後補助金 未着手
+    "docs": "reference",   # 常時参照
+}
 # ── フェーズ0の正本（SSoT）。住所・電話は2026-06-08に公式で裏取り済み ──
 # 設計方針: HPで読めること（基準・必要書類・流れ）は"聞かない"。手引きPDFへ誘導し、
 # 電話/来所は「HPでは分からない＝人に聞くしかないこと」と「やるべき手続き(予約・相談)」に絞る。
@@ -146,7 +156,7 @@ def md_to_html(md: str, demote: int = 0) -> str:
     """最小限の Markdown→HTML（見出し/表/リスト/引用/太字/段落）。
     demote>0 で見出しレベルを下げる（フェーズ内のサブ見出し化。h1→h2 等）。"""
     lines = md.split("\n")
-    out, i = [], 0
+    out, i, in_done_section = [], 0, False
     def inline(s: str) -> str:
         s = html.escape(s)
         s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
@@ -181,12 +191,30 @@ def md_to_html(md: str, demote: int = 0) -> str:
                 i += 1
             t = "<table><thead><tr>" + "".join(f"<th>{inline(h)}</th>" for h in header) + "</tr></thead><tbody>"
             for r in rows:
-                t += "<tr>" + "".join(f"<td>{inline(c)}</td>" for c in r) + "</tr>"
+                rj = " ".join(r)
+                if r and r[0].startswith("✅"):
+                    rcls = ' class="done"'
+                elif "❌" in rj or "消極的" in rj:
+                    rcls = ' class="ng"'
+                else:
+                    rcls = ""
+                t += f"<tr{rcls}>" + "".join(f"<td>{inline(c)}</td>" for c in r) + "</tr>"
             t += "</tbody></table>"
             out.append(t); continue
         m = re.match(r"^(#{1,4})\s+(.*)$", ln)
         if m:
-            lvl = min(len(m.group(1)) + demote, 6); out.append(f"<h{lvl}>{inline(m.group(2))}</h{lvl}>"); i += 1; continue
+            lvl = min(len(m.group(1)) + demote, 6)
+            txt = m.group(2)
+            if lvl == 2 and "完了" in txt and not in_done_section:
+                out.append(f'<details class="past-section"><summary>{inline(txt)}</summary>')
+                in_done_section = True
+            elif in_done_section and lvl <= 2:
+                out.append('</details>')
+                in_done_section = False
+                out.append(f"<h{lvl}>{inline(txt)}</h{lvl}>")
+            else:
+                out.append(f"<h{lvl}>{inline(txt)}</h{lvl}>")
+            i += 1; continue
         if ln.startswith(">"):
             buf = []
             while i < len(lines) and lines[i].startswith(">"):
@@ -206,8 +234,13 @@ def md_to_html(md: str, demote: int = 0) -> str:
                 for x, done in items
             ) + f"</{tag}>"); continue
         if re.match(r"^---+$", ln):
+            if in_done_section:
+                out.append('</details>')
+                in_done_section = False
             out.append("<hr>"); i += 1; continue
         out.append(f"<p>{inline(ln)}</p>"); i += 1
+    if in_done_section:
+        out.append('</details>')
     return "\n".join(out)
 
 
@@ -285,6 +318,25 @@ def build_flowchart() -> str:
 </section>"""
 
 
+def build_progress_strip() -> str:
+    STATE_ICON  = {"completed": "✅", "active": "★", "pending": "⏳", "reference": "📄"}
+    STATE_LABEL = {"completed": "完了", "active": "今ここ", "pending": "未着手", "reference": "参照"}
+    items = []
+    for pid, title, _ in PHASES:
+        state = PHASE_STATE.get(pid, "pending")
+        icon  = STATE_ICON.get(state, "⏳")
+        label = STATE_LABEL.get(state, "")
+        short = CHIP_SHORT.get(pid, title)
+        items.append(
+            f'<div class="ps-step {state}">'
+            f'{html.escape(icon)} {html.escape(short)}'
+            f'<span class="ps-label">{html.escape(label)}</span>'
+            f'</div>'
+        )
+    arrow = '<span class="ps-arrow">›</span>'
+    return '<div class="progress-strip">' + arrow.join(items) + '</div>\n'
+
+
 def main() -> int:
     sections, nav = [], []
     for pid, title, content in PHASES:
@@ -304,8 +356,69 @@ def main() -> int:
                     continue
                 parts.append(md_to_html(p.read_text(encoding="utf-8"), demote=1))
             inner = '\n<hr>\n'.join(parts)
-        banner = f'<div class="phasebanner"><span class="pnum">{html.escape(title.split(" ", 1)[0])}</span><b>{html.escape(title.split(" ", 1)[1])}</b></div>'
-        sections.append(f'<section id="{pid}" class="doc">\n{banner}\n{inner}\n</section>')
+        state   = PHASE_STATE.get(pid, "reference")
+        parts_t = title.split(" ", 1)
+        pnum_h  = html.escape(parts_t[0])
+        ptitle_h = html.escape(parts_t[1]) if len(parts_t) > 1 else ""
+        if state == "active":
+            banner = (
+                f'<div class="phasebanner phase-active-banner">'
+                f'<span class="pnum">{pnum_h}</span>'
+                f'<b>{ptitle_h}</b>'
+                f'<span class="now-here-badge">★ 今ここ</span>'
+                f'</div>'
+            )
+            sections.append(
+                f'<section id="{pid}" class="doc phase-active">\n{banner}\n{inner}\n</section>'
+            )
+        elif state == "completed":
+            banner = (
+                f'<div class="phasebanner">'
+                f'<span class="pnum" style="opacity:.45">{pnum_h}</span>'
+                f'<b style="text-decoration:line-through;opacity:.55">{ptitle_h}</b>'
+                f'<span class="phase-badge completed-badge" style="margin-left:auto">✅ 完了</span>'
+                f'</div>'
+            )
+            sum_inner = (
+                f'<span class="ps-sum-num">{pnum_h}</span>'
+                f'<span class="ps-sum-title">{ptitle_h}</span>'
+                f'<span class="phase-badge completed-badge">✅ 完了</span>'
+            )
+            sections.append(
+                f'<details class="phase-wrap phase-completed" id="{pid}">\n'
+                f'<summary class="phase-summary">{sum_inner}</summary>\n'
+                f'<section class="doc">\n{banner}\n{inner}\n</section>\n'
+                f'</details>'
+            )
+        elif state == "pending":
+            banner = (
+                f'<div class="phasebanner">'
+                f'<span class="pnum" style="opacity:.4">{pnum_h}</span>'
+                f'<b style="opacity:.5">{ptitle_h}</b>'
+                f'<span class="phase-badge pending-badge" style="margin-left:auto">⏳ 未着手</span>'
+                f'</div>'
+            )
+            sum_inner = (
+                f'<span class="ps-sum-num">{pnum_h}</span>'
+                f'<span class="ps-sum-title" style="color:#aaa">{ptitle_h}</span>'
+                f'<span class="phase-badge pending-badge">⏳ 未着手</span>'
+            )
+            sections.append(
+                f'<details class="phase-wrap phase-pending" id="{pid}">\n'
+                f'<summary class="phase-summary">{sum_inner}</summary>\n'
+                f'<section class="doc">\n{banner}\n{inner}\n</section>\n'
+                f'</details>'
+            )
+        else:  # reference
+            banner = (
+                f'<div class="phasebanner">'
+                f'<span class="pnum">{pnum_h}</span>'
+                f'<b>{ptitle_h}</b>'
+                f'</div>'
+            )
+            sections.append(
+                f'<section id="{pid}" class="doc">\n{banner}\n{inner}\n</section>'
+            )
         chip_label = CHIP_SHORT[pid]
         nav.append(f'<a class="chip" href="#{pid}" data-target="{pid}">{html.escape(chip_label)}</a>')
     flow = build_flowchart()
@@ -318,7 +431,7 @@ def main() -> int:
                      + md_to_html(next_doc.read_text(encoding="utf-8")) + '\n</section>\n<hr class="sec">\n')
         next_chip = '<a class="chip" href="#next" data-target="next">▶ 次にやること</a>'
     nav_html = '<nav class="toc" id="toc">' + next_chip + "".join(nav) + "</nav>"
-    body = next_html + flow + "\n" + '\n<hr class="sec">\n'.join(sections)
+    body = next_html + flow + "\n" + build_progress_strip() + '\n<hr class="sec">\n'.join(sections)
     doc = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>融資・補助金パッケージ — プレイスポットしんばし</title>
@@ -341,7 +454,37 @@ ul,ol{{padding-left:22px}}
 li{{margin:3px 0}}
 hr{{border:none;border-top:1px solid #ddd;margin:16px 0}}
 li.done{{color:#aaa;text-decoration:line-through;opacity:.65}}
+tr.done td{{color:#aaa;font-size:.88em;opacity:.7}}
+tr.ng td{{color:#b08080;text-decoration:line-through;opacity:.55}}
+details.past-section{{margin:10px 0}}
+details.past-section>summary{{cursor:pointer;display:block;padding:7px 12px;color:#888;font-size:13px;background:#f7f5f0;border-radius:8px;border:1px solid #e0d8c8;list-style:none;margin-bottom:6px}}
+details.past-section>summary::before{{content:"▶ ";font-size:10px;vertical-align:middle}}
+details.past-section[open]>summary::before{{content:"▼ ";font-size:10px;vertical-align:middle}}
 hr.sec{{border-top:2px dashed var(--gold);margin:36px 0}}
+/* ── phase-state system ── */
+details[id]{{scroll-margin-top:54px}}
+.phase-wrap{{margin:0;border:none;background:transparent}}
+.phase-summary{{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:10px;margin:0 0 4px;font-size:14px;font-weight:600}}
+.phase-summary::-webkit-details-marker{{display:none}}
+details.phase-completed>.phase-summary{{background:#f3f0ea;border:1px solid #ddd8cc;color:#aaa}}
+details.phase-pending>.phase-summary{{background:#f6f6f6;border:1px solid #e0e0e0;color:#bbb}}
+.ps-sum-num{{flex:0 0 28px;height:28px;border-radius:50%;background:rgba(0,0,0,.08);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}}
+.ps-sum-title{{flex:1}}
+.phase-badge{{font-size:11px;padding:2px 9px;border-radius:999px;font-weight:700;white-space:nowrap;flex-shrink:0}}
+.completed-badge{{background:#e5f5e0;color:#2f7a3a;border:1px solid #b0dfa8}}
+.pending-badge{{background:#f0f0f0;color:#999;border:1px solid #ddd}}
+.now-here-badge{{background:var(--gold);color:#1a1207;font-size:12px;padding:3px 12px;border-radius:999px;font-weight:800;margin-left:auto;white-space:nowrap;flex-shrink:0}}
+section.doc.phase-active{{border:2.5px solid var(--gold);border-radius:14px;padding:4px 14px 14px;background:#fffdf5}}
+.phase-active-banner{{background:#221900!important}}
+/* ── progress strip ── */
+.progress-strip{{display:flex;align-items:center;flex-wrap:wrap;gap:3px;background:#1a1d27;border-radius:11px;padding:8px 12px;margin:10px 0 20px;overflow-x:auto}}
+.ps-step{{display:flex;flex-direction:column;align-items:center;padding:5px 9px;border-radius:7px;min-width:50px;text-align:center;line-height:1.3;font-size:11px;font-weight:700}}
+.ps-step.completed{{background:#1a2e1a;color:#6abf69}}
+.ps-step.active{{background:var(--gold);color:#1a1207}}
+.ps-step.pending{{background:#242836;color:#545a6b}}
+.ps-step.reference{{background:#242836;color:#767d90}}
+.ps-arrow{{color:#3a4055;font-size:14px;flex-shrink:0;line-height:1}}
+.ps-label{{font-size:9px;font-weight:600;margin-top:2px;opacity:.75;letter-spacing:.03em}}
 a{{color:#1e5fb4;word-break:break-all}}
 /* PJ 3ページ切替タブ */
 .pjnav{{position:static;z-index:30;display:flex;background:#0f1117;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}}
@@ -429,7 +572,7 @@ pre.code{{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:
   table{{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}
   table thead,table tbody{{display:table;width:100%;min-width:520px}}}}
 </style></head><body>
-<nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a><a href="yakuin.html">🏠 薬院 売る/貸す</a></nav>
+<nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a></nav>
 {nav_html}
 {body}
 <hr class="sec">
@@ -442,7 +585,10 @@ pre.code{{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:
   tt0.addEventListener('click', toTop);
   var chips=[].slice.call(document.querySelectorAll('.toc .chip'));
   var map={{}}; chips.forEach(function(c){{map[c.dataset.target]=c;}});
-  var secs=[].slice.call(document.querySelectorAll('section[id]'));
+  function openDetails(hash){{if(!hash)return;var el=document.querySelector(hash);if(el&&el.tagName==='DETAILS')el.open=true;}}
+  openDetails(location.hash);
+  chips.forEach(function(c){{c.addEventListener('click',function(){{openDetails('#'+c.dataset.target);}});}});
+  var secs=[].slice.call(document.querySelectorAll('section[id], details[id]'));
   var io=new IntersectionObserver(function(es){{
     es.forEach(function(e){{
       if(e.isIntersecting){{

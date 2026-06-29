@@ -3,8 +3,8 @@
 一棟もの（一棟マンション・一棟アパート）検索スクリプト
 楽待から一棟売り物件を検索し、パイプ区切り形式で出力する。
 
-出力フォーマット (14列):
-source|name|price|location|area|built|station|structure|units|yield|layout_detail|pet|brokerage|url
+出力フォーマット (17列):
+score|source|name|price|location|area|built|station|structure|units|yield|layout_detail|pet|brokerage|url|minpaku_fit|dscr_value
 
 検索条件:
 - 価格帯: 1.5億〜2億円
@@ -31,9 +31,9 @@ HEADERS = {
     "Accept-Language": "ja,en;q=0.5",
 }
 
-# Price range: 1.5億〜2億 (in 万円 for Rakumachi)
-PRICE_MIN = 15000  # 1.5億 = 15000万
-PRICE_MAX = 20000  # 2億 = 20000万
+# Price range: 0.8億〜3億 (in 万円 for Rakumachi)
+PRICE_MIN = 8000   # 0.8億 = 8000万
+PRICE_MAX = 30000  # 3億 = 30000万
 
 # Area configs — same areas as existing patrol
 KENBIYA_REGIONS = {
@@ -41,9 +41,9 @@ KENBIYA_REGIONS = {
     "fukuoka": {"path": "f/fukuoka", "pref": "福岡県"},
     "tokyo": {"path": "s/tokyo", "pref": "東京都"},
 }
-# Kenbiya price dropdown: closest to 15000 is 14000
-KENBIYA_PRICE_MIN = 14000
-KENBIYA_PRICE_MAX = 20000
+# Kenbiya price dropdown: closest to 8000
+KENBIYA_PRICE_MIN = 8000
+KENBIYA_PRICE_MAX = 30000
 
 AREA_CONFIGS = {
     "osaka": {
@@ -775,7 +775,7 @@ def _extract_kenbiya_fields_structured(
 
 
 def score_ittomono(prop: dict) -> int:
-    """Score 一棟もの property for investment potential (0-100).
+    """Score 一棟もの property for investment potential (0-135).
 
     Axes:
       Yield (30): 7%+=30, 6-7=25, 5-6=20, 4-5=15, <4=5, unknown=10
@@ -783,6 +783,9 @@ def score_ittomono(prop: dict) -> int:
       Age (20): <10yr=20, 10-20=15, 20-30=10, 30-40=5, 40+=0
       Units (15): 10+=15, 6-9=12, 3-5=8, 1-2=3, unknown=5
       Station (15): ≤5min=15, 6-10=10, 11-15=5, >15/unknown=0
+      Minpaku fit (20): 運営中/稼働中=20, 旅館業/簡易宿所=15, 特区/可能=10, 民泊=5, none=0
+      DSCR (15): ≥1.2=15, 1.0-1.2=8, <1.0=0, yield unknown=5
+    Side effects: sets prop["minpaku_fit"], prop["dscr_value"], prop["dscr_score"]
     """
     score = 0
 
@@ -857,6 +860,44 @@ def score_ittomono(prop: dict) -> int:
             score += 10
         elif mins <= 15:
             score += 5
+
+    # Minpaku fit
+    _minpaku_text = prop.get("name", "") + " " + prop.get("layout_detail", "")
+    minpaku_fit = 0
+    if "民泊運営中" in _minpaku_text or "民泊稼働中" in _minpaku_text:
+        minpaku_fit = 20
+    elif "旅館業許可" in _minpaku_text or "簡易宿所" in _minpaku_text:
+        minpaku_fit = 15
+    elif "特区民泊" in _minpaku_text or "民泊可能" in _minpaku_text:
+        minpaku_fit = 10
+    elif "民泊" in _minpaku_text:
+        minpaku_fit = 5
+    prop["minpaku_fit"] = minpaku_fit
+    score += minpaku_fit
+
+    # DSCR (Debt Service Coverage Ratio)
+    dscr_value = 0.0
+    dscr_pts = 5  # neutral: yield unknown
+    _price_man = prop.get("price_man", 0)
+    _yt = prop.get("yield_text", "")
+    _ym = re.search(r"([\d.]+)%", _yt)
+    if _price_man > 0 and _ym:
+        _yr = float(_ym.group(1)) / 100
+        _p = _price_man * 10000
+        _r = 0.015 / 12
+        _mp = _p * _r / (1 - (1 + _r) ** -240)
+        _noi = _p * _yr / 12 * 0.77
+        if _mp > 0:
+            dscr_value = _noi / _mp
+            if dscr_value >= 1.2:
+                dscr_pts = 15
+            elif dscr_value >= 1.0:
+                dscr_pts = 8
+            else:
+                dscr_pts = 0
+    prop["dscr_value"] = round(dscr_value, 2)
+    prop["dscr_score"] = dscr_pts
+    score += dscr_pts
 
     return score
 
@@ -1029,9 +1070,9 @@ def deduplicate_by_content(properties: list[dict]) -> list[dict]:
 
 
 def save_results(properties: list[dict], city_key: str) -> Path:
-    """Save results to pipe-delimited data file (15-column: score prepended).
+    """Save results to pipe-delimited data file (17-column: score prepended, minpaku_fit/dscr_value appended).
 
-    Properties are scored, sorted by score desc, and only Green (70+) are saved.
+    Properties are scored, sorted by score desc, and top-30 with score>=30 are saved.
     """
     DATA_DIR.mkdir(exist_ok=True)
     out_path = DATA_DIR / f"ittomono_{city_key}_raw.txt"
@@ -1047,21 +1088,19 @@ def save_results(properties: list[dict], city_key: str) -> Path:
     # Content-based dedup (cross-source: same property, different URLs)
     properties = deduplicate_by_content(properties)
 
-    # Score, sort, and keep top 25 with score >= 40
-    # Threshold 40 (was 55) because pre-save scorer lacks price/location/CF axes
-    # that report-time scorer has. Old buildings (築40+) get 0 for age → drop to 48
-    # even with good station/units. Report scorer compensates with earthquake(+10)
-    # and location(+10), so pre-save should not over-filter.
+    # Score, sort, and keep top 30 with score >= 30
+    # Threshold 30 (was 40) to accommodate wider price range (8000〜30000万) and
+    # minpaku/DSCR axes that can push borderline properties over the old cutoff.
     for p in properties:
         p["score"] = score_ittomono(p)
     properties.sort(key=lambda x: x["score"], reverse=True)
-    shortlist = [p for p in properties if p["score"] >= 40][:25]
+    shortlist = [p for p in properties if p["score"] >= 30][:30]
 
     lines = [
         f"## 一棟もの検索結果 - {AREA_CONFIGS[city_key]['label']}",
         f"## 条件: {PRICE_MIN}万〜{PRICE_MAX}万",
         f"## 取得日: {datetime.now().strftime('%Y-%m-%d')}",
-        f"## 件数: {len(shortlist)}件 (全{len(properties)}件中スコア40+上位25)",
+        f"## 件数: {len(shortlist)}件 (全{len(properties)}件中スコア30+上位30)",
         "",
     ]
 
@@ -1082,6 +1121,8 @@ def save_results(properties: list[dict], city_key: str) -> Path:
             "",  # pet placeholder
             "",  # brokerage placeholder
             prop["url"],
+            str(prop.get("minpaku_fit", 0)),
+            str(prop.get("dscr_value", 0.0)),
         ])
         lines.append(line)
 
@@ -1092,7 +1133,7 @@ def save_results(properties: list[dict], city_key: str) -> Path:
 def main():
     """Search all target cities for 一棟もの."""
     print(f"\u4e00\u68df\u3082\u306e\u7269\u4ef6\u691c\u7d22 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    print(f"\u6761\u4ef6: {PRICE_MIN}\u4e07\u301c{PRICE_MAX}\u4e07 (1.5\u5104\u301c2\u5104\u5186)")
+    print(f"\u6761\u4ef6: {PRICE_MIN}\u4e07\u301c{PRICE_MAX}\u4e07 ({PRICE_MIN//10000}\u5104\u301c{PRICE_MAX//10000}\u5104\u5186)")
 
     # In GHA, limit enrichment to avoid timeout (300s budget for entire script)
     import os

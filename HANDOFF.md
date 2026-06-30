@@ -1,5 +1,9 @@
 # property-report HANDOFF
 
+## [Auto-Kaizen] 2026-06-30
+- [WARN] crestmall-sale/HANDOFF.md not updated in 19 days (threshold: 7).
+
+
 ## Completed (パトロール結果反映 2026-05-16 21:00)
 - **Before**: hub_summary.json が 2026-05-06 の値のままでマージコンフリクト残存（candidates: "8", updated_at: "2026-05-06T21:57:00+09:00" / "2026-05-06T22:26:00+09:00"）
 - **After**: パトロール結果反映（candidates: "0", updated_at: "2026-05-16T21:00:00+09:00"）。総件数0件、新規0件、消失0件、所要時間18分
@@ -87,9 +91,6 @@
 - **Before**: hub_summary.json が 2026-04-21 の古い値のまま（candidates: "8", updated_at: "2026-04-21T06:56:00+09:00"）
 - **After**: パトロール結果反映（candidates: "1330", updated_at: "2026-04-22T23:48:00+09:00"）。追跡件数1330件、新着314件、削除287件、ソース28/28 OK
 - **新着物件トップ10**: multi_site_osaka 2480万円、yahoo_fukuoka 1790万円、yahoo_fukuoka 2490万円、yahoo_fukuoka 2590万円、yahoo_fukuoka 2250万円、多賀ハウス yahoo_fukuoka 1860万円、yahoo_fukuoka 1860万円、アデレイド新福島 multi_site_osaka 4998万円、大久保マンション yahoo_tokyo 3160万円、アステルコート新町 multi_site_osaka 4790万円
-
-## [Auto-Kaizen] 2026-04-20
-- [WARN] property-report/HANDOFF.md not updated in 7 days (threshold: 7).
 
 
 

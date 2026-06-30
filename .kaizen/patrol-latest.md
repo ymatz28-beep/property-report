@@ -5,9 +5,9 @@
 - [ERROR] hardcoded_data: [ESCALATED: 22d unresolved] Large inline data (60 lines) at line 71. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] structural_reform: [ESCALATED: 76d unresolved] generate_market.py is 1667 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 76d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 76d unresolved] Stale temp/debug file (87 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 76d unresolved] Stale temp/debug file (87 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 76d unresolved] Stale temp/debug file (87 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 76d unresolved] Stale temp/debug file (88 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 76d unresolved] Stale temp/debug file (88 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 76d unresolved] Stale temp/debug file (88 days old). Delete it.
 - [ERROR] structural_reform: [ESCALATED: 76d unresolved] Stale temp/debug file (91 days old). Delete it.
 - [ERROR] html_ui: [ESCALATED: 25d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: [ESCALATED: 15d unresolved] Missing gnav (site-header) — no navigation
@@ -27,7 +27,7 @@
 - [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-06-30 01:01): 【ittomono_fukuoka（取得件数が急減）】source_degraded → Fix: 1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加
 - [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-06-30 01:01): 【ittomono_osaka（取得件数が急減）】source_degraded → Fix: 1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加
 - [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-06-30 01:01): 【ittomono_tokyo（取得件数が急減）】source_degraded → Fix: 1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加
-- [WARN] git_uncommitted: Property Analyzer: 33 uncommitted file(s), oldest 35h ago (threshold: 24h). GHA runs on old code until pushed.
+- [WARN] lib_sync_drift: lib/templates/pages/property_report.html ≠ property-analyzer/lib/templates/pages/property_report.html. GHA uses property-analyzer copy. Sync needed.
 - [ERROR] design_token_compliance: [ESCALATED: 25d unresolved] Line 9: hardcoded #c9a84c should be var(--gold)
 - [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 406: hardcoded #9ca3af should be var(--text-secondary)
@@ -61,12 +61,12 @@
 - [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 304: hardcoded #fbbf24 should be var(--amber)
 - [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
 - [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 344: hardcoded #f87171 should be var(--red-light)
-- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 62: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 646: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 665: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 62: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 646: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 665: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 310: hardcoded #22c55e should be var(--green)
 - [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 313: hardcoded #f87171 should be var(--red-light)
@@ -79,9 +79,9 @@
 - [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 475: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 494: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 62: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 646: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 665: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 74d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] blank_cells: [ESCALATED: 76d unresolved] ダッシュ「—」160個 (閾値20) — データ欠損の可能性
 - [ERROR] first_seen_coverage: 掲載日カバレッジ 24% (33/140) — 閾値80%
 - [ERROR] qa_market_data_accuracy: [ESCALATED: 76d unresolved] 4/88 (4.5%) — price mismatch: 福岡市南区 3LDK raw=900.0 html=990.0; price mismatch: メゾン野間ハイツ 402 raw=500.0 html=630.0; price mismatch: 高木団地住宅 二号棟 raw=698.0 html=710.0; price mismatch: アンピールやよい坂 305 raw=710.0 html=730.0

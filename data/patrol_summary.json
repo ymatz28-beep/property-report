@@ -1,162 +1,153 @@
 {
-  "date": "2026-06-28 01:07",
+  "date": "2026-06-30 01:01",
   "source": "local",
-  "total": 2949,
-  "prev_total": 2297,
-  "new_count": 930,
-  "removed_count": 279,
-  "elapsed_min": 386,
+  "total": 2869,
+  "prev_total": 2882,
+  "new_count": 166,
+  "removed_count": 179,
+  "elapsed_min": 427,
   "failed_sources": [
-    "athome_osaka"
+    "ittomono_fukuoka",
+    "ittomono_osaka",
+    "ittomono_tokyo"
   ],
   "failed_steps": [
-    "search_ftakken.py --mode kubun",
-    "search_ftakken.py --mode ittomono",
-    "search_ftakken.py --mode budget",
     "search_lifull.py"
   ],
   "failure_details": [
     {
-      "step": "search_ftakken.py --mode kubun",
-      "label": "search_ftakken.py --mode kubun",
-      "impact": "詳細不明",
-      "stderr_tail": "utomation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --disable-blink-features=AutomationControlled --no-sandbox --user-data-dir=/var/folders/s3/gcwfwkhs3n5fgd7383nnmgmm0000gn/T/playwright_chromiumdev_profile-ikuXXf --remote-debugging-pipe --no-startup-window\n  - <launched> pid=98968",
-      "reason": "エラー終了 (exit 1)",
-      "fix": "エラーログを確認"
-    },
-    {
-      "step": "search_ftakken.py --mode ittomono",
-      "label": "search_ftakken.py --mode ittomono",
-      "impact": "詳細不明",
-      "stderr_tail": "utomation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --disable-blink-features=AutomationControlled --no-sandbox --user-data-dir=/var/folders/s3/gcwfwkhs3n5fgd7383nnmgmm0000gn/T/playwright_chromiumdev_profile-Gnc3S7 --remote-debugging-pipe --no-startup-window\n  - <launched> pid=98971",
-      "reason": "エラー終了 (exit 1)",
-      "fix": "エラーログを確認"
-    },
-    {
-      "step": "search_ftakken.py --mode budget",
-      "label": "search_ftakken.py --mode budget",
-      "impact": "詳細不明",
-      "stderr_tail": "utomation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --disable-blink-features=AutomationControlled --no-sandbox --user-data-dir=/var/folders/s3/gcwfwkhs3n5fgd7383nnmgmm0000gn/T/playwright_chromiumdev_profile-7CZBTr --remote-debugging-pipe --no-startup-window\n  - <launched> pid=98969",
-      "reason": "エラー終了 (exit 1)",
-      "fix": "エラーログを確認"
-    },
-    {
       "step": "search_lifull.py",
       "label": "LIFULL検索",
       "impact": "LIFULLの物件データが未更新",
-      "stderr_tail": "utomation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --disable-blink-features=AutomationControlled --no-sandbox --user-data-dir=/var/folders/s3/gcwfwkhs3n5fgd7383nnmgmm0000gn/T/playwright_chromiumdev_profile-vyO2RO --remote-debugging-pipe --no-startup-window\n  - <launched> pid=98970",
+      "stderr_tail": "automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --disable-blink-features=AutomationControlled --no-sandbox --user-data-dir=/var/folders/s3/gcwfwkhs3n5fgd7383nnmgmm0000gn/T/playwright_chromiumdev_profile-kPekOm --remote-debugging-pipe --no-startup-window\n  - <launched> pid=8001",
       "reason": "エラー終了 (exit 1)",
       "fix": "エラーログを確認"
     },
     {
-      "step": "source_degraded:athome_osaka",
-      "label": "athome_osaka（取得件数が急減）",
+      "step": "source_degraded:ittomono_fukuoka",
+      "label": "ittomono_fukuoka（取得件数が急減）",
       "impact": "前回比>70%減 — diff計算から除外（サイト側の一時障害 or セレクタ変化の疑い）",
       "reason": "source_degraded",
-      "stderr_tail": "ソース athome_osaka がフォールバック動作中。スクレイパーはOKだが取得件数が急減し、差分計算から自動除外された。",
+      "stderr_tail": "ソース ittomono_fukuoka がフォールバック動作中。スクレイパーはOKだが取得件数が急減し、差分計算から自動除外された。",
+      "fix": "1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加"
+    },
+    {
+      "step": "source_degraded:ittomono_osaka",
+      "label": "ittomono_osaka（取得件数が急減）",
+      "impact": "前回比>70%減 — diff計算から除外（サイト側の一時障害 or セレクタ変化の疑い）",
+      "reason": "source_degraded",
+      "stderr_tail": "ソース ittomono_osaka がフォールバック動作中。スクレイパーはOKだが取得件数が急減し、差分計算から自動除外された。",
+      "fix": "1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加"
+    },
+    {
+      "step": "source_degraded:ittomono_tokyo",
+      "label": "ittomono_tokyo（取得件数が急減）",
+      "impact": "前回比>70%減 — diff計算から除外（サイト側の一時障害 or セレクタ変化の疑い）",
+      "reason": "source_degraded",
+      "stderr_tail": "ソース ittomono_tokyo がフォールバック動作中。スクレイパーはOKだが取得件数が急減し、差分計算から自動除外された。",
       "fix": "1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加"
     }
   ],
   "step_count": 28,
-  "ok_count": 24,
+  "ok_count": 27,
   "step_status": {
     "search_suumo.py (osaka)": {
       "last_failure_at": "2026-06-26T16:17:19",
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "search_suumo.py (fukuoka)": {
       "last_failure_at": "2026-06-25T12:22:08",
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "search_suumo.py (tokyo)": {
       "last_failure_at": "2026-06-25T12:22:08",
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "search_multi_site.py": {
-      "last_success_at": "2026-06-28T07:32:46",
+      "last_success_at": "2026-06-30T08:07:55",
       "last_failure_at": "2026-06-26T16:17:19"
     },
     "search_restate.py": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "search_ftakken.py --mode kubun": {
-      "last_success_at": "2026-06-26T16:17:19",
+      "last_success_at": "2026-06-30T08:07:55",
       "last_failure_at": "2026-06-28T07:32:46"
     },
     "search_ftakken.py --mode ittomono": {
-      "last_success_at": "2026-06-26T16:17:19",
+      "last_success_at": "2026-06-30T08:07:55",
       "last_failure_at": "2026-06-28T07:32:46"
     },
     "search_ftakken.py --mode budget": {
-      "last_success_at": "2026-06-26T16:17:19",
+      "last_success_at": "2026-06-30T08:07:55",
       "last_failure_at": "2026-06-28T07:32:46"
     },
     "search_lifull.py": {
       "last_success_at": "2026-06-25T12:22:08",
-      "last_failure_at": "2026-06-28T07:32:46"
+      "last_failure_at": "2026-06-30T08:07:55"
     },
     "search_ittomono.py": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "search_yield_focused.py": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "enrich_maintenance.py": {
-      "last_success_at": "2026-06-28T07:32:46",
+      "last_success_at": "2026-06-30T08:07:55",
       "last_failure_at": "2026-06-26T16:17:19"
     },
     "first_seen": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "url_check": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "generate_osaka_report.py": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "generate_fukuoka_report.py": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "generate_tokyo_report.py": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "generate_ittomono_report.py": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "generate_inquiry_messages.py": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "generate_market.py": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "write_hub_summary.py": {
       "last_failure_at": "2026-06-14T11:37:19",
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "pipeline_flag": {
       "last_failure_at": "2026-06-14T11:37:19",
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "pipeline_lifecycle": {
       "last_failure_at": "2026-06-14T11:37:19",
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "generate_market_post_sweep": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "pipeline_dashboard": {
       "last_failure_at": "2026-06-14T11:37:19",
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "naiken_analysis": {
       "last_failure_at": "2026-06-14T11:37:19",
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "qa_gate": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "deploy": {
-      "last_success_at": "2026-06-28T07:32:46"
+      "last_success_at": "2026-06-30T08:07:55"
     },
     "count_anomaly_check": {
       "last_failure_at": "2026-06-26T16:17:19"
@@ -164,22 +155,28 @@
   },
   "new_items": [
     {
-      "name": "ライオンズマンション多賀",
-      "price_text": "880万円",
-      "price_man": 880,
+      "name": "物件画像",
+      "price_text": "3399万円",
+      "price_man": 3399,
       "source": "yahoo_fukuoka"
     },
     {
-      "name": "アステルコート新町",
-      "price_text": "4590万円",
-      "price_man": 4590,
-      "source": "multi_site_osaka"
+      "name": "ロマネスク長尾第3",
+      "price_text": "1450万円",
+      "price_man": 1450,
+      "source": "yahoo_fukuoka"
     },
     {
-      "name": "ディオ・フェルティ枚方長尾",
-      "price_text": "2198万円",
-      "price_man": 2198,
-      "source": "multi_site_osaka"
+      "name": "物件画像",
+      "price_text": "3090万円",
+      "price_man": 3090,
+      "source": "yahoo_fukuoka"
+    },
+    {
+      "name": "物件画像",
+      "price_text": "3190万円",
+      "price_man": 3190,
+      "source": "yahoo_fukuoka"
     },
     {
       "name": "物件画像",
@@ -188,2088 +185,18 @@
       "source": "multi_site_osaka"
     },
     {
-      "name": "物件画像",
-      "price_text": "3280万円",
-      "price_man": 3280,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "藤和薬院コープ",
-      "price_text": "3848万円",
-      "price_man": 3848,
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "name": "物件画像",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "アムール板付7",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "name": "南博多パールシャトー",
-      "price_text": "2300万円",
-      "price_man": 2300,
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンションMAXIM大橋",
-      "price_text": "3180万円",
-      "price_man": 3180,
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "name": "チサンマンション天神3",
-      "price_text": "2750万円",
-      "price_man": 2750,
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "103大稲マンション",
-      "price_text": "2080万円",
-      "price_man": 2080,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "小笹コーポ",
-      "price_text": "1698万円",
-      "price_man": 1698,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "103大稲マンション",
-      "price_text": "2080万円",
-      "price_man": 2080,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サンライフ六本松",
-      "price_text": "3980万円",
-      "price_man": 3980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイナコートエスパシオ舞鶴",
-      "price_text": "4280万円",
-      "price_man": 4280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "藤和コープ・サンウェルス",
-      "price_text": "2080万円",
-      "price_man": 2080,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション小笹",
-      "price_text": "2099万円",
-      "price_man": 2099,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション小笹",
-      "price_text": "2099万円",
-      "price_man": 2099,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ゾンネンハイム大手門",
-      "price_text": "2542万円",
-      "price_man": 2542,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレス平尾２",
-      "price_text": "2950万円",
-      "price_man": 2950,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション輝国",
-      "price_text": "950万円",
-      "price_man": 950,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロワールマンション大濠Ⅱ",
-      "price_text": "4430万円",
-      "price_man": 4430,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "輝国住宅1号棟",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション小笹",
-      "price_text": "2099万円",
-      "price_man": 2099,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ユーハイム大濠西",
-      "price_text": "2640万円",
-      "price_man": 2640,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション小笹",
-      "price_text": "2099万円",
-      "price_man": 2099,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アダージュ薬院弐番館",
-      "price_text": "4890万円",
-      "price_man": 4890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション大名",
-      "price_text": "2997万円",
-      "price_man": 2997,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスクヴューコート植物園",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション輝国",
-      "price_text": "1430万円",
-      "price_man": 1430,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "パークハイツ桜坂",
-      "price_text": "1820万円",
-      "price_man": 1820,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション薬院Ⅱ",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "朝日プラザ桜坂　中古マンション",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション南薬院",
-      "price_text": "2380万円",
-      "price_man": 2380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレス平尾２",
-      "price_text": "2950万円",
-      "price_man": 2950,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "秀和警固レジデンス",
-      "price_text": "3080万円",
-      "price_man": 3080,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "大名サンハイツ",
-      "price_text": "2820万円",
-      "price_man": 2820,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "大名サンハイツ",
-      "price_text": "2820万円",
-      "price_man": 2820,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シャンボール大名A棟",
-      "price_text": "3490万円",
-      "price_man": 3490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "イニシアイオ大名",
-      "price_text": "4280万円",
-      "price_man": 4280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション大名",
-      "price_text": "3007万円",
-      "price_man": 3007,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション高砂",
-      "price_text": "3280万円",
-      "price_man": 3280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エバーライフ赤坂",
-      "price_text": "4280万円",
-      "price_man": 4280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "朝日プラザ大濠",
-      "price_text": "3750万円",
-      "price_man": 3750,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイナコート六本松",
-      "price_text": "2899万円",
-      "price_man": 2899,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南 ２０２",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "藤和シティコープ平尾駅前",
-      "price_text": "4990万円",
-      "price_man": 4990,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス　中古マンション",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション六本松第2",
-      "price_text": "2280万円",
-      "price_man": 2280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サングレート薬院駅ロイヤルウィン",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2590万円",
-      "price_man": 2590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロワールマンション大名",
-      "price_text": "2480万円",
-      "price_man": 2480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "平尾フェニックスマンション",
-      "price_text": "4650万円",
-      "price_man": 4650,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第3",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第3",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション舞鶴第2",
-      "price_text": "3290万円",
-      "price_man": 3290,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第3",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シテイマンション平尾Ⅱ",
-      "price_text": "2553万円",
-      "price_man": 2553,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第3",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "トーカンマンション大濠公園駅前",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ハイライフ平尾",
-      "price_text": "2250万円",
-      "price_man": 2250,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2590万円",
-      "price_man": 2590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アンピール天神南",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレス平尾Ⅱ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "マンション鳥飼204",
-      "price_text": "1650万円",
-      "price_man": 1650,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション平尾Ⅰ",
-      "price_text": "2590万円",
-      "price_man": 2590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "駅徒歩約4分♪ シティマンション薬院Ⅱ　【担当：大石…",
-      "price_text": "2880万円",
-      "price_man": 2880,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東峰マンション西公園",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレス平尾Ⅱ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第3",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション平尾Ⅱ",
-      "price_text": "2563万円",
-      "price_man": 2563,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ユーハイム大濠西",
-      "price_text": "2660万円",
-      "price_man": 2660,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア天神今泉",
-      "price_text": "4999万円",
-      "price_man": 4999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション平尾I",
-      "price_text": "2590万円",
-      "price_man": 2590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "大名サンハイツ",
-      "price_text": "2820万円",
-      "price_man": 2820,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション輝国一号館",
-      "price_text": "900万円",
-      "price_man": 900,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サンライフ六本松",
-      "price_text": "3980万円",
-      "price_man": 3980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション高砂",
-      "price_text": "2799万円",
-      "price_man": 2799,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "グランコート高砂",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション天神",
-      "price_text": "3100万円",
-      "price_man": 3100,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "3099万円",
-      "price_man": 3099,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "スタンスレジデンス植物園外苑ヒルズ",
-      "price_text": "4790万円",
-      "price_man": 4790,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シャンボール桜坂",
-      "price_text": "2260万円",
-      "price_man": 2260,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ゾンネンハイム大手門",
-      "price_text": "2542万円",
-      "price_man": 2542,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティハウス六本松ツインタワーズ",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "クリオ渡辺通サザンマークス",
-      "price_text": "4780万円",
-      "price_man": 4780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第３",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "藤和シティコープ平尾駅前",
-      "price_text": "4790万円",
-      "price_man": 4790,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "朝日プラザ薬院",
-      "price_text": "3990万円",
-      "price_man": 3990,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サンライフ六本松",
-      "price_text": "4280万円",
-      "price_man": 4280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション西公園",
-      "price_text": "3799万円",
-      "price_man": 3799,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレス平尾Ⅱ",
-      "price_text": "2990万円",
-      "price_man": 2990,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク西公園第７",
-      "price_text": "3490万円",
-      "price_man": 3490,
-      "source": "suumo_fukuoka"
-    },
-    {
       "name": "笹丘中央パーク・ホームズ",
       "price_text": "2880万円",
       "price_man": 2880,
       "source": "suumo_fukuoka"
     },
     {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第３",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ハイライフ平尾",
-      "price_text": "2250万円",
-      "price_man": 2250,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "デュオヴェール薬院est",
-      "price_text": "4580万円",
-      "price_man": 4580,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サンポートハイツ304号室",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレス平尾Ⅱ",
-      "price_text": "2990万円",
-      "price_man": 2990,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "朝日プラザ天神",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "デュオヴェール薬院est",
-      "price_text": "4580万円",
-      "price_man": 4580,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "≪価格改定≫アートウィル赤坂",
-      "price_text": "4780万円",
-      "price_man": 4780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第３",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "秀和警固レジデンス",
-      "price_text": "3080万円",
-      "price_man": 3080,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "輝国住宅1号棟",
-      "price_text": "1380万円",
-      "price_man": 1380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2590万円",
-      "price_man": 2590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネツクス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サンライフ六本松",
-      "price_text": "3980万円",
-      "price_man": 3980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東峰マンション西公園",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エステートマンション赤坂けやき通り",
-      "price_text": "3880万円",
-      "price_man": 3880,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "小笹コーポ",
-      "price_text": "1698万円",
-      "price_man": 1698,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東峰マンション西公園",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院",
-      "price_text": "2380万円",
-      "price_man": 2380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東峰マンション西公園",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東峰マンション西公園",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション小笹",
-      "price_text": "2099万円",
-      "price_man": 2099,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東峰マンション西公園【担当：中尾】　までお気軽にお問…",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シャトレ大濠",
-      "price_text": "1580万円",
-      "price_man": 1580,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ペルル大濠公園",
-      "price_text": "4580万円",
-      "price_man": 4580,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク西公園第６",
-      "price_text": "3790万円",
-      "price_man": 3790,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "小笹コーポ",
-      "price_text": "1698万円",
-      "price_man": 1698,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東峰マンション西公園",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ハイラーク舞鶴",
-      "price_text": "3980万円",
-      "price_man": 3980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "藤和シティコープ平尾駅前",
-      "price_text": "3880万円",
-      "price_man": 3880,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク西公園第6",
-      "price_text": "3790万円",
-      "price_man": 3790,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "秀和警固レジデンス",
-      "price_text": "3080万円",
-      "price_man": 3080,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "藤和コープソシエ大名",
-      "price_text": "3490万円",
-      "price_man": 3490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠公園",
-      "price_text": "3980万円",
-      "price_man": 3980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ニューライフ天神",
-      "price_text": "2800万円",
-      "price_man": 2800,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第3",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アーバンパレス大濠",
-      "price_text": "4570万円",
-      "price_man": 4570,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション赤坂",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2590万円",
-      "price_man": 2590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ニューライフ天神",
-      "price_text": "2800万円",
-      "price_man": 2800,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シャトレ大濠",
-      "price_text": "1580万円",
-      "price_man": 1580,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク西公園第６",
-      "price_text": "3790万円",
-      "price_man": 3790,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション小笹",
-      "price_text": "2099万円",
-      "price_man": 2099,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第５",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2590万円",
-      "price_man": 2590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アートウィル赤坂",
-      "price_text": "4780万円",
-      "price_man": 4780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第3",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第５",
-      "price_text": "3180万円",
-      "price_man": 3180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション大名",
-      "price_text": "3012万円",
-      "price_man": 3012,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス　中古マンション",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション天神Ⅲ",
-      "price_text": "2380万円",
-      "price_man": 2380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アクロス天神セントラルグロー",
-      "price_text": "4350万円",
-      "price_man": 4350,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ平尾",
-      "price_text": "1650万円",
-      "price_man": 1650,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コモダス天神",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "輝国住宅1号棟",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "輝国住宅",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション西公園",
-      "price_text": "4480万円",
-      "price_man": 4480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション平尾Ⅱ",
-      "price_text": "2573万円",
-      "price_man": 2573,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション薬院Ⅱ",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第３",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション薬院第3",
-      "price_text": "3090万円",
-      "price_man": 3090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション六本松第２",
-      "price_text": "1480万円",
-      "price_man": 1480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "小笹コーポ",
-      "price_text": "1698万円",
-      "price_man": 1698,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "藤和シティコープ平尾駅前",
-      "price_text": "3880万円",
-      "price_man": 3880,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション高砂第２",
-      "price_text": "2580万円",
-      "price_man": 2580,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレス平尾Ⅱ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東カングランドマンション大濠パークサイド",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シャンボール大名 D棟",
-      "price_text": "3500万円",
-      "price_man": 3500,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス【担当：中尾】までお気軽にお問合せください…",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東カングランドマンション大濠パークサイド",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロワールマンション赤坂",
-      "price_text": "1980万円",
-      "price_man": 1980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東カングランドマンション大濠パークサイド",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東急ドエルアルス桜坂",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ピュアドームサウスイースト天神",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレス大名第２",
-      "price_text": "3360万円",
-      "price_man": 3360,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東カングランドマンション大濠パークサイド",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ハイツ大手門",
-      "price_text": "4298万円",
-      "price_man": 4298,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "藤和シティコープ平尾駅前",
-      "price_text": "4180万円",
-      "price_man": 4180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション笹丘第２",
-      "price_text": "2280万円",
-      "price_man": 2280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "朝日プラザ天神",
-      "price_text": "3180万円",
-      "price_man": 3180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ハイライフ平尾",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスクヴューコート植物園",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "朝日プラザ桜坂",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア天神今泉",
-      "price_text": "4900万円",
-      "price_man": 4900,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネツクス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション小笹",
-      "price_text": "2099万円",
-      "price_man": 2099,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "3099万円",
-      "price_man": 3099,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷　中古マンション",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ゾンネンハイム大手門",
-      "price_text": "2532万円",
-      "price_man": 2532,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アンピール百年橋",
-      "price_text": "3280万円",
-      "price_man": 3280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネツクス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション平尾Ⅱ",
-      "price_text": "2563万円",
-      "price_man": 2563,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "三愛シティライフ小笹",
-      "price_text": "998万円",
-      "price_man": 998,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレス平尾Ⅱ",
-      "price_text": "2950万円",
-      "price_man": 2950,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ゾンネンハイム大手門",
-      "price_text": "2537万円",
-      "price_man": 2537,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シャンボール舞鶴",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エクセレンス谷",
-      "price_text": "2590万円",
-      "price_man": 2590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア天神今泉",
-      "price_text": "4900万円",
-      "price_man": 4900,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション天神",
-      "price_text": "1820万円",
-      "price_man": 1820,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "秀和警固レジデンス",
-      "price_text": "3080万円",
-      "price_man": 3080,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク大濠アネックス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "警固ハウス",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "リファレンス天神南",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第３　中古マンション",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アプローズ那珂",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "トピレック博多",
-      "price_text": "2450万円",
-      "price_man": 2450,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "【ロワールマンション博多駅南】博多駅徒歩圏！最新リノ…",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール山王公園南",
-      "price_text": "3450万円",
-      "price_man": 3450,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "GSハイム博多",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3490万円",
-      "price_man": 3490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アプローズ那珂",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3910万円",
-      "price_man": 3910,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第３",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロワールマンション南福岡3",
-      "price_text": "1980万円",
-      "price_man": 1980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シテイライフ井尻",
-      "price_text": "1799万円",
-      "price_man": 1799,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ空港南",
-      "price_text": "1450万円",
-      "price_man": 1450,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サングレート博多東弐番館",
-      "price_text": "4180万円",
-      "price_man": 4180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "プレイスポットしんばしビル本館",
-      "price_text": "2249万円",
-      "price_man": 2249,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイナコート吉塚",
-      "price_text": "2499万円",
-      "price_man": 2499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ呉服町",
-      "price_text": "4380万円",
-      "price_man": 4380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "GSハイム博多",
-      "price_text": "2557万円",
-      "price_man": 2557,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "プレイスポットしんばしビル本館",
-      "price_text": "2249万円",
-      "price_man": 2249,
-      "source": "suumo_fukuoka"
-    },
-    {
       "name": "オープンレジデンシア桜並木ガーデン",
       "price_text": "3780万円",
       "price_man": 3780,
       "source": "suumo_fukuoka"
     },
     {
-      "name": "ふよう港ハイツ",
-      "price_text": "2530万円",
-      "price_man": 2530,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第2住吉ハイツ",
-      "price_text": "1680万円",
-      "price_man": 1680,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "チサンマンション祇園",
-      "price_text": "3180万円",
-      "price_man": 3180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレス・ステージ博多",
-      "price_text": "4099万円",
-      "price_man": 4099,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "デュオヴェール博多駅",
-      "price_text": "4480万円",
-      "price_man": 4480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "三愛シティライフ空港南Ⅱ",
-      "price_text": "1698万円",
-      "price_man": 1698,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "三愛シティライフ空港南Ⅱ",
-      "price_text": "1698万円",
-      "price_man": 1698,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "三愛シティライフ空港南Ⅱ",
-      "price_text": "1698万円",
-      "price_man": 1698,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "三愛シティライフ空港南Ⅱ",
-      "price_text": "1698万円",
-      "price_man": 1698,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモ博多古門戸",
-      "price_text": "4399万円",
-      "price_man": 4399,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "三愛シティライフ空港南Ⅱ",
-      "price_text": "1698万円",
-      "price_man": 1698,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "三愛シティライフ空港南II",
-      "price_text": "1698万円",
-      "price_man": 1698,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロワールマンション吉塚2",
-      "price_text": "1800万円",
-      "price_man": 1800,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "グランフォーレ南福岡",
-      "price_text": "3500万円",
-      "price_man": 3500,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール板付",
-      "price_text": "1298万円",
-      "price_man": 1298,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール板付",
-      "price_text": "1398万円",
-      "price_man": 1398,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エメラルドマンション比恵",
-      "price_text": "1998万円",
-      "price_man": 1998,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "4130万円",
-      "price_man": 4130,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "KBCマンションユーハイム博多南",
-      "price_text": "3290万円",
-      "price_man": 3290,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレスレイクビュー井尻",
-      "price_text": "2380万円",
-      "price_man": 2380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "クレアウォーターマーク",
-      "price_text": "2750万円",
-      "price_man": 2750,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
       "name": "アルファライフ博多",
       "price_text": "4699万円",
       "price_man": 4699,
@@ -2279,1386 +206,18 @@
       "name": "アルファライフ博多",
       "price_text": "4599万円",
       "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "スカイマンション諸岡",
-      "price_text": "1480万円",
-      "price_man": 1480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4799万円",
-      "price_man": 4799,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4699万円",
-      "price_man": 4699,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "デュオヴェール博多駅",
-      "price_text": "4480万円",
-      "price_man": 4480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "グランピア住吉",
-      "price_text": "2399万円",
-      "price_man": 2399,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4699万円",
-      "price_man": 4699,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第3住吉ハイツ702号室",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第３",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多プレシャス",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア博多空港通り",
-      "price_text": "4580万円",
-      "price_man": 4580,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3490万円",
-      "price_man": 3490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロワールマンションロゼ吉塚Ｂ棟",
-      "price_text": "2090万円",
-      "price_man": 2090,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第３",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第３",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "トピレック博多",
-      "price_text": "1398万円",
-      "price_man": 1398,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4699万円",
-      "price_man": 4699,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アウルステージアン・シオ博多駅南",
-      "price_text": "4790万円",
-      "price_man": 4790,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第一大楠マンション",
-      "price_text": "650万円",
-      "price_man": 650,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島II",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ井尻",
-      "price_text": "1799万円",
-      "price_man": 1799,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ベルアージュ井尻",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ベルアージュ井尻",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ベルアージュ井尻　中古マンション",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール山王公園南",
-      "price_text": "3450万円",
-      "price_man": 3450,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ベルアージュ井尻",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "4080万円",
-      "price_man": 4080,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ベルアージュ井尻",
-      "price_text": "2690万円",
-      "price_man": 2690,
       "source": "suumo_fukuoka"
     },
     {
       "name": "アムール吉塚",
       "price_text": "3199万円",
       "price_man": 3199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール吉塚",
-      "price_text": "3199万円",
-      "price_man": 3199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ベルアージュ井尻",
-      "price_text": "2690万円",
-      "price_man": 2690,
       "source": "suumo_fukuoka"
     },
     {
       "name": "クレアランドマーク",
       "price_text": "3480万円",
       "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ベルアージュ井尻",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多SOUTH",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール吉塚",
-      "price_text": "3199万円",
-      "price_man": 3199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール山王公園南",
-      "price_text": "3450万円",
-      "price_man": 3450,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東急ドエル・アルス博多・古門戸町",
-      "price_text": "4690万円",
-      "price_man": 4690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ラポール板付",
-      "price_text": "1850万円",
-      "price_man": 1850,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多 SOUTH",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アプローズ那珂",
-      "price_text": "2999万円",
-      "price_man": 2999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "【即日内覧OK♪博多駅・福岡空港が近い好立地】プレサ…",
-      "price_text": "4380万円",
-      "price_man": 4380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "新川端グレイスマンション",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サンシティ博多ＦＬＥＸ２１",
-      "price_text": "2250万円",
-      "price_man": 2250,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ネストピア博多グランドステージⅢ",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多　ＳＯＵＴＨ",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多SOUTH",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール吉塚",
-      "price_text": "3199万円",
-      "price_man": 3199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレスト博多ＥＡＳＴ　ＰＡＲＫ",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4699万円",
-      "price_man": 4699,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多　SOUTH",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多SOUTH",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレスト博多EAST　PARK",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストパサージュ博多",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エバーライフ住吉",
-      "price_text": "3190万円",
-      "price_man": 3190,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "美野島シャトー",
-      "price_text": "1670万円",
-      "price_man": 1670,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール山王公園南",
-      "price_text": "3490万円",
-      "price_man": 3490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "プレサンスロジェ博多駅北",
-      "price_text": "4280万円",
-      "price_man": 4280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "東峰マンション竹下",
-      "price_text": "1980万円",
-      "price_man": 1980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレスト博多EAST　PARK",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島II",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アウルステージアン・シオ博多駅南",
-      "price_text": "4790万円",
-      "price_man": 4790,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アウルステージアン・シオ博多駅南",
-      "price_text": "4790万円",
-      "price_man": 4790,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレスト博多 EAST PARK",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東201号",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アソシア博多諸岡テラス",
-      "price_text": "4399万円",
-      "price_man": 4399,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多　8階",
-      "price_text": "4699万円",
-      "price_man": 4699,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多SOUTH",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール吉塚",
-      "price_text": "3199万円",
-      "price_man": 3199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サーパス大博通り",
-      "price_text": "3499万円",
-      "price_man": 3499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール吉塚",
-      "price_text": "3199万円",
-      "price_man": 3199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレスト博多EAST　PARK",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アンピール竹下",
-      "price_text": "1800万円",
-      "price_man": 1800,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロワールマンション南福岡５",
-      "price_text": "2590万円",
-      "price_man": 2590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サーパス大博通り",
-      "price_text": "3499万円",
-      "price_man": 3499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール吉塚",
-      "price_text": "3199万円",
-      "price_man": 3199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ呉服町",
-      "price_text": "4380万円",
-      "price_man": 4380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ファーネスト博多ルシエＥＡＳＴ",
-      "price_text": "4880万円",
-      "price_man": 4880,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サーパス大博通り",
-      "price_text": "3499万円",
-      "price_man": 3499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "クリオラベルヴィ呉服町",
-      "price_text": "4399万円",
-      "price_man": 4399,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4699万円",
-      "price_man": 4699,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "グレイス博多",
-      "price_text": "2210万円",
-      "price_man": 2210,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コモダス奈良屋",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第３",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多　SOUTH",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4299万円",
-      "price_man": 4299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール吉塚",
-      "price_text": "3199万円",
-      "price_man": 3199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サヴォイ　ザ・リバーテラス",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "クレアランドマーク",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ヒューマインド南福岡かえで通り",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "パシフィックコート博多駅南",
-      "price_text": "4590万円",
-      "price_man": 4590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サヴォイ ザ・リバーテラス",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモ博多古門戸",
-      "price_text": "4399万円",
-      "price_man": 4399,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレスグランステージ博多",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多プレシャス",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多 SOUTH",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サーパス大博通り",
-      "price_text": "3499万円",
-      "price_man": 3499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島２",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ　中古マンション",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サヴォイ　ザ・リバーテラス",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3490万円",
-      "price_man": 3490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サーパス大博通り",
-      "price_text": "3499万円",
-      "price_man": 3499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロワールマンション博多駅南",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール吉塚",
-      "price_text": "3199万円",
-      "price_man": 3199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アクタス南福岡グランパーク",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレスレイクビュー井尻",
-      "price_text": "2380万円",
-      "price_man": 2380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ふよう港ハイツ",
-      "price_text": "2890万円",
-      "price_man": 2890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "プレミアム板付",
-      "price_text": "2600万円",
-      "price_man": 2600,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サヴォイ　ザ・リバーテラス",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "美野島シャトー",
-      "price_text": "1670万円",
-      "price_man": 1670,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモ博多古門戸",
-      "price_text": "4399万円",
-      "price_man": 4399,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク奈良屋",
-      "price_text": "4000万円",
-      "price_man": 4000,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "パシフィックコート博多駅南",
-      "price_text": "4590万円",
-      "price_man": 4590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多SOUTH",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ベルアージュ井尻",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サヴォイ　ザ・リバーテラス",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "三愛シティライフ雑餉隈III",
-      "price_text": "1980万円",
-      "price_man": 1980,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "クレアランドマーク",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "クレアランドマーク",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロマネスク奈良屋",
-      "price_text": "4000万円",
-      "price_man": 4000,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アソシア博多諸岡テラス",
-      "price_text": "3990万円",
-      "price_man": 3990,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "クレアランドマーク",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ竹下",
-      "price_text": "4890万円",
-      "price_man": 4890,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "クレアランドマーク",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ブライトクロス博多",
-      "price_text": "3999万円",
-      "price_man": 3999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サヴォイ　ザ・リバーテラス　１３０１号",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アウルステージ アン・シオ博多駅南",
-      "price_text": "4790万円",
-      "price_man": 4790,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "パシフィックコート博多駅南",
-      "price_text": "4590万円",
-      "price_man": 4590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "クレアウォーターマーク",
-      "price_text": "2750万円",
-      "price_man": 2750,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ファーネスト博多レヴィア",
-      "price_text": "4598万円",
-      "price_man": 4598,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレスト博多EAST　PARK",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ファミール南福岡",
-      "price_text": "2680万円",
-      "price_man": 2680,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "カーサ第弐博多",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サヴォイ ザ・リバーテラス",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コーポラス東光",
-      "price_text": "1050万円",
-      "price_man": 1050,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サヴォイ　ザ・リバーテラス",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ファミール南福岡",
-      "price_text": "2680万円",
-      "price_man": 2680,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ステイツ天神東",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "カーサ第２博多",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サーパス大博通り",
-      "price_text": "3499万円",
-      "price_man": 3499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ファミール南福岡",
-      "price_text": "2680万円",
-      "price_man": 2680,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "グランピア竹下",
-      "price_text": "2590万円",
-      "price_man": 2590,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アンピール博多駅南",
-      "price_text": "4480万円",
-      "price_man": 4480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ベルアージュ井尻",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サーパス大博通り",
-      "price_text": "3499万円",
-      "price_man": 3499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "第三住吉ハイツ",
-      "price_text": "2549万円",
-      "price_man": 2549,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレスト博多EAST PARK",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サーパス大博通り",
-      "price_text": "3499万円",
-      "price_man": 3499,
       "source": "suumo_fukuoka"
     },
     {
@@ -3668,309 +227,9 @@
       "source": "suumo_fukuoka"
     },
     {
-      "name": "エンクレスト博多EAST PARK",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サーパス大博通り",
-      "price_text": "3499万円",
-      "price_man": 3499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロワールマンション空港南",
-      "price_text": "1360万円",
-      "price_man": 1360,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレスト博多駅南ＦＩＴ",
-      "price_text": "4950万円",
-      "price_man": 4950,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "グランフォーレラグゼ博多",
+      "name": "クレアランドマーク",
       "price_text": "3480万円",
       "price_man": 3480,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ吉塚駅東II",
-      "price_text": "3580万円",
-      "price_man": 3580,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "サヴォイ ザ・リバーテラス",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレスト博多 EAST PARK",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ美野島Ⅱ",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション南福岡第2",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "プリエール博多",
-      "price_text": "3599万円",
-      "price_man": 3599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "朝日プラザ博多",
-      "price_text": "3280万円",
-      "price_man": 3280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ロータリープラザ博多駅東",
-      "price_text": "1690万円",
-      "price_man": 1690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール吉塚",
-      "price_text": "3199万円",
-      "price_man": 3199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション南福岡第2",
-      "price_text": "2690万円",
-      "price_man": 2690,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エメラルドマンション東那珂",
-      "price_text": "1490万円",
-      "price_man": 1490,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア博多空港通り",
-      "price_text": "4448万円",
-      "price_man": 4448,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ＧＳハイム博多",
-      "price_text": "2200万円",
-      "price_man": 2200,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コープ野村博多東",
-      "price_text": "2680万円",
-      "price_man": 2680,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第3",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "三愛シティライフ空港南",
-      "price_text": "1280万円",
-      "price_man": 1280,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア博多駅南(未入居)",
-      "price_text": "4248万円",
-      "price_man": 4248,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア博多空港通り(未入居)",
-      "price_text": "4448万円",
-      "price_man": 4448,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ダイアパレスレイクビュー井尻",
-      "price_text": "2380万円",
-      "price_man": 2380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション南福岡",
-      "price_text": "1200万円",
-      "price_man": 1200,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン(未入居)",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "皐月マンション奈良屋",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション博多南第３",
-      "price_text": "2390万円",
-      "price_man": 2390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ井尻",
-      "price_text": "1799万円",
-      "price_man": 1799,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティマンション南福岡",
-      "price_text": "1200万円",
-      "price_man": 1200,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アムール山王公園南",
-      "price_text": "3450万円",
-      "price_man": 3450,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ローレルハイツ南福岡",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
       "source": "suumo_fukuoka"
     },
     {
@@ -3980,447 +239,81 @@
       "source": "suumo_fukuoka"
     },
     {
-      "name": "コスモテール吉塚",
-      "price_text": "3490万円",
-      "price_man": 3490,
-      "source": "suumo_fukuoka"
+      "name": "クローバーハイツ第二大手前",
+      "price_text": "3980万円",
+      "price_man": 3980,
+      "source": "suumo_osaka"
     },
     {
-      "name": "ダイアパレスレイクビュー井尻",
-      "price_text": "2380万円",
-      "price_man": 2380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
+      "name": "ライオンズマンション上町",
       "price_text": "3780万円",
       "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "スカイマンション南福岡",
-      "price_text": "1650万円",
-      "price_man": 1650,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚　中古マンション",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "オープンレジデンシア桜並木ガーデン",
-      "price_text": "3780万円",
-      "price_man": 3780,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シテイライフ井尻",
-      "price_text": "1849万円",
-      "price_man": 1849,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "KBCマンションユーハイム博多南",
-      "price_text": "2978万円",
-      "price_man": 2978,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エメラルドマンション吉塚",
-      "price_text": "1999万円",
-      "price_man": 1999,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "コスモテール吉塚",
-      "price_text": "3390万円",
-      "price_man": 3390,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アルファライフ博多",
-      "price_text": "4599万円",
-      "price_man": 4599,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "シティライフ井尻",
-      "price_text": "1799万円",
-      "price_man": 1799,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア【担当：鍋嶋】　までお気軽にお…",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "モントーレ東比恵クレア",
-      "price_text": "4199万円",
-      "price_man": 4199,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "エンクレストベイサイド通り",
-      "price_text": "4499万円",
-      "price_man": 4499,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "老司エクセル15【担当：髙柳】　までお気軽にお問合せ…",
-      "price_text": "1299万円",
-      "price_man": 1299,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "アーサー大橋エクシオ２",
-      "price_text": "3790万円",
-      "price_man": 3790,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "南博多パールシャトー",
-      "price_text": "2300万円",
-      "price_man": 2300,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "ライオンズマンション大橋第2",
-      "price_text": "3180万円",
-      "price_man": 3180,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "クローバー花畑ガーデン",
-      "price_text": "1380万円",
-      "price_man": 1380,
-      "source": "suumo_fukuoka"
-    },
-    {
-      "name": "朝日プラザ末吉橋",
-      "price_text": "3398万円",
-      "price_man": 3398,
       "source": "suumo_osaka"
     },
     {
-      "name": "アルス心斎橋",
-      "price_text": "4898万円",
-      "price_man": 4898,
+      "name": "野田パークマンション",
+      "price_text": "2780万円",
+      "price_man": 2780,
       "source": "suumo_osaka"
     },
     {
-      "name": "ライオンズマンション上町台",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "イトーピア長堀橋シエルクレール",
-      "price_text": "4798万円",
-      "price_man": 4798,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "グランドメゾン松屋町",
-      "price_text": "4698万円",
-      "price_man": 4698,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "ライオンズマンション東本町第三",
-      "price_text": "3798万円",
-      "price_man": 3798,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "カサ高津1番館",
-      "price_text": "2699万円",
-      "price_man": 2699,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "イトーピア長堀橋シエルクレール",
-      "price_text": "4798万円",
-      "price_man": 4798,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アルス心斎橋",
-      "price_text": "4898万円",
-      "price_man": 4898,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "ユニ船場",
-      "price_text": "2680万円",
-      "price_man": 2680,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "ユニ船場",
-      "price_text": "2680万円",
-      "price_man": 2680,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アルス心斎橋",
-      "price_text": "4898万円",
-      "price_man": 4898,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "ロイヤル内本町",
-      "price_text": "4799万円",
-      "price_man": 4799,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アデレイド新福島",
-      "price_text": "4898万円",
-      "price_man": 4898,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "ユニライフ福島C棟",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "ベル・アーバニティ野田",
-      "price_text": "4699万円",
-      "price_man": 4699,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アークレジデンス梅田北",
-      "price_text": "4500万円",
-      "price_man": 4500,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "大淀セントポリア",
-      "price_text": "2998万円",
-      "price_man": 2998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "朝日プラザ北梅田",
-      "price_text": "2950万円",
-      "price_man": 2950,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "朝日プラザ梅田東パート1",
-      "price_text": "4198万円",
-      "price_man": 4198,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アルカディーナ天満橋リバーサイド",
-      "price_text": "4998万円",
-      "price_man": 4998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アルカディーナ天満橋リバーサイド",
-      "price_text": "4998万円",
-      "price_man": 4998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "パラシオ北梅田",
-      "price_text": "4798万円",
-      "price_man": 4798,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アルカディーナ天満橋リバーサイド",
-      "price_text": "4998万円",
-      "price_man": 4998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アルカディーナ天満橋リバーサイド",
-      "price_text": "4998万円",
-      "price_man": 4998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アルカディーナ天満橋リバーサイド",
-      "price_text": "4998万円",
-      "price_man": 4998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "≪リノベ物件成約特典有≫アルカディーナ 天満橋 リバ…",
-      "price_text": "4998万円",
-      "price_man": 4998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "≪リノベ物件成約特典有≫パラシオ北梅田",
-      "price_text": "4798万円",
-      "price_man": 4798,
+      "name": "ブールバール南森町",
+      "price_text": "3080万円",
+      "price_man": 3080,
       "source": "suumo_osaka"
     },
     {
       "name": "日商岩井中津マンション",
-      "price_text": "3999万円",
-      "price_man": 3999,
+      "price_text": "3080万円",
+      "price_man": 3080,
       "source": "suumo_osaka"
     },
     {
-      "name": "朝日プラザ中津",
-      "price_text": "3498万円",
-      "price_man": 3498,
+      "name": "ユニシオ西天満二丁目",
+      "price_text": "4180万円",
+      "price_man": 4180,
       "source": "suumo_osaka"
     },
     {
-      "name": "アルカディーナ天満橋リバーサイド",
-      "price_text": "4998万円",
-      "price_man": 4998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "パラシオ北梅田",
-      "price_text": "4798万円",
-      "price_man": 4798,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アルカディーナ天満橋リバーサイド",
-      "price_text": "4998万円",
-      "price_man": 4998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "アルカディーナ天満橋リバーサイド",
-      "price_text": "4998万円",
-      "price_man": 4998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "パラシオ北梅田",
-      "price_text": "4798万円",
-      "price_man": 4798,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "大淀セントポリア",
-      "price_text": "2998万円",
-      "price_man": 2998,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "メゾン南堀江",
-      "price_text": "3180万円",
-      "price_man": 3180,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "プライムハイツ阿波座",
-      "price_text": "3300万円",
-      "price_man": 3300,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "サンハイツ南堀江",
-      "price_text": "3380万円",
-      "price_man": 3380,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "ジャルダン大阪壱番館 【ペット飼育可】",
-      "price_text": "4580万円",
-      "price_man": 4580,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "ジャルダン大阪壱番館 【ペット飼育可】",
-      "price_text": "4580万円",
-      "price_man": 4580,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "南堀江スカイハイツ",
-      "price_text": "1720万円",
-      "price_man": 1720,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "グランドメゾン長堀",
+      "name": "中津グリーンハイツ",
       "price_text": "2480万円",
       "price_man": 2480,
       "source": "suumo_osaka"
     },
     {
-      "name": "朝日プラザ南堀江　A棟",
-      "price_text": "3870万円",
-      "price_man": 3870,
+      "name": "ノバカネイチ阿波座二番館",
+      "price_text": "3090万円",
+      "price_man": 3090,
       "source": "suumo_osaka"
     },
     {
-      "name": "朝日プラザ南堀江A棟",
-      "price_text": "3870万円",
-      "price_man": 3870,
+      "name": "ダイアパレス本田",
+      "price_text": "2580万円",
+      "price_man": 2580,
+      "source": "suumo_osaka"
+    },
+    {
+      "name": "エルベロワイヤル壱六",
+      "price_text": "3290万円",
+      "price_man": 3290,
+      "source": "suumo_osaka"
+    },
+    {
+      "name": "東急ドエルアルス阿波座",
+      "price_text": "2480万円",
+      "price_man": 2480,
+      "source": "suumo_osaka"
+    },
+    {
+      "name": "アステルコート新町",
+      "price_text": "4590万円",
+      "price_man": 4590,
+      "source": "suumo_osaka"
+    },
+    {
+      "name": "西道頓堀コーポ1号棟 （10階）",
+      "price_text": "3688万円",
+      "price_man": 3688,
       "source": "suumo_osaka"
     },
     {
@@ -4430,165 +323,57 @@
       "source": "suumo_osaka"
     },
     {
-      "name": "カーサ土佐堀",
-      "price_text": "2790万円",
-      "price_man": 2790,
+      "name": "アステルコート新町",
+      "price_text": "4590万円",
+      "price_man": 4590,
       "source": "suumo_osaka"
     },
     {
-      "name": "エスリードOSAKA MID WEST",
-      "price_text": "4280万円",
-      "price_man": 4280,
+      "name": "モアリッツ九条南",
+      "price_text": "2600万円",
+      "price_man": 2600,
       "source": "suumo_osaka"
     },
     {
-      "name": "ノバカネイチ阿波座二番館",
-      "price_text": "3290万円",
-      "price_man": 3290,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "朝日プラザ南堀江",
-      "price_text": "3870万円",
-      "price_man": 3870,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "エスリードＯＳＡＫＡ　ＭＩＤ　ＷＥＳＴ",
-      "price_text": "4280万円",
-      "price_man": 4280,
-      "source": "suumo_osaka"
-    },
-    {
-      "name": "フジメゾン千駄木",
-      "price_text": "3980万円",
-      "price_man": 3980,
+      "name": "パシフィック自由ヶ丘マンション",
+      "price_text": "4599万円",
+      "price_man": 4599,
       "source": "suumo_tokyo"
     },
     {
-      "name": "シャンボール小石川",
-      "price_text": "4680万円",
-      "price_man": 4680,
+      "name": "新中野サニーハイツ",
+      "price_text": "4998万円",
+      "price_man": 4998,
       "source": "suumo_tokyo"
     },
     {
-      "name": "キャニオンマンション文京西片",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "ライオンズマンション江古田",
-      "price_text": "3880万円",
-      "price_man": 3880,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "パシフィック中野",
-      "price_text": "3990万円",
-      "price_man": 3990,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "ライオンズマンション江古田",
+      "name": "朝日プラザ八広",
       "price_text": "3480万円",
       "price_man": 3480,
       "source": "suumo_tokyo"
     },
     {
-      "name": "サニーハウスさぎの宮",
-      "price_text": "4198万円",
-      "price_man": 4198,
+      "name": "クレド・ハイツリー両国　6階南東角住戸",
+      "price_text": "4199万円",
+      "price_man": 4199,
       "source": "suumo_tokyo"
     },
     {
-      "name": "上高田四丁目団地１号棟",
-      "price_text": "3380万円",
-      "price_man": 3380,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "サニーコート東中野",
-      "price_text": "4780万円",
-      "price_man": 4780,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "ライオンズマンション中野弥生町",
-      "price_text": "4799万円",
-      "price_man": 4799,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "岡本マンション",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "サニーハウスさぎの宮",
-      "price_text": "4198万円",
-      "price_man": 4198,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "ライオンズマンション江古田",
-      "price_text": "3880万円",
-      "price_man": 3880,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "中野スカイマンション",
-      "price_text": "3990万円",
-      "price_man": 3990,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "パシフィック中野",
-      "price_text": "3990万円",
-      "price_man": 3990,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "ヴィラロイヤル東中野 706号室",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "スターパレス北品川",
-      "price_text": "4280万円",
-      "price_man": 4280,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "哲学堂コーポラス",
-      "price_text": "3580万円",
-      "price_man": 3580,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "ストーク両国秀山",
-      "price_text": "4180万円",
-      "price_man": 4180,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "ハイツ両国駅前",
-      "price_text": "4790万円",
-      "price_man": 4790,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "浅草ロイヤルマンション",
-      "price_text": "4999万円",
-      "price_man": 4999,
+      "name": "クレド・ハイツリー両国",
+      "price_text": "4199万円",
+      "price_man": 4199,
       "source": "suumo_tokyo"
     },
     {
       "name": "下谷サニーハイツ",
-      "price_text": "2988万円",
-      "price_man": 2988,
+      "price_text": "3480万円",
+      "price_man": 3480,
+      "source": "suumo_tokyo"
+    },
+    {
+      "name": "レーベンシティオ上野桜木",
+      "price_text": "4980万円",
+      "price_man": 4980,
       "source": "suumo_tokyo"
     },
     {
@@ -4598,45 +383,15 @@
       "source": "suumo_tokyo"
     },
     {
-      "name": "下谷第2サマリヤマンション",
-      "price_text": "3040万円",
-      "price_man": 3040,
+      "name": "フォースター浅草今戸",
+      "price_text": "4698万円",
+      "price_man": 4698,
       "source": "suumo_tokyo"
     },
     {
-      "name": "浅草ロイヤルマンション",
-      "price_text": "4999万円",
-      "price_man": 4999,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "ディアハイム浅草",
-      "price_text": "4980万円",
-      "price_man": 4980,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "浅草ロイヤルマンション",
-      "price_text": "4198万円",
-      "price_man": 4198,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "中銀南長崎マンシオン505号室",
-      "price_text": "3398万円",
-      "price_man": 3398,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "中銀南長崎マンシオン",
-      "price_text": "3398万円",
-      "price_man": 3398,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "グリーンキャピタル西巣鴨",
-      "price_text": "3990万円",
-      "price_man": 3990,
+      "name": "マンション宮",
+      "price_text": "4180万円",
+      "price_man": 4180,
       "source": "suumo_tokyo"
     },
     {
@@ -4646,1083 +401,663 @@
       "source": "suumo_tokyo"
     },
     {
-      "name": "ニュー池袋ハイツ",
-      "price_text": "4480万円",
-      "price_man": 4480,
-      "source": "suumo_tokyo"
+      "name": "チサンマンション第２新大阪",
+      "price_text": "1580万円",
+      "price_man": 1580,
+      "source": "yield_osaka"
     },
     {
-      "name": "ニュー池袋ハイツ",
-      "price_text": "4480万円",
-      "price_man": 4480,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "中銀南長崎マンシオン",
-      "price_text": "3480万円",
-      "price_man": 3480,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "グレイス高田馬場",
-      "price_text": "4500万円",
-      "price_man": 4500,
-      "source": "suumo_tokyo"
-    },
-    {
-      "name": "福島グランドヴィラ 1階 ２ＳＤＫ",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "福島グランドヴィラ 1階 ２ＳＤＫ",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "ドミール堂島 5階 ２ＤＫ",
-      "price_text": "1990万円",
-      "price_man": 1990,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "グリーンシティＯＳＡＫＡ　１号棟 6階 １ＬＤＫ",
-      "price_text": "2480万円",
-      "price_man": 2480,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "福島グランドヴィラ 1階 ２ＳＬＤＫ",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "メゾン北梅田 2階 １ＤＫ",
-      "price_text": "980万円",
-      "price_man": 980,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "ポールハイツ淀 7階 １ＬＤＫ",
-      "price_text": "1890万円",
-      "price_man": 1890,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "野田パークマンション 9階 ２ＤＫ",
-      "price_text": "1780万円",
-      "price_man": 1780,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "ドルミ野田 9階 ２Ｋ",
-      "price_text": "1880万円",
-      "price_man": 1880,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "福島グランドヴィラ 1階 ２ＳＤＫ",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "福島グランドヴィラ 1階 ２ＳＤＫ",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "福島グランドヴィラ 1階 ２ＳＤＫ",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "パークプラザ野田 4階 ２ＬＤＫ",
-      "price_text": "2480万円",
-      "price_man": 2480,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "野田パークマンション 9階 ３ＬＤＫ",
+      "name": "利回り10.96％",
       "price_text": "2500万円",
       "price_man": 2500,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "福島グランドヴィラ 1階 ２ＳＤＫ",
-      "price_text": "2490万円",
-      "price_man": 2490,
-      "source": "multi_site_osaka"
-    },
-    {
-      "name": "健美家 中野区鷺宮1-12-#0pqo",
-      "price_text": "1億4500万円",
-      "price_man": 14500,
-      "source": "ittomono_tokyo"
-    },
-    {
-      "name": "健美家 練馬区北町5丁目10#2iuo",
-      "price_text": "2億円",
-      "price_man": 20000,
-      "source": "ittomono_tokyo"
-    },
-    {
-      "name": "健美家 練馬区桜台一丁目34#7glk",
-      "price_text": "1億8750万円",
-      "price_man": 18750,
-      "source": "ittomono_tokyo"
-    },
-    {
-      "name": "健美家 練馬区北町1丁目#4heg",
-      "price_text": "1億6950万円",
-      "price_man": 16950,
-      "source": "ittomono_tokyo"
-    },
-    {
-      "name": "健美家 世田谷区世田谷1丁目#8g5k",
-      "price_text": "1億5000万円",
-      "price_man": 15000,
-      "source": "ittomono_tokyo"
-    },
-    {
-      "name": "健美家 杉並区高円寺南5-4#88nc",
-      "price_text": "1億6500万円",
-      "price_man": 16500,
-      "source": "ittomono_tokyo"
-    },
-    {
-      "name": "健美家 杉並区阿佐谷南2丁目#7d0g",
-      "price_text": "1億6660万円",
-      "price_man": 16660,
-      "source": "ittomono_tokyo"
-    },
-    {
-      "name": "大阪市中央区瓦屋町　マンション（民泊運営中）",
-      "price_text": "2億円",
-      "price_man": 20000,
-      "source": "ittomono_osaka"
-    },
-    {
-      "name": "GE4389",
-      "price_text": "4480万円",
-      "price_man": 4480,
-      "source": "rakumachi_osaka"
-    },
-    {
-      "name": "2019年築",
-      "price_text": "4280万円",
-      "price_man": 4280,
-      "source": "rakumachi_osaka"
-    },
-    {
-      "name": "ST【小さい物件からコツコツ】””新大阪駅徒歩5分””",
-      "price_text": "1970万円",
-      "price_man": 1970,
       "source": "yield_osaka"
     },
     {
-      "name": "大阪市西区",
-      "price_text": "2950万円",
-      "price_man": 2950,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "地下鉄中央線「九条」駅まで徒歩8分",
-      "price_text": "1790万円",
-      "price_man": 1790,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "JR大阪環状線",
-      "price_text": "1900万円",
-      "price_man": 1900,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "大阪市北区",
-      "price_text": "2970万円",
-      "price_man": 2970,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "エステムプラザ梅田ＷＥＳＴ",
+      "name": "プロシード心斎橋東ヴァンターレ",
       "price_text": "1500万円",
       "price_man": 1500,
       "source": "yield_osaka"
     },
     {
-      "name": "エステムプラザ梅田ＷＥＳＴ",
-      "price_text": "2250万円",
-      "price_man": 2250,
+      "name": "ST【人気の大阪市浪速区】””環状線 新今宮駅徒歩5分””",
+      "price_text": "2260万円",
+      "price_man": 2260,
       "source": "yield_osaka"
     },
     {
-      "name": "心斎橋駅5分 南船場のオーナーチェンジ",
-      "price_text": "935万円",
-      "price_man": 935,
+      "name": "GE　手数料交渉可能　プレサンス堺筋本町センティス",
+      "price_text": "2260万円",
+      "price_man": 2260,
       "source": "yield_osaka"
     },
     {
-      "name": "大阪市中央区の利便性高い区分マンション",
-      "price_text": "2340万円",
-      "price_man": 2340,
+      "name": "GE",
+      "price_text": "680万円",
+      "price_man": 680,
       "source": "yield_osaka"
     },
     {
-      "name": "GE4421",
-      "price_text": "2340万円",
-      "price_man": 2340,
+      "name": "【恵美須町6分】平成21年・賃貸中・1590万円・4.67％",
+      "price_text": "1590万円",
+      "price_man": 1590,
       "source": "yield_osaka"
     },
     {
-      "name": "【専任】アドバンス西梅田ラシュレ",
-      "price_text": "1980万円",
-      "price_man": 1980,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "GE4426",
-      "price_text": "1600万円",
-      "price_man": 1600,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "吉野ハイツ４０６号",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "レジデンス心斎橋",
-      "price_text": "1780万円",
-      "price_man": 1780,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "エスリード難波レジデンス",
-      "price_text": "1800万円",
-      "price_man": 1800,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "エスリード難波ステーションゲート ノーステラス",
+      "name": "アドバンス難波ウインズ",
       "price_text": "1950万円",
       "price_man": 1950,
       "source": "yield_osaka"
     },
     {
-      "name": "ララプレイス大阪新町ヴェレ",
-      "price_text": "1980万円",
-      "price_man": 1980,
+      "name": "大阪天満宮6分・平成24年・賃貸中・2150万円・4.35％",
+      "price_text": "2150万円",
+      "price_man": 2150,
       "source": "yield_osaka"
     },
     {
-      "name": "チサンマンション心斎橋",
-      "price_text": "1230万円",
-      "price_man": 1230,
+      "name": "谷町六丁目3分・平成29年・賃貸中・2150万円・4.29％",
+      "price_text": "2150万円",
+      "price_man": 2150,
       "source": "yield_osaka"
     },
     {
-      "name": "ハイネス北浜",
-      "price_text": "1980万円",
-      "price_man": 1980,
-      "source": "rakumachi_osaka"
-    },
-    {
-      "name": "ライオンズマンション浜寺石津",
-      "price_text": "1800万円",
-      "price_man": 1800,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "【堺筋本町3分】平成27年・賃貸中・1950万円・4.55％",
-      "price_text": "1950万円",
-      "price_man": 1950,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "大阪中央区",
-      "price_text": "3970万円",
-      "price_man": 3970,
-      "source": "rakumachi_osaka"
-    },
-    {
-      "name": "【長堀橋2分】平成25年・賃貸中・2070万円・4.80％",
-      "price_text": "2070万円",
-      "price_man": 2070,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "堺筋本町徒歩３分のオーナーチェンジ物件",
+      "name": "シエリアタワー中之島",
       "price_text": "2400万円",
       "price_man": 2400,
       "source": "yield_osaka"
     },
     {
-      "name": "藤和シティスクエア阿倍野橋",
-      "price_text": "1870万円",
-      "price_man": 1870,
+      "name": "GE4449",
+      "price_text": "1500万円",
+      "price_man": 1500,
       "source": "yield_osaka"
     },
     {
-      "name": "プレサンス北浜オリジン",
-      "price_text": "2900万円",
-      "price_man": 2900,
+      "name": "ＬＡＶ心斎橋ＷＥＳＴ",
+      "price_text": "2080万円",
+      "price_man": 2080,
       "source": "yield_osaka"
     },
     {
-      "name": "プレサンス堺筋本町駅前シェル",
-      "price_text": "2200万円",
-      "price_man": 2200,
+      "name": "アスヴェル大阪城ＷＥＳＴ２",
+      "price_text": "2130万円",
+      "price_man": 2130,
       "source": "yield_osaka"
     },
     {
-      "name": "プレサンス天満橋トラッド",
-      "price_text": "2200万円",
-      "price_man": 2200,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "プレサンス梅田ヴェルテ",
-      "price_text": "2150万円",
-      "price_man": 2150,
-      "source": "rakumachi_osaka"
-    },
-    {
-      "name": "アスヴェル難波ＥＡＳＴ",
-      "price_text": "1600万円",
-      "price_man": 1600,
-      "source": "yield_osaka"
-    },
-    {
-      "name": "朝日プラザ島之内",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "rakumachi_osaka"
-    },
-    {
-      "name": "品川区×高利回6%×LTV95%対応可",
-      "price_text": "2億円",
-      "price_man": 20000,
-      "source": "ittomono_tokyo"
-    },
-    {
-      "name": "品川区×駅徒歩6分×旅館業12.04%",
-      "price_text": "1億9500万円",
-      "price_man": 19500,
-      "source": "ittomono_tokyo"
-    },
-    {
-      "name": "蓮根 一棟マンション",
-      "price_text": "7900万円",
-      "price_man": 7900,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "◆不動産投資のPLAC◆板橋区◆6.4％◆大山駅徒歩14分◆",
-      "price_text": "5200万円",
-      "price_man": 5200,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "京成立石",
-      "price_text": "7980万円",
-      "price_man": 7980,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "都立家政 一棟アパート",
-      "price_text": "4500万円",
-      "price_man": 4500,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "Premier大塚",
-      "price_text": "7980万円",
-      "price_man": 7980,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "板橋区赤塚１丁目一棟アパート",
-      "price_text": "6980万円",
-      "price_man": 6980,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "メゾンK",
-      "price_text": "7280万円",
-      "price_man": 7280,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "久我山ハイツ",
-      "price_text": "5200万円",
-      "price_man": 5200,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "大森 一棟アパート",
-      "price_text": "5000万円",
-      "price_man": 5000,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "蓮根 一棟アパート",
-      "price_text": "5980万円",
-      "price_man": 5980,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "【満室稼働】板橋区 上板橋駅徒歩13分 一棟AP",
-      "price_text": "6500万円",
-      "price_man": 6500,
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "name": "【阿佐ヶ谷エリア実勢土地評価額120％オーバー！！】【事前‥",
+      "name": "【阿佐ヶ谷エリア実勢土地評価額約120％！！】【事前打診済‥",
       "price_text": "5540万円",
       "price_man": 5540,
       "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "落合南長崎駅歩7分！満室稼働中！オーナーチェンジ！",
-      "price_text": "6480万円",
-      "price_man": 6480,
+      "name": "沼袋 一棟アパート",
+      "price_text": "4980万円",
+      "price_man": 4980,
       "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "ダイアパレス北赤羽駅前",
-      "price_text": "2420万円",
-      "price_man": 2420,
-      "source": "yield_tokyo"
+      "name": "メゾンマキ",
+      "price_text": "4600万円",
+      "price_man": 4600,
+      "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "利回り4.41％",
-      "price_text": "1000万円",
-      "price_man": 1000,
-      "source": "yield_tokyo"
+      "name": "2駅利用可・満室稼働中・板橋区アパート",
+      "price_text": "4580万円",
+      "price_man": 4580,
+      "source": "yield_ittomono_tokyo"
     },
     {
-      "name": "東京都杉並区",
-      "price_text": "2330万円",
-      "price_man": 2330,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【武蔵野市】人気の吉祥寺！珍しい所有権・南向き【#1623】",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【板橋区】住環境良好！安定の広め・複数路線【#1573】",
-      "price_text": "900万円",
-      "price_man": 900,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "東京都杉並区",
-      "price_text": "2080万円",
-      "price_man": 2080,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ファインコート等々力",
-      "price_text": "1700万円",
-      "price_man": 1700,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "GE4418",
-      "price_text": "2200万円",
-      "price_man": 2200,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "◆月々77,000円で賃貸中",
-      "price_text": "2050万円",
-      "price_man": 2050,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "◆月々69,000円で賃貸中",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "利回り4.46％",
-      "price_text": "2130万円",
-      "price_man": 2130,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "2004年築",
-      "price_text": "950万円",
-      "price_man": 950,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "利回り5.14％",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "スカイコート早稲田壱番館",
-      "price_text": "2010万円",
-      "price_man": 2010,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "◆月々80,000円で賃貸中",
-      "price_text": "950万円",
-      "price_man": 950,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "GE4423",
-      "price_text": "1800万円",
-      "price_man": 1800,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "フルリノベーション済み",
-      "price_text": "1530万円",
-      "price_man": 1530,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【墨田区】ゆとりある40㎡1LDKタイプ！【#2677】",
-      "price_text": "2300万円",
-      "price_man": 2300,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【中央区】タワマン高層51階！勝どき駅5分【#2675】",
-      "price_text": "1350万円",
-      "price_man": 1350,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【豊島区】山手線駅徒歩圏内！高利回り1R【#2670】",
-      "price_text": "1950万円",
-      "price_man": 1950,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "◆月々78,500円で賃貸中",
-      "price_text": "2600万円",
-      "price_man": 2600,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "GE4427",
-      "price_text": "2340万円",
-      "price_man": 2340,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "GE4429",
-      "price_text": "1480万円",
-      "price_man": 1480,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【世田谷区】L字2面バルコニーで日当たり良好！【#2652】",
-      "price_text": "1400万円",
-      "price_man": 1400,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【中野区】149戸大規模レジ＆高層階・角部屋【#2653】",
-      "price_text": "1290万円",
-      "price_man": 1290,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "◆月々77,000円で賃貸中",
-      "price_text": "1200万円",
-      "price_man": 1200,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "GE4431",
-      "price_text": "2000万円",
-      "price_man": 2000,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "◆月々80,000円で賃貸中",
-      "price_text": "2050万円",
-      "price_man": 2050,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "◆仲介手数料不要◆【東急リバブル売主】メゾン南常盤台",
-      "price_text": "1300万円",
-      "price_man": 1300,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "◆月々108,000円で賃貸中　駅徒歩5分　オーナーチェンジ",
-      "price_text": "2300万円",
-      "price_man": 2300,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "スカイコート渋谷　奥渋商店街　渋谷駅徒歩圏内",
-      "price_text": "2380万円",
-      "price_man": 2380,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "スカイコート渋谷",
-      "price_text": "2350万円",
-      "price_man": 2350,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "アプレシティ高円寺【空室につき内見可能】",
-      "price_text": "2680万円",
-      "price_man": 2680,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "カーサ第二渋谷【角部屋×室内リフォーム中】",
-      "price_text": "2980万円",
-      "price_man": 2980,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "トップ平和台",
-      "price_text": "970万円",
-      "price_man": 970,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "セントヒルズ北新宿",
-      "price_text": "1200万円",
-      "price_man": 1200,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "メゾン・ド・タンブール",
-      "price_text": "1560万円",
-      "price_man": 1560,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "第二高島平マイコーポ",
-      "price_text": "1780万円",
-      "price_man": 1780,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "プラウドタワー芝浦",
-      "price_text": "1290万円",
-      "price_man": 1290,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ヴェルメゾン本町",
-      "price_text": "1480万円",
-      "price_man": 1480,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "真和ハイツ",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "■ メイゾン落合 ■",
-      "price_text": "1380万円",
-      "price_man": 1380,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ディアプラザ根津",
-      "price_text": "2480万円",
-      "price_man": 2480,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "グランドメゾン紀尾井坂",
-      "price_text": "2850万円",
-      "price_man": 2850,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "パレ・ドール新宿",
-      "price_text": "2380万円",
-      "price_man": 2380,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "飯田橋ハイツ",
-      "price_text": "1490万円",
-      "price_man": 1490,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "グランヴェール南馬込",
-      "price_text": "780万円",
-      "price_man": 780,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "マンション壁装館",
-      "price_text": "2298万円",
-      "price_man": 2298,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "トップ三軒茶屋第４",
-      "price_text": "990万円",
-      "price_man": 990,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ルネ御苑プラザ",
-      "price_text": "1530万円",
-      "price_man": 1530,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ミリオンコート学芸大",
-      "price_text": "1280万円",
-      "price_man": 1280,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ミリオンコート学芸大",
-      "price_text": "2680万円",
-      "price_man": 2680,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ノア道玄坂",
-      "price_text": "2780万円",
-      "price_man": 2780,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "▲駅徒歩7分！33平米・3K・4階・賃貸中！",
-      "price_text": "1380万円",
-      "price_man": 1380,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "レヂオンス石神井公園",
-      "price_text": "780万円",
-      "price_man": 780,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ハイシティ中野",
-      "price_text": "2610万円",
-      "price_man": 2610,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "三田野沢コーポ",
-      "price_text": "1130万円",
-      "price_man": 1130,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "菱和パレス小竹向原",
-      "price_text": "1250万円",
-      "price_man": 1250,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ザ・パークハウス晴海タワーズ",
-      "price_text": "2996万円",
-      "price_man": 2996,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "人気の代々木エリアのオーナーチェンジ物件",
-      "price_text": "2680万円",
-      "price_man": 2680,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "勝どきザ・タワー",
-      "price_text": "1050万円",
-      "price_man": 1050,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ライラックハイツ",
-      "price_text": "1200万円",
-      "price_man": 1200,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "賃貸中で家賃収入が見込める区分マンション",
-      "price_text": "980万円",
-      "price_man": 980,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【世田谷区】閑静な住宅街！バストイレ別独立洗面【#1714】",
-      "price_text": "2180万円",
-      "price_man": 2180,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【渋谷区】人気の代官山駅徒歩2分！バストイレ別【#1709】",
-      "price_text": "2350万円",
-      "price_man": 2350,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "◆人気の駒沢大学駅・1DK・バストイレ別・賃貸中",
-      "price_text": "1130万円",
-      "price_man": 1130,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "◆山手線徒歩圏！エレベーター、オートロック付・新耐震・賃貸中",
-      "price_text": "1480万円",
-      "price_man": 1480,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ライオンズマンション東池袋第二",
-      "price_text": "1690万円",
-      "price_man": 1690,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ライオンズマンション東池袋第二",
-      "price_text": "1380万円",
-      "price_man": 1380,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【新宿区】神楽坂・江戸川橋・早稲田駅利用可【#2721】",
-      "price_text": "2160万円",
-      "price_man": 2160,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "ダイアパレス石神井公園",
-      "price_text": "1550万円",
-      "price_man": 1550,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "【新宿区】山手線利用可能！高利回り南向き1R【#2648】",
+      "name": "モンテベルデ西大島",
       "price_text": "1500万円",
       "price_man": 1500,
       "source": "yield_tokyo"
     },
     {
-      "name": "【板橋区】独立洗面台有！ゆとりある南東向き1K【#2645】",
-      "price_text": "2880万円",
-      "price_man": 2880,
+      "name": "楽待 杉並区高円寺南2#7892",
+      "price_text": "690万円",
+      "price_man": 690,
       "source": "yield_tokyo"
     },
     {
-      "name": "GENOVIA新御徒町skygarden（担当：堀江）",
-      "price_text": "1750万円",
-      "price_man": 1750,
+      "name": "楽待 世田谷区赤堤2#7900",
+      "price_text": "650万円",
+      "price_man": 650,
       "source": "yield_tokyo"
     },
     {
-      "name": "メゾン・ド・フィラント",
-      "price_text": "1280万円",
-      "price_man": 1280,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "メゾン・ド・フィラント",
-      "price_text": "2730万円",
-      "price_man": 2730,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "メゾン・ド・アルジャン",
-      "price_text": "1120万円",
-      "price_man": 1120,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "北区、1R区分 ◆「赤羽」駅徒歩2分×角部屋×事務所利用可！",
-      "price_text": "1950万円",
-      "price_man": 1950,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "グラン蒲田",
-      "price_text": "1380万円",
-      "price_man": 1380,
-      "source": "yield_tokyo"
-    },
-    {
-      "name": "新宿区、1K区分 ◆現空！「新大久保」駅徒歩7分×立地良好",
+      "name": "護国寺駅徒歩5分ほか3駅利用可。賃貸中で家賃収入が見込める区分マンション",
       "price_text": "1780万円",
       "price_man": 1780,
       "source": "yield_tokyo"
     },
     {
-      "name": "熊谷組施工・総戸数710戸・秀和赤坂レジデンシャルホテル",
-      "price_text": "1280万円",
-      "price_man": 1280,
+      "name": "サンビュー南町",
+      "price_text": "1480万円",
+      "price_man": 1480,
       "source": "yield_tokyo"
     },
     {
-      "name": "東洋巣鴨コーポ201号室",
-      "price_text": "4000万円",
-      "price_man": 4000,
-      "source": "rakumachi_tokyo"
-    },
-    {
-      "name": "東洋巣鴨コーポ201号室",
-      "price_text": "1980万円",
-      "price_man": 1980,
+      "name": "シティインデックス新宿若松町",
+      "price_text": "1650万円",
+      "price_man": 1650,
       "source": "yield_tokyo"
     },
     {
-      "name": "【東急リバブル専属】ＧＥＮＯＶＩＡ練馬高野台ｓｋｙｒｕｎ",
-      "price_text": "2380万円",
-      "price_man": 2380,
+      "name": "東京都豊島区",
+      "price_text": "1430万円",
+      "price_man": 1430,
       "source": "yield_tokyo"
     },
     {
-      "name": "≪文京区≫BT別・リフォーム済み！事務所利用可≪Y1736≫",
-      "price_text": "2099万円",
-      "price_man": 2099,
+      "name": "▶平和島駅徒歩8分！利回り6％！総戸数292戸！",
+      "price_text": "1550万円",
+      "price_man": 1550,
       "source": "yield_tokyo"
     },
     {
-      "name": "シティータワーズ東京ベイセントラルタワー",
-      "price_text": "1860万円",
-      "price_man": 1860,
+      "name": "GE4433",
+      "price_text": "980万円",
+      "price_man": 980,
       "source": "yield_tokyo"
     },
     {
-      "name": "文京区のオーナーチェンジ物件",
+      "name": "東京都豊島区",
+      "price_text": "2750万円",
+      "price_man": 2750,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "GE4438",
+      "price_text": "2500万円",
+      "price_man": 2500,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "藤和シティホームズ世田谷下馬",
+      "price_text": "2680万円",
+      "price_man": 2680,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "グリーンプラザ北綾瀬第4",
       "price_text": "2480万円",
       "price_man": 2480,
       "source": "yield_tokyo"
     },
     {
-      "name": "新耐震・室内洗置・オートロック・スカイコート蒲田第4",
+      "name": "アクロス新宿",
+      "price_text": "2000万円",
+      "price_man": 2000,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "大田区",
+      "price_text": "1100万円",
+      "price_man": 1100,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ニュー両国サンハイツ",
+      "price_text": "1050万円",
+      "price_man": 1050,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "◆駅徒歩3分！人気の丸の内線・角部屋・賃貸中",
+      "price_text": "1380万円",
+      "price_man": 1380,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "■■東中野駅■駅歩5分■オーナチェンジ■20平米■洗濯置あり",
+      "price_text": "2280万円",
+      "price_man": 2280,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "2017年築",
+      "price_text": "1183万円",
+      "price_man": 1183,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "日神パレステージ西池袋公園",
+      "price_text": "1780万円",
+      "price_man": 1780,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ビレッタ八広",
+      "price_text": "1980万円",
+      "price_man": 1980,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都練馬区",
+      "price_text": "2280万円",
+      "price_man": 2280,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "エステムプラザ池袋立教通り",
+      "price_text": "1218万円",
+      "price_man": 1218,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "駅近",
+      "price_text": "1280万円",
+      "price_man": 1280,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "◆駅徒歩3分！3駅利用可・角部屋・賃貸中",
+      "price_text": "2380万円",
+      "price_man": 2380,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "利回り3.78%",
+      "price_text": "2340万円",
+      "price_man": 2340,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "GE4443",
+      "price_text": "1680万円",
+      "price_man": 1680,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "▼バストイレ別、駅徒歩3分、賃貸中",
+      "price_text": "1730万円",
+      "price_man": 1730,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【文京区】最上階・バストイレ別！複数駅路線【#2711】",
+      "price_text": "2080万円",
+      "price_man": 2080,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "利回り12.80%　融資相談可",
+      "price_text": "550万円",
+      "price_man": 550,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都練馬区　区分マンション",
+      "price_text": "1860万円",
+      "price_man": 1860,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "GE4447",
+      "price_text": "2960万円",
+      "price_man": 2960,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ブライズ戸越公園",
+      "price_text": "2350万円",
+      "price_man": 2350,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都練馬区　区分マンション",
+      "price_text": "2400万円",
+      "price_man": 2400,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ジョリーメゾンヌベル下落合",
+      "price_text": "2490万円",
+      "price_man": 2490,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【新宿区】「大久保」＆「東中野」駅利用可！【#2715】",
+      "price_text": "1300万円",
+      "price_man": 1300,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "利回り4.66%　東武東上線「ときわ台」駅徒歩3分",
+      "price_text": "1390万円",
+      "price_man": 1390,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "利回り5.75%　オーナーチェンジ物件　浅草駅徒歩4分",
+      "price_text": "1730万円",
+      "price_man": 1730,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "利回り3.33%　オーナーチェンジ物件　牛込神楽坂駅徒歩5分",
+      "price_text": "2990万円",
+      "price_man": 2990,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "利回り5.56%　オーナーチェンジ物件　下落合駅徒歩6分",
+      "price_text": "1790万円",
+      "price_man": 1790,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "パークウェル目白",
+      "price_text": "2240万円",
+      "price_man": 2240,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "パークウェル目白",
+      "price_text": "1580万円",
+      "price_man": 1580,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "オーナーチェンジ物件　利回り3.95％　巣鴨駅徒歩8分",
+      "price_text": "2580万円",
+      "price_man": 2580,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "利回り4.80%　西武新宿線「武蔵関」駅徒歩10分",
       "price_text": "1700万円",
       "price_man": 1700,
       "source": "yield_tokyo"
     },
     {
-      "name": "内見可・事務所可・1999年築・ロイヤルアメニティ白金",
-      "price_text": "2999万円",
-      "price_man": 2999,
+      "name": "◆3駅利用可・エレベーター、オートロック、防犯カメラ完備",
+      "price_text": "1000万円",
+      "price_man": 1000,
       "source": "yield_tokyo"
     },
     {
-      "name": "内見可・事務所可・1999年築・ロイヤルアメニティ白金",
-      "price_text": "2290万円",
-      "price_man": 2290,
+      "name": "世田谷線『上町駅』徒歩5分！投資用不動産！",
+      "price_text": "2650万円",
+      "price_man": 2650,
       "source": "yield_tokyo"
     },
     {
-      "name": "グランデール上野　南向きワイドバルコニー　オートロック",
+      "name": "▶利回り9.13％！新耐震！EV有！",
+      "price_text": "920万円",
+      "price_man": 920,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東京都墨田区　区分マンション",
+      "price_text": "1470万円",
+      "price_man": 1470,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "▶新御徒町駅徒歩6分！平成築！賃貸中！",
+      "price_text": "1650万円",
+      "price_man": 1650,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "東武東上線『中板橋駅』徒歩8分！投資用物件",
+      "price_text": "2400万円",
+      "price_man": 2400,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "グランデール上野",
       "price_text": "1730万円",
       "price_man": 1730,
       "source": "yield_tokyo"
     },
     {
       "name": "グランデール上野",
-      "price_text": "1790万円",
-      "price_man": 1790,
+      "price_text": "2300万円",
+      "price_man": 2300,
       "source": "yield_tokyo"
     },
     {
-      "name": "日興パレス高田馬場【19㎡バルコニー付×室内洗置】",
-      "price_text": "2998万円",
-      "price_man": 2998,
+      "name": "マイステージ駒沢公園",
+      "price_text": "960万円",
+      "price_man": 960,
       "source": "yield_tokyo"
     },
     {
-      "name": "小日向マンション【空室につき内見可能×令和4年リフォーム済】",
-      "price_text": "2590万円",
-      "price_man": 2590,
+      "name": "オーヒロローズハイツ（駅1分・中央区アドレス・角部屋）",
+      "price_text": "2180万円",
+      "price_man": 2180,
       "source": "yield_tokyo"
     },
     {
-      "name": "エクセリア池袋WEST",
-      "price_text": "2900万円",
-      "price_man": 2900,
+      "name": "ウィン青山（青山1丁目から徒歩2分・事務所可・483戸）",
+      "price_text": "2850万円",
+      "price_man": 2850,
       "source": "yield_tokyo"
     },
     {
-      "name": "ハーモニーレジデンス早稲田夏目坂",
-      "price_text": "1100万円",
-      "price_man": 1100,
+      "name": "赤坂グリーンハイツ",
+      "price_text": "2880万円",
+      "price_man": 2880,
       "source": "yield_tokyo"
     },
     {
-      "name": "パレステュディオ神楽坂Ｃｉｔｙ",
+      "name": "赤坂グリーンハイツ",
+      "price_text": "2980万円",
+      "price_man": 2980,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "コーポ小石川【新規リノベ済×空室につき内見可能】",
+      "price_text": "2750万円",
+      "price_man": 2750,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "アイル東京スカイツリー",
+      "price_text": "2800万円",
+      "price_man": 2800,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "パレス江古田",
+      "price_text": "820万円",
+      "price_man": 820,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "オーナーチェンジ物件　利回り5.44％！　稲荷駅徒歩7分",
+      "price_text": "1300万円",
+      "price_man": 1300,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【東急リバブル専任】ステージファースト阿佐ヶ谷",
+      "price_text": "1870万円",
+      "price_man": 1870,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "オーナーチェンジ物件　利回り5.16％！　3路線3駅好立地",
+      "price_text": "2996万円",
+      "price_man": 2996,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "フローレンスパレス田園調布",
+      "price_text": "2680万円",
+      "price_man": 2680,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ジュヒロプラザ赤羽【赤羽駅 徒歩2分×空室につき内見可】",
+      "price_text": "1950万円",
+      "price_man": 1950,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "トーア岩本町マンション",
+      "price_text": "1200万円",
+      "price_man": 1200,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【世田谷区】人気の田園都市線！2面採光角部屋【#2732】",
+      "price_text": "1130万円",
+      "price_man": 1130,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【墨田区】2駅2路線利用可能！高利回り【#2733】",
+      "price_text": "1470万円",
+      "price_man": 1470,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ダイホープラザ調布",
+      "price_text": "2080万円",
+      "price_man": 2080,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "【新宿区】角部屋　バストイレ別【#3710】",
       "price_text": "2350万円",
       "price_man": 2350,
       "source": "yield_tokyo"
     },
     {
-      "name": "プレール中野坂上",
-      "price_text": "1390万円",
-      "price_man": 1390,
+      "name": "【渋谷区】2路線３駅利用の好アクセス!【#3713】",
+      "price_text": "2150万円",
+      "price_man": 2150,
       "source": "yield_tokyo"
     },
     {
-      "name": "ガーデンハイツ小平１番館",
-      "price_text": "1580万円",
-      "price_man": 1580,
+      "name": "キャッスルマンション新小岩",
+      "price_text": "999万円",
+      "price_man": 999,
       "source": "yield_tokyo"
     },
     {
-      "name": "ニュー松ケ谷マンション",
-      "price_text": "1280万円",
-      "price_man": 1280,
+      "name": "ライオンズマンション西新宿第５",
+      "price_text": "1720万円",
+      "price_man": 1720,
       "source": "yield_tokyo"
     },
     {
-      "name": "ニュー松ケ谷マンション",
-      "price_text": "1230万円",
-      "price_man": 1230,
+      "name": "パレ・ホームズ高井戸",
+      "price_text": "1980万円",
+      "price_man": 1980,
       "source": "yield_tokyo"
     },
     {
-      "name": "トーア東尾久マンション",
-      "price_text": "2200万円",
-      "price_man": 2200,
+      "name": "シンシティー駒込",
+      "price_text": "2780万円",
+      "price_man": 2780,
       "source": "yield_tokyo"
     },
     {
-      "name": "エイリックスタイル行橋駅前ザ・テラス",
-      "price_text": "299万円",
-      "price_man": 299,
+      "name": "飯田橋第一パークファミリア",
+      "price_text": "4790万円",
+      "price_man": 4790,
+      "source": "rakumachi_tokyo"
+    },
+    {
+      "name": "ハイツ面影橋",
+      "price_text": "3980万円",
+      "price_man": 3980,
+      "source": "rakumachi_tokyo"
+    },
+    {
+      "name": "ハイツ面影橋",
+      "price_text": "2300万円",
+      "price_man": 2300,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "シティタワー品川",
+      "price_text": "2720万円",
+      "price_man": 2720,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "第２大盛マンション",
+      "price_text": "1299万円",
+      "price_man": 1299,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "大久保カドビル",
+      "price_text": "1350万円",
+      "price_man": 1350,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "マイキャッスル渋谷JP",
+      "price_text": "2350万円",
+      "price_man": 2350,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ライオンズマンション亀有第５",
+      "price_text": "730万円",
+      "price_man": 730,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ランドピアときわ台",
+      "price_text": "740万円",
+      "price_man": 740,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "晴海アイランドトリトンスクエアビュータワー",
+      "price_text": "1499万円",
+      "price_man": 1499,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "大清コーポラス",
+      "price_text": "2280万円",
+      "price_man": 2280,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "メゾンサンシャイン",
+      "price_text": "1680万円",
+      "price_man": 1680,
+      "source": "yield_tokyo"
+    },
+    {
+      "name": "ピュア大橋参番館",
+      "price_text": "6500万円",
+      "price_man": 6500,
+      "source": "yield_ittomono_fukuoka"
+    },
+    {
+      "name": "Ｆアパルトメント的場",
+      "price_text": "3520万円",
+      "price_man": 3520,
+      "source": "yield_ittomono_fukuoka"
+    },
+    {
+      "name": "駐輪場あり",
+      "price_text": "990万円",
+      "price_man": 990,
       "source": "yield_fukuoka"
     },
     {
-      "name": "ライオンズマンション皇后崎公園",
-      "price_text": "1580万円",
-      "price_man": 1580,
-      "source": "yield_fukuoka"
+      "name": "【売主】福岡市博多区◆65.92㎡◆築浅◆区分マンション",
+      "price_text": "3780万円",
+      "price_man": 3780,
+      "source": "rakumachi_fukuoka"
     },
     {
-      "name": "【利回り６％】博多駅徒歩10分の当社所有１R物件！",
-      "price_text": "1000万円",
-      "price_man": 1000,
+      "name": "サヴォイラ・サブリエール",
+      "price_text": "1900万円",
+      "price_man": 1900,
       "source": "yield_fukuoka"
     },
     {
@@ -5732,60 +1067,105 @@
       "source": "yield_fukuoka"
     },
     {
-      "name": "ライオンズステーションプラザ博多",
-      "price_text": "1150万円",
-      "price_man": 1150,
+      "name": "レジデンシャルヒルズ博多南",
+      "price_text": "1480万円",
+      "price_man": 1480,
       "source": "yield_fukuoka"
     },
     {
-      "name": "甦る小さな戸建て",
-      "price_text": "4480万円",
-      "price_man": 4480,
-      "source": "restate_tokyo"
+      "name": "ピュアドーム高宮アーネスト",
+      "price_text": "600万円",
+      "price_man": 600,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "ピュアドーム高宮アーネスト",
+      "price_text": "600万円",
+      "price_man": 600,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "駅徒歩4分×表面利回り8.43%、現在賃貸中のOC区分マンション",
+      "price_text": "640万円",
+      "price_man": 640,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "ピュアドーム平尾アークス",
+      "price_text": "1100万円",
+      "price_man": 1100,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "ライオンズマンション高宮第５",
+      "price_text": "1050万円",
+      "price_man": 1050,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "メゾン・ド・フォレット 206",
+      "price_text": "178万円",
+      "price_man": 178,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "エステートモア博多グラン A棟",
+      "price_text": "660万円",
+      "price_man": 660,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "エステート・モア・博多グラン",
+      "price_text": "415万円",
+      "price_man": 415,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "フォルム博多南",
+      "price_text": "378万円",
+      "price_man": 378,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "フォルム福岡南",
+      "price_text": "370万円",
+      "price_man": 370,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "エステート・モア・天神ワーフ",
+      "price_text": "960万円",
+      "price_man": 960,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "エステート・モア・天神ワーフ",
+      "price_text": "760万円",
+      "price_man": 760,
+      "source": "yield_fukuoka"
+    },
+    {
+      "name": "部屋の真ん中に、お風呂。",
+      "price_text": "2490万円",
+      "price_man": 2490,
+      "source": "restate_fukuoka"
     }
   ],
   "removed_items": [
     {
-      "source": "multi_site_fukuoka"
-    },
-    {
       "source": "yahoo_fukuoka"
     },
     {
-      "source": "multi_site_fukuoka"
+      "source": "yahoo_fukuoka"
     },
     {
       "source": "multi_site_osaka"
     },
     {
-      "source": "yahoo_fukuoka"
+      "source": "suumo_fukuoka"
     },
     {
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "source": "yahoo_tokyo"
-    },
-    {
-      "source": "yahoo_tokyo"
-    },
-    {
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "source": "multi_site_fukuoka"
-    },
-    {
-      "source": "yahoo_fukuoka"
-    },
-    {
-      "source": "yahoo_fukuoka"
+      "source": "suumo_fukuoka"
     },
     {
       "source": "suumo_fukuoka"
@@ -5794,178 +1174,31 @@
       "source": "suumo_fukuoka"
     },
     {
-      "source": "suumo_osaka"
+      "source": "suumo_fukuoka"
     },
     {
-      "source": "suumo_osaka"
+      "source": "suumo_fukuoka"
     },
     {
-      "source": "suumo_osaka"
+      "source": "suumo_fukuoka"
     },
     {
-      "source": "suumo_osaka"
+      "source": "suumo_fukuoka"
     },
     {
-      "source": "suumo_osaka"
+      "source": "suumo_fukuoka"
     },
     {
-      "source": "suumo_osaka"
+      "source": "suumo_fukuoka"
     },
     {
-      "source": "suumo_osaka"
+      "source": "suumo_fukuoka"
     },
     {
-      "source": "suumo_osaka"
+      "source": "suumo_fukuoka"
     },
     {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
-    },
-    {
-      "source": "suumo_osaka"
+      "source": "suumo_fukuoka"
     },
     {
       "source": "suumo_osaka"
@@ -6040,148 +1273,7 @@
       "source": "suumo_tokyo"
     },
     {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "suumo_tokyo"
-    },
-    {
-      "source": "ittomono_tokyo"
-    },
-    {
-      "source": "ittomono_tokyo"
-    },
-    {
-      "source": "ittomono_tokyo"
-    },
-    {
-      "source": "ittomono_tokyo"
-    },
-    {
-      "source": "ittomono_tokyo"
-    },
-    {
-      "source": "ittomono_tokyo"
-    },
-    {
-      "source": "ittomono_tokyo"
-    },
-    {
-      "source": "ittomono_tokyo"
-    },
-    {
-      "source": "ittomono_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
-    },
-    {
-      "source": "yield_osaka"
+      "source": "multi_site_osaka"
     },
     {
       "source": "yield_osaka"
@@ -6232,9 +1324,6 @@
       "source": "yield_ittomono_tokyo"
     },
     {
-      "source": "ittomono_tokyo"
-    },
-    {
       "source": "yield_ittomono_tokyo"
     },
     {
@@ -6250,55 +1339,13 @@
       "source": "yield_ittomono_tokyo"
     },
     {
-      "source": "yield_ittomono_tokyo"
+      "source": "yield_tokyo"
     },
     {
-      "source": "yield_ittomono_tokyo"
-    },
-    {
-      "source": "multi_site_tokyo"
-    },
-    {
-      "source": "multi_site_tokyo"
-    },
-    {
-      "source": "multi_site_tokyo"
-    },
-    {
-      "source": "multi_site_tokyo"
+      "source": "yield_tokyo"
     },
     {
       "source": "rakumachi_tokyo"
-    },
-    {
-      "source": "yield_tokyo"
-    },
-    {
-      "source": "yield_tokyo"
-    },
-    {
-      "source": "yield_tokyo"
-    },
-    {
-      "source": "yield_tokyo"
-    },
-    {
-      "source": "yield_tokyo"
-    },
-    {
-      "source": "yield_tokyo"
-    },
-    {
-      "source": "yield_tokyo"
-    },
-    {
-      "source": "yield_tokyo"
-    },
-    {
-      "source": "yield_tokyo"
-    },
-    {
-      "source": "yield_tokyo"
     },
     {
       "source": "yield_tokyo"
@@ -6508,6 +1555,12 @@
       "source": "yield_tokyo"
     },
     {
+      "source": "rakumachi_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
       "source": "yield_tokyo"
     },
     {
@@ -6535,9 +1588,72 @@
       "source": "yield_tokyo"
     },
     {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
+      "source": "yield_tokyo"
+    },
+    {
       "source": "rakumachi_tokyo"
     },
     {
+      "source": "yield_ittomono_fukuoka"
+    },
+    {
+      "source": "yield_ittomono_fukuoka"
+    },
+    {
+      "source": "yield_ittomono_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
+    },
+    {
       "source": "yield_fukuoka"
     },
     {
@@ -6559,7 +1675,10 @@
       "source": "yield_fukuoka"
     },
     {
-      "source": "multi_site_fukuoka"
+      "source": "yield_fukuoka"
+    },
+    {
+      "source": "yield_fukuoka"
     },
     {
       "source": "yield_fukuoka"
@@ -6569,15 +1688,6 @@
     },
     {
       "source": "restate_fukuoka"
-    },
-    {
-      "source": "restate_osaka"
-    },
-    {
-      "source": "restate_osaka"
-    },
-    {
-      "source": "restate_tokyo"
     }
   ],
   "flagged_count": 0,

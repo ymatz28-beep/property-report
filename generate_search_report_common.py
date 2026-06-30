@@ -5,7 +5,6 @@ import html
 import json
 import re
 import sys
-from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
@@ -25,7 +24,7 @@ from lib.renderer import create_env  # noqa: E402
 # サブリース: 賃料改定不可 → 投資対象外（中野さん知見 2026-04-02）
 _SUBLEASE_KEYWORDS = ["サブリース", "家賃保証", "一括借上", "借上げ", "マスターリース"]
 # ペット不可: 区分はハード除外（チワワ3kg必須）。一棟はオーナー判断なので除外しない
-_PET_NG_KEYWORDS = ["ペット不可", "ペット飼育不可"]
+_PET_NG_KEYWORDS = ["ペット不可", "ペット飼育不可", "ペット禁止", "動物不可", "犬猫不可"]
 
 
 # ── ハードフィルタ関数（テスト可能 + Noneガード） ──
@@ -43,8 +42,9 @@ def is_pet_ng(r) -> bool:
     """ペット不可判定（区分用）。PropertyRow or dict対応。"""
     pet = getattr(r, "pet_status", "") or (r.get("pet_status", "") if isinstance(r, dict) else "") or ""
     name = getattr(r, "name", "") or (r.get("name", "") if isinstance(r, dict) else "") or ""
+    minpaku = getattr(r, "minpaku_status", "") or (r.get("minpaku_status", "") if isinstance(r, dict) else "") or ""
     raw = getattr(r, "raw_line", "") or (r.get("raw_line", "") if isinstance(r, dict) else "") or ""
-    text = f"{pet} {name} {raw}"
+    text = f"{pet} {name} {minpaku} {raw}"
     return pet == "不可" or any(kw in text for kw in _PET_NG_KEYWORDS)
 
 
@@ -1042,42 +1042,11 @@ def load_patrol_summary() -> dict:
 def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[str, str], raw_count: int, duplicate_count: int) -> str:
     """Build property search report HTML using the shared Jinja2 template."""
     rows_sorted = sorted(rows, key=lambda r: (-r.total_score, r.price_man, (r.walk_min or 999), r.name))
-    top5 = rows_sorted[:5]
 
     avg_price = round(sum(r.price_man for r in rows_sorted) / len(rows_sorted), 1) if rows_sorted else 0
     avg_area = round(sum((r.area_sqm or 0) for r in rows_sorted) / len(rows_sorted), 2) if rows_sorted else 0
     top_prop = rows_sorted[0] if rows_sorted else None
     search_date = meta.get("search_date") or dt.date.today().isoformat()
-
-    bucket_counts = Counter(r.bucket_label for r in rows_sorted)
-    price_bins = Counter()
-    for r in rows_sorted:
-        bin_start = (r.price_man // 500) * 500
-        price_bins[bin_start] += 1
-    price_bin_labels = [f"{b}-{b+499}万円" for b in sorted(price_bins)]
-    price_bin_values = [price_bins[b] for b in sorted(price_bins)]
-
-    radar_labels = ["予算", "面積", "耐震", "駅距離", "立地", "間取り", "ペット", "管理費修繕", "リノベ余地", "仲介手数料", "民泊規約"]
-    radar_datasets = []
-    for i, r in enumerate(top5):
-        b = r.score_breakdown
-        radar_datasets.append({
-            "label": f"{i+1}. {r.name[:18]}",
-            "data": [
-                round(b["budget"] / 20 * 100),
-                round(b["area"] / 15 * 100),
-                round(b["earthquake"] / 15 * 100),
-                round(b["station"] / 15 * 100),
-                round(b["location"] / 15 * 100),
-                round(b["layout"] / 10 * 100),
-                max(0, round(b["pet"] / 15 * 100)),
-                max(0, round(b["maintenance"] / 10 * 100)),
-                round(b["renovation"] / 5 * 100),
-                round(b["brokerage"] / 5 * 100),
-                0 if b["minpaku_penalty"] < 0 else 100,
-            ],
-            "borderWidth": 2,
-        })
 
     # Build structured data for template
     first_seen = load_first_seen()
@@ -1092,7 +1061,6 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         first_seen_file = Path(__file__).parent / "data" / "first_seen.json"
         first_seen_file.write_text(json.dumps(first_seen, ensure_ascii=False, indent=2), encoding="utf-8")
     table_rows = [_build_table_row_data(r, idx, first_seen) for idx, r in enumerate(rows_sorted, start=1)]
-    focus_cards = [_build_focus_card_data(r, i) for i, r in enumerate(top5, start=1)]
     sources_str = meta.get("sources_loaded", "SUUMO")
     city_badge = f"データソース: {sources_str}"
 
@@ -1116,7 +1084,6 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     return template.render(
         config=config_dict,
         rows_sorted=rows_sorted,
-        top5=top5,
         meta=meta,
         raw_count=raw_count,
         duplicate_count=duplicate_count,
@@ -1124,15 +1091,8 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         avg_area=avg_area,
         top_prop=top_prop,
         search_date=search_date,
-        radar_labels=radar_labels,
-        radar_datasets=radar_datasets,
-        bucket_labels=list(bucket_counts.keys()),
-        bucket_values=list(bucket_counts.values()),
-        price_bin_labels=price_bin_labels,
-        price_bin_values=price_bin_values,
         city_badge=city_badge,
         table_rows=table_rows,
-        focus_cards=focus_cards,
         search_condition_bullets=config.search_condition_bullets,
         investor_notes=config.investor_notes,
         sources_str=sources_str,
@@ -1224,6 +1184,13 @@ def generate_report(config: ReportConfig) -> Path:
     deduped = [r for r in deduped if not is_pet_ng(r)]
     pet_ng_count = before_pet - len(deduped)
 
+    # Filter out 管理費修繕積立金 > 30,000円/月
+    before_maint = len(deduped)
+    deduped = [r for r in deduped if r.maintenance_fee == 0 or r.maintenance_fee <= 30000]
+    maint_high_count = before_maint - len(deduped)
+    if maint_high_count > 0:
+        print(f"  Removed {maint_high_count} high-maintenance-fee (> 30,000円) properties")
+
     # Filter out 民泊禁止 properties
     before_minpaku = len(deduped)
 
@@ -1275,6 +1242,7 @@ def generate_report(config: ReportConfig) -> Path:
     meta["sold_removed"] = str(sold_count)
     meta["oc_removed"] = str(oc_count)
     meta["pet_ng_removed"] = str(pet_ng_count)
+    meta["maint_high_removed"] = str(maint_high_count)
     meta["minpaku_ng_removed"] = str(minpaku_ng_count)
     meta["sublease_removed"] = str(sublease_count)
     meta["small_area_removed"] = str(small_area_count)

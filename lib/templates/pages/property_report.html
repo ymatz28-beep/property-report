@@ -33,9 +33,7 @@
 
 {% block title %}{{ config.city_label }} 物件検索レポート{% endblock %}
 
-{% block head_extra %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{% endblock %}
+{% block head_extra %}{% endblock %}
 
 {# Use shared gnav from base.html #}
 
@@ -132,14 +130,10 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
 }
 
 /* Grid */
-.grid-4 { margin-top:32px; display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:14px; }
 .card {
   border:1px solid var(--line); background:var(--card); border-radius:var(--radius);
   padding:16px; backdrop-filter: blur(10px); box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
 }
-.stat .label { color:var(--muted); font-size:12px; }
-.stat .value { font-size:clamp(18px, 3.5vw, 28px); font-weight:800; margin-top:6px; }
-.stat .sub { color:var(--text-secondary); font-size:12px; margin-top:4px; }
 
 /* Sections */
 .section { margin-top:32px; border:1px solid var(--line); background:var(--card); border-radius:var(--radius); padding:18px; backdrop-filter: blur(10px); }
@@ -226,42 +220,6 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 .tier-conditional .tier-pill::before { content:"\25C7 "; /* ◇ */ }
 .tier-pass .tier-pill::before { content:"\25CB "; /* ○ */ }
 
-/* Focus cards */
-.focus-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; }
-.focus-card {
-  border-radius:12px; border:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-  padding:14px; box-shadow:var(--shadow);
-}
-.focus-head { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:start; }
-.focus-rank {
-  width:36px; height:36px; border-radius:12px; display:grid; place-items:center;
-  background:rgba(var(--accent-rgb),.12); border:1px solid rgba(var(--accent-rgb),.35); font-weight:800;
-}
-.focus-head h3 { margin:0; font-size:17px; line-height:1.3; }
-.focus-head p { margin:4px 0 0; color:var(--muted); font-size:12px; }
-.focus-score {
-  min-width:68px; text-align:center; font-weight:900; font-size:24px;
-  color:#fff; border-radius:14px; padding:8px 10px;
-  border:1px solid color-mix(in oklab, var(--accent) 40%, white 8%);
-  background:color-mix(in oklab, var(--accent) 14%, transparent);
-}
-.focus-score span { display:block; margin-top:4px; font-size:10px; color:var(--text); font-weight:700; }
-.chip-row { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
-.chip {
-  display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700;
-  padding:5px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.09);
-  background:rgba(255,255,255,.03); color:var(--text);
-}
-.chip-penalty { border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.10); color:var(--red-light); }
-.focus-comment { margin:10px 0 0; color:var(--text-secondary); line-height:1.65; font-size:13px; }
-.focus-meta { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:12px; }
-.focus-meta span { padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.06); background:rgba(255,255,255,.02); }
-
-/* Charts */
-.chart-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:14px; }
-.chart-col { display:grid; gap:14px; }
-.chart-card canvas { width:100%; max-height:360px; }
 .notes { margin:0; padding-left:18px; line-height:1.8; color:var(--text); }
 .footer { margin-top:32px; color:var(--muted); font-size:12px; text-align:center; }
 .footer a { color:var(--text); }
@@ -280,7 +238,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 /* === Tablet landscape (960px) === */
 @media (max-width: 960px) {
   .grid-4 { grid-template-columns:repeat(2, minmax(0,1fr)); }
-  .chart-grid, .focus-grid { grid-template-columns:1fr; }
+  .focus-grid { grid-template-columns:1fr; }
   .cond-list { columns:1; }
   .hero { padding:14px; }
   .hero h1 { font-size:18px; }
@@ -384,9 +342,6 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 <div class="wrap">
   {# Section jump navigation #}
   <nav class="section-jump" id="sectionJump">
-    <a href="#sec-stats">Stats</a>
-    <a href="#sec-charts">Charts</a>
-    <a href="#sec-top5">Top5</a>
     <a href="#sec-table">全物件テーブル</a>
   </nav>
 
@@ -408,6 +363,9 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
         <span class="badge">売却済除外 {{ meta.sold_removed | default("0") }}件</span>
         <span class="badge">OC除外 {{ meta.oc_removed | default("0") }}件</span>
         <span class="badge">ペット不可除外 {{ meta.pet_ng_removed | default("0") }}件</span>
+        <span class="badge">管理費高除外 {{ meta.maint_high_removed | default("0") }}件</span>
+        <span class="badge">サブリース除外 {{ meta.sublease_removed | default("0") }}件</span>
+        <span class="badge">狭小除外 {{ meta.small_area_removed | default("0") }}件</span>
         <span class="badge">民泊不可除外 {{ meta.minpaku_ng_removed | default("0") }}件</span>
         <span class="badge">低スコア除外 {{ meta.quality_filtered | default("0") }}件</span>
       </div>
@@ -430,13 +388,6 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   </div>
   {% endif %}
 
-  {# Stats Grid #}
-  <section id="sec-stats" class="grid-4">
-    <div class="card stat"><div class="label">総候補数</div><div class="value">{{ rows_sorted | length }}</div><div class="sub">重複排除後</div></div>
-    <div class="card stat"><div class="label">平均価格</div><div class="value">{{ "%.1f" | format(avg_price) }}万円</div><div class="sub">全候補平均</div></div>
-    <div class="card stat"><div class="label">平均面積</div><div class="value">{{ "%.2f" | format(avg_area) }}㎡</div><div class="sub">全候補平均</div></div>
-    <div class="card stat"><div class="label">最高スコア</div><div class="value">{{ top_prop.total_score if top_prop else '-' }}</div><div class="sub">{{ top_prop.name if top_prop else '' }}</div></div>
-  </section>
 
   {# Search Conditions #}
   <section class="section">
@@ -502,48 +453,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
     </div>
   </section>
 
-  {# Top 5 Focus Cards #}
-  <section id="sec-top5" class="section">
-    <h2>Top 5 Focus Cards</h2>
-    <div class="focus-grid">
-      {% for card in focus_cards %}
-      <article class="focus-card">
-        <div class="focus-head">
-          <div class="focus-rank">#{{ card.rank }}</div>
-          <div>
-            <h3><a href="{{ card.url }}" target="_blank" rel="noopener noreferrer">{{ card.name }}</a></h3>
-            <p>{{ card.price_formatted }} / {{ card.area_formatted }} / {{ card.location }}</p>
-          </div>
-          <div class="focus-score" style="--accent:{{ card.tier_color }}">{{ card.total_score }}<span>{{ card.tier_label }}</span></div>
-        </div>
-        <div class="chip-row">
-          {% for chip in card.chips %}
-          <span class="chip {% if chip.value < 0 %}chip-penalty{% endif %}">{{ chip.label }} {{ "%+d" | format(chip.value) }}</span>
-          {% endfor %}
-        </div>
-        <p class="focus-comment">{{ card.detail_comment }}</p>
-        <div class="focus-meta">
-          <span>{{ card.station_text }}</span>
-          <span>{{ card.built_text }}</span>
-          <span>{{ card.layout }}</span>
-          {% if card.minpaku_status %}<span>{{ card.minpaku_status }}</span>{% endif %}
-        </div>
-      </article>
-      {% endfor %}
-    </div>
-  </section>
 
-  {# Charts #}
-  <section id="sec-charts" class="section">
-    <h2>Charts</h2>
-    <div class="chart-grid">
-      <div class="card chart-card"><canvas id="radarChart"></canvas></div>
-      <div class="chart-col">
-        <div class="card chart-card"><canvas id="bucketChart"></canvas></div>
-        <div class="card chart-card"><canvas id="priceChart"></canvas></div>
-      </div>
-    </div>
-  </section>
 
   {# Investor Notes #}
   <section class="section">
@@ -570,97 +480,6 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 
 {% block scripts %}
 <script>
-const chartAccent = 'rgba({{ config.accent_rgb }}, 1)';
-const chartAccentFill = 'rgba({{ config.accent_rgb }}, 0.18)';
-const radarLabels = {{ radar_labels | tojson }};
-const radarDatasets = {{ radar_datasets | tojson }}.map((d, i) => {
-  const hueShift = [0, 18, 35, 52, 70][i] || 0;
-  const alpha = 0.14 + i * 0.03;
-  return {
-    ...d,
-    borderColor: i === 0 ? chartAccent : `hsla(${(195 + hueShift)%360}, 90%, 68%, .95)`,
-    backgroundColor: i === 0 ? chartAccentFill : `hsla(${(195 + hueShift)%360}, 90%, 68%, ${alpha})`,
-    pointRadius: 2,
-    pointHoverRadius: 4,
-  };
-});
-const bucketLabels = {{ bucket_labels | tojson }};
-const bucketValues = {{ bucket_values | tojson }};
-const priceLabels = {{ price_bin_labels | tojson }};
-const priceValues = {{ price_bin_values | tojson }};
-
-const commonGrid = { color: 'rgba(255,255,255,0.08)', drawBorder: false };
-const commonTicks = { color: 'rgba(220,230,245,0.8)', font: { family: 'Inter, Noto Sans JP, sans-serif' } };
-
-new Chart(document.getElementById('radarChart'), {
-  type: 'radar',
-  data: { labels: radarLabels, datasets: radarDatasets },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { labels: { color: '#e8efff' } },
-      title: { display: true, text: 'Top5 \u30B9\u30B3\u30A2\u5185\u8A33\u6BD4\u8F03\uFF080-100\u6B63\u898F\u5316\uFF09', color: '#e8efff' }
-    },
-    scales: {
-      r: {
-        suggestedMin: 0, suggestedMax: 100,
-        angleLines: { color: 'rgba(255,255,255,0.08)' },
-        grid: { color: 'rgba(255,255,255,0.08)' },
-        pointLabels: { color: 'rgba(230,240,255,0.88)', font: { size: 11 } },
-        ticks: { backdropColor: 'transparent', color: 'rgba(220,230,245,0.55)', stepSize: 20 }
-      }
-    }
-  }
-});
-
-new Chart(document.getElementById('bucketChart'), {
-  type: 'bar',
-  data: {
-    labels: bucketLabels,
-    datasets: [{
-      label: '\u4EF6\u6570', data: bucketValues, borderRadius: 8, borderSkipped: false,
-      backgroundColor: bucketValues.map((_, i) => `rgba({{ config.accent_rgb }}, ${0.35 + (i % 5) * 0.1})`),
-      borderColor: bucketValues.map((_, i) => `rgba({{ config.accent_rgb }}, ${0.7 + (i % 3) * 0.1})`),
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      title: { display: true, text: '\u30A8\u30EA\u30A2\u5206\u5E03\uFF08\u7ACB\u5730\u30D0\u30B1\u30C3\u30C8\u5225\u4EF6\u6570\uFF09', color: '#e8efff' }
-    },
-    scales: {
-      x: { ticks: commonTicks, grid: { display: false } },
-      y: { ticks: commonTicks, grid: commonGrid, beginAtZero: true }
-    }
-  }
-});
-
-new Chart(document.getElementById('priceChart'), {
-  type: 'bar',
-  data: {
-    labels: priceLabels,
-    datasets: [{
-      label: '\u4EF6\u6570', data: priceValues, borderRadius: 8, borderSkipped: false,
-      backgroundColor: priceValues.map((_, i) => `rgba(255,255,255, ${0.14 + (i % 4) * 0.05})`),
-      borderColor: priceValues.map(() => chartAccent),
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      title: { display: true, text: '\u4FA1\u683C\u5206\u5E03\uFF08500\u4E07\u5186\u523B\u307F\uFF09', color: '#e8efff' }
-    },
-    scales: {
-      x: { ticks: commonTicks, grid: { display: false } },
-      y: { ticks: commonTicks, grid: commonGrid, beginAtZero: true }
-    }
-  }
-});
-
 // Table sort
 (() => {
   const table = document.getElementById('propertyTable');

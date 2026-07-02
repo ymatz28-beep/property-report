@@ -1,99 +1,99 @@
-## [Constancy] 2026-07-01
+## [Constancy] 2026-07-02
 
-- [ERROR] hardcoded_data: [ESCALATED: 77d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
-- [ERROR] hardcoded_data: [ESCALATED: 29d unresolved] Large inline data (83 lines) at line 364. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
-- [ERROR] hardcoded_data: [ESCALATED: 23d unresolved] Large inline data (60 lines) at line 71. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
-- [ERROR] structural_reform: [ESCALATED: 77d unresolved] generate_market.py is 1667 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 77d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 77d unresolved] Stale temp/debug file (88 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 77d unresolved] Stale temp/debug file (88 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 77d unresolved] Stale temp/debug file (88 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 77d unresolved] Stale temp/debug file (92 days old). Delete it.
-- [ERROR] html_ui: [ESCALATED: 26d unresolved] Missing gnav (site-header) — no navigation
-- [ERROR] html_ui: [ESCALATED: 16d unresolved] Missing gnav (site-header) — no navigation
+- [ERROR] hardcoded_data: [ESCALATED: 78d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
+- [ERROR] hardcoded_data: [ESCALATED: 30d unresolved] Large inline data (83 lines) at line 364. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
+- [ERROR] hardcoded_data: [ESCALATED: 24d unresolved] Large inline data (60 lines) at line 71. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
+- [ERROR] structural_reform: [ESCALATED: 78d unresolved] generate_market.py is 1667 lines (threshold: 800). Consider splitting.
+- [ERROR] structural_reform: [ESCALATED: 78d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
+- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (89 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (89 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (89 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (92 days old). Delete it.
+- [ERROR] html_ui: [ESCALATED: 27d unresolved] Missing gnav (site-header) — no navigation
+- [ERROR] html_ui: [ESCALATED: 17d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
-- [ERROR] html_ui: [ESCALATED: 16d unresolved] Missing gnav (site-header) — no navigation
-- [ERROR] html_ui: [ESCALATED: 26d unresolved] Missing gnav (site-header) — no navigation
-- [ERROR] html_ui: [ESCALATED: 29d unresolved] Missing gnav (site-header) — no navigation
+- [ERROR] html_ui: [ESCALATED: 17d unresolved] Missing gnav (site-header) — no navigation
+- [ERROR] html_ui: [ESCALATED: 27d unresolved] Missing gnav (site-header) — no navigation
+- [ERROR] html_ui: [ESCALATED: 30d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
-- [ERROR] html_ui: [ESCALATED: 16d unresolved] Missing gnav (site-header) — no navigation
+- [ERROR] html_ui: [ESCALATED: 17d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
-- [ERROR] html_ui: [ESCALATED: 16d unresolved] Missing gnav (site-header) — no navigation
-- [ERROR] html_ui: [ESCALATED: 26d unresolved] Missing gnav (site-header) — no navigation
+- [ERROR] html_ui: [ESCALATED: 17d unresolved] Missing gnav (site-header) — no navigation
+- [ERROR] html_ui: [ESCALATED: 27d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
-- [ERROR] html_ui: [ESCALATED: 16d unresolved] Missing gnav (site-header) — no navigation
-- [ERROR] timestamp_format: [ESCALATED: 22d unresolved] Date-only timestamp '最終更新: 2026-06-27' — should include HH:MM
-- [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-07-01 01:13): 【管理費データ取得】エラー終了 (exit 1) → Fix: 管理費ページのHTML構造変化の可能性。パーサー確認
+- [ERROR] html_ui: [ESCALATED: 17d unresolved] Missing gnav (site-header) — no navigation
+- [ERROR] timestamp_format: [ESCALATED: 23d unresolved] Date-only timestamp '最終更新: 2026-06-27' — should include HH:MM
 - [WARN] lib_sync_drift: lib/templates/pages/property_report.html ≠ property-analyzer/lib/templates/pages/property_report.html. GHA uses property-analyzer copy. Sync needed.
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 9: hardcoded #c9a84c should be var(--gold)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 406: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 425: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 564: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 565: hardcoded #22c55e should be var(--green)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 566: hardcoded #ef4444 should be var(--red)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 643: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 652: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 709: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 764: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 46: hardcoded #1a1d27 should be var(--surface)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 50: hardcoded #242836 should be var(--surface2)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 51: hardcoded #242836 should be var(--surface2)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 56: hardcoded #0f1117 should be var(--bg)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 58: hardcoded #c9a84c should be var(--gold)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 58: hardcoded #1a1d27 should be var(--surface)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 60: hardcoded #1a1d27 should be var(--surface)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 63: hardcoded #242836 should be var(--surface2)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 63: hardcoded #e4e4e7 should be var(--text)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 66: hardcoded #1a1d27 should be var(--surface)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 67: hardcoded #242836 should be var(--surface2)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 77: hardcoded #1a1d27 should be var(--surface)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 77: hardcoded #1a1d27 should be var(--surface)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 84: hardcoded #1a1d27 should be var(--surface)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 90: hardcoded #c9a84c should be var(--gold)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 97: hardcoded #1a1d27 should be var(--surface)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 101: hardcoded #c9a84c should be var(--gold)
-- [ERROR] design_token_compliance: [ESCALATED: 26d unresolved] Line 115: hardcoded #0f1117 should be var(--bg)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 173: hardcoded #fbbf24 should be var(--amber)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 304: hardcoded #fbbf24 should be var(--amber)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 344: hardcoded #f87171 should be var(--red-light)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 310: hardcoded #22c55e should be var(--green)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 313: hardcoded #f87171 should be var(--red-light)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 377: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 77d unresolved] Line 396: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 760: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 779: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 114: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 475: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 494: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 75d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] blank_cells: [ESCALATED: 77d unresolved] ダッシュ「—」150個 (閾値20) — データ欠損の可能性
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 3% (4/135) — 閾値80%
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 9: hardcoded #c9a84c should be var(--gold)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 406: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 425: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 564: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 565: hardcoded #22c55e should be var(--green)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 566: hardcoded #ef4444 should be var(--red)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 643: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 652: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 709: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 764: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 46: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 50: hardcoded #242836 should be var(--surface2)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 51: hardcoded #242836 should be var(--surface2)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 56: hardcoded #0f1117 should be var(--bg)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 58: hardcoded #c9a84c should be var(--gold)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 58: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 60: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 63: hardcoded #242836 should be var(--surface2)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 63: hardcoded #e4e4e7 should be var(--text)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 66: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 67: hardcoded #242836 should be var(--surface2)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 77: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 77: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 84: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 90: hardcoded #c9a84c should be var(--gold)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 97: hardcoded #1a1d27 should be var(--surface)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 101: hardcoded #c9a84c should be var(--gold)
+- [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 115: hardcoded #0f1117 should be var(--bg)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 173: hardcoded #fbbf24 should be var(--amber)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 304: hardcoded #fbbf24 should be var(--amber)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 344: hardcoded #f87171 should be var(--red-light)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 310: hardcoded #22c55e should be var(--green)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 313: hardcoded #f87171 should be var(--red-light)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 377: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 396: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 760: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 779: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 114: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 475: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 494: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 76d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] blank_cells: [ESCALATED: 78d unresolved] ダッシュ「—」157個 (閾値20) — データ欠損の可能性
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 1% (1/143) — 閾値80%
 - [WARN] qa_market_duplicate_detection: 1 duplicate (price, area) pairs: [(('11200', '332.04'), ['osaka-ittomono', 'osaka-ittomono'])]
-- [ERROR] qa_market_data_accuracy: [ESCALATED: 77d unresolved] 4/82 (4.9%) — price mismatch: 福岡市南区 3LDK raw=900.0 html=990.0; price mismatch: メゾン野間ハイツ 402 raw=500.0 html=630.0; price mismatch: 高木団地住宅 二号棟 raw=698.0 html=710.0; price mismatch: アンピールやよい坂 305 raw=710.0 html=730.0
-- [ERROR] qa_market_oc_income_coverage: [ESCALATED: 77d unresolved] OC 329件中 219件が年間収入欠落 (67%) — 利回り逆算で補完
+- [ERROR] qa_market_data_accuracy: [ESCALATED: 78d unresolved] 4/90 (4.4%) — price mismatch: 福岡市南区 3LDK raw=900.0 html=990.0; price mismatch: メゾン野間ハイツ 402 raw=500.0 html=630.0; price mismatch: 高木団地住宅 二号棟 raw=698.0 html=710.0; price mismatch: アンピールやよい坂 305 raw=710.0 html=730.0
+- [ERROR] qa_market_oc_income_coverage: [ESCALATED: 78d unresolved] OC 333件中 219件が年間収入欠落 (66%) — 利回り逆算で補完
+- [ERROR] qa_market_yield_consistency: 5件の利回り/年間収入乖離(>20%): プレサンス天満ステーションフロント: expected=38.6万 actual=80.4万 (52%乖離); ステージファースト武蔵小山: expected=48.6万 actual=82.1万 (41%乖離); ロアール西大井弐番館: expected=50.7万 actual=108.0万 (53%乖離); アイル東京スカイツリー: expected=54.6万 actual=108.0万 (49%乖離); サンコート池袋: expected=38.6万 actual=107.9万 (64%乖離)
 - [WARN] qa_market_sublease_in_raw: 2件に間接サブリース兆候: 祇園駅まで徒歩4分　呉服駅も徒歩9分圏内　博多駅徒歩11分圏内!!!　サブリース契約で管理費の負担は, 祇園駅まで徒歩4分　呉服駅も徒歩9分圏内　博多駅徒歩11分圏内!!!　サブリース契約で管理費の負担は
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 77d unresolved] 23件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 福岡市博多区美野島(17㎡): ['ラフォーレ大濠パークアベニュー', '現在賃料45,000円にて賃貸中\u3000お問い合わせは営業部092-738-8500まで']; 福岡市博多区博多駅東(16㎡): ['祇園駅まで徒歩4分\u3000呉服駅も徒歩9分圏内\u3000博多駅徒歩11分圏内!!!\u3000サブリース契約で管理費の負担は', 'エイリックスタイル行橋駅前ザ・テラス']; 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市中央区輝国(42㎡): ['ネストピア博多駅前Ⅲ', 'お問い合わせは営業部092-738-8500まで\u3000現在家賃47,000円にて賃貸中'] ... +18 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 37.9% (47/124件)。パイプライン変換バグの可能性。例: 23000.0万円/915.71㎡; 27000.0万円/973.06㎡; 20000.0万円/211.86㎡; 30000.0万円/800.53㎡; 11200.0万円/380.18㎡
-- [ERROR] renderer_compliance: [ESCALATED: 26d unresolved] Missing gnav (site-header / site-nav) — no navigation
-- [ERROR] renderer_compliance: [ESCALATED: 29d unresolved] Missing gnav (site-header / site-nav) — no navigation
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 78d unresolved] 26件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 福岡市博多区美野島(17㎡): ['ラフォーレ大濠パークアベニュー', '現在賃料45,000円にて賃貸中\u3000お問い合わせは営業部092-738-8500まで']; 福岡市博多区博多駅東(16㎡): ['祇園駅まで徒歩4分\u3000呉服駅も徒歩9分圏内\u3000博多駅徒歩11分圏内!!!\u3000サブリース契約で管理費の負担は', 'エイリックスタイル行橋駅前ザ・テラス']; 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市中央区輝国(42㎡): ['エステート・モア・天神ＳＴＵＤＩＯ', 'お問い合わせは営業部092-738-8500まで\u3000現在家賃47,000円にて賃貸中'] ... +21 more
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 45.0% (58/129件)。パイプライン変換バグの可能性。例: 23000.0万円/915.71㎡; 27000.0万円/973.06㎡; 20000.0万円/211.86㎡; 30000.0万円/800.53㎡; 11200.0万円/380.18㎡
+- [ERROR] renderer_compliance: [ESCALATED: 27d unresolved] Missing gnav (site-header / site-nav) — no navigation
+- [ERROR] renderer_compliance: [ESCALATED: 30d unresolved] Missing gnav (site-header / site-nav) — no navigation
 - [ERROR] renderer_compliance: Missing design tokens (var(--bg) / var(--surface)) — page not using renderer.py
 - [ERROR] renderer_compliance: Missing design tokens (var(--bg) / var(--surface)) — page not using renderer.py
 - [ERROR] renderer_compliance: Missing design tokens (var(--bg) / var(--surface)) — page not using renderer.py
 - [ERROR] renderer_compliance: Missing design tokens (var(--bg) / var(--surface)) — page not using renderer.py
 - [ERROR] renderer_compliance: Missing design tokens (var(--bg) / var(--surface)) — page not using renderer.py
 - [ERROR] renderer_compliance: Missing design tokens (var(--bg) / var(--surface)) — page not using renderer.py
-- [ERROR] renderer_compliance: [ESCALATED: 26d unresolved] Missing gnav (site-header / site-nav) — no navigation
-- [ERROR] freeze_candidates: [ESCALATED: 43d unresolved] プロジェクト 'property-analyzer' は 9999d 非活性 (凍結閾値 90d)。 _archived/ への移動または Phase 0 再定義を検討。
+- [ERROR] renderer_compliance: [ESCALATED: 27d unresolved] Missing gnav (site-header / site-nav) — no navigation
+- [ERROR] freeze_candidates: [ESCALATED: 44d unresolved] プロジェクト 'property-analyzer' は 9999d 非活性 (凍結閾値 90d)。 _archived/ への移動または Phase 0 再定義を検討。

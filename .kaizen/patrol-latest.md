@@ -5,10 +5,10 @@
 - [ERROR] hardcoded_data: [ESCALATED: 24d unresolved] Large inline data (60 lines) at line 71. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] structural_reform: [ESCALATED: 78d unresolved] generate_market.py is 1667 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 78d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (89 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (89 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (89 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (92 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (90 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (90 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (90 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 78d unresolved] Stale temp/debug file (93 days old). Delete it.
 - [ERROR] html_ui: [ESCALATED: 27d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: [ESCALATED: 17d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
@@ -23,7 +23,6 @@
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
 - [ERROR] html_ui: [ESCALATED: 17d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] timestamp_format: [ESCALATED: 23d unresolved] Date-only timestamp '最終更新: 2026-06-27' — should include HH:MM
-- [WARN] lib_sync_drift: lib/templates/pages/property_report.html ≠ property-analyzer/lib/templates/pages/property_report.html. GHA uses property-analyzer copy. Sync needed.
 - [ERROR] design_token_compliance: [ESCALATED: 27d unresolved] Line 9: hardcoded #c9a84c should be var(--gold)
 - [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 78d unresolved] Line 406: hardcoded #9ca3af should be var(--text-secondary)
@@ -85,7 +84,7 @@
 - [ERROR] qa_market_oc_income_coverage: [ESCALATED: 78d unresolved] OC 333件中 219件が年間収入欠落 (66%) — 利回り逆算で補完
 - [ERROR] qa_market_yield_consistency: 5件の利回り/年間収入乖離(>20%): プレサンス天満ステーションフロント: expected=38.6万 actual=80.4万 (52%乖離); ステージファースト武蔵小山: expected=48.6万 actual=82.1万 (41%乖離); ロアール西大井弐番館: expected=50.7万 actual=108.0万 (53%乖離); アイル東京スカイツリー: expected=54.6万 actual=108.0万 (49%乖離); サンコート池袋: expected=38.6万 actual=107.9万 (64%乖離)
 - [WARN] qa_market_sublease_in_raw: 2件に間接サブリース兆候: 祇園駅まで徒歩4分　呉服駅も徒歩9分圏内　博多駅徒歩11分圏内!!!　サブリース契約で管理費の負担は, 祇園駅まで徒歩4分　呉服駅も徒歩9分圏内　博多駅徒歩11分圏内!!!　サブリース契約で管理費の負担は
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 78d unresolved] 26件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 福岡市博多区美野島(17㎡): ['ラフォーレ大濠パークアベニュー', '現在賃料45,000円にて賃貸中\u3000お問い合わせは営業部092-738-8500まで']; 福岡市博多区博多駅東(16㎡): ['祇園駅まで徒歩4分\u3000呉服駅も徒歩9分圏内\u3000博多駅徒歩11分圏内!!!\u3000サブリース契約で管理費の負担は', 'エイリックスタイル行橋駅前ザ・テラス']; 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市中央区輝国(42㎡): ['エステート・モア・天神ＳＴＵＤＩＯ', 'お問い合わせは営業部092-738-8500まで\u3000現在家賃47,000円にて賃貸中'] ... +21 more
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 78d unresolved] 26件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 福岡市博多区美野島(17㎡): ['ラフォーレ大濠パークアベニュー', '現在賃料45,000円にて賃貸中\u3000お問い合わせは営業部092-738-8500まで']; 福岡市博多区博多駅東(16㎡): ['エイリックスタイル行橋駅前ザ・テラス', '祇園駅まで徒歩4分\u3000呉服駅も徒歩9分圏内\u3000博多駅徒歩11分圏内!!!\u3000サブリース契約で管理費の負担は']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市中央区輝国(42㎡): ['お問い合わせは営業部092-738-8500まで\u3000現在家賃47,000円にて賃貸中', 'エステート・モア・天神ＳＴＵＤＩＯ'] ... +21 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 45.0% (58/129件)。パイプライン変換バグの可能性。例: 23000.0万円/915.71㎡; 27000.0万円/973.06㎡; 20000.0万円/211.86㎡; 30000.0万円/800.53㎡; 11200.0万円/380.18㎡
 - [ERROR] renderer_compliance: [ESCALATED: 27d unresolved] Missing gnav (site-header / site-nav) — no navigation
 - [ERROR] renderer_compliance: [ESCALATED: 30d unresolved] Missing gnav (site-header / site-nav) — no navigation

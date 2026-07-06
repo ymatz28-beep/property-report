@@ -5,10 +5,10 @@
 - [ERROR] hardcoded_data: [ESCALATED: 28d unresolved] Large inline data (60 lines) at line 71. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] structural_reform: [ESCALATED: 82d unresolved] generate_market.py is 1667 lines (threshold: 800). Consider splitting.
 - [ERROR] structural_reform: [ESCALATED: 82d unresolved] property_pipeline.py is 2279 lines (threshold: 800). Consider splitting.
-- [ERROR] structural_reform: [ESCALATED: 82d unresolved] Stale temp/debug file (93 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 82d unresolved] Stale temp/debug file (93 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 82d unresolved] Stale temp/debug file (93 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 82d unresolved] Stale temp/debug file (96 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 82d unresolved] Stale temp/debug file (94 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 82d unresolved] Stale temp/debug file (94 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 82d unresolved] Stale temp/debug file (94 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 82d unresolved] Stale temp/debug file (97 days old). Delete it.
 - [ERROR] html_ui: [ESCALATED: 31d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: [ESCALATED: 21d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
@@ -26,7 +26,7 @@
 - [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-07-06 01:12): 【SUUMO物件検索(大阪)】エラー終了 (exit 2) → Fix: SUUMO大阪: 0件取得(guard発動)。HTMLセレクタ変化の疑い。search_suumo.pyのparse_listing_pageを確認
 - [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-07-06 01:12): 【SUUMO物件検索(福岡)】エラー終了 (exit 2) → Fix: SUUMO福岡: 0件取得(guard発動)。HTMLセレクタ変化の疑い。search_suumo.pyのparse_listing_pageを確認
 - [WARN] property_patrol_steps: 物件パトロール失敗ステップ (2026-07-06 01:12): 【SUUMO物件検索(東京)】エラー終了 (exit 2) → Fix: SUUMO東京: 0件取得(guard発動)。HTMLセレクタ変化の疑い。search_suumo.pyのparse_listing_pageを確認
-- [ERROR] git_uncommitted: Property Analyzer: 28 uncommitted file(s), oldest 79h ago (threshold: 24h). GHA runs on old code until pushed.
+- [WARN] lib_sync_drift: lib/templates/pages/property_report.html ≠ property-analyzer/lib/templates/pages/property_report.html. GHA uses property-analyzer copy. Sync needed.
 - [ERROR] design_token_compliance: [ESCALATED: 31d unresolved] Line 9: hardcoded #c9a84c should be var(--gold)
 - [ERROR] design_token_compliance: [ESCALATED: 82d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 82d unresolved] Line 406: hardcoded #9ca3af should be var(--text-secondary)
@@ -61,11 +61,11 @@
 - [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
 - [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 344: hardcoded #f87171 should be var(--red-light)
 - [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 654: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 673: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 654: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 673: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 82d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 82d unresolved] Line 310: hardcoded #22c55e should be var(--green)
 - [ERROR] design_token_compliance: [ESCALATED: 82d unresolved] Line 313: hardcoded #f87171 should be var(--red-light)
@@ -79,13 +79,16 @@
 - [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 475: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 494: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
-- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 605: hardcoded #9ca3af should be var(--text-secondary)
-- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 624: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 654: hardcoded #9ca3af should be var(--text-secondary)
+- [ERROR] design_token_compliance: [ESCALATED: 80d unresolved] Line 673: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] blank_cells: ダッシュ「—」27個 (閾値20) — データ欠損の可能性
+- [WARN] blank_cells: ダッシュ「—」40個 (閾値20) — データ欠損の可能性
+- [WARN] blank_cells: ダッシュ「—」25個 (閾値20) — データ欠損の可能性
 - [ERROR] blank_cells: [ESCALATED: 82d unresolved] ダッシュ「—」145個 (閾値20) — データ欠損の可能性
 - [ERROR] first_seen_coverage: 掲載日カバレッジ 0% (0/134) — 閾値80%
 - [ERROR] qa_market_oc_income_coverage: [ESCALATED: 82d unresolved] OC 320件中 262件が年間収入欠落 (82%) — 利回り逆算で補完
 - [WARN] qa_market_sublease_in_raw: 2件に間接サブリース兆候: 祇園駅まで徒歩4分　呉服駅も徒歩9分圏内　博多駅徒歩11分圏内!!!　サブリース契約で管理費の負担は, 祇園駅まで徒歩4分　呉服駅も徒歩9分圏内　博多駅徒歩11分圏内!!!　サブリース契約で管理費の負担は
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 82d unresolved] 18件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 中野区松が丘(40㎡): ['パシフィック中野', '新井薬師前駅 / 1LDK / 40.70㎡']; 福岡市博多区美野島(17㎡): ['現在賃料45,000円にて賃貸中\u3000お問い合わせは営業部092-738-8500まで', 'ラフォーレ大濠パークアベニュー']; 福岡市博多区博多駅東(16㎡): ['エイリックスタイル行橋駅前ザ・テラス', '祇園駅まで徒歩4分\u3000呉服駅も徒歩9分圏内\u3000博多駅徒歩11分圏内!!!\u3000サブリース契約で管理費の負担は']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分'] ... +13 more
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 82d unresolved] 18件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 中野区松が丘(40㎡): ['パシフィック中野', '新井薬師前駅 / 1LDK / 40.70㎡']; 福岡市博多区美野島(17㎡): ['現在賃料45,000円にて賃貸中\u3000お問い合わせは営業部092-738-8500まで', 'ラフォーレ大濠パークアベニュー']; 福岡市博多区博多駅東(16㎡): ['祇園駅まで徒歩4分\u3000呉服駅も徒歩9分圏内\u3000博多駅徒歩11分圏内!!!\u3000サブリース契約で管理費の負担は', 'エイリックスタイル行橋駅前ザ・テラス']; 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)'] ... +13 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 32.8% (40/122件)。パイプライン変換バグの可能性。例: 27000.0万円/973.06㎡; 23000.0万円/915.71㎡; 20000.0万円/211.86㎡; 30000.0万円/800.53㎡; 11200.0万円/380.18㎡
 - [ERROR] renderer_compliance: [ESCALATED: 31d unresolved] Missing gnav (site-header / site-nav) — no navigation
 - [ERROR] renderer_compliance: [ESCALATED: 34d unresolved] Missing gnav (site-header / site-nav) — no navigation

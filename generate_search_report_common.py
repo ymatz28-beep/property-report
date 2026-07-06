@@ -19,7 +19,7 @@ for p in [str(_THIS_DIR), str(_LIB_ROOT)]:
         sys.path.insert(0, p)
 
 from lib.renderer import create_env  # noqa: E402
-from revenue_calc import analyze as revenue_analyze  # noqa: E402
+from revenue_calc import InvestmentParams, analyze as revenue_analyze  # noqa: E402
 
 # ── ハードフィルタ定数 ──
 # サブリース: 賃料改定不可 → 投資対象外（中野さん知見 2026-04-02）
@@ -1015,6 +1015,19 @@ def enrich_revenue(row: PropertyRow, config: ReportConfig) -> None:
             area_sqm=row.area_sqm,
             maintenance_fee_monthly=row.maintenance_fee or 0,
         )
+        scenario_cf = {}
+        for scenario_years in (15, 20):
+            ra_s = revenue_analyze(
+                price_man=row.price_man,
+                yield_pct=yield_pct,
+                structure=row.structure or "RC造",
+                built_year=row.built_year,
+                units_count=1,
+                area_sqm=row.area_sqm,
+                maintenance_fee_monthly=row.maintenance_fee or 0,
+                params=InvestmentParams(loan_years=scenario_years),
+            )
+            scenario_cf[f"cf_{scenario_years}y"] = round(ra_s.after_tax_cf / 12, 1)
     except Exception:
         row.revenue = None
         return
@@ -1041,6 +1054,7 @@ def enrich_revenue(row: PropertyRow, config: ReportConfig) -> None:
         "rent_source": row.rent_source,
         "rent_per_sqm": rent_per_sqm,
         "structure_used": row.structure or "RC造",
+        **scenario_cf,
     }
 
 
@@ -1242,19 +1256,6 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         "profitable_count": profitable_count,
     }
 
-    # Build structured data for template
-    first_seen = load_first_seen()
-    # Backfill: register any URLs not yet tracked with today's date
-    today_iso = dt.date.today().isoformat()
-    backfilled = 0
-    for r in rows_sorted:
-        if r.url and r.url not in first_seen:
-            first_seen[r.url] = today_iso
-            backfilled += 1
-    if backfilled:
-        first_seen_file = Path(__file__).parent / "data" / "first_seen.json"
-        first_seen_file.write_text(json.dumps(first_seen, ensure_ascii=False, indent=2), encoding="utf-8")
-    table_rows = [_build_table_row_data(r, idx, first_seen) for idx, r in enumerate(rows_sorted, start=1)]
     sources_str = meta.get("sources_loaded", "SUUMO")
     city_badge = f"データソース: {sources_str}"
 
@@ -1287,7 +1288,6 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         top_prop=top_prop,
         search_date=search_date,
         city_badge=city_badge,
-        table_rows=table_rows,
         search_condition_bullets=config.search_condition_bullets,
         investor_notes=config.investor_notes,
         sources_str=sources_str,

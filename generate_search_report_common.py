@@ -1216,6 +1216,7 @@ _NAV_PAGES = [
     {"href": "minpaku-osaka.html", "label": "民泊・大阪"},
     {"href": "minpaku-fukuoka.html", "label": "民泊・福岡"},
     {"href": "minpaku-tokyo.html", "label": "民泊・東京"},
+    {"href": "ittomono.html", "label": "一棟もの"},
     {"href": "market.html", "label": "賃貸Market"},
     {"href": "naiken-analysis.html", "label": "内覧分析"},
     {"href": "inquiry-messages.html", "label": "問い合わせ"},

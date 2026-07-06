@@ -272,6 +272,227 @@ button:active, .btn:active, [role="button"]:active {
   .stat-grid { grid-template-columns: 1fr; }
 }
 
+/* ── Deal Score Gauge ── */
+.deal-gauge {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.deal-gauge svg { transform: rotate(-90deg); }
+.deal-gauge-circle-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 4;
+}
+.deal-gauge-circle {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+.deal-gauge-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  line-height: 1;
+}
+.deal-gauge-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+/* Sizes */
+.deal-gauge--sm { width: 40px; height: 40px; }
+.deal-gauge--sm .deal-gauge-value { font-size: 12px; }
+.deal-gauge--md { width: 56px; height: 56px; }
+.deal-gauge--md .deal-gauge-value { font-size: 16px; }
+.deal-gauge--lg { width: 72px; height: 72px; }
+.deal-gauge--lg .deal-gauge-value { font-size: 20px; }
+/* Tier colors applied via inline style */
+
+/* ── Property Card ── */
+.prop-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0;
+  transition: transform 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+}
+.prop-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+.prop-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.prop-card-score { flex-shrink: 0; }
+.prop-card-title-block { flex: 1; min-width: 0; }
+.prop-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.prop-card-location {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.prop-card-tier {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.prop-card-body {
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+}
+.prop-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.prop-kpi-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.prop-kpi-value {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+/* Tags row */
+.prop-card-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 0 16px 12px;
+}
+.prop-tag {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid;
+}
+.prop-tag--pet {
+  color: var(--green);
+  border-color: rgba(34,197,94,0.3);
+  background: rgba(34,197,94,0.08);
+}
+.prop-tag--minpaku {
+  color: var(--blue);
+  border-color: rgba(59,130,246,0.3);
+  background: rgba(59,130,246,0.08);
+}
+.prop-tag--source {
+  color: var(--text-secondary);
+  border-color: var(--border);
+  background: rgba(255,255,255,0.03);
+}
+.prop-tag--new {
+  color: var(--accent2, #8b5cf6);
+  border-color: rgba(139,92,246,0.3);
+  background: rgba(139,92,246,0.08);
+}
+/* Expandable sections */
+.prop-card-detail, .prop-card-score-detail {
+  padding: 0 16px 16px;
+  display: none;
+}
+.prop-card.expanded .prop-card-detail { display: block; }
+.prop-card.show-score .prop-card-score-detail { display: block; }
+/* Revenue grid inside card */
+.revenue-detail-inner .revenue-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;
+  background: rgba(255,255,255,0.02); border-radius: var(--radius-sm);
+  padding: 12px;
+}
+.revenue-kpi { display: flex; flex-direction: column; gap: 1px; }
+.revenue-kpi-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+.revenue-kpi-value { font-size: 13px; font-weight: 700; font-family: var(--font-mono); }
+.revenue-verdict {
+  grid-column: 1 / -1; text-align: center; font-size: 12px; font-weight: 700;
+  padding: 6px; border-radius: 6px; margin-top: 4px;
+}
+.prop-card-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  font-size: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  transition: color 0.15s;
+}
+.prop-card-toggle:hover { color: var(--text); }
+.score-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 4px;
+}
+.score-axis {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  padding: 3px 0;
+}
+.score-axis-name { color: var(--text-secondary); }
+.score-axis-value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+/* Footer with link */
+.prop-card-footer {
+  padding: 8px 16px 12px;
+}
+.prop-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(99,102,241,0.08);
+  transition: background 0.15s;
+}
+.prop-card-link:hover {
+  background: rgba(99,102,241,0.16);
+}
+
+@media (max-width: 640px) {
+  .prop-card-header { padding: 12px 12px 8px; gap: 8px; }
+  .prop-card-body { padding: 8px 12px; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .prop-card-tags { padding: 0 12px 8px; }
+  .prop-card-name { font-size: 13px; }
+  .prop-kpi-value { font-size: 12px; }
+}
+
 /* === Site header === */
 
 /* === Global nav === */
@@ -299,14 +520,24 @@ body {
 
 /* Hero */
 .hero {
-  position:relative; padding:28px; border-radius:24px;
-  border:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-  box-shadow:var(--shadow); overflow:hidden; backdrop-filter: blur(12px);
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  background:var(--surface); border-radius:var(--radius-md);
+  padding:12px 20px; margin-bottom:var(--space-4);
+  border:1px solid var(--border);
 }
-.kicker { color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-weight:700; font-size:12px; }
-h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:700; font-family:var(--font-body); }
-.hero-sub { color:var(--text-secondary); margin:0; max-width:860px; }
+.hero h1 { font-size:16px; font-weight:700; white-space:nowrap; margin:0; }
+.hero .subtitle { display:none; }
+.hero .stats { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+.hero .stat-card {
+  display:flex; align-items:baseline; gap:4px; padding:0;
+  background:none;
+}
+.hero .stat-card .label { font-size:10px; color:var(--text-muted); }
+.hero .stat-card .value { font-size:14px; font-weight:700; font-family:var(--font-mono); }
+.hero-updated { font-size:10px; color:var(--text-muted); margin-left:auto; }
+.hero-details { flex-basis:100%; }
+.kicker { display:none; }
+.hero-sub { display:none; }
 .badge-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
 .badge {
   display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
@@ -374,6 +605,7 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
 
 /* Table */
 .table-shell { overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); -webkit-overflow-scrolling:touch; }
+.property-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:14px; }
 table { width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }
 thead th {
   position:sticky; top:0; z-index:1;
@@ -507,6 +739,9 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 @media (max-width: 640px) {
   .hero { padding:8px 10px; border-radius:14px; }
   .hero h1 { margin:4px 0; }
+  .hero .stats { gap:8px; }
+  .hero .stat-card .value { font-size:13px; }
+  .property-grid { grid-template-columns:1fr; gap:12px; }
   .badge-row { gap:3px; margin-top:6px; }
   .badge { font-size:9px; padding:2px 6px; }
   .grid-4 { grid-template-columns:repeat(2, minmax(0,1fr)); gap:6px; margin-top:12px; }
@@ -713,43 +948,71 @@ document.addEventListener('click', function(e) {
 
 <div class="wrap">
   <nav class="section-jump" id="sectionJump">
-    <a href="#sec-table">全物件テーブル</a>
+    <a href="#sec-properties">候補カード</a>
   </nav>
 
   <section class="hero">
-    <div class="kicker">PROPERTY SEARCH REPORT / 東京</div>
-    <h1>東京 民泊向け中古マンション候補レポート</h1>
-    <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
-    <div class="badge-row">
-      <span class="badge">検索日 2026-07-03</span>
-      <span class="badge">厳選 20件 / 667件</span>
-      <span class="badge">データソース: SUUMO, rakumachi, yahoo, cowcamo, restate</span>
-    </div>
-    <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
-    <div class="collapsible-content is-collapsed">
-      <div class="badge-row" style="margin-top:8px;">
-        <span class="badge">原データ 667件</span>
-        <span class="badge">重複除外 404件</span>
-        <span class="badge">売却済除外 85件</span>
-        <span class="badge">OC除外 0件</span>
-        <span class="badge">ペット不可除外 1件</span>
-        <span class="badge">管理費高除外 33件</span>
-        <span class="badge">サブリース除外 0件</span>
-        <span class="badge">狭小除外 1件</span>
-        <span class="badge">民泊不可除外 0件</span>
-        <span class="badge">低スコア除外 92件</span>
+    <h1>東京 民泊候補</h1>
+    <div class="subtitle">民泊向け中古マンション候補レポート</div>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="label">件数</div>
+        <div class="value">20</div>
       </div>
-      <div class="badge-row">
-        <span class="badge">渋谷区・新宿区・目黒区・台東区・豊島区中心</span>
-        <span class="badge">価格上限 5,000万円</span>
-        <span class="badge">専有面積 40-70㎡目安</span>
-        <span class="badge">ペット可/相談可優先</span>
+      <div class="stat-card">
+        <div class="label">平均価格</div>
+        <div class="value">4243万</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">平均利回り</div>
+        <div class="value">2.27%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">平均CCR</div>
+        <div class="value">-6.9%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">上位</div>
+        <div class="value">15</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">ペット可</div>
+        <div class="value">15</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">税後CF+</div>
+        <div class="value">0</div>
+      </div>
+    </div>
+    <div class="hero-updated">検索日 2026-07-03 — データソース: SUUMO, rakumachi, yahoo, cowcamo, restate</div>
+    <div class="hero-details">
+      <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
+      <div class="collapsible-content is-collapsed">
+        <div class="badge-row">
+          <span class="badge">厳選 20件 / 667件</span>
+          <span class="badge">原データ 667件</span>
+          <span class="badge">重複除外 404件</span>
+          <span class="badge">売却済除外 85件</span>
+          <span class="badge">OC除外 0件</span>
+          <span class="badge">ペット不可除外 1件</span>
+          <span class="badge">管理費高除外 33件</span>
+          <span class="badge">サブリース除外 0件</span>
+          <span class="badge">狭小除外 1件</span>
+          <span class="badge">民泊不可除外 0件</span>
+          <span class="badge">低スコア除外 92件</span>
+        </div>
+        <div class="badge-row">
+          <span class="badge">渋谷区・新宿区・目黒区・台東区・豊島区中心</span>
+          <span class="badge">価格上限 5,000万円</span>
+          <span class="badge">専有面積 40-70㎡目安</span>
+          <span class="badge">ペット可/相談可優先</span>
+        </div>
       </div>
     </div>
   </section>
 
   <div class="freshness-bar">
-    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 07-05 01:16 処理582分</span>
+    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 07-06 01:12 処理209分</span>
     <span class="fb-chip">掲載中 2804件</span>
   </div>
 
@@ -772,330 +1035,3804 @@ document.addEventListener('click', function(e) {
     </div>
   </section>
 
-  <section id="sec-table" class="section">
-    <h2>Property Table</h2>
-    <div class="table-shell">
-      <table id="propertyTable">
-        <thead>
-          <tr>
-            <th><button data-sort="index" data-type="number">#</button></th>
-            <th class="first-seen-th"><button data-sort="firstseen" data-type="string">掲載開始</button></th>
-            <th><button data-sort="name" data-type="string">物件名</button></th>
-            <th><button data-sort="price" data-type="number">価格</button></th>
-            <th><button data-sort="area" data-type="number">面積</button></th>
-            <th><button data-sort="location" data-type="string">所在地</button></th>
-            <th><button data-sort="walk" data-type="number">最寄駅</button></th>
-            <th class="year-th"><button data-sort="year" data-type="number">築年</button></th>
-            <th class="layout-th"><button data-sort="layout" data-type="string">間取り</button></th>
-            <th class="maint-th">管理費修繕</th>
-            <th class="breakdown-th">スコア内訳</th>
-            <th><button data-sort="score" data-type="number">スコア</button></th>
-            <th class="tier-th"><button data-sort="tier" data-type="string">評価</button></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="tier-strong" data-index="1" data-name="ディアハイム浅草" data-location="東京都台東区浅草３-16-1" data-layout="1LDK" data-tier="強く推奨" data-price="4980" data-area="40.47" data-score="93" data-year="1992" data-walk="5" data-firstseen="6/26">
-            <td>1</td>
-            <td class="first-seen-col">6/26</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21146168/" target="_blank" rel="noopener noreferrer">ディアハイム浅草</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,980万円</td>
-            <td>40.47㎡</td>
-            <td><div class="clamp2">東京都台東区浅草３-16-1</div></td>
-            <td><div class="clamp2">浅草 徒歩5分</div></td>
-            <td class="year-col">1992年</td>
-            <td class="layout-col">1LDK</td>
-            <td class="maint-col"><span title="管理費11,000円 + 修繕7,300円">18,300円</span><span class="maint-detail">管理11,000 + 修繕7,300</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+15 立地+18 間取+5 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">93</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="2" data-name="浅草ダイヤモンドマンション" data-location="東京都台東区千束４-44‐2" data-layout="1DK+S（納戸）" data-tier="強く推奨" data-price="2798" data-area="42.50" data-score="91" data-year="1982" data-walk="10" data-firstseen="6/5">
-            <td>2</td>
-            <td class="first-seen-col">6/5</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20977812/" target="_blank" rel="noopener noreferrer">浅草ダイヤモンドマンション</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>2,798万円</td>
-            <td>42.50㎡</td>
-            <td><div class="clamp2">東京都台東区千束４-44‐2</div></td>
-            <td><div class="clamp2">三ノ輪 徒歩10分</div></td>
-            <td class="year-col">1982年</td>
-            <td class="layout-col">1DK+S（納戸）</td>
-            <td class="maint-col"><span title="管理費10,490円 + 修繕10,670円">21,160円</span><span class="maint-detail">管理10,490 + 修繕10,670</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+15 駅距+10 立地+18 間取+0 ペト+10 管理+3 リノ+0 仲介+0 民泊+0">91</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="3" data-name="レーベンシティオ上野桜木" data-location="東京都台東区上野桜木１-15-9" data-layout="1LDK" data-tier="強く推奨" data-price="4980" data-area="42.67" data-score="88" data-year="2004" data-walk="4" data-firstseen="6/30">
-            <td>3</td>
-            <td class="first-seen-col">6/30</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21020358/" target="_blank" rel="noopener noreferrer">レーベンシティオ上野桜木</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,980万円</td>
-            <td>42.67㎡</td>
-            <td><div class="clamp2">東京都台東区上野桜木１-15-9</div></td>
-            <td><div class="clamp2">鶯谷 徒歩4分</div></td>
-            <td class="year-col">2004年</td>
-            <td class="layout-col">1LDK</td>
-            <td class="maint-col"><span title="管理費13,100円 + 修繕10,180円">23,280円</span><span class="maint-detail">管理13,100 + 修繕10,180</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+15 立地+15 間取+5 ペト+10 管理+3 リノ+0 仲介+0 民泊+0">88</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="4" data-name="メゾンニシムラ" data-location="東京都台東区浅草４-43-4" data-layout="1R" data-tier="強く推奨" data-price="4080" data-area="40.15" data-score="85" data-year="1987" data-walk="8" data-firstseen="5/21">
-            <td>4</td>
-            <td class="first-seen-col">5/21</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" rel="noopener noreferrer">メゾンニシムラ</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,080万円</td>
-            <td>40.15㎡</td>
-            <td><div class="clamp2">東京都台東区浅草４-43-4</div></td>
-            <td><div class="clamp2">浅草 徒歩8分</div></td>
-            <td class="year-col">1987年</td>
-            <td class="layout-col">1R</td>
-            <td class="maint-col"><span title="管理費3,000円 + 修繕11,294円">14,294円</span><span class="maint-detail">管理3,000 + 修繕11,294</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-zero">間取0</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+10 立地+18 間取+0 ペト+10 管理+7 リノ+0 仲介+0 民泊+0">85</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="5" data-name="オーシャンプラザ若松町" data-location="東京都新宿区若松町29-7" data-layout="1LDK" data-tier="強く推奨" data-price="4780" data-area="43.10" data-score="82" data-year="1986" data-walk="4" data-firstseen="7/2">
-            <td>5</td>
-            <td class="first-seen-col">7/2</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21182368/" target="_blank" rel="noopener noreferrer">オーシャンプラザ若松町</a></div><div class="source-tag">SUUMO</div></td>
-            <td>4,780万円</td>
-            <td>43.10㎡</td>
-            <td><div class="clamp2">東京都新宿区若松町29-7</div></td>
-            <td><div class="clamp2">若松河田 徒歩4分</div></td>
-            <td class="year-col">1986年</td>
-            <td class="layout-col">1LDK</td>
-            <td class="maint-col"><span title="管理費11,500円 + 修繕2,100円">13,600円</span><span class="maint-detail">管理11,500 + 修繕2,100</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+15 立地+20 間取+5 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">82</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="6" data-name="第２さくらコーポ" data-location="東京都台東区東浅草１-3-4" data-layout="2LDK" data-tier="強く推奨" data-price="3200" data-area="66.83" data-score="81" data-year="1986" data-walk="15" data-firstseen="7/2">
-            <td>6</td>
-            <td class="first-seen-col">7/2</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21181330/" target="_blank" rel="noopener noreferrer">第２さくらコーポ</a></div><div class="source-tag">SUUMO</div></td>
-            <td>3,200万円</td>
-            <td>66.83㎡</td>
-            <td><div class="clamp2">東京都台東区東浅草１-3-4</div></td>
-            <td><div class="clamp2">浅草 徒歩15分</div></td>
-            <td class="year-col">1986年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費6,000円（修繕不明）">6,000円</span><span class="maint-detail">管理のみ</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+10</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+3</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-pos">管理+10</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+10 耐震+15 駅距+3 立地+18 間取+10 ペト-5 管理+10 リノ+0 仲介+0 民泊+0">81</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="7" data-name="マンション宮" data-location="東京都台東区西浅草３-29-20" data-layout="2LDK" data-tier="強く推奨" data-price="4180" data-area="58.30" data-score="81" data-year="1975" data-walk="5" data-firstseen="6/10">
-            <td>7</td>
-            <td class="first-seen-col">6/10</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21031128/" target="_blank" rel="noopener noreferrer">マンション宮</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,180万円</td>
-            <td>58.30㎡</td>
-            <td><div class="clamp2">東京都台東区西浅草３-29-20</div></td>
-            <td><div class="clamp2">浅草 徒歩5分</div></td>
-            <td class="year-col">1975年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費13,000円 + 修繕8,000円">21,000円</span><span class="maint-detail">管理13,000 + 修繕8,000</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+0 駅距+15 立地+18 間取+10 ペト+10 管理+3 リノ+0 仲介+0 民泊+0">81</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="8" data-name="角の部屋「クレヴェスタ浅草Ⅱ」" data-location="東京都台東区東浅草１" data-layout="1LDK" data-tier="強く推奨" data-price="4480" data-area="40.68" data-score="81" data-year="2019" data-walk="15" data-firstseen="6/2">
-            <td>8</td>
-            <td class="first-seen-col">6/2</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20967987/" target="_blank" rel="noopener noreferrer">角の部屋「クレヴェスタ浅草Ⅱ」</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,480万円</td>
-            <td>40.68㎡</td>
-            <td><div class="clamp2">東京都台東区東浅草１</div></td>
-            <td><div class="clamp2">三ノ輪 徒歩15分</div></td>
-            <td class="year-col">2019年</td>
-            <td class="layout-col">1LDK</td>
-            <td class="maint-col"><span title="管理費12,200円 + 修繕5,700円">17,900円</span><span class="maint-detail">管理12,200 + 修繕5,700</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+3</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+3 立地+18 間取+5 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">81</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="9" data-name="クリオ東浅草" data-location="東京都台東区清川１" data-layout="2LDK" data-tier="強く推奨" data-price="4998" data-area="48.90" data-score="81" data-year="2004" data-walk="12" data-firstseen="7/1">
-            <td>9</td>
-            <td class="first-seen-col">7/1</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21178233/" target="_blank" rel="noopener noreferrer">クリオ東浅草</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,998万円</td>
-            <td>48.90㎡</td>
-            <td><div class="clamp2">東京都台東区清川１</div></td>
-            <td><div class="clamp2">南千住 徒歩12分</div></td>
-            <td class="year-col">2004年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費13,720円 + 修繕11,440円">25,160円</span><span class="maint-detail">管理13,720 + 修繕11,440</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+3</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+15 駅距+3 立地+18 間取+10 ペト+10 管理+0 リノ+0 仲介+0 民泊+0">81</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="10" data-name="パラスト野方" data-location="東京都中野区丸山２" data-layout="2LDK" data-tier="強く推奨" data-price="2420" data-area="44.37" data-score="80" data-year="1974" data-walk="10" data-firstseen="5/19">
-            <td>10</td>
-            <td class="first-seen-col">5/19</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20627086/" target="_blank" rel="noopener noreferrer">パラスト野方</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>2,420万円</td>
-            <td>44.37㎡</td>
-            <td><div class="clamp2">東京都中野区丸山２</div></td>
-            <td><div class="clamp2">野方 徒歩10分</div></td>
-            <td class="year-col">1974年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費12,100円 + 修繕7,300円">19,400円</span><span class="maint-detail">管理12,100 + 修繕7,300</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+10</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+20 面積+15 耐震+0 駅距+10 立地+10 間取+10 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="11" data-name="カーサ第二新宿" data-location="東京都新宿区大久保１" data-layout="1LDK" data-tier="強く推奨" data-price="3880" data-area="46.51" data-score="80" data-year="1974" data-walk="4" data-firstseen="5/19">
-            <td>11</td>
-            <td class="first-seen-col">5/19</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20765366/" target="_blank" rel="noopener noreferrer">カーサ第二新宿</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>3,880万円</td>
-            <td>46.51㎡</td>
-            <td><div class="clamp2">東京都新宿区大久保１</div></td>
-            <td><div class="clamp2">東新宿 徒歩4分</div></td>
-            <td class="year-col">1974年</td>
-            <td class="layout-col">1LDK</td>
-            <td class="maint-col"><span title="管理費13,320円 + 修繕13,320円">26,640円</span><span class="maint-detail">管理13,320 + 修繕13,320</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+15 面積+15 耐震+0 駅距+15 立地+20 間取+5 ペト+10 管理+0 リノ+0 仲介+0 民泊+0">80</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="12" data-name="グリーンキャピタル西巣鴨" data-location="東京都豊島区西巣鴨４-１５-８" data-layout="2LDK" data-tier="強く推奨" data-price="3990" data-area="45.36" data-score="80" data-year="1978" data-walk="2" data-firstseen="7/2">
-            <td>12</td>
-            <td class="first-seen-col">7/2</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_21181893/" target="_blank" rel="noopener noreferrer">グリーンキャピタル西巣鴨</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>3,990万円</td>
-            <td>45.36㎡</td>
-            <td><div class="clamp2">東京都豊島区西巣鴨４-１５-８</div></td>
-            <td><div class="clamp2">西巣鴨 徒歩2分</div></td>
-            <td class="year-col">1978年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費8,720円 + 修繕8,750円">17,470円</span><span class="maint-detail">管理8,720 + 修繕8,750</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+15</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+15 面積+15 耐震+0 駅距+15 立地+10 間取+10 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="13" data-name="まんしょん早稲田" data-location="東京都新宿区馬場下町60-1" data-layout="1LDK" data-tier="強く推奨" data-price="4490" data-area="40.50" data-score="80" data-year="1971" data-walk="1" data-firstseen="7/2">
-            <td>13</td>
-            <td class="first-seen-col">7/2</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21182311/" target="_blank" rel="noopener noreferrer">まんしょん早稲田</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,490万円</td>
-            <td>40.50㎡</td>
-            <td><div class="clamp2">東京都新宿区馬場下町60-1</div></td>
-            <td><div class="clamp2">早稲田 徒歩1分</div></td>
-            <td class="year-col">1971年</td>
-            <td class="layout-col">1LDK</td>
-            <td class="maint-col"><span title="管理費11,200円 + 修繕6,100円">17,300円</span><span class="maint-detail">管理11,200 + 修繕6,100</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+0 駅距+15 立地+20 間取+5 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="14" data-name="トーア早稲田マンション" data-location="東京都新宿区大久保３-14" data-layout="1LDK" data-tier="強く推奨" data-price="4580" data-area="43.33" data-score="80" data-year="1978" data-walk="1" data-firstseen="6/14">
-            <td>14</td>
-            <td class="first-seen-col">6/14</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20993190/" target="_blank" rel="noopener noreferrer">トーア早稲田マンション</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,580万円</td>
-            <td>43.33㎡</td>
-            <td><div class="clamp2">東京都新宿区大久保３-14</div></td>
-            <td><div class="clamp2">西早稲田 徒歩1分</div></td>
-            <td class="year-col">1978年</td>
-            <td class="layout-col">1LDK</td>
-            <td class="maint-col"><span title="管理費7,917円 + 修繕10,028円">17,945円</span><span class="maint-detail">管理7,917 + 修繕10,028</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+0 駅距+15 立地+20 間取+5 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">80</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-strong" data-index="15" data-name="パラスト西原" data-location="東京都渋谷区西原１-2-16" data-layout="2LDK" data-tier="強く推奨" data-price="4980" data-area="42.00" data-score="80" data-year="1973" data-walk="2" data-firstseen="6/19">
-            <td>15</td>
-            <td class="first-seen-col">6/19</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shibuya/nc_21090742/" target="_blank" rel="noopener noreferrer">パラスト西原</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,980万円</td>
-            <td>42.00㎡</td>
-            <td><div class="clamp2">東京都渋谷区西原１-2-16</div></td>
-            <td><div class="clamp2">幡ヶ谷 徒歩2分</div></td>
-            <td class="year-col">1973年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費13,330円 + 修繕15,320円">28,650円</span><span class="maint-detail">管理13,330 + 修繕15,320</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:var(--accent-green)" title="予算+10 面積+15 耐震+0 駅距+15 立地+20 間取+10 ペト+10 管理+0 リノ+0 仲介+0 民泊+0">80</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:var(--accent-green)">強く推奨</span></td>
-          </tr>
-          <tr class="tier-good" data-index="16" data-name="シャンブル西早稲田" data-location="東京都新宿区西早稲田２-19-28" data-layout="2LDK" data-tier="推奨" data-price="3480" data-area="46.76" data-score="78" data-year="1976" data-walk="2" data-firstseen="7/2">
-            <td>16</td>
-            <td class="first-seen-col">7/2</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21182307/" target="_blank" rel="noopener noreferrer">シャンブル西早稲田</a></div><div class="source-tag">SUUMO</div></td>
-            <td>3,480万円</td>
-            <td>46.76㎡</td>
-            <td><div class="clamp2">東京都新宿区西早稲田２-19-28</div></td>
-            <td><div class="clamp2">西早稲田 徒歩2分</div></td>
-            <td class="year-col">1976年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費14,400円 + 修繕6,000円">20,400円</span><span class="maint-detail">管理14,400 + 修繕6,000</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+20</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+20</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:#facc15" title="予算+20 面積+15 耐震+0 駅距+15 立地+20 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">78</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
-          </tr>
-          <tr class="tier-good" data-index="17" data-name="上野ロイヤルハイツ" data-location="東京都台東区入谷１-６－６" data-layout="2LDK" data-tier="推奨" data-price="4790" data-area="50.96" data-score="78" data-year="1982" data-walk="1" data-firstseen="5/19">
-            <td>17</td>
-            <td class="first-seen-col">5/19</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20376620/" target="_blank" rel="noopener noreferrer">上野ロイヤルハイツ</a></div><div class="source-tag">SUUMO</div></td>
-            <td>4,790万円</td>
-            <td>50.96㎡</td>
-            <td><div class="clamp2">東京都台東区入谷１-６－６</div></td>
-            <td><div class="clamp2">入谷 徒歩1分</div></td>
-            <td class="year-col">1982年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費10,660円 + 修繕10,000円">20,660円</span><span class="maint-detail">管理10,660 + 修繕10,000</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+15</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-pos">管理+3</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+15 駅距+15 立地+15 間取+10 ペト-5 管理+3 リノ+0 仲介+0 民泊+0">78</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
-          </tr>
-          <tr class="tier-good" data-index="18" data-name="豊島区巣鴨３丁目 マンション" data-location="東京都豊島区巣鴨３" data-layout="2LDK" data-tier="推奨" data-price="4380" data-area="45.40" data-score="77" data-year="1982" data-walk="4" data-firstseen="6/22">
-            <td>18</td>
-            <td class="first-seen-col">6/22</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_21014102/" target="_blank" rel="noopener noreferrer">豊島区巣鴨３丁目 マンション</a></div><div class="source-tag">SUUMO</div></td>
-            <td>4,380万円</td>
-            <td>45.40㎡</td>
-            <td><div class="clamp2">東京都豊島区巣鴨３</div></td>
-            <td><div class="clamp2">巣鴨 徒歩4分</div></td>
-            <td class="year-col">1982年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費12,700円 + 修繕1,270円">13,970円</span><span class="maint-detail">管理12,700 + 修繕1,270</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+10</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-neg">ペト-5</span> <span class="sc-pill sc-pos">管理+7</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+15 駅距+15 立地+10 間取+10 ペト-5 管理+7 リノ+0 仲介+0 民泊+0">77</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
-          </tr>
-          <tr class="tier-good" data-index="19" data-name="ライオンズマンション大森" data-location="東京都品川区南大井２" data-layout="2LDK" data-tier="推奨" data-price="4690" data-area="53.08" data-score="77" data-year="1978" data-walk="4" data-firstseen="7/2">
-            <td>19</td>
-            <td class="first-seen-col">7/2</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_21093203/" target="_blank" rel="noopener noreferrer">ライオンズマンション大森</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,690万円</td>
-            <td>53.08㎡</td>
-            <td><div class="clamp2">東京都品川区南大井２</div></td>
-            <td><div class="clamp2">大森海岸 徒歩4分</div></td>
-            <td class="year-col">1978年</td>
-            <td class="layout-col">2LDK</td>
-            <td class="maint-col"><span title="管理費8,990円 + 修繕8,360円">17,350円</span><span class="maint-detail">管理8,990 + 修繕8,360</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-zero">耐震0</span> <span class="sc-pill sc-pos">駅距+15</span> <span class="sc-pill sc-pos">立地+12</span> <span class="sc-pill sc-pos">間取+10</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-pos">管理+5</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+0 駅距+15 立地+12 間取+10 ペト+10 管理+5 リノ+0 仲介+0 民泊+0">77</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
-          </tr>
-          <tr class="tier-good" data-index="20" data-name="フォースター浅草今戸" data-location="東京都台東区今戸２-20-4" data-layout="1LDK" data-tier="推奨" data-price="4698" data-area="50.19" data-score="76" data-year="2015" data-walk="15" data-firstseen="6/5">
-            <td>20</td>
-            <td class="first-seen-col">6/5</td>
-            <td class="name-col"><div class="clamp2"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20997568/" target="_blank" rel="noopener noreferrer">フォースター浅草今戸</a></div><span class="pet-tag pet-maybe">ペット相談可</span><div class="source-tag">SUUMO</div></td>
-            <td>4,698万円</td>
-            <td>50.19㎡</td>
-            <td><div class="clamp2">東京都台東区今戸２-20-4</div></td>
-            <td><div class="clamp2">浅草 徒歩15分</div></td>
-            <td class="year-col">2015年</td>
-            <td class="layout-col">1LDK</td>
-            <td class="maint-col"><span title="管理費14,350円 + 修繕12,050円">26,400円</span><span class="maint-detail">管理14,350 + 修繕12,050</span></td>
-            <td class="breakdown-col"><span class="sc-pill sc-pos">予算+10</span> <span class="sc-pill sc-pos">面積+15</span> <span class="sc-pill sc-pos">耐震+15</span> <span class="sc-pill sc-pos">駅距+3</span> <span class="sc-pill sc-pos">立地+18</span> <span class="sc-pill sc-pos">間取+5</span> <span class="sc-pill sc-pos">ペト+10</span> <span class="sc-pill sc-zero">管理0</span> <span class="sc-pill sc-zero">リノ0</span> <span class="sc-pill sc-zero">仲介0</span> <span class="sc-pill sc-zero">民泊0</span></td>
-            <td><span class="score-badge" style="--badge:#facc15" title="予算+10 面積+15 耐震+15 駅距+3 立地+18 間取+5 ペト+10 管理+0 リノ+0 仲介+0 民泊+0">76</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:#facc15">推奨</span></td>
-          </tr>
-        </tbody>
-      </table>
+  <section id="sec-properties" class="section">
+    <h2>Property Cards</h2>
+    <div class="property-grid">
+      
+<div class="prop-card" data-score="93" data-price="4980" data-area="40.47">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="7.916806799999989"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">93</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="ディアハイム浅草">ディアハイム浅草</div>
+      <div class="prop-card-location">浅草 徒歩5分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4980万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈2.1%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">40.47㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">1LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1992年3月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">123.1万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費11000+修繕7300</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">67.8万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">1.36%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-12.4万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-7.4万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-6.6%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">996.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">157.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+60.9万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++18
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21146168/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="91" data-price="2798" data-area="42.5">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="10.178751599999998"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">91</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="浅草ダイヤモンドマンション">浅草ダイヤモンドマンション</div>
+      <div class="prop-card-location">三ノ輪 徒歩10分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">2798万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.7%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">42.5㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">1DK+S（納戸）</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1982年3月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">65.8万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費10490+修繕10670</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">62.5万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.23%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-9.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-5.5万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-8.7%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">559.6万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">152.6万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+46.2万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++20
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++18
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++3
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20977812/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="88" data-price="4980" data-area="42.67">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="13.571668799999998"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">88</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="レーベンシティオ上野桜木">レーベンシティオ上野桜木</div>
+      <div class="prop-card-location">鶯谷 徒歩4分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4980万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈2.7%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">42.67㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">1LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">2004年4月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">116.7万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費13100+修繕10180</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">87.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">1.75%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-7.8万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-4.5万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-4.0%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">996.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">103.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+38.9万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++3
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21020358/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="85" data-price="4080" data-area="40.15">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="16.964585999999997"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">85</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="メゾンニシムラ">メゾンニシムラ</div>
+      <div class="prop-card-location">浅草 徒歩8分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4080万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈2.6%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">40.15㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">1R</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1987年4月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">101.6万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費3000+修繕11294</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">71.9万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">1.76%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-11.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-6.6万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-7.2%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">816.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">163.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+55.3万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++18
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++7
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="82" data-price="4780" data-area="43.1">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="20.35750320000001"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">82</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="オーシャンプラザ若松町">オーシャンプラザ若松町</div>
+      <div class="prop-card-location">若松河田 徒歩4分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4780万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.1%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">43.1㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">1LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1986年3月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">110.9万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費11500+修繕2100</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">111.1万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.32%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-11.7万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-6.9万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-6.5%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">956.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">191.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+56.7万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++20
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--red)">
+-5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++7
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21182368/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="81" data-price="3200" data-area="66.83">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="21.488475599999987"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">81</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="第２さくらコーポ">第２さくらコーポ</div>
+      <div class="prop-card-location">浅草 徒歩15分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">3200万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈5.4%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">66.83㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1986年5月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">47.9万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費6000</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">141.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">4.41%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-2.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-0.8万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-1.1%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">640.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">128.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+18.0万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++20
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++3
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++18
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--red)">
+-5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21181330/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="81" data-price="4180" data-area="58.3">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="21.488475599999987"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">81</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="マンション宮">マンション宮</div>
+      <div class="prop-card-location">浅草 徒歩5分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4180万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.3%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">58.3㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1975年8月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">71.7万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費13000+修繕8000</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">91.5万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.19%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-15.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-8.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-8.7%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">836.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">278.7万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+84.7万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++18
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++3
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21031128/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="81" data-price="4480" data-area="40.68">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="21.488475599999987"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">81</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="角の部屋「クレヴェスタ浅草Ⅱ」">角の部屋「クレヴェスタ浅草Ⅱ」</div>
+      <div class="prop-card-location">三ノ輪 徒歩15分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4480万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.3%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">40.68㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">1LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">2019年6月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">110.1万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費12200+修繕5700</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">103.8万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.32%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-4.8万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-3.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-3.2%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">896.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">65.6万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+19.2万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++3
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++18
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20967987/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="81" data-price="4998" data-area="48.9">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="21.488475599999987"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">81</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="クリオ東浅草">クリオ東浅草</div>
+      <div class="prop-card-location">南千住 徒歩12分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4998万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.0%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">48.9㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">2004年2月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">102.2万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費13720+修繕11440</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">97.4万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">1.95%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-6.9万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-3.9万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-3.5%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">999.6万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">103.4万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+36.0万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++3
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++18
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21178233/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="80" data-price="2420" data-area="44.37">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="22.61944799999999"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">80</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="パラスト野方">パラスト野方</div>
+      <div class="prop-card-location">野方 徒歩10分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">2420万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈4.9%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">44.37㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1974年4月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">54.5万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費12100+修繕7300</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">77.4万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">3.2%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-6.8万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-3.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-6.1%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">484.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">161.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+41.7万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++20
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20627086/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="80" data-price="3880" data-area="46.51">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="22.61944799999999"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">80</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="カーサ第二新宿">カーサ第二新宿</div>
+      <div class="prop-card-location">東新宿 徒歩4分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">3880万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.7%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">46.51㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">1LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1974年2月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">83.4万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費13320+修繕13320</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">92.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.38%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-13.5万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-7.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-8.2%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">776.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">258.7万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+76.5万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++20
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20765366/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="80" data-price="3990" data-area="45.36">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="22.61944799999999"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">80</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="グリーンキャピタル西巣鴨">グリーンキャピタル西巣鴨</div>
+      <div class="prop-card-location">西巣鴨 徒歩2分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">3990万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.4%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">45.36㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1978年2月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">88.0万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費8720+修繕8750</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">94.1万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.36%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-14.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-7.4万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-8.2%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">798.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">266.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+78.9万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_21181893/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="80" data-price="4490" data-area="40.5">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="22.61944799999999"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">80</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="まんしょん早稲田">まんしょん早稲田</div>
+      <div class="prop-card-location">早稲田 徒歩1分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4490万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈2.8%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">40.5㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">1LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1971年6月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">110.9万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費11200+修繕6100</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">87.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">1.95%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-17.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-9.4万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-9.3%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">898.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">299.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+94.3万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++20
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21182311/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="80" data-price="4580" data-area="43.33">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="22.61944799999999"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">80</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="トーア早稲田マンション">トーア早稲田マンション</div>
+      <div class="prop-card-location">西早稲田 徒歩1分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4580万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.0%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">43.33㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">1LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1978年9月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">105.7万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費7917+修繕10028</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">94.1万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.06%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-17.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-9.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-9.0%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">916.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">305.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+94.7万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++20
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20993190/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="80" data-price="4980" data-area="42.0">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--green)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="22.61944799999999"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--green)">80</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="パラスト西原">パラスト西原</div>
+      <div class="prop-card-location">幡ヶ谷 徒歩2分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--green);background:rgba(34,197,94,0.12)">
+      Green
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4980万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈2.8%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">42.0㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1973年11月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">118.6万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費13330+修繕15320</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">83.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">1.67%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-20.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-11.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-10.0%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">996.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">332.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+108.7万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++20
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_shibuya/nc_21090742/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="78" data-price="3480" data-area="46.76">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--yellow)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="24.8813928"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--yellow)">78</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="シャンブル西早稲田">シャンブル西早稲田</div>
+      <div class="prop-card-location">西早稲田 徒歩2分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--yellow);background:rgba(234,179,8,0.12)">
+      Yellow
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">3480万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈4.2%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">46.76㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1976年10月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">74.4万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費14400+修繕6000</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">100.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.88%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-10.7万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-5.4万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-6.9%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">696.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">232.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+63.3万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++20
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++20
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--red)">
+-5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++3
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21182307/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="78" data-price="4790" data-area="50.96">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--yellow)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="24.8813928"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--yellow)">78</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="上野ロイヤルハイツ">上野ロイヤルハイツ</div>
+      <div class="prop-card-location">入谷 徒歩1分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--yellow);background:rgba(234,179,8,0.12)">
+      Yellow
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4790万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈2.6%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">50.96㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1982年9月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">94.0万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費10660+修繕10000</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">80.6万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">1.68%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-18.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-10.9万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-10.1%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">958.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">261.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+87.0万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--red)">
+-5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++3
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20376620/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="77" data-price="4380" data-area="45.4">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--yellow)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="26.01236519999999"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--yellow)">77</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="豊島区巣鴨３丁目 マンション">豊島区巣鴨３丁目 マンション</div>
+      <div class="prop-card-location">巣鴨 徒歩4分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--yellow);background:rgba(234,179,8,0.12)">
+      Yellow
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4380万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.1%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">45.4㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1982年6月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">96.5万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費12700+修繕1270</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">98.4万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.25%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-14.6万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-8.5万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-8.7%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">876.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">238.9万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+72.1万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--red)">
+-5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++7
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_21014102/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="77" data-price="4690" data-area="53.08">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--yellow)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="26.01236519999999"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--yellow)">77</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="ライオンズマンション大森">ライオンズマンション大森</div>
+      <div class="prop-card-location">大森海岸 徒歩4分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--yellow);background:rgba(234,179,8,0.12)">
+      Yellow
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4690万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.2%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">53.08㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">2LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">1978年7月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">88.4万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費8990+修繕8360</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">106.7万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.28%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-16.8万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-8.9万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-8.5%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">938.0万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">312.7万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+93.9万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++12
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_21093203/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
+      
+<div class="prop-card" data-score="76" data-price="4698" data-area="50.19">
+  <div class="prop-card-header">
+    <div class="prop-card-score">
+      
+<div class="deal-gauge deal-gauge--sm">
+  <svg viewBox="0 0 40 40" width="100%" height="100%">
+    <circle class="deal-gauge-circle-bg" cx="20" cy="20" r="18"/>
+    <circle class="deal-gauge-circle" cx="20" cy="20" r="18"
+            stroke="var(--yellow)"
+            stroke-dasharray="113.09724"
+            stroke-dashoffset="27.143337599999995"/>
+  </svg>
+  <span class="deal-gauge-value" style="color:var(--yellow)">76</span>
+</div>
+
+    </div>
+    <div class="prop-card-title-block">
+      <div class="prop-card-name" title="フォースター浅草今戸">フォースター浅草今戸</div>
+      <div class="prop-card-location">浅草 徒歩15分</div>
+    </div>
+    <span class="prop-card-tier" style="color:var(--yellow);background:rgba(234,179,8,0.12)">
+      Yellow
+    </span>
+  </div>
+
+  <div class="prop-card-body">
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">価格</span>
+      <span class="prop-kpi-value">4698万円</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">利回り</span>
+      <span class="prop-kpi-value">≈3.7%</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">面積</span>
+      <span class="prop-kpi-value">50.19㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">間取り</span>
+      <span class="prop-kpi-value">1LDK</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">築年</span>
+      <span class="prop-kpi-value">2015年11月</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">㎡単価</span>
+      <span class="prop-kpi-value">93.6万/㎡</span>
+    </div>
+    <div class="prop-kpi">
+      <span class="prop-kpi-label">管理費+修繕</span>
+      <span class="prop-kpi-value">管理費14350+修繕12050</span>
+    </div>
+  </div>
+
+  <div class="prop-card-tags">
+    <span class="prop-tag prop-tag--pet">Pet 相談可</span>
+    <span class="prop-tag prop-tag--source">SUUMO</span>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('expanded'); event.stopPropagation();">
+    ▸ 投資分析
+  </div>
+  <div class="prop-card-detail revenue-detail-inner">
+    <div class="revenue-grid">
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">NOI（営業純利益）</span>
+        <span class="revenue-kpi-value">115.3万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">実質利回り</span>
+        <span class="revenue-kpi-value">2.45%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税前)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-4.5万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">月間CF (税後)</span>
+        <span class="revenue-kpi-value" style="color:var(--red)">-2.9万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">CCR（自己資本利回り）</span>
+        <span class="revenue-kpi-value">-2.7%</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">回収年数</span>
+        <span class="revenue-kpi-value">∞</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">頭金</span>
+        <span class="revenue-kpi-value">939.6万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">年間償却</span>
+        <span class="revenue-kpi-value">74.2万</span>
+      </div>
+      <div class="revenue-kpi">
+        <span class="revenue-kpi-label">節税効果</span>
+        <span class="revenue-kpi-value" style="color:var(--green)">+19.8万</span>
+      </div>
+      <div class="revenue-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">
+        CF赤字
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-toggle" onclick="this.closest('.prop-card').classList.toggle('show-score'); event.stopPropagation();">
+    ▸ スコア内訳
+  </div>
+  <div class="prop-card-score-detail">
+    <div class="score-breakdown-grid">
+      <div class="score-axis">
+        <span class="score-axis-name">budget</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">area</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">earthquake</span>
+        <span class="score-axis-value" style="color:var(--green)">
++15
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">station</span>
+        <span class="score-axis-value" style="color:var(--green)">
++3
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">location</span>
+        <span class="score-axis-value" style="color:var(--green)">
++18
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">layout</span>
+        <span class="score-axis-value" style="color:var(--green)">
++5
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">pet</span>
+        <span class="score-axis-value" style="color:var(--green)">
++10
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">maintenance</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">renovation</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">brokerage</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+      <div class="score-axis">
+        <span class="score-axis-name">minpaku_penalty</span>
+        <span class="score-axis-value" style="color:var(--text-muted)">
+0
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prop-card-footer">
+    <a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20997568/" target="_blank" rel="noopener" class="prop-card-link">
+      詳細 ↗
+    </a>
+  </div>
+</div>
+
     </div>
   </section>
 
@@ -1116,52 +4853,12 @@ document.addEventListener('click', function(e) {
     <div style="margin-bottom:8px">
       <a href="index.html">Hub</a> &middot;       <a href="minpaku-osaka.html">民泊・大阪</a> &middot;       <a href="minpaku-fukuoka.html">民泊・福岡</a> &middot;       <a href="minpaku-tokyo.html">民泊・東京</a> &middot;       <a href="market.html">賃貸Market</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a> &middot;       <a href="inquiry-pipeline.html">Pipeline</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, cowcamo, restate (data/suumo_tokyo_raw.txt + data/rakumachi_tokyo_raw.txt, data/yahoo_tokyo_raw.txt, data/cowcamo_tokyo_raw.txt, data/restate_tokyo_raw.txt)</div>
-    <div>Generated on 2026-07-06 04:41</div>
+    <div>Generated on 2026-07-06 17:58</div>
   </div>
 </div>
 
 
 <script>
-// Table sort
-(() => {
-  const table = document.getElementById('propertyTable');
-  const tbody = table.querySelector('tbody');
-  const headers = table.querySelectorAll('thead button[data-sort]');
-  let sortState = { key: 'score', dir: 'desc' };
-
-  const valueFor = (row, key, type) => {
-    if (key === 'name') return (row.dataset.name || '').toLowerCase();
-    const v = row.dataset[key];
-    return type === 'number' ? Number(v) : (v || '');
-  };
-
-  const applySort = (key, type) => {
-    if (sortState.key === key) {
-      sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
-    } else {
-      sortState = { key, dir: key === 'score' ? 'desc' : 'asc' };
-    }
-    const rows = Array.from(tbody.querySelectorAll('tr'));
-    rows.sort((a, b) => {
-      const av = valueFor(a, key, type);
-      const bv = valueFor(b, key, type);
-      let cmp = 0;
-      if (type === 'number') cmp = av - bv;
-      else cmp = String(av).localeCompare(String(bv), 'ja');
-      if (cmp === 0) cmp = Number(a.dataset.index) - Number(b.dataset.index);
-      return sortState.dir === 'asc' ? cmp : -cmp;
-    });
-    rows.forEach(r => tbody.appendChild(r));
-    headers.forEach(h => h.textContent = h.textContent.replace(/[\u2191\u2193]$/, ''));
-    const active = Array.from(headers).find(h => h.dataset.sort === key);
-    if (active) active.textContent = active.textContent + (sortState.dir === 'asc' ? '\u2191' : '\u2193');
-  };
-
-  headers.forEach(h => {
-    h.addEventListener('click', () => applySort(h.dataset.sort, h.dataset.type || 'string'));
-  });
-})();
-
 // Section jump nav: highlight active section on scroll
 (() => {
   const nav = document.getElementById('sectionJump');

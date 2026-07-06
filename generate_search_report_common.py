@@ -19,6 +19,7 @@ for p in [str(_THIS_DIR), str(_LIB_ROOT)]:
         sys.path.insert(0, p)
 
 from lib.renderer import create_env  # noqa: E402
+from revenue_calc import analyze as revenue_analyze  # noqa: E402
 
 # ── ハードフィルタ定数 ──
 # サブリース: 賃料改定不可 → 投資対象外（中野さん知見 2026-04-02）
@@ -175,6 +176,12 @@ class PropertyRow:
     detail_comment: str = ""
     pet_score: int = 0
     structure: str = ""  # RC造, SRC造, S造, 木造, etc.
+    yield_text: str = ""
+    rent_source: str = ""
+    est_monthly_rent: str = ""
+    rent_per_sqm: int = 0
+    price_per_sqm: str = ""
+    revenue: dict | None = None
 
 
 def parse_price_man(text: str) -> int:
@@ -863,6 +870,180 @@ def safe_json(obj: object) -> str:
     return json.dumps(obj, ensure_ascii=False)
 
 
+_RENT_PER_SQM_BY_WARD: dict[str, dict[str, int]] = {
+    "fukuoka": {
+        "中央区": 3200,
+        "博多区": 3000,
+        "東区": 2600,
+        "南区": 2400,
+        "早良区": 2300,
+        "西区": 2200,
+        "城南区": 2000,
+    },
+    "osaka": {
+        "中央区": 3400,
+        "西区": 3300,
+        "北区": 3200,
+        "浪速区": 3100,
+        "福島区": 3000,
+        "天王寺区": 2900,
+        "淀川区": 2800,
+        "都島区": 2800,
+        "東淀川区": 2300,
+    },
+    "tokyo": {
+        "中央区": 3900,
+        "新宿区": 4000,
+        "渋谷区": 4000,
+        "港区": 3500,
+        "豊島区": 3800,
+        "品川区": 3600,
+        "目黒区": 3100,
+        "文京区": 3200,
+        "台東区": 3100,
+        "中野区": 3600,
+        "墨田区": 3700,
+        "板橋区": 3400,
+        "練馬区": 3100,
+        "北区": 3200,
+        "足立区": 3400,
+        "葛飾区": 3400,
+    },
+}
+
+_RENT_PER_SQM_BY_STATION: dict[str, dict[str, int]] = {
+    "fukuoka": {
+        "博多": 3000, "祇園": 2900, "呉服町": 2800, "東比恵": 2400,
+        "中洲川端": 2800, "千代県庁口": 2400, "吉塚": 2200,
+        "天神": 3200, "赤坂": 3000, "薬院": 2800, "大濠公園": 2800,
+        "唐人町": 2600, "六本松": 2600, "渡辺通": 2800, "西鉄福岡": 3200,
+        "桜坂": 2500, "西鉄平尾": 2400, "舞鶴": 2800, "大手門": 2800,
+        "大橋": 2000, "高宮": 1500, "井尻": 1700, "笹原": 1600,
+        "雑餉隈": 1200, "春日": 1800, "姪浜": 1800, "室見": 2000,
+        "西新": 2200, "藤崎": 2100, "箱崎": 2000, "箱崎宮前": 2000,
+        "箱崎九大前": 1900, "千早": 2100, "香椎": 1900,
+    },
+    "osaka": {
+        "梅田": 3400, "福島": 3200, "中津": 3100, "天満": 2900,
+        "南森町": 3000, "北浜": 3100, "淀屋橋": 3200, "肥後橋": 3100,
+        "本町": 3000, "心斎橋": 3300, "長堀橋": 3100, "なんば": 3200,
+        "堺筋本町": 2900, "谷町四丁目": 2800, "天王寺": 2800,
+        "阿波座": 2800, "西長堀": 2700, "九条": 2500,
+        "新大阪": 2600, "東三国": 2300, "京橋": 2600,
+    },
+    "tokyo": {
+        "渋谷": 4200, "恵比寿": 4000, "代官山": 4000, "中目黒": 3800,
+        "新宿": 4000, "新宿三丁目": 3800, "池袋": 3600, "大塚": 3200,
+        "上野": 3200, "御徒町": 3200, "浅草": 3000, "蔵前": 3000,
+        "押上": 2800, "錦糸町": 3000, "両国": 2900,
+        "品川": 3600, "五反田": 3400, "大崎": 3300, "目黒": 3600,
+        "三田": 3400, "麻布十番": 4000, "六本木": 4200, "白金": 3800,
+        "中野": 3400, "高円寺": 3000, "荻窪": 2800, "東中野": 3200,
+        "野方": 2600, "沼袋": 2500, "赤羽": 2800, "王子": 2700,
+        "田端": 2800, "練馬": 2800, "東武練馬": 2400,
+    },
+}
+
+_ESTIMATED_RENT_PER_SQM: dict[str, int] = {
+    "osaka": 2800,
+    "fukuoka": 2400,
+    "tokyo": 3200,
+}
+
+
+def _age_discount(built_year: int | None) -> float:
+    if not built_year:
+        return 0.80
+    age = 2026 - built_year
+    if age <= 10:
+        return 1.00
+    if age <= 20:
+        return 0.92
+    if age <= 30:
+        return 0.82
+    if age <= 40:
+        return 0.72
+    return 0.65
+
+
+def _get_rent_per_sqm(city_key: str, location: str, built_year: int | None = None, station_text: str = "") -> tuple[int, str]:
+    walk_match = re.search(r"徒歩\s*(\d+)\s*分", station_text)
+    walk_min = int(walk_match.group(1)) if walk_match else 5
+    station_data = _RENT_PER_SQM_BY_STATION.get(city_key, {})
+    if station_text and station_data and walk_min < 10:
+        cleaned = re.sub(
+            r"(西鉄天神大牟田線|地下鉄空港線|地下鉄箱崎線|地下鉄七隈線|ＪＲ鹿児島本線|ＪＲ篠栗線|JR鹿児島本線|JR篠栗線|ＪＲ中央線|JR中央線|東京メトロ[^\s]*線|都営[^\s]*線|西武[^\s]*線|東武[^\s]*線)",
+            "",
+            station_text,
+        )
+        for stn in sorted(station_data.keys(), key=len, reverse=True):
+            if stn in cleaned:
+                return int(station_data[stn] * _age_discount(built_year)), stn
+    if station_data and location:
+        for stn in sorted(station_data.keys(), key=len, reverse=True):
+            if stn in location:
+                return int(station_data[stn] * _age_discount(built_year)), stn
+    ward_match = re.search(r"([^\s市県都府]+区)", location)
+    ward = ward_match.group(1) if ward_match else ""
+    ward_data = _RENT_PER_SQM_BY_WARD.get(city_key, {})
+    if ward and ward in ward_data:
+        return int(ward_data[ward] * _age_discount(built_year)), ward
+    return int(_ESTIMATED_RENT_PER_SQM.get(city_key, 2800) * _age_discount(built_year)), ""
+
+
+def enrich_revenue(row: PropertyRow, config: ReportConfig) -> None:
+    """Attach market-rent-based revenue analysis for card rendering."""
+    if not row.price_man or row.price_man <= 0 or not row.area_sqm or row.area_sqm <= 0:
+        row.revenue = None
+        return
+    rent_per_sqm, label = _get_rent_per_sqm(config.city_key, row.location, row.built_year, row.station_text)
+    monthly_rent_yen = rent_per_sqm * row.area_sqm
+    annual_rent_man = monthly_rent_yen * 12 / 10000
+    yield_pct = annual_rent_man / row.price_man * 100
+    row.rent_per_sqm = rent_per_sqm
+    row.rent_source = f"相場{label}" if label else "相場"
+    row.est_monthly_rent = f"{monthly_rent_yen / 10000:.1f}万"
+    row.yield_text = f"≈{yield_pct:.1f}%"
+    row.price_per_sqm = f"{row.price_man / row.area_sqm:.1f}万/㎡"
+    try:
+        ra = revenue_analyze(
+            price_man=row.price_man,
+            yield_pct=yield_pct,
+            structure=row.structure or "RC造",
+            built_year=row.built_year,
+            units_count=1,
+            area_sqm=row.area_sqm,
+            maintenance_fee_monthly=row.maintenance_fee or 0,
+        )
+    except Exception:
+        row.revenue = None
+        return
+    row.revenue = {
+        "noi": round(ra.noi, 1),
+        "net_yield": round(ra.net_yield_pct, 2),
+        "monthly_cf": round(ra.monthly_cf, 1),
+        "after_tax_monthly_cf": round(ra.after_tax_cf / 12, 1),
+        "ccr": round(ra.ccr_pct, 1),
+        "payback_years": round(ra.payback_years, 1) if ra.payback_years != float("inf") else None,
+        "depreciation_annual": round(ra.depreciation_annual, 1),
+        "tax_benefit": round(ra.tax_benefit, 1),
+        "verdict": ra.verdict,
+        "down_payment": round(ra.down_payment, 1),
+        "acquisition_cost": round(ra.acquisition_cost, 1),
+        "total_equity": round(ra.total_equity, 1),
+        "loan_amount": round(ra.loan_amount, 1),
+        "loan_years": ra.loan_years,
+        "loan_rate": ra.params.loan_rate_annual * 100,
+        "annual_debt_service": round(ra.annual_debt_service, 1),
+        "taxable_income": round(ra.taxable_income, 1),
+        "after_tax_cf": round(ra.after_tax_cf, 1),
+        "est_monthly_rent": row.est_monthly_rent,
+        "rent_source": row.rent_source,
+        "rent_per_sqm": rent_per_sqm,
+        "structure_used": row.structure or "RC造",
+    }
+
+
 def _format_maintenance_disp(r: PropertyRow) -> str:
     """Format maintenance fee display with breakdown (管理費 + 修繕).
 
@@ -1047,6 +1228,19 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     avg_area = round(sum((r.area_sqm or 0) for r in rows_sorted) / len(rows_sorted), 2) if rows_sorted else 0
     top_prop = rows_sorted[0] if rows_sorted else None
     search_date = meta.get("search_date") or dt.date.today().isoformat()
+    revenue_rows = [r for r in rows_sorted if r.revenue]
+    avg_net_yield = round(sum(r.revenue["net_yield"] for r in revenue_rows) / len(revenue_rows), 2) if revenue_rows else 0
+    avg_ccr = round(sum(r.revenue["ccr"] for r in revenue_rows) / len(revenue_rows), 1) if revenue_rows else 0
+    profitable_count = sum(1 for r in revenue_rows if r.revenue["after_tax_monthly_cf"] > 0)
+    hero_stats = {
+        "count": len(rows_sorted),
+        "avg_price": int(round(avg_price)) if avg_price else 0,
+        "avg_net_yield": avg_net_yield,
+        "avg_ccr": avg_ccr,
+        "top_count": sum(1 for r in rows_sorted if r.total_score >= 80),
+        "pet_ok_count": sum(1 for r in rows_sorted if r.pet_score >= 10),
+        "profitable_count": profitable_count,
+    }
 
     # Build structured data for template
     first_seen = load_first_seen()
@@ -1079,7 +1273,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     patrol_summary = load_patrol_summary()
 
     # Render with lib.renderer
-    env = create_env()
+    env = create_env(extra_dirs=[_THIS_DIR / "lib" / "templates"])
     template = env.get_template("pages/property_report.html")
     return template.render(
         config=config_dict,
@@ -1089,6 +1283,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         duplicate_count=duplicate_count,
         avg_price=avg_price,
         avg_area=avg_area,
+        hero_stats=hero_stats,
         top_prop=top_prop,
         search_date=search_date,
         city_badge=city_badge,
@@ -1213,6 +1408,7 @@ def generate_report(config: ReportConfig) -> Path:
 
     for row in deduped:
         score_row(row, config)
+        enrich_revenue(row, config)
 
     # 厳選フィルタ: ティアベース表示制御
     # 緑(80+) = 全数表示、黄(65-79) = 緑が少ない場合のみ補充、オレンジ/赤 = 非表示

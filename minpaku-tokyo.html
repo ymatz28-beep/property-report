@@ -502,13 +502,14 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 .footer { margin-top:32px; color:var(--muted); font-size:12px; text-align:center; }
 .footer a { color:var(--text); }
 
-/* Collapsible sections for mobile */
+/* Collapsible sections (collapsed by default on all screen sizes) */
 .collapsible-toggle {
-  display:none; cursor:pointer; background:none; border:none; color:var(--muted);
+  display:inline-block; cursor:pointer; background:none; border:none; color:var(--muted);
   font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.1);
 }
 .collapsible-toggle::after { content:" \25BC"; font-size:10px; }
 .collapsible-toggle.is-open::after { content:" \25B2"; }
+.collapsible-content.is-collapsed { display:none; }
 
 /* Scroll offset for sticky nav */
 [id] { scroll-margin-top:calc(var(--gnav-height, 52px) + 56px); }
@@ -524,8 +525,6 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   .badge-row { gap:4px; }
   .badge { font-size:10px; padding:3px 6px; }
   .stat .value { font-size:20px; }
-  .collapsible-toggle { display:inline-block; }
-  .collapsible-content.is-collapsed { display:none; }
   .breakdown-col { max-width:180px; }
   .maint-detail { font-size:9px; }
 }
@@ -1584,7 +1583,7 @@ document.addEventListener('click', function(e) {
     <div style="margin-bottom:8px">
       <a href="index.html">Hub</a> &middot;       <a href="minpaku-osaka.html">民泊・大阪</a> &middot;       <a href="minpaku-fukuoka.html">民泊・福岡</a> &middot;       <a href="minpaku-tokyo.html">民泊・東京</a> &middot;       <a href="ittomono.html">一棟もの</a> &middot;       <a href="market.html">賃貸Market</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a> &middot;       <a href="inquiry-pipeline.html">Pipeline</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, cowcamo, restate (data/suumo_tokyo_raw.txt + data/rakumachi_tokyo_raw.txt, data/yahoo_tokyo_raw.txt, data/cowcamo_tokyo_raw.txt, data/restate_tokyo_raw.txt)</div>
-    <div>Generated on 2026-07-07 13:46</div>
+    <div>Generated on 2026-07-07 13:49</div>
   </div>
 </div>
 

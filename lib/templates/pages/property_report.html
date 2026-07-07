@@ -271,13 +271,14 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 .footer { margin-top:32px; color:var(--muted); font-size:12px; text-align:center; }
 .footer a { color:var(--text); }
 
-/* Collapsible sections for mobile */
+/* Collapsible sections (collapsed by default on all screen sizes) */
 .collapsible-toggle {
-  display:none; cursor:pointer; background:none; border:none; color:var(--muted);
+  display:inline-block; cursor:pointer; background:none; border:none; color:var(--muted);
   font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.1);
 }
 .collapsible-toggle::after { content:" \25BC"; font-size:10px; }
 .collapsible-toggle.is-open::after { content:" \25B2"; }
+.collapsible-content.is-collapsed { display:none; }
 
 /* Scroll offset for sticky nav */
 [id] { scroll-margin-top:calc(var(--gnav-height, 52px) + 56px); }
@@ -293,8 +294,6 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   .badge-row { gap:4px; }
   .badge { font-size:10px; padding:3px 6px; }
   .stat .value { font-size:20px; }
-  .collapsible-toggle { display:inline-block; }
-  .collapsible-content.is-collapsed { display:none; }
   .breakdown-col { max-width:180px; }
   .maint-detail { font-size:9px; }
 }

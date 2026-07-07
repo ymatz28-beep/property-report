@@ -68,14 +68,24 @@ body {
 
 /* Hero */
 .hero {
-  position:relative; padding:28px; border-radius:24px;
-  border:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-  box-shadow:var(--shadow); overflow:hidden; backdrop-filter: blur(12px);
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  background:var(--surface); border-radius:var(--radius-md);
+  padding:12px 20px; margin-bottom:var(--space-4);
+  border:1px solid var(--border);
 }
-.kicker { color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-weight:700; font-size:12px; }
-h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:700; font-family:var(--font-body); }
-.hero-sub { color:var(--text-secondary); margin:0; max-width:860px; }
+.hero h1 { font-size:16px; font-weight:700; white-space:nowrap; margin:0; }
+.hero .subtitle { display:none; }
+.hero .stats { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+.hero .stat-card {
+  display:flex; align-items:baseline; gap:4px; padding:0;
+  background:none;
+}
+.hero .stat-card .label { font-size:10px; color:var(--text-muted); }
+.hero .stat-card .value { font-size:14px; font-weight:700; font-family:var(--font-mono); }
+.hero-updated { font-size:10px; color:var(--text-muted); margin-left:auto; }
+.hero-details { flex-basis:100%; }
+.kicker { display:none; }
+.hero-sub { display:none; }
 .badge-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
 .badge {
   display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
@@ -141,22 +151,59 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
 .section h2::before { content:""; width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12); }
 .cond-list { margin:0; padding-left:18px; color:var(--text); line-height:1.75; columns:2; column-gap:24px; }
 
-/* Table */
-.table-shell { overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); -webkit-overflow-scrolling:touch; }
-table { width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }
-thead th {
-  position:sticky; top:0; z-index:1;
-  background:rgba(12,17,26,.92); color:var(--text); font-size:12px;
-  text-align:left; padding:12px 10px; border-bottom:1px solid rgba(255,255,255,.08); white-space:nowrap;
+/* Dense property list */
+.property-list { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.prop-table { width:100%; min-width:1120px; border-collapse:collapse; font-size:12px; }
+.prop-table th {
+  text-align:left; padding:8px 10px; font-size:10px; font-weight:700;
+  color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg); white-space:nowrap;
 }
-thead th button { all:unset; cursor:pointer; color:inherit; font-weight:700; display:inline-flex; gap:6px; align-items:center; }
-tbody td { padding:10px 6px; border-bottom:1px solid rgba(255,255,255,.05); font-size:13px; vertical-align:top; }
-tbody tr:nth-child(even) td { background:rgba(255,255,255,.012); }
-tbody tr:hover td { background:rgba(var(--accent-rgb),.06); }
-.tier-strong td { box-shadow: inset 4px 0 0 rgba(34,197,94,.7); }
-.tier-good td { box-shadow: inset 4px 0 0 rgba(250,204,21,.7); }
-.tier-conditional td { box-shadow: inset 4px 0 0 rgba(251,146,60,.7); }
-.tier-pass td { box-shadow: inset 4px 0 0 rgba(239,68,68,.7); }
+.prop-table td { padding:8px 10px; border-bottom:1px solid rgba(255,255,255,0.03); white-space:nowrap; }
+.prop-table tr:hover { background:rgba(255,255,255,0.02); }
+.prop-table .name-cell { min-width:140px; max-width:240px; white-space:normal; line-height:1.3; overflow:hidden; }
+.prop-table .name-cell a,
+.prop-table .name-cell span {
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.prop-table .score-cell { font-family:var(--font-mono); font-weight:700; }
+.prop-table .price-cell { font-family:var(--font-mono); font-weight:600; text-align:right; white-space:nowrap; }
+.prop-table .area-cell { font-family:var(--font-mono); text-align:right; white-space:nowrap; }
+.prop-table .station-cell { min-width:100px; max-width:200px; white-space:normal; word-break:break-all; line-height:1.3; padding:6px 4px; }
+.prop-table .layout-cell { max-width:70px; text-align:center; padding:6px 2px; }
+.price-badge {
+  display:inline-block; font-size:9px; font-weight:700;
+  padding:1px 5px; border-radius:3px; margin-left:2px;
+  vertical-align:middle; letter-spacing:0.3px;
+}
+.price-badge--green { background:rgba(34,197,94,0.2); color:var(--green); }
+.price-badge--accent { background:rgba(99,102,241,0.18); color:var(--accent); }
+.price-badge--yellow { background:rgba(234,179,8,0.2); color:var(--yellow); }
+.price-badge--red { background:rgba(239,68,68,0.2); color:var(--red); }
+.prop-table tr.detail-row { display:none; }
+.prop-table tr.detail-row.open { display:table-row; }
+.prop-table tr.detail-row > td {
+  padding:10px 10px 14px; background:rgba(99,102,241,0.03);
+  border-bottom:1px solid rgba(99,102,241,0.08);
+}
+.detail-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+  gap:10px 20px; padding:4px 0;
+}
+.detail-item { display:flex; flex-direction:column; min-width:0; }
+.detail-label { font-size:10px; color:var(--text-muted); letter-spacing:0.3px; white-space:nowrap; }
+.detail-value { font-size:13px; font-weight:600; font-family:var(--font-mono); margin-top:2px; }
+.detail-verdict {
+  display:inline-block; font-size:11px; font-weight:600;
+  padding:2px 10px; border-radius:10px; margin-top:4px;
+}
+.prop-table tr[data-expandable] { cursor:pointer; }
+.prop-table tr[data-expandable] .name-cell { display:flex; align-items:flex-start; gap:2px; }
+.prop-table tr[data-expandable] .name-cell::before {
+  content:"▸"; font-size:10px; color:var(--text-muted); flex-shrink:0; margin-top:2px;
+}
+.prop-table tr[data-expandable].expanded .name-cell::before { content:"▾"; }
 a { color:var(--text); text-decoration:none; }
 a:hover { color:var(--accent); text-decoration:underline; }
 .name-col { max-width:130px; }
@@ -276,6 +323,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 @media (max-width: 640px) {
   .hero { padding:8px 10px; border-radius:14px; }
   .hero h1 { margin:4px 0; }
+  .hero .stats { gap:8px; }
+  .hero .stat-card .value { font-size:13px; }
   .badge-row { gap:3px; margin-top:6px; }
   .badge { font-size:9px; padding:2px 6px; }
   .grid-4 { grid-template-columns:repeat(2, minmax(0,1fr)); gap:6px; margin-top:12px; }
@@ -284,9 +333,9 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   .stat .value { font-size:15px; margin-top:2px; }
   .stat .sub { display:none; }
   .section { margin-top:20px; }
-  table { min-width:800px; }
-  tbody td { padding:6px 4px; font-size:11px; }
-  thead th { padding:6px 4px; font-size:10px; }
+  .prop-table { min-width:1120px; font-size:11px; }
+  .prop-table th, .prop-table td { padding:5px 4px; }
+  .detail-grid { grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:8px 12px; }
   .name-col { max-width:140px; }
   .score-badge { min-width:32px; padding:4px 8px; font-size:13px; }
   .source-tag { font-size:9px; padding:1px 5px; }
@@ -342,37 +391,65 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 <div class="wrap">
   {# Section jump navigation #}
   <nav class="section-jump" id="sectionJump">
-    <a href="#sec-table">全物件テーブル</a>
+    <a href="#sec-properties">候補リスト</a>
   </nav>
 
   {# Hero #}
   <section class="hero">
-    <div class="kicker">PROPERTY SEARCH REPORT / {{ config.city_label | upper }}</div>
-    <h1>{{ config.city_label }} 民泊向け中古マンション候補レポート</h1>
-    <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
-    <div class="badge-row">
-      <span class="badge">検索日 {{ search_date }}</span>
-      <span class="badge">厳選 {{ rows_sorted | length }}件 / {{ raw_count }}件</span>
-      <span class="badge">{{ city_badge }}</span>
-    </div>
-    <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
-    <div class="collapsible-content is-collapsed">
-      <div class="badge-row" style="margin-top:8px;">
-        <span class="badge">原データ {{ raw_count }}件</span>
-        <span class="badge">重複除外 {{ duplicate_count }}件</span>
-        <span class="badge">売却済除外 {{ meta.sold_removed | default("0") }}件</span>
-        <span class="badge">OC除外 {{ meta.oc_removed | default("0") }}件</span>
-        <span class="badge">ペット不可除外 {{ meta.pet_ng_removed | default("0") }}件</span>
-        <span class="badge">管理費高除外 {{ meta.maint_high_removed | default("0") }}件</span>
-        <span class="badge">サブリース除外 {{ meta.sublease_removed | default("0") }}件</span>
-        <span class="badge">狭小除外 {{ meta.small_area_removed | default("0") }}件</span>
-        <span class="badge">民泊不可除外 {{ meta.minpaku_ng_removed | default("0") }}件</span>
-        <span class="badge">低スコア除外 {{ meta.quality_filtered | default("0") }}件</span>
+    <h1>{{ config.city_label }} 民泊候補</h1>
+    <div class="subtitle">民泊向け中古マンション候補レポート</div>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="label">件数</div>
+        <div class="value">{{ hero_stats.count }}</div>
       </div>
-      <div class="badge-row">
-        {% for b in config.hero_conditions %}
-        <span class="badge">{{ b }}</span>
-        {% endfor %}
+      <div class="stat-card">
+        <div class="label">平均価格</div>
+        <div class="value">{{ hero_stats.avg_price }}万</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">平均利回り</div>
+        <div class="value">{{ hero_stats.avg_net_yield }}%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">平均CCR</div>
+        <div class="value">{{ hero_stats.avg_ccr }}%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">上位</div>
+        <div class="value">{{ hero_stats.top_count }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">ペット可</div>
+        <div class="value">{{ hero_stats.pet_ok_count }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">税後CF+</div>
+        <div class="value">{{ hero_stats.profitable_count }}</div>
+      </div>
+    </div>
+    <div class="hero-updated">検索日 {{ search_date }} — {{ city_badge }}</div>
+    <div class="hero-details">
+      <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
+      <div class="collapsible-content is-collapsed">
+        <div class="badge-row">
+          <span class="badge">厳選 {{ rows_sorted | length }}件 / {{ raw_count }}件</span>
+          <span class="badge">原データ {{ raw_count }}件</span>
+          <span class="badge">重複除外 {{ duplicate_count }}件</span>
+          <span class="badge">売却済除外 {{ meta.sold_removed | default("0") }}件</span>
+          <span class="badge">OC除外 {{ meta.oc_removed | default("0") }}件</span>
+          <span class="badge">ペット不可除外 {{ meta.pet_ng_removed | default("0") }}件</span>
+          <span class="badge">管理費高除外 {{ meta.maint_high_removed | default("0") }}件</span>
+          <span class="badge">サブリース除外 {{ meta.sublease_removed | default("0") }}件</span>
+          <span class="badge">狭小除外 {{ meta.small_area_removed | default("0") }}件</span>
+          <span class="badge">民泊不可除外 {{ meta.minpaku_ng_removed | default("0") }}件</span>
+          <span class="badge">低スコア除外 {{ meta.quality_filtered | default("0") }}件</span>
+        </div>
+        <div class="badge-row">
+          {% for b in config.hero_conditions %}
+          <span class="badge">{{ b }}</span>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </section>
@@ -408,45 +485,58 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
     </div>
   </section>
 
-  {# Property Table #}
-  <section id="sec-table" class="section">
-    <h2>Property Table</h2>
-    <div class="table-shell">
-      <table id="propertyTable">
+  {# Property List #}
+  <section id="sec-properties" class="section">
+    <h2>Property List</h2>
+    <div class="property-list">
+      <table class="prop-table">
         <thead>
           <tr>
-            <th><button data-sort="index" data-type="number">#</button></th>
-            <th class="first-seen-th"><button data-sort="firstseen" data-type="string">掲載開始</button></th>
-            <th><button data-sort="name" data-type="string">物件名</button></th>
-            <th><button data-sort="price" data-type="number">価格</button></th>
-            <th><button data-sort="area" data-type="number">面積</button></th>
-            <th><button data-sort="location" data-type="string">所在地</button></th>
-            <th><button data-sort="walk" data-type="number">最寄駅</button></th>
-            <th class="year-th"><button data-sort="year" data-type="number">築年</button></th>
-            <th class="layout-th"><button data-sort="layout" data-type="string">間取り</button></th>
-            <th class="maint-th">管理費修繕</th>
-            <th class="breakdown-th">スコア内訳</th>
-            <th><button data-sort="score" data-type="number">スコア</button></th>
-            <th class="tier-th"><button data-sort="tier" data-type="string">評価</button></th>
+            <th>スコア</th><th>物件名</th><th>価格</th><th>面積</th><th>築年</th>
+            <th>構造</th><th>最寄駅</th><th>ペット</th><th>想定家賃</th><th>利回り</th>
+            <th>CF/月(税後)</th><th>CF(15)</th><th>CF(20)</th><th>㎡単価</th>
           </tr>
         </thead>
         <tbody>
-          {% for row in table_rows %}
-          <tr class="{{ row.tier_class }}" data-index="{{ row.idx }}" data-name="{{ row.name }}" data-location="{{ row.location }}" data-layout="{{ row.layout }}" data-tier="{{ row.tier_label }}" data-price="{{ row.price_man }}" data-area="{{ row.area_display }}" data-score="{{ row.total_score }}" data-year="{{ row.built_year }}" data-walk="{{ row.walk_min }}" data-firstseen="{{ row.first_seen }}">
-            <td>{{ row.idx }}</td>
-            <td class="first-seen-col">{% if row.is_new %}<span class="new-badge">NEW</span>{% else %}{{ row.first_seen }}{% endif %}</td>
-            <td class="name-col"><div class="clamp2"><a href="{{ row.url }}" target="_blank" rel="noopener noreferrer">{{ row.name }}</a></div>{% if row.pet_badge %}<span class="pet-tag {{ row.pet_badge_class }}">{{ row.pet_badge }}</span>{% endif %}<div class="source-tag">{{ row.source }}</div></td>
-            <td>{{ row.price_formatted }}</td>
-            <td>{{ row.area_formatted }}</td>
-            <td><div class="clamp2">{{ row.location }}</div></td>
-            <td><div class="clamp2">{{ row.station_text }}</div></td>
-            <td class="year-col">{{ row.built_display }}</td>
-            <td class="layout-col">{{ row.layout }}</td>
-            <td class="maint-col">{{ row.maint_display | safe }}</td>
-            <td class="breakdown-col">{{ row.breakdown_html | safe }}</td>
-            <td><span class="score-badge" style="--badge:{{ row.tier_color }}" title="{{ row.breakdown_title }}">{{ row.total_score }}</span></td>
-            <td class="tier-col"><span class="tier-pill" style="--tier:{{ row.tier_color }}">{{ row.tier_label }}</span></td>
+          {% for row in rows_sorted %}
+          <tr data-score="{{ row.total_score }}" data-price="{{ row.price_man | default(0) }}" data-area="{{ row.area_sqm | default(0) }}" {% if row.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
+            <td class="score-cell" style="color:{% if row.total_score >= 80 %}var(--green){% elif row.total_score >= 65 %}var(--yellow){% else %}var(--orange, #ff6b35){% endif %}">{{ row.total_score }}</td>
+            <td class="name-cell"><a href="{{ row.url }}" target="_blank" rel="noopener" title="{{ row.name }}" onclick="event.stopPropagation()">{{ row.name }}</a></td>
+            <td class="price-cell">{{ row.price_text }}</td>
+            <td class="area-cell">{{ row.area_text }}</td>
+            <td class="layout-cell">{{ row.built_text or "—" }}</td>
+            <td>{{ row.structure or "—" }}</td>
+            <td class="station-cell" title="{{ row.station_text | default(row.location) }}">{{ row.station_text | default(row.location) }}</td>
+            <td>{{ row.pet_status or "—" }}</td>
+            <td class="price-cell">{% if row.est_monthly_rent %}{{ row.est_monthly_rent }}<br><span style="font-size:9px;color:var(--text-muted)">{{ row.rent_source }}</span>{% else %}—{% endif %}</td>
+            <td>{{ row.yield_text or "—" }}</td>
+            <td class="price-cell" style="color:{% if row.revenue and row.revenue.after_tax_monthly_cf > 0 %}var(--green){% elif row.revenue %}var(--red){% else %}var(--text-muted){% endif %}">{% if row.revenue %}{{ row.revenue.after_tax_monthly_cf }}万{% else %}—{% endif %}</td>
+            <td class="price-cell">{% if row.revenue and row.revenue.cf_15y is defined and row.revenue.cf_15y is not none %}<span style="color:{% if row.revenue.cf_15y > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ row.revenue.cf_15y }}万</span>{% else %}—{% endif %}</td>
+            <td class="price-cell">{% if row.revenue and row.revenue.cf_20y is defined and row.revenue.cf_20y is not none %}<span style="color:{% if row.revenue.cf_20y > 0 %}var(--green){% else %}var(--red){% endif %};font-size:10px">{{ row.revenue.cf_20y }}万</span>{% else %}—{% endif %}</td>
+            <td class="price-cell">{{ row.price_per_sqm or "—" }}</td>
           </tr>
+          {% if row.revenue %}
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">{{ row.maintenance_fee_text or "—" }}</span></div>
+                <div class="detail-item"><span class="detail-label">{{ row.revenue.rent_source or "想定家賃" }}{% if row.revenue.rent_per_sqm %}<span style="font-size:9px;opacity:0.7"> ({{ row.revenue.rent_per_sqm }}円/㎡)</span>{% endif %}</span><span class="detail-value">{{ row.revenue.est_monthly_rent }}/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">{{ row.revenue.loan_rate }}% / {{ row.revenue.loan_years }}年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">{{ row.revenue.noi }}万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">{{ row.revenue.net_yield }}%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:{% if row.revenue.monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ row.revenue.monthly_cf }}万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:{% if row.revenue.after_tax_monthly_cf > 0 %}var(--green){% else %}var(--red){% endif %}">{{ row.revenue.after_tax_monthly_cf }}万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">{{ row.revenue.ccr }}%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">{% if row.revenue.payback_years %}{{ row.revenue.payback_years }}年{% else %}∞{% endif %}</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">{{ row.revenue.total_equity }}万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">{{ row.revenue.annual_debt_service }}万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">{{ row.revenue.depreciation_annual }}万</span></div>
+                {% if row.revenue.tax_benefit > 0 %}<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+{{ row.revenue.tax_benefit }}万</span></div>{% endif %}
+              </div>
+              <div class="detail-verdict" style="background:{% if row.revenue.verdict == '高CF物件' %}rgba(34,197,94,0.1);color:var(--green){% elif row.revenue.verdict == '安定CF' %}rgba(34,197,94,0.08);color:var(--green){% elif row.revenue.verdict == '薄利' %}rgba(234,179,8,0.1);color:var(--yellow){% else %}rgba(239,68,68,0.1);color:var(--red){% endif %}">{{ row.revenue.verdict }}</div>
+            </td>
+          </tr>
+          {% endif %}
           {% endfor %}
         </tbody>
       </table>
@@ -480,45 +570,13 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 
 {% block scripts %}
 <script>
-// Table sort
-(() => {
-  const table = document.getElementById('propertyTable');
-  const tbody = table.querySelector('tbody');
-  const headers = table.querySelectorAll('thead button[data-sort]');
-  let sortState = { key: 'score', dir: 'desc' };
-
-  const valueFor = (row, key, type) => {
-    if (key === 'name') return (row.dataset.name || '').toLowerCase();
-    const v = row.dataset[key];
-    return type === 'number' ? Number(v) : (v || '');
-  };
-
-  const applySort = (key, type) => {
-    if (sortState.key === key) {
-      sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
-    } else {
-      sortState = { key, dir: key === 'score' ? 'desc' : 'asc' };
-    }
-    const rows = Array.from(tbody.querySelectorAll('tr'));
-    rows.sort((a, b) => {
-      const av = valueFor(a, key, type);
-      const bv = valueFor(b, key, type);
-      let cmp = 0;
-      if (type === 'number') cmp = av - bv;
-      else cmp = String(av).localeCompare(String(bv), 'ja');
-      if (cmp === 0) cmp = Number(a.dataset.index) - Number(b.dataset.index);
-      return sortState.dir === 'asc' ? cmp : -cmp;
-    });
-    rows.forEach(r => tbody.appendChild(r));
-    headers.forEach(h => h.textContent = h.textContent.replace(/[\u2191\u2193]$/, ''));
-    const active = Array.from(headers).find(h => h.dataset.sort === key);
-    if (active) active.textContent = active.textContent + (sortState.dir === 'asc' ? '\u2191' : '\u2193');
-  };
-
-  headers.forEach(h => {
-    h.addEventListener('click', () => applySort(h.dataset.sort, h.dataset.type || 'string'));
-  });
-})();
+function toggleDetail(tr) {
+  const detail = tr.nextElementSibling;
+  if (detail && detail.classList.contains('detail-row')) {
+    detail.classList.toggle('open');
+    tr.classList.toggle('expanded');
+  }
+}
 
 // Section jump nav: highlight active section on scroll
 (() => {

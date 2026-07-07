@@ -299,14 +299,24 @@ body {
 
 /* Hero */
 .hero {
-  position:relative; padding:28px; border-radius:24px;
-  border:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-  box-shadow:var(--shadow); overflow:hidden; backdrop-filter: blur(12px);
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  background:var(--surface); border-radius:var(--radius-md);
+  padding:12px 20px; margin-bottom:var(--space-4);
+  border:1px solid var(--border);
 }
-.kicker { color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-weight:700; font-size:12px; }
-h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:700; font-family:var(--font-body); }
-.hero-sub { color:var(--text-secondary); margin:0; max-width:860px; }
+.hero h1 { font-size:16px; font-weight:700; white-space:nowrap; margin:0; }
+.hero .subtitle { display:none; }
+.hero .stats { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+.hero .stat-card {
+  display:flex; align-items:baseline; gap:4px; padding:0;
+  background:none;
+}
+.hero .stat-card .label { font-size:10px; color:var(--text-muted); }
+.hero .stat-card .value { font-size:14px; font-weight:700; font-family:var(--font-mono); }
+.hero-updated { font-size:10px; color:var(--text-muted); margin-left:auto; }
+.hero-details { flex-basis:100%; }
+.kicker { display:none; }
+.hero-sub { display:none; }
 .badge-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
 .badge {
   display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
@@ -372,22 +382,59 @@ h1 { margin:10px 0 10px; font-size:var(--fs-h1); line-height:1.2; font-weight:70
 .section h2::before { content:""; width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12); }
 .cond-list { margin:0; padding-left:18px; color:var(--text); line-height:1.75; columns:2; column-gap:24px; }
 
-/* Table */
-.table-shell { overflow:auto; border-radius:14px; border:1px solid rgba(255,255,255,.08); -webkit-overflow-scrolling:touch; }
-table { width:100%; border-collapse:separate; border-spacing:0; min-width:1180px; }
-thead th {
-  position:sticky; top:0; z-index:1;
-  background:rgba(12,17,26,.92); color:var(--text); font-size:12px;
-  text-align:left; padding:12px 10px; border-bottom:1px solid rgba(255,255,255,.08); white-space:nowrap;
+/* Dense property list */
+.property-list { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.prop-table { width:100%; min-width:1120px; border-collapse:collapse; font-size:12px; }
+.prop-table th {
+  text-align:left; padding:8px 10px; font-size:10px; font-weight:700;
+  color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg); white-space:nowrap;
 }
-thead th button { all:unset; cursor:pointer; color:inherit; font-weight:700; display:inline-flex; gap:6px; align-items:center; }
-tbody td { padding:10px 6px; border-bottom:1px solid rgba(255,255,255,.05); font-size:13px; vertical-align:top; }
-tbody tr:nth-child(even) td { background:rgba(255,255,255,.012); }
-tbody tr:hover td { background:rgba(var(--accent-rgb),.06); }
-.tier-strong td { box-shadow: inset 4px 0 0 rgba(34,197,94,.7); }
-.tier-good td { box-shadow: inset 4px 0 0 rgba(250,204,21,.7); }
-.tier-conditional td { box-shadow: inset 4px 0 0 rgba(251,146,60,.7); }
-.tier-pass td { box-shadow: inset 4px 0 0 rgba(239,68,68,.7); }
+.prop-table td { padding:8px 10px; border-bottom:1px solid rgba(255,255,255,0.03); white-space:nowrap; }
+.prop-table tr:hover { background:rgba(255,255,255,0.02); }
+.prop-table .name-cell { min-width:140px; max-width:240px; white-space:normal; line-height:1.3; overflow:hidden; }
+.prop-table .name-cell a,
+.prop-table .name-cell span {
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.prop-table .score-cell { font-family:var(--font-mono); font-weight:700; }
+.prop-table .price-cell { font-family:var(--font-mono); font-weight:600; text-align:right; white-space:nowrap; }
+.prop-table .area-cell { font-family:var(--font-mono); text-align:right; white-space:nowrap; }
+.prop-table .station-cell { min-width:100px; max-width:200px; white-space:normal; word-break:break-all; line-height:1.3; padding:6px 4px; }
+.prop-table .layout-cell { max-width:70px; text-align:center; padding:6px 2px; }
+.price-badge {
+  display:inline-block; font-size:9px; font-weight:700;
+  padding:1px 5px; border-radius:3px; margin-left:2px;
+  vertical-align:middle; letter-spacing:0.3px;
+}
+.price-badge--green { background:rgba(34,197,94,0.2); color:var(--green); }
+.price-badge--accent { background:rgba(99,102,241,0.18); color:var(--accent); }
+.price-badge--yellow { background:rgba(234,179,8,0.2); color:var(--yellow); }
+.price-badge--red { background:rgba(239,68,68,0.2); color:var(--red); }
+.prop-table tr.detail-row { display:none; }
+.prop-table tr.detail-row.open { display:table-row; }
+.prop-table tr.detail-row > td {
+  padding:10px 10px 14px; background:rgba(99,102,241,0.03);
+  border-bottom:1px solid rgba(99,102,241,0.08);
+}
+.detail-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+  gap:10px 20px; padding:4px 0;
+}
+.detail-item { display:flex; flex-direction:column; min-width:0; }
+.detail-label { font-size:10px; color:var(--text-muted); letter-spacing:0.3px; white-space:nowrap; }
+.detail-value { font-size:13px; font-weight:600; font-family:var(--font-mono); margin-top:2px; }
+.detail-verdict {
+  display:inline-block; font-size:11px; font-weight:600;
+  padding:2px 10px; border-radius:10px; margin-top:4px;
+}
+.prop-table tr[data-expandable] { cursor:pointer; }
+.prop-table tr[data-expandable] .name-cell { display:flex; align-items:flex-start; gap:2px; }
+.prop-table tr[data-expandable] .name-cell::before {
+  content:"▸"; font-size:10px; color:var(--text-muted); flex-shrink:0; margin-top:2px;
+}
+.prop-table tr[data-expandable].expanded .name-cell::before { content:"▾"; }
 a { color:var(--text); text-decoration:none; }
 a:hover { color:var(--accent); text-decoration:underline; }
 .name-col { max-width:130px; }
@@ -507,6 +554,8 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 @media (max-width: 640px) {
   .hero { padding:8px 10px; border-radius:14px; }
   .hero h1 { margin:4px 0; }
+  .hero .stats { gap:8px; }
+  .hero .stat-card .value { font-size:13px; }
   .badge-row { gap:3px; margin-top:6px; }
   .badge { font-size:9px; padding:2px 6px; }
   .grid-4 { grid-template-columns:repeat(2, minmax(0,1fr)); gap:6px; margin-top:12px; }
@@ -515,9 +564,9 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   .stat .value { font-size:15px; margin-top:2px; }
   .stat .sub { display:none; }
   .section { margin-top:20px; }
-  table { min-width:800px; }
-  tbody td { padding:6px 4px; font-size:11px; }
-  thead th { padding:6px 4px; font-size:10px; }
+  .prop-table { min-width:1120px; font-size:11px; }
+  .prop-table th, .prop-table td { padding:5px 4px; }
+  .detail-grid { grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:8px 12px; }
   .name-col { max-width:140px; }
   .score-badge { min-width:32px; padding:4px 8px; font-size:13px; }
   .source-tag { font-size:9px; padding:1px 5px; }
@@ -714,45 +763,73 @@ document.addEventListener('click', function(e) {
 
 <div class="wrap">
   <nav class="section-jump" id="sectionJump">
-    <a href="#sec-table">全物件テーブル</a>
+    <a href="#sec-properties">候補リスト</a>
   </nav>
 
   <section class="hero">
-    <div class="kicker">PROPERTY SEARCH REPORT / 大阪</div>
-    <h1>大阪 民泊向け中古マンション候補レポート</h1>
-    <p class="hero-sub">検索データを実行時に解析し、重複排除・立地評価・民泊適性スコアリングを実施。テーブルはクリックソート対応、上位候補はスコア内訳まで確認できます。</p>
-    <div class="badge-row">
-      <span class="badge">検索日 2026-07-03</span>
-      <span class="badge">厳選 36件 / 642件</span>
-      <span class="badge">データソース: SUUMO, rakumachi, yahoo, athome, restate, 大阪R不動産</span>
-    </div>
-    <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
-    <div class="collapsible-content is-collapsed">
-      <div class="badge-row" style="margin-top:8px;">
-        <span class="badge">原データ 642件</span>
-        <span class="badge">重複除外 379件</span>
-        <span class="badge">売却済除外 45件</span>
-        <span class="badge">OC除外 0件</span>
-        <span class="badge">ペット不可除外 0件</span>
-        <span class="badge">管理費高除外 18件</span>
-        <span class="badge">サブリース除外 0件</span>
-        <span class="badge">狭小除外 2件</span>
-        <span class="badge">民泊不可除外 2件</span>
-        <span class="badge">低スコア除外 75件</span>
+    <h1>大阪 民泊候補</h1>
+    <div class="subtitle">民泊向け中古マンション候補レポート</div>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="label">件数</div>
+        <div class="value">35</div>
       </div>
-      <div class="badge-row">
-        <span class="badge">大阪市西区・北区・中央区中心</span>
-        <span class="badge">価格上限 5,000万円</span>
-        <span class="badge">専有面積 40-70㎡目安</span>
-        <span class="badge">ペット可/相談可優先</span>
+      <div class="stat-card">
+        <div class="label">平均価格</div>
+        <div class="value">3471万</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">平均利回り</div>
+        <div class="value">2.84%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">平均CCR</div>
+        <div class="value">-4.7%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">上位</div>
+        <div class="value">35</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">ペット可</div>
+        <div class="value">31</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">税後CF+</div>
+        <div class="value">0</div>
+      </div>
+    </div>
+    <div class="hero-updated">検索日 2026-07-07 — データソース: SUUMO, rakumachi, yahoo, athome, restate, 大阪R不動産</div>
+    <div class="hero-details">
+      <button class="collapsible-toggle" onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-collapsed')">フィルタ詳細</button>
+      <div class="collapsible-content is-collapsed">
+        <div class="badge-row">
+          <span class="badge">厳選 35件 / 679件</span>
+          <span class="badge">原データ 679件</span>
+          <span class="badge">重複除外 422件</span>
+          <span class="badge">売却済除外 43件</span>
+          <span class="badge">OC除外 0件</span>
+          <span class="badge">ペット不可除外 1件</span>
+          <span class="badge">管理費高除外 21件</span>
+          <span class="badge">サブリース除外 0件</span>
+          <span class="badge">狭小除外 2件</span>
+          <span class="badge">民泊不可除外 2件</span>
+          <span class="badge">低スコア除外 69件</span>
+        </div>
+        <div class="badge-row">
+          <span class="badge">大阪市西区・北区・中央区中心</span>
+          <span class="badge">価格上限 5,000万円</span>
+          <span class="badge">専有面積 40-70㎡目安</span>
+          <span class="badge">ペット可/相談可優先</span>
+        </div>
       </div>
     </div>
   </section>
 
   <div class="freshness-bar">
-    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 07-06 01:12 処理209分</span>
-    <span class="fb-chip">掲載中 2804件</span>
-  </div>
+    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 07-07 08:49 処理26分</span>
+    <span class="fb-chip">掲載中 2796件</span>
+<span class="fb-chip fb-new">+239 新規</span><span class="fb-chip fb-removed">-232 終了</span>  </div>
 
 
   <section class="section">
@@ -773,28 +850,1243 @@ document.addEventListener('click', function(e) {
     </div>
   </section>
 
-  <section id="sec-table" class="section">
-    <h2>Property Table</h2>
-    <div class="table-shell">
-      <table id="propertyTable">
+  <section id="sec-properties" class="section">
+    <h2>Property List</h2>
+    <div class="property-list">
+      <table class="prop-table">
         <thead>
           <tr>
-            <th><button data-sort="index" data-type="number">#</button></th>
-            <th class="first-seen-th"><button data-sort="firstseen" data-type="string">掲載開始</button></th>
-            <th><button data-sort="name" data-type="string">物件名</button></th>
-            <th><button data-sort="price" data-type="number">価格</button></th>
-            <th><button data-sort="area" data-type="number">面積</button></th>
-            <th><button data-sort="location" data-type="string">所在地</button></th>
-            <th><button data-sort="walk" data-type="number">最寄駅</button></th>
-            <th class="year-th"><button data-sort="year" data-type="number">築年</button></th>
-            <th class="layout-th"><button data-sort="layout" data-type="string">間取り</button></th>
-            <th class="maint-th">管理費修繕</th>
-            <th class="breakdown-th">スコア内訳</th>
-            <th><button data-sort="score" data-type="number">スコア</button></th>
-            <th class="tier-th"><button data-sort="tier" data-type="string">評価</button></th>
+            <th>スコア</th><th>物件名</th><th>価格</th><th>面積</th><th>築年</th>
+            <th>構造</th><th>最寄駅</th><th>ペット</th><th>想定家賃</th><th>利回り</th>
+            <th>CF/月(税後)</th><th>CF(15)</th><th>CF(20)</th><th>㎡単価</th>
           </tr>
         </thead>
         <tbody>
+          <tr data-score="96" data-price="3380" data-area="53.9" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">96</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21160899/" target="_blank" rel="noopener" title="サニーハウス谷町" onclick="event.stopPropagation()">サニーハウス谷町</a></td>
+            <td class="price-cell">3380万円</td>
+            <td class="area-cell">53.9㎡</td>
+            <td class="layout-cell">1982年2月</td>
+            <td>—</td>
+            <td class="station-cell" title="谷町六丁目 徒歩4分">谷町六丁目 徒歩4分</td>
+            <td>相談可</td>
+            <td class="price-cell">11.9万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
+            <td>≈4.2%</td>
+            <td class="price-cell" style="color:var(--red)">-5.5万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-6.4万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-2.7万</span></td>
+            <td class="price-cell">62.7万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費10700+修繕11700</span></div>
+                <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2210円/㎡)</span></span><span class="detail-value">11.9万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 16年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">95.4万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.82%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-9.6万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-5.5万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-7.2%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">912.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">210.7万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">184.4万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+49.8万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="95" data-price="2480" data-area="47.53" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">95</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21166708/" target="_blank" rel="noopener" title="東急ドエルアルス阿波座" onclick="event.stopPropagation()">東急ドエルアルス阿波座</a></td>
+            <td class="price-cell">2480万円</td>
+            <td class="area-cell">47.53㎡</td>
+            <td class="layout-cell">1987年9月</td>
+            <td>—</td>
+            <td class="station-cell" title="阿波座 徒歩6分">阿波座 徒歩6分</td>
+            <td>相談可</td>
+            <td class="price-cell">9.6万<br><span style="font-size:9px;color:var(--text-muted)">相場阿波座</span></td>
+            <td>≈4.6%</td>
+            <td class="price-cell" style="color:var(--red)">-2.1万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-5.2万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-2.5万</span></td>
+            <td class="price-cell">52.2万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費8700+修繕10010</span></div>
+                <div class="detail-item"><span class="detail-label">相場阿波座<span style="font-size:9px;opacity:0.7"> (2016円/㎡)</span></span><span class="detail-value">9.6万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 21年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">75.9万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.06%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-4.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-3.9%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">669.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">125.7万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">99.2万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+23.9万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="95" data-price="2999" data-area="54.03" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">95</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79092430/" target="_blank" rel="noopener" title="ビーバードルチェ阿波座" onclick="event.stopPropagation()">ビーバードルチェ阿波座</a></td>
+            <td class="price-cell">2999万円</td>
+            <td class="area-cell">54.03㎡</td>
+            <td class="layout-cell">1988年3月</td>
+            <td>—</td>
+            <td class="station-cell" title="九条 徒歩8分">九条 徒歩8分</td>
+            <td>相談可</td>
+            <td class="price-cell">9.7万<br><span style="font-size:9px;color:var(--text-muted)">相場九条</span></td>
+            <td>≈3.9%</td>
+            <td class="price-cell" style="color:var(--red)">-3.1万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-7.3万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-4.0万</span></td>
+            <td class="price-cell">55.5万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費7620+修繕9670</span></div>
+                <div class="detail-item"><span class="detail-label">相場九条<span style="font-size:9px;opacity:0.7"> (1800円/㎡)</span></span><span class="detail-value">9.7万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 22年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">79.1万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.64%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.7万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-3.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-4.6%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">809.7万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">146.9万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">112.5万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+30.5万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="93" data-price="3290" data-area="61.02" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">93</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21166058/" target="_blank" rel="noopener" title="エルベロワイヤル壱六" onclick="event.stopPropagation()">エルベロワイヤル壱六</a></td>
+            <td class="price-cell">3290万円</td>
+            <td class="area-cell">61.02㎡</td>
+            <td class="layout-cell">1982年6月</td>
+            <td>—</td>
+            <td class="station-cell" title="阿波座 徒歩5分">阿波座 徒歩5分</td>
+            <td>相談可</td>
+            <td class="price-cell">11.1万<br><span style="font-size:9px;color:var(--text-muted)">相場阿波座</span></td>
+            <td>≈4.1%</td>
+            <td class="price-cell" style="color:var(--red)">-5.5万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-6.4万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-2.8万</span></td>
+            <td class="price-cell">53.9万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費9460+修繕10620</span></div>
+                <div class="detail-item"><span class="detail-label">相場阿波座<span style="font-size:9px;opacity:0.7"> (1820円/㎡)</span></span><span class="detail-value">11.1万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 16年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">89.9万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.73%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-9.6万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-5.5万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-7.4%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">888.3万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">205.0万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">179.4万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+49.4万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="92" data-price="2480" data-area="40.0" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">92</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20754194/" target="_blank" rel="noopener" title="グリーンシティＯＳＡＫＡ　１号棟" onclick="event.stopPropagation()">グリーンシティＯＳＡＫＡ　１号棟</a></td>
+            <td class="price-cell">2480万円</td>
+            <td class="area-cell">40.0㎡</td>
+            <td class="layout-cell">1986年8月</td>
+            <td>—</td>
+            <td class="station-cell" title="野田 徒歩10分">野田 徒歩10分</td>
+            <td>相談可</td>
+            <td class="price-cell">9.2万<br><span style="font-size:9px;color:var(--text-muted)">相場福島</span></td>
+            <td>≈4.5%</td>
+            <td class="price-cell" style="color:var(--red)">-2.3万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-5.0万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-2.3万</span></td>
+            <td class="price-cell">62.0万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費3920+修繕7960</span></div>
+                <div class="detail-item"><span class="detail-label">相場福島<span style="font-size:9px;opacity:0.7"> (2304円/㎡)</span></span><span class="detail-value">9.2万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 20年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">80.4万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.24%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-4.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.3万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-4.1%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">669.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">130.3万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">99.2万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+22.6万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="90" data-price="2250" data-area="49.71" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">90</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21068178/" target="_blank" rel="noopener" title="フルーレ南堀江" onclick="event.stopPropagation()">フルーレ南堀江</a></td>
+            <td class="price-cell">2250万円</td>
+            <td class="area-cell">49.71㎡</td>
+            <td class="layout-cell">1977年6月</td>
+            <td>—</td>
+            <td class="station-cell" title="桜川 徒歩4分">桜川 徒歩4分</td>
+            <td>相談可</td>
+            <td class="price-cell">10.7万<br><span style="font-size:9px;color:var(--text-muted)">相場西区</span></td>
+            <td>≈5.7%</td>
+            <td class="price-cell" style="color:var(--red)">-2.1万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-2.1万</span></td>
+            <td class="price-cell"><span style="color:var(--green);font-size:10px">0.3万</span></td>
+            <td class="price-cell">45.3万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費8880+修繕8880</span></div>
+                <div class="detail-item"><span class="detail-label">相場西区<span style="font-size:9px;opacity:0.7"> (2145円/㎡)</span></span><span class="detail-value">10.7万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">88.2万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.92%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.0万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-4.2%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">607.5万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">147.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">150.0万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+33.9万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="90" data-price="2998" data-area="56.32" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">90</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21118851/" target="_blank" rel="noopener" title="大淀セントポリア" onclick="event.stopPropagation()">大淀セントポリア</a></td>
+            <td class="price-cell">2998万円</td>
+            <td class="area-cell">56.32㎡</td>
+            <td class="layout-cell">1981年9月</td>
+            <td>—</td>
+            <td class="station-cell" title="天神橋筋六丁目 徒歩13分">天神橋筋六丁目 徒歩13分</td>
+            <td>相談可</td>
+            <td class="price-cell">11.7万<br><span style="font-size:9px;color:var(--text-muted)">相場北区</span></td>
+            <td>≈4.7%</td>
+            <td class="price-cell" style="color:var(--red)">-4.8万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-4.8万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-1.5万</span></td>
+            <td class="price-cell">53.2万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費7700+修繕9100</span></div>
+                <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">11.7万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">100.1万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.34%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-8.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-4.8万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-7.0%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">809.5万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">196.7万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">163.5万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+39.5万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="90" data-price="4380" data-area="53.0" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">90</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener" title="セレッソコート南堀江マルティア" onclick="event.stopPropagation()">セレッソコート南堀江マルティア</a></td>
+            <td class="price-cell">4380万円</td>
+            <td class="area-cell">53.0㎡</td>
+            <td class="layout-cell">2000年6月</td>
+            <td>—</td>
+            <td class="station-cell" title="桜川 徒歩4分">桜川 徒歩4分</td>
+            <td>相談可</td>
+            <td class="price-cell">14.3万<br><span style="font-size:9px;color:var(--text-muted)">相場西区</span></td>
+            <td>≈3.9%</td>
+            <td class="price-cell" style="color:var(--red)">-1.9万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-12.4万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-7.6万</span></td>
+            <td class="price-cell">82.6万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費11600+修繕18200</span></div>
+                <div class="detail-item"><span class="detail-label">相場西区<span style="font-size:9px;opacity:0.7"> (2706円/㎡)</span></span><span class="detail-value">14.3万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 34年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">111.5万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.55%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-4.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-1.9万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-1.9%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1182.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">161.0万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">101.1万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+26.8万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="90" data-price="4580" data-area="52.87" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">90</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21110448/" target="_blank" rel="noopener" title="エステムプラザ梅田・中崎町" onclick="event.stopPropagation()">エステムプラザ梅田・中崎町</a></td>
+            <td class="price-cell">4580万円</td>
+            <td class="area-cell">52.87㎡</td>
+            <td class="layout-cell">2004年2月</td>
+            <td>—</td>
+            <td class="station-cell" title="中崎町 徒歩3分">中崎町 徒歩3分</td>
+            <td>相談可</td>
+            <td class="price-cell">13.9万<br><span style="font-size:9px;color:var(--text-muted)">相場北区</span></td>
+            <td>≈3.6%</td>
+            <td class="price-cell" style="color:var(--red)">-2.2万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-13.4万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-8.5万</span></td>
+            <td class="price-cell">86.6万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費12130+修繕12130</span></div>
+                <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2624円/㎡)</span></span><span class="detail-value">13.9万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 35年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">113.3万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.47%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-4.3万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-2.1%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1236.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">165.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">94.8万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+25.8万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="90" data-price="4998" data-area="56.28" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">90</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21149733/" target="_blank" rel="noopener" title="アルカディーナ天満橋リバーサイド" onclick="event.stopPropagation()">アルカディーナ天満橋リバーサイド</a></td>
+            <td class="price-cell">4998万円</td>
+            <td class="area-cell">56.28㎡</td>
+            <td class="layout-cell">2000年2月</td>
+            <td>—</td>
+            <td class="station-cell" title="桜ノ宮 徒歩5分">桜ノ宮 徒歩5分</td>
+            <td>相談可</td>
+            <td class="price-cell">13.4万<br><span style="font-size:9px;color:var(--text-muted)">相場天満</span></td>
+            <td>≈3.2%</td>
+            <td class="price-cell" style="color:var(--red)">-3.2万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-15.2万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-9.8万</span></td>
+            <td class="price-cell">88.8万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費8440+修繕15200</span></div>
+                <div class="detail-item"><span class="detail-label">相場天満<span style="font-size:9px;opacity:0.7"> (2378円/㎡)</span></span><span class="detail-value">13.4万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 34年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">109.0万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.18%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-6.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-3.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-2.9%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1349.5万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">183.8万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">115.3万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+36.1万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="88" data-price="2850" data-area="51.59" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">88</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20608462/" target="_blank" rel="noopener" title="ニューライフ高麗橋" onclick="event.stopPropagation()">ニューライフ高麗橋</a></td>
+            <td class="price-cell">2850万円</td>
+            <td class="area-cell">51.59㎡</td>
+            <td class="layout-cell">1986年1月</td>
+            <td>—</td>
+            <td class="station-cell" title="北浜 徒歩6分">北浜 徒歩6分</td>
+            <td>相談可</td>
+            <td class="price-cell">11.5万<br><span style="font-size:9px;color:var(--text-muted)">相場北浜</span></td>
+            <td>≈4.8%</td>
+            <td class="price-cell" style="color:var(--red)">-2.8万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-5.9万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-2.8万</span></td>
+            <td class="price-cell">55.2万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費12000+修繕12010</span></div>
+                <div class="detail-item"><span class="detail-label">相場北浜<span style="font-size:9px;opacity:0.7"> (2232円/㎡)</span></span><span class="detail-value">11.5万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 20年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">89.4万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.14%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.0万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.8万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-4.3%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">769.5万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">149.7万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">114.0万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+26.9万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="88" data-price="3050" data-area="56.91" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">88</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener" title="●ストークマンション長堀●" onclick="event.stopPropagation()">●ストークマンション長堀●</a></td>
+            <td class="price-cell">3050万円</td>
+            <td class="area-cell">56.91㎡</td>
+            <td class="layout-cell">1982年3月</td>
+            <td>—</td>
+            <td class="station-cell" title="西長堀 徒歩4分">西長堀 徒歩4分</td>
+            <td>相談可</td>
+            <td class="price-cell">10.0万<br><span style="font-size:9px;color:var(--text-muted)">相場西長堀</span></td>
+            <td>≈3.9%</td>
+            <td class="price-cell" style="color:var(--red)">-5.5万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-6.4万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-3.0万</span></td>
+            <td class="price-cell">53.6万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費9900+修繕12600</span></div>
+                <div class="detail-item"><span class="detail-label">相場西長堀<span style="font-size:9px;opacity:0.7"> (1755円/㎡)</span></span><span class="detail-value">10.0万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 16年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">75.5万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.48%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-9.5万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-5.5万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-8.1%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">823.5万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">190.1万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">166.4万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+48.1万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="87" data-price="3180" data-area="62.15" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">87</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21014369/" target="_blank" rel="noopener" title="メゾン南堀江" onclick="event.stopPropagation()">メゾン南堀江</a></td>
+            <td class="price-cell">3180万円</td>
+            <td class="area-cell">62.15㎡</td>
+            <td class="layout-cell">1980年8月</td>
+            <td>—</td>
+            <td class="station-cell" title="西長堀 徒歩5分">西長堀 徒歩5分</td>
+            <td>相談可</td>
+            <td class="price-cell">10.9万<br><span style="font-size:9px;color:var(--text-muted)">相場西長堀</span></td>
+            <td>≈4.1%</td>
+            <td class="price-cell" style="color:var(--red)">-5.0万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-5.0万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-1.5万</span></td>
+            <td class="price-cell">51.2万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費3600+修繕6850</span></div>
+                <div class="detail-item"><span class="detail-label">相場西長堀<span style="font-size:9px;opacity:0.7"> (1755円/㎡)</span></span><span class="detail-value">10.9万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">99.5万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.13%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-9.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-5.0万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-7.0%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">858.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">208.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">190.8万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+49.2万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="87" data-price="3798" data-area="54.1" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">87</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21228226/" target="_blank" rel="noopener" title="ノバカネイチ同心町" onclick="event.stopPropagation()">ノバカネイチ同心町</a></td>
+            <td class="price-cell">3798万円</td>
+            <td class="area-cell">54.1㎡</td>
+            <td class="layout-cell">1984年1月</td>
+            <td>—</td>
+            <td class="station-cell" title="天満 徒歩9分">天満 徒歩9分</td>
+            <td>相談可</td>
+            <td class="price-cell">10.2万<br><span style="font-size:9px;color:var(--text-muted)">相場天満</span></td>
+            <td>≈3.2%</td>
+            <td class="price-cell" style="color:var(--red)">-7.4万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-10.2万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-6.0万</span></td>
+            <td class="price-cell">70.2万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費13000+修繕16230</span></div>
+                <div class="detail-item"><span class="detail-label">相場天満<span style="font-size:9px;opacity:0.7"> (1885円/㎡)</span></span><span class="detail-value">10.2万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 18年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">69.6万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">1.83%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-12.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-7.4万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-8.7%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1025.5万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">216.0万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">175.3万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+57.7万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="85" data-price="1980" data-area="47.62" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">85</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21126167/" target="_blank" rel="noopener" title="ビーバードルチェ阿波座" onclick="event.stopPropagation()">ビーバードルチェ阿波座</a></td>
+            <td class="price-cell">1980万円</td>
+            <td class="area-cell">47.62㎡</td>
+            <td class="layout-cell">1988年3月</td>
+            <td>—</td>
+            <td class="station-cell" title="九条 徒歩8分">九条 徒歩8分</td>
+            <td>相談可</td>
+            <td class="price-cell">8.6万<br><span style="font-size:9px;color:var(--text-muted)">相場九条</span></td>
+            <td>≈5.2%</td>
+            <td class="price-cell" style="color:var(--red)">-1.0万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-3.8万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-1.6万</span></td>
+            <td class="price-cell">41.6万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費6670+修繕8510</span></div>
+                <div class="detail-item"><span class="detail-label">相場九条<span style="font-size:9px;opacity:0.7"> (1800円/㎡)</span></span><span class="detail-value">8.6万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 22年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">69.8万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.52%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-2.3万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-1.0万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-2.3%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">534.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">97.0万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">74.2万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+14.9万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="85" data-price="2680" data-area="53.46" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">85</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21062989/" target="_blank" rel="noopener" title="グランドヴィラ境川" onclick="event.stopPropagation()">グランドヴィラ境川</a></td>
+            <td class="price-cell">2680万円</td>
+            <td class="area-cell">53.46㎡</td>
+            <td class="layout-cell">1989年7月</td>
+            <td>—</td>
+            <td class="station-cell" title="九条 徒歩7分">九条 徒歩7分</td>
+            <td>相談可</td>
+            <td class="price-cell">9.6万<br><span style="font-size:9px;color:var(--text-muted)">相場九条</span></td>
+            <td>≈4.3%</td>
+            <td class="price-cell" style="color:var(--red)">-2.2万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-6.3万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-3.3万</span></td>
+            <td class="price-cell">50.1万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費11320+修繕6830</span></div>
+                <div class="detail-item"><span class="detail-label">相場九条<span style="font-size:9px;opacity:0.7"> (1800円/㎡)</span></span><span class="detail-value">9.6万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 23年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">77.0万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.87%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-4.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-3.7%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">723.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">127.2万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">94.6万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+23.6万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="85" data-price="4050" data-area="47.7" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">85</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21102036/" target="_blank" rel="noopener" title="リーガル岡崎橋" onclick="event.stopPropagation()">リーガル岡崎橋</a></td>
+            <td class="price-cell">4050万円</td>
+            <td class="area-cell">47.7㎡</td>
+            <td class="layout-cell">2014年6月</td>
+            <td>—</td>
+            <td class="station-cell" title="阿波座 徒歩2分">阿波座 徒歩2分</td>
+            <td>相談可</td>
+            <td class="price-cell">12.3万<br><span style="font-size:9px;color:var(--text-muted)">相場阿波座</span></td>
+            <td>≈3.6%</td>
+            <td class="price-cell" style="color:var(--red)">-2.1万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-12.0万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-7.6万</span></td>
+            <td class="price-cell">84.9万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費12130+修繕4770</span></div>
+                <div class="detail-item"><span class="detail-label">相場阿波座<span style="font-size:9px;opacity:0.7"> (2576円/㎡)</span></span><span class="detail-value">12.3万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 35年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">105.9万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.61%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-3.4万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-2.3%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1093.5万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">146.4万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">65.7万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+15.6万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="85" data-price="4480" data-area="57.97" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">85</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21203901/" target="_blank" rel="noopener" title="ライオンズマンション新梅田第2" onclick="event.stopPropagation()">ライオンズマンション新梅田第2</a></td>
+            <td class="price-cell">4480万円</td>
+            <td class="area-cell">57.97㎡</td>
+            <td class="layout-cell">2000年4月</td>
+            <td>—</td>
+            <td class="station-cell" title="中津 徒歩10分">中津 徒歩10分</td>
+            <td>相談可</td>
+            <td class="price-cell">15.2万<br><span style="font-size:9px;color:var(--text-muted)">相場北区</span></td>
+            <td>≈4.1%</td>
+            <td class="price-cell" style="color:var(--red)">-0.9万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-11.7万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-6.8万</span></td>
+            <td class="price-cell">77.3万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費9900+修繕11010</span></div>
+                <div class="detail-item"><span class="detail-label">相場北区<span style="font-size:9px;opacity:0.7"> (2624円/㎡)</span></span><span class="detail-value">15.2万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 34年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">131.1万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.93%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-2.8万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-0.9万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-0.9%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1209.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">164.7万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">103.4万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+22.3万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="85" data-price="4580" data-area="59.85" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">85</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21188304/" target="_blank" rel="noopener" title="ジャルダン大阪壱番館 【ペット飼育可】" onclick="event.stopPropagation()">ジャルダン大阪壱番館 【ペット飼育可】</a></td>
+            <td class="price-cell">4580万円</td>
+            <td class="area-cell">59.85㎡</td>
+            <td class="layout-cell">2001年5月</td>
+            <td>—</td>
+            <td class="station-cell" title="阿波座 徒歩1分">阿波座 徒歩1分</td>
+            <td>相談可</td>
+            <td class="price-cell">13.7万<br><span style="font-size:9px;color:var(--text-muted)">相場阿波座</span></td>
+            <td>≈3.6%</td>
+            <td class="price-cell" style="color:var(--red)">-2.3万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-13.5万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-8.5万</span></td>
+            <td class="price-cell">76.5万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費12600+修繕14360</span></div>
+                <div class="detail-item"><span class="detail-label">相場阿波座<span style="font-size:9px;opacity:0.7"> (2296円/㎡)</span></span><span class="detail-value">13.7万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 35年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">108.7万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.37%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-4.7万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.3万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-2.2%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1236.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">165.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">101.8万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+29.2万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="82" data-price="2200" data-area="46.8" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">82</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21203777/" target="_blank" rel="noopener" title="ノバカネイチ阿波座2番館" onclick="event.stopPropagation()">ノバカネイチ阿波座2番館</a></td>
+            <td class="price-cell">2200万円</td>
+            <td class="area-cell">46.8㎡</td>
+            <td class="layout-cell">1983年2月</td>
+            <td>—</td>
+            <td class="station-cell" title="九条 徒歩8分">九条 徒歩8分</td>
+            <td>—</td>
+            <td class="price-cell">7.6万<br><span style="font-size:9px;color:var(--text-muted)">相場九条</span></td>
+            <td>≈4.1%</td>
+            <td class="price-cell" style="color:var(--red)">-3.2万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-4.4万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-2.0万</span></td>
+            <td class="price-cell">47.0万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費5600+修繕7020</span></div>
+                <div class="detail-item"><span class="detail-label">相場九条<span style="font-size:9px;opacity:0.7"> (1625円/㎡)</span></span><span class="detail-value">7.6万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 17年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">62.9万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.86%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.7万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-3.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-6.5%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">594.0万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">130.8万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">110.0万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+29.2万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="82" data-price="2380" data-area="53.23" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">82</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21186241/" target="_blank" rel="noopener" title="南堀江第二スカイハイツ" onclick="event.stopPropagation()">南堀江第二スカイハイツ</a></td>
+            <td class="price-cell">2380万円</td>
+            <td class="area-cell">53.23㎡</td>
+            <td class="layout-cell">1976年9月</td>
+            <td>—</td>
+            <td class="station-cell" title="ドーム前千代崎 徒歩4分">ドーム前千代崎 徒歩4分</td>
+            <td>相談可</td>
+            <td class="price-cell">11.4万<br><span style="font-size:9px;color:var(--text-muted)">相場西区</span></td>
+            <td>≈5.8%</td>
+            <td class="price-cell" style="color:var(--red)">-1.9万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-1.9万</span></td>
+            <td class="price-cell"><span style="color:var(--green);font-size:10px">0.7万</span></td>
+            <td class="price-cell">44.7万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費9000+修繕6000</span></div>
+                <div class="detail-item"><span class="detail-label">相場西区<span style="font-size:9px;opacity:0.7"> (2145円/㎡)</span></span><span class="detail-value">11.4万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">99.2万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">4.17%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-4.7万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-1.9万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-3.5%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">642.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">156.1万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">158.7万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+34.1万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="82" data-price="3280" data-area="69.61" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">82</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21231374/" target="_blank" rel="noopener" title="西道頓堀コーポ" onclick="event.stopPropagation()">西道頓堀コーポ</a></td>
+            <td class="price-cell">3280万円</td>
+            <td class="area-cell">69.61㎡</td>
+            <td class="layout-cell">1974年7月</td>
+            <td>—</td>
+            <td class="station-cell" title="西長堀 徒歩6分">西長堀 徒歩6分</td>
+            <td>相談可</td>
+            <td class="price-cell">12.2万<br><span style="font-size:9px;color:var(--text-muted)">相場西長堀</span></td>
+            <td>≈4.5%</td>
+            <td class="price-cell" style="color:var(--red)">-4.3万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-4.3万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-0.8万</span></td>
+            <td class="price-cell">47.1万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費4000+修繕11000</span></div>
+                <div class="detail-item"><span class="detail-label">相場西長堀<span style="font-size:9px;opacity:0.7"> (1755円/㎡)</span></span><span class="detail-value">12.2万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">107.4万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.28%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-9.0万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-4.3万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-5.9%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">885.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">215.2万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">218.7万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+55.8万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="82" data-price="4180" data-area="45.51" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">82</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20245135/" target="_blank" rel="noopener" title="アルス心斎橋ＵＮＡＧＩＤＡＮＩ" onclick="event.stopPropagation()">アルス心斎橋ＵＮＡＧＩＤＡＮＩ</a></td>
+            <td class="price-cell">4180万円</td>
+            <td class="area-cell">45.51㎡</td>
+            <td class="layout-cell">2004年8月</td>
+            <td>—</td>
+            <td class="station-cell" title="心斎橋 徒歩6分">心斎橋 徒歩6分</td>
+            <td>相談可</td>
+            <td class="price-cell">12.3万<br><span style="font-size:9px;color:var(--text-muted)">相場心斎橋</span></td>
+            <td>≈3.5%</td>
+            <td class="price-cell" style="color:var(--red)">-1.9万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-12.2万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-7.6万</span></td>
+            <td class="price-cell">91.8万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費6700+修繕11400</span></div>
+                <div class="detail-item"><span class="detail-label">相場心斎橋<span style="font-size:9px;opacity:0.7"> (2706円/㎡)</span></span><span class="detail-value">12.3万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 35年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">104.7万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.51%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-3.9万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-1.9万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-2.1%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1128.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">151.1万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">86.5万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+23.1万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="81" data-price="3380" data-area="56.04" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">81</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21132567/" target="_blank" rel="noopener" title="谷町セントラルハイツ" onclick="event.stopPropagation()">谷町セントラルハイツ</a></td>
+            <td class="price-cell">3380万円</td>
+            <td class="area-cell">56.04㎡</td>
+            <td class="layout-cell">1978年8月</td>
+            <td>—</td>
+            <td class="station-cell" title="谷町六丁目 徒歩2分">谷町六丁目 徒歩2分</td>
+            <td>相談可</td>
+            <td class="price-cell">12.4万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
+            <td>≈4.4%</td>
+            <td class="price-cell" style="color:var(--red)">-5.1万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-5.1万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-1.5万</span></td>
+            <td class="price-cell">60.3万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費14180+修繕9376</span></div>
+                <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2210円/㎡)</span></span><span class="detail-value">12.4万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">98.9万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.93%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-10.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-5.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-6.8%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">912.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">221.8万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">225.3万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+61.0万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="81" data-price="3480" data-area="58.36" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">81</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21044096/" target="_blank" rel="noopener" title="谷町セントラルハイツ" onclick="event.stopPropagation()">谷町セントラルハイツ</a></td>
+            <td class="price-cell">3480万円</td>
+            <td class="area-cell">58.36㎡</td>
+            <td class="layout-cell">1978年8月</td>
+            <td>—</td>
+            <td class="station-cell" title="谷町六丁目 徒歩2分">谷町六丁目 徒歩2分</td>
+            <td>相談可</td>
+            <td class="price-cell">12.9万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
+            <td>≈4.4%</td>
+            <td class="price-cell" style="color:var(--red)">-5.2万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-5.2万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-1.4万</span></td>
+            <td class="price-cell">59.6万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費9376+修繕14180</span></div>
+                <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (2210円/㎡)</span></span><span class="detail-value">12.9万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">104.2万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.99%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-10.3万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-5.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-6.6%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">939.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">228.3万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">232.0万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+62.2万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="80" data-price="2600" data-area="56.21" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">80</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21172340/" target="_blank" rel="noopener" title="モアリッツ九条南" onclick="event.stopPropagation()">モアリッツ九条南</a></td>
+            <td class="price-cell">2600万円</td>
+            <td class="area-cell">56.21㎡</td>
+            <td class="layout-cell">1989年1月</td>
+            <td>—</td>
+            <td class="station-cell" title="九条 徒歩8分">九条 徒歩8分</td>
+            <td>相談可</td>
+            <td class="price-cell">10.1万<br><span style="font-size:9px;color:var(--text-muted)">相場九条</span></td>
+            <td>≈4.7%</td>
+            <td class="price-cell" style="color:var(--red)">-2.3万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-6.3万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-3.4万</span></td>
+            <td class="price-cell">46.3万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費10570+修繕16240</span></div>
+                <div class="detail-item"><span class="detail-label">相場九条<span style="font-size:9px;opacity:0.7"> (1800円/㎡)</span></span><span class="detail-value">10.1万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 23年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">71.7万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.76%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-4.3万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.3万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-4.0%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">702.0万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">123.4万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">91.8万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+23.8万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="80" data-price="2899" data-area="63.72" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">80</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21213131/" target="_blank" rel="noopener" title="藤和九条コープ" onclick="event.stopPropagation()">藤和九条コープ</a></td>
+            <td class="price-cell">2899万円</td>
+            <td class="area-cell">63.72㎡</td>
+            <td class="layout-cell">1981年10月</td>
+            <td>—</td>
+            <td class="station-cell" title="九条 徒歩4分">九条 徒歩4分</td>
+            <td>相談可</td>
+            <td class="price-cell">10.4万<br><span style="font-size:9px;color:var(--text-muted)">相場九条</span></td>
+            <td>≈4.3%</td>
+            <td class="price-cell" style="color:var(--red)">-5.9万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-5.9万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-2.7万</span></td>
+            <td class="price-cell">45.5万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費13800+修繕12870</span></div>
+                <div class="detail-item"><span class="detail-label">相場九条<span style="font-size:9px;opacity:0.7"> (1625円/㎡)</span></span><span class="detail-value">10.4万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">74.3万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.56%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-9.7万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-5.9万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-9.1%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">782.7万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">190.2万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">158.1万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+45.0万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="80" data-price="2980" data-area="63.18" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">80</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21214318/" target="_blank" rel="noopener" title="ブールバール南森町" onclick="event.stopPropagation()">ブールバール南森町</a></td>
+            <td class="price-cell">2980万円</td>
+            <td class="area-cell">63.18㎡</td>
+            <td class="layout-cell">1978年11月</td>
+            <td>—</td>
+            <td class="station-cell" title="南森町 徒歩1分">南森町 徒歩1分</td>
+            <td>相談可</td>
+            <td class="price-cell">12.3万<br><span style="font-size:9px;color:var(--text-muted)">相場南森町</span></td>
+            <td>≈5.0%</td>
+            <td class="price-cell" style="color:var(--red)">-4.0万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-4.0万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-0.7万</span></td>
+            <td class="price-cell">47.2万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費8000+修繕16750</span></div>
+                <div class="detail-item"><span class="detail-label">相場南森町<span style="font-size:9px;opacity:0.7"> (1950円/㎡)</span></span><span class="detail-value">12.3万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">96.8万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">3.25%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-8.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-4.0万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-5.9%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">804.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">195.5万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">198.7万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+51.0万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="80" data-price="3480" data-area="57.23" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">80</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20551331/" target="_blank" rel="noopener" title="グランドヴィラ玉川" onclick="event.stopPropagation()">グランドヴィラ玉川</a></td>
+            <td class="price-cell">3480万円</td>
+            <td class="area-cell">57.23㎡</td>
+            <td class="layout-cell">1986年3月</td>
+            <td>—</td>
+            <td class="station-cell" title="玉川 徒歩3分">玉川 徒歩3分</td>
+            <td>—</td>
+            <td class="price-cell">13.2万<br><span style="font-size:9px;color:var(--text-muted)">相場福島</span></td>
+            <td>≈4.5%</td>
+            <td class="price-cell" style="color:var(--red)">-3.9万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-7.7万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-3.9万</span></td>
+            <td class="price-cell">60.8万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費13190+修繕16450</span></div>
+                <div class="detail-item"><span class="detail-label">相場福島<span style="font-size:9px;opacity:0.7"> (2304円/㎡)</span></span><span class="detail-value">13.2万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 20年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">99.8万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.87%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-6.9万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-3.9万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-5.0%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">939.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">182.8万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">139.2万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+35.6万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="80" data-price="3498" data-area="49.86" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">80</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21200384/" target="_blank" rel="noopener" title="朝日プラザ中津" onclick="event.stopPropagation()">朝日プラザ中津</a></td>
+            <td class="price-cell">3498万円</td>
+            <td class="area-cell">49.86㎡</td>
+            <td class="layout-cell">1985年10月</td>
+            <td>—</td>
+            <td class="station-cell" title="中津 徒歩7分">中津 徒歩7分</td>
+            <td>—</td>
+            <td class="price-cell">10.0万<br><span style="font-size:9px;color:var(--text-muted)">相場中津</span></td>
+            <td>≈3.4%</td>
+            <td class="price-cell" style="color:var(--red)">-5.7万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-9.0万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-5.1万</span></td>
+            <td class="price-cell">70.2万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費13210+修繕9620</span></div>
+                <div class="detail-item"><span class="detail-label">相場中津<span style="font-size:9px;opacity:0.7"> (2015円/㎡)</span></span><span class="detail-value">10.0万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 19年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">75.8万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.17%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-9.6万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-5.7万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-7.3%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">944.5万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">190.9万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">149.9万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+46.2万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="80" data-price="3680" data-area="58.85" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">80</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20827794/" target="_blank" rel="noopener" title="野田ハイデンス" onclick="event.stopPropagation()">野田ハイデンス</a></td>
+            <td class="price-cell">3680万円</td>
+            <td class="area-cell">58.85㎡</td>
+            <td class="layout-cell">1981年9月</td>
+            <td>—</td>
+            <td class="station-cell" title="海老江 徒歩3分">海老江 徒歩3分</td>
+            <td>—</td>
+            <td class="price-cell">12.2万<br><span style="font-size:9px;color:var(--text-muted)">相場福島</span></td>
+            <td>≈4.0%</td>
+            <td class="price-cell" style="color:var(--red)">-6.9万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-6.9万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-2.9万</span></td>
+            <td class="price-cell">62.5万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費6870+修繕10360</span></div>
+                <div class="detail-item"><span class="detail-label">相場福島<span style="font-size:9px;opacity:0.7"> (2080円/㎡)</span></span><span class="detail-value">12.2万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 15年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">105.0万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.85%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-11.4万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-6.9万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-8.3%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">993.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">241.4万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">200.7万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+53.9万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="80" data-price="4380" data-area="42.83" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">80</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20626411/" target="_blank" rel="noopener" title="エステムプラザ大手前エヴァース" onclick="event.stopPropagation()">エステムプラザ大手前エヴァース</a></td>
+            <td class="price-cell">4380万円</td>
+            <td class="area-cell">42.83㎡</td>
+            <td class="layout-cell">2012年1月</td>
+            <td>—</td>
+            <td class="station-cell" title="谷町四丁目 徒歩4分">谷町四丁目 徒歩4分</td>
+            <td>相談可</td>
+            <td class="price-cell">11.0万<br><span style="font-size:9px;color:var(--text-muted)">相場谷町四丁目</span></td>
+            <td>≈3.0%</td>
+            <td class="price-cell" style="color:var(--red)">-3.2万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-13.9万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-9.1万</span></td>
+            <td class="price-cell">102.3万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費6700+修繕6850</span></div>
+                <div class="detail-item"><span class="detail-label">相場谷町四丁目<span style="font-size:9px;opacity:0.7"> (2576円/㎡)</span></span><span class="detail-value">11.0万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 35年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">97.0万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.22%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-5.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-3.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-3.2%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1182.6万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">158.3万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">75.1万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+23.4万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="80" data-price="4699" data-area="65.95" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">80</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_21158281/" target="_blank" rel="noopener" title="ベル・アーバニティ野田" onclick="event.stopPropagation()">ベル・アーバニティ野田</a></td>
+            <td class="price-cell">4699万円</td>
+            <td class="area-cell">65.95㎡</td>
+            <td class="layout-cell">1994年11月</td>
+            <td>—</td>
+            <td class="station-cell" title="野田 徒歩5分">野田 徒歩5分</td>
+            <td>相談可</td>
+            <td class="price-cell">15.2万<br><span style="font-size:9px;color:var(--text-muted)">相場福島</span></td>
+            <td>≈3.9%</td>
+            <td class="price-cell" style="color:var(--red)">-3.2万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-12.6万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-7.5万</span></td>
+            <td class="price-cell">71.3万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費9950+修繕19800</span></div>
+                <div class="detail-item"><span class="detail-label">相場福島<span style="font-size:9px;opacity:0.7"> (2304円/㎡)</span></span><span class="detail-value">15.2万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 28年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">120.3万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.56%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-6.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-3.2万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-3.0%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1268.7万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">195.0万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">134.3万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+36.3万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="80" data-price="4898" data-area="54.86" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">80</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20375566/" target="_blank" rel="noopener" title="◇ＪＲ「新福島」駅徒5分◇アデレイド新福島【大阪市福…" onclick="event.stopPropagation()">◇ＪＲ「新福島」駅徒5分◇アデレイド新福島【大阪市福…</a></td>
+            <td class="price-cell">4898万円</td>
+            <td class="area-cell">54.86㎡</td>
+            <td class="layout-cell">2012年10月</td>
+            <td>—</td>
+            <td class="station-cell" title="新福島 徒歩5分">新福島 徒歩5分</td>
+            <td>相談可</td>
+            <td class="price-cell">16.2万<br><span style="font-size:9px;color:var(--text-muted)">相場福島</span></td>
+            <td>≈4.0%</td>
+            <td class="price-cell" style="color:var(--red)">-2.0万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-14.0万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-8.6万</span></td>
+            <td class="price-cell">89.3万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費12340+修繕12890</span></div>
+                <div class="detail-item"><span class="detail-label">相場福島<span style="font-size:9px;opacity:0.7"> (2944円/㎡)</span></span><span class="detail-value">16.2万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 35年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">135.6万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.77%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-3.5万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.0万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-1.8%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1322.5万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">177.1万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">84.0万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+18.0万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
+          <tr data-score="80" data-price="4999" data-area="44.13" data-expandable onclick="toggleDetail(this)">
+            <td class="score-cell" style="color:var(--green)">80</td>
+            <td class="name-cell"><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20221056/" target="_blank" rel="noopener" title="ブランズ大阪松屋町" onclick="event.stopPropagation()">ブランズ大阪松屋町</a></td>
+            <td class="price-cell">4999万円</td>
+            <td class="area-cell">44.13㎡</td>
+            <td class="layout-cell">2020年10月</td>
+            <td>—</td>
+            <td class="station-cell" title="松屋町 徒歩3分">松屋町 徒歩3分</td>
+            <td>相談可</td>
+            <td class="price-cell">15.0万<br><span style="font-size:9px;color:var(--text-muted)">相場中央区</span></td>
+            <td>≈3.6%</td>
+            <td class="price-cell" style="color:var(--red)">-2.1万</td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-14.4万</span></td>
+            <td class="price-cell"><span style="color:var(--red);font-size:10px">-8.9万</span></td>
+            <td class="price-cell">113.3万/㎡</td>
+          </tr>
+          <tr class="detail-row">
+            <td colspan="14">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">管理費+修繕</span><span class="detail-value">管理費5800+修繕3530</span></div>
+                <div class="detail-item"><span class="detail-label">相場中央区<span style="font-size:9px;opacity:0.7"> (3400円/㎡)</span></span><span class="detail-value">15.0万/月</span></div>
+                <div class="detail-item"><span class="detail-label">金利/期間</span><span class="detail-value">2.85% / 35年</span></div>
+                <div class="detail-item"><span class="detail-label">NOI</span><span class="detail-value">142.9万</span></div>
+                <div class="detail-item"><span class="detail-label">実質利回り</span><span class="detail-value">2.86%</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税前)</span><span class="detail-value" style="color:var(--red)">-3.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CF/月(税後)</span><span class="detail-value" style="color:var(--red)">-2.1万</span></div>
+                <div class="detail-item"><span class="detail-label">CCR</span><span class="detail-value">-1.9%</span></div>
+                <div class="detail-item"><span class="detail-label">回収年数</span><span class="detail-value">∞</span></div>
+                <div class="detail-item"><span class="detail-label">初期資金</span><span class="detail-value">1349.7万</span></div>
+                <div class="detail-item"><span class="detail-label">年間返済</span><span class="detail-value">180.7万</span></div>
+                <div class="detail-item"><span class="detail-label">年間償却</span><span class="detail-value">71.4万</span></div>
+<div class="detail-item"><span class="detail-label">節税効果</span><span class="detail-value" style="color:var(--green)">+12.8万</span></div>              </div>
+              <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -817,51 +2109,19 @@ document.addEventListener('click', function(e) {
     <div style="margin-bottom:8px">
       <a href="index.html">Hub</a> &middot;       <a href="minpaku-osaka.html">民泊・大阪</a> &middot;       <a href="minpaku-fukuoka.html">民泊・福岡</a> &middot;       <a href="minpaku-tokyo.html">民泊・東京</a> &middot;       <a href="ittomono.html">一棟もの</a> &middot;       <a href="market.html">賃貸Market</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a> &middot;       <a href="inquiry-pipeline.html">Pipeline</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, athome, restate, 大阪R不動産 (data/suumo_osaka_raw.txt + data/rakumachi_osaka_raw.txt, data/yahoo_osaka_raw.txt, data/athome_osaka_raw.txt, data/restate_osaka_raw.txt)</div>
-    <div>Generated on 2026-07-06 18:55</div>
+    <div>Generated on 2026-07-07 13:46</div>
   </div>
 </div>
 
 
 <script>
-// Table sort
-(() => {
-  const table = document.getElementById('propertyTable');
-  const tbody = table.querySelector('tbody');
-  const headers = table.querySelectorAll('thead button[data-sort]');
-  let sortState = { key: 'score', dir: 'desc' };
-
-  const valueFor = (row, key, type) => {
-    if (key === 'name') return (row.dataset.name || '').toLowerCase();
-    const v = row.dataset[key];
-    return type === 'number' ? Number(v) : (v || '');
-  };
-
-  const applySort = (key, type) => {
-    if (sortState.key === key) {
-      sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
-    } else {
-      sortState = { key, dir: key === 'score' ? 'desc' : 'asc' };
-    }
-    const rows = Array.from(tbody.querySelectorAll('tr'));
-    rows.sort((a, b) => {
-      const av = valueFor(a, key, type);
-      const bv = valueFor(b, key, type);
-      let cmp = 0;
-      if (type === 'number') cmp = av - bv;
-      else cmp = String(av).localeCompare(String(bv), 'ja');
-      if (cmp === 0) cmp = Number(a.dataset.index) - Number(b.dataset.index);
-      return sortState.dir === 'asc' ? cmp : -cmp;
-    });
-    rows.forEach(r => tbody.appendChild(r));
-    headers.forEach(h => h.textContent = h.textContent.replace(/[\u2191\u2193]$/, ''));
-    const active = Array.from(headers).find(h => h.dataset.sort === key);
-    if (active) active.textContent = active.textContent + (sortState.dir === 'asc' ? '\u2191' : '\u2193');
-  };
-
-  headers.forEach(h => {
-    h.addEventListener('click', () => applySort(h.dataset.sort, h.dataset.type || 'string'));
-  });
-})();
+function toggleDetail(tr) {
+  const detail = tr.nextElementSibling;
+  if (detail && detail.classList.contains('detail-row')) {
+    detail.classList.toggle('open');
+    tr.classList.toggle('expanded');
+  }
+}
 
 // Section jump nav: highlight active section on scroll
 (() => {

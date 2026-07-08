@@ -382,6 +382,17 @@ body {
 .section h2::before { content:""; width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12); }
 .cond-list { margin:0; padding-left:18px; color:var(--text); line-height:1.75; columns:2; column-gap:24px; }
 
+/* Type filter buttons */
+.type-toolbar { display:flex; align-items:center; gap:8px; padding-bottom:12px; flex-wrap:wrap; }
+.filter-btn {
+  padding:6px 14px; border-radius:6px; border:1px solid var(--border, rgba(255,255,255,.10));
+  background:transparent; color:var(--text-muted); font-size:13px; font-weight:600;
+  cursor:pointer; transition:all .15s; text-decoration:none; display:inline-block;
+}
+.filter-btn:hover { border-color:rgba(var(--accent-rgb),.4); color:var(--text); text-decoration:none; }
+.filter-btn.active { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
+.prop-table tr.type-hidden { display:none; }
+
 /* Dense property list */
 .property-list { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .prop-table { width:100%; min-width:1120px; border-collapse:collapse; font-size:12px; }
@@ -826,9 +837,9 @@ document.addEventListener('click', function(e) {
   </section>
 
   <div class="freshness-bar">
-    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 07-07 08:49 処理26分</span>
-    <span class="fb-chip">掲載中 2796件</span>
-<span class="fb-chip fb-new">+239 新規</span><span class="fb-chip fb-removed">-232 終了</span>  </div>
+    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 07-08 13:50 処理31分</span>
+    <span class="fb-chip">掲載中 2387件</span>
+<span class="fb-chip fb-new">+179 新規</span><span class="fb-chip fb-removed">-576 終了</span><span class="fb-chip" style="color:var(--warning)">⚠️ athome_osaka 一時障害</span>  </div>
 
 
   <section class="section">
@@ -851,6 +862,12 @@ document.addEventListener('click', function(e) {
 
   <section id="sec-properties" class="section">
     <h2>Property List</h2>
+    <div class="type-toolbar">
+      <button class="filter-btn active" data-type="all">すべて (52)</button>
+      <button class="filter-btn" data-type="kubun">区分 (52)</button>
+      <button class="filter-btn" data-type="kodate">戸建て (0)</button>
+      <a class="filter-btn" href="ittomono.html?city=fukuoka">一棟 &rarr;</a>
+    </div>
     <div class="property-list">
       <table class="prop-table">
         <thead>
@@ -861,7 +878,7 @@ document.addEventListener('click', function(e) {
           </tr>
         </thead>
         <tbody>
-          <tr data-score="103" data-price="2890" data-area="59.9" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="103" data-price="2890" data-area="59.9" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">103</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99817011" target="_blank" rel="noopener" title="ダイナコート六本松 16-5" onclick="event.stopPropagation()">ダイナコート六本松 16-5</a></td>
             <td class="price-cell">2890万円</td>
@@ -896,7 +913,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="102" data-price="1650" data-area="55.55" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="102" data-price="1650" data-area="55.55" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">102</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99796379" target="_blank" rel="noopener" title="第2住吉ハイツ" onclick="event.stopPropagation()">第2住吉ハイツ</a></td>
             <td class="price-cell">1650万円</td>
@@ -931,7 +948,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(234,179,8,0.1);color:var(--yellow)">薄利</div>
             </td>
           </tr>
-          <tr data-score="100" data-price="2680" data-area="40.75" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="100" data-price="2680" data-area="40.75" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">100</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99818434" target="_blank" rel="noopener" title="ふれんず物件(博多区)" onclick="event.stopPropagation()">ふれんず物件(博多区)</a></td>
             <td class="price-cell">2680万円</td>
@@ -966,7 +983,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="100" data-price="3050" data-area="52.98" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="100" data-price="3050" data-area="52.98" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">100</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99810838" target="_blank" rel="noopener" title="ふれんず物件(博多区)" onclick="event.stopPropagation()">ふれんず物件(博多区)</a></td>
             <td class="price-cell">3050万円</td>
@@ -1001,7 +1018,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(234,179,8,0.1);color:var(--yellow)">薄利</div>
             </td>
           </tr>
-          <tr data-score="100" data-price="3680" data-area="67.46" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="100" data-price="3680" data-area="67.46" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">100</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99752336" target="_blank" rel="noopener" title="ツインタワー博多駅前 ３０２" onclick="event.stopPropagation()">ツインタワー博多駅前 ３０２</a></td>
             <td class="price-cell">3680万円</td>
@@ -1036,7 +1053,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="99" data-price="3390" data-area="47.02" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="99" data-price="3390" data-area="47.02" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">99</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21126511/" target="_blank" rel="noopener" title="グランフォーレラグゼ博多" onclick="event.stopPropagation()">グランフォーレラグゼ博多</a></td>
             <td class="price-cell">3390万円</td>
@@ -1071,7 +1088,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="97" data-price="2999" data-area="52.55" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="97" data-price="2999" data-area="52.55" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">97</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99853857" target="_blank" rel="noopener" title="ふれんず物件(博多区)" onclick="event.stopPropagation()">ふれんず物件(博多区)</a></td>
             <td class="price-cell">2999万円</td>
@@ -1106,7 +1123,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="96" data-price="2978" data-area="66.57" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="96" data-price="2978" data-area="66.57" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">96</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20840821/" target="_blank" rel="noopener" title="ニューライフ平尾" onclick="event.stopPropagation()">ニューライフ平尾</a></td>
             <td class="price-cell">2978万円</td>
@@ -1141,7 +1158,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="93" data-price="2680" data-area="48.19" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="93" data-price="2680" data-area="48.19" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">93</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99850884" target="_blank" rel="noopener" title="ライオンズマンション博多駅南第2 205" onclick="event.stopPropagation()">ライオンズマンション博多駅南第2 205</a></td>
             <td class="price-cell">2680万円</td>
@@ -1176,7 +1193,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="93" data-price="2690" data-area="48.8" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="93" data-price="2690" data-area="48.8" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">93</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21052379/" target="_blank" rel="noopener" title="シティマンション薬院Ⅱ" onclick="event.stopPropagation()">シティマンション薬院Ⅱ</a></td>
             <td class="price-cell">2690万円</td>
@@ -1211,7 +1228,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="92" data-price="1430" data-area="44.77" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="92" data-price="1430" data-area="44.77" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">92</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99726779" target="_blank" rel="noopener" title="天神南ハイツ 204" onclick="event.stopPropagation()">天神南ハイツ 204</a></td>
             <td class="price-cell">1430万円</td>
@@ -1246,7 +1263,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="92" data-price="3280" data-area="44.66" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="92" data-price="3280" data-area="44.66" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">92</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99800708" target="_blank" rel="noopener" title="ふれんず物件(博多区)" onclick="event.stopPropagation()">ふれんず物件(博多区)</a></td>
             <td class="price-cell">3280万円</td>
@@ -1281,7 +1298,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="92" data-price="3350" data-area="40.43" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="92" data-price="3350" data-area="40.43" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">92</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99843993" target="_blank" rel="noopener" title="クレアランドマーク 302" onclick="event.stopPropagation()">クレアランドマーク 302</a></td>
             <td class="price-cell">3350万円</td>
@@ -1316,7 +1333,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="91" data-price="1990" data-area="48.33" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="91" data-price="1990" data-area="48.33" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">91</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99843855" target="_blank" rel="noopener" title="高宮マンション 538" onclick="event.stopPropagation()">高宮マンション 538</a></td>
             <td class="price-cell">1990万円</td>
@@ -1351,7 +1368,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="91" data-price="2000" data-area="55.62" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="91" data-price="2000" data-area="55.62" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">91</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99791987" target="_blank" rel="noopener" title="103大稲マンション 706" onclick="event.stopPropagation()">103大稲マンション 706</a></td>
             <td class="price-cell">2000万円</td>
@@ -1386,7 +1403,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="90" data-price="1750" data-area="43.5" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="90" data-price="1750" data-area="43.5" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">90</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99759702" target="_blank" rel="noopener" title="ふれんず物件(中央区)" onclick="event.stopPropagation()">ふれんず物件(中央区)</a></td>
             <td class="price-cell">1750万円</td>
@@ -1421,7 +1438,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="90" data-price="2590" data-area="51.84" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="90" data-price="2590" data-area="51.84" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">90</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21112453/" target="_blank" rel="noopener" title="グランピア竹下" onclick="event.stopPropagation()">グランピア竹下</a></td>
             <td class="price-cell">2590万円</td>
@@ -1456,7 +1473,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="90" data-price="4980" data-area="50.57" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="90" data-price="4980" data-area="50.57" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">90</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashiminami/nc_21090619/" target="_blank" rel="noopener" title="グランフォーレ大橋駅前レジデンス" onclick="event.stopPropagation()">グランフォーレ大橋駅前レジデンス</a></td>
             <td class="price-cell">4980万円</td>
@@ -1491,7 +1508,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="88" data-price="1960" data-area="53.19" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="88" data-price="1960" data-area="53.19" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">88</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99723968" target="_blank" rel="noopener" title="ロマネスク高宮 602" onclick="event.stopPropagation()">ロマネスク高宮 602</a></td>
             <td class="price-cell">1960万円</td>
@@ -1526,7 +1543,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="88" data-price="2480" data-area="47.0" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="88" data-price="2480" data-area="47.0" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">88</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21232153/" target="_blank" rel="noopener" title="グリーンマンション薬院" onclick="event.stopPropagation()">グリーンマンション薬院</a></td>
             <td class="price-cell">2480万円</td>
@@ -1561,7 +1578,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="88" data-price="2700" data-area="50.22" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="88" data-price="2700" data-area="50.22" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">88</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99830359" target="_blank" rel="noopener" title="ふれんず物件(中央区)" onclick="event.stopPropagation()">ふれんず物件(中央区)</a></td>
             <td class="price-cell">2700万円</td>
@@ -1596,7 +1613,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="88" data-price="2799" data-area="53.85" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="88" data-price="2799" data-area="53.85" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">88</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99829891" target="_blank" rel="noopener" title="ニューライフ天神 905" onclick="event.stopPropagation()">ニューライフ天神 905</a></td>
             <td class="price-cell">2799万円</td>
@@ -1631,7 +1648,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="88" data-price="3390" data-area="69.51" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="88" data-price="3390" data-area="69.51" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">88</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20097897/" target="_blank" rel="noopener" title="【ロワールマンション博多駅南】博多駅徒歩圏！最新リノ…" onclick="event.stopPropagation()">【ロワールマンション博多駅南】博多駅徒歩圏！最新リノ…</a></td>
             <td class="price-cell">3390万円</td>
@@ -1666,7 +1683,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="87" data-price="2049" data-area="40.63" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="87" data-price="2049" data-area="40.63" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">87</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99758573" target="_blank" rel="noopener" title="プレイスポットしんばしビル本館 905" onclick="event.stopPropagation()">プレイスポットしんばしビル本館 905</a></td>
             <td class="price-cell">2049万円</td>
@@ -1701,7 +1718,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="87" data-price="3180" data-area="66.0" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="87" data-price="3180" data-area="66.0" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">87</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99724577" target="_blank" rel="noopener" title="ふれんず物件(中央区)" onclick="event.stopPropagation()">ふれんず物件(中央区)</a></td>
             <td class="price-cell">3180万円</td>
@@ -1736,7 +1753,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="87" data-price="3380" data-area="40.43" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="87" data-price="3380" data-area="40.43" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">87</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21017734/" target="_blank" rel="noopener" title="クレアランドマーク" onclick="event.stopPropagation()">クレアランドマーク</a></td>
             <td class="price-cell">3380万円</td>
@@ -1771,7 +1788,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="87" data-price="4570" data-area="53.88" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="87" data-price="4570" data-area="53.88" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">87</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21187898/" target="_blank" rel="noopener" title="アーバンパレス大濠" onclick="event.stopPropagation()">アーバンパレス大濠</a></td>
             <td class="price-cell">4570万円</td>
@@ -1806,7 +1823,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="86" data-price="2280" data-area="47.79" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="86" data-price="2280" data-area="47.79" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">86</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99807591" target="_blank" rel="noopener" title="ふれんず物件(中央区)" onclick="event.stopPropagation()">ふれんず物件(中央区)</a></td>
             <td class="price-cell">2280万円</td>
@@ -1841,7 +1858,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="86" data-price="2978" data-area="46.35" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="86" data-price="2978" data-area="46.35" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">86</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99843603" target="_blank" rel="noopener" title="ふれんず物件(中央区)" onclick="event.stopPropagation()">ふれんず物件(中央区)</a></td>
             <td class="price-cell">2978万円</td>
@@ -1876,7 +1893,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="85" data-price="2390" data-area="51.68" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="85" data-price="2390" data-area="51.68" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">85</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99830527" target="_blank" rel="noopener" title="ふれんず物件(博多区)" onclick="event.stopPropagation()">ふれんず物件(博多区)</a></td>
             <td class="price-cell">2390万円</td>
@@ -1911,7 +1928,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="85" data-price="4480" data-area="67.36" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="85" data-price="4480" data-area="67.36" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">85</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21112785/" target="_blank" rel="noopener" title="アンピール博多駅南" onclick="event.stopPropagation()">アンピール博多駅南</a></td>
             <td class="price-cell">4480万円</td>
@@ -1946,7 +1963,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="83" data-price="2800" data-area="62.32" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="83" data-price="2800" data-area="62.32" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">83</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99808684" target="_blank" rel="noopener" title="大名サンハイツ 704" onclick="event.stopPropagation()">大名サンハイツ 704</a></td>
             <td class="price-cell">2800万円</td>
@@ -1981,7 +1998,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="83" data-price="2820" data-area="55.62" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="83" data-price="2820" data-area="55.62" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">83</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99827986" target="_blank" rel="noopener" title="ふれんず物件(中央区)" onclick="event.stopPropagation()">ふれんず物件(中央区)</a></td>
             <td class="price-cell">2820万円</td>
@@ -2016,7 +2033,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="83" data-price="3599" data-area="58.88" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="83" data-price="3599" data-area="58.88" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">83</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99852532" target="_blank" rel="noopener" title="シャンボール大名 D棟 1506" onclick="event.stopPropagation()">シャンボール大名 D棟 1506</a></td>
             <td class="price-cell">3599万円</td>
@@ -2051,7 +2068,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="83" data-price="3750" data-area="46.8" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="83" data-price="3750" data-area="46.8" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">83</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99834545" target="_blank" rel="noopener" title="ふれんず物件(中央区)" onclick="event.stopPropagation()">ふれんず物件(中央区)</a></td>
             <td class="price-cell">3750万円</td>
@@ -2086,7 +2103,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="83" data-price="3799" data-area="62.96" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="83" data-price="3799" data-area="62.96" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">83</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99843820" target="_blank" rel="noopener" title="ふれんず物件(中央区)" onclick="event.stopPropagation()">ふれんず物件(中央区)</a></td>
             <td class="price-cell">3799万円</td>
@@ -2121,7 +2138,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="83" data-price="4380" data-area="64.14" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="83" data-price="4380" data-area="64.14" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">83</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20690206/" target="_blank" rel="noopener" title="【即日内覧OK♪博多駅・福岡空港が近い好立地】プレサ…" onclick="event.stopPropagation()">【即日内覧OK♪博多駅・福岡空港が近い好立地】プレサ…</a></td>
             <td class="price-cell">4380万円</td>
@@ -2156,7 +2173,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(234,179,8,0.1);color:var(--yellow)">薄利</div>
             </td>
           </tr>
-          <tr data-score="82" data-price="1530" data-area="51.57" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="82" data-price="1530" data-area="51.57" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">82</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99850837" target="_blank" rel="noopener" title="ふれんず物件(南区)" onclick="event.stopPropagation()">ふれんず物件(南区)</a></td>
             <td class="price-cell">1530万円</td>
@@ -2191,7 +2208,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="82" data-price="2780" data-area="55.27" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="82" data-price="2780" data-area="55.27" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">82</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21185132/" target="_blank" rel="noopener" title="カーサ第弐博多" onclick="event.stopPropagation()">カーサ第弐博多</a></td>
             <td class="price-cell">2780万円</td>
@@ -2226,7 +2243,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="82" data-price="3490" data-area="51.04" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="82" data-price="3490" data-area="51.04" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">82</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99854160" target="_blank" rel="noopener" title="サンシティ博多flex21 502 号室" onclick="event.stopPropagation()">サンシティ博多flex21 502 号室</a></td>
             <td class="price-cell">3490万円</td>
@@ -2261,7 +2278,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="82" data-price="4248" data-area="56.14" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="82" data-price="4248" data-area="56.14" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">82</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99839759" target="_blank" rel="noopener" title="福岡市博多区 2LDK" onclick="event.stopPropagation()">福岡市博多区 2LDK</a></td>
             <td class="price-cell">4248万円</td>
@@ -2296,7 +2313,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(234,179,8,0.1);color:var(--yellow)">薄利</div>
             </td>
           </tr>
-          <tr data-score="82" data-price="4599" data-area="55.39" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="82" data-price="4599" data-area="55.39" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">82</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99827307" target="_blank" rel="noopener" title="ふれんず物件(博多区)" onclick="event.stopPropagation()">ふれんず物件(博多区)</a></td>
             <td class="price-cell">4599万円</td>
@@ -2331,7 +2348,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="81" data-price="1999" data-area="43.82" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="81" data-price="1999" data-area="43.82" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">81</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99846847" target="_blank" rel="noopener" title="“仕事が早い・対応が早い”　九州不動産にご連絡ください!!　担当：福重（フクシゲ）０８０－５２６５－" onclick="event.stopPropagation()">“仕事が早い・対応が早い”　九州不動産にご連絡ください!!　担当：福重（フクシゲ）０８０－５２６５－</a></td>
             <td class="price-cell">1999万円</td>
@@ -2366,7 +2383,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="81" data-price="2972" data-area="66.7" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="81" data-price="2972" data-area="66.7" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">81</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99772167" target="_blank" rel="noopener" title="ふれんず物件(中央区)" onclick="event.stopPropagation()">ふれんず物件(中央区)</a></td>
             <td class="price-cell">2972万円</td>
@@ -2401,7 +2418,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="81" data-price="4299" data-area="65.32" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="81" data-price="4299" data-area="65.32" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">81</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21199655/" target="_blank" rel="noopener" title="リファレンス天神南" onclick="event.stopPropagation()">リファレンス天神南</a></td>
             <td class="price-cell">4299万円</td>
@@ -2436,7 +2453,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="1599" data-area="51.66" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="1599" data-area="51.66" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99655804" target="_blank" rel="noopener" title="皐月マンション那の川 805" onclick="event.stopPropagation()">皐月マンション那の川 805</a></td>
             <td class="price-cell">1599万円</td>
@@ -2471,7 +2488,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(234,179,8,0.1);color:var(--yellow)">薄利</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="2380" data-area="68.04" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="2380" data-area="68.04" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99822525" target="_blank" rel="noopener" title="ロワールマンション大名 602" onclick="event.stopPropagation()">ロワールマンション大名 602</a></td>
             <td class="price-cell">2380万円</td>
@@ -2506,7 +2523,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="2598" data-area="48.09" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="2598" data-area="48.09" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99707849" target="_blank" rel="noopener" title="ユーハイム大濠西 701" onclick="event.stopPropagation()">ユーハイム大濠西 701</a></td>
             <td class="price-cell">2598万円</td>
@@ -2541,7 +2558,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="4199" data-area="42.77" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="4199" data-area="42.77" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_79204532/" target="_blank" rel="noopener" title="モントーレ東比恵クレア" onclick="event.stopPropagation()">モントーレ東比恵クレア</a></td>
             <td class="price-cell">4199万円</td>
@@ -2576,7 +2593,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="4600" data-area="59.08" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="4600" data-area="59.08" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21172212/" target="_blank" rel="noopener" title="朝日プラザ天神" onclick="event.stopPropagation()">朝日プラザ天神</a></td>
             <td class="price-cell">4600万円</td>
@@ -2611,7 +2628,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="4699" data-area="53.04" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="4699" data-area="53.04" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21209105/" target="_blank" rel="noopener" title="アルファライフ博多プレシャス" onclick="event.stopPropagation()">アルファライフ博多プレシャス</a></td>
             <td class="price-cell">4699万円</td>
@@ -2646,7 +2663,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="4890" data-area="56.3" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="4890" data-area="56.3" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://www.f-takken.com/freins/items/99844235" target="_blank" rel="noopener" title="西鉄バス　神屋町停 3分" onclick="event.stopPropagation()">西鉄バス　神屋町停 3分</a></td>
             <td class="price-cell">4890万円</td>
@@ -2703,7 +2720,7 @@ document.addEventListener('click', function(e) {
     <div style="margin-bottom:8px">
       <a href="index.html">Hub</a> &middot;       <a href="minpaku-osaka.html">民泊・大阪</a> &middot;       <a href="minpaku-fukuoka.html">民泊・福岡</a> &middot;       <a href="minpaku-tokyo.html">民泊・東京</a> &middot;       <a href="ittomono.html">一棟もの</a> &middot;       <a href="market.html">賃貸Market</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a> &middot;       <a href="inquiry-pipeline.html">Pipeline</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, athome, ftakken, restate (data/suumo_fukuoka_raw.txt + data/rakumachi_fukuoka_raw.txt, data/yahoo_fukuoka_raw.txt, data/athome_fukuoka_raw.txt, data/ftakken_fukuoka_raw.txt, data/restate_fukuoka_raw.txt)</div>
-    <div>Generated on 2026-07-08 14:21</div>
+    <div>Generated on 2026-07-08 18:00</div>
   </div>
 </div>
 
@@ -2716,6 +2733,24 @@ function toggleDetail(tr) {
     tr.classList.toggle('expanded');
   }
 }
+
+// Type filter (区分/戸建て) — works on prop-table rows
+document.querySelectorAll('.type-toolbar .filter-btn[data-type]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.type-toolbar .filter-btn[data-type]').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var type = btn.dataset.type;
+    document.querySelectorAll('.prop-table tbody tr[data-type]').forEach(function(tr) {
+      var show = type === 'all' || tr.dataset.type === type;
+      tr.classList.toggle('type-hidden', !show);
+      var detail = tr.nextElementSibling;
+      if (detail && detail.classList.contains('detail-row') && !show) {
+        detail.classList.remove('open');
+        tr.classList.remove('expanded');
+      }
+    });
+  });
+});
 
 // Section jump nav: highlight active section on scroll
 (() => {

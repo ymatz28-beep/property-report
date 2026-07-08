@@ -18,6 +18,16 @@ from urllib.request import Request, urlopen
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 
+import sys
+
+sys.path.insert(0, str(BASE_DIR))
+from investment_criteria import (
+    KODATE_AREA_MIN as _KODATE_AREA_MIN,
+    KODATE_PRICE_MAX_MAN as _KODATE_PRICE_MAX_MAN,
+    KUBUN_AREA_MIN as _KUBUN_AREA_MIN,
+    KUBUN_PRICE_MAX_MAN as _KUBUN_PRICE_MAX_MAN,
+)
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
@@ -67,8 +77,8 @@ WARD_CONFIGS = {
     },
 }
 
-PRICE_MAX_MAN = 5000
-AREA_MIN = 40
+PRICE_MAX_MAN = _KUBUN_PRICE_MAX_MAN
+AREA_MIN = _KUBUN_AREA_MIN
 AREA_MAX = 70
 
 
@@ -425,9 +435,9 @@ def save_results(properties: list[dict], city_key: str) -> Path:
 
 # --- 戸建て (中古一戸建て) — separate URL tree (/chukoikkodate/) and filters ---
 # 区分マンションと違い管理規約が無いため、面積帯はマンション枠(40-70㎡)より広め。
-# 価格上限は2000万円台まで（Yuma指定、2026-07-08）
-KODATE_PRICE_MAX_MAN = 2999
-KODATE_AREA_MIN = 40
+# 価格上限は investment_criteria.py が正 (Yuma指定、2026-07-08時点で2999万)
+KODATE_PRICE_MAX_MAN = _KODATE_PRICE_MAX_MAN
+KODATE_AREA_MIN = _KODATE_AREA_MIN
 
 
 def build_search_url_kodate(pref_slug: str, ward_slug: str, page: int = 1) -> str:

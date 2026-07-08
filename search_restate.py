@@ -19,6 +19,11 @@ from bs4 import BeautifulSoup
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 
+import sys
+
+sys.path.insert(0, str(BASE_DIR))
+from investment_criteria import KUBUN_AREA_MIN, KUBUN_PRICE_MAX_MAN
+
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
@@ -44,8 +49,8 @@ SITE_CONFIGS = {
     },
 }
 
-PRICE_MAX = 5000  # 万円
-AREA_MIN = 40
+PRICE_MAX = KUBUN_PRICE_MAX_MAN  # 万円
+AREA_MIN = KUBUN_AREA_MIN
 AREA_MAX = 70
 
 
@@ -306,7 +311,7 @@ def scrape_restate(city_key: str) -> list[dict]:
             properties.append(prop)
             print(f"    → {prop['name']} / {prop['price_text']} / {prop['area_text']}")
         else:
-            print(f"    → スキップ (条件外)")
+            print("    → スキップ (条件外)")
 
     print(f"  {source_name} 合計: {len(properties)}件")
     return properties
@@ -358,7 +363,7 @@ def main():
             print(f"  出力: {out}")
         else:
             save_results([], city_key)
-            print(f"  条件に合う物件なし")
+            print("  条件に合う物件なし")
 
 
 if __name__ == "__main__":

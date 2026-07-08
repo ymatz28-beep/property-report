@@ -17,8 +17,13 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 
-PRICE_MAX = 5000  # 万円
-AREA_MIN = 40
+import sys
+
+sys.path.insert(0, str(BASE_DIR))
+from investment_criteria import KUBUN_AREA_MIN, KUBUN_PRICE_MAX_MAN
+
+PRICE_MAX = KUBUN_PRICE_MAX_MAN  # 万円
+AREA_MIN = KUBUN_AREA_MIN
 AREA_MAX = 70
 
 WARD_SLUGS = {

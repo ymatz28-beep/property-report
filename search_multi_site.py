@@ -14,11 +14,16 @@ import time
 from datetime import datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, unquote, urlencode
+from urllib.parse import unquote, urlencode
 from urllib.request import Request, urlopen
 
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
+
+import sys
+
+sys.path.insert(0, str(BASE_DIR))
+from investment_criteria import KUBUN_AREA_MIN, KUBUN_PRICE_MAX_MAN
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -67,9 +72,9 @@ AREA_CONFIGS = {
     },
 }
 
-# Price and area criteria from CLAUDE.md
-PRICE_MAX = 50000000  # 5000万円
-AREA_MIN = 40  # m2
+# Price and area criteria (SSoT: investment_criteria.py)
+PRICE_MAX = KUBUN_PRICE_MAX_MAN * 10000  # 円
+AREA_MIN = KUBUN_AREA_MIN  # m2
 AREA_MAX = 70  # m2
 
 
@@ -165,7 +170,7 @@ def search_rakumachi(city_key: str) -> list[dict]:
     print(f"\n=== 楽待 ({config['label']}) 検索中... ===")
 
     # dim2001 = 区分マンション
-    base_url = f"https://www.rakumachi.jp/syuuekibukken/area/prefecture/dim2001/"
+    base_url = "https://www.rakumachi.jp/syuuekibukken/area/prefecture/dim2001/"
     params = {
         "area": area_code,
         "pmax": str(PRICE_MAX // 10000),  # 楽待は万円単位
@@ -203,7 +208,7 @@ def search_rakumachi(city_key: str) -> list[dict]:
     print(f"  楽待 合計: {len(properties)}件")
 
     # Phase 3: detail enrichment (サブリース判定 + 複数駅補完)
-    print(f"  詳細ページ取得中 (サブリース判定 + 複数駅補完)...")
+    print("  詳細ページ取得中 (サブリース判定 + 複数駅補完)...")
     for i, prop in enumerate(properties):
         properties[i] = _enrich_rakumachi_detail(prop)
         if i < len(properties) - 1:
@@ -223,17 +228,9 @@ def _parse_rakumachi_html(html: str, city_key: str) -> list[dict]:
     # Pattern: property detail pages /syuuekibukken/kansai/osaka/dim2001/XXXXXXX/show.html
     # or /syuuekibukken/area/osaka/dim2001/XXXXXXX/
 
-    # Extract property card blocks
-    blocks = re.findall(
-        r'<a[^>]*href="(/syuuekibukken/[^"]*?/(\d{5,10})/[^"]*)"[^>]*>.*?</a>',
-        html,
-        re.DOTALL,
-    )
-
     # Also try table-style listings
     # Look for structured data near property URLs
     seen_ids = set()
-    lines = html.split("\n")
 
     # Find all property detail URLs
     url_pattern = re.compile(r'href="((?:https://www\.rakumachi\.jp)?/syuuekibukken/[^"]*?/(\d{5,10})/[^"]*)"')
@@ -918,7 +915,7 @@ def search_cowcamo(city_key: str) -> list[dict]:
     if city_key != "tokyo":
         return []
 
-    print(f"\n=== カウカモ (東京) 検索中... ===")
+    print("\n=== カウカモ (東京) 検索中... ===")
     properties = []
     max_pages = 5
 

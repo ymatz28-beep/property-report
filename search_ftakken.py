@@ -14,6 +14,11 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 
+import sys
+
+sys.path.insert(0, str(BASE_DIR))
+from investment_criteria import KUBUN_AREA_MIN, KUBUN_PRICE_MAX_MAN
+
 SEARCH_CONFIGS = {
     "fukuoka": {
         "label": "福岡",
@@ -27,8 +32,8 @@ SEARCH_CONFIGS = {
     },
 }
 
-PRICE_MAX = 5000  # 万円 (区分)
-AREA_MIN = 40
+PRICE_MAX = KUBUN_PRICE_MAX_MAN  # 万円 (区分)
+AREA_MIN = KUBUN_AREA_MIN
 AREA_MAX = 70
 
 # 格安区分 (budget tier): 1000万以下, 面積制限緩和, OC含む
@@ -588,7 +593,7 @@ def _parse_ittomono_block(block: str, prop_type: str, detail_urls: list[str], id
         name = f"{area_label} {structure}" if structure else area_label or f"ふれんず{prop_type} #{idx}"
 
     # URL
-    url = detail_urls[idx] if idx < len(detail_urls) else f"https://www.f-takken.com/freins/buy/mansion"
+    url = detail_urls[idx] if idx < len(detail_urls) else "https://www.f-takken.com/freins/buy/mansion"
 
     # Area display: prioritize building area; for 戸建て show both if available
     if land_text and prop_type != "一棟マンション":

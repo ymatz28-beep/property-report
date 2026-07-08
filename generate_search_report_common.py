@@ -201,7 +201,12 @@ def parse_built(text: str) -> tuple[int | None, int | None]:
     y = re.search(r"(\d{4})年", text)
     m = re.search(r"年\s*(\d{1,2})月", text)
     if y:
-        return int(y.group(1)), int(m.group(1)) if m else 1
+        year = int(y.group(1))
+        # Sanity check: SUUMO等の掲載側入力ミスで明治期等の非現実的な年が入ることがある
+        # (実例: chukoikkodate/osaka/nc_20908754 が「1868年1月」と表記, 2026-07-08)
+        if not (1900 <= year <= 2026):
+            return None, None
+        return year, int(m.group(1)) if m else 1
     return None, None
 
 
@@ -485,6 +490,8 @@ def hydrate_parsed_fields(row: PropertyRow) -> None:
     if row.area_sqm:
         row.area_text = f"{row.area_sqm}㎡"
     row.built_year, row.built_month = parse_built(row.built_text)
+    if row.built_year is None and re.search(r"\d{4}年", row.built_text):
+        row.built_text = "築年不明（要確認）"
     row.walk_min = parse_walk_minutes(row.station_text)
     # Clean station text: "地下鉄堺筋線「天神橋筋六丁目」徒歩10分" → "天神橋筋六丁目 徒歩10分"
     row.station_text = _clean_station_text(row.station_text)

@@ -1,16 +1,20 @@
 name: Daily Property Patrol
 
 on:
-  # Dead man's switch — DO NOT remove this schedule block again.
+  # This is now Primary, not a fallback — DO NOT remove this schedule block again.
   # History: disabled 2026-04-08 (redundant no-op runs) → re-enabled 2026-04-16 as
-  # fallback → disabled AGAIN 2026-05-14 ("phantom double-runs"). Result: this
-  # workflow had zero runs for 7+ weeks, and local launchd silently missed
-  # 2026-07-04〜07-06 (3 consecutive days) with no automated catch-up.
-  # The "local-check" guard step below already exits in <1min when local ran
-  # within 24h — that is NOT a wasted run, it's the switch confirming local is
-  # healthy. Cost is negligible; the safety net is the entire point of this file.
+  # fallback → disabled AGAIN 2026-05-14 ("phantom double-runs") → 7+ weeks with zero
+  # runs → local launchd silently missed 2026-07-04〜07-06 (3 days) with no catch-up.
+  # 2026-07-08: flipped local-first → cloud-first. Reasons: (1) repo is public, so
+  # Actions minutes are free — the original cost-saving reason for local-first no
+  # longer applies; (2) the Mac is asleep most hours (project_laptop_evening_unavailable
+  # memory) — no local trigger time is reliable, only "less unreliable". Cloud has none
+  # of that failure mode. Local launchd is now disabled; manual/opportunistic runs only
+  # (run_daily_patrol.py --force). The "local-check" guard step below is kept purely so
+  # a manual local run same-day doesn't trigger a redundant cloud run — it is NOT a
+  # skip-if-someone-else-covered-it fallback pattern anymore.
   schedule:
-    - cron: '0 21 * * *'   # JST 06:00 — catches overnight local-launchd gaps
+    - cron: '0 21 * * *'   # JST 06:00 — the guaranteed daily run
   workflow_dispatch:
 
 permissions:

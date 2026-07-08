@@ -14,24 +14,16 @@
     <key>WorkingDirectory</key>
     <string>/Users/ytejima/Documents/Projects/property-analyzer</string>
 
-    <!-- Fires at 17:00, not 01:00. The Mac is asleep at night (lid closed / carried /
-         power unplugged, ~18:00 through early morning) — 01:00 was structurally
-         undeliverable, not just occasionally flaky (see project_laptop_evening_unavailable
-         memory; same root cause already fixed once for daily-digest's 18:00→16:00 move).
-         17:00 sits inside the confirmed-awake 16:00-17:30 window with runway before
-         ~18:00 sleep onset (typical run ≈30min per data/patrol_summary.json elapsed_min).
-         GHA daily-patrol.yml's 06:00 JST cron schedule: is the real fallback for any
-         day this still doesn't fire — see that workflow's own comment for the history. -->
-    <key>StartCalendarInterval</key>
-    <dict>
-        <key>Hour</key>
-        <integer>17</integer>
-        <key>Minute</key>
-        <integer>0</integer>
-    </dict>
+    <!-- DISABLED as of 2026-07-08 (not installed in ~/Library/LaunchAgents). GHA
+         daily-patrol.yml is now Primary (06:00 JST cron, unconditional, repo is public
+         so Actions minutes are free). Local used to be Primary but the Mac is asleep
+         most hours (see project_laptop_evening_unavailable memory) — even the best
+         reachable local window (17:00) is still probabilistic (Yuma might be out).
+         Cloud has no such failure mode. This plist is kept only as a reference for
+         manual/opportunistic runs: python run_daily_patrol.py --force. No automatic
+         trigger key is set on purpose — copying this file back into LaunchAgents does
+         nothing unless a StartCalendarInterval/RunAtLoad key is re-added deliberately. -->
 
-    <!-- RunAtLoad disabled: was triggering extra runs on reboot/login during daytime,
-         which started the drift cascade. Manual catch-up: run_daily_patrol.py --force -->
     <key>RunAtLoad</key>
     <false/>
 

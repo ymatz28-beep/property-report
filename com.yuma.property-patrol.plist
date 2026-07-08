@@ -14,14 +14,18 @@
     <key>WorkingDirectory</key>
     <string>/Users/ytejima/Documents/Projects/property-analyzer</string>
 
-    <!-- Fixed clock: fires at 01:00 AM every night regardless of when last run completed.
-         StartInterval (relative 24h) caused drift: if a run completed at 9AM, the next
-         fire was 9AM next day → idle guard spun 2h → completion at 11AM → cascade worse.
-         StartCalendarInterval + night-hours idle_guard = always runs clean at 1:00 AM. -->
+    <!-- Fires at 17:00, not 01:00. The Mac is asleep at night (lid closed / carried /
+         power unplugged, ~18:00 through early morning) — 01:00 was structurally
+         undeliverable, not just occasionally flaky (see project_laptop_evening_unavailable
+         memory; same root cause already fixed once for daily-digest's 18:00→16:00 move).
+         17:00 sits inside the confirmed-awake 16:00-17:30 window with runway before
+         ~18:00 sleep onset (typical run ≈30min per data/patrol_summary.json elapsed_min).
+         GHA daily-patrol.yml's 06:00 JST cron schedule: is the real fallback for any
+         day this still doesn't fire — see that workflow's own comment for the history. -->
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>
-        <integer>1</integer>
+        <integer>17</integer>
         <key>Minute</key>
         <integer>0</integer>
     </dict>

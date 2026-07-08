@@ -382,6 +382,17 @@ body {
 .section h2::before { content:""; width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12); }
 .cond-list { margin:0; padding-left:18px; color:var(--text); line-height:1.75; columns:2; column-gap:24px; }
 
+/* Type filter buttons */
+.type-toolbar { display:flex; align-items:center; gap:8px; padding-bottom:12px; flex-wrap:wrap; }
+.filter-btn {
+  padding:6px 14px; border-radius:6px; border:1px solid var(--border, rgba(255,255,255,.10));
+  background:transparent; color:var(--text-muted); font-size:13px; font-weight:600;
+  cursor:pointer; transition:all .15s; text-decoration:none; display:inline-block;
+}
+.filter-btn:hover { border-color:rgba(var(--accent-rgb),.4); color:var(--text); text-decoration:none; }
+.filter-btn.active { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
+.prop-table tr.type-hidden { display:none; }
+
 /* Dense property list */
 .property-list { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .prop-table { width:100%; min-width:1120px; border-collapse:collapse; font-size:12px; }
@@ -826,9 +837,9 @@ document.addEventListener('click', function(e) {
   </section>
 
   <div class="freshness-bar">
-    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 07-07 08:49 処理26分</span>
-    <span class="fb-chip">掲載中 2796件</span>
-<span class="fb-chip fb-new">+239 新規</span><span class="fb-chip fb-removed">-232 終了</span>  </div>
+    <span class="fb-chip"><span class="fb-icon">&#x1F4C5;</span> 最終更新: 07-08 13:50 処理31分</span>
+    <span class="fb-chip">掲載中 2387件</span>
+<span class="fb-chip fb-new">+179 新規</span><span class="fb-chip fb-removed">-576 終了</span><span class="fb-chip" style="color:var(--warning)">⚠️ athome_osaka 一時障害</span>  </div>
 
 
   <section class="section">
@@ -851,6 +862,12 @@ document.addEventListener('click', function(e) {
 
   <section id="sec-properties" class="section">
     <h2>Property List</h2>
+    <div class="type-toolbar">
+      <button class="filter-btn active" data-type="all">すべて (20)</button>
+      <button class="filter-btn" data-type="kubun">区分 (20)</button>
+      <button class="filter-btn" data-type="kodate">戸建て (0)</button>
+      <a class="filter-btn" href="ittomono.html?city=tokyo">一棟 &rarr;</a>
+    </div>
     <div class="property-list">
       <table class="prop-table">
         <thead>
@@ -861,7 +878,7 @@ document.addEventListener('click', function(e) {
           </tr>
         </thead>
         <tbody>
-          <tr data-score="93" data-price="4980" data-area="40.47" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="93" data-price="4980" data-area="40.47" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">93</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21234568/" target="_blank" rel="noopener" title="ディアハイム浅草" onclick="event.stopPropagation()">ディアハイム浅草</a></td>
             <td class="price-cell">4980万円</td>
@@ -896,7 +913,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="91" data-price="2798" data-area="42.5" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="91" data-price="2798" data-area="42.5" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">91</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20977812/" target="_blank" rel="noopener" title="浅草ダイヤモンドマンション" onclick="event.stopPropagation()">浅草ダイヤモンドマンション</a></td>
             <td class="price-cell">2798万円</td>
@@ -931,7 +948,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="88" data-price="4980" data-area="42.67" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="88" data-price="4980" data-area="42.67" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">88</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21020358/" target="_blank" rel="noopener" title="レーベンシティオ上野桜木" onclick="event.stopPropagation()">レーベンシティオ上野桜木</a></td>
             <td class="price-cell">4980万円</td>
@@ -966,7 +983,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="87" data-price="3380" data-area="40.41" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="87" data-price="3380" data-area="40.41" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">87</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_minato/nc_21123247/" target="_blank" rel="noopener" title="エル高輪" onclick="event.stopPropagation()">エル高輪</a></td>
             <td class="price-cell">3380万円</td>
@@ -1001,7 +1018,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="85" data-price="4080" data-area="40.15" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="85" data-price="4080" data-area="40.15" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">85</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" rel="noopener" title="メゾンニシムラ" onclick="event.stopPropagation()">メゾンニシムラ</a></td>
             <td class="price-cell">4080万円</td>
@@ -1036,7 +1053,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="83" data-price="4980" data-area="41.66" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="83" data-price="4980" data-area="41.66" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">83</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21228245/" target="_blank" rel="noopener" title="ライジングプレイス浅草弐番館" onclick="event.stopPropagation()">ライジングプレイス浅草弐番館</a></td>
             <td class="price-cell">4980万円</td>
@@ -1071,7 +1088,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="82" data-price="4780" data-area="43.1" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="82" data-price="4780" data-area="43.1" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">82</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21006797/" target="_blank" rel="noopener" title="オーシャンプラザ若松町" onclick="event.stopPropagation()">オーシャンプラザ若松町</a></td>
             <td class="price-cell">4780万円</td>
@@ -1106,7 +1123,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="81" data-price="3200" data-area="66.83" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="81" data-price="3200" data-area="66.83" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">81</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21181330/" target="_blank" rel="noopener" title="第２さくらコーポ" onclick="event.stopPropagation()">第２さくらコーポ</a></td>
             <td class="price-cell">3200万円</td>
@@ -1141,7 +1158,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="81" data-price="4180" data-area="58.3" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="81" data-price="4180" data-area="58.3" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">81</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21230658/" target="_blank" rel="noopener" title="マンション宮" onclick="event.stopPropagation()">マンション宮</a></td>
             <td class="price-cell">4180万円</td>
@@ -1176,7 +1193,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="81" data-price="4480" data-area="40.68" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="81" data-price="4480" data-area="40.68" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">81</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20967987/" target="_blank" rel="noopener" title="角の部屋「クレヴェスタ浅草Ⅱ」" onclick="event.stopPropagation()">角の部屋「クレヴェスタ浅草Ⅱ」</a></td>
             <td class="price-cell">4480万円</td>
@@ -1211,7 +1228,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="81" data-price="4998" data-area="48.9" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="81" data-price="4998" data-area="48.9" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">81</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21178233/" target="_blank" rel="noopener" title="クリオ東浅草" onclick="event.stopPropagation()">クリオ東浅草</a></td>
             <td class="price-cell">4998万円</td>
@@ -1246,7 +1263,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="2390" data-area="44.37" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="2390" data-area="44.37" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20627086/" target="_blank" rel="noopener" title="パラスト野方" onclick="event.stopPropagation()">パラスト野方</a></td>
             <td class="price-cell">2390万円</td>
@@ -1281,7 +1298,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="3880" data-area="46.51" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="3880" data-area="46.51" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20765366/" target="_blank" rel="noopener" title="カーサ第二新宿" onclick="event.stopPropagation()">カーサ第二新宿</a></td>
             <td class="price-cell">3880万円</td>
@@ -1316,7 +1333,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="3990" data-area="45.36" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="3990" data-area="45.36" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_21119539/" target="_blank" rel="noopener" title="グリーンキャピタル西巣鴨" onclick="event.stopPropagation()">グリーンキャピタル西巣鴨</a></td>
             <td class="price-cell">3990万円</td>
@@ -1351,7 +1368,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="4580" data-area="43.33" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="4580" data-area="43.33" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20993190/" target="_blank" rel="noopener" title="トーア早稲田マンション" onclick="event.stopPropagation()">トーア早稲田マンション</a></td>
             <td class="price-cell">4580万円</td>
@@ -1386,7 +1403,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="80" data-price="4980" data-area="42.0" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="80" data-price="4980" data-area="42.0" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--green)">80</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shibuya/nc_21090742/" target="_blank" rel="noopener" title="パラスト西原" onclick="event.stopPropagation()">パラスト西原</a></td>
             <td class="price-cell">4980万円</td>
@@ -1421,7 +1438,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="78" data-price="3480" data-area="46.76" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="78" data-price="3480" data-area="46.76" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--yellow)">78</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21230154/" target="_blank" rel="noopener" title="シャンブル西早稲田" onclick="event.stopPropagation()">シャンブル西早稲田</a></td>
             <td class="price-cell">3480万円</td>
@@ -1456,7 +1473,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="78" data-price="3980" data-area="37.23" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="78" data-price="3980" data-area="37.23" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--yellow)">78</td>
             <td class="name-cell"><a href="https://cowcamo.jp/short_stories/rakp6mWmvG4" target="_blank" rel="noopener" title="新宿御苑前駅 / 1LDK / 37.23㎡" onclick="event.stopPropagation()">新宿御苑前駅 / 1LDK / 37.23㎡</a></td>
             <td class="price-cell">3980万円</td>
@@ -1491,7 +1508,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="78" data-price="4790" data-area="50.96" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="78" data-price="4790" data-area="50.96" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--yellow)">78</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20376620/" target="_blank" rel="noopener" title="上野ロイヤルハイツ" onclick="event.stopPropagation()">上野ロイヤルハイツ</a></td>
             <td class="price-cell">4790万円</td>
@@ -1526,7 +1543,7 @@ document.addEventListener('click', function(e) {
               <div class="detail-verdict" style="background:rgba(239,68,68,0.1);color:var(--red)">CF赤字</div>
             </td>
           </tr>
-          <tr data-score="77" data-price="4690" data-area="53.08" data-expandable onclick="toggleDetail(this)">
+          <tr data-score="77" data-price="4690" data-area="53.08" data-type="kubun" data-expandable onclick="toggleDetail(this)">
             <td class="score-cell" style="color:var(--yellow)">77</td>
             <td class="name-cell"><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_21093203/" target="_blank" rel="noopener" title="ライオンズマンション大森" onclick="event.stopPropagation()">ライオンズマンション大森</a></td>
             <td class="price-cell">4690万円</td>
@@ -1583,7 +1600,7 @@ document.addEventListener('click', function(e) {
     <div style="margin-bottom:8px">
       <a href="index.html">Hub</a> &middot;       <a href="minpaku-osaka.html">民泊・大阪</a> &middot;       <a href="minpaku-fukuoka.html">民泊・福岡</a> &middot;       <a href="minpaku-tokyo.html">民泊・東京</a> &middot;       <a href="ittomono.html">一棟もの</a> &middot;       <a href="market.html">賃貸Market</a> &middot;       <a href="naiken-analysis.html">内覧分析</a> &middot;       <a href="inquiry-messages.html">問い合わせ</a> &middot;       <a href="inquiry-pipeline.html">Pipeline</a>    </div>
     <div>Sources: SUUMO, rakumachi, yahoo, cowcamo, restate (data/suumo_tokyo_raw.txt + data/rakumachi_tokyo_raw.txt, data/yahoo_tokyo_raw.txt, data/cowcamo_tokyo_raw.txt, data/restate_tokyo_raw.txt)</div>
-    <div>Generated on 2026-07-08 14:21</div>
+    <div>Generated on 2026-07-08 18:00</div>
   </div>
 </div>
 
@@ -1596,6 +1613,24 @@ function toggleDetail(tr) {
     tr.classList.toggle('expanded');
   }
 }
+
+// Type filter (区分/戸建て) — works on prop-table rows
+document.querySelectorAll('.type-toolbar .filter-btn[data-type]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.type-toolbar .filter-btn[data-type]').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var type = btn.dataset.type;
+    document.querySelectorAll('.prop-table tbody tr[data-type]').forEach(function(tr) {
+      var show = type === 'all' || tr.dataset.type === type;
+      tr.classList.toggle('type-hidden', !show);
+      var detail = tr.nextElementSibling;
+      if (detail && detail.classList.contains('detail-row') && !show) {
+        detail.classList.remove('open');
+        tr.classList.remove('expanded');
+      }
+    });
+  });
+});
 
 // Section jump nav: highlight active section on scroll
 (() => {

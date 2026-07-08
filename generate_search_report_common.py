@@ -1243,6 +1243,8 @@ def load_patrol_summary() -> dict:
 def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[str, str], raw_count: int, duplicate_count: int) -> str:
     """Build property search report HTML using the shared Jinja2 template."""
     rows_sorted = sorted(rows, key=lambda r: (-r.total_score, r.price_man, (r.walk_min or 999), r.name))
+    kodate_count = sum(1 for r in rows_sorted if "戸建" in r.source)
+    type_counts = {"kodate": kodate_count, "kubun": len(rows_sorted) - kodate_count}
 
     avg_price = round(sum(r.price_man for r in rows_sorted) / len(rows_sorted), 1) if rows_sorted else 0
     avg_area = round(sum((r.area_sqm or 0) for r in rows_sorted) / len(rows_sorted), 2) if rows_sorted else 0
@@ -1285,6 +1287,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
     return template.render(
         config=config_dict,
         rows_sorted=rows_sorted,
+        type_counts=type_counts,
         meta=meta,
         raw_count=raw_count,
         duplicate_count=duplicate_count,

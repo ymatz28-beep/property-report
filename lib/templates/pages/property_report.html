@@ -151,6 +151,17 @@ body {
 .section h2::before { content:""; width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 6px rgba(var(--accent-rgb),.12); }
 .cond-list { margin:0; padding-left:18px; color:var(--text); line-height:1.75; columns:2; column-gap:24px; }
 
+/* Type filter buttons */
+.type-toolbar { display:flex; align-items:center; gap:8px; padding-bottom:12px; flex-wrap:wrap; }
+.filter-btn {
+  padding:6px 14px; border-radius:6px; border:1px solid var(--border, rgba(255,255,255,.10));
+  background:transparent; color:var(--text-muted); font-size:13px; font-weight:600;
+  cursor:pointer; transition:all .15s; text-decoration:none; display:inline-block;
+}
+.filter-btn:hover { border-color:rgba(var(--accent-rgb),.4); color:var(--text); text-decoration:none; }
+.filter-btn.active { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
+.prop-table tr.type-hidden { display:none; }
+
 /* Dense property list */
 .property-list { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .prop-table { width:100%; min-width:1120px; border-collapse:collapse; font-size:12px; }
@@ -487,6 +498,12 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   {# Property List #}
   <section id="sec-properties" class="section">
     <h2>Property List</h2>
+    <div class="type-toolbar">
+      <button class="filter-btn active" data-type="all">すべて ({{ rows_sorted | length }})</button>
+      <button class="filter-btn" data-type="kubun">区分 ({{ type_counts.kubun }})</button>
+      <button class="filter-btn" data-type="kodate">戸建て ({{ type_counts.kodate }})</button>
+      <a class="filter-btn" href="ittomono.html?city={{ config.city_key }}">一棟 &rarr;</a>
+    </div>
     <div class="property-list">
       <table class="prop-table">
         <thead>
@@ -498,7 +515,7 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
         </thead>
         <tbody>
           {% for row in rows_sorted %}
-          <tr data-score="{{ row.total_score }}" data-price="{{ row.price_man | default(0) }}" data-area="{{ row.area_sqm | default(0) }}" {% if row.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
+          <tr data-score="{{ row.total_score }}" data-price="{{ row.price_man | default(0) }}" data-area="{{ row.area_sqm | default(0) }}" data-type="{{ 'kodate' if '戸建' in row.source else 'kubun' }}" {% if row.revenue %}data-expandable onclick="toggleDetail(this)"{% endif %}>
             <td class="score-cell" style="color:{% if row.total_score >= 80 %}var(--green){% elif row.total_score >= 65 %}var(--yellow){% else %}var(--orange, #ff6b35){% endif %}">{{ row.total_score }}</td>
             <td class="name-cell"><a href="{{ row.url }}" target="_blank" rel="noopener" title="{{ row.name }}" onclick="event.stopPropagation()">{{ row.name }}</a></td>
             <td class="price-cell">{{ row.price_text }}</td>
@@ -576,6 +593,24 @@ function toggleDetail(tr) {
     tr.classList.toggle('expanded');
   }
 }
+
+// Type filter (区分/戸建て) — works on prop-table rows
+document.querySelectorAll('.type-toolbar .filter-btn[data-type]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.type-toolbar .filter-btn[data-type]').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var type = btn.dataset.type;
+    document.querySelectorAll('.prop-table tbody tr[data-type]').forEach(function(tr) {
+      var show = type === 'all' || tr.dataset.type === type;
+      tr.classList.toggle('type-hidden', !show);
+      var detail = tr.nextElementSibling;
+      if (detail && detail.classList.contains('detail-row') && !show) {
+        detail.classList.remove('open');
+        tr.classList.remove('expanded');
+      }
+    });
+  });
+});
 
 // Section jump nav: highlight active section on scroll
 (() => {

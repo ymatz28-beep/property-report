@@ -9078,6 +9078,14 @@ document.querySelectorAll('.filter-btn').forEach(function(btn) {
   });
 });
 
+// Pre-select city filter from ?city= query param (linked from minpaku-*.html「一棟」ボタン)
+(function() {
+  var city = new URLSearchParams(location.search).get('city');
+  if (!city) return;
+  var btn = document.querySelector('.filter-btn[data-city="' + city + '"]');
+  if (btn) btn.click();
+})();
+
 // View toggle (desktop only)
 document.querySelectorAll('.vt-btn').forEach(function(btn) {
   btn.addEventListener('click', function() {

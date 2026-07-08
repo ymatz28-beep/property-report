@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import datetime as dt
 import html
-import json
 import re
 import sys
 from collections import Counter
@@ -38,7 +37,6 @@ from generate_search_report_common import (
     site_header_css,
     site_header_html,
     global_nav_css,
-    global_nav_html,
     load_first_seen,
     _format_first_seen,
     grade_tier,
@@ -1232,6 +1230,14 @@ document.querySelectorAll('.filter-btn').forEach(function(btn) {{
     }});
   }});
 }});
+
+// Pre-select city filter from ?city= query param (linked from minpaku-*.html「一棟」ボタン)
+(function() {{
+  var city = new URLSearchParams(location.search).get('city');
+  if (!city) return;
+  var btn = document.querySelector('.filter-btn[data-city="' + city + '"]');
+  if (btn) btn.click();
+}})();
 
 // View toggle (desktop only)
 document.querySelectorAll('.vt-btn').forEach(function(btn) {{

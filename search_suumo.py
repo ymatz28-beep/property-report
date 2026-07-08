@@ -424,8 +424,9 @@ def save_results(properties: list[dict], city_key: str) -> Path:
 
 
 # --- 戸建て (中古一戸建て) — separate URL tree (/chukoikkodate/) and filters ---
-# 区分マンションと違い管理規約が無いため、価格帯・面積帯はマンション枠(5000万/40-70㎡)より広め。
-KODATE_PRICE_MAX_MAN = 8000
+# 区分マンションと違い管理規約が無いため、面積帯はマンション枠(40-70㎡)より広め。
+# 価格上限は2000万円台まで（Yuma指定、2026-07-08）
+KODATE_PRICE_MAX_MAN = 2999
 KODATE_AREA_MIN = 40
 
 

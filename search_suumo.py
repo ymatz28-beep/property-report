@@ -172,7 +172,7 @@ def parse_listing_page(html: str) -> list[dict]:
             built = built_m.group(1).strip()
 
         if not name:
-            name = f"SUUMO物件"
+            name = "SUUMO物件"
 
         properties.append({
             "name": name,
@@ -423,10 +423,228 @@ def save_results(properties: list[dict], city_key: str) -> Path:
     return out_path
 
 
+# --- 戸建て (中古一戸建て) — separate URL tree (/chukoikkodate/) and filters ---
+# 区分マンションと違い管理規約が無いため、価格帯・面積帯はマンション枠(5000万/40-70㎡)より広め。
+KODATE_PRICE_MAX_MAN = 8000
+KODATE_AREA_MIN = 40
+
+
+def build_search_url_kodate(pref_slug: str, ward_slug: str, page: int = 1) -> str:
+    """Build SUUMO 中古一戸建て ward-based search URL."""
+    return f"https://suumo.jp/chukoikkodate/{pref_slug}/{ward_slug}/?pc=100&page={page}"
+
+
+def parse_listing_page_kodate(html: str) -> list[dict]:
+    """Parse SUUMO 中古一戸建て listing page for property cards."""
+    properties = []
+    cards = re.split(r'<div class="property_unit[ "]', html)
+
+    for card in cards[1:]:
+        url_m = re.search(r'href="(/chukoikkodate/[^"]+/nc_\d+/)"', card)
+        if not url_m:
+            continue
+        detail_url = f"https://suumo.jp{url_m.group(1)}"
+
+        name = ""
+        name_m = re.search(r'物件名</dt>\s*<dd[^>]*>([^<]+)</dd>', card, re.DOTALL)
+        if name_m:
+            name = name_m.group(1).strip()
+
+        price_m = re.search(r'class="dottable-value">\s*([^<]+)</span>', card)
+        if not price_m:
+            continue
+        price_text = price_m.group(1).strip()
+        price_man = _parse_price_man(price_text)
+        if price_man <= 0 or price_man > KODATE_PRICE_MAX_MAN:
+            continue
+
+        location = ""
+        loc_m = re.search(r'所在地</dt>\s*<dd[^>]*>([^<]+)</dd>', card, re.DOTALL)
+        if loc_m:
+            location = loc_m.group(1).strip()
+
+        station = ""
+        sta_m = re.search(r'沿線・駅</dt>\s*<dd[^>]*>([^<]+)</dd>', card, re.DOTALL)
+        if sta_m:
+            station = sta_m.group(1).strip()
+
+        # 建物面積 (building floor area) — houses list land + building area separately;
+        # building area is the closer analog to マンション's 専有面積.
+        area_text = ""
+        area_m = re.search(r'建物面積</dt>\s*<dd[^>]*>([\d.]+)\s*m', card, re.DOTALL)
+        if area_m:
+            area_val = float(area_m.group(1))
+            if area_val < KODATE_AREA_MIN:
+                continue
+            area_text = f"{area_val}㎡"
+
+        layout = ""
+        layout_m = re.search(r'間取り</dt>\s*<dd[^>]*>([^<]+)</dd>', card, re.DOTALL)
+        if layout_m:
+            layout = layout_m.group(1).strip()
+
+        built = ""
+        built_m = re.search(r'築年月</dt>\s*<dd[^>]*>([^<]+)</dd>', card, re.DOTALL)
+        if built_m:
+            built = built_m.group(1).strip()
+
+        if not name:
+            name = "SUUMO戸建て"
+
+        properties.append({
+            "name": name,
+            "price_text": f"{price_man}万円",
+            "price_man": price_man,
+            "location": location,
+            "area_text": area_text,
+            "built_text": built,
+            "station_text": station,
+            "layout": layout,
+            "url": detail_url,
+            # 戸建ては区分所有と違い管理規約が存在しない(建物を丸ごと所有)ため、
+            # ペット可否は所有者判断。「不明=不可寄り」のスコア減点対象から外すため明示的に可とする。
+            "pet": "可",
+        })
+
+    return properties
+
+
+def scrape_ward_kodate(pref_slug: str, ward_slug: str, ward_name: str) -> list[dict]:
+    """Scrape all pages of 中古一戸建て listings for a single ward."""
+    print(f"\n  {ward_name} ({ward_slug}) 戸建て検索中...")
+    all_props = []
+    page = 1
+    max_pages = 10
+
+    while page <= max_pages:
+        url = build_search_url_kodate(pref_slug, ward_slug, page)
+        html = fetch_page(url)
+        if not html:
+            break
+
+        props = parse_listing_page_kodate(html)
+        if not props:
+            break
+
+        all_props.extend(props)
+        print(f"    Page {page}: {len(props)}件 (累計: {len(all_props)}件)")
+
+        if f"page={page + 1}" not in html:
+            break
+
+        page += 1
+        time.sleep(1.5)
+
+    return all_props
+
+
+def search_suumo_kodate(city_key: str) -> list[dict]:
+    """Search SUUMO 中古一戸建て for all wards in a city."""
+    config = WARD_CONFIGS.get(city_key)
+    if not config:
+        print(f"No SUUMO config for {city_key}")
+        return []
+
+    pref_slug = config["pref_slug"]
+    print(f"\n=== SUUMO戸建て ({city_key}) 検索中... ===")
+
+    all_properties = []
+    for ward_slug, ward_name in config["wards"].items():
+        props = scrape_ward_kodate(pref_slug, ward_slug, ward_name)
+        all_properties.extend(props)
+        time.sleep(2)
+
+    seen_urls = set()
+    deduped = []
+    for p in all_properties:
+        if p["url"] not in seen_urls:
+            seen_urls.add(p["url"])
+            deduped.append(p)
+
+    dup_count = len(all_properties) - len(deduped)
+    if dup_count > 0:
+        print(f"  重複除外: {dup_count}件")
+    print(f"  SUUMO戸建て {city_key} 合計: {len(deduped)}件")
+    return deduped
+
+
+def save_results_kodate(properties: list[dict], city_key: str) -> Path:
+    """Save 戸建て results to pipe-delimited data file (12-column format, source=SUUMO(戸建))."""
+    DATA_DIR.mkdir(exist_ok=True)
+    out_path = DATA_DIR / f"suumo_kodate_{city_key}_raw.txt"
+
+    if not properties and out_path.exists():
+        existing_lines = [l for l in out_path.read_text(encoding="utf-8").splitlines()
+                         if l and not l.startswith("#")]
+        if existing_lines:
+            import re as _re
+            content = out_path.read_text(encoding="utf-8")
+            date_m = _re.search(r"## 取得日: (\d{4}-\d{2}-\d{2})", content)
+            stale_days = 0
+            if date_m:
+                from datetime import date as _date
+                last_date = _date.fromisoformat(date_m.group(1))
+                stale_days = (_date.today() - last_date).days
+            print(f"  [GUARD:STALE] {out_path.name}: 0件取得 — 既存{len(existing_lines)}件を保護 (データ {stale_days}日前)")
+            import sys as _sys
+            _sys.exit(2)
+
+    lines = [
+        f"## SUUMO戸建て検索結果 - {city_key}",
+        f"## 条件: {KODATE_PRICE_MAX_MAN}万以下, {KODATE_AREA_MIN}㎡以上",
+        f"## 取得日: {datetime.now().strftime('%Y-%m-%d')}",
+        f"## 件数: {len(properties)}件",
+        "",
+    ]
+
+    for prop in properties:
+        line = "|".join([
+            "SUUMO(戸建)",
+            prop["name"],
+            prop["price_text"],
+            prop["location"],
+            prop["area_text"],
+            prop["built_text"],
+            prop["station_text"],
+            prop["layout"],
+            prop.get("pet", ""),
+            "",  # brokerage
+            "",  # maintenance — 戸建ては管理費/修繕積立金の概念なし
+            prop["url"],
+        ])
+        lines.append(line)
+
+    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return out_path
+
+
 def main():
-    """Search target cities. Optional first arg: city key (osaka/fukuoka/tokyo)."""
+    """Search target cities. Optional first arg: city key (osaka/fukuoka/tokyo).
+
+    Optional --mode kodate: search 中古一戸建て instead of マンション.
+    """
     import sys as _sys
-    target_cities = [_sys.argv[1]] if len(_sys.argv) > 1 and _sys.argv[1] in WARD_CONFIGS else ["osaka", "fukuoka", "tokyo"]
+    args = _sys.argv[1:]
+    mode = "mansion"
+    if "--mode" in args:
+        idx = args.index("--mode")
+        mode = args[idx + 1]
+        del args[idx:idx + 2]
+    target_cities = [args[0]] if args and args[0] in WARD_CONFIGS else ["osaka", "fukuoka", "tokyo"]
+
+    if mode == "kodate":
+        print(f"SUUMO戸建て検索 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+        print(f"条件: {KODATE_PRICE_MAX_MAN}万以下, {KODATE_AREA_MIN}㎡以上")
+        print(f"対象都市: {', '.join(target_cities)}")
+        for city_key in target_cities:
+            props = search_suumo_kodate(city_key)
+            if props:
+                out = save_results_kodate(props, city_key)
+                print(f"  出力: {out}")
+            else:
+                save_results_kodate([], city_key)
+                print("  条件に合う物件なし")
+        return
 
     print(f"SUUMO物件検索 - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print(f"条件: {PRICE_MAX_MAN}万以下, {AREA_MIN}-{AREA_MAX}㎡")
@@ -439,7 +657,7 @@ def main():
             print(f"  出力: {out}")
         else:
             save_results([], city_key)
-            print(f"  条件に合う物件なし")
+            print("  条件に合う物件なし")
 
 
 if __name__ == "__main__":

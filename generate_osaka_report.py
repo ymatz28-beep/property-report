@@ -27,6 +27,10 @@ def find_extra_data_paths(city_key: str) -> list[Path]:
     lifull = DATA_DIR / f"lifull_{city_key}_raw.txt"
     if lifull.exists():
         paths.append(lifull)
+    # SUUMO 中古一戸建て（管理規約なし・スコア加点対象、Yuma要望2026-07-08）
+    kodate = DATA_DIR / f"suumo_kodate_{city_key}_raw.txt"
+    if kodate.exists():
+        paths.append(kodate)
     return paths
 
 
@@ -54,7 +58,7 @@ def main() -> None:
             "セゾンファンデックス・筑波銀行の融資枠を活用",
             "特区民泊の制度期限は2026/5/29。間に合わなければ簡易宿所許可で対応",
             "管理規約の民泊可否は個別確認が必要",
-            "戸建て・メゾネットは管理規約制約なしのため並行検索推奨",
+            "戸建て（SUUMO中古一戸建て）は管理規約制約なしのため優先スコア加点（+20）で検索中",
         ],
         include_osaka_r=True,
         extra_data_paths=find_extra_data_paths("osaka"),

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime as dt
-import html
 import json
 import re
 import sys
@@ -724,6 +723,11 @@ def brokerage_score(row: PropertyRow) -> int:
     return 0
 
 
+def kodate_bonus(row: PropertyRow) -> int:
+    """戸建て加点: 区分所有と違い管理規約が無く、民泊運営の自由度が高い(Yuma要望2026-07-08)。"""
+    return 20 if "戸建" in row.source else 0
+
+
 def renovation_score(row: PropertyRow) -> int:
     """Renovation scoring: unrenovated=+5, renovated=-5, R不動産 renovated=0 (exception)"""
     text = f"{row.name} {row.raw_line}".lower()
@@ -850,6 +854,7 @@ def score_row(row: PropertyRow, config: ReportConfig) -> None:
         "maintenance": maintenance_fee_score(row.maintenance_fee),
         "renovation": renovation_score(row),
         "brokerage": brokerage_score(row),
+        "kodate": kodate_bonus(row),
         "minpaku_penalty": minpaku_penalty(row),
     }
     row.score_breakdown = breakdown

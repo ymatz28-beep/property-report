@@ -54,6 +54,11 @@ STEP_FIX: dict[str, dict[str, str]] = {
         "stale_data": "SUUMO東京: 0件取得(guard発動)。HTMLセレクタ変化の疑い。search_suumo.pyのparse_listing_pageを確認",
         "default": "SUUMO側のブロック可能性。User-Agent or wait時間を見直す",
     },
+    "search_suumo.py osaka --mode kodate": {
+        "timeout": "SUUMO大阪戸建てタイムアウト。4区取得が遅延",
+        "stale_data": "SUUMO大阪戸建て: 0件取得(guard発動)。HTMLセレクタ変化の疑い。search_suumo.pyのparse_listing_page_kodateを確認",
+        "default": "SUUMO側のブロック可能性。User-Agent or wait時間を見直す",
+    },
     "enrich_maintenance.py": {
         "timeout": "設計上の仕様（600s budget制）。未取得分は翌日継続。アクション不要",
         "default": "管理費ページのHTML構造変化の可能性。パーサー確認",
@@ -77,6 +82,7 @@ STEP_LABELS = {
     "search_suumo.py (fukuoka)": ("SUUMO物件検索(福岡)", "SUUMO福岡の物件データが未更新"),
     "search_suumo.py (tokyo)": ("SUUMO物件検索(東京)", "SUUMO東京の物件データが未更新"),
     "search_multi_site.py": ("Yahoo不動産/楽待検索", "Yahoo/楽待の物件データが未更新"),
+    "search_suumo.py osaka --mode kodate": ("SUUMO戸建て検索(大阪)", "SUUMO大阪の戸建てデータが未更新"),
     "search_restate.py": ("RE-STATE検索", "RE-STATEの物件データが未更新"),
     "search_ftakken.py": ("F宅建検索", "F宅建の物件データが未更新"),
     "search_lifull.py": ("LIFULL検索", "LIFULLの物件データが未更新"),
@@ -414,7 +420,6 @@ def search_all_sites() -> list[dict]:
             )
         suumo_procs[city] = (proc, stderr_path, time.time())
 
-    import os as _os, signal as _sig
     suumo_ok = True
     for city, timeout in suumo_cities:
         proc, stderr_path, t0 = suumo_procs[city]
@@ -467,6 +472,7 @@ def search_all_sites() -> list[dict]:
     log("=== 物件検索: 他ソース（並列） ===")
     parallel_steps = [
         ("search_multi_site.py", 600),
+        ("search_suumo.py osaka --mode kodate", 300),
         ("search_restate.py", 300),
         ("search_ftakken.py --mode kubun", 300),
         ("search_ftakken.py --mode ittomono", 300),
@@ -1199,7 +1205,7 @@ def main():
 def _mint_dispatch_token(project: str, failed_steps: list[str]) -> str:
     """Issue a one-shot token for reply routing. Persists to dispatch_tokens.yaml
     with 72h TTL so the future reply_dispatcher can validate + mark consumed."""
-    import hashlib, secrets, yaml
+    import secrets, yaml
     tok = secrets.token_hex(6)  # 12-char hex, short enough for subject
     token_file = BASE_DIR / "data" / "dispatch_tokens.yaml"
     try:

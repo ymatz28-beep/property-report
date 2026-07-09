@@ -520,6 +520,22 @@ def parse_listing_page_kodate(html: str) -> list[dict]:
     return properties
 
 
+def check_kodate_land_rights(url: str) -> str:
+    """Fetch 戸建て detail page and return the 土地の権利形態 text.
+
+    List-page cards never expose this field (confirmed empty on a live
+    fetch); it only appears in the detail page's spec table, so a filter
+    on it requires this extra request per candidate.
+    """
+    html = fetch_page(url)
+    if not html:
+        return ""
+    m = re.search(r"土地の権利形態</div>.*?</th>\s*<td[^>]*>(.*?)</td>", html, re.DOTALL)
+    if not m:
+        return ""
+    return re.sub(r"\s+", "", m.group(1))
+
+
 def scrape_ward_kodate(pref_slug: str, ward_slug: str, ward_name: str) -> list[dict]:
     """Scrape all pages of 中古一戸建て listings for a single ward."""
     print(f"\n  {ward_name} ({ward_slug}) 戸建て検索中...")
@@ -537,7 +553,14 @@ def scrape_ward_kodate(pref_slug: str, ward_slug: str, ward_name: str) -> list[d
         if not props:
             break
 
-        all_props.extend(props)
+        for prop in props:
+            land_rights = check_kodate_land_rights(prop["url"])
+            time.sleep(1.0)
+            if any(kw in land_rights for kw in ("賃借権", "借地権", "地上権")):
+                print(f"    除外(借地権): {prop['name']} {prop['price_text']} — {land_rights}")
+                continue
+            all_props.append(prop)
+
         print(f"    Page {page}: {len(props)}件 (累計: {len(all_props)}件)")
 
         if f"page={page + 1}" not in html:

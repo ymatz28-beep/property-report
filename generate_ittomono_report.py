@@ -106,6 +106,12 @@ def parse_data_file(data_path: Path, city_key: str) -> list[IttomonoRow]:
         else:
             continue
 
+        # URL column position varies: legacy format has it last, but newer
+        # save_results() (search_ittomono.py) appends minpaku_fit/dscr_value
+        # after it. Find the field that actually looks like a URL instead of
+        # assuming a fixed position, so trailing-field additions never break links.
+        url = next((p for p in reversed(parts) if p.startswith("http")), parts[-1])
+
         row = IttomonoRow(
             source=parts[offset],
             name=parts[offset + 1],
@@ -118,7 +124,7 @@ def parse_data_file(data_path: Path, city_key: str) -> list[IttomonoRow]:
             units=parts[offset + 8],
             yield_text=parts[offset + 9],
             layout_detail=parts[offset + 10],
-            url=parts[-1],  # URL is always the last column
+            url=url,
             city_key=city_key,
         )
         if offset == 1:

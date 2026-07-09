@@ -298,10 +298,22 @@ def _parse_rakumachi_ittomono(html: str, city_key: str, dim_label: str, region: 
     )
     seen_ids = set()
 
-    # Pre-collect to use next-URL as end boundary (avoids previous property contamination)
-    all_matches = list(url_pattern.finditer(html))
+    # Card boundary: each listing lives inside <div class="propertyBlock ...">.
+    # Its <p class="propertyBlock__name"> sits BEFORE the <a href>, in the same
+    # card. The old href-to-next-href window started AT the href, so it excluded
+    # this card's own name and instead captured the NEXT card's name — pairing
+    # every listing's URL/price/location with the following listing's name.
+    # Splitting on the propertyBlock div start keeps name+url+price together
+    # (same fix already applied to the 健美家 scraper's prop_block parsing).
+    card_re = re.compile(r'<div class="propertyBlock(?:\s|")')
+    card_starts = [m.start() for m in card_re.finditer(html)]
+    card_starts.append(len(html))
 
-    for i, match in enumerate(all_matches):
+    for i in range(len(card_starts) - 1):
+        card = html[card_starts[i]:card_starts[i + 1]]
+        match = url_pattern.search(card)
+        if not match:
+            continue
         prop_url = match.group(1)
         prop_id = match.group(2)
         if prop_id in seen_ids:
@@ -311,15 +323,7 @@ def _parse_rakumachi_ittomono(html: str, city_key: str, dim_label: str, region: 
         if not prop_url.startswith("http"):
             prop_url = "https://www.rakumachi.jp" + prop_url
 
-        # Context: from this URL forward to the next property URL (no lookback)
-        start = match.start()
-        if i + 1 < len(all_matches):
-            end = all_matches[i + 1].start()
-        else:
-            end = min(len(html), match.end() + 3000)
-        context = html[start:end]
-
-        prop = _extract_ittomono_fields(context, prop_url, prop_id, city_key, dim_label)
+        prop = _extract_ittomono_fields(card, prop_url, prop_id, city_key, dim_label)
         if prop:
             if is_target_location(prop["location"], city_key):
                 properties.append(prop)

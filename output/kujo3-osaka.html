@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>九条3丁目 借地権戸建て 精査レポート — iUMA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@500&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #242836;
+  --card: #1a1d27;
+  --card-hover: #242836;
+  --border: #2d3348;
+  --border-light: #3d4460;
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.12);
+  --accent: #6366f1;
+  --accent2: #8b5cf6;
+  --blue: #3b82f6;
+  --purple: #6366f1;
+  --orange: #ff6b35;
+  --green: #22c55e;
+  --green-light: #4ade80;
+  --red: #ef4444;
+  --red-light: #f87171;
+  --yellow: #eab308;
+  --amber: #fbbf24;
+  --blue-dim: #2d5a8a;
+  --green-dim: #166534;
+  --gold-glow: rgba(201,168,76,0.15);
+  --blue-glow: rgba(74,144,217,0.12);
+  --text: #e4e4e7;
+  --text-secondary: #9ca3af;
+  --text-muted: #7c8293;
+  --text-decorative: #5f6678;
+  --font-display: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --bp-mobile: 640px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1200px;
+  --shadow-card: 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-hover: 0 8px 32px rgba(0,0,0,0.3);
+  --focus-ring: 2px solid #6366f1;
+  --focus-offset: 2px;
+  --active-scale: 0.97;
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --skeleton-base: #1a1d27;
+  --skeleton-shine: #242836;
+  --gnav-height: 52px;
+  --z-nav: 100;
+  --z-subnav: 90;
+  --z-modal: 200;
+  --z-toast: 300;
+  --fs-display: clamp(22px, 4vw, 36px);
+  --fs-h1: clamp(20px, 2.5vw, 26px);
+  --fs-h2: clamp(16px, 2vw, 22px);
+  --fs-h3: clamp(14px, 1.8vw, 18px);
+  --fs-body: clamp(14px, 3.6vw, 15px);
+  --fs-small: 12px;
+  --fs-xs: clamp(11px, 3vw, 12px);
+}
+
+/* === Reset === */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; scroll-padding-top: calc(var(--gnav-height, 52px) + 60px); }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* === Utilities === */
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.container-narrow { max-width: 720px; margin: 0 auto; padding: 24px; }
+.container-wide { max-width: 1280px; margin: 0 auto; padding: 24px; }
+.hide-mobile { }  /* overridden at 640px */
+.show-mobile { display: none; }
+.pnl-positive { color: var(--green); }
+.pnl-negative { color: var(--red); }
+
+/* === Fluid Typography === */
+.text-display { font-size: var(--fs-display); font-weight: 700; font-family: var(--font-display); line-height: 1.1; }
+.text-h1 { font-size: var(--fs-h1); font-weight: 700; line-height: 1.2; }
+.text-h2 { font-size: var(--fs-h2); font-weight: 700; line-height: 1.3; }
+.text-h3 { font-size: var(--fs-h3); font-weight: 600; line-height: 1.4; }
+.text-body { font-size: var(--fs-body); }
+.text-small { font-size: var(--fs-small); }
+.text-xs { font-size: var(--fs-xs); }
+.text-mono { font-family: var(--font-mono); }
+
+/* === Stat Grid (responsive auto-fit) === */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-4);
+}
+
+/* === Section Spacing === */
+.section { padding: var(--space-8) 0; }
+.section + .section { border-top: 1px solid var(--border); }
+
+/* === Responsive grid === */
+.responsive-grid { display: grid; gap: 16px; }
+.responsive-grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+.responsive-grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+/* === Table Scroll Indicator === */
+.table-scroll-wrap {
+  position: relative;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-scroll-wrap::after {
+  content: '→ scroll';
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  font-size: 9px;
+  color: var(--text-muted);
+  background: var(--surface);
+  padding: 2px 6px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.table-scroll-wrap.has-scroll::after { opacity: 1; }
+
+/* === Focus States (WCAG 2.1 AA) === */
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+button:focus-visible, a:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* === Interactive Elements === */
+button, .btn, [role="button"] {
+  transition: transform var(--transition-fast), background var(--transition-fast);
+  cursor: pointer;
+}
+button:active, .btn:active, [role="button"]:active {
+  transform: scale(var(--active-scale));
+}
+
+/* === Skeleton Loading === */
+.skeleton {
+  background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 50%, var(--skeleton-base) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* === Trend Indicators === */
+.trend-up { color: var(--green); }
+.trend-up::before { content: '▲ '; font-size: 0.75em; }
+.trend-down { color: var(--red); }
+.trend-down::before { content: '▼ '; font-size: 0.75em; }
+.trend-flat { color: var(--text-muted); }
+.trend-flat::before { content: '— '; }
+
+/* === Empty State === */
+.empty-state {
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: var(--space-12); margin-bottom: var(--space-4); opacity: 0.3; }
+.empty-state .empty-title { font-size: var(--fs-h3); font-weight: 600; margin-bottom: var(--space-2); color: var(--text-secondary); }
+.empty-state .empty-desc { font-size: var(--fs-body); }
+
+/* === Toast Notification === */
+.toast {
+  position: fixed; bottom: var(--space-6); right: var(--space-6);
+  background: var(--surface2); color: var(--text);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md); border: 1px solid var(--border);
+  box-shadow: var(--shadow-hover);
+  font-size: var(--fs-small);
+  z-index: var(--z-toast);
+  animation: slideInUp 0.3s ease;
+}
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* === Progress Ring (CSS conic-gradient) === */
+.progress-ring {
+  --progress: 0;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) calc(var(--progress) * 1%), var(--border) 0);
+  display: flex; align-items: center; justify-content: center;
+}
+.progress-ring::after {
+  content: '';
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+/* === Badge variants === */
+.badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: var(--fs-xs); font-weight: 600; }
+.badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+.badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+.badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+.badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+.badge-muted { background: rgba(124,130,147,0.15); color: var(--text-muted); }
+
+/* === Animations === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== Tablet (768px) ===== */
+@media (max-width: 768px) {
+  .responsive-grid.cols-2,
+  .responsive-grid.cols-3 { grid-template-columns: 1fr; }
+}
+
+/* ===== Mobile (640px) ===== */
+@media (max-width: 640px) {
+  .container { padding: 12px; }
+  .hide-mobile { display: none; }
+  .show-mobile { display: block; }
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+  }
+  .section { padding: var(--space-4) 0; }
+}
+
+/* ===== Extra small (380px) ===== */
+@media (max-width: 380px) {
+  .container { padding: 8px; }
+  .stat-grid { grid-template-columns: 1fr; }
+}
+
+.dd-wrap { padding-top: var(--space-6); padding-bottom: var(--space-10); }
+.dd-hero { margin-bottom: var(--space-6); }
+.dd-hero h1 { font-size: var(--fs-h1); font-weight: 700; margin-bottom: var(--space-2); }
+.dd-hero .dd-meta { color: var(--text-muted); font-size: var(--fs-small); }
+.dd-hero .dd-meta a { color: var(--accent); }
+
+.dd-section { margin: var(--space-8) 0; scroll-margin-top: calc(var(--gnav-height, 52px) + 48px); }
+.dd-section h2 { font-size: var(--fs-h2); font-weight: 700; margin-bottom: var(--space-3); padding-left: 10px; border-left: 3px solid var(--gold); }
+.dd-section .dd-note { color: var(--text-muted); font-size: var(--fs-small); line-height: 1.7; margin: var(--space-3) 0; }
+.dd-section .dd-verdict { border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-3) 0; font-size: var(--fs-small); line-height: 1.7; background: var(--surface); border: 1px solid var(--border); }
+.dd-section .dd-verdict.dd-favorable { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.25); }
+.dd-section .dd-verdict.dd-risk { background: rgba(234,179,8,0.08); border-color: rgba(234,179,8,0.25); }
+
+/* property card */
+.dd-defects { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--space-3); }
+.dd-defect-tag { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.3); border-radius: 999px; padding: 3px 10px; font-size: var(--fs-xs); font-weight: 600; }
+
+/* generic table */
+.dd-table { width: 100%; border-collapse: collapse; margin: var(--space-3) 0; font-size: var(--fs-small); }
+.dd-table th { text-align: left; padding: 6px 10px; color: var(--text-muted); font-weight: 600; font-size: var(--fs-xs); border-bottom: 1px solid var(--border); }
+.dd-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.dd-table tr.dd-highlight td { font-weight: 700; color: var(--gold); }
+@media (max-width: 640px) { .dd-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; } .dd-table th, .dd-table td { white-space: nowrap; } }
+
+/* offer scenarios */
+.dd-scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-3); margin: var(--space-3) 0; }
+.dd-scenario-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); text-align: center; }
+.dd-scenario-card .dd-s-label { font-size: var(--fs-xs); color: var(--text-muted); margin-bottom: 4px; }
+.dd-scenario-card .dd-s-price { font-size: var(--fs-h3); font-weight: 800; font-family: var(--font-mono); color: var(--text); }
+.dd-scenario-card .dd-s-pct { font-size: var(--fs-xs); color: var(--text-secondary); margin-top: 2px; }
+
+/* contractor / platform cards */
+.dd-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); margin: var(--space-3) 0; }
+.dd-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); }
+.dd-card h3 { font-size: var(--fs-body); font-weight: 700; margin-bottom: 4px; }
+.dd-card p { font-size: var(--fs-small); color: var(--text-secondary); line-height: 1.6; margin-bottom: 6px; }
+.dd-card a { color: var(--accent); font-size: var(--fs-xs); word-break: break-all; }
+.dd-subheading { font-size: var(--fs-body); margin-top: var(--space-4); margin-bottom: var(--space-2); }
+
+/* next actions */
+.dd-actions { list-style: none; padding: 0; }
+.dd-actions li { padding: 6px 0 6px 22px; position: relative; font-size: var(--fs-small); border-bottom: 1px solid var(--border); }
+.dd-actions li::before { content: '☐'; position: absolute; left: 0; color: var(--text-muted); }
+
+/* sources */
+.dd-sources { list-style: none; padding: 0; font-size: var(--fs-xs); color: var(--text-muted); }
+.dd-sources li { padding: 3px 0; }
+.dd-sources a { color: var(--accent); word-break: break-all; }
+
+/* ── flowchart ── */
+.dd-flow { display: flex; flex-direction: column; align-items: center; gap: 0; margin: var(--space-4) 0; }
+.dd-fbox { display: block; width: 100%; max-width: 640px; background: var(--surface); border: 2px solid var(--gold); border-radius: 12px; padding: 12px 16px; text-decoration: none; color: var(--text); }
+.dd-fbox b { display: block; font-size: var(--fs-body); }
+.dd-fbox small { display: block; color: var(--text-secondary); font-size: var(--fs-xs); margin-top: 3px; line-height: 1.5; }
+.dd-fbox.dd-first { background: rgba(201,168,76,0.1); }
+.dd-fbox.dd-gate { border-color: var(--red); }
+.dd-fbox.dd-end { border-color: var(--green); }
+.dd-fbox .dd-badge { display: inline-block; background: var(--gold); color: #1a1207; font-weight: 800; font-size: var(--fs-xs); padding: 2px 9px; border-radius: 999px; margin-bottom: 5px; }
+.dd-farrow { color: var(--gold); font-weight: 700; font-size: var(--fs-small); padding: 6px 0; text-align: center; }
+.dd-frow { display: flex; gap: 12px; width: 100%; max-width: 640px; }
+.dd-frow .dd-fbox { flex: 1; max-width: none; }
+
+/* ── sticky TOC ── */
+.dd-toc { position: sticky; top: var(--gnav-height, 52px); z-index: 90; box-sizing: border-box; width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); background: rgba(15,17,23,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 8px 16px; display: flex; justify-content: center; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; border-bottom: 1px solid var(--border); scrollbar-width: none; }
+.dd-toc::-webkit-scrollbar { display: none; }
+.dd-toc .dd-chip { flex: 0 0 auto; background: var(--surface2); color: var(--text-secondary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 999px; font-size: var(--fs-xs); font-weight: 600; text-decoration: none; white-space: nowrap; min-height: 44px; display: flex; align-items: center; }
+.dd-toc .dd-chip.active { background: var(--gold); color: #1a1207; border-color: var(--gold); }
+
+/* ── back to top ── */
+#totop { position: fixed; right: 16px; bottom: 16px; z-index: 95; background: var(--gold); color: #1a1207; border: none; width: 46px; height: 46px; border-radius: 50%; font-size: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.3); opacity: 0; pointer-events: none; transition: opacity .2s; }
+#totop.show { opacity: .95; pointer-events: auto; }
+
+@media (max-width: 700px) {
+  .dd-flow .dd-frow { flex-direction: column; }
+}
+
+@media print {
+  .dd-toc, #totop, .site-header, .iuma-footer { display: none; }
+  body { padding: 0; font-size: 10.5pt; }
+  @page { margin: 14mm 12mm; }
+  .dd-fbox { box-shadow: none; }
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; break-inside: avoid; page-break-inside: avoid; }
+  .dd-table { break-inside: auto; page-break-inside: auto; }
+  .dd-table tr, .dd-table td, .dd-table th { break-inside: avoid; page-break-inside: avoid; }
+  .dd-table thead { display: table-header-group; }
+  blockquote, pre, li, img { break-inside: avoid; page-break-inside: avoid; }
+  p { orphans: 3; widows: 3; }
+}
+</style>
+</head>
+<body>
+
+<style>
+/* ── Shared Gnav ── */
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: var(--gnav-height, 52px);
+  background: rgba(22,24,31,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky; top: 0; z-index: var(--z-nav, 100);
+}
+.site-nav { display: flex; gap: 4px; align-items: center; }
+.site-nav a {
+  color: #71717a; text-decoration: none; font-size: 13px; font-weight: 500;
+  padding: 6px 14px; border-radius: 6px; transition: background .15s, color .15s;
+}
+.site-nav a:hover, .site-nav a[aria-current="page"] {
+  background: rgba(255,255,255,0.065); color: #f5f5f7;
+}
+
+/* Overflow dropdown */
+.nav-more { position: relative; }
+.nav-more-btn {
+  color: #71717a; font-size: 18px; font-weight: 700; letter-spacing: 2px;
+  padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  background: none; border: none; transition: background .15s, color .15s;
+  line-height: 1;
+}
+.nav-more-btn:hover { background: rgba(255,255,255,0.065); color: #f5f5f7; }
+.nav-more-menu {
+  display: none; position: absolute; right: 0; top: calc(100% + 8px);
+  background: rgba(22,24,31,0.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+  padding: 6px; min-width: 180px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  max-height: calc(100vh - var(--gnav-height, 52px) - 24px);
+  overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+}
+.nav-more-menu a {
+  display: block; padding: 10px 14px; border-radius: 6px;
+  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
+  transition: background .15s, color .15s; white-space: nowrap;
+}
+.nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
+  background: rgba(255,255,255,0.065); color: #f5f5f7;
+}
+.nav-more.open .nav-more-menu { display: block; }
+
+/* ── Section Nav (sibling tabs) ── */
+.section-nav {
+  display: flex; gap: 4px; align-items: center;
+  padding: 8px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: rgba(22,24,31,0.70); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: sticky; top: var(--gnav-height, 52px); z-index: calc(var(--z-nav, 100) - 1);
+  scrollbar-width: none;
+}
+.section-nav::-webkit-scrollbar { display: none; }
+.section-nav a {
+  flex-shrink: 0; color: #9ca3af; text-decoration: none;
+  font-size: 12px; font-weight: 500;
+  padding: 6px 12px; border-radius: 6px;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+.section-nav a:hover { background: rgba(255,255,255,0.065); color: #f5f5f7; }
+.section-nav a[aria-current="page"] {
+  background: rgba(99,102,241,0.18); color: #c7d2fe;
+}
+
+/* Hamburger toggle */
+.nav-toggle { display: none; }
+.nav-toggle-label { display: none; cursor: pointer; padding: 8px; }
+.nav-toggle-label span,
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  display: block; background: #f5f5f7; height: 2px; width: 20px;
+  border-radius: 2px; position: relative; transition: .3s;
+}
+.nav-toggle-label span::before,
+.nav-toggle-label span::after { content: ''; position: absolute; }
+.nav-toggle-label span::before { top: -6px; }
+.nav-toggle-label span::after { top: 6px; }
+
+/* Mobile: all items in hamburger (flat list, no dropdown) */
+@media (max-width: 640px) {
+  .nav-toggle-label { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
+  .site-nav {
+    display: none; flex-direction: column; align-items: stretch; gap: 0;
+    position: absolute; top: var(--gnav-height, 52px); left: 0; right: 0; z-index: var(--z-modal, 200);
+    background: rgba(22,24,31,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 0;
+    max-height: calc(100vh - var(--gnav-height, 52px));
+    overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  }
+  .site-nav a { padding: 12px 24px; border-radius: 0; font-size: 14px; }
+  .nav-toggle:checked ~ .site-nav { display: flex; }
+  .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
+  .nav-toggle:checked ~ .nav-toggle-label span::before { top: 0; transform: rotate(45deg); }
+  .nav-toggle:checked ~ .nav-toggle-label span::after { top: 0; transform: rotate(-45deg); }
+  /* Hide dropdown container on mobile — items show as flat list */
+  .nav-more { display: contents; }
+  .nav-more-btn { display: none; }
+  .nav-more-menu { display: contents !important; position: static; background: none; border: none; box-shadow: none; padding: 0; min-width: auto; }
+  .nav-more-menu a { padding: 12px 24px; border-radius: 0; font-size: 14px; color: #71717a; }
+}
+</style>
+
+<header class="site-header">
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+  <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
+  <nav class="site-nav">
+    <a href="/stock/portfolio.html"
+>
+      Stock
+    </a>
+    <a href="/stock/market-intel.html"
+>
+      Market Intel
+    </a>
+    <a href="/cisco/"
+>
+      Cisco
+    </a>
+    <a href="/action/"
+>
+      Action
+    </a>
+    <a href="https://ymatz28-beep.github.io/property-report/"
+>
+      Property
+    </a>
+
+    <div class="nav-more">
+      <button class="nav-more-btn" aria-label="More pages" onclick="this.parentElement.classList.toggle('open')">⋯</button>
+      <div class="nav-more-menu">
+        <a href="/wealth/dashboard.html"
+>
+          Wealth
+        </a>
+        <a href="/trading/"
+>
+          Trading
+        </a>
+        <a href="/intel/"
+>
+          Insight
+        </a>
+        <a href="/health/"
+>
+          Health
+        </a>
+        <a href="https://iuma-family.pages.dev/"
+>
+          Medical
+        </a>
+        <a href="https://ymatz28-beep.github.io/trip-planner/"
+>
+          Travel
+        </a>
+        <a href="/newsletter/"
+>
+          Newsletter
+        </a>
+        <a href="/bookmarks/"
+>
+          Bookmarks
+        </a>
+        <a href="/bookmarks/decide.html"
+>
+          判定
+        </a>
+        <a href="/sns/"
+>
+          SNS
+        </a>
+        <a href="/monetize/"
+>
+          Monetize
+        </a>
+        <a href="https://ymatz28-beep.github.io/self-insight/"
+>
+          Self-Insight
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+
+<script>
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  var m = document.querySelector('.nav-more');
+  if (m && !m.contains(e.target)) m.classList.remove('open');
+});
+</script>
+
+<div class="container-narrow dd-wrap">
+
+  <div class="dd-hero">
+    <h1>九条3丁目 借地権戸建て 精査レポート</h1>
+    <p class="dd-meta">大阪市西区九条3丁目 中古一戸建て／1,880万円 ／ 自動生成: 2026-07-09 22:39 ／ <a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashinishi/nc_76619760/" target="_blank" rel="noopener">元物件情報</a></p>
+  </div>
+
+  <section class="dd-section" id="flow">
+    <h2>全体の流れ（上から着手順）</h2>
+    <div class="dd-flow">
+      <a class="dd-fbox dd-first dd-first" href="#license">
+<span class="dd-badge">▶ いまここから</span>        <b>1. 地主への事前相談（最重要ゲート）</b>
+        <small>簡易宿所（旅館業）としての利用可否・地主の承諾書取得を最優先で確認。ここが通らなければ全計画が成立しない</small>
+      </a>
+<div class="dd-farrow">▼</div>      <a class="dd-fbox" href="#offer">
+        <b>2. 指値交渉</b>
+        <small>借地権物件は流動性が低く売れ残りやすいため交渉余地あり。1,880万円→1,650〜1,750万円を目標</small>
+      </a>
+<div class="dd-farrow">▼</div><div class="dd-frow">      <a class="dd-fbox" href="#financing">
+        <b>3A. 融資事前審査（地主承諾書取得後）</b>
+        <small>みずほ・三井住友銀行等、旧法賃借権＋承諾書ありで対応可能な金融機関へ打診</small>
+      </a>
+      <a class="dd-fbox" href="#tax">
+        <b>3B. 役所への事前確認</b>
+        <small>大阪市保健所へ簡易宿所許可の要件（消防設備・構造適合）を確認、税事務所へ建物分の固定資産税額を確認</small>
+      </a>
+</div><div class="dd-farrow">▼</div>      <a class="dd-fbox" href="#contractors">
+        <b>4. リノベ＋消防設備工事発注</b>
+        <small>簡易宿所は旅館業法の重い消防基準（スプリンクラー等）がかかりうるため、着工前に消防署へ事前相談必須</small>
+      </a>
+<div class="dd-farrow">▼</div>      <a class="dd-fbox dd-end" href="#license">
+        <b>5. 旅館業法（簡易宿所）許可申請→運用開始</b>
+        <small>商業地域のため許可取得のハードルは住居系地域より低い。365日営業可、住宅宿泊管理業者への外注義務なし</small>
+      </a>
+    </div>
+  </section>
+
+  <nav class="dd-toc" id="toc">
+    <a class="dd-chip" href="#property" data-target="property">物件概要</a>
+    <a class="dd-chip" href="#offer" data-target="offer">指値</a>
+    <a class="dd-chip" href="#renovation" data-target="renovation">リノベ費用</a>
+    <a class="dd-chip" href="#tax" data-target="tax">固定資産税</a>
+    <a class="dd-chip" href="#license" data-target="license">許認可</a>
+    <a class="dd-chip" href="#pnl" data-target="pnl">収支</a>
+    <a class="dd-chip" href="#financing" data-target="financing">融資</a>
+    <a class="dd-chip" href="#contractors" data-target="contractors">工務店</a>
+    <a class="dd-chip" href="#next" data-target="next">Next</a>
+    <a class="dd-chip" href="#sources" data-target="sources">参考</a>
+  </nav>
+
+  <section class="dd-section" id="property">
+    <h2>物件概要</h2>
+    <table class="dd-table">
+      <tbody>
+        <tr><th>所在地</th><td>大阪市西区九条3丁目（地下鉄中央線「九条」徒歩5分）</td></tr>
+        <tr><th>種別</th><td>中古一戸建て（鉄骨2階建）</td></tr>
+        <tr><th>土地/建物</th><td>117.72㎡（実測・旧法賃借権）/ 127.74㎡（登記）</td></tr>
+        <tr><th>築年</th><td>1985年3月築（新耐震基準）</td></tr>
+        <tr><th>間取り</th><td>4DK</td></tr>
+        <tr><th>価格</th><td>1,880万円</td></tr>
+        <tr><th>用途地域</th><td>商業地域（建ぺい率80%・容積率400%）</td></tr>
+        <tr><th>地代</th><td>6万5,000円/月（年間78万円）</td></tr>
+        <tr><th>借地条件</th><td>旧法賃借権、残存16年2ヶ月</td></tr>
+        <tr><th>仲介</th><td>センチュリー21ウエストエリア(株) 06-6585-6963（担当：吉田直也）</td></tr>
+      </tbody>
+    </table>
+    <div class="dd-defects">
+<span class="dd-defect-tag">土地は旧法賃借権（所有権なし）</span><span class="dd-defect-tag">地代 月6.5万円が固定費で別途発生</span><span class="dd-defect-tag">地主の承諾なしに転貸・商業利用不可の可能性</span>    </div>
+  </section>
+
+  <section class="dd-section" id="offer">
+    <h2>指値（オファー価格）</h2>
+    <div class="dd-scenario-grid">
+      <div class="dd-scenario-card">
+        <div class="dd-s-label">強気の初回提示</div>
+        <div class="dd-s-price">1,650万円</div>
+<div class="dd-s-pct">▲12%</div>      </div>
+      <div class="dd-scenario-card">
+        <div class="dd-s-label">現実的な着地目標</div>
+        <div class="dd-s-price">1,700〜1,750万円</div>
+<div class="dd-s-pct">▲7〜10%</div>      </div>
+      <div class="dd-scenario-card">
+        <div class="dd-s-label">譲れないライン</div>
+        <div class="dd-s-price">1,800万円</div>
+<div class="dd-s-pct">▲4%</div>      </div>
+    </div>
+<p class="dd-note">借地権付き物件は購入者がローンを組みにくく現金購入層に限定されるため、所有権物件より売却に時間がかかりやすい（根拠: アットホーム・GMO不動産査定の借地権売却解説）。情報提供日2026/7/9・次回更新予定日2026/7/17と回転が早い物件のため、値下げ交渉は早期着手が有利。成約事例の一次データ未確認のため、上記は借地権物件の一般的な流動性の低さからの推定値。</p>  </section>
+
+  <section class="dd-section" id="renovation">
+    <h2>撤去・リノベ費用</h2>
+    <table class="dd-table">
+      <thead><tr><th>項目</th><th>費用</th><th>備考</th></tr></thead>
+      <tbody>
+        <tr><td>耐震診断</td><td>10〜40万円</td><td>1985年3月築＝新耐震基準（1981年6月以降）に該当するはずだが、実施前に必ず診断で確認</td></tr>
+        <tr><td>中規模〜フルリノベ</td><td>700〜1,200万円</td><td>鉄骨造127.74㎡、水回り含む中規模改修〜フルスケルトンのレンジ（ホームプロ・SUUMO相場）</td></tr>
+        <tr><td>消防設備（簡易宿所＝旅館業法基準）</td><td>50〜300万円超（未確定）</td><td>民泊新法と異なり旅館業法の重い基準が適用される可能性。着工前に消防署への事前相談が必須。千代崎案件（民泊新法ルート）の約50万円より大幅に重くなるリスクあり</td></tr>
+        <tr><td>地主への名義書換承諾料</td><td>50〜100万円（目安）</td><td>借地権付き建物の売買時に地主へ支払う名義書換料。借地権価格の10%程度が相場とされる（未確認・個別交渉）</td></tr>
+        <tr class="dd-highlight"><td>合計目安</td><td colspan="2">約2,900〜3,300万円（購入1,880万円＋諸費用約100万円＋上記）</td></tr>
+      </tbody>
+    </table>
+<p class="dd-note">消防設備費の振れ幅が最大の不確定要素。簡易宿所は旅館業法の基準（スプリンクラー等）が適用されうるため、千代崎案件の民泊新法ルート（消防基準が軽い）と比べてCAPEXが大きく膨らむリスクがある。着工前の消防署事前相談が必須。</p>  </section>
+
+  <section class="dd-section" id="tax">
+    <h2>固定資産税：借地権付き物件の負担区分</h2>
+    <p class="dd-note">土地の固定資産税・都市計画税は地主が納税義務者（借地人は直接負担しない）。建物分の固定資産税のみ借地人（買主）負担となる。</p>
+    <div class="dd-verdict dd-neutral">地代（月6.5万円）の相場は公租公課（地主が負担する土地の税額）の3〜5倍とされ、地主の税負担は地代に織り込まれている（根拠: イエコン）。建物分（1985年築・鉄骨127.74㎡）の固定資産税額は評価額次第で未確認。住宅用地の特例（1/6軽減）は地主側が享受するもので、借地人の建物分税額には直接影響しない。簡易宿所として営業する場合、建物の用途変更（住宅→旅館業）で建物分の評価・税額が上がる可能性があり、大阪市税事務所への個別確認が必要（未確認）。</div>
+  </section>
+
+  <section class="dd-section" id="license">
+    <h2>許認可ルート：旅館業法（簡易宿所）</h2>
+    <p class="dd-note">用途地域が商業地域のため、住居専用地域と異なり旅館業法の簡易宿所許可を取得しやすく、取得できれば年間180日上限のある民泊新法と違い365日営業が可能（根拠: 民泊大学）。住宅宿泊管理業者への外注義務（民泊新法特有、売上15〜35%）も発生しない。</p>
+<div class="dd-verdict">地主の承諾は法律上は民泊自体の必須要件ではないが、借地契約に「自己使用限定」等の用法遵守条項がある場合、商業利用（簡易宿所営業）が契約違反とみなされ契約解除リスクがある（根拠: ダーウィン法律事務所、日本地主家主協会）。着工前に地主へ書面で確認・承諾を得ることが最優先タスク。商業地域でも大阪市の条例上乗せ規制（住居専用地域からの距離制限等）が個別にかかる場合があるため、保健所環境衛生監視課への事前相談も必須（未確認）。</div>  </section>
+
+  <section class="dd-section" id="pnl">
+    <h2>収支・事業計画</h2>
+    <table class="dd-table">
+      <thead>
+        <tr><th>項目</th><th>低位</th><th>中位（ベース）</th><th>高位</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>営業日数（365日営業前提）</td><td>365日</td><td>365日</td><td>365日</td></tr>
+        <tr><td>稼働率</td><td>55%</td><td>65%</td><td>75%</td></tr>
+        <tr><td>ADR（1泊単価・戸建て貸切）</td><td>20,000円</td><td>24,000円</td><td>28,000円</td></tr>
+        <tr class="dd-highlight"><td>年間売上</td><td>401万円</td><td>569万円</td><td>767万円</td></tr>
+        <tr><td>OTA手数料15%</td><td>▲60万円</td><td>▲85万円</td><td>▲115万円</td></tr>
+        <tr><td>清掃費（稼働泊数×6,000円）</td><td>▲121万円</td><td>▲142万円</td><td>▲164万円</td></tr>
+        <tr><td>固定費（地代78万＋建物固定資産税・保険等30万）</td><td>▲108万円</td><td>▲108万円</td><td>▲108万円</td></tr>
+        <tr class="dd-highlight"><td>年間NOI（営業利益）</td><td>112万円</td><td>234万円</td><td>380万円</td></tr>
+      </tbody>
+    </table>
+<p class="dd-note">ADR・稼働率は九条エリアの一次相場データ未取得のため、大阪市内戸建て貸切民泊の一般的なレンジからの推定値（要現地相場調査）。住宅宿泊管理業者への外注義務がない分、千代崎案件（民泊新法）より変動費構造は有利。一方、地代78万円/年が固定費として重く、消防設備費の不確実性も大きい。自己資金約1,714万円（融資LTV70%想定時）に対し、中位ケースの年間返済額（借入1,316万円・金利4%・15年、概算117万円）を引くとCF(税前)は約117万円/年。表面CFベースの回収年数は約14.6年と、千代崎案件（約17年・実質便益込みで約11年）と近い水準だが、借地権関連費用と消防設備費の振れ幅を織り込むと投資効率はさらに悪化しうる。精密な収支は消防設備見積もり確定後に再計算が必要。</p>  </section>
+
+  <section class="dd-section" id="financing">
+    <h2>融資構成</h2>
+<div class="dd-verdict dd-favorable">最大の関門は地主の承諾書取得。承諾書が取れれば、みずほ銀行・三井住友銀行等、旧法賃借権に対応する都市銀行でLTV60〜80%の融資が狙える（根拠: ランディックス、オリックス銀行）。承諾が得られない、または金融機関の反応が悪い場合はノンバンク（金利+3〜4%、自己資金2割以上）が代替案。筑波銀行×セゾンファンデックスの既契約チャネルは松戸支店管轄限定のためこの大阪案件は対象外（千代崎案件と同様）。</div>    <table class="dd-table">
+      <thead><tr><th>融資先</th><th>商品</th><th>条件</th><th>金利</th><th>現実味</th></tr></thead>
+      <tbody>
+        <tr><td>みずほ銀行・三井住友銀行</td><td>住宅ローン（借地権対応）</td><td>LTV60〜80%目安・地主承諾書必須</td><td>変動金利水準</td><td>本命（承諾書取得が前提）</td></tr>
+        <tr><td>セゾンファンデックス</td><td>不動産担保ローン</td><td>LTV50〜70%・自己資金2〜3割</td><td>3.4〜9.9%</td><td>代替案（借地権は担保評価が保守的になりやすい）</td></tr>
+        <tr><td>地銀・ノンバンク全般</td><td>不動産担保ローン</td><td>自己資金2割以上が原則</td><td>都市銀行+3〜4%</td><td>承諾書が取れない場合の代替</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="dd-section" id="contractors">
+    <h2>工務店候補</h2>
+    <div class="dd-card-grid">
+      <div class="dd-card">
+        <h3>上野工務店</h3>
+        <p>SUUMOリモデル大阪市西区ランキング1位。自社大工チームで中間マージンなし。西区エリアの施工実績豊富。</p>
+<a href="https://www.homepro.jp/osaka/osakashinishi/renovation/" target="_blank" rel="noopener">https://www.homepro.jp/osaka/osakashinishi/renovation/</a>      </div>
+      <div class="dd-card">
+        <h3>ふくろう工務店</h3>
+        <p>「大阪で安くリフォーム」を明示的に打ち出す低価格ポジショニング。自社職人で中間コスト圧縮、大阪・兵庫中心。</p>
+<a href="https://fukuro-komuten.co.jp/" target="_blank" rel="noopener">https://fukuro-komuten.co.jp/</a>      </div>
+      <div class="dd-card">
+        <h3>河野工務店</h3>
+        <p>1966年創業60年の地場工務店。西成区拠点で西区の対象物件から近く、現地対応が速い。</p>
+      </div>
+    </div>
+    <h3 class="dd-subheading">一括見積もりサイト</h3>
+    <div class="dd-card-grid">
+      <div class="dd-card">
+        <h3>ホームプロ</h3>
+        <p>国内最古参の一括見積もりサイト（2001年〜）。大阪141社超が登録、匿名見積もりで営業圧なし。</p>
+<a href="https://www.homepro.jp/osaka/osakashinishi/renovation/" target="_blank" rel="noopener">https://www.homepro.jp/osaka/osakashinishi/renovation/</a>      </div>
+      <div class="dd-card">
+        <h3>タウンライフリフォーム</h3>
+        <p>全国640社超。価格だけでなくリノベ提案プラン込みで返ってくるので、簡易宿所転用の設計案も比較できる。</p>
+<a href="https://www.town-life.jp/reform/" target="_blank" rel="noopener">https://www.town-life.jp/reform/</a>      </div>
+    </div>
+  </section>
+
+  <section class="dd-section" id="next">
+    <h2>Now / Next</h2>
+    <ul class="dd-actions">
+<li>地主（賃貸人）へ簡易宿所営業の可否を書面で確認・承諾書取得を最優先で打診（全計画のゲート）</li><li>大阪市保健所環境衛生監視課へ簡易宿所許可の消防設備要件を事前相談（CAPEXが数百万円変わる分岐点）</li><li>消防署へ現況建物の消防設備適合状況を確認</li><li>みずほ・三井住友銀行へ旧法賃借権＋承諾書ありでの住宅ローン可否を打診</li><li>大阪市税事務所へ簡易宿所転用時の建物分固定資産税の見込み額を確認</li><li>仲介業者（センチュリー21ウエストエリア）へ1,650万円での指値打診</li>    </ul>
+  </section>
+
+  <section class="dd-section" id="sources">
+    <h2>参考リンク集</h2>
+    <ul class="dd-sources">
+<li><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashinishi/nc_76619760/" target="_blank" rel="noopener">SUUMO 物件詳細（nc_76619760）</a></li><li><a href="https://rynne.co.jp/posts/44" target="_blank" rel="noopener">ランディックス｜借地権の住宅ローン</a></li><li><a href="https://manabu.orixbank.co.jp/archives/581" target="_blank" rel="noopener">オリックス銀行｜借地権との違い</a></li><li><a href="https://iekon.jp/column/leased-land/4443" target="_blank" rel="noopener">イエコン｜借地権の更新料</a></li><li><a href="https://www.century21-sell.jp/reading/11245/" target="_blank" rel="noopener">センチュリー21｜更新料の相場</a></li><li><a href="https://iekon.jp/column/leased-land/4330" target="_blank" rel="noopener">イエコン｜借地権の固定資産税</a></li><li><a href="https://realestate.darwin-law.jp/topic/1029/" target="_blank" rel="noopener">ダーウィン法律事務所｜民泊と地主承諾</a></li><li><a href="https://www.jinushi.gr.jp/qanda/q033/" target="_blank" rel="noopener">日本地主家主協会｜民泊Q&A</a></li><li><a href="https://minpaku-daigaku.com/基礎入門｜簡易宿所と民泊の違い3点で失敗しな/" target="_blank" rel="noopener">民泊大学｜簡易宿所と民泊の違い</a></li><li><a href="https://www.homepro.jp/hiyou/renovation/steel-frame.html" target="_blank" rel="noopener">ホームプロ｜鉄骨造リノベーション費用</a></li><li><a href="https://suumo.jp/remodel/blog/entry/20230327/002/" target="_blank" rel="noopener">SUUMO｜耐震リフォーム費用</a></li><li><a href="https://www.athome.co.jp/contents/for-sellers/sellers-knowhow/land-lease-righ/" target="_blank" rel="noopener">アットホーム｜借地権付き建物の売却</a></li><li><a href="https://e-estate.jp/media/estate-sale/blog/13171/" target="_blank" rel="noopener">GMO不動産査定｜借地権付き建物の売却方法</a></li>    </ul>
+  </section>
+
+</div>
+<button id="totop" aria-label="先頭へ" type="button">↑</button>
+
+
+<style>
+.iuma-footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: var(--space-8) 0;
+  border-top: 1px solid var(--border);
+  margin-top: var(--space-8);
+}
+.iuma-footer .warn {
+  color: var(--red);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .iuma-footer {
+    padding: var(--space-4) 0;
+    font-size: 10px;
+  }
+}
+</style>
+
+<footer class="iuma-footer">
+  <div style="margin-top:4px;">Generated at 2026-07-09 22:39</div>
+</footer>
+<script>
+(function () {
+  var totop = document.getElementById('totop');
+  totop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  addEventListener('scroll', function () {
+    totop.classList.toggle('show', scrollY > 500);
+  }, { passive: true });
+
+  var chips = [].slice.call(document.querySelectorAll('.dd-toc .dd-chip'));
+  var map = {};
+  chips.forEach(function (c) { map[c.dataset.target] = c; });
+  var secs = [].slice.call(document.querySelectorAll('.dd-section[id]'));
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        chips.forEach(function (c) { c.classList.remove('active'); });
+        var c = map[e.target.id];
+        if (c) { c.classList.add('active'); }
+      }
+    });
+  }, { rootMargin: '-54px 0px -70% 0px', threshold: 0 });
+  secs.forEach(function (s) { io.observe(s); });
+})();
+</script>
+</body>
+</html>

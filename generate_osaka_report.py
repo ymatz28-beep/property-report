@@ -62,6 +62,13 @@ def main() -> None:
         ],
         include_osaka_r=True,
         extra_data_paths=find_extra_data_paths("osaka"),
+        deepdive_links=[
+            {
+                "title": "千代崎2丁目 ハイブリッド民泊 精査レポート",
+                "url": "chiyozaki-osaka.html",
+                "desc": "大阪市西区千代崎2丁目テラスハウス（689万円）。一棟民泊本線とは別スキーム（個人契約・民泊新法ルート）。指値・リノベ費用・固定資産税リスク・融資構成・工務店候補まで精査。",
+            },
+        ],
     )
     out = generate_report(config)
     print(f"Generated: {out}")

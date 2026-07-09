@@ -272,6 +272,10 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
 .tier-pass .tier-pill::before { content:"\25CB "; /* ○ */ }
 
 .notes { margin:0; padding-left:18px; line-height:1.8; color:var(--text); }
+.deepdive-card { display:block; padding:14px 16px; border:1px solid var(--border); border-radius:var(--radius-md, 8px); background:var(--surface); text-decoration:none; color:var(--text); margin-bottom:8px; transition:border-color .15s; }
+.deepdive-card:hover { border-color:var(--accent); }
+.deepdive-card .dc-title { font-weight:700; font-size:14px; }
+.deepdive-card .dc-desc { font-size:12px; color:var(--text-muted); margin-top:4px; }
 .footer { margin-top:32px; color:var(--muted); font-size:12px; text-align:center; }
 .footer a { color:var(--text); }
 
@@ -548,6 +552,19 @@ td:nth-child(8) { white-space:nowrap; max-width:55px; }
   </section>
 
 
+
+  {# Individual Deep-dive Reports #}
+  {% if deepdive_links %}
+  <section class="section">
+    <h2>個別ディープダイブ</h2>
+    {% for d in deepdive_links %}
+    <a class="deepdive-card" href="{{ d.url }}">
+      <div class="dc-title">{{ d.title }}</div>
+      <div class="dc-desc">{{ d.desc }}</div>
+    </a>
+    {% endfor %}
+  </section>
+  {% endif %}
 
   {# Investor Notes #}
   <section class="section">

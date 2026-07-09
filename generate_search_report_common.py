@@ -142,6 +142,7 @@ class ReportConfig:
     investor_notes: list[str]
     include_osaka_r: bool = False
     extra_data_paths: list[Path] = field(default_factory=list)  # Additional site data files
+    deepdive_links: list[dict] = field(default_factory=list)  # [{title, url, desc}] pinned individual deep-dive reports
 
 
 @dataclass
@@ -1306,6 +1307,7 @@ def build_report_html(config: ReportConfig, rows: list[PropertyRow], meta: dict[
         city_badge=city_badge,
         search_condition_bullets=config.search_condition_bullets,
         investor_notes=config.investor_notes,
+        deepdive_links=config.deepdive_links,
         sources_str=sources_str,
         nav_pages=_NAV_PAGES,
         current_page=f"minpaku-{config.city_key}.html",

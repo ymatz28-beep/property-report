@@ -526,9 +526,11 @@ def sweep_stale() -> dict:
                     if not line:
                         continue
                     parts = line.split("|")
+                    # URL column position varies by format (e.g. ittomono_*_raw.txt
+                    # appends minpaku_fit/dscr_value after url) — find the http field.
                     if parts:
-                        url = parts[-1].strip()
-                        if url.startswith("http"):
+                        url = next((p.strip() for p in reversed(parts) if p.strip().startswith("http")), "")
+                        if url:
                             raw_urls.add(url)
         except Exception:
             pass
@@ -718,8 +720,10 @@ def track_price_changes() -> list[dict]:
                     parts = line.split("|")
                     if len(parts) < 3:
                         continue
-                    url = parts[-1].strip()
-                    if not url.startswith("http"):
+                    # URL column position varies by format (e.g. ittomono_*_raw.txt
+                    # appends minpaku_fit/dscr_value after url) — find the http field.
+                    url = next((p.strip() for p in reversed(parts) if p.strip().startswith("http")), "")
+                    if not url:
                         continue
                     # ittomono has score prefix at index 0, price at index 3
                     price_idx = 3 if is_ittomono else 2

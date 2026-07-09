@@ -219,10 +219,11 @@ def patrol_dead_urls() -> dict:
             if not line or line.startswith("#"):
                 continue
             parts = line.split("|")
-            # URL is the last field
+            # URL column position varies by format (e.g. ittomono_*_raw.txt
+            # appends minpaku_fit/dscr_value after url) — find the http field.
             if parts:
-                url = parts[-1].strip()
-                if url.startswith("http"):
+                url = next((p.strip() for p in reversed(parts) if p.strip().startswith("http")), "")
+                if url:
                     all_urls.add(url)
 
     log(f"  合計 {len(all_urls)} URLs をチェック")
@@ -298,8 +299,10 @@ def parse_raw_files() -> dict[str, dict]:
             parts = line.split("|")
             if len(parts) < 4:
                 continue
-            url = parts[-1].strip()
-            if not url.startswith("http"):
+            # URL column position varies by format (e.g. ittomono_*_raw.txt
+            # appends minpaku_fit/dscr_value after url) — find the http field.
+            url = next((p.strip() for p in reversed(parts) if p.strip().startswith("http")), "")
+            if not url:
                 continue
 
             # Detect score-prefixed format (ittomono_*_raw.txt):
@@ -345,9 +348,11 @@ def update_first_seen() -> None:
             if not line or line.startswith("#"):
                 continue
             parts = line.split("|")
+            # URL column position varies by format (e.g. ittomono_*_raw.txt
+            # appends minpaku_fit/dscr_value after url) — find the http field.
             if parts:
-                url = parts[-1].strip()
-                if url.startswith("http") and url not in registry:
+                url = next((p.strip() for p in reversed(parts) if p.strip().startswith("http")), "")
+                if url and url not in registry:
                     registry[url] = today
                     new_count += 1
 

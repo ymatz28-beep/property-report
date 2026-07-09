@@ -187,11 +187,13 @@ def extract_urls_from_multi_site(data_path: Path) -> list[dict]:
                 continue
             parts = [p.strip() for p in line.split("|")]
             # Extended format: source|name|price|location|area|built|station|layout|pet|brokerage|url
+            # URL column position varies by format (e.g. ittomono_*_raw.txt
+            # appends minpaku_fit/dscr_value after url) — find the http field.
             if len(parts) >= 10:
-                url = parts[-1]
+                url = next((p for p in reversed(parts) if p.startswith("http")), "")
                 name = parts[1]
                 source = parts[0]
-                if url.startswith("http"):
+                if url:
                     properties.append({"name": name, "url": url, "source": f"{source}/{data_path.name}"})
     return properties
 

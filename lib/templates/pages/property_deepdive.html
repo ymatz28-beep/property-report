@@ -1,0 +1,301 @@
+{#
+  Property deep-dive report — reusable template for one-off distressed/complex
+  property due-diligence write-ups (指値・リノベ費用・融資・収支・工務店候補).
+
+  Expected context (see scripts/build_property_deepdive.py for the dataclass):
+    title, subtitle, property{}, flow_phases[], offer{}, renovation{},
+    tax_risk{}, license{}, pnl{}, financing{}, contractors[], platforms[],
+    next_actions[], sources[]
+#}
+{% extends "base.html" %}
+
+{% block title %}{{ title }} — iUMA{% endblock %}
+
+{% block styles %}
+.dd-wrap { padding-top: var(--space-6); padding-bottom: var(--space-10); }
+.dd-hero { margin-bottom: var(--space-6); }
+.dd-hero h1 { font-size: var(--fs-h1); font-weight: 700; margin-bottom: var(--space-2); }
+.dd-hero .dd-meta { color: var(--text-muted); font-size: var(--fs-small); }
+.dd-hero .dd-meta a { color: var(--accent); }
+
+.dd-section { margin: var(--space-8) 0; scroll-margin-top: calc(var(--gnav-height, 52px) + 48px); }
+.dd-section h2 { font-size: var(--fs-h2); font-weight: 700; margin-bottom: var(--space-3); padding-left: 10px; border-left: 3px solid var(--gold); }
+.dd-section .dd-note { color: var(--text-muted); font-size: var(--fs-small); line-height: 1.7; margin: var(--space-3) 0; }
+.dd-section .dd-verdict { border-radius: var(--radius-md); padding: var(--space-4); margin: var(--space-3) 0; font-size: var(--fs-small); line-height: 1.7; background: var(--surface); border: 1px solid var(--border); }
+.dd-section .dd-verdict.dd-favorable { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.25); }
+.dd-section .dd-verdict.dd-risk { background: rgba(234,179,8,0.08); border-color: rgba(234,179,8,0.25); }
+
+/* property card */
+.dd-defects { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--space-3); }
+.dd-defect-tag { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.3); border-radius: 999px; padding: 3px 10px; font-size: var(--fs-xs); font-weight: 600; }
+
+/* generic table */
+.dd-table { width: 100%; border-collapse: collapse; margin: var(--space-3) 0; font-size: var(--fs-small); }
+.dd-table th { text-align: left; padding: 6px 10px; color: var(--text-muted); font-weight: 600; font-size: var(--fs-xs); border-bottom: 1px solid var(--border); }
+.dd-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.dd-table tr.dd-highlight td { font-weight: 700; color: var(--gold); }
+@media (max-width: 640px) { .dd-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; } .dd-table th, .dd-table td { white-space: nowrap; } }
+
+/* offer scenarios */
+.dd-scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-3); margin: var(--space-3) 0; }
+.dd-scenario-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); text-align: center; }
+.dd-scenario-card .dd-s-label { font-size: var(--fs-xs); color: var(--text-muted); margin-bottom: 4px; }
+.dd-scenario-card .dd-s-price { font-size: var(--fs-h3); font-weight: 800; font-family: var(--font-mono); color: var(--text); }
+.dd-scenario-card .dd-s-pct { font-size: var(--fs-xs); color: var(--text-secondary); margin-top: 2px; }
+
+/* contractor / platform cards */
+.dd-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); margin: var(--space-3) 0; }
+.dd-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); }
+.dd-card h3 { font-size: var(--fs-body); font-weight: 700; margin-bottom: 4px; }
+.dd-card p { font-size: var(--fs-small); color: var(--text-secondary); line-height: 1.6; margin-bottom: 6px; }
+.dd-card a { color: var(--accent); font-size: var(--fs-xs); word-break: break-all; }
+.dd-subheading { font-size: var(--fs-body); margin-top: var(--space-4); margin-bottom: var(--space-2); }
+
+/* next actions */
+.dd-actions { list-style: none; padding: 0; }
+.dd-actions li { padding: 6px 0 6px 22px; position: relative; font-size: var(--fs-small); border-bottom: 1px solid var(--border); }
+.dd-actions li::before { content: '☐'; position: absolute; left: 0; color: var(--text-muted); }
+
+/* sources */
+.dd-sources { list-style: none; padding: 0; font-size: var(--fs-xs); color: var(--text-muted); }
+.dd-sources li { padding: 3px 0; }
+.dd-sources a { color: var(--accent); word-break: break-all; }
+
+/* ── flowchart ── */
+.dd-flow { display: flex; flex-direction: column; align-items: center; gap: 0; margin: var(--space-4) 0; }
+.dd-fbox { display: block; width: 100%; max-width: 640px; background: var(--surface); border: 2px solid var(--gold); border-radius: 12px; padding: 12px 16px; text-decoration: none; color: var(--text); }
+.dd-fbox b { display: block; font-size: var(--fs-body); }
+.dd-fbox small { display: block; color: var(--text-secondary); font-size: var(--fs-xs); margin-top: 3px; line-height: 1.5; }
+.dd-fbox.dd-first { background: rgba(201,168,76,0.1); }
+.dd-fbox.dd-gate { border-color: var(--red); }
+.dd-fbox.dd-end { border-color: var(--green); }
+.dd-fbox .dd-badge { display: inline-block; background: var(--gold); color: #1a1207; font-weight: 800; font-size: var(--fs-xs); padding: 2px 9px; border-radius: 999px; margin-bottom: 5px; }
+.dd-farrow { color: var(--gold); font-weight: 700; font-size: var(--fs-small); padding: 6px 0; text-align: center; }
+.dd-frow { display: flex; gap: 12px; width: 100%; max-width: 640px; }
+.dd-frow .dd-fbox { flex: 1; max-width: none; }
+
+/* ── sticky TOC ── */
+.dd-toc { position: sticky; top: var(--gnav-height, 52px); z-index: 90; box-sizing: border-box; width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); background: rgba(15,17,23,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 8px 16px; display: flex; justify-content: center; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; border-bottom: 1px solid var(--border); scrollbar-width: none; }
+.dd-toc::-webkit-scrollbar { display: none; }
+.dd-toc .dd-chip { flex: 0 0 auto; background: var(--surface2); color: var(--text-secondary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 999px; font-size: var(--fs-xs); font-weight: 600; text-decoration: none; white-space: nowrap; min-height: 44px; display: flex; align-items: center; }
+.dd-toc .dd-chip.active { background: var(--gold); color: #1a1207; border-color: var(--gold); }
+
+/* ── back to top ── */
+#totop { position: fixed; right: 16px; bottom: 16px; z-index: 95; background: var(--gold); color: #1a1207; border: none; width: 46px; height: 46px; border-radius: 50%; font-size: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.3); opacity: 0; pointer-events: none; transition: opacity .2s; }
+#totop.show { opacity: .95; pointer-events: auto; }
+
+@media (max-width: 700px) {
+  .dd-flow .dd-frow { flex-direction: column; }
+}
+
+@media print {
+  .dd-toc, #totop, .site-header, .iuma-footer { display: none; }
+  body { padding: 0; font-size: 10.5pt; }
+  @page { margin: 14mm 12mm; }
+  .dd-fbox { box-shadow: none; }
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; break-inside: avoid; page-break-inside: avoid; }
+  .dd-table { break-inside: auto; page-break-inside: auto; }
+  .dd-table tr, .dd-table td, .dd-table th { break-inside: avoid; page-break-inside: avoid; }
+  .dd-table thead { display: table-header-group; }
+  blockquote, pre, li, img { break-inside: avoid; page-break-inside: avoid; }
+  p { orphans: 3; widows: 3; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container-narrow dd-wrap">
+
+  <div class="dd-hero">
+    <h1>{{ title }}</h1>
+    <p class="dd-meta">{{ subtitle }} ／ 自動生成: {{ generated_at }}{% if property.url %} ／ <a href="{{ property.url }}" target="_blank" rel="noopener">元物件情報</a>{% endif %}</p>
+  </div>
+
+  <section class="dd-section" id="flow">
+    <h2>全体の流れ（上から着手順）</h2>
+    <div class="dd-flow">
+      {% for phase in flow_phases %}
+      {% if phase.row_start %}<div class="dd-frow">{% endif %}
+      <a class="dd-fbox{% if loop.first %} dd-first{% endif %}{% if phase.variant %} dd-{{ phase.variant }}{% endif %}" href="#{{ phase.id }}">
+        {% if phase.badge %}<span class="dd-badge">{{ phase.badge }}</span>{% endif %}
+        <b>{{ phase.title }}</b>
+        <small>{{ phase.detail }}</small>
+      </a>
+      {% if phase.row_end %}</div>{% endif %}
+      {% if not loop.last and not phase.row_start %}<div class="dd-farrow">▼</div>{% endif %}
+      {% endfor %}
+    </div>
+  </section>
+
+  <nav class="dd-toc" id="toc">
+    {% for s in dd_sections %}
+    <a class="dd-chip" href="#{{ s.id }}" data-target="{{ s.id }}">{{ s.label }}</a>
+    {% endfor %}
+  </nav>
+
+  <section class="dd-section" id="property">
+    <h2>物件概要</h2>
+    <table class="dd-table">
+      <tbody>
+        {% for row in property.rows %}
+        <tr><th>{{ row.label }}</th><td>{{ row.value }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if property.defects %}
+    <div class="dd-defects">
+      {% for d in property.defects %}<span class="dd-defect-tag">{{ d }}</span>{% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+  <section class="dd-section" id="offer">
+    <h2>指値（オファー価格）</h2>
+    <div class="dd-scenario-grid">
+      {% for sc in offer.scenarios %}
+      <div class="dd-scenario-card">
+        <div class="dd-s-label">{{ sc.label }}</div>
+        <div class="dd-s-price">{{ sc.price }}</div>
+        {% if sc.pct %}<div class="dd-s-pct">{{ sc.pct }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% if offer.note %}<p class="dd-note">{{ offer.note }}</p>{% endif %}
+  </section>
+
+  <section class="dd-section" id="renovation">
+    <h2>撤去・リノベ費用</h2>
+    <table class="dd-table">
+      <thead><tr><th>項目</th><th>費用</th><th>備考</th></tr></thead>
+      <tbody>
+        {% for item in renovation['items'] %}
+        <tr><td>{{ item.label }}</td><td>{{ item.cost }}</td><td>{{ item.note }}</td></tr>
+        {% endfor %}
+        {% if renovation.total %}
+        <tr class="dd-highlight"><td>合計目安</td><td colspan="2">{{ renovation.total }}</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+    {% if renovation.note %}<p class="dd-note">{{ renovation.note }}</p>{% endif %}
+  </section>
+
+  {% if tax_risk %}
+  <section class="dd-section" id="tax">
+    <h2>{{ tax_risk.title | default("固定資産税リスク") }}</h2>
+    <p class="dd-note">{{ tax_risk.summary }}</p>
+    <div class="dd-verdict dd-{{ tax_risk.verdict | default('risk') }}">{{ tax_risk.detail }}</div>
+  </section>
+  {% endif %}
+
+  {% if license %}
+  <section class="dd-section" id="license">
+    <h2>{{ license.title | default("許認可ルート") }}</h2>
+    <p class="dd-note">{{ license.summary }}</p>
+    {% if license.detail %}<div class="dd-verdict">{{ license.detail }}</div>{% endif %}
+  </section>
+  {% endif %}
+
+  <section class="dd-section" id="pnl">
+    <h2>収支・事業計画</h2>
+    <table class="dd-table">
+      <thead>
+        <tr><th>項目</th>{% for col in pnl.columns %}<th>{{ col }}</th>{% endfor %}</tr>
+      </thead>
+      <tbody>
+        {% for row in pnl.rows %}
+        <tr{% if row.highlight %} class="dd-highlight"{% endif %}><td>{{ row.label }}</td>{% for v in row['values'] %}<td>{{ v }}</td>{% endfor %}</tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if pnl.note %}<p class="dd-note">{{ pnl.note }}</p>{% endif %}
+  </section>
+
+  <section class="dd-section" id="financing">
+    <h2>融資構成</h2>
+    {% if financing.recommendation %}<div class="dd-verdict dd-favorable">{{ financing.recommendation }}</div>{% endif %}
+    <table class="dd-table">
+      <thead><tr><th>融資先</th><th>商品</th><th>条件</th><th>金利</th><th>現実味</th></tr></thead>
+      <tbody>
+        {% for l in financing.lenders %}
+        <tr><td>{{ l.name }}</td><td>{{ l.product }}</td><td>{{ l.terms }}</td><td>{{ l.rate }}</td><td>{{ l.viability }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  {% if contractors %}
+  <section class="dd-section" id="contractors">
+    <h2>工務店候補</h2>
+    <div class="dd-card-grid">
+      {% for c in contractors %}
+      <div class="dd-card">
+        <h3>{{ c.name }}</h3>
+        <p>{{ c.why }}</p>
+        {% if c.url %}<a href="{{ c.url }}" target="_blank" rel="noopener">{{ c.url }}</a>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% if platforms %}
+    <h3 class="dd-subheading">一括見積もりサイト</h3>
+    <div class="dd-card-grid">
+      {% for p in platforms %}
+      <div class="dd-card">
+        <h3>{{ p.name }}</h3>
+        <p>{{ p.why }}</p>
+        {% if p.url %}<a href="{{ p.url }}" target="_blank" rel="noopener">{{ p.url }}</a>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if next_actions %}
+  <section class="dd-section" id="next">
+    <h2>Now / Next</h2>
+    <ul class="dd-actions">
+      {% for a in next_actions %}<li>{{ a }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if sources %}
+  <section class="dd-section" id="sources">
+    <h2>参考リンク集</h2>
+    <ul class="dd-sources">
+      {% for s in sources %}<li><a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.label }}</a></li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+</div>
+<button id="totop" aria-label="先頭へ" type="button">↑</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var totop = document.getElementById('totop');
+  totop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  addEventListener('scroll', function () {
+    totop.classList.toggle('show', scrollY > 500);
+  }, { passive: true });
+
+  var chips = [].slice.call(document.querySelectorAll('.dd-toc .dd-chip'));
+  var map = {};
+  chips.forEach(function (c) { map[c.dataset.target] = c; });
+  var secs = [].slice.call(document.querySelectorAll('.dd-section[id]'));
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        chips.forEach(function (c) { c.classList.remove('active'); });
+        var c = map[e.target.id];
+        if (c) { c.classList.add('active'); c.scrollIntoView({ inline: 'center', block: 'nearest' }); }
+      }
+    });
+  }, { rootMargin: '-54px 0px -70% 0px', threshold: 0 });
+  secs.forEach(function (s) { io.observe(s); });
+})();
+</script>
+{% endblock %}

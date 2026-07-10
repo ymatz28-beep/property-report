@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'output/*.html'
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -44,10 +45,20 @@ jobs:
           git config user.name "Property Report Bot"
           git config user.email "noreply@github.com"
 
-          rm -f *.html
+          # gh-pages限定の手動保守ページ（property-analyzer側にソースが無い）は削除対象から除外
+          MANUAL_PAGES="portfolio_dashboard.html portfolio.html minpaku-osaka-ittou.html yakuin-sell-or-rent.html"
+          for f in *.html; do
+            [ ! -f "$f" ] && continue
+            skip=0
+            for m in $MANUAL_PAGES; do
+              [ "$f" = "$m" ] && skip=1 && break
+            done
+            [ "$skip" -eq 1 ] && continue
+            rm -f "$f"
+          done
           cp /tmp/deploy-reports/*.html ./
 
-          git add *.html
+          git add -A -- '*.html'
           if ! git diff --cached --quiet; then
             git commit -m "Auto-deploy from main $(date +%Y-%m-%d-%H%M)"
             git push origin gh-pages

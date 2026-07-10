@@ -615,10 +615,19 @@ def _fix_station_name(r: "IttomonoRow") -> str:
     return fallback
 
 
+# RC/S造の建築原価だけでも円/m2は十数万円台が下限になるため、取引価格が
+# これを大きく割り込むことは実務上ありえない。リアライズ天満橋(価格23.8億円
+# が1.65億円に化けた事例、円/m2=4.05万円)を機械的に弾くための下限値。
+# 現行データで最安の実在物件(景雲ハイツ、円/m2=15.03万円、詳細ページと突合済み)
+# には掛からないよう、その2/3以下に設定して安全マージンを確保。
+_MIN_PLAUSIBLE_PRICE_PER_SQM = 10.0  # 万円/m2
+
+
 def _filter_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
     """Remove obviously bad data before dedup and scoring."""
     import datetime as _dt
     current_year = _dt.date.today().year
+
     filtered = []
     for r in rows:
         # units < 2: not an apartment building (likely a single unit or parsing error)
@@ -629,6 +638,15 @@ def _filter_rows(rows: list[IttomonoRow]) -> list[IttomonoRow]:
         if r.built_year and r.built_year > current_year:
             print(f"  [FILTER] 未来竣工除外: {r.name} ({r.built_year}年竣工予定)")
             continue
+        # Price-plausibility check: catches scrape-time price contamination
+        # (a listing's true price swapped for a stray in-range-looking value,
+        # e.g. from a nearby ad/widget card) that a simple price-range filter
+        # can't catch because the bad value itself passes the range check.
+        if r.price_man > 0 and r.area_sqm and r.area_sqm > 0:
+            price_per_sqm = r.price_man / r.area_sqm
+            if price_per_sqm < _MIN_PLAUSIBLE_PRICE_PER_SQM:
+                print(f"  [FILTER] 価格異常値除外(円/m2={price_per_sqm:.1f}万が下限{_MIN_PLAUSIBLE_PRICE_PER_SQM}万未満): {r.name} ({r.price_text}, {r.area_text})")
+                continue
         # Fix station text used as property name (ftakken scraper artifact)
         r.name = _fix_station_name(r)
         # Clean internal IDs from displayed names

@@ -1,0 +1,69 @@
+{#
+  Investment Priority Dashboard — cross-city ranking by financing favorability x profitability.
+
+  Required context:
+    records: list of {city_label, name, url, price_man, location, structure,
+      loan_years, verdict, ccr, payback_years, monthly_cf, composite_score,
+      tier_label, tier_color}
+    generated_at: str
+    total_count: int
+#}
+{% extends "base.html" %}
+
+{% block title %}投資優先度ランキング — iUMA{% endblock %}
+
+{% block styles %}
+.ip-hero { padding: 32px 24px 16px; max-width: 1100px; margin: 0 auto; }
+.ip-hero h1 { font-size: var(--fs-h1); margin: 0 0 6px; }
+.ip-hero p { color: var(--text-muted); font-size: var(--fs-body); margin: 0; line-height: 1.6; }
+.ip-wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px 48px; }
+.ip-table { width: 100%; border-collapse: collapse; font-size: var(--fs-body); }
+.ip-table th, .ip-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+.ip-table th { color: var(--text-muted); font-weight: 500; font-size: var(--fs-xs); white-space: nowrap; }
+.ip-table a { color: var(--accent); text-decoration: none; }
+.ip-table a:hover { text-decoration: underline; }
+.ip-tier { font-weight: 700; }
+.ip-sub { font-size: var(--fs-xs); color: var(--text-muted); }
+.ip-empty { padding: 40px 0; color: var(--text-muted); text-align: center; }
+{% endblock %}
+
+{% block content %}
+<div class="ip-hero">
+  <h1>投資優先度ランキング（融資×収益）</h1>
+  <p>
+    全都市横断。融資期間（築年から算出される借入年数）・建物構造・収支判定（CCR/回収年数）を組み合わせた複合スコアで自動順位付け。
+    パトロール実行のたびに再生成（{{ generated_at }} 時点 / 全{{ total_count }}件）。
+    上位「優良」「有望」がDD（精査レポート）の優先候補。
+  </p>
+</div>
+<div class="ip-wrap">
+  {% if records %}
+  <table class="ip-table">
+    <thead>
+      <tr>
+        <th>スコア</th><th>都市</th><th>物件</th><th>価格</th><th>構造</th>
+        <th>融資期間</th><th>収支判定</th><th>CCR</th><th>回収年数</th><th>月次CF(税後)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><span class="ip-tier" style="color:{{ r.tier_color }}">{{ r.composite_score }}</span><br><span class="ip-sub">{{ r.tier_label }}</span></td>
+        <td>{{ r.city_label }}</td>
+        <td><a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.name }}</a><br><span class="ip-sub">{{ r.location }}</span></td>
+        <td>{{ r.price_man }}万円</td>
+        <td>{{ r.structure }}</td>
+        <td>{{ r.loan_years if r.loan_years is not none else "—" }}年</td>
+        <td>{{ r.verdict }}</td>
+        <td>{{ "%.1f"|format(r.ccr) + "%" if r.ccr is not none else "—" }}</td>
+        <td>{{ "%.1f"|format(r.payback_years) + "年" if r.payback_years is not none else "∞" }}</td>
+        <td>{{ "%.1f"|format(r.monthly_cf) + "万" if r.monthly_cf is not none else "—" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="ip-empty">データがありません。パトロール実行後に生成されます。</div>
+  {% endif %}
+</div>
+{% endblock %}

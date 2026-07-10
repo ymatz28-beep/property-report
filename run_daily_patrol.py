@@ -546,6 +546,12 @@ def generate_reports() -> list[dict]:
         results.append({"step": script, **result})
         if not result["ok"]:
             log(f"  ⚠️ {script} 失敗 — 他都市は続行")
+    # 融資×収益の投資優先度ランキング（3都市横断ダッシュボード）。
+    # 各都市レポート生成時にdata/investment_priority/*.jsonへ永続化済みの結果を集約するだけ。
+    result = run_script("generate_investment_priority.py")
+    results.append({"step": "generate_investment_priority.py", **result})
+    if not result["ok"]:
+        log("  ⚠️ generate_investment_priority.py 失敗 — 続行")
     # Generate 一棟もの report
     result = run_script("generate_ittomono_report.py")
     results.append({"step": "generate_ittomono_report.py", **result})

@@ -1231,9 +1231,6 @@ _NAV_PAGES = [
     {"href": "minpaku-tokyo.html", "label": "民泊・東京"},
     {"href": "ittomono.html", "label": "一棟もの"},
     {"href": "market.html", "label": "賃貸Market"},
-    {"href": "naiken-analysis.html", "label": "内覧分析"},
-    {"href": "inquiry-messages.html", "label": "問い合わせ"},
-    {"href": "inquiry-pipeline.html", "label": "Pipeline"},
 ]
 
 
@@ -1482,6 +1479,11 @@ def generate_report(config: ReportConfig) -> Path:
     if top_n_trimmed > 0:
         print(f"  Tier filter: {len(green)}件 green + {len(deduped) - len(green)}件 yellow (cut {top_n_trimmed} lower-ranked)")
     print(f"  Final: {len(deduped)}件 厳選済み")
+
+    # 融資×収益の投資優先度ランキングを都市ごとに永続化（横断ダッシュボード用）
+    from investment_priority import build_priority_records, save_city_priority
+    priority_records = build_priority_records(deduped, config)
+    save_city_priority(config.city_key, priority_records)
 
     # Auto QA
     _run_qa(config.output_path, deduped, config.city_label)

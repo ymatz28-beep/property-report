@@ -118,9 +118,6 @@ GNAV_PAGES = [
     {"href": "minpaku-tokyo.html", "label": "民泊・東京"},
     {"href": "ittomono.html", "label": "一棟もの"},
     {"href": "market.html", "label": "賃貸Market"},
-    {"href": "naiken-analysis.html", "label": "内覧分析"},
-    {"href": "inquiry-messages.html", "label": "問い合わせ"},
-    {"href": "inquiry-pipeline.html", "label": "Pipeline"},
     {"href": "rent-strategy.html", "label": "家賃戦略"},
 ]
 
@@ -1165,92 +1162,6 @@ def _load_patrol_summary() -> dict | None:
 
 
 # ---------------------------------------------------------------------------
-# Pipeline auto-flag: 収益物件の上位をinquiries.yamlへ自動注入
-# ---------------------------------------------------------------------------
-def _pipeline_auto_flag(cities: list[dict]) -> None:
-    """Flag top profitable properties into the pipeline (CF+ & CCR high)."""
-    try:
-        import yaml as _yaml
-        from pathlib import Path as _Path
-        from datetime import date as _date
-
-        inq_path = _Path("data/inquiries.yaml")
-        if not inq_path.exists():
-            return
-        raw = _yaml.safe_load(inq_path.read_text(encoding="utf-8"))
-        inquiries = raw.get("inquiries", []) if isinstance(raw, dict) else raw
-        existing_urls = {inq.get("url", "").rstrip("/") for inq in inquiries}
-
-        # Next ID
-        max_id = 0
-        for inq in inquiries:
-            try:
-                max_id = max(max_id, int(inq.get("id", "inq-0").split("-")[-1]))
-            except (ValueError, IndexError):
-                pass
-
-        new_flagged = []
-        for city_data in cities:
-            for prop in city_data.get("profitable", {}).get("properties", []):
-                url = prop.get("url", "").rstrip("/")
-                if not url or url in existing_urls:
-                    continue
-                rev = prop.get("revenue", {})
-                if not rev:
-                    continue
-                ccr = rev.get("ccr", 0)
-                cf = rev.get("after_tax_monthly_cf", 0)
-                if cf <= 0 or ccr < 5.0:
-                    continue
-
-                max_id += 1
-                entry = {
-                    "id": f"inq-{max_id:03d}",
-                    "name": prop.get("name", ""),
-                    "url": prop.get("url", ""),
-                    "source": prop.get("source", ""),
-                    "city": city_data.get("key", ""),
-                    "score": prop.get("total_score", 0),
-                    "status": "flagged",
-                    "price": prop.get("price_man", 0),
-                    "area": prop.get("area_sqm", 0),
-                    "layout": prop.get("layout", ""),
-                    "station": prop.get("station_text", prop.get("location", "")),
-                    "year_built": prop.get("built_year"),
-                    "pet": prop.get("pet_status") or "unknown",
-                    "short_term": None,
-                    "management_fee": prop.get("maintenance_fee", 0),
-                    "agent": None,
-                    "thread_id": None,
-                    "viewing_date": None,
-                    "decision": None,
-                    "notes": f"自動フラグ: CF {cf:.1f}万/月, CCR {ccr:.1f}%",
-                    "created": str(_date.today()),
-                    "updated": str(_date.today()),
-                }
-                new_flagged.append(entry)
-                existing_urls.add(url)
-
-        if new_flagged:
-            inquiries.extend(new_flagged)
-            if isinstance(raw, dict):
-                raw["inquiries"] = inquiries
-            else:
-                raw = inquiries
-            inq_path.write_text(
-                _yaml.dump(raw, allow_unicode=True, default_flow_style=False, sort_keys=False),
-                encoding="utf-8",
-            )
-            print(f"  → Pipeline: {len(new_flagged)}件を自動フラグ (CF+/CCR≥5%)")
-            for e in new_flagged[:5]:
-                print(f"    {e['id']} {e['name']} CCR={e['notes'].split('CCR ')[-1]}")
-        else:
-            print("  → Pipeline: 新規フラグ対象なし")
-    except Exception as e:
-        print(f"  → Pipeline auto-flag error: {e}")
-
-
-# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 def main() -> None:
@@ -1582,9 +1493,6 @@ def main() -> None:
         city_data["count"] += len(profitable)
         total_profitable += len(profitable)
     print(f"  収益物件: {total_profitable}件 (CF+ or CG+)")
-
-    # ── 収益物件 → Pipeline 自動フラグ（CCR上位をinquiries.yamlに注入） ──
-    _pipeline_auto_flag(cities)
 
     # Totals
     total_count = total_kubun + total_ittomono + total_kodate + total_budget

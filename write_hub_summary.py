@@ -25,18 +25,6 @@ DATA_DIR = _PROJECT_ROOT / "data"
 OUTPUT_DIR = _PROJECT_ROOT / "output" / "data"
 
 
-def _active_inquiries(inquiries_yaml: Path) -> int:
-    if not inquiries_yaml.exists():
-        return 0
-    data = yaml.safe_load(inquiries_yaml.read_text(encoding="utf-8")) or {}
-    items = data.get("items") or data if isinstance(data, list) else (data.get("inquiries") or [])
-    # Tolerate both dict-with-list and list-at-root
-    if isinstance(items, dict):
-        items = items.get("items", [])
-    active_states = {"inquired", "in_discussion", "viewing", "viewed"}
-    return sum(1 for it in items if it.get("status") in active_states)
-
-
 def _properties_total(properties_yaml: Path) -> int:
     if not properties_yaml.exists():
         return 0
@@ -77,14 +65,12 @@ def _last_patrol_iso(patrol_summary_json: Path) -> str:
 
 def main() -> int:
     total = _properties_total(DATA_DIR / "properties.yaml")
-    inquiries = _active_inquiries(DATA_DIR / "inquiries.yaml")
     patrol = DATA_DIR / "patrol_summary.json"
     top = _top_score(patrol)
 
     summary = {
         "candidates": f"{total:,}" if total else None,
         "top_score": top,
-        "inquiries": inquiries,
         "updated_at": _last_patrol_iso(patrol),
     }
 
@@ -92,7 +78,7 @@ def main() -> int:
     out_path = OUTPUT_DIR / "hub_summary.json"
     out_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"  hub_summary.json written: candidates={summary['candidates']} "
-          f"inquiries={summary['inquiries']} top_score={summary['top_score']}")
+          f"top_score={summary['top_score']}")
     return 0
 
 

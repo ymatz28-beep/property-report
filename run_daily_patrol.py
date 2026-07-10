@@ -93,14 +93,9 @@ STEP_LABELS = {
     "generate_fukuoka_report.py": ("福岡レポート生成", "福岡レポートが古いまま"),
     "generate_tokyo_report.py": ("東京レポート生成", "東京レポートが古いまま"),
     "generate_ittomono_report.py": ("一棟ものレポート生成", "一棟ものレポートが古いまま"),
-    "generate_inquiry_messages.py": ("問い合わせ文面生成", "問い合わせ文面が未更新"),
     "write_hub_summary.py": ("Hub KPI JSON生成", "ハブのKPIが前日値のまま表示"),
     "first_seen": ("初回検出日記録", "新規物件の初回検出日が未記録"),
     "url_check": ("掲載終了チェック", "売却済み物件の検出が未実行"),
-    "pipeline_flag": ("自動フラグ付与", "高スコア物件の自動フラグが未実行"),
-    "pipeline_lifecycle": ("パイプラインライフサイクル", "掲載終了・価格変動・ステータス同期"),
-    "pipeline_dashboard": ("問い合わせダッシュボード", "問い合わせ管理画面が未更新"),
-    "naiken_analysis": ("内覧分析レポート", "内覧比較レポートが未更新"),
     "deploy": ("デプロイ", "レポートが公開されていない"),
 }
 
@@ -556,8 +551,6 @@ def generate_reports() -> list[dict]:
     results.append({"step": "generate_ittomono_report.py", **result})
     if not result["ok"]:
         log("  ⚠️ generate_ittomono_report.py 失敗 — 続行")
-    result = run_script("generate_inquiry_messages.py")
-    results.append({"step": "generate_inquiry_messages.py", **result})
     # Generate market.html (格安+区分+収益+一棟 統合ページ)
     result = run_script("generate_market.py")
     results.append({"step": "generate_market.py", **result})
@@ -1066,66 +1059,7 @@ def main():
         errors.append(f"generate_reports: {e}")
         log(f"  ❌ レポート生成全体エラー: {e} — デプロイは試行")
 
-    # 5.5. Pipeline lifecycle: auto-flag + sweep stale + price tracking + agent sync
     flagged_items: list[dict] = []
-    try:
-        from property_pipeline import auto_flag, generate_dashboard, generate_naiken_analysis, lifecycle
-        flagged_items = auto_flag() or []
-        all_steps.append({"step": "pipeline_flag", "ok": True})
-        log("  Pipeline auto-flag 完了")
-    except Exception as e:
-        all_steps.append({"step": "pipeline_flag", "ok": False, "reason": "crash",
-                          "stderr_tail": str(e)})
-        log(f"  ⚠️ Pipeline auto-flag skipped: {e}")
-
-    # 5.6. Lifecycle management (sweep stale + price tracking + agent memory sync)
-    try:
-        lc_result = lifecycle()
-        all_steps.append({"step": "pipeline_lifecycle", "ok": True})
-        log(f"  Pipeline lifecycle完了: {lc_result}")
-    except Exception as e:
-        all_steps.append({"step": "pipeline_lifecycle", "ok": False, "reason": "crash",
-                          "stderr_tail": str(e)})
-        log(f"  ⚠️ Pipeline lifecycle skipped: {e}")
-
-    # 5.6.0. Early save patrol_summary so generate_market.py reads current run's date
-    try:
-        save_patrol_summary(start, (datetime.now() - start).total_seconds(),
-                            diff, url_report, all_steps=all_steps,
-                            flagged_items=flagged_items)
-    except Exception as e:
-        log(f"  ⚠️ early patrol_summary save failed: {e}")
-
-    # 5.6.1. Re-generate market.html after lifecycle sweep (to reflect removed properties)
-    try:
-        result = run_script("generate_market.py")
-        all_steps.append({"step": "generate_market_post_sweep", **result})
-        if result["ok"]:
-            log("  market.html再生成完了（sweep反映）")
-        else:
-            log("  ⚠️ market.html再生成失敗（sweep後）— 続行")
-    except Exception as e:
-        log(f"  ⚠️ market.html再生成 skipped: {e}")
-
-    # 5.7. Regenerate dashboard (after flag + sync)
-    try:
-        generate_dashboard()
-        all_steps.append({"step": "pipeline_dashboard", "ok": True})
-        log("  Pipeline dashboard生成完了")
-    except Exception as e:
-        all_steps.append({"step": "pipeline_dashboard", "ok": False, "reason": "crash",
-                          "stderr_tail": str(e)})
-        log(f"  ⚠️ Pipeline dashboard skipped: {e}")
-
-    # 5.8. Regenerate naiken analysis (viewing properties → comparison page)
-    try:
-        generate_naiken_analysis()
-        all_steps.append({"step": "naiken_analysis", "ok": True})
-        log("  内覧分析レポート生成完了")
-    except Exception as e:
-        all_steps.append({"step": "naiken_analysis", "ok": False, "reason": "crash",
-                          "stderr_tail": str(e)})
-        log(f"  ⚠️ 内覧分析レポート skipped: {e}")
 
     # 6. QA Gate — verify output HTML before deploy
     try:

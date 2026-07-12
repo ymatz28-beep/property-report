@@ -43,9 +43,6 @@
 - [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 97: hardcoded #1a1d27 should be var(--surface)
 - [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 101: hardcoded #c9a84c should be var(--gold)
 - [ERROR] design_token_compliance: [ESCALATED: 37d unresolved] Line 115: hardcoded #0f1117 should be var(--bg)
-- [WARN] design_token_compliance: Line 61: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 405: hardcoded #9ca3af should be var(--text-secondary)
-- [WARN] design_token_compliance: Line 424: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 86d unresolved] Line 173: hardcoded #fbbf24 should be var(--amber)
 - [ERROR] design_token_compliance: [ESCALATED: 86d unresolved] Line 304: hardcoded #fbbf24 should be var(--amber)
 - [ERROR] design_token_compliance: [ESCALATED: 86d unresolved] Line 343: hardcoded #4ade80 should be var(--green-light)
@@ -62,9 +59,6 @@
 - [ERROR] design_token_compliance: [ESCALATED: 86d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 86d unresolved] Line 475: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 86d unresolved] Line 494: hardcoded #9ca3af should be var(--text-secondary)
-- [WARN] design_token_compliance: Line 61: hardcoded #6366f1 should be var(--accent)
-- [WARN] design_token_compliance: Line 329: hardcoded #9ca3af should be var(--text-secondary)
-- [WARN] design_token_compliance: Line 348: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 86d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 86d unresolved] Line 661: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 86d unresolved] Line 680: hardcoded #9ca3af should be var(--text-secondary)
@@ -77,7 +71,7 @@
 - [ERROR] qa_market_data_accuracy: [ESCALATED: 88d unresolved] 5/91 (5.5%) — price mismatch: 福岡市博多区 2DK raw=992.0 html=990.0; price mismatch: 福岡市南区 3LDK raw=900.0 html=990.0; price mismatch: メゾン野間ハイツ 402 raw=500.0 html=630.0; price mismatch: 高木団地住宅 二号棟 raw=698.0 html=710.0; price mismatch: ふれんず物件(南区) raw=710.0 html=730.0
 - [ERROR] qa_market_oc_income_coverage: [ESCALATED: 88d unresolved] OC 291件中 238件が年間収入欠落 (82%) — 利回り逆算で補完
 - [WARN] qa_market_sublease_in_raw: 1件に間接サブリース兆候: ＠安心の空室保証サブリース物件＠所有者管理費負担なし＠
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 88d unresolved] 18件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ', 'グリーンシティＯＳＡＫＡ\u3000１号棟']; 中野区本町(40㎡): ['新中野サニーハイツ', '中野坂上駅 / 1LDK / 40.31㎡']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区博多駅南(21㎡): ['【売主】福岡市中央区◆7.26％◆区分マンション', '駅南三丁目（博多駅）バス停 徒歩3分']; 福岡市中央区警固(24㎡): ['ふれんず物件(中央区)', '【売主】福岡市中央区◆102.71㎡◆区分マンション'] ... +13 more
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 88d unresolved] 18件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 中野区本町(40㎡): ['中野坂上駅 / 1LDK / 40.31㎡', '新中野サニーハイツ']; 福岡市博多区博多駅前(22㎡): ['ライオンズステーションプラザ博多 7階部分', 'ふれんず物件(博多区)']; 福岡市博多区博多駅南(21㎡): ['駅南三丁目（博多駅）バス停 徒歩3分', '【売主】福岡市中央区◆7.26％◆区分マンション']; 福岡市中央区警固(24㎡): ['【売主】福岡市中央区◆102.71㎡◆区分マンション', 'ふれんず物件(中央区)'] ... +13 more
 - [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 39.7% (50/126件)。パイプライン変換バグの可能性。例: 23000.0万円/915.71㎡; 27000.0万円/973.06㎡; 20000.0万円/211.86㎡; 27000.0万円/300.45㎡; 8500.0万円/97.14㎡
 - [WARN] ia_consistency: Page not found: inquiry-pipeline.html
 - [WARN] ia_consistency: Page not found: inquiry-messages.html

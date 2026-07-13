@@ -3,10 +3,10 @@
 - [ERROR] hardcoded_data: [ESCALATED: 89d unresolved] Large inline data (91 lines) at line 36. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] hardcoded_data: [ESCALATED: 41d unresolved] Large inline data (83 lines) at line 364. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
 - [ERROR] hardcoded_data: [ESCALATED: 35d unresolved] Large inline data (60 lines) at line 71. Consider externalizing to YAML/JSON or add `# kaizen-allow: hardcoded_data` 3 lines above to suppress.
-- [ERROR] structural_reform: [ESCALATED: 89d unresolved] Stale temp/debug file (100 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 89d unresolved] Stale temp/debug file (100 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 89d unresolved] Stale temp/debug file (100 days old). Delete it.
-- [ERROR] structural_reform: [ESCALATED: 89d unresolved] Stale temp/debug file (103 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 89d unresolved] Stale temp/debug file (101 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 89d unresolved] Stale temp/debug file (101 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 89d unresolved] Stale temp/debug file (101 days old). Delete it.
+- [ERROR] structural_reform: [ESCALATED: 89d unresolved] Stale temp/debug file (104 days old). Delete it.
 - [ERROR] html_ui: [ESCALATED: 38d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: [ESCALATED: 28d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
@@ -21,9 +21,10 @@
 - [ERROR] html_ui: Missing viewport meta tag — mobile broken
 - [ERROR] html_ui: [ESCALATED: 28d unresolved] Missing gnav (site-header) — no navigation
 - [ERROR] timestamp_format: [ESCALATED: 34d unresolved] Date-only timestamp '最終更新: 2026-07-10' — should include HH:MM
-- [ERROR] property_patrol_steps: [ESCALATED: 17d unresolved] 物件パトロール失敗ステップ (2026-07-12 10:39): 【qa_gate】エラー → Fix: エラーログを確認
-- [ERROR] property_patrol_steps: [ESCALATED: 17d unresolved] 物件パトロール失敗ステップ (2026-07-12 10:39): 【デプロイ】エラー → Fix: エラーログを確認
-- [ERROR] property_patrol_steps: [ESCALATED: 17d unresolved] 物件パトロール失敗ステップ (2026-07-12 10:39): 【ftakken_fukuoka（取得件数が急減）】source_degraded → Fix: 1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加
+- [ERROR] property_patrol_steps: [ESCALATED: 17d unresolved] 物件パトロール失敗ステップ (2026-07-13 12:51): 【qa_gate】エラー → Fix: エラーログを確認
+- [ERROR] property_patrol_steps: [ESCALATED: 17d unresolved] 物件パトロール失敗ステップ (2026-07-13 12:51): 【デプロイ】エラー → Fix: エラーログを確認
+- [ERROR] property_patrol_steps: [ESCALATED: 17d unresolved] 物件パトロール失敗ステップ (2026-07-13 12:51): 【ftakken_fukuoka_budget（取得件数が急減）】source_degraded → Fix: 1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加
+- [ERROR] property_patrol_steps: [ESCALATED: 17d unresolved] 物件パトロール失敗ステップ (2026-07-13 12:51): 【suumo_tokyo（取得件数が急減）】source_degraded → Fix: 1) サイトUIの変化を確認（セレクタ更新） 2) 一時障害なら翌日自動回復 3) 無視=ホワイトリスト追加
 - [ERROR] design_token_compliance: [ESCALATED: 38d unresolved] Line 9: hardcoded #c9a84c should be var(--gold)
 - [ERROR] design_token_compliance: [ESCALATED: 38d unresolved] Line 46: hardcoded #1a1d27 should be var(--surface)
 - [ERROR] design_token_compliance: [ESCALATED: 38d unresolved] Line 50: hardcoded #242836 should be var(--surface2)
@@ -59,20 +60,19 @@
 - [ERROR] design_token_compliance: [ESCALATED: 87d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 87d unresolved] Line 475: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 87d unresolved] Line 494: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 61: hardcoded #6366f1 should be var(--accent)
+- [WARN] design_token_compliance: Line 329: hardcoded #9ca3af should be var(--text-secondary)
+- [WARN] design_token_compliance: Line 348: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 87d unresolved] Line 61: hardcoded #6366f1 should be var(--accent)
 - [ERROR] design_token_compliance: [ESCALATED: 87d unresolved] Line 661: hardcoded #9ca3af should be var(--text-secondary)
 - [ERROR] design_token_compliance: [ESCALATED: 87d unresolved] Line 680: hardcoded #9ca3af should be var(--text-secondary)
-- [WARN] blank_cells: ダッシュ「—」26個 (閾値20) — データ欠損の可能性
-- [WARN] blank_cells: ダッシュ「—」54個 (閾値20) — データ欠損の可能性
-- [WARN] blank_cells: ダッシュ「—」25個 (閾値20) — データ欠損の可能性
-- [ERROR] blank_cells: [ESCALATED: 89d unresolved] ダッシュ「—」148個 (閾値20) — データ欠損の可能性
-- [ERROR] first_seen_coverage: 掲載日カバレッジ 4% (6/146) — 閾値80%
-- [ERROR] property_name_quality: 駅名が物件名になっている: 1件 — ['ミリオンタワー虎ノ門【駅徒歩4分×管理体制良好】']
-- [ERROR] qa_market_data_accuracy: [ESCALATED: 89d unresolved] 6/89 (6.7%) — price mismatch: ニューライフ平尾 raw=2963.0 html=2968.0; price mismatch: 福岡市博多区 2DK raw=992.0 html=990.0; price mismatch: 福岡市南区 3LDK raw=900.0 html=990.0; price mismatch: メゾン野間ハイツ 402 raw=500.0 html=630.0; price mismatch: 高木団地住宅 二号棟 raw=698.0 html=710.0 ... +1 more
-- [ERROR] qa_market_oc_income_coverage: [ESCALATED: 89d unresolved] OC 291件中 238件が年間収入欠落 (82%) — 利回り逆算で補完
-- [WARN] qa_market_sublease_in_raw: 1件に間接サブリース兆候: ＠安心の空室保証サブリース物件＠所有者管理費負担なし＠
-- [ERROR] qa_market_name_cross_reference: [ESCALATED: 89d unresolved] 18件の物件名クロスリファレンス不一致: 大阪市福島区海老江(40㎡): ['グリーンシティＯＳＡＫＡ\u3000１号棟', 'グリーンシティＯＳＡＫＡ\u3000１号棟 6階 １ＬＤＫ']; 中野区本町(40㎡): ['中野坂上駅 / 1LDK / 40.31㎡', '新中野サニーハイツ']; 福岡市博多区博多駅前(22㎡): ['ふれんず物件(博多区)', 'ライオンズステーションプラザ博多 7階部分']; 福岡市博多区博多駅南(21㎡): ['【売主】福岡市中央区◆7.26％◆区分マンション', '駅南三丁目（博多駅）バス停 徒歩3分']; 福岡市中央区警固(24㎡): ['【売主】福岡市中央区◆102.71㎡◆区分マンション', 'ふれんず物件(中央区)'] ... +13 more
-- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 41.3% (52/126件)。パイプライン変換バグの可能性。例: 2250.0万円/49.71㎡; 23000.0万円/915.71㎡; 27000.0万円/973.06㎡; 20000.0万円/211.86㎡; 27000.0万円/300.45㎡
+- [WARN] blank_cells: ダッシュ「—」32個 (閾値20) — データ欠損の可能性
+- [WARN] blank_cells: ダッシュ「—」31個 (閾値20) — データ欠損の可能性
+- [ERROR] blank_cells: [ESCALATED: 89d unresolved] ダッシュ「—」83個 (閾値20) — データ欠損の可能性
+- [ERROR] first_seen_coverage: 掲載日カバレッジ 6% (6/108) — 閾値80%
+- [ERROR] qa_market_oc_income_coverage: [ESCALATED: 89d unresolved] OC 302件中 245件が年間収入欠落 (81%) — 利回り逆算で補完
+- [ERROR] qa_market_name_cross_reference: [ESCALATED: 89d unresolved] 9件の物件名クロスリファレンス不一致: 福岡市南区大橋(28㎡): ['ふれんず物件(南区)', '【福岡市南区】2022築・「大橋駅」徒歩9分・高層階！']; 福岡市南区大楠(20㎡): ['ふれんず物件(南区)', '【売主】福岡再開発エリア◆7.26％◆中央区区分マンション']; 福岡市南区宅(57㎡): ['三宅本町バス停 徒歩4分', 'シャンブル三宅']; 福岡市南区向野(55㎡): ['南市民センター前バス停 徒歩1分', 'アーサー大橋東エクシオ']; 福岡市南区大橋(60㎡): ['2025年4月築の築浅マンション\u3000近くにコンビニ2軒あり\u3000インターネットは無料利用可\u300024時間ごみ出', 'レジアス大橋'] ... +4 more
+- [ERROR] data_accuracy: スクレイプデータとHTMLレンダリングの不一致率 39.6% (36/91件)。パイプライン変換バグの可能性。例: 23000.0万円/915.71㎡; 27000.0万円/973.06㎡; 20000.0万円/211.86㎡; 27000.0万円/300.45㎡; 8500.0万円/97.14㎡
 - [WARN] ia_consistency: Page not found: inquiry-pipeline.html
 - [WARN] ia_consistency: Page not found: inquiry-messages.html
 - [ERROR] renderer_compliance: [ESCALATED: 38d unresolved] Missing gnav (site-header / site-nav) — no navigation

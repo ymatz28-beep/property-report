@@ -47,7 +47,8 @@ CHIP_SHORT = {
 }
 # 現在地（18_次のアクション.md を更新したらここも合わせて変える）
 PHASE_STATE = {
-    "p0":   "completed",   # 全電話・初回面談 完了
+    "p0":   "reference",   # 初回電話は完了だが、16_メール文例.mdの窓口台本が随時増える生きた参照集のため
+                            # "completed"にすると全体が1つのdetailsに畳まれ新しい台本まで隠れる→常時展開に変更
     "p1":   "pending",     # 旅館業許可 未着手（物件取得後）
     "p2":   "active",      # 融資活動中（直接融資4行=公庫・商工中金・遠賀信金・福岡銀行NG確定。非銀行=セゾンファンデックス本命・日宝次点を打診中）
     "p3":   "active",      # B類型 飯塚先生署名待ち（並行）
@@ -156,6 +157,14 @@ def make_pdf() -> bool:
     return ok
 
 
+def _is_past_heading(txt: str) -> bool:
+    """完了・送信済・凍結など"もう見なくていい"見出しかどうか（##セクションの自動collapse判定）。
+    早見表の状況列（✅送信済／❌NG・除外）と同じアイコン規約を見出し側にも適用し、
+    未対応（⏳）だけが常時展開されるようにする。"""
+    t = txt.lstrip()
+    return t.startswith(("✅", "❌")) or "完了" in txt
+
+
 def md_to_html(md: str, demote: int = 0) -> str:
     """最小限の Markdown→HTML（見出し/表/リスト/引用/太字/段落）。
     demote>0 で見出しレベルを下げる（フェーズ内のサブ見出し化。h1→h2 等）。"""
@@ -207,15 +216,15 @@ def md_to_html(md: str, demote: int = 0) -> str:
             out.append(t); continue
         m = re.match(r"^(#{1,4})\s+(.*)$", ln)
         if m:
-            lvl = min(len(m.group(1)) + demote, 6)
+            orig_lvl = len(m.group(1))
+            lvl = min(orig_lvl + demote, 6)
             txt = m.group(2)
-            if lvl == 2 and "完了" in txt and not in_done_section:
-                out.append(f'<details class="past-section"><summary>{inline(txt)}</summary>')
-                in_done_section = True
-            elif in_done_section and lvl <= 2:
+            if in_done_section and orig_lvl <= 2:
                 out.append('</details>')
                 in_done_section = False
-                out.append(f"<h{lvl}>{inline(txt)}</h{lvl}>")
+            if orig_lvl == 2 and _is_past_heading(txt):
+                out.append(f'<details class="past-section"><summary>{inline(txt)}</summary>')
+                in_done_section = True
             else:
                 out.append(f"<h{lvl}>{inline(txt)}</h{lvl}>")
             i += 1; continue

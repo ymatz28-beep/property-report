@@ -165,6 +165,41 @@ def _is_past_heading(txt: str) -> bool:
     return t.startswith(("✅", "❌")) or "完了" in txt
 
 
+# ── 見出しアンカー（2026-07-19）: 全見出しに安定idを付与し、表・カード・heroから
+#    実行セクション（電話台本・申込文等）へ深リンクできるようにする。
+#    `## 見出し {#custom-id}` の明示指定は、状態絵文字（⏳→✅）の変化でもリンクが腐らない安定アンカー。
+_RESERVED_IDS = {"p0", "p1", "p2", "p3", "p4", "p5", "docs", "next", "flow", "toc", "totop"}
+_seen_ids: set[str] = set(_RESERVED_IDS)
+
+
+def _reset_heading_ids() -> None:
+    """ビルド毎にid採番をリセット（同一入力→同一idの決定性を保証）。"""
+    _seen_ids.clear()
+    _seen_ids.update(_RESERVED_IDS)
+
+
+def _slugify(text: str) -> str:
+    t = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text)   # [text](url) → text
+    t = re.sub(r"\*\*|`", "", t)
+    t = re.sub(r"[\W_]+", "-", t.lower()).strip("-")     # \w=英数+かな漢字。絵文字・記号は"-"に
+    return t or "sec"
+
+
+def _heading_id(txt: str) -> tuple[str, str]:
+    """見出しテキストから (表示テキスト, ページ内一意id) を返す。衝突は -2, -3 で決定的に回避。"""
+    m = re.search(r"\s*\{#([A-Za-z0-9_-]+)\}\s*$", txt)
+    if m:
+        txt, base = txt[: m.start()], m.group(1)
+    else:
+        base = _slugify(txt)
+    hid, n = base, 2
+    while hid in _seen_ids:
+        hid = f"{base}-{n}"
+        n += 1
+    _seen_ids.add(hid)
+    return txt, hid
+
+
 def md_to_html(md: str, demote: int = 0) -> str:
     """最小限の Markdown→HTML（見出し/表/リスト/引用/太字/段落）。
     demote>0 で見出しレベルを下げる（フェーズ内のサブ見出し化。h1→h2 等）。"""
@@ -218,15 +253,16 @@ def md_to_html(md: str, demote: int = 0) -> str:
         if m:
             orig_lvl = len(m.group(1))
             lvl = min(orig_lvl + demote, 6)
-            txt = m.group(2)
+            txt, hid = _heading_id(m.group(2))
             if in_done_section and orig_lvl <= 2:
                 out.append('</details>')
                 in_done_section = False
             if orig_lvl == 2 and _is_past_heading(txt):
-                out.append(f'<details class="past-section"><summary>{inline(txt)}</summary>')
+                # 畳まれても id は details 側に付く＝アンカーは生き、JS(revealHash)が開いて見せる
+                out.append(f'<details class="past-section" id="{hid}"><summary>{inline(txt)}</summary>')
                 in_done_section = True
             else:
-                out.append(f"<h{lvl}>{inline(txt)}</h{lvl}>")
+                out.append(f'<h{lvl} id="{hid}">{inline(txt)}</h{lvl}>')
             i += 1; continue
         if ln.startswith(">"):
             buf = []
@@ -293,7 +329,8 @@ def build_hub() -> str:
         '<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）。'
         '各カードは「やること」と「これだけ聞く」に絞ってある。並行で<b>gBizIDプライム</b>'
         '（省力化補助の前提・発行に2〜3週）も申請。</blockquote>'
-        f'<div class="hubgrid">{"".join(cards)}</div>')
+        '<details class="past-section"><summary>✅ 朝イチの電話・予約（初動6件・完了）</summary>'
+        f'<div class="hubgrid">{"".join(cards)}</div></details>')
 
 
 def build_taxprep() -> str:
@@ -368,6 +405,8 @@ def build_next_hero(md: str) -> str:
         s = html.escape(s)
         s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
         s = re.sub(r"`(.+?)`", r"<code>\1</code>", s)
+        # md側に [台本](#script-ncb) 等のページ内リンクがあってもheroカードで生きたリンクにする
+        s = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", r'<a href="\2">\1</a>', s)
         return s
 
     detail_html = f'<div class="nh-detail">→ {_mini(detail)}</div>' if detail else ""
@@ -402,6 +441,7 @@ def build_progress_strip() -> str:
 
 
 def main() -> int:
+    _reset_heading_ids()
     sections, nav = [], []
     for pid, title, content in PHASES:
         # 中身を生成（HUB/TAXPREP は関数生成、それ以外は md ファイルを束ねて1段下げ内包）
@@ -510,6 +550,8 @@ h2{{font-size:18px;border-left:5px solid var(--gold);padding-left:10px;margin-to
 h3{{font-size:15px;margin-top:20px;color:#333}}
 h4{{font-size:14px;margin-top:14px;color:#555}}
 section.doc{{scroll-margin-top:54px}}
+h1,h2,h3,h4,h5,h6{{scroll-margin-top:54px}}
+details.past-section{{scroll-margin-top:54px}}
 .flowwrap{{scroll-margin-top:54px}}
 table{{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}}
 th,td{{border:1px solid #ccc;padding:6px 9px;text-align:left;vertical-align:top}}
@@ -569,6 +611,7 @@ a{{color:#1e5fb4;word-break:break-all}}
 .nh-action{{color:#ffd86b;font-size:17px;font-weight:800;line-height:1.5}}
 .nh-detail{{color:#cfd2da;font-size:12.5px;margin-top:6px;line-height:1.6}}
 .nh-detail code{{background:#242836;color:#e6e8ee}}
+.next-hero a{{color:#8ab4ff}}
 .nh-meta{{color:#767d90;font-size:10.5px;margin-top:8px}}
 .toc{{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:7px 20px;display:flex;justify-content:center;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}}
 .toc .chip{{flex:0 0 auto;background:#242836;color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}}
@@ -661,9 +704,25 @@ pre.code{{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:
   tt0.addEventListener('click', toTop);
   var chips=[].slice.call(document.querySelectorAll('.toc .chip'));
   var map={{}}; chips.forEach(function(c){{map[c.dataset.target]=c;}});
-  function openDetails(hash){{if(!hash)return;var el=document.querySelector(hash);if(el&&el.tagName==='DETAILS')el.open=true;}}
-  openDetails(location.hash);
-  chips.forEach(function(c){{c.addEventListener('click',function(){{openDetails('#'+c.dataset.target);}});}});
+  // アンカー先が閉じた<details>（phase-wrap/past-section）内でも、祖先を全て開いてから
+  // ネイティブスクロールに任せる。click時（=デフォルト動作の前）に開くのでスクロールが確実に届く。
+  function revealHash(hash){{
+    if(!hash||hash.length<2)return;
+    var id; try{{id=decodeURIComponent(hash.slice(1));}}catch(e){{id=hash.slice(1);}}
+    var el=document.getElementById(id); if(!el)return;
+    for(var n=el;n;n=n.parentElement){{ if(n.tagName==='DETAILS')n.open=true; }}
+  }}
+  revealHash(location.hash);
+  addEventListener('hashchange',function(){{revealHash(location.hash);}},false);
+  document.addEventListener('click',function(ev){{
+    var t=ev.target;
+    while(t&&t!==document&&t.tagName!=='A')t=t.parentElement;
+    if(t&&t!==document&&t.tagName==='A'){{
+      var h=t.getAttribute('href');
+      if(h&&h.charAt(0)==='#')revealHash(h);
+    }}
+  }},true);
+  chips.forEach(function(c){{c.addEventListener('click',function(){{revealHash('#'+c.dataset.target);}});}});
   var secs=[].slice.call(document.querySelectorAll('section[id], details[id]'));
   var io=new IntersectionObserver(function(es){{
     es.forEach(function(e){{

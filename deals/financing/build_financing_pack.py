@@ -49,12 +49,16 @@ CHIP_SHORT = {
 PHASE_STATE = {
     "p0":   "completed",   # 全電話・初回面談 完了
     "p1":   "pending",     # 旅館業許可 未着手（物件取得後）
-    "p2":   "active",      # 融資活動中（福岡銀行協議中・信用保証協会待ち）
+    "p2":   "active",      # 融資活動中（直接融資4行=公庫・商工中金・遠賀信金・福岡銀行NG確定。非銀行=セゾンファンデックス本命・日宝次点を打診中）
     "p3":   "active",      # B類型 飯塚先生署名待ち（並行）
     "p4":   "pending",     # 発注ゲート 未着手
     "p5":   "pending",     # 開業後補助金 未着手
     "docs": "reference",   # 常時参照
 }
+# 現在フェーズ（PHASE_STATE から導出。journey順で最初の active）。フローチャートの
+# 「▶ いまここから」バッジ・progress strip がここに追従する＝ハードコード禁止。
+def _current_phase() -> str:
+    return next((pid for pid, _, _ in PHASES if PHASE_STATE.get(pid) == "active"), "p0")
 # ── フェーズ0の正本（SSoT）。住所・電話は2026-06-08に公式で裏取り済み ──
 # 設計方針: HPで読めること（基準・必要書類・流れ）は"聞かない"。手引きPDFへ誘導し、
 # 電話/来所は「HPでは分からない＝人に聞くしかないこと」と「やるべき手続き(予約・相談)」に絞る。
@@ -296,26 +300,77 @@ def build_taxprep() -> str:
     return "\n".join(parts) if parts else "<p>（内容準備中）</p>"
 
 
+def _flow_mark(pid: str) -> tuple[str, str]:
+    """フローチャート各箱の (追加CSSクラス, 先頭バッジHTML) を PHASE_STATE から導出。
+    「▶ いまここから」は _current_phase()（journey順で最初の active）にだけ付く。
+    build_progress_strip() と同じデータ駆動パターン（ハードコード禁止・DESIGN.md準拠）。"""
+    if pid == _current_phase():
+        return " cur", '<span class="badge">▶ いまここから</span>'
+    if PHASE_STATE.get(pid) == "completed":
+        return " done", '<span class="badge fin">✅ 完了</span>'
+    return "", ""
+
+
 def build_flowchart() -> str:
-    """全体の流れを1枚に。各ボックスはフェーズ（#p0..#p5）へジャンプ。"""
+    """全体の流れを1枚に。各ボックスはフェーズ（#p0..#p5）へジャンプ。
+    現在地バッジは PHASE_STATE から自動導出（build_progress_strip と同じSSoT）。"""
+    c0, b0 = _flow_mark("p0")
+    c1, b1 = _flow_mark("p1")
+    c2, b2 = _flow_mark("p2")
+    c3, b3 = _flow_mark("p3")
+    c4, b4 = _flow_mark("p4")
+    c5, b5 = _flow_mark("p5")
     return f"""
 <section class="flowwrap" id="flow">
   <h1>全体の流れ（上から着手順。各箱からフェーズへ飛べる）</h1>
   <div class="flow">
-    <a class="fbox first" href="#p0"><span class="badge">▶ いまここから</span><b>1. 朝イチに電話（予約・相談）＋ 事業者ID申請</b><small>★最優先 公庫の相談予約 0120-154-505／福岡支店092-411-9111（午前中に取り切る）。必須=保健所 092-419-1125・消防 予防課 092-475-0119・こども未来局 092-711-4188。任意=組合 092-737-5050・商工会議所 092-441-2161。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
+    <a class="fbox{c0}" href="#p0">{b0}<b>1. 朝イチに電話（予約・相談）＋ 事業者ID申請</b><small>★最優先 公庫の相談予約 0120-154-505／福岡支店092-411-9111（午前中に取り切る）。必須=保健所 092-419-1125・消防 予防課 092-475-0119・こども未来局 092-711-4188。任意=組合 092-737-5050・商工会議所 092-441-2161。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
     <div class="farrow">▼ 相談で段取りが見えたら</div>
-    <a class="fbox start" href="#p1"><b>2. 旅館業（簡易宿所）許可を申請</b><small>すべての低金利と（開業後の）補助金を開く"スイッチ"。手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。許可は申請中でも公庫の打診は可</small></a>
+    <a class="fbox start{c1}" href="#p1">{b1}<b>2. 旅館業（簡易宿所）許可を申請</b><small>すべての低金利と（開業後の）補助金を開く"スイッチ"。手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。許可は申請中でも融資の打診は可</small></a>
     <div class="farrow">▼ 許可を軸に、下の2つを並行で進める</div>
     <div class="frow">
-      <a class="fbox" href="#p2"><b>3A. 融資（公庫）</b><small>組合加入 → 公庫 振興事業貸付（設備20年・据置2年）で打診＝返済余裕率(DSCR)成立。相見積も並行</small></a>
-      <a class="fbox" href="#p3"><b>3B. 税制の前提づくり</b><small>商工会議所で経営力向上計画の認定（経営強化税制＝即時償却/10%控除の前提）。設備取得の"前"に</small></a>
+      <a class="fbox{c2}" href="#p2">{b2}<b>3A. 融資（金融機関）</b><small>直接融資4行（公庫・商工中金・遠賀信金・福岡銀行）NG確定 → 非銀行（セゾンファンデックス本命・日宝次点）へ不動産担保ローンを打診中。相見積も並行</small></a>
+      <a class="fbox{c3}" href="#p3">{b3}<b>3B. 税制の前提づくり</b><small>商工会議所で経営力向上計画の認定（経営強化税制＝即時償却/10%控除の前提）。設備取得の"前"に</small></a>
     </div>
     <div class="farrow">▼ 「決定の紙（融資決定・計画認定）が出る前に発注したら無効」</div>
-    <a class="fbox gate" href="#p4"><b>4. ★発注ゲート → 工事 → 消防適合・許可取得 → 開業</b><small>融資決定・計画認定の"後"に発注。リノベ本体はどの補助も対象外なので先行可。開業時に宿泊税の申告を開始</small></a>
+    <a class="fbox gate{c4}" href="#p4">{b4}<b>4. ★発注ゲート → 工事 → 消防適合・許可取得 → 開業</b><small>融資決定・計画認定の"後"に発注。リノベ本体はどの補助も対象外なので先行可。開業時に宿泊税の申告を開始</small></a>
     <div class="farrow">▼ ここで初めて補助金が解禁</div>
-    <a class="fbox end" href="#p5"><b>5. 開業後：福岡市 受入環境補助・省力化補助を申請</b><small>開業＋宿泊税申告が要件。交付決定の"後"に対象機器を発注→設置→実績報告で後払い入金。確定申告で経営強化税制も回収</small></a>
+    <a class="fbox end{c5}" href="#p5">{b5}<b>5. 開業後：福岡市 受入環境補助・省力化補助を申請</b><small>開業＋宿泊税申告が要件。交付決定の"後"に対象機器を発注→設置→実績報告で後払い入金。確定申告で経営強化税制も回収</small></a>
   </div>
 </section>"""
+
+
+def build_next_hero(md: str) -> str:
+    """18_次のアクション.md「## 次にやること（優先順）」の1番を最優先カードとして抽出。
+    正本はあくまで md 側＝編集箇所は1つ、カードは自動追従。パース不能なら空文字
+    （全文は必ず直下に出るので安全に劣化する）。"""
+    m_sec = re.search(r"^##\s*次にやること.*$", md, re.M)
+    if not m_sec:
+        return ""
+    m_item = re.search(r"^1\.\s+(.+)$", md[m_sec.end():], re.M)
+    if not m_item:
+        return ""
+    item = m_item.group(1).strip()
+    m_bold = re.match(r"\*\*(.+?)\*\*\s*(?:→\s*)?(.*)$", item)
+    action, detail = (m_bold.group(1), m_bold.group(2)) if m_bold else (item, "")
+    m_upd = re.search(r"最終更新[::]\s*([^\n]+)", md)
+
+    def _mini(s: str) -> str:
+        s = html.escape(s)
+        s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+        s = re.sub(r"`(.+?)`", r"<code>\1</code>", s)
+        return s
+
+    detail_html = f'<div class="nh-detail">→ {_mini(detail)}</div>' if detail else ""
+    upd_html = f"・最終更新 {html.escape(m_upd.group(1).strip())}" if m_upd else ""
+    return (
+        '<div class="next-hero">'
+        '<div class="nh-label">▶ 今すぐやる（最優先アクション）</div>'
+        f'<div class="nh-action">{_mini(action)}</div>'
+        f"{detail_html}"
+        f'<div class="nh-meta">出典: 「次にやること（優先順）」の1番{upd_html}。全文は下に</div>'
+        "</div>"
+    )
 
 
 def build_progress_strip() -> str:
@@ -427,8 +482,10 @@ def main() -> int:
     next_html = ""
     next_chip = ""
     if next_doc.exists():
+        next_md = next_doc.read_text(encoding="utf-8")
         next_html = ('<section id="next" class="doc next-actions">\n'
-                     + md_to_html(next_doc.read_text(encoding="utf-8")) + '\n</section>\n<hr class="sec">\n')
+                     + build_next_hero(next_md) + '\n'
+                     + md_to_html(next_md) + '\n</section>\n<hr class="sec">\n')
         next_chip = '<a class="chip" href="#next" data-target="next">▶ 次にやること</a>'
     nav_html = '<nav class="toc" id="toc">' + next_chip + "".join(nav) + "</nav>"
     body = next_html + flow + "\n" + build_progress_strip() + '\n<hr class="sec">\n'.join(sections)
@@ -497,6 +554,13 @@ a{{color:#1e5fb4;word-break:break-all}}
 .toolbar a.alt{{background:#242836;color:#e4e4e7}}
 .next-actions{{background:#fffdf3;border:2px solid var(--gold);border-radius:12px;padding:4px 18px 10px;margin-top:14px}}
 .next-actions h1{{border:none;color:#7a5c00}}
+/* 最優先アクションカード（18_次のアクション.md の1番から自動生成） */
+.next-hero{{background:#1a1d27;border:2px solid var(--gold);border-radius:12px;padding:14px 18px;margin:14px 0 10px}}
+.nh-label{{display:inline-block;background:var(--gold);color:#1a1207;font-weight:800;font-size:11px;padding:2px 10px;border-radius:999px;margin-bottom:8px;letter-spacing:.02em}}
+.nh-action{{color:#ffd86b;font-size:17px;font-weight:800;line-height:1.5}}
+.nh-detail{{color:#cfd2da;font-size:12.5px;margin-top:6px;line-height:1.6}}
+.nh-detail code{{background:#242836;color:#e6e8ee}}
+.nh-meta{{color:#767d90;font-size:10.5px;margin-top:8px}}
 .toc{{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:7px 20px;display:flex;justify-content:center;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}}
 .toc .chip{{flex:0 0 auto;background:#242836;color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}}
 .toc .chip.active{{background:var(--gold);color:#1a1207;border-color:var(--gold)}}
@@ -508,9 +572,12 @@ a{{color:#1e5fb4;word-break:break-all}}
 .fbox.start{{background:#fff4cf;border-color:#b8902a}}
 .fbox.gate{{background:#ffe9e3;border-color:#e0623a}}
 .fbox.end{{background:#e7f6ea;border-color:#2faa55}}
-.fbox.first{{background:#1a1d27;border-color:#1a1d27;position:relative}}
-.fbox.first b{{color:#ffd86b}} .fbox.first small{{color:#cfd2da}}
-.fbox.first .badge{{display:inline-block;background:#ffd86b;color:#1a1207;font-weight:800;font-size:11px;padding:2px 9px;border-radius:999px;margin-bottom:5px}}
+.fbox .badge{{display:inline-block;font-weight:800;font-size:11px;padding:2px 9px;border-radius:999px;margin-bottom:5px}}
+.fbox.cur{{background:#1a1d27;border-color:#1a1d27;position:relative}}
+.fbox.cur b{{color:#ffd86b}} .fbox.cur small{{color:#cfd2da}}
+.fbox.cur .badge{{background:#ffd86b;color:#1a1207}}
+.fbox.done{{opacity:.55}}
+.fbox .badge.fin{{background:#e5f5e0;color:#2f7a3a;border:1px solid #b0dfa8}}
 .frow{{display:flex;gap:12px;width:100%;max-width:640px}}
 .frow .fbox{{flex:1}}
 .farrow{{color:#b8902a;font-weight:700;font-size:12.5px;padding:6px 0;text-align:center}}

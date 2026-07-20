@@ -45,6 +45,15 @@ CHIP_SHORT = {
     "p5": "5 開業後の補助金",
     "docs": "📄 必要書類",
 }
+# ── 重要項目クイックジャンプ（2026-07-20）: フェーズ内に埋もれた重要サブ見出しへ
+#    チップバーから直接飛べるようにする。id は本文側 `{#id}` 明示指定と対応させ、
+#    見出し文言が変わっても腐らない安定アンカーにする（_heading_id()の既存機構を流用）。
+#    横展開: 同型の(id, ラベル)リスト＋チップ描画ループは trip-planner/self-insight の
+#    重複nav実装にもそのまま移植可能（このファイル単体では抽出しない）。
+IMPORTANT_LINKS = [
+    ("best-financing", "🔑 融資ベスプラ"),
+    ("cashflow-sim", "🔑 想定収支"),
+]
 # 現在地（18_次のアクション.md を更新したらここも合わせて変える）
 PHASE_STATE = {
     "p0":   "reference",   # 初回電話は完了だが、16_メール文例.mdの窓口台本が随時増える生きた参照集のため
@@ -536,7 +545,11 @@ def main() -> int:
                      + build_next_hero(next_md) + '\n'
                      + md_to_html(next_md) + '\n</section>\n<hr class="sec">\n')
         next_chip = '<a class="chip" href="#next" data-target="next">▶ 次にやること</a>'
-    nav_html = '<nav class="toc" id="toc">' + next_chip + "".join(nav) + "</nav>"
+    important_chips = "".join(
+        f'<a class="chip chip-important" href="#{lid}">{html.escape(label)}</a>'
+        for lid, label in IMPORTANT_LINKS
+    )
+    nav_html = '<nav class="toc" id="toc">' + next_chip + "".join(nav) + important_chips + "</nav>"
     body = next_html + flow + "\n" + build_progress_strip() + '\n<hr class="sec">\n'.join(sections)
     doc = f"""<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -616,6 +629,7 @@ a{{color:#1e5fb4;word-break:break-all}}
 .toc{{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:7px 20px;display:flex;justify-content:center;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}}
 .toc .chip{{flex:0 0 auto;background:#242836;color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}}
 .toc .chip.active{{background:var(--gold);color:#1a1207;border-color:var(--gold)}}
+.toc .chip.chip-important{{background:#fff8e6;color:#7a4a00;border-color:#c9a84c}}
 /* flowchart */
 .flow{{display:flex;flex-direction:column;align-items:center;gap:0;margin:14px 0 6px}}
 .fbox{{display:block;width:100%;max-width:640px;background:#fffdf7;border:2px solid var(--gold);border-radius:12px;padding:11px 15px;text-decoration:none;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.06)}}

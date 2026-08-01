@@ -5,14 +5,19 @@
     {% from "components/table.html" import responsive_table %}
     {{ responsive_table(
         headers=[
-            {"label": "Name", "key": "name"},
-            {"label": "Price", "key": "price", "align": "right"},
+            {"label": "Name", "key": "name", "clamp": true},
+            {"label": "Price", "key": "price", "align": "right", "tight": true},
             {"label": "Details", "key": "details", "hide_mobile": true},
         ],
         rows=[
             {"name": "Item A", "price": "\\u00a51,000", "details": "..."},
         ],
     ) }}
+
+  Column width policy (intelligent allocation — see DESIGN_SYSTEM.md "Table"):
+    tight: true  — バッジ/数値/短いenum列。内容ぴったりの自然幅まで縮む(.col-tight)
+    clamp: true  — 自由テキスト列。残り幅を吸収し、2行でクランプ表示(.col-clamp-2)
+    無指定の列は自然幅のまま。table-layout:fixed は使わない(テキスト列圧壊の過去事故対策)。
 #}
 
 {% macro responsive_table(headers, rows, table_class="", sortable=false, table_id="") %}
@@ -63,7 +68,7 @@
     <thead>
       <tr>
         {% for h in headers %}
-        <th {% if h.hide_mobile | default(false) %}class="hide-mobile"{% endif %}
+        <th class="{{ 'hide-mobile' if h.hide_mobile | default(false) else '' }} {{ 'col-tight' if h.tight | default(false) else '' }}"
             {% if h.align | default("") %}style="text-align:{{ h.align }};"{% endif %}
             {% if sortable and h.key %}data-sort="{{ h.key }}"{% endif %}>
           {{ h.label }}
@@ -76,9 +81,10 @@
       {% for row in rows %}
       <tr>
         {% for h in headers %}
-        <td {% if h.hide_mobile | default(false) %}class="hide-mobile"{% endif %}
+        <td class="{{ 'hide-mobile' if h.hide_mobile | default(false) else '' }} {{ 'col-tight' if h.tight | default(false) else '' }}"
             {% if h.align | default("") %}style="text-align:{{ h.align }};"{% endif %}>
-          {{ row[h.key] if h.key else "" }}
+          {% if h.clamp | default(false) %}<span class="col-clamp-2">{{ row[h.key] if h.key else "" }}</span>
+          {% else %}{{ row[h.key] if h.key else "" }}{% endif %}
         </td>
         {% endfor %}
       </tr>

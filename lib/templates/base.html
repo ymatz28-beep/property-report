@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function() {
+  var stored = localStorage.getItem('iuma_theme');
+  var wantsLight = stored ? stored === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
+  if (wantsLight) document.documentElement.setAttribute('data-theme', 'light');
+})();
+</script>
 <title>{% block title %}iUMA{% endblock %}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="{{ google_fonts_url }}" rel="stylesheet">
@@ -25,5 +32,27 @@
 {% endblock %}
 
 {% block scripts %}{% endblock %}
+
+<button type="button" class="theme-toggle-fab" id="themeToggleFab" aria-label="ダーク/ライト表示切替"></button>
+<script>
+(function() {
+  var KEY = 'iuma_theme';
+  var btn = document.getElementById('themeToggleFab');
+  function current() {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  }
+  function syncLabel() {
+    btn.textContent = current() === 'light' ? '🌙 ダーク表示' : '☀️ ライト表示';
+  }
+  btn.addEventListener('click', function() {
+    var next = current() === 'light' ? 'dark' : 'light';
+    if (next === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    else document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem(KEY, next);
+    syncLabel();
+  });
+  syncLabel();
+})();
+</script>
 </body>
 </html>

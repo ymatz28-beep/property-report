@@ -1,3 +1,21 @@
+<!-- [auto-precompact] 2026-08-25 19:19 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/b6b4a071-e59d-4945-a7d2-118ad8a87fe1.jsonl -->
+<!-- [auto-precompact] 2026-08-24 16:08 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/8bc93ae8-7ce2-4e8f-bb86-1aa87bff8f87.jsonl -->
+<!-- [auto-precompact] 2026-08-24 11:46 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/8bc93ae8-7ce2-4e8f-bb86-1aa87bff8f87.jsonl -->
+
+## [Auto-Kaizen] 2026-08-24
+- [WARN] property-analyzer/HANDOFF.md not updated in 8 days (threshold: 7).
+
+
+
+
+<!-- [auto-precompact] 2026-07-23 12:13 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/7025e9d7-dbf6-4579-8d8e-c6b49239e6da.jsonl -->
+<!-- [auto-precompact] 2026-07-23 11:33 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/7025e9d7-dbf6-4579-8d8e-c6b49239e6da.jsonl -->
+<!-- [auto-precompact] 2026-07-22 14:01 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/7025e9d7-dbf6-4579-8d8e-c6b49239e6da.jsonl -->
+<!-- [auto-precompact] 2026-07-20 14:36 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/c00fc03a-2b6c-4002-891d-36bb3f190dd7.jsonl -->
+<!-- [auto-precompact] 2026-07-19 22:30 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/c00fc03a-2b6c-4002-891d-36bb3f190dd7.jsonl -->
+<!-- [auto-precompact] 2026-07-19 21:36 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/c00fc03a-2b6c-4002-891d-36bb3f190dd7.jsonl -->
+<!-- [auto-precompact] 2026-07-19 21:15 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/c00fc03a-2b6c-4002-891d-36bb3f190dd7.jsonl -->
+
 <!-- [auto-precompact] 2026-07-10 10:34 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/c23ddf87-cf60-475c-b599-b47317cbec13.jsonl -->
 <!-- [auto-precompact] 2026-07-10 10:20 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/eba3c248-bc10-44ea-bbea-d5abb67e7957.jsonl -->
 <!-- [auto-precompact] 2026-07-10 10:19 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/f7cd20be-c07b-4fc6-a107-67a47edeae16.jsonl -->
@@ -9,15 +27,12 @@
 <!-- [auto-precompact] 2026-07-08 17:47 transcript: /Users/ytejima/.claude/projects/-Users-ytejima-Documents-Projects/3be26292-f98b-4a14-82f3-b95b47ea1059.jsonl -->
 # HANDOFF
 
-## [Auto-Kaizen] 2026-07-08
-- [WARN] property-analyzer/HANDOFF.md not updated in 7 days (threshold: 7).
-
 
 
 ---
-**📍 今どこ**: 融資4本並行進行中（2026-06-23）。福岡銀行 高宮支店 山上様に資料送付メール出せば完了。
-**✅ 前回(2026-06-23)**: 福岡銀行 西新町支店 石井様（中野氏紹介）→除外確定。高宮支店 山上様（プロシード紹介）→昨日電話済み・面談予約済み。メール下書き完成。業者はRenoLIVING返信待ち継続。
-**▶ 次**: (1) 山上様にメール送付（資料4点添付）。(2) 公庫面談 6/25・商工中金面談 6/24 に臨む。(3) RenoLIVING返信待ち（追加業者も並行探索）。(4) 組合加入手続き — 旅館組合(092-291-1517)・福岡市ホテル旅館組合(092-431-3001)どちらが振興事業貸付の条件を満たす生活衛生同業組合かを要確認。
+**📍 今どこ**: トラストホールディングス（2番抵当・本命候補）が査定フェーズに進行中（2026-08-25）。所有不動産一覧（8件）を住所・面積の詳細情報付きで再提出、Gmail返信下書き作成済み・送信待ち（PDF添付は手動）。
+**✅ 前回(2026-08-25)**: トラスト山本様より「査定のため物件の住所及び面積の詳細情報が欲しい」と依頼 → 登記簿謄本・固定資産税課税明細書・売買契約書等の一次資料で全8物件を再確認し `output/ご所有不動産一覧_トラスト提出用.html`（PDF同時再生成）を更新。千葉花見川（登記簿270.24㎡ vs 壁芯計算337.26㎡）・西浦和（275.46㎡ vs 建築確認申請書307.68㎡）の建物面積差異を発見、書類内に両論併記。チサンマンション第三博多の住所を曖昧な「福岡市」→正確な「福岡市中央区薬院2-44-904」に訂正（中洲の取得予定物件と混同するリスクを解消）。明石町アビタシオン・チサンの構造をRC→SRC（鉄骨鉄筋コンクリート造）に訂正。
+**▶ 次**: (1) Gmail下書き（宛先info@trust-hd.jp、Re: 不動産担保ローンの件）を確認・PDF添付・送信。(2) トラストからの年数・金利提示を待ち、セゾン（1番抵当・1,640万円・変動4.400%・最長9年）との組み合わせでDSCRが黒字化するか試算。(3) 千葉花見川・西浦和の面積差異は今後登記完了・測量等で確定値が出たら反映。
 ---
 
 ## 2026-06-05 セッション記録: 不動産2件の出口判断

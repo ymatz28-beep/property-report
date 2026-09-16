@@ -10,6 +10,8 @@ h2{font-size:18px;border-left:5px solid var(--gold);padding-left:10px;margin-top
 h3{font-size:15px;margin-top:20px;color:#333}
 h4{font-size:14px;margin-top:14px;color:#555}
 section.doc{scroll-margin-top:54px}
+h1,h2,h3,h4,h5,h6{scroll-margin-top:54px}
+details.past-section{scroll-margin-top:54px}
 .flowwrap{scroll-margin-top:54px}
 table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
 th,td{border:1px solid #ccc;padding:6px 9px;text-align:left;vertical-align:top}
@@ -63,9 +65,18 @@ a{color:#1e5fb4;word-break:break-all}
 .toolbar a.alt{background:#242836;color:#e4e4e7}
 .next-actions{background:#fffdf3;border:2px solid var(--gold);border-radius:12px;padding:4px 18px 10px;margin-top:14px}
 .next-actions h1{border:none;color:#7a5c00}
+/* 最優先アクションカード（18_次のアクション.md の1番から自動生成） */
+.next-hero{background:#1a1d27;border:2px solid var(--gold);border-radius:12px;padding:14px 18px;margin:14px 0 10px}
+.nh-label{display:inline-block;background:var(--gold);color:#1a1207;font-weight:800;font-size:11px;padding:2px 10px;border-radius:999px;margin-bottom:8px;letter-spacing:.02em}
+.nh-action{color:#ffd86b;font-size:17px;font-weight:800;line-height:1.5}
+.nh-detail{color:#cfd2da;font-size:12.5px;margin-top:6px;line-height:1.6}
+.nh-detail code{background:#242836;color:#e6e8ee}
+.next-hero a{color:#8ab4ff}
+.nh-meta{color:#767d90;font-size:10.5px;margin-top:8px}
 .toc{position:sticky;top:0;z-index:25;box-sizing:border-box;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#1a1d27;padding:7px 20px;display:flex;justify-content:center;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 3px 8px rgba(0,0,0,.18)}
 .toc .chip{flex:0 0 auto;background:#242836;color:#cfd2da;border:1px solid #3a3f4f;padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}
 .toc .chip.active{background:var(--gold);color:#1a1207;border-color:var(--gold)}
+.toc .chip.chip-important{background:#fff8e6;color:#7a4a00;border-color:#c9a84c}
 /* flowchart */
 .flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:14px 0 6px}
 .fbox{display:block;width:100%;max-width:640px;background:#fffdf7;border:2px solid var(--gold);border-radius:12px;padding:11px 15px;text-decoration:none;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.06)}
@@ -74,9 +85,12 @@ a{color:#1e5fb4;word-break:break-all}
 .fbox.start{background:#fff4cf;border-color:#b8902a}
 .fbox.gate{background:#ffe9e3;border-color:#e0623a}
 .fbox.end{background:#e7f6ea;border-color:#2faa55}
-.fbox.first{background:#1a1d27;border-color:#1a1d27;position:relative}
-.fbox.first b{color:#ffd86b} .fbox.first small{color:#cfd2da}
-.fbox.first .badge{display:inline-block;background:#ffd86b;color:#1a1207;font-weight:800;font-size:11px;padding:2px 9px;border-radius:999px;margin-bottom:5px}
+.fbox .badge{display:inline-block;font-weight:800;font-size:11px;padding:2px 9px;border-radius:999px;margin-bottom:5px}
+.fbox.cur{background:#1a1d27;border-color:#1a1d27;position:relative}
+.fbox.cur b{color:#ffd86b} .fbox.cur small{color:#cfd2da}
+.fbox.cur .badge{background:#ffd86b;color:#1a1207}
+.fbox.done{opacity:.55}
+.fbox .badge.fin{background:#e5f5e0;color:#2f7a3a;border:1px solid #b0dfa8}
 .frow{display:flex;gap:12px;width:100%;max-width:640px}
 .frow .fbox{flex:1}
 .farrow{color:#b8902a;font-weight:700;font-size:12.5px;padding:6px 0;text-align:center}
@@ -139,38 +153,44 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
   table thead,table tbody{display:table;width:100%;min-width:520px}}
 </style></head><body>
 <nav class="pjnav"><a href="simulator.html">🎛 シミュレータ</a><a href="financing.html" class="on">💰 融資戦略</a></nav>
-<nav class="toc" id="toc"><a class="chip" href="#next" data-target="next">▶ 次にやること</a><a class="chip" href="#p0" data-target="p0">0 朝イチ電話</a><a class="chip" href="#p1" data-target="p1">1 旅館業許可</a><a class="chip" href="#p2" data-target="p2">2 公庫融資</a><a class="chip" href="#p3" data-target="p3">3 税優遇の前提</a><a class="chip" href="#p4" data-target="p4">4 発注ゲート</a><a class="chip" href="#p5" data-target="p5">5 開業後の補助金</a><a class="chip" href="#docs" data-target="docs">📄 必要書類</a></nav>
+<nav class="toc" id="toc"><a class="chip" href="#next" data-target="next">▶ 次にやること</a><a class="chip" href="#p0" data-target="p0">0 朝イチ電話</a><a class="chip" href="#p1" data-target="p1">1 旅館業許可</a><a class="chip" href="#p2" data-target="p2">2 公庫融資</a><a class="chip" href="#p3" data-target="p3">3 税優遇の前提</a><a class="chip" href="#p4" data-target="p4">4 発注ゲート</a><a class="chip" href="#p5" data-target="p5">5 開業後の補助金</a><a class="chip" href="#docs" data-target="docs">📄 必要書類</a><a class="chip chip-important" href="#best-financing">🔑 融資ベスプラ</a><a class="chip chip-important" href="#cashflow-sim">🔑 想定収支</a></nav>
 <section id="next" class="doc next-actions">
-<h1>プレイスポット 今ここと次の一手</h1>
-<p>最終更新: 2026-07-10（公庫・福岡銀行 正式NG判明）</p>
+<div class="next-hero"><div class="nh-label">▶ 今すぐやる（最優先アクション）</div><div class="nh-action">セゾンファンデックス（本命）・日宝（次点）へ不動産担保ローンの仮審査を申し込む</div><div class="nh-detail">→ 候補・条件は下記「融資ベスプラ」の表を参照。文面: <a href="#script-saison">セゾン問い合わせ文</a>・<a href="#script-nippo">日宝電話確認事項</a>（<code>16_メール問い合わせ文例.md</code>に用意済み）</div><div class="nh-meta">出典: 「次にやること（優先順）」の1番・最終更新 2026-07-19（ルートB凍結・銀行以外の金融機関を新規開拓する方針に切替）。全文は下に</div></div>
+<h1 id="プレイスポット-今ここと次の一手">プレイスポット 今ここと次の一手</h1>
+<p>最終更新: 2026-07-19（ルートB凍結・銀行以外の金融機関を新規開拓する方針に切替）</p>
 <hr>
-<details class="past-section"><summary>完了イベント</summary>
+<details class="past-section" id="完了イベント"><summary>完了イベント</summary>
 <table><thead><tr><th>日時</th><th>内容</th></tr></thead><tbody><tr class="done"><td>✅ <strong>6/22 (月) 13:00</strong></td><td>Proceed Design 田代様 初回面談（完了）</td></tr><tr class="done"><td>✅ <strong>6/24 (水) 15:00</strong></td><td>商工中金 西岡様 Zoom 面談（完了・消極的）</td></tr><tr class="done"><td>✅ <strong>6/25 (木) 10:00</strong></td><td>公庫 坂本様 オンライン面談（完了・消極的）</td></tr><tr class="done"><td>✅ <strong>6/25 (木) 12:00</strong></td><td>福岡銀行 高宮支店 山上様 面談（完了・協議中）</td></tr><tr class="done"><td>✅ <strong>6/25 (木) 14:00</strong></td><td>Proceed Design 田代様 現地調査（完了・見積待ち）</td></tr><tr class="done"><td>✅ <strong>6/29〜6/30</strong></td><td>山上様より追加資料依頼（花園の返済予定表）→ 6/30資産状況とあわせて送付完了。以降10日間、山上様から返信なし</td></tr><tr class="done"><td>✅ <strong>7/3 (金)</strong></td><td>RenoLIVING 小松様より返信（迷惑メール振り分けで遅延）。現地確認は悠々ホーム中野様と直接調整する旨、融資状況を確認された → 遠賀信金・商工中金は見送り、公庫・福岡銀行の回答待ちと回答済み</td></tr><tr class="ng"><td>❌ <strong>7/10 (金)</strong></td><td><strong>公庫 坂本様・福岡銀行 山上様、両方とも今回は不可（正式NG）</strong> → 直接融資4行すべて不成立。ルートA/Bへの本格移行が必須</td></tr><tr><td>📧 <strong>7/10時点</strong></td><td>RenoLIVING小松様への他行担当者紹介依頼（6/24送付分）→ 返事待ち継続中</td></tr></tbody></table>
 </details>
 <hr>
-<h2>状況マップ（3本柱の今）</h2>
-<h3>A. 融資（金融機関）</h3>
-<table><thead><tr><th>機関</th><th>状態</th></tr></thead><tbody><tr class="ng"><td>公庫 坂本様</td><td>❌ <strong>NG（7/10正式回答）</strong> — 通常融資ルートは不成立</td></tr><tr class="ng"><td>商工中金 西岡様</td><td>❌ NG（6/24消極的→見送り確定）</td></tr><tr class="ng"><td>遠賀信金 野口様</td><td>❌ NG — 福岡に本店がない・従業員がいる営業実績がない</td></tr><tr class="ng"><td>福岡銀行 高宮支店 山上様</td><td>❌ <strong>NG（7/10正式回答）</strong> — 追加資料まで提出したが不成立</td></tr><tr><td>福岡県信用保証協会</td><td>✅ Webフォーム送信済（6/19）→ 連絡待ち。<strong>唯一の未確定ルート。</strong> 返信来たら西日本シティ銀行へ電話 0120-713-817</td></tr></tbody></table>
-<blockquote>⚠️ 直接融資4行（公庫・商工中金・遠賀信金・福岡銀行）は全滅。以降は「ルートA（信用保証協会+制度融資）」「ルートB（旅館組合経由の公庫振興事業貸付）」の2択に一本化。</blockquote>
-<h3>B. 補助金・節税（3本柱）</h3>
+<h2 id="状況マップ-3本柱の今">状況マップ（3本柱の今）</h2>
+<h3 id="a-融資-金融機関">A. 融資（金融機関）</h3>
+<table><thead><tr><th>機関</th><th>状態</th></tr></thead><tbody><tr class="ng"><td>公庫 坂本様</td><td>❌ <strong>NG（7/10正式回答）</strong> — 通常融資ルートは不成立</td></tr><tr class="ng"><td>商工中金 西岡様</td><td>❌ NG（6/24消極的→見送り確定）</td></tr><tr class="ng"><td>遠賀信金 野口様</td><td>❌ NG — 福岡に本店がない・従業員がいる営業実績がない</td></tr><tr class="ng"><td>福岡銀行 高宮支店 山上様</td><td>❌ <strong>NG（7/10正式回答）</strong> — 追加資料まで提出したが不成立</td></tr><tr><td>福岡県信用保証協会</td><td>✅ Webフォーム送信済（6/19）→ 1ヶ月返信なし。<strong>協会は保証をつけるだけで貸し手ではない</strong>ため、返信を待たず西日本シティ銀行 0120-713-817 へ直接電話してよい（標準フローは銀行が窓口→協会へ保証依頼）→ <a href="#script-ncb">電話台本へ</a></td></tr></tbody></table>
+<blockquote>⚠️ 直接融資4行（公庫・商工中金・遠賀信金・福岡銀行）は全滅。ルートB（旅館組合経由の公庫振興事業貸付）は同じ公庫の審査である上、組合へのFAX連絡も実際には未実施と判明（2026-07-19）→ <strong>凍結</strong>。信用保証協会からの返信待ちの「ルートA」も西日本シティ銀行という銀行行きのため、次は<strong>銀行以外の金融機関</strong>（他の信用金庫・信用組合、不動産担保ローン専門のノンバンク等）を新規に探す方向に切替。</blockquote>
+<h3 id="b-補助金-節税-3本柱">B. 補助金・節税（3本柱）</h3>
 <table><thead><tr><th></th><th>内容</th><th>状態</th></tr></thead><tbody><tr><td>B類型</td><td>経営力向上計画 → 設備費を税額控除</td><td>✅ 商工会議所で決定。<strong>飯塚先生の署名待ち</strong></td></tr><tr><td>C. 省力化補助</td><td>スマートロック等 1/2 補助</td><td>⏳ 開業後に申請</td></tr><tr><td>D. 税制（少額特例）</td><td>40万未満設備を全額経費化</td><td>⏳ 開業後に処理</td></tr></tbody></table>
 <blockquote>★ 認定が下りる前に設備を発注しないこと（B類型の前提条件）</blockquote>
-<h3>C. 物件・許認可</h3>
-<table><thead><tr><th>内容</th><th>状態</th></tr></thead><tbody><tr><td>競合確認</td><td>✅ 905号に申し込みなし（6/15確認）</td></tr><tr><td>指値申し込み（2,000万）</td><td>📧 中野さん（悠悠ホーム）にメール済み（6/24）― 返事待ち</td></tr><tr><td>保健所</td><td>✅ 種別 = 「旅館営業」で確定</td></tr><tr><td>消防署</td><td>✅ 1室なら設備は軽い</td></tr><tr><td>旅館業許可申請</td><td>⏳ 物件取得・リノベ後</td></tr><tr><td>定款に旅館業追加</td><td>⏳ 公庫・保健所で要否確認後</td></tr><tr><td>リノベ相見積</td><td>✅ 6/25 Proceed Design 現地調査完了 → <strong>見積待ち</strong>。はぴりの！→旅館業非対応で除外。ANDHEART→費用高額で除外。RenoLIVING→7/3返信あり、中野様と現地確認を直接調整中（実質1社待ち）</td></tr></tbody></table>
+<h3 id="c-物件-許認可">C. 物件・許認可</h3>
+<table><thead><tr><th>内容</th><th>状態</th></tr></thead><tbody><tr><td>競合確認</td><td>✅ 905号に申し込みなし（6/15確認）</td></tr><tr><td>指値申し込み（2,000万）</td><td>📧 中野さん（悠悠ホーム）にメール済み（6/24）― 返事待ち。<strong>特約付き契約はNGの方針のため、本契約化は金融機関のめどが立ってから</strong>（現状は据え置き）</td></tr><tr><td>保健所</td><td>✅ 種別 = 「旅館営業」で確定</td></tr><tr><td>消防署</td><td>✅ 1室なら設備は軽い</td></tr><tr><td>旅館業許可申請</td><td>⏳ 物件取得・リノベ後</td></tr><tr><td>定款に旅館業追加</td><td>⏳ 公庫・保健所で要否確認後</td></tr><tr><td>リノベ相見積</td><td>✅ 6/25 Proceed Design 現地調査完了 → <strong>見積待ち</strong>。はぴりの！→旅館業非対応で除外。ANDHEART→費用高額で除外。RenoLIVING→7/3返信あり、中野様と現地確認を直接調整中（実質1社待ち）</td></tr></tbody></table>
 <hr>
-<h2>次にやること（優先順）</h2>
-<p><strong>直接融資4行が全滅したため、ルートA/Bへの移行が最優先。</strong></p>
-<ol><li><strong>博多旅館ホテル組合に確認（ルートB）</strong> → 旅館組合092-291-1517 / 福岡市ホテル旅館組合092-431-3001、どちらが公庫振興事業貸付の「生活衛生同業組合」要件を満たすか。公庫のNGは「通常融資」判断であり組合経由枠は別審査 — 再挑戦の余地あり</li><li><strong>信用保証協会に「福岡支店登記予定」を追加連絡（ルートA）</strong> → 薬院904号を福岡支店として登記する前提を伝え、返信を早める。返信来たら西日本シティ銀行へ電話 0120-713-817</li><li><strong>RenoLIVING小松様からの返信待ち（他行担当者の紹介依頼中）</strong> → 6/24に融資先紹介を依頼済み・返事待ち。NG確定した旨もあわせて伝え、紹介を後押しする</li><li><strong>飯塚先生に連絡</strong> → B類型の投資計画書に署名・押印をもらう（融資と並行して進められる）</li><li><strong>指値申し込み返事待ち</strong> → 中野さん（悠悠ホーム）から連絡が来たら対応</li><li><strong>Proceed Design 見積を受け取ったら</strong> → 事業計画書の設備投資額を確定・ルートA/Bの申請書に反映</li></ol>
-<h3>融資ベスプラ（次の一手）</h3>
-<blockquote>遠賀信金 NGの根本原因: 信金は会員制・営業エリア制限（本店/支店が管轄エリア内に必要）。東京本店のみでは福岡の信金・制度融資に乗れない。</blockquote>
-<p><strong>解決ルート（A→Bの順で動く）</strong></p>
-<p>A. <strong>薬院904号を福岡支店として登記</strong> → 福岡県信用保証協会の管轄要件をクリア → 制度融資（福岡市商工業振興資金 1.70%・保証料0.51%〜・担保不要）が適用可能に。取扱: 福岡銀行・西日本シティ銀行。現状すでに保証協会にWebフォーム送信済みなので、返信後に「福岡支店登記予定」を追加で伝える。</p>
-<p>B. <strong>公庫 振興事業貸付（生活衛生同業組合経由）</strong> → 旅館組合加入で別枠融資ルートが開く。公庫の消極的姿勢は「通常融資」への判断であり、組合経由枠は別審査。博多旅館ホテル組合への確認が先決。</p>
+<h2 id="次にやること-優先順">次にやること（優先順）</h2>
+<p><strong>直接融資4行が全滅・ルートBは凍結。銀行以外の金融機関を新規に探すのが最優先。</strong></p>
+<ol><li><strong>セゾンファンデックス（本命）・日宝（次点）へ不動産担保ローンの仮審査を申し込む</strong> → 候補・条件は下記「融資ベスプラ」の表を参照。文面: <a href="#script-saison">セゾン問い合わせ文</a>・<a href="#script-nippo">日宝電話確認事項</a>（<code>16_メール問い合わせ文例.md</code>に用意済み）</li><li><strong>西日本シティ銀行 ビジネスサポートセンターへ電話（協会の返信を待たなくてよい）</strong> → 0120-713-817。標準フローは「銀行が窓口→銀行が協会へ保証依頼」が先なので、6/19の協会Webフォーム返信を待つ必要はない。台本: <a href="#script-ncb">西日本シティ銀行 電話スクリプト</a>（※これは銀行ルートなので優先度は2番目）</li><li><strong>RenoLIVING小松様からの返信待ち（他行担当者の紹介依頼中）</strong> → 6/24に融資先紹介を依頼済み・返事待ち。NG確定した旨もあわせて伝え、紹介を後押しする</li><li><strong>飯塚先生に連絡</strong> → B類型の投資計画書に署名・押印をもらう（融資と並行して進められる）</li><li><strong>指値の本申込・契約化は金融機関のめどが立ってから</strong> → 特約（融資特約等）付き契約はNGの方針のため、借りられる金融機関がある程度固まるまでは6/24送付分の返事待ちのまま据え置き。中野さん（悠悠ホーム）から連絡が来ても契約は急がない</li><li><strong>Proceed Design 見積を受け取ったら</strong> → 事業計画書の設備投資額を確定・申請書に反映</li></ol>
+<h3 id="best-financing">融資ベスプラ（次の一手）</h3>
+<blockquote>遠賀信金 NGの根本原因: 信金は会員制・営業エリア制限（本店/支店が管轄エリア内に必要）。東京本店のみでは福岡の信金・制度融資に乗れない。同じ制約は他の信金・信組にも及ぶ可能性が高いので、候補探し段階で要確認。</blockquote>
+<p><strong>方針転換（2026-07-19）</strong>: ルートB（公庫振興事業貸付・組合経由）は同じ公庫の審査であり、公庫本体が7/10に正式NGを出している以上、再挑戦の見込みは薄いと判断し凍結。信用保証協会（ルートA）も最終的な貸し手は銀行（福岡銀行・西日本シティ銀行）のため、次の一手は<strong>銀行以外の金融機関の新規開拓</strong>に切替。</p>
+<p><strong>候補リスト（2026-07-19 実調査済み・URL/金利確認済み）</strong></p>
+<table><thead><tr><th>候補</th><th>種別</th><th>適合度</th><th>条件</th></tr></thead><tbody><tr><td><a href="#script-saison">セゾンファンデックス</a></td><td>ノンバンク不動産担保ローン</td><td>★本命</td><td>全国対応・法人可・500万〜5億円・変動3.4-5.2%/固定4.5-9.9%・赤字決算/銀行否決案件も独自審査と公称 → <a href="#script-saison">問い合わせ文へ</a></td></tr><tr><td><a href="#script-nippo">日宝</a></td><td>ノンバンク不動産担保ローン</td><td>★次点</td><td>全国対応（福岡・北九州明記）・50万〜5億円・4.0-9.9%・最長30年・資金使途自由 → <a href="#script-nippo">電話確認事項へ</a></td></tr><tr><td><a href="#script-shinkin">福岡信用金庫 / 福岡ひびき信用金庫 / 福岡県信用組合（けんしん）</a></td><td>信金・信組</td><td>△要確認</td><td>いずれも博多区に支店あり＝地区内。ただし法人会員資格に事業所登記が要るか窓口で要確認 → <a href="#script-shinkin">共通電話台本へ</a></td></tr><tr><td>アサックス</td><td>ノンバンク</td><td>△要確認</td><td>金利1.95-7.8%で好条件だが店舗は首都圏中心・福岡対応可否は電話確認必須</td></tr><tr><td>出光クレジット</td><td>ノンバンク</td><td>✗除外</td><td>商品自体は適合だが2026年7月現在新規申込を一時停止中</td></tr><tr><td>オリックス（銀行・クレジット）</td><td>銀行/ノンバンク</td><td>✗除外</td><td>銀行商品は個人向け、クレジット無担保枠は上限500万円で規模不足</td></tr><tr><td>SBIエステートファイナンス</td><td>ノンバンク</td><td>✗除外</td><td>担保対象が1都3県+関西限定・福岡不可</td></tr></tbody></table>
+<p><strong>次の一手</strong>: セゾンファンデックス（本命）→ 日宝（並行）へ事業計画書を添えて無料仮審査を申し込む（<a href="#script-saison">セゾン問い合わせ文</a>・<a href="#script-nippo">日宝電話確認事項</a>）。信金3先へは電話で法人会員資格の可否を確認（<a href="#script-shinkin">共通電話台本</a>）。</p>
+<h3 id="cashflow-sim">セゾン・日宝で通った場合の想定収支（2026-07-20試算）</h3>
+<p><strong>前提</strong>（<code>placespot-shinbashi.yaml</code> financing_strategy / acquisition と同一のSSoT値）: 総事業費 3,214.8万（物件2,148万＋諸費用7%150万＋リノベ726万＋旅館セットアップ190万）、自己資金20%＝642.9万、<strong>借入額 2,571.8万</strong>。運用は旅館業（簡易宿所・日数上限なし）、稼働率はリサーチ標準（2年目安定期）65%・ADR 18,000円で試算 → 年間売上427万・変動費207万・固定費23.3万（消防点検含む）・<strong>返済前の営業利益(NOI) 197万/年</strong>。</p>
+<table><thead><tr><th>候補</th><th>金利レンジ</th><th>返済年数</th><th>月返済</th><th>年間CF(NOI−返済)</th><th>DSCR</th><th>自己資金CCR</th></tr></thead><tbody><tr><td>セゾン 変動・低め</td><td>3.4%</td><td>25年</td><td>12.7万</td><td><strong>+44万</strong></td><td>1.29</td><td>6.9%</td></tr><tr><td>セゾン 変動・高め</td><td>5.2%</td><td>25年</td><td>15.3万</td><td>+13万</td><td>1.07</td><td>2.0%</td></tr><tr><td>セゾン 固定・低め</td><td>4.5%</td><td>25年</td><td>14.3万</td><td>+26万</td><td>1.15</td><td>4.0%</td></tr><tr><td>セゾン 固定・高め</td><td>9.9%</td><td>25年</td><td>23.2万</td><td><strong>−81万</strong></td><td>0.71</td><td>−12.6%</td></tr><tr><td>日宝・低め</td><td>4.0%</td><td>25年</td><td>13.6万</td><td>+34万</td><td>1.21</td><td>5.3%</td></tr><tr><td>日宝・低め（30年で借りられた場合）</td><td>4.0%</td><td>30年</td><td>12.3万</td><td>+50万</td><td>1.34</td><td>7.7%</td></tr><tr><td>日宝・高め</td><td>9.9%</td><td>25年</td><td>23.2万</td><td>−81万</td><td>0.71</td><td>−12.6%</td></tr></tbody></table>
+<p><strong>判定</strong>（社内基準: DSCR目標1.3・自己資金配当率 目標10%/最低5%）: 金利が低め〜中位（セゾン変動3.4-4.5%台、日宝4.0%）で通ればギリギリ黒字〜小幅黒字。<strong>セゾンの固定上限(9.9%)や日宝の上限金利域に寄ると赤字転落</strong>。日宝は30年払いを引き出せればDSCR1.34で唯一目標をクリアできるため、仮審査時は「年数をできるだけ長く」を優先確認事項に。稼働率・ADRは業者想定（旅館80%/38,400円）ではなく保守的なリサーチ標準を採用しているため、実績が伴えばCFはこの試算より上振れしやすい。</p>
 <hr>
-<h2>窓口一覧</h2>
+<h2 id="窓口一覧">窓口一覧</h2>
 <table><thead><tr><th>相手</th><th>連絡先</th><th>手段</th></tr></thead><tbody><tr><td>公庫 坂本様</td><td>面談 6/25</td><td>Zoom</td></tr><tr><td>商工中金 西岡様</td><td>面談 6/24 15:00</td><td>Zoom</td></tr><tr><td>遠賀信金 野口様</td><td>0926-62-3231</td><td>電話</td></tr><tr><td>博多旅館ホテル組合（支部）</td><td>092-291-1517</td><td>電話</td></tr><tr><td>飯塚先生（税理士）</td><td>—</td><td>直接持参</td></tr><tr><td>仲介 中野さん（悠悠ホーム株式会社）</td><td>070-7663-7753 / to-nakano@yuyuhome.co.jp</td><td>電話・メール</td></tr><tr><td>博多消防署 予防課</td><td>092-475-0119</td><td>電話</td></tr><tr><td>保健所 博多衛生課</td><td>eisei-hawo.PHB@city.fukuoka.lg.jp</td><td>メール</td></tr></tbody></table>
 <hr>
-<h2>書類の場所</h2>
+<h2 id="書類の場所">書類の場所</h2>
 <p>詳細な申請書類・ドラフト → <code>_private/00_提出資料インデックス.html</code> を開く</p>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">open ~/Documents/Projects/property-analyzer/deals/financing/_private/00_提出資料インデックス.html</pre></div>
 </section>
@@ -179,12 +199,12 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
 <section class="flowwrap" id="flow">
   <h1>全体の流れ（上から着手順。各箱からフェーズへ飛べる）</h1>
   <div class="flow">
-    <a class="fbox first" href="#p0"><span class="badge">▶ いまここから</span><b>1. 朝イチに電話（予約・相談）＋ 事業者ID申請</b><small>★最優先 公庫の相談予約 0120-154-505／福岡支店092-411-9111（午前中に取り切る）。必須=保健所 092-419-1125・消防 予防課 092-475-0119・こども未来局 092-711-4188。任意=組合 092-737-5050・商工会議所 092-441-2161。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
+    <a class="fbox" href="#p0"><b>1. 朝イチに電話（予約・相談）＋ 事業者ID申請</b><small>★最優先 公庫の相談予約 0120-154-505／福岡支店092-411-9111（午前中に取り切る）。必須=保健所 092-419-1125・消防 予防課 092-475-0119・こども未来局 092-711-4188。任意=組合 092-737-5050・商工会議所 092-441-2161。並行でgBizIDプライム申請（フェーズ0に台本）</small></a>
     <div class="farrow">▼ 相談で段取りが見えたら</div>
-    <a class="fbox start" href="#p1"><b>2. 旅館業（簡易宿所）許可を申請</b><small>すべての低金利と（開業後の）補助金を開く"スイッチ"。手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。許可は申請中でも公庫の打診は可</small></a>
+    <a class="fbox start" href="#p1"><b>2. 旅館業（簡易宿所）許可を申請</b><small>すべての低金利と（開業後の）補助金を開く"スイッチ"。手数料22,000円・フロントICT代替OK・49㎡は用途変更不要。許可は申請中でも融資の打診は可</small></a>
     <div class="farrow">▼ 許可を軸に、下の2つを並行で進める</div>
     <div class="frow">
-      <a class="fbox" href="#p2"><b>3A. 融資（公庫）</b><small>組合加入 → 公庫 振興事業貸付（設備20年・据置2年）で打診＝返済余裕率(DSCR)成立。相見積も並行</small></a>
+      <a class="fbox cur" href="#p2"><span class="badge">▶ いまここから</span><b>3A. 融資（金融機関）</b><small>直接融資4行（公庫・商工中金・遠賀信金・福岡銀行）NG確定 → 非銀行（セゾンファンデックス本命・日宝次点）へ不動産担保ローンを打診中。相見積も並行</small></a>
       <a class="fbox" href="#p3"><b>3B. 税制の前提づくり</b><small>商工会議所で経営力向上計画の認定（経営強化税制＝即時償却/10%控除の前提）。設備取得の"前"に</small></a>
     </div>
     <div class="farrow">▼ 「決定の紙（融資決定・計画認定）が出る前に発注したら無効」</div>
@@ -193,12 +213,10 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
     <a class="fbox end" href="#p5"><b>5. 開業後：福岡市 受入環境補助・省力化補助を申請</b><small>開業＋宿泊税申告が要件。交付決定の"後"に対象機器を発注→設置→実績報告で後払い入金。確定申告で経営強化税制も回収</small></a>
   </div>
 </section>
-<div class="progress-strip"><div class="ps-step completed">✅ 0 朝イチ電話<span class="ps-label">完了</span></div><span class="ps-arrow">›</span><div class="ps-step pending">⏳ 1 旅館業許可<span class="ps-label">未着手</span></div><span class="ps-arrow">›</span><div class="ps-step active">★ 2 公庫融資<span class="ps-label">今ここ</span></div><span class="ps-arrow">›</span><div class="ps-step active">★ 3 税優遇の前提<span class="ps-label">今ここ</span></div><span class="ps-arrow">›</span><div class="ps-step pending">⏳ 4 発注ゲート<span class="ps-label">未着手</span></div><span class="ps-arrow">›</span><div class="ps-step pending">⏳ 5 開業後の補助金<span class="ps-label">未着手</span></div><span class="ps-arrow">›</span><div class="ps-step reference">📄 📄 必要書類<span class="ps-label">参照</span></div></div>
-<details class="phase-wrap phase-completed" id="p0">
-<summary class="phase-summary"><span class="ps-sum-num">0</span><span class="ps-sum-title">まず朝イチ、電話で予約・相談</span><span class="phase-badge completed-badge">✅ 完了</span></summary>
-<section class="doc">
-<div class="phasebanner"><span class="pnum" style="opacity:.45">0</span><b style="text-decoration:line-through;opacity:.55">まず朝イチ、電話で予約・相談</b><span class="phase-badge completed-badge" style="margin-left:auto">✅ 完了</span></div>
-<blockquote>この物件は<b>許可が全部のスイッチ</b>。まず<b>A. 読む → B. 動く</b>の順。<br>A. <b>読む（HPで完結）</b>：旅館業の<a href="https://www.city.fukuoka.lg.jp/hofuku/iyakumu-eisei/life/kurashinoeisei/documents/ryokangyounimotodukutebiki_R0411.pdf" target="_blank">手引きPDF</a>（<a href="https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html" target="_blank">案内ページ</a>）に、構造・面積・必要書類・手数料22,000円・許可まで14営業日が全部載っている。<br>B. <b>動く（HPでは分からない＝人に聞く／予約する）</b>：下のカードへ。<b class="now-i">今朝の最優先</b>は公庫の相談予約（午前中に取り切る・許可申請中でも申込可）。<b class="must-i">必須</b>は保健所（事前相談の予約・着工前に図面持参）・消防（この建物の設備判断）・こども未来局（許可申請の前の事前協議）。<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）。各カードは「やること」と「これだけ聞く」に絞ってある。並行で<b>gBizIDプライム</b>（省力化補助の前提・発行に2〜3週）も申請。</blockquote><div class="hubgrid"><div class="hubcard now"><div class="hubh"><b>🏦 日本政策金融公庫（相談予約）</b><span class="hublinks"><a class="tel" href="tel:0120154505">☎ 0120-154-505</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E6%97%A5%E6%9C%AC%E6%94%BF%E7%AD%96%E9%87%91%E8%9E%8D%E5%85%AC%E5%BA%AB%20%E7%A6%8F%E5%B2%A1%E6%94%AF%E5%BA%97%20%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D3-21-12" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag now">今朝最優先</span>午前中に相談予約を取り切る。旅館業は許可申請中でも申込可</div><div class="hubaddr">📍 日本政策金融公庫 福岡支店 福岡市博多区博多駅前3-21-12</div><div class="hubdo"><b>やること</b>今朝いちばんに、設備資金の相談予約を取る。総合ダイヤル0120-154-505（平日9-17時）が混んだら福岡支店 国民生活事業 092-411-9111へ直接。許可申請中でも申込めるので待たなくていい。融資の詳細はフェーズ2。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>制度・必要書類の概要は公庫サイト。予約日と当日の持参書類は電話で確定</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:#5a3a1a">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。設備資金の相談予約をお願いします。旅館業は許可申請中です。
+<div class="progress-strip"><div class="ps-step reference">📄 0 朝イチ電話<span class="ps-label">参照</span></div><span class="ps-arrow">›</span><div class="ps-step pending">⏳ 1 旅館業許可<span class="ps-label">未着手</span></div><span class="ps-arrow">›</span><div class="ps-step active">★ 2 公庫融資<span class="ps-label">今ここ</span></div><span class="ps-arrow">›</span><div class="ps-step active">★ 3 税優遇の前提<span class="ps-label">今ここ</span></div><span class="ps-arrow">›</span><div class="ps-step pending">⏳ 4 発注ゲート<span class="ps-label">未着手</span></div><span class="ps-arrow">›</span><div class="ps-step pending">⏳ 5 開業後の補助金<span class="ps-label">未着手</span></div><span class="ps-arrow">›</span><div class="ps-step reference">📄 📄 必要書類<span class="ps-label">参照</span></div></div>
+<section id="p0" class="doc">
+<div class="phasebanner"><span class="pnum">0</span><b>まず朝イチ、電話で予約・相談</b></div>
+<blockquote>この物件は<b>許可が全部のスイッチ</b>。まず<b>A. 読む → B. 動く</b>の順。<br>A. <b>読む（HPで完結）</b>：旅館業の<a href="https://www.city.fukuoka.lg.jp/hofuku/iyakumu-eisei/life/kurashinoeisei/documents/ryokangyounimotodukutebiki_R0411.pdf" target="_blank">手引きPDF</a>（<a href="https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html" target="_blank">案内ページ</a>）に、構造・面積・必要書類・手数料22,000円・許可まで14営業日が全部載っている。<br>B. <b>動く（HPでは分からない＝人に聞く／予約する）</b>：下のカードへ。<b class="now-i">今朝の最優先</b>は公庫の相談予約（午前中に取り切る・許可申請中でも申込可）。<b class="must-i">必須</b>は保健所（事前相談の予約・着工前に図面持参）・消防（この建物の設備判断）・こども未来局（許可申請の前の事前協議）。<b class="opt-i">任意</b>は組合（公庫低利を狙う場合）と商工会議所（税優遇を狙う場合）。各カードは「やること」と「これだけ聞く」に絞ってある。並行で<b>gBizIDプライム</b>（省力化補助の前提・発行に2〜3週）も申請。</blockquote><details class="past-section"><summary>✅ 朝イチの電話・予約（初動6件・完了）</summary><div class="hubgrid"><div class="hubcard now"><div class="hubh"><b>🏦 日本政策金融公庫（相談予約）</b><span class="hublinks"><a class="tel" href="tel:0120154505">☎ 0120-154-505</a><a class="mapl" href="https://www.google.com/maps/search/?api=1&query=%E6%97%A5%E6%9C%AC%E6%94%BF%E7%AD%96%E9%87%91%E8%9E%8D%E5%85%AC%E5%BA%AB%20%E7%A6%8F%E5%B2%A1%E6%94%AF%E5%BA%97%20%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%9A%E5%A4%9A%E5%8C%BA%E5%8D%9A%E5%A4%9A%E9%A7%85%E5%89%8D3-21-12" target="_blank">📍 地図</a></span></div><div class="hubrole"><span class="htag now">今朝最優先</span>午前中に相談予約を取り切る。旅館業は許可申請中でも申込可</div><div class="hubaddr">📍 日本政策金融公庫 福岡支店 福岡市博多区博多駅前3-21-12</div><div class="hubdo"><b>やること</b>今朝いちばんに、設備資金の相談予約を取る。総合ダイヤル0120-154-505（平日9-17時）が混んだら福岡支店 国民生活事業 092-411-9111へ直接。許可申請中でも申込めるので待たなくていい。融資の詳細はフェーズ2。</div><div class="hubhp"><b>HPで分かる（読めば済む）</b>制度・必要書類の概要は公庫サイト。予約日と当日の持参書類は電話で確定</div><div class="hubscript"><b>📞 そのまま読む台本</b><pre style="white-space:pre-wrap;font-family:inherit;background:#fff8e6;border:1px solid #e3cf8f;border-radius:8px;padding:10px 12px;margin:6px 0 0;font-size:13px;line-height:1.7;color:#5a3a1a">お世話になります。中洲2-1-11 プレイスポットしんばしビル905号（区分マンション1室）を簡易宿所（旅館業）として開業準備中の、iUMAプロパティマネジメント（代表 手嶋）です。設備資金の相談予約をお願いします。旅館業は許可申請中です。
 お聞きしたいのは、次の点です。
 1. 相談日の予約（できれば近日）と、当日の持参書類
 2. 振興事業貸付（組合経由の低利・設備20年）を使う場合の進め方
@@ -229,13 +247,13 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
 1. 認定支援機関として支援可能か、申請の流れ
 2. ★認定までの標準期間（設備取得の「前」に認定が要るため）
 3. A類型/B類型の選択と、B類型の税理士事前確認の段取り
-お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>認定支援機関として支援可能か、申請の流れ</li><li>★認定までの標準期間（設備取得の「前」に認定が要るため）</li><li>A類型/B類型の選択と、B類型の税理士事前確認の段取り</li></ol></div></div></div>
+お手数ですが、よろしくお願いいたします。</pre></div><div class="huba"><b>聞くこと（チェック用）</b><ol><li>認定支援機関として支援可能か、申請の流れ</li><li>★認定までの標準期間（設備取得の「前」に認定が要るため）</li><li>A類型/B類型の選択と、B類型の税理士事前確認の段取り</li></ol></div></div></div></details>
 <hr>
-<h2>📧 メール・WEB予約で問い合わせる（電話より確実・そのままコピー）</h2>
+<h2 id="メール-web予約で問い合わせる-電話より確実-そのままコピー">📧 メール・WEB予約で問い合わせる（電話より確実・そのままコピー）</h2>
 <blockquote>電話は時間が読めないので、メール・WEB予約で済むものはそちらを使う。送信済みのものは早見表に記録し、これから出すものだけ文面を置く。</blockquote>
-<h3>連絡手段の早見表</h3>
-<table><thead><tr><th>窓口</th><th>最良の手段</th><th>宛先</th><th>状況</th></tr></thead><tbody><tr><td>日本政策金融公庫 坂本様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）。面談 6/25 オンライン</td></tr><tr><td>遠賀信用金庫 野口様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）</td></tr><tr><td>商工中金 西岡様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）。面談 6/24 15:00 Zoom</td></tr><tr><td>福岡銀行 高宮支店 山上様</td><td>メール</td><td>プロシードからアドレス取得後送付</td><td>⏳メール送付待ち（昨日電話済み・面談予約済み・プロシード紹介 2026-06-23）</td></tr><tr class="ng"><td>福岡銀行 西新町支店 石井様</td><td>—</td><td>—</td><td>✗ 除外（電話出ず・中野氏から消極的と聞いていたため 2026-06-23）</td></tr><tr><td>福岡県信用保証協会（制度融資・保証）</td><td>Webフォーム</td><td><a href="https://www.fukuoka-cgc.or.jp/contact/contact_form.php（送信先:">https://www.fukuoka-cgc.or.jp/contact/contact_form.php（送信先:</a> 営業部）</td><td>⏳問い合わせ予定（法人本店が東京でも使えるか確認）</td></tr><tr><td>西日本シティ銀行（制度融資・貸し手）</td><td>電話</td><td>0120-713-817（ビジネスサポートセンター福岡）</td><td>⏳保証協会の確認後に打診。Webフォームは福岡県内事業者限定のため電話</td></tr><tr><td>日本政策金融公庫 福岡支店</td><td>WEB予約フォーム</td><td>公庫サイト「福岡支店 WEB予約」</td><td>✅予約済（6/10 13:00）</td></tr><tr><td>博多衛生課 環境係（旅館業）</td><td>メール（事前相談はメールで受付）</td><td>eisei-hawo.PHB@city.fukuoka.lg.jp</td><td>✅返信あり（種別=旅館で申請の方向・許可2週間+混雑で余裕を）</td></tr><tr><td>こども未来局 こども健全育成課（事前協議）</td><td>メール</td><td>kenzenikusei.CB@city.fukuoka.lg.jp</td><td>✅送信済</td></tr><tr><td>福岡県旅館ホテル生活衛生同業組合（公庫低利の前提）</td><td>FAX または 電話（メール・フォーム無し）</td><td>FAX 092-752-0117 ／ 電話 092-737-5050</td><td>✅連絡済（2026-06-11）→ 組合費は<strong>支部に確認</strong>。振興事業資金証明書は<strong>公庫で詳細確認</strong>。支部連絡先: 博多旅館ホテル組合 092-291-1517 ／ 福岡市ホテル旅館組合 092-431-3001</td></tr><tr><td>福岡市 観光産業課（補助金・開業後）</td><td>メール</td><td>syukuhaku-shien@city.fukuoka.lg.jp</td><td>✅返信あり（6/9 横尾氏）：上限40万は事業者単位／申請は実営業中が要件／来年度未定／問13でマンションタイプの客室内キッチン・洗濯は対象外。チラシ・Q&amp;A・事例集の3点入手済</td></tr><tr><td>福岡商工会議所 中小企業振興グループ（税優遇の前提）</td><td>メール（相談は予約制）</td><td>fkkeiei@fukunet.or.jp ／ 電話 092-441-2161</td><td>✅送信済</td></tr><tr><td>博多消防署 予防課</td><td>電話／来署（建物の現場判断のため）</td><td>092-475-0119</td><td>✅相談済（1室は特例で軽い・下記メモ）</td></tr></tbody></table>
-<h3>福岡銀行 高宮支店 山上様 あてメール（電話済み・資料送付用）</h3>
+<h3 id="連絡手段の早見表">連絡手段の早見表</h3>
+<table><thead><tr><th>窓口</th><th>最良の手段</th><th>宛先</th><th>状況</th></tr></thead><tbody><tr><td>日本政策金融公庫 坂本様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）。面談 6/25 オンライン</td></tr><tr><td>遠賀信用金庫 野口様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）</td></tr><tr><td>商工中金 西岡様</td><td>メール</td><td>—</td><td>✅書類送付済（2026-06-19）。面談 6/24 15:00 Zoom</td></tr><tr><td>福岡銀行 高宮支店 山上様</td><td>メール</td><td>プロシードからアドレス取得後送付</td><td>⏳メール送付待ち（昨日電話済み・面談予約済み・プロシード紹介 2026-06-23）</td></tr><tr class="ng"><td>福岡銀行 西新町支店 石井様</td><td>—</td><td>—</td><td>✗ 除外（電話出ず・中野氏から消極的と聞いていたため 2026-06-23）</td></tr><tr><td>福岡県信用保証協会（制度融資・保証）</td><td>Webフォーム</td><td><a href="https://www.fukuoka-cgc.or.jp/contact/contact_form.php（送信先:">https://www.fukuoka-cgc.or.jp/contact/contact_form.php（送信先:</a> 営業部）</td><td>⏳問い合わせ予定（法人本店が東京でも使えるか確認）</td></tr><tr><td>西日本シティ銀行（制度融資・貸し手）</td><td>電話</td><td>0120-713-817（ビジネスサポートセンター福岡）</td><td>⏳<strong>協会の返信を待たず今すぐ架電してよい</strong>（標準フローは銀行が窓口→協会へ保証依頼が先）。Webフォームは福岡県内事業者限定のため電話 → <a href="#script-ncb">電話台本へ</a></td></tr><tr><td>日本政策金融公庫 福岡支店</td><td>WEB予約フォーム</td><td>公庫サイト「福岡支店 WEB予約」</td><td>✅予約済（6/10 13:00）</td></tr><tr><td>博多衛生課 環境係（旅館業）</td><td>メール（事前相談はメールで受付）</td><td>eisei-hawo.PHB@city.fukuoka.lg.jp</td><td>✅返信あり（種別=旅館で申請の方向・許可2週間+混雑で余裕を）</td></tr><tr><td>こども未来局 こども健全育成課（事前協議）</td><td>メール</td><td>kenzenikusei.CB@city.fukuoka.lg.jp</td><td>✅送信済</td></tr><tr class="ng"><td>福岡県旅館ホテル生活衛生同業組合（公庫低利の前提）</td><td>FAX または 電話（メール・フォーム無し）</td><td>FAX 092-752-0117 ／ 電話 092-737-5050</td><td>❌未実施（手嶋氏はFAX手段を保有せず、2026-06-11の連絡は実際には発生していなかったと2026-07-19判明）。<strong>加えて公庫本体が7/10に正式NG済みのため、組合経由の振興事業貸付ルートも同じ公庫の審査であり見込み薄と判断（ルートB凍結）</strong>。支部連絡先（参考）: 博多旅館ホテル組合 092-291-1517 ／ 福岡市ホテル旅館組合 092-431-3001</td></tr><tr><td>福岡市 観光産業課（補助金・開業後）</td><td>メール</td><td>syukuhaku-shien@city.fukuoka.lg.jp</td><td>✅返信あり（6/9 横尾氏）：上限40万は事業者単位／申請は実営業中が要件／来年度未定／問13でマンションタイプの客室内キッチン・洗濯は対象外。チラシ・Q&amp;A・事例集の3点入手済</td></tr><tr><td>福岡商工会議所 中小企業振興グループ（税優遇の前提）</td><td>メール（相談は予約制）</td><td>fkkeiei@fukunet.or.jp ／ 電話 092-441-2161</td><td>✅送信済</td></tr><tr><td>博多消防署 予防課</td><td>電話／来署（建物の現場判断のため）</td><td>092-475-0119</td><td>✅相談済（1室は特例で軽い・下記メモ）</td></tr><tr><td>セゾンファンデックス（不動産担保ローン・本命）</td><td>Web申込フォーム</td><td><a href="https://www.fundex.co.jp/business/mortgage/">https://www.fundex.co.jp/business/mortgage/</a></td><td>⏳未着手（2026-07-19候補確定） → <a href="#script-saison">問い合わせ文へ</a></td></tr><tr><td>日宝（不動産担保ローン・次点）</td><td>電話／Web</td><td><a href="https://e-nippo.com/">https://e-nippo.com/</a></td><td>⏳未着手（2026-07-19候補確定） → <a href="#script-nippo">電話確認事項へ</a></td></tr><tr><td>福岡信用金庫</td><td>電話</td><td>博多北支店・博多駅南支店（博多区内）</td><td>⏳法人会員資格の可否を要確認 → <a href="#script-shinkin">共通電話台本へ</a></td></tr><tr><td>福岡ひびき信用金庫</td><td>電話</td><td>福岡支店（博多区綱場町）</td><td>⏳法人会員資格の可否を要確認 → <a href="#script-shinkin">共通電話台本へ</a></td></tr><tr><td>福岡県信用組合（けんしん）</td><td>電話</td><td><a href="https://kenshin-f.jp">https://kenshin-f.jp</a></td><td>⏳法人会員資格の可否を要確認 → <a href="#script-shinkin">共通電話台本へ</a></td></tr></tbody></table>
+<details class="past-section" id="福岡銀行-高宮支店-山上様-あてメール-送信済"><summary>✅ 福岡銀行 高宮支店 山上様 あてメール（送信済）</summary>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">件名：資料送付／中洲区分1室・簡易宿所開業の融資相談
 
 福岡銀行 高宮支店 山上様
@@ -265,8 +283,9 @@ pre.code{background:#0f1117;color:#e6e8ee;padding:30px 14px 14px;border-radius:1
 手嶋</pre></div>
 <p><strong>添付（4点）</strong></p>
 <ul><li>物件マイソク（販売図面）</li><li>事業計画書（収支計画サマリ・保守版）</li><li>法人決算書 直近2〜3期</li><li>リノベ見積書（悠悠ホーム）</li></ul>
+</details>
 <hr>
-<h3>福岡県信用保証協会 問い合わせ文（Webフォームに貼る）</h3>
+<details class="past-section" id="福岡県信用保証協会-問い合わせ文-送信済-返信待ち"><summary>✅ 福岡県信用保証協会 問い合わせ文（送信済・返信待ち）</summary>
 <p>フォーム: <a href="https://www.fukuoka-cgc.or.jp/contact/contact_form.php">https://www.fukuoka-cgc.or.jp/contact/contact_form.php</a>　送信先: <strong>営業部</strong>を選択</p>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">件名: 旅館業開業に伴う制度融資のご相談
 
@@ -287,11 +306,75 @@ iUMAプロパティマネジメント合同会社（代表社員 手嶋耕一）
 
 連絡先: 080-5637-5105 / yuma.tejima@gmail.com
 iUMAプロパティマネジメント合同会社 代表社員 手嶋耕一</pre></div>
-<h3>消防の相談結果（2026-06-09・905号）</h3>
+</details>
+<h3 id="script-ncb">⏳ 西日本シティ銀行 ビジネスサポートセンター あて電話スクリプト（今すぐ架電）</h3>
+<p>電話: 0120-713-817（ビジネスサポートセンター福岡）</p>
+<div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">お世話になります。iUMAプロパティマネジメント合同会社の手嶋と申します。
+福岡市博多区中洲の区分マンション1室を取得し、旅館業（簡易宿所）を
+開業する計画があり、信用保証協会保証付きの制度融資についてご相談
+したくお電話しました。
+
+お聞きしたいのは次の点です。
+1. 法人本店が福岡県外（東京）でも、御行で信用保証協会保証付き融資の
+   取扱いは可能か
+2. 借入希望額（約2,500万円・15〜20年）・用途（簡易宿所開業）での
+   概算の可否
+3. 信用保証協会への保証申込は、御行を窓口として進める形が一般的と
+   伺いましたが、その場合の流れ・必要書類
+4. 福岡県信用保証協会には6/19に別途Webフォームで直接問い合わせ済み
+   （返信待ち）だが、御行経由で並行して進めても問題ないか</pre></div>
+<p>補足（電話前の前提・2026-07-19一次ソース確認）:</p>
+<ul><li>信用保証協会は保証をつけるだけの機関で、実際に貸すのは銀行。標準的な流れは「銀行窓口へ相談→銀行が審査→銀行が協会へ保証依頼→協会審査→保証書発行→銀行と契約」で、<strong>銀行が先に窓口になるのが一般的</strong>（協会公式サイト・福岡商工会議所の解説で確認）。</li><li>6/19の協会への直接Webフォーム申込は「協会持ち込み」という別ルートで制度上は有効だが、1ヶ月返信なし。協会の返信を待たず、今すぐ西日本シティ銀行に電話してよい（協会への直接申込を取り下げる必要もない）。</li><li>西日本シティ銀行だけに絞る記録上の理由は無い。福岡銀行は別ルート（Proceed Design紹介・高宮支店）で直接融資を打診し7/10にNG済みのため重複を避けた可能性はあるが未確認。制度融資自体は地銀・信金なら他行でも本来使えるはずなので、西日本が芳しくなければ福岡ひびき信金・福岡信金等でも同じ相談をしてよい。</li></ul>
+<p>出典:</p>
+<ul><li>福岡県信用保証協会「お申込みの手続きについて」<a href="https://www.fukuoka-cgc.or.jp/use/procedure.php">https://www.fukuoka-cgc.or.jp/use/procedure.php</a></li><li>福岡商工会議所「創業融資」解説 <a href="https://www.fukunet.or.jp/keieisodan/sogyo/faunding-loan/">https://www.fukunet.or.jp/keieisodan/sogyo/faunding-loan/</a></li><li>西日本シティ銀行「主な保証制度について」<a href="https://www.ncbank.co.jp/hojin/zaimu/omona_hoshouseido/">https://www.ncbank.co.jp/hojin/zaimu/omona_hoshouseido/</a></li></ul>
+<h3 id="script-saison">⏳ セゾンファンデックス あて問い合わせ文（本命・未着手）</h3>
+<p>フォーム: <a href="https://www.fundex.co.jp/business/mortgage/">https://www.fundex.co.jp/business/mortgage/</a> の無料仮審査申込</p>
+<div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">件名: 事業者向け不動産担保ローンの仮審査相談
+
+iUMAプロパティマネジメント合同会社（代表社員 手嶋耕一）と申します。
+福岡市博多区中洲2丁目の区分マンション1室を取得し、簡易宿所（旅館業）
+として開業する計画です。銀行・公庫での通常融資が今回は不成立となったため、
+不動産担保ローンでのご相談を希望します。
+
+【概要】
+・物件：中洲2-1-11・区分1室・49㎡・SRC造9階最上階
+・取得価格：約2,249万円（指値交渉中）＋リノベ費用約550〜726万円
+・借入希望：約2,500万円・15〜20年
+・用途：簡易宿所（旅館業）― 保健所・消防への事前相談は完了済み
+・法人：iUMAプロパティマネジメント合同会社（設立2017年8月・第8期・黒字・既存融資に延滞なし）
+
+無料仮審査を希望します。事業計画書・決算書等はご案内に沿って提出します。
+
+連絡先：080-5637-5105 ／ yuma.tejima@gmail.com</pre></div>
+<h3 id="script-nippo">⏳ 日宝 あて問い合わせ文（次点・未着手）</h3>
+<div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">お世話になります。iUMAプロパティマネジメント合同会社の手嶋と申します。
+福岡市博多区中洲の区分マンション1室を取得し、簡易宿所（旅館業）を
+開業する計画で、不動産担保ローンのご相談をしたくお電話しました。
+
+お聞きしたいのは次の点です。
+1. 福岡エリアの物件・法人（東京本店）でも取扱い可能か
+2. 借入希望額（約2,500万円・15〜20年）と物件（区分マンション1室）での
+   概算の可否・金利目安
+3. 簡易宿所（旅館業）としての開業資金という用途で問題ないか
+4. 無料相談・仮審査の申込方法</pre></div>
+<h3 id="script-shinkin">⏳ 信用金庫・信用組合（福岡信金／福岡ひびき信金／けんしん）共通の電話確認事項</h3>
+<div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">お世話になります。iUMAプロパティマネジメント合同会社の手嶋と申します。
+本店は東京都中央区ですが、福岡市博多区中洲の区分マンション1室を取得し、
+簡易宿所（旅館業）として開業を計画しています。
+
+お聞きしたいのは次の点です。
+1. 法人の会員（組合員）資格は、物件所在地（博多区）だけで得られるか、
+   それとも博多区内に事業所を新たに設ける必要があるか
+2. 事業所を設ける場合、会員資格を得るまでの手続き・期間
+3. 借入希望額（約2,500万円・15〜20年）・用途（簡易宿所開業）での
+   融資相談の可否</pre></div>
+<details class="past-section" id="消防の相談結果-相談済み-2026-06-09-905号"><summary>✅ 消防の相談結果（相談済み・2026-06-09・905号）</summary>
 <ul><li>対象：プレイスポットしんばしビル本館 905号（中洲2-1-11・9階最上階）。</li><li><strong>1室なら「みなし従属」の特例で消防設備が軽い</strong>：宿泊に使う部屋の床面積が建物全体の延べ面積の10%以下（かつ300㎡未満）なら、その室は共同住宅の一部とみなされ、建物は共同住宅扱いのまま。→ 905号1室だけの軽い設備でOK、マンション全館の自火報連動（費用が数百万に跳ねる元）は不要。</li><li><strong>2室にすると特例が崩れる</strong>：宿泊面積が10%超や独立用途と見なされ、建物が複合用途（旅館＋共同住宅）扱い→全館に消防設備が要求され費用が激増。→ <strong>1室（905号）で行くのが正解</strong>。</li><li>用語：「10%」は床「面積」の割合（免責ではない）。「特例」＝みなし従属の緩和措置。</li><li><strong>★要確認：別の者が905号で消防相談を入れている</strong>。競合の検討者か、売主か、誰が何の段階かを消防署・仲介（株ハピネス 092-833-7500）に確認。</li><li>念のため消防署へ「みなし従属で1室なら追加設備は最小、で合っているか」「10%・300㎡の線引き」を文章で一度確認。</li></ul>
-<h3>公庫 WEB予約フォームの記入値</h3>
+</details>
+<details class="past-section" id="公庫-web予約フォームの記入値-予約済"><summary>✅ 公庫 WEB予約フォームの記入値（予約済）</summary>
 <ul><li>相談内容1（必須）：融資相談（事業資金）　※創業資金ではない（8期続く既存法人）</li><li>相談内容2：融資制度</li><li>相談方法：来店相談（直近）／オンラインは相談日の2営業日前16時まで</li><li>業種（事業内容）：旅館業（簡易宿所営業）／不動産賃貸業</li><li>創業年月：2017年8月</li><li>ご資金のお使いみち：設備資金（中洲2-1-11の区分1室の取得＋簡易宿所への改装）。借入希望 約2,500万円前後・返済20年</li><li>備考：生活衛生貸付の振興事業貸付（設備20年・据置2年）の利用希望。生活衛生同業組合への加入を予定。旅館業（簡易宿所）許可は申請予定。法人は第8期黒字、既存の公庫借入あり。</li></ul>
-<h3>組合（福岡県旅館ホテル生活衛生同業組合）— FAX送付用</h3>
+</details>
+<details class="past-section" id="組合-福岡県旅館ホテル生活衛生同業組合-fax送付用-ルートb凍結-未実施"><summary>❌ 組合（福岡県旅館ホテル生活衛生同業組合）— FAX送付用（ルートB凍結・未実施）</summary>
 <p>メール・Webフォームは無し。<strong>FAX 092-752-0117</strong>（電話 092-737-5050 でも可）。下の文面をFAX送付（コンビニのマルチコピー機やオンラインFAXで送れる）。〒810-0004 福岡市中央区渡辺通5-13-12 セントラルビル202。</p>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">福岡県旅館ホテル生活衛生同業組合 御中（FAX：092-752-0117）
 
@@ -306,7 +389,8 @@ iUMAプロパティマネジメント合同会社 代表社員 手嶋耕一</pre
 4. 開業前（旅館業の許可申請中）の段階でも、加入・資金証明書のご相談が可能か
 
 連絡先：電話 080-5637-5105 ／ メール yuma.tejima@gmail.com</pre></div>
-<h3>観光産業課（受入環境充実支援補助金）あてメール</h3>
+</details>
+<details class="past-section" id="観光産業課-受入環境充実支援補助金-あてメール-返信あり"><summary>✅ 観光産業課（受入環境充実支援補助金）あてメール（返信あり）</summary>
 <p>宛先：syukuhaku-shien@city.fukuoka.lg.jp　件名：受入環境充実支援補助金についての事前相談／中洲2-1-11・簡易宿所 開業準備中</p>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">観光産業課 ご担当者様
 
@@ -326,7 +410,8 @@ iUMAプロパティマネジメント合同会社（代表社員 手嶋耕一）
 iUMAプロパティマネジメント合同会社
 代表社員 手嶋 耕一（てじま こういち）
 電話：080-5637-5105 ／ メール：yuma.tejima@gmail.com</pre></div>
-<h3>福岡商工会議所（経営力向上計画の認定支援）あてメール</h3>
+</details>
+<details class="past-section" id="福岡商工会議所-経営力向上計画の認定支援-あてメール-送信済"><summary>✅ 福岡商工会議所（経営力向上計画の認定支援）あてメール（送信済）</summary>
 <p>宛先：fkkeiei@fukunet.or.jp　件名：経営力向上計画の認定支援についての相談（設備の税制活用）</p>
 <p>※経営相談は予約制（対面・オンライン）。このメールは相談予約のお願いとして送る。</p>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">福岡商工会議所 経営支援部 中小企業振興グループ ご担当者様
@@ -345,54 +430,54 @@ iUMAプロパティマネジメント合同会社（代表社員 手嶋耕一）
 iUMAプロパティマネジメント合同会社
 代表社員 手嶋 耕一（てじま こういち）
 電話：080-5637-5105 ／ メール：yuma.tejima@gmail.com</pre></div>
-<h3>申請で繰り返し使う会社情報（コピー用）</h3>
+</details>
+<h3 id="申請で繰り返し使う会社情報-コピー用">申請で繰り返し使う会社情報（コピー用）</h3>
 <ul><li>商号：iUMAプロパティマネジメント合同会社（代表社員 手嶋耕一）</li><li>会社法人等番号：0100-03-025935 ／ 法人番号：9010003025935 ／ 資本金：100万円</li><li>設立（会社成立）：平成29年（2017年）8月21日 ／ 決算：6月締め（第8期＝令和6/7/1〜令和7/6/30）</li><li>本店：〒104-0044 東京都中央区明石町13-15-405 ／ 支店：千葉市花見川区花園2434番地61</li><li><strong>⚠ 登記の事業目的が「不動産の売買・仲介・賃貸及び管理」のみ。旅館業（宿泊業）が未記載 → 旅館業許可・公庫の旅館業向け融資の前に「目的追加の変更登記」が要る可能性が高い。保健所・公庫の事前相談で要確認。</strong></li></ul>
 </section>
-</details>
 <hr class="sec">
 <details class="phase-wrap phase-pending" id="p1">
 <summary class="phase-summary"><span class="ps-sum-num">1</span><span class="ps-sum-title" style="color:#aaa">旅館業の許可を取る</span><span class="phase-badge pending-badge">⏳ 未着手</span></summary>
 <section class="doc">
 <div class="phasebanner"><span class="pnum" style="opacity:.4">1</span><b style="opacity:.5">旅館業の許可を取る</b><span class="phase-badge pending-badge" style="margin-left:auto">⏳ 未着手</span></div>
-<h2>旅館業（簡易宿所）許可申請の詳細と費用（福岡市・中洲しんばし）</h2>
+<h2 id="旅館業-簡易宿所-許可申請の詳細と費用-福岡市-中洲しんばし">旅館業（簡易宿所）許可申請の詳細と費用（福岡市・中洲しんばし）</h2>
 <blockquote>すべての低金利融資と補助金を開く&quot;スイッチ&quot;がこの許可。福岡市の手続き・要件・費用を一次ソースで整理（2026-06-05）。 ★この物件に効く3点: 福岡市は手数料 <strong>22,000円</strong>／フロントは <strong>ICT代替で無人OK</strong>（条例緩和済み）／49㎡は <strong>用途変更（建築確認）が不要</strong>（200㎡未満）。</blockquote>
 <hr>
-<h3>★用語の整理（紛らわしいので最初に固定）</h3>
+<h3 id="用語の整理-紛らわしいので最初に固定">★用語の整理（紛らわしいので最初に固定）</h3>
 <ul><li><strong>簡易宿所＝旅館業法の営業種別のひとつ（＝旅館業の一種）。民泊ではない。</strong></li><li>法律が別物:</li><li><strong>旅館業法</strong>（許可制・<strong>通年365日</strong>営業可）── 種別: 「旅館・ホテル営業」「<strong>簡易宿所営業</strong>」「下宿営業」</li><li><strong>民泊（住宅宿泊事業法・いわゆる民泊新法）</strong>（届出制・<strong>年180日まで</strong>・住宅扱い）── 福岡市は住居専用地域で曜日制限もあり、実質さらに短い</li><li>だから本資料で「簡易宿所」と書いたら<strong>旅館業（通年営業できる方）</strong>を指す。「民泊」と書いたら住宅宿泊事業法（180日）の方。</li><li>本件の方針: 通年営業したいので<strong>簡易宿所（旅館業）が本命</strong>、民泊新法はサブ。公庫・省力化補助なども旅館業（簡易宿所）が対象で、民泊新法は対象外のものが多い。</li><li>※紛らわしさの原因: 民泊を「簡易宿所の許可を取って運営する」ケースがあるため口語で混ざる。本資料では上の定義で統一する。</li></ul>
-<h3>種別の選択（まず保健所事前相談で確定）</h3>
+<h3 id="種別の選択-まず保健所事前相談で確定">種別の選択（まず保健所事前相談で確定）</h3>
 <ul><li><strong>簡易宿所営業</strong>: 客室延床33㎡以上（定員10人未満は 3.3㎡×定員）。49㎡・5名なら 3.3×5=16.5㎡で楽に満たす。民泊転用の定番。</li><li><strong>旅館・ホテル営業</strong>: 2018年改正で1室から可。洋室9㎡／和室7㎡以上。1室を1グループに貸す実態ならこちらも適。</li><li>福岡市はどちらも<strong>手数料は同じ22,000円</strong>。1室1グループ貸しの実態に合う種別を保健所事前相談で決める。既存資料は「簡易宿所」前提で統一。</li><li>出典: 福岡市 旅館業の営業について <a href="https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html">https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html</a> ／ 福岡市民泊開業ガイド <a href="https://luxent.jp/permit/3356/">https://luxent.jp/permit/3356/</a></li></ul>
 <hr>
-<h3>申請の流れ（福岡市・着手順）</h3>
+<h3 id="申請の流れ-福岡市-着手順">申請の流れ（福岡市・着手順）</h3>
 <ol><li class="done">✅ <strong>指導要綱の事前協議 — 不要（対象外）</strong>: 福岡市旅館等設置規制指導要綱（こども未来局所管）は<strong>旅館・ホテル営業の新築・増改築</strong>が対象。<strong>簡易宿所は要綱上「除く」と明記されており協議不要</strong>（2026-06-10 こども未来局 こども健全育成課 電話確認）。なお保健所申請時に「施設から100m以内に学校・保育所等があると許可を与えない場合がある」の審査は別途あり（本物件は中洲繁華街のため該当施設なしと見込む）。</li><li><strong>三者に事前相談</strong>（工事着工前が理想・要予約）:</li><li>博多区保健所 衛生課（構造・面積・衛生・帳場ICT代替の可否）</li><li>所轄消防署 予防課（消防設備の要否・消防法令適合通知書の取り方）</li><li>市 建築指導課（用途・建築基準法。49㎡は用途変更の建築確認 不要だが適合義務は残る）</li><li><strong>近隣周知</strong>: 共同住宅は申請前に建物内の全居住者等への周知が必要（福岡市）</li><li><strong>消防設備の設置 → 消防検査 → 消防法令適合通知書の取得</strong>（許可申請の必須添付）</li><li><strong>営業許可申請書＋書類一式を提出＋手数料22,000円</strong>（博多区保健所 衛生課）</li><li><strong>保健所の立入検査</strong>（構造設備基準の適合確認）</li><li><strong>許可書交付 → 営業開始</strong>（標識掲示・宿泊者名簿3年保管を開始）</li></ol>
 <p><strong>期間</strong>: 事前相談〜許可まで標準1〜3ヶ月（福岡市は検査合格後の交付が標準14日）。書類準備を含め物件取得から運営開始まで3〜6ヶ月が目安。</p>
 <ul><li>出典: 旅館業(簡易宿所)許可申請ガイド2026 <a href="https://minpakugakko.com/minpaku-ryokangyo-application-2026/">https://minpakugakko.com/minpaku-ryokangyo-application-2026/</a> ／ 厚労省 民泊の手引き <a href="https://www.mhlw.go.jp/file/06-Seisakujouhou-11130500-Shokuhinanzenbu/0000213163.pdf">https://www.mhlw.go.jp/file/06-Seisakujouhou-11130500-Shokuhinanzenbu/0000213163.pdf</a></li></ul>
 <hr>
-<h3>必要書類（法人・福岡市）</h3>
+<h3 id="必要書類-法人-福岡市">必要書類（法人・福岡市）</h3>
 <ul><li>営業許可申請書（保健所様式）</li><li>施設を中心とした半径300m以内の見取り図（学校等を明示）</li><li>各階平面図（縮尺・方位・間取り・各室の床面積と用途）・立面図</li><li>消防法令適合通知書の写し</li><li>建築基準法の検査済証の写し（任意）</li><li>法人: 履歴事項全部証明書（6か月以内）・定款の写し・役員名簿</li><li>フロント代替（ICT）を使う場合: ICT設備の説明書・緊急時駆けつけ態勢の説明書（運営代行契約等）</li><li>手数料 22,000円（現金のみ・返金不可）</li></ul>
 <hr>
-<h3>★ 費用一覧（実額・この1室区分の目安）</h3>
+<h3 id="費用一覧-実額-この1室区分の目安">★ 費用一覧（実額・この1室区分の目安）</h3>
 <table><thead><tr><th>項目</th><th>費用目安</th><th>備考・出典</th></tr></thead><tbody><tr><td>営業許可 申請手数料</td><td><strong>22,000円</strong>（現金・返金不可）</td><td>福岡市公式</td></tr><tr><td>登記事項証明書 等の実費</td><td>数千円</td><td>法務局</td></tr><tr><td>消防設備（特小自火報＋誘導灯＋消火器＋防炎物品）</td><td><strong>15〜40万円</strong></td><td>1LDK規模の標準。特小自火報=設備5-8万+施工3-5万／誘導灯=1台数万〜（免除要件あり）／消火器・防炎=数万</td></tr><tr><td>└ ★マンション全体設備との接続が必要な場合</td><td>数十万〜<strong>数百万</strong></td><td>区分1室の最大の変動要因。管理組合＋消防署に事前相談で先に確定</td></tr><tr><td>消防設備の法定点検（年）</td><td>年4〜7万円（〜100㎡）</td><td>機器点検＋総合点検</td></tr><tr><td>ICT帳場代替（タブレット・カメラ・スマートロック）</td><td><strong>20〜80万円</strong></td><td>※セットアップ費・補助金B/Cの対象とダブるので二重計上しない</td></tr><tr><td>図面作成（建築士。既存図があれば不要）</td><td>0〜15万円</td><td></td></tr><tr><td>用途変更（建築確認）</td><td><strong>0円</strong></td><td>49㎡=200㎡未満で確認申請 不要（適合義務は残る）</td></tr><tr><td>行政書士 代行（任意）</td><td>16〜40万円</td><td>福岡の事務所例: 簡易宿所14万〜＋図面8万〜＋消防書類4万〜。自分でやれば0だが差し戻しリスク</td></tr><tr><td><strong>合計（専門家フル活用・消防が軽い前提）</strong></td><td><strong>概ね60〜130万円</strong></td><td>消防がマンション全体接続だと大きく上振れ</td></tr></tbody></table>
 <blockquote>★二重計上に注意: ICT設備・スマートロック・消防工事の一部は、既存の「セットアップ費190万」や「補助金で狙う設備」と重なる。許可費用として新規に積むのは、手数料＋専門家＋（重複しない）消防の追加分だけ。 出典: 消防設備費用 <a href="https://minpakugakko.com/minpaku-shobo-setsubi-2026/">https://minpakugakko.com/minpaku-shobo-setsubi-2026/</a> ／ 消防庁リーフレット <a href="https://www.fdma.go.jp/mission/prevention/suisin/items/minpaku_leaf_setubi.pdf">https://www.fdma.go.jp/mission/prevention/suisin/items/minpaku_leaf_setubi.pdf</a> ／ 行政書士相場 <a href="https://note.com/nodokaya/n/nbf7da5a3f151">https://note.com/nodokaya/n/nbf7da5a3f151</a></blockquote>
 <hr>
-<h3>フロントのICT代替（福岡市は無人運営OK）</h3>
+<h3 id="フロントのict代替-福岡市は無人運営ok">フロントのICT代替（福岡市は無人運営OK）</h3>
 <p>2018年改正＋2025年4月の衛生等管理要領改正で、フロントは次の3点を満たせば設備で代替でき、無人運営が可能（福岡市は条例で対応済み）:</p>
 <ol><li>緊急時におおむね10分で駆けつけられる体制（運営代行で可）</li><li>営業者設置のビデオカメラ等で本人確認・出入りを常時鮮明な画像で確認</li><li>鍵の受渡しを適切に行う（スマートロック等）</li><li>出典: フロント代替ICT改正 <a href="https://fujino-gyosei.jp/furont-daitai-ict-kaisei/">https://fujino-gyosei.jp/furont-daitai-ict-kaisei/</a> ／ 代替設備要件 <a href="https://nagai-iryou.com/furont/">https://nagai-iryou.com/furont/</a></li></ol>
 <hr>
-<h3>★この物件特有の最大リスク（区分1室）</h3>
+<h3 id="この物件特有の最大リスク-区分1室">★この物件特有の最大リスク（区分1室）</h3>
 <ul><li>1室を宿泊用途にすると、建物が(16)項イ複合用途化し、<strong>共用部の感知器追加・他住戸の同意・マンション全体の警報設備との接続</strong>が求められる場合がある。ここが費用を15万→数百万に跳ね上げる唯一の変動要因。</li><li><strong>対策</strong>: 管理組合＋所轄消防署へ<strong>無料の事前相談</strong>を最優先で行い、接続の要否と費用を着工前に確定する。</li><li>管理規約の民泊・旅館業の可否は<strong>確認済み（可・2026-06-04）</strong>。規約の壁はクリア済みで、残る論点は消防の構造波及のみ。</li></ul>
 <hr>
-<h3>専門家を使うか自分でやるか</h3>
+<h3 id="専門家を使うか自分でやるか">専門家を使うか自分でやるか</h3>
 <ul><li>自分で申請も可能（手数料22,000円＋実費のみ）。ただし保健所・消防・建築の三者並行調整と図面・条例解釈で手戻りが起きやすく、1回の差し戻しで数週間の遅延。</li><li>行政書士（16〜40万円）に任せると差し戻しを防ぎ、融資・補助金のスケジュール（許可が前提）を崩しにくい。初回開業・ICT代替ありなら投資価値あり。</li><li>判断: 融資と補助金が許可待ちで連鎖しているので、<strong>遅延リスクを買い取る意味で行政書士を使う</strong>のが堅い。費用は経営強化税制の対象外（役務）だが、補助金スケジュールを守る効果が大きい。</li></ul>
 <blockquote>数字・要件は申請前に必ず博多区保健所 衛生課・所轄消防署で最新を確認する。条例運用は自治体・物件で差がある。</blockquote>
 <hr>
-<h2>旅館業（簡易宿所）許可 — 申請パック（福岡市・持って動く版）</h2>
+<h2 id="旅館業-簡易宿所-許可-申請パック-福岡市-持って動く版">旅館業（簡易宿所）許可 — 申請パック（福岡市・持って動く版）</h2>
 <blockquote>物件: プレイスポットしんばし（福岡市博多区中洲2-1-11 / 区分1室・49.23㎡・最大5名） 申請主体: iUMAプロパティマネジメント合同会社（代表社員 手嶋耕一） 出典: 福岡市「旅館業法に基づく許可申請及び運営の手引き(R4.11)」「簡易宿所の施設基準」/ 各様式 <a href="https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html">https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html</a> ※全体像・費用・リスクは「旅館業許可」タブ（doc 08）参照。本書は&quot;提出物そのもの&quot;。</blockquote>
-<h3>結論（順番が9割）</h3>
+<h3 id="結論-順番が9割">結論（順番が9割）</h3>
 <p>許可申請は<strong>いきなり出せない</strong>。先に3つの事前相談・協議（すべて無料）を通し、消防の通知書を取ってから申請。手数料は<strong>22,000円・現金のみ・返金なし</strong>。窓口は<strong>博多区衛生課</strong>（中洲＝博多区）。</p>
-<h3>申請前にやる事前相談・協議（この順で）</h3>
+<h3 id="申請前にやる事前相談-協議-この順で">申請前にやる事前相談・協議（この順で）</h3>
 <ol><li class="done">✅ <strong>こども未来局への事前協議 — 不要（対象外）</strong>：旅館等設置規制指導要綱は簡易宿所を適用除外と明記。協議ステップはスキップ（2026-06-10 こども健全育成課 092-711-4188 電話確認済み）。</li><li class="done">✅ <strong>博多区衛生課へ事前相談完了</strong>（メール相談済み・2026-06-09）：種別は「旅館営業」が適切と回答取得。構造設備の方向性も確認済み。</li><li class="done">✅ <strong>博多消防署 予防課へ消防相談</strong>（092-475-0119）：<strong>事前相談完了済み</strong>。工事後に<strong>「消防法令適合通知書」</strong>を取得（申請の添付必須）。</li><li><strong>建築審査課へ建築物該当性の協議</strong>：49.23㎡は200㎡未満なので用途変更の建築確認は原則不要だが、検査済証/確認済証の扱いを確認。</li></ol>
 <blockquote>★この物件の最大の変動要因は消防（区分1室を宿泊用途化＝複合用途。マンション全体の警報設備接続を求められると費用が跳ねる）。管理組合＋消防への事前相談を最優先（doc 08 のリスク欄）。</blockquote>
-<h3>必要書類チェックリスト（区分マンション・無人運用 前提で全部・手引きで裏取り済み）</h3>
+<h3 id="必要書類チェックリスト-区分マンション-無人運用-前提で全部-手引きで裏取り済み">必要書類チェックリスト（区分マンション・無人運用 前提で全部・手引きで裏取り済み）</h3>
 <p><strong>全施設共通</strong></p>
 <ul><li>[ ] 営業許可申請書【様式DL済み】</li><li class="done">✅ 地図（施設中心・半径300mの円。学校等を明示）→ ドラフト作成済み。申請前に学校等の有無を現地確認して記入</li><li>[ ] 各階平面図＋立面図（縮尺・方位・各室の床面積と用途）→ 49㎡間取り図をベースに注記追加が必要</li><li>[ ] 検査済証の写し（用途変更なら確認済証の写し）※原本持参</li><li>[ ] 消防法令適合通知書の写し（申請者名義）※原本持参</li><li>[ ] 履歴事項全部証明書（または現在事項。写し可）＋定款の写し（発行6か月以内）…法人</li><li class="done">✅ 役員名簿（氏名・かな・性別・生年月日・住所）→ ドラフト作成済み。<strong>生年月日・個人住所の記入で完成</strong></li><li>[ ] 申請手数料 22,000円（現金）</li></ul>
 <p><strong>分譲マンションを使うため追加（申請者＝区分所有者の想定）</strong></p>
@@ -401,86 +486,86 @@ iUMAプロパティマネジメント合同会社
 <ul><li>[ ] ビデオカメラのカタログ等（型式・録画時間がわかるもの）</li><li>[ ] 平面図にビデオカメラ・モニター・通話機器の設置場所を記載</li><li>[ ] 管理事務所→施設の経路図（距離・移動手段・時間）</li><li>[ ] 施設利用の注意事項を宿泊者に説明し署名を取る様式</li><li>[ ] （管理業務を委託する場合）委託契約書</li><li>[ ] 宿泊者の安全を確保するためのマニュアル</li></ul>
 <p><strong>非対面チェックインのため追加</strong></p>
 <ul><li>[ ] 使用する機器と設置場所がわかる書類</li><li>[ ] 予約〜チェックイン〜入室までの手順書</li><li class="done">✅ 宿泊者向け多言語マニュアル（日/英/中/韓）→ ドラフト作成済み。<strong>Wi-Fi・ゴミ収集日・避難場所等の空欄を確定後に記入</strong></li></ul>
-<h3>申請タイミング（電話確認済み）</h3>
+<h3 id="申請タイミング-電話確認済み">申請タイミング（電話確認済み）</h3>
 <ul><li><strong>正式申請は「工事完了後」かつ「組合加入後」</strong>。工事前・融資申込み段階では不可（保健所は申請受付しない）。公庫面談時点のステータスは「申請予定（工事完工後に申請）」で問題なし。</li><li>事前相談（メール）は現時点でも可能・済み。正式申請と混同しないこと。</li></ul>
-<h3>保健所の回答（2026-06-09・博多衛生課 環境係／メール事前相談）</h3>
+<h3 id="保健所の回答-2026-06-09-博多衛生課-環境係-メール事前相談">保健所の回答（2026-06-09・博多衛生課 環境係／メール事前相談）</h3>
 <ul><li><strong>種別は「旅館（ホテル・旅館営業）」が適切</strong>：簡易宿所は寝室を多人数で共用する構造。1グループに1室を貸切る運用は「旅館」。本件は5名グループ貸切なので<strong>旅館営業で申請する方向</strong>（最終的な種別は営業者判断）。融資（振興事業貸付）・補助金・組合はいずれも旅館業全体に効くので不変、許可手数料も同じ22,000円。</li><li>構造基準＝手引き5P〜／管理事務所設置（ICT無人運用）＝手引き8P〜／申請書類＝手引き12P〜。</li><li><strong>許可まで概ね2週間。ただし現在申請が大変混雑中→余裕をもって申請予約する</strong>。</li><li>事前相談は<strong>メールのみ</strong>（来所・ZOOM不可と回答で明確化）。具体的な質問はその都度メール（eisei-hawo.PHB@city.fukuoka.lg.jp）。</li><li>設置規制指導要綱はこども未来局へ直接と案内されたが → <strong>2026-06-10 電話確認済み：簡易宿所は対象外・協議不要</strong>。</li><li>添付で手引きPDF（別紙2）を受領（保健所指定の最新版）。</li></ul>
-<h3>手引きで確認した要点（添付PDF＝公式R4.11・保健所指定ページ）</h3>
+<h3 id="手引きで確認した要点-添付pdf-公式r4-11-保健所指定ページ">手引きで確認した要点（添付PDF＝公式R4.11・保健所指定ページ）</h3>
 <ul><li><strong>構造（5P）</strong>：旅館・ホテル営業の客室は<strong>1室7㎡以上</strong>（簡易宿所は3.3㎡×人数＝5名で16.5㎡）。本物件40㎡台で<strong>どちらも余裕クリア</strong>。採光・換気・手洗付便所・入浴設備が要る。</li><li><strong>管理事務所＝玄関帳場を設けない無人運用（8P）</strong>：客室と管理事務所の間に<strong>通話設備が必要（電話または通話できるスマホ/タブレット。インターホンは不可）</strong>。各客室に<strong>マニュアル</strong>（管理事務所・消防・医療機関の連絡先／施設→消防・医療への経路図／火災時対応・避難経路図／ごみ処理／建物の使用ルール／災害時の避難場所）を備える。外国人客が想定されるので<strong>多言語版</strong>も用意。</li><li><strong>申請書類（12P）</strong>：営業許可申請書／半径300m地図／各階平面図・配置図／立面図・断面図／検査済証の写し／消防法令適合通知書の写し／法人謄本・定款（6か月以内）／役員名簿／手数料22,000円（現金）。区分マンションは使用権限がわかる書類。無人運用はカメラ・通話機器・経路図・マニュアルを追加。→ 当キットの「必要書類」と一致。</li><li><strong>要綱（3P）</strong>：旅館等設置規制指導要綱はこども未来局（手引き3Pに連絡先）。<strong>2026-06-10 電話確認済み：簡易宿所は対象外・協議不要</strong>。</li><li>手引き原本（ローカル）：<code>deals/financing/福岡市旅館業許可/手引き_基準/ryokangyounimotodukutebiki_R0411.pdf</code></li></ul>
-<h3>施設基準 セルフチェック（プレイスポット／旅館営業の客室最低面積は手引き5P参照・本物件は余裕でクリア）</h3>
+<h3 id="施設基準-セルフチェック-プレイスポット-旅館営業の客室最低面積は手引き5p参照-本物件は余裕でクリア">施設基準 セルフチェック（プレイスポット／旅館営業の客室最低面積は手引き5P参照・本物件は余裕でクリア）</h3>
 <table><thead><tr><th>基準</th><th>内容</th><th>本物件</th></tr></thead><tbody><tr><td>客室延床面積</td><td>宿泊10人未満は 3.3㎡×人数。5名→<strong>16.5㎡以上</strong></td><td>49.23㎡ → ◎ 余裕でクリア</td></tr><tr><td>玄関帳場</td><td>原則必要。ただし安全確保措置（ICT＋駆けつけ）で代替可</td><td>無人運用で代替（福岡市OK）</td></tr><tr><td>採光・換気</td><td>直接外気に接する窓・換気設備</td><td>要・図面で確認</td></tr><tr><td>洗面・便所</td><td>適当な規模の洗面、手洗付き便所</td><td>リノベで確保</td></tr><tr><td>入浴設備</td><td>浴室またはシャワー</td><td>既存ユニットで対応</td></tr><tr><td>客室の出入り</td><td>他の客室を通らず出入りできる</td><td>1室なので問題なし</td></tr></tbody></table>
-<h3>様式第1号 旅館業許可申請書 事前記入ドラフト</h3>
+<h3 id="様式第1号-旅館業許可申請書-事前記入ドラフト">様式第1号 旅館業許可申請書 事前記入ドラフト</h3>
 <table><thead><tr><th>欄</th><th>記入内容</th></tr></thead><tbody><tr><td>申請年月日</td><td>（提出日）</td></tr><tr><td>あて先</td><td>福岡市長</td></tr><tr><td>申請者 所在地</td><td>〒104-0044 東京都中央区明石町（本店）</td></tr><tr><td>申請者 名称</td><td>iUMAプロパティマネジメント合同会社</td></tr><tr><td>代表者 役職・氏名</td><td>代表社員　手嶋耕一</td></tr><tr><td>営業施設の名称</td><td>プレイスポットしんばし（仮）</td></tr><tr><td>営業施設の所在地</td><td>福岡市博多区中洲2-1-11 プレイスポットしんばしビル905号</td></tr><tr><td>営業の種別</td><td>旅館・ホテル営業（1グループ貸切のため。保健所回答2026-06-09で「旅館」が適切）</td></tr><tr><td>客室数・延床面積</td><td>1室／49.23㎡（内法有効面積で算定し直す）</td></tr><tr><td>収容定員</td><td>5名</td></tr><tr><td>構造設備の概要</td><td>鉄筋コンクリート造の区分1室。客室・洗面・便所・浴室・換気・採光窓を備える。玄関帳場は設けず、ビデオカメラ付きチェックイン機＋スマートロック＋10分駆けつけ体制で代替</td></tr><tr><td>フロント（帳場）の有無</td><td>無（ICT代替・管理事務所設置型）</td></tr></tbody></table>
 <blockquote>★氏名・本店住所は登記どおり。延床面積は申請前に内法（うちのり）で測り直して確定。</blockquote>
-<h3>ダウンロード済みの様式・手引き（場所）</h3>
+<h3 id="ダウンロード済みの様式-手引き-場所">ダウンロード済みの様式・手引き（場所）</h3>
 <ul><li>様式一式（許可申請書 Word/PDF・記載要領・変更/停止/廃止届・承継申請）: <code>deals/financing/福岡市旅館業許可/様式/</code></li><li>手引き・簡易宿所基準: <code>deals/financing/福岡市旅館業許可/手引き_基準/</code></li></ul>
-<h3>窓口</h3>
+<h3 id="窓口">窓口</h3>
 <ul><li>申請窓口: 博多区衛生課（中洲＝博多区）</li><li>消防: 博多消防署 予防課 092-475-0119</li><li>事前協議: こども未来局（旅館等設置規制指導要綱）</li><li>手数料: 22,000円（現金のみ・返金不可）</li></ul>
 </section>
 </details>
 <hr class="sec">
 <section id="p2" class="doc phase-active">
 <div class="phasebanner phase-active-banner"><span class="pnum">2</span><b>公庫でお金を借りる</b><span class="now-here-badge">★ 今ここ</span></div>
-<h2>融資打診プレイブック — プレイスポットしんばし（中洲2-1-11）</h2>
+<h2 id="融資打診プレイブック-プレイスポットしんばし-中洲2-1-11">融資打診プレイブック — プレイスポットしんばし（中洲2-1-11）</h2>
 <p><strong>方針：金利の低いところから順に打診する。2路線を並行で進める。高金利ノンバンクは最終手段。</strong></p>
 <blockquote><strong>★★ 2026-06-05 一次ソース裏取りで前提を2点修正（下の「裏取りで変わった2点」を必ず読む）★★</strong></blockquote>
-<table><thead><tr><th>順</th><th>打診先（金利の低い順）</th><th>用途</th><th>金利目安</th><th>担当資料</th></tr></thead><tbody><tr><td>1</td><td>日本政策金融公庫 <strong>振興事業貸付</strong>（要・生活衛生同業組合 加入）</td><td><strong>旅館業</strong></td><td>基準2.4〜2.6%／振興−0.15〜0.30%・設備<strong>20年以内</strong></td><td><code>01_jfc...</code> ＋ <code>10_生活衛生同業組合...</code></td></tr><tr><td>2</td><td>商工中金（要・株主団体/組合 構成員）</td><td><strong>旅館業</strong></td><td>1〜2%台・設備15年</td><td>公的の二枚看板。団体加入が前提</td></tr><tr><td>3</td><td>滋賀銀行 ジャストサポート（<strong>個人名義のみ・法人NG</strong>）</td><td><strong>賃貸</strong></td><td>2.500〜5.525%(2026-04)・最長35年</td><td><code>02_shiga_賃貸_打診パッケージ.md</code></td></tr><tr><td>4</td><td>福岡県信用保証協会＋地元銀行（制度融資）／関西みらい銀行</td><td>両方</td><td>2.55%〜（開業支援で実質低）</td><td>制度融資は宿泊開業支援あり</td></tr><tr><td>5</td><td>スルガ銀行／三井住友トラストL&amp;F</td><td><strong>賃貸</strong></td><td>2.9%〜（推定）</td><td>法人・全国・区分可</td></tr><tr><td>6</td><td>大垣共立銀行（キラット）</td><td>両方</td><td>3.4〜5.2%</td><td>上位不調時の中位・九州対応</td></tr><tr><td>7</td><td><strong>セゾンファンデックス 直接</strong>（<strong>法人OK</strong>・博多拠点）</td><td>両方</td><td>変動3.4〜5.2%(2026-05)・5億・5〜25年</td><td>★法人で行く場合の現実的fallback 092-482-1222</td></tr><tr><td>8</td><td>L&amp;F／オリックス</td><td>両方</td><td>3.3〜8.8%</td><td><strong>最終手段</strong>（高金利・妙味を削る）</td></tr></tbody></table>
+<table><thead><tr><th>順</th><th>打診先（金利の低い順）</th><th>用途</th><th>金利目安</th><th>担当資料</th></tr></thead><tbody><tr><td>1</td><td>日本政策金融公庫 <strong>振興事業貸付</strong>（要・生活衛生同業組合 加入）</td><td><strong>旅館業</strong></td><td>基準2.4〜2.6%／振興−0.15〜0.30%・設備<strong>20年以内</strong></td><td><code>01_jfc...</code> ＋ <code>10_生活衛生同業組合...</code></td></tr><tr><td>2</td><td>商工中金（要・株主団体/組合 構成員）</td><td><strong>旅館業</strong></td><td>1〜2%台・設備15年</td><td>公的の二枚看板。団体加入が前提</td></tr><tr><td>3</td><td>滋賀銀行 ジャストサポート（<strong>個人名義のみ・法人NG</strong>）</td><td><strong>賃貸</strong></td><td>2.500〜5.525%(2026-04)・最長35年</td><td><code>02_shiga_賃貸_打診パッケージ.md</code></td></tr><tr><td>4</td><td>福岡県信用保証協会＋地元銀行（制度融資）／関西みらい銀行</td><td>両方</td><td>2.55%〜（開業支援で実質低）</td><td>制度融資は宿泊開業支援あり</td></tr><tr><td>5</td><td>スルガ銀行／三井住友トラストL&amp;F</td><td><strong>賃貸</strong></td><td>2.9%〜（推定）</td><td>法人・全国・区分可</td></tr><tr><td>6</td><td>大垣共立銀行（キラット）</td><td>両方</td><td>3.4〜5.2%</td><td>上位不調時の中位・九州対応</td></tr><tr><td>7</td><td><strong>セゾンファンデックス 直接</strong>（<strong>法人OK</strong>・博多拠点）</td><td>両方</td><td>変動3.4〜5.2%(2026-05)・5億・5〜25年</td><td>★法人で行く場合の現実的fallback 092-482-1222 ／ <a href="#script-saison">問い合わせ文へ</a></td></tr><tr><td>8</td><td>L&amp;F／オリックス</td><td>両方</td><td>3.3〜8.8%</td><td><strong>最終手段</strong>（高金利・妙味を削る）</td></tr></tbody></table>
 <blockquote>筑波銀行は福岡の物件に融資しなくなったため対象外。セゾンは「保証会社」で、貸すのは銀行（ただしセゾンファンデックス自身が直接貸す枠＝順7もある）。</blockquote>
 <hr>
-<h3>★ 裏取りで変わった2点（2026-06-05・一次ソース）</h3>
+<h3 id="裏取りで変わった2点-2026-06-05-一次ソース">★ 裏取りで変わった2点（2026-06-05・一次ソース）</h3>
 <ol><li><strong>公庫は組合加入が事実上の必須</strong>。生活衛生貸付は「一般貸付＝設備13年以内」「振興事業貸付（生活衛生同業組合 加入が条件）＝設備20年以内（据置2年）」の2系統。借入2,340万・2.0%の月返済は 13年≒17.0万 / 20年≒11.8万で、軌道65%の営業利益16.4万に対しDSCRは 13年=0.96(赤字) / 20年=1.39。金利は振興事業貸付で会計書類＋事業計画確認なら基準利率−0.15%、生産性向上計画なら−0.30%。→<strong>組合加入→振興事業貸付(20年)を取らないと公庫では成立しない</strong>。一般貸付(13年)は不可。詳細は <code>10_生活衛生同業組合_公庫低利の鍵.md</code>。出典 一般貸付 <a href="https://www.jfc.go.jp/n/finance/search/32_ippankashitsuke_m.html">https://www.jfc.go.jp/n/finance/search/32_ippankashitsuke_m.html</a> ／ 振興事業貸付 <a href="https://www.jfc.go.jp/n/finance/search/33_shinkojigyo_m.html">https://www.jfc.go.jp/n/finance/search/33_shinkojigyo_m.html</a></li><li><strong>滋賀ジャストサポートは法人NG・個人専用</strong>。法人名義の不動産は担保不可、収益物件目的は「給与収入&gt;不動産収入」かつ不動産賃貸業が主業の人は不可、4,999万以下は前年給与800万以上が条件。金利も1.95%は旧情報で現行2.500〜5.525%(2026-04)。→<strong>iUMA法人では使えない</strong>。個人名義(手嶋耕一)で組むか、法人で行くなら順7のセゾン直接へ。出典 <a href="https://mcl.sbk.jp/lp/fudosantanpo/">https://mcl.sbk.jp/lp/fudosantanpo/</a></li></ol>
 <hr>
-<h3>なぜこの順番か</h3>
+<h3 id="なぜこの順番か">なぜこの順番か</h3>
 <ul><li>公庫は旅館業（許可制・通年営業）に低利で出す。<strong>民泊新法（180日上限）には出さない</strong>ので、公庫狙いなら旅館業一択。生活衛生同業組合に入ると振興事業貸付が使え、基準利率−0.15%（生産性向上計画なら−0.30%）＋返済20年以内。事実上いちばん安く、かつ<strong>20年返済の確保がDSCR成立の条件</strong>（→組合加入が鍵。詳細 <code>10_生活衛生同業組合...</code>）。</li><li>商工中金も公的枠で1-2%台。どちらも団体/組合加入が前提なので、組合加入は公庫・商工中金の両方に効く先行投資。</li><li>滋賀は法人NGのため、法人で進めるなら賃貸ルートはセゾン直接(順7)が現実的な受け皿。個人名義で組めるなら滋賀が賃貸の最安。</li><li>旅館業ルート(公庫/商工中金)と賃貸ルート(滋賀個人 or セゾン直接 法人)は<strong>用途も名義の見せ方も違う</strong>ので、同時並行で走らせて構わない（信用情報の申込履歴は気にするが、公庫は信用情報照会の扱いが銀行と別系統）。</li></ul>
 <hr>
-<h3>⚠ 路線を分ける上での正直なリスク（必ず認識する）</h3>
+<h3 id="路線を分ける上での正直なリスク-必ず認識する">⚠ 路線を分ける上での正直なリスク（必ず認識する）</h3>
 <ul><li>公庫＝<strong>旅館業</strong>（許可取得 or 申請中）で出す。滋賀＝<strong>賃貸</strong>で出す。<strong>同一物件を、片方に旅館業・片方に賃貸と説明する</strong>ことになる。</li><li>これ自体は「旅館業許可が下りるまでは賃貸、許可後に旅館業へ転用」という実態なら矛盾しない。ただし<strong>借りた後に当初申告と違う使い方をすると資金使途違反</strong>になり得る。最終的にどちらで実行するかを決め、実行先の金融機関には実態を正しく伝えること。</li><li><strong>管理規約の民泊/旅館業の可否は確認済み（可・2026-06-04）</strong>。区分で最大の障壁だった規約問題はクリア。残る確認は消防の構造要件のみ。</li></ul>
-<h3>追加で打診できる先（金利の低い順・用途別）</h3>
+<h3 id="追加で打診できる先-金利の低い順-用途別">追加で打診できる先（金利の低い順・用途別）</h3>
 <p><strong>賃貸投資区分で出すとき（法人投資ローン）</strong></p>
-<ul><li>スルガ銀行（法人可・全国・LTV柔軟・最長35年。賃貸区分の本命候補、推定2.5-3.5%）</li><li>SBIエステートファイナンス（法人・全国・資金使途自由）</li><li>三井住友トラスト・ローン&amp;ファイナンス（2.9-5.3%、民泊事業ローン2.9-3.9%併設）</li><li>福岡信用金庫 / 福岡ひびき信用金庫（地元・審査柔軟・決済速い）</li></ul>
+<ul><li>スルガ銀行（法人可・全国・LTV柔軟・最長35年。賃貸区分の本命候補、推定2.5-3.5%）</li><li>SBIエステートファイナンス（法人・全国・資金使途自由）</li><li>三井住友トラスト・ローン&amp;ファイナンス（2.9-5.3%、民泊事業ローン2.9-3.9%併設）</li><li>福岡信用金庫 / 福岡ひびき信用金庫（地元・審査柔軟・決済速い）→ <a href="#script-shinkin">共通電話台本へ</a></li></ul>
 <p><strong>旅館業で出すとき（事業性・制度融資）</strong></p>
-<ul><li>商工組合中央金庫（宿泊業の事業性融資に明確対応・全国・法人）</li><li>福岡県信用保証協会 ＋ 地元銀行（制度融資・開業支援・金利低）</li><li>L&amp;Fアセットファイナンス 民泊事業ローン（3.55-4.55%・共同担保でフルローン可）</li></ul>
+<ul><li>商工組合中央金庫（宿泊業の事業性融資に明確対応・全国・法人）</li><li>福岡県信用保証協会 ＋ 地元銀行（制度融資・開業支援・金利低）→ <a href="#script-ncb">西日本シティ銀行 電話台本へ</a></li><li>L&amp;Fアセットファイナンス 民泊事業ローン（3.55-4.55%・共同担保でフルローン可）</li></ul>
 <blockquote>静岡銀行・住信SBIは対象外（静岡=首都圏限定で福岡不可／住信SBI=法人不可）。</blockquote>
 <hr>
-<h3>全体スケジュール（開業予定日から逆算・目安2.5〜3ヶ月）</h3>
+<h3 id="全体スケジュール-開業予定日から逆算-目安2-5-3ヶ月">全体スケジュール（開業予定日から逆算・目安2.5〜3ヶ月）</h3>
 <ol><li><strong>今すぐ（Week 0）</strong>：（管理規約の民泊/事業使用可否は確認済み・可）。物件売買の目処（売買契約 or 予約）。リノベ詳細見積（精査後550万目標）。消防の構造要件だけ保健所/消防署に事前確認。</li><li><strong>Week 1-2</strong>：福岡県旅館ホテル生活衛生同業組合へ加入相談（低利ルート確保）。福岡市保健所（中央区）で簡易宿所の事前相談＝消防・構造の可否確認。法人書類一式を取得（登記簿・定款・印鑑証明・納税証明・決算3期）。</li><li><strong>Week 2-3</strong>：公庫の創業計画書を作成（<code>01_jfc…</code> の内容を公式Excelに転記）。滋賀の打診パッケージを用意（<code>02_shiga…</code>）。</li><li><strong>Week 3-4</strong>：公庫にネット申請（本店東京→東京支店管轄。6/10 福岡支店窓口で確認済み）。並行して滋賀銀行に申込（オンライン可）。</li><li><strong>Week 4-7</strong>：本面談・審査（公庫は面談から2〜3週間）。追加書類に即対応。</li><li><strong>Week 7-9</strong>：融資決定→契約→実行。物件決済・リノベ着工。</li></ol>
 <hr>
-<h3>資金計画の動かし方（自己資金・リノベ見積・相見積のタイミング）</h3>
+<h3 id="資金計画の動かし方-自己資金-リノベ見積-相見積のタイミング">資金計画の動かし方（自己資金・リノベ見積・相見積のタイミング）</h3>
 <ul><li><strong>自己資金は「多めに見せて少なく入れる」はできない</strong>。金融機関は実行時に申告どおり自己資金が入ったかを通帳・領収書で確認する。800万と申告して500万だと資金計画と実態の食い違い（見せ金扱い）になり、減額・否決・条件違反のもと。</li><li><strong>自己資金を圧縮する正攻法は「総事業費を下げる」こと</strong>。リノベ圧縮・指値で総額が下がれば、自己資金も借入も自動で減る。これは歓迎される健全な圧縮。逆に自己資金だけ削って借入を増やすと自己資金比率が下がり、区分1室（担保評価低め）では審査が厳しくなり金利も上振れ（DSCR 800万=1.39 → 500万に削り借入増=約1.26）。削るならリノベ圧縮とセットで。</li><li><strong>相見積もりは&quot;今すぐ・打診と並行&quot;で取る</strong>。「見積を取る」のは自由、「契約・発注」だけが後。理由: 1. 審査にはリノベ見積が必須で、安い見積ほど借入を減らせて審査に有利　2. 審査通過後に見積が大きく下がると借入の組み直し＝再審査・条件変更の二度手間　3. 補助金の「発注は交付決定後」ルールに、相見積を取ること自体は当たらない（発注ではない）。</li><li><strong>唯一の順序</strong>: 契約（発注）だけは「融資の承認」＋「補助金/計画認定の決定」の両方が出てから。公庫・銀行とも本承認の前なら見積差し替え・総額調整は可能。</li><li><strong>推奨フロー</strong>: 1. 今ある700万見積で打診開始 → 2. 並行で2〜3社相見積（インダストリアルで圧縮・堅め550万/強気475万）→ 3. 本審査前に最精度の見積へ差し替えて総事業費・借入額を確定 → 4. 融資承認→補助金交付決定/計画認定→契約・発注 → 5. 下がった分は借入減（DSCR改善）か自己資金温存、どちらでも可。</li></ul>
-<h3>本店・支店の所在地と「福岡の物件」融資（論点）</h3>
+<h3 id="本店-支店の所在地と-福岡の物件-融資-論点">本店・支店の所在地と「福岡の物件」融資（論点）</h3>
 <p>法人iUMAは本店＝東京（中央区明石町・自宅）、支店＝千葉（花見川区花園・所有物件）。福岡に拠点がない。これが効くか効かないかは融資先で分かれる。</p>
 <table><thead><tr><th>融資先</th><th>本店東京・福岡拠点なしの影響</th><th>対策</th></tr></thead><tbody><tr><td>公庫（振興事業/生活衛生）</td><td><strong>管轄は本店所在地（東京）</strong>。6/10 福岡支店で確認。ただしネット申請が可能なため来店不要。審査の主因は事業内容で所在地は副次要因</td><td>「なぜ東京の法人が福岡で宿泊事業を」を事業計画で説明。許可・組合は福岡で取り実態を作る</td></tr><tr><td>セゾン直接／スルガ／L&amp;F等（全国対応）</td><td>影響小。全国対応なので本店所在地はほぼ不問</td><td>通常どおり</td></tr><tr><td>福岡の地銀・信金（福岡銀行/西日本シティ/福岡信金 等）</td><td>★影響あり。地銀・信金は営業エリア内融資が原則で、域内に事業所がないと土俵に乗りにくい</td><td>福岡物件取得を機に<strong>福岡支店を登記</strong>すると枠が開く（iUMAは支店登記の実務経験あり）。登録免許税は要だが地銀枠と引き換え</td></tr><tr><td>滋賀ジャストサポート</td><td>無関係（個人名義専用）。手嶋耕一 個人の住所（東京）で審査</td><td>名義論点（給与&gt;不動産収入）が先。所在地は影響小</td></tr></tbody></table>
 <ul><li><strong>許可・組合・補助金は物件所在地（福岡）ベース</strong>なので本店が東京でも問題にならない（旅館業許可＝福岡保健所、組合＝福岡県、福岡市補助＝市内施設要件）。</li><li>結論: <strong>公庫・全国ノンバンクを本線にするなら本店東京・支店千葉のままで進められる</strong>。福岡の地銀プロパーを使いたくなった時だけ、福岡支店登記を検討する。Layer1（千葉銀・休眠予定）は別PJで、本件には混ぜない。</li></ul>
-<h3>持ち物（初回相談・面談に共通で持っていく）</h3>
+<h3 id="持ち物-初回相談-面談に共通で持っていく">持ち物（初回相談・面談に共通で持っていく）</h3>
 <ul><li>法人：履歴事項全部証明書（登記簿）原本・定款コピー・法人印鑑証明・法人納税証明（滞納なし）・決算書3期分</li><li>代表者（Yuma）：本人確認書類・確定申告3年分・資産背景（通帳6ヶ月コピー・有価証券等）</li><li>物件：販売図面・登記簿・売買契約書（or 予約）・リノベ見積書（内訳付き）</li><li>事業：収支計画（稼働率/ADRの根拠データ）・既存筑波借入の返済実績一覧（滞納ゼロ＝信用力）</li></ul>
 <hr>
-<h3>面談で必ず聞かれること（両方共通）と返し方</h3>
+<h3 id="面談で必ず聞かれること-両方共通-と返し方">面談で必ず聞かれること（両方共通）と返し方</h3>
 <ol><li><strong>なぜこの事業か／経験は</strong> → 既にiUMA法人で不動産賃貸の実績（筑波で複数物件・滞納ゼロ）。中洲は観光・宿泊の一等地。</li><li><strong>稼働率・単価の根拠</strong> → 福岡市ホテル稼働80%（2024）、中洲民泊60-75%、ADR中洲実勢12-15k＋5名定員グループ割増。<strong>「希望」でなく「データ」で語る</strong>。</li><li><strong>自己資金の出所</strong> → [要記入：いくら・どこから]</li><li><strong>返済できるのか（DSCR）</strong> → 収支計画で営業利益が返済額を上回ることを数字で示す（目標DSCR 1.3以上）。</li><li><strong>許可の見通し（公庫）</strong> → 旅館業許可の申請スケジュール。申請中でも申込可。</li><li><strong>既存借入との関係</strong> → 筑波の残債・返済状況を開示し、二重債務でないことを説明。</li></ol>
 <hr>
-<h3>要記入チェックリスト（Yumaが埋める空欄）</h3>
+<h3 id="要記入チェックリスト-yumaが埋める空欄">要記入チェックリスト（Yumaが埋める空欄）</h3>
 <ul><li>[ ] 自己資金の額と出所</li><li>[ ] 法人決算3期の要点（売上・利益・純資産）</li><li>[ ] 筑波の既存借入：物件ごとの残債・月返済・金利・残期間</li><li>[ ] 物件の最終取得価格（指値交渉の結果）</li><li>[ ] リノベ最終見積（精査後の確定額・550万目標）</li><li>[x] 管理規約の民泊/事業使用の可否 → 確認済み（可）</li></ul>
 <hr>
-<h2>生活衛生同業組合への加入 — 公庫の低利・長期(振興事業貸付)を開く鍵</h2>
+<h2 id="生活衛生同業組合への加入-公庫の低利-長期-振興事業貸付-を開く鍵">生活衛生同業組合への加入 — 公庫の低利・長期(振興事業貸付)を開く鍵</h2>
 <blockquote>公庫で一番安く・長く借りる「振興事業貸付」は、<strong>生活衛生同業組合の組合員であること</strong>が条件。 この物件（旅館業/簡易宿所）なら入る組合は <strong>福岡県旅館ホテル生活衛生同業組合</strong>。フェーズ0で加入相談しておくと、公庫打診の土俵に乗れる。</blockquote>
 <hr>
-<h3>何の組合か</h3>
+<h3 id="何の組合か">何の組合か</h3>
 <ul><li><strong>福岡県旅館ホテル生活衛生同業組合</strong>（生活衛生同業組合の「旅館ホテル」業種）</li><li>事務所: 福岡市中央区渡辺通5-13-12 セントラルビル201／<strong>電話 092-737-5050</strong></li><li>旅館・ホテル・簡易宿所の事業者が入る業界組合。福岡市の物件もここ（県組合＋地域支部）。</li><li>出典: 福岡県旅館ホテル生活衛生同業組合 加入案内 <a href="https://fukuoka-ryokan-hotel.com/pages/33/">https://fukuoka-ryokan-hotel.com/pages/33/</a> ／ 福岡生衛センター 組合一覧 <a href="https://www.fukuoka-seiei.or.jp/kanyu01.html">https://www.fukuoka-seiei.or.jp/kanyu01.html</a></li></ul>
 <hr>
-<h3>なぜ入るか（入ると公庫の条件がこう変わる）</h3>
+<h3 id="なぜ入るか-入ると公庫の条件がこう変わる">なぜ入るか（入ると公庫の条件がこう変わる）</h3>
 <p>組合員になると、組合理事長が「振興事業に係る資金証明書」を発行でき、これを添えて公庫の<strong>振興事業貸付</strong>を申し込める。一般貸付（組合に入らない枠）との差は大きい：</p>
 <table><thead><tr><th></th><th>一般貸付（組合に入らない）</th><th>振興事業貸付（組合員）</th></tr></thead><tbody><tr><td>設備資金の返済年数</td><td><strong>13年以内</strong></td><td><strong>20年以内</strong>（据置2年以内）</td></tr><tr><td>金利</td><td>基準利率</td><td>会計書類＋事業計画の確認で<strong>−0.15%</strong>、生産性向上に資する計画なら<strong>−0.30%</strong>（基準利率から引下げ）</td></tr><tr><td>500万超の設備資金</td><td>都道府県知事の「推薦書」が必要</td><td>組合の「資金証明書」で代替（推薦書 不要・手続きが楽）</td></tr><tr><td>旅館業の融資限度</td><td>4億円</td><td>7億2,000万円</td></tr></tbody></table>
 <blockquote>★この物件の肝は返済年数。借入2,340万・2.0%なら 13年=月17.0万(DSCR0.96・赤字) / 20年=月11.8万(DSCR1.39・合格)。<strong>組合に入って振興事業貸付の20年を取ることが、公庫成立の必須条件</strong>。 出典: 公庫 振興事業貸付 <a href="https://www.jfc.go.jp/n/finance/search/33_shinkojigyo_m.html">https://www.jfc.go.jp/n/finance/search/33_shinkojigyo_m.html</a></blockquote>
 <hr>
-<h3>費用（★金額は電話で確定する）</h3>
+<h3 id="費用-金額は電話で確定する">費用（★金額は電話で確定する）</h3>
 <ul><li><strong>入会金・組合費（年会費）は公式サイトに非掲載</strong>。福岡県旅館ホテル生活衛生同業組合（092-737-5050）に直接要確認。</li><li>一般に生活衛生同業組合の組合費は施設規模・地域支部で異なる（入会金＋月会費/年会費の構成が多い）。<strong>具体額は推測せず、加入相談の電話で確定する</strong>。</li><li>振興事業貸付で得られる「20年返済化＋金利−0.15〜0.30%」の効果は、月返済が約5万円/月下がる規模（13年→20年）なので、組合費は十分ペイする前提。</li></ul>
 <hr>
-<h3>加入の流れ</h3>
+<h3 id="加入の流れ">加入の流れ</h3>
 <ol><li><strong>Step1</strong>: 地域の支部（地区の旅館組合）に加入</li><li><strong>Step2</strong>: 支部から県組合へ報告 → 組合員になる</li><li><strong>公庫を使うとき</strong>: 組合理事長に「振興事業に係る資金証明書」の交付を依頼。法人は最近2期分の決算書（勘定科目明細含む）・履歴事項全部証明書・試算表・設備見積・平面図等を添付 → 交付された資金証明書を添えて公庫に申込</li><li>出典: 公庫 生活衛生（振興事業）手続き <a href="https://www.jfc.go.jp/n/finance/flow/tetsuzuki_m.html">https://www.jfc.go.jp/n/finance/flow/tetsuzuki_m.html</a></li></ol>
 <hr>
-<h3>いつやるか（タイミング）</h3>
+<h3 id="いつやるか-タイミング">いつやるか（タイミング）</h3>
 <ul><li><strong>フェーズ0（今）で加入相談</strong>の電話を入れる（092-737-5050）。公庫の振興事業貸付を狙うなら、申込までに組合員になっておく。</li><li>旅館業許可は申請中でも公庫の申込は可。だが振興事業貸付の「資金証明書」は組合員でないと出ないので、組合加入は早いほどよい。</li><li>「振興事業に係る資金証明書」の発行には2期分決算等が要る → 別途進めている決算書・登記の準備と同じ書類で足りる。</li></ul>
 <hr>
-<h3>打診スクリプト（電話・福岡県旅館ホテル生活衛生同業組合 092-737-5050）</h3>
+<h3 id="打診スクリプト-電話-福岡県旅館ホテル生活衛生同業組合-092-737-5050">打診スクリプト（電話・福岡県旅館ホテル生活衛生同業組合 092-737-5050）</h3>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">お世話になります。福岡市博多区中洲で区分マンション1室を簡易宿所（旅館業）として
 開業準備している、iUMAプロパティマネジメント（代表 手嶋）と申します。
 日本政策金融公庫の振興事業貸付の利用を考えており、その前提として組合への加入を
@@ -492,82 +577,82 @@ iUMAプロパティマネジメント合同会社
 4. 開業前（許可申請中）の段階でも加入・資金証明書の相談は可能か</pre></div>
 <blockquote>注: 金利引下げ幅・返済年数は公庫公式に基づく。組合費は要電話確認（推測しない）。</blockquote>
 <hr>
-<h2>日本政策金融公庫 東京支店 向け 事業計画書（旅館業・ネット申請）</h2>
+<h2 id="日本政策金融公庫-東京支店-向け-事業計画書-旅館業-ネット申請">日本政策金融公庫 東京支店 向け 事業計画書（旅館業・ネット申請）</h2>
 <blockquote><strong>⚠ 提出前に下記2点だけ実数へ最終照合：</strong> 1. 法人決算3期の実数（第8期は反映済み・第6/7期の売上利益を最終確認）　2. 代表者の年収・資産の証憑。 自己資金・既存借入・物件・収支・稼働根拠・資金計画の構造・経営者の経歴は記入済み。 <strong>資金計画は取得2,240万（現状）を基本ケースとし、指値で2,000万に着地した場合の改善ケースを併記（§7）。</strong></blockquote>
 <blockquote>公式の「創業計画書」Excelに転記する下書き。空欄[要記入]はYumaの実数を入れる。 公式様式: <a href="https://www.jfc.go.jp/n/service/dl_kokumin.html">https://www.jfc.go.jp/n/service/dl_kokumin.html</a> ／ 創業計画書Excel: <a href="https://www.jfc.go.jp/n/service/xls/kaigyou00_190507a.xlsx">https://www.jfc.go.jp/n/service/xls/kaigyou00_190507a.xlsx</a> 制度: 生活衛生貸付（一般貸付/振興事業貸付）・国民生活事業。<strong>管轄: 東京支店（本店所在地基準）。申込 → <a href="https://www.jfc.go.jp/n/service/apply.html">https://www.jfc.go.jp/n/service/apply.html</a></strong> 6/10 福岡支店窓口で「本店東京→東京管轄」と確認済み。 低利ルート: 福岡県旅館ホテル生活衛生同業組合 加入 → 振興事業貸付（基準利率より低利。会計書類＋事業計画確認で−0.15%、生産性向上計画なら−0.30%）。詳細 <code>10_生活衛生同業組合_公庫低利の鍵.md</code>。  <strong>★★ 最重要・2026-06-05 一次ソース裏取りで判明 ★★</strong> 生活衛生貸付は返済年数が2系統で別物：<strong>一般貸付＝設備13年以内</strong> / <strong>振興事業貸付（生活衛生同業組合 加入が条件）＝設備20年以内（据置2年）</strong>。 この物件は借入2,340万・金利2.0%で月返済が <strong>13年≒17.0万 / 20年≒11.8万</strong>。軌道65%稼働の営業利益16.4万に対しDSCRは <strong>13年=0.96（赤字で回らない）/ 20年=1.39</strong>。 → <strong>組合に加入して振興事業貸付（20年）を取ることが、公庫で成立する必須条件。一般貸付（13年）では成立しない。</strong> まず福岡県旅館ホテル生活衛生同業組合への加入相談を先行する。 出典: 一般貸付（生活衛生）13年 <a href="https://www.jfc.go.jp/n/finance/search/32_ippankashitsuke_m.html">https://www.jfc.go.jp/n/finance/search/32_ippankashitsuke_m.html</a> ／ 振興事業貸付 設備20年 <a href="https://www.jfc.go.jp/n/finance/search/33_shinkojigyo_m.html">https://www.jfc.go.jp/n/finance/search/33_shinkojigyo_m.html</a> ／ 金利情報 <a href="https://www.jfc.go.jp/n/rate/">https://www.jfc.go.jp/n/rate/</a></blockquote>
 <blockquote><strong>【重要】旅館業の認可前でも申込・審査はOK。</strong> 設備資金は「物件取得＋改装」のための資金で、実務も「改装完了→許可取得」の順。許可は申請して受理番号と取得スケジュールを示せば、申請中の状態で審査を進められる。ただし通常、<strong>融資実行（資金交付）時に許可取得 or 取得確実が条件（特約）</strong>になる。＝今の段階（未認可）で打診して問題ない。</blockquote>
-<h3>申込者</h3>
+<h3 id="申込者">申込者</h3>
 <ul><li>法人名：iUMAプロパティマネジメント合同会社</li><li>代表社員：手嶋 耕一</li><li>事業の運営：上記 手嶋耕一 本人が担う（賃貸運営・宿泊事業の実務）。代表＝運営者は同一人物1名</li><li>事業：不動産賃貸・宿泊事業（簡易宿所）</li><li>既存取引：筑波銀行（法人3物件）＋日本政策金融公庫（法人1物件）で融資実績（4物件・滞納ゼロ）。法人既存借入 合計月返済 約134.5万円</li></ul>
-<h3>1. 創業（新規事業）の動機</h3>
+<h3 id="1-創業-新規事業-の動機">1. 創業（新規事業）の動機</h3>
 <p>中洲（博多区）は福岡随一の観光・繁華街で、インバウンドを含む宿泊需要が通年で厚い。当社は既に不動産賃貸を法人で運営しており、保有運用のノウハウを宿泊事業（簡易宿所）に展開する。対象物件は中洲2-1-11の49.23㎡区分（1DK＋和室、最大5名）で、家族・グループ・訪日客の滞在に適する。民泊新法は年180日上限で事業が不安定なため、<strong>通年営業できる旅館業（簡易宿所）許可</strong>を取得して恒久事業として運営する。</p>
-<h3>2. 経営者の経歴（代表社員 手嶋耕一・CVより抜粋）</h3>
+<h3 id="2-経営者の経歴-代表社員-手嶋耕一-cvより抜粋">2. 経営者の経歴（代表社員 手嶋耕一・CVより抜粋）</h3>
 <ul><li><strong>学歴</strong>：関西大学 商学部 卒業（1998）、ビジネス・ブレークスルー大学院 経営管理修士（MBA）修了（2017）。</li><li><strong>現職</strong>：Cisco Systems（Cisco Meraki）Senior Network Support Manager（2018〜現在）。日本のカスタマーサポートチームを2名から18名へ立ち上げ・育成（来期24名体制見込み）。安定した給与収入あり。</li><li><strong>マネジメント実績</strong>：2004年以降一貫して外資系IT（Genesys／Arkadin＝現NTT／Cisco Webex／Cisco Meraki）でチーム立ち上げ・人材採用・KPI管理を担当。Arkadin時代は前年比10%のコスト（TCO）削減、ベンダー価格交渉・契約管理の実績。シンガポール赴任でアジア複数キャリアと折衝（2007-2010）。</li><li><strong>強み</strong>：ゼロからの事業・チーム立ち上げと、数値目標を立てて実行・改善する運営力。『7つの習慣』に基づくコーチングで200名以上に講座実施。→ 宿泊事業の立ち上げ・継続運営に直結。</li><li><strong>不動産の実績</strong>：iUMAプロパティマネジメント合同会社で収益不動産を取得・賃貸運営（筑波銀行融資・滞納ゼロ）。</li><li><strong>宿泊運営体制</strong>：運営代行（F-area 等）に清掃・予約・チェックインを委託し、未経験領域を補完。OTA集客とスマートロックで非対面運営。</li></ul>
-<h3>3. 取扱商品・サービス</h3>
+<h3 id="3-取扱商品-サービス">3. 取扱商品・サービス</h3>
 <ul><li>簡易宿所（旅館業許可）。49.23㎡・定員5名（ダブル2＋シングル1）。モダンジャパニーズ内装。</li><li>販路：Booking.com / Airbnb / Agoda / Expedia（OTA）。スマートロックで非対面チェックイン。</li><li>差別化：中洲中心の立地、5名対応の広さ、グループ・訪日客向け価格。</li></ul>
-<h3>4. 取引先・取引関係</h3>
+<h3 id="4-取引先-取引関係">4. 取引先・取引関係</h3>
 <ul><li>集客：上記OTA（手数料 約15%）</li><li>運営代行：F-area（運営代行手数料 約18%）／清掃委託</li><li>設備・保守：消防設備点検業者、リネン</li></ul>
-<h3>5. 従業員</h3>
+<h3 id="5-従業員">5. 従業員</h3>
 <ul><li>当面0名（運営代行・外注で対応）。拡大時に検討。</li></ul>
-<h3>6. お借入の状況（法人・代表者）</h3>
+<h3 id="6-お借入の状況-法人-代表者">6. お借入の状況（法人・代表者）</h3>
 <ul><li>筑波銀行（セゾン保証）松戸支店：法人名義で3物件を融資中。いずれも変動金利（フルスライド型）・元利均等返済・返済は滞りなし。</li><li>埼玉県西浦和物件：残債 約1億4,246万円／月返済 507,107円／金利 2.40%（変動）／残期間 約34年</li><li>埼玉県東浦和物件：融資額 約1億6,190万円／月返済 570,200円／金利 2.40%（変動）／期間 35年 ※建築中（2026年8月完成・9月入居予定）</li><li>福岡市薬院904（法人事務所）：残債 約1,540万円／月返済 105,242円／金利 2.85%（変動）／残期間 約15年</li><li>日本政策金融公庫：法人名義で1物件を融資中（収益不動産）。固定金利・元利均等返済・返済は滞りなし。</li><li>仙台市クレストモール（収益不動産）：残債 約1,900万円／月返済 162,000円／金利 1.90%（固定）</li><li><strong>法人全4物件（収益不動産3件・法人事務所1件）合計月返済：約134.5万円（1,344,549円）— 返済は滞りなし・信用力の核</strong></li><li>今回の公庫借入（振興事業貸付 約2,517万）と既存返済を合算しても返済可能であることを資金繰り表で示す。</li></ul>
-<h3>7. 必要な資金と調達方法（設備資金）</h3>
+<h3 id="7-必要な資金と調達方法-設備資金">7. 必要な資金と調達方法（設備資金）</h3>
 <p><strong>基本ケース：取得2,240万・リノベ550万（インダストリアル相見積で圧縮）・自己資金650万</strong></p>
 <table><thead><tr><th>必要資金</th><th>金額</th><th>調達方法</th><th>金額</th></tr></thead><tbody><tr><td>物件取得費（中洲2-1-11 49.23㎡）</td><td>22,400,000</td><td>自己資金</td><td>6,501,990</td></tr><tr><td>リノベーション工事（インダストリアル・相見積で圧縮）</td><td>5,500,000</td><td>公庫 生活衛生貸付（振興事業・設備資金）</td><td>25,170,000</td></tr><tr><td>取得諸費用（約7%）</td><td>1,568,000</td><td></td><td></td></tr><tr><td>旅館 セットアップ（家具家電・スマートロック・許認可・消防）</td><td>1,903,990</td><td></td><td></td></tr><tr><td>予備費</td><td>300,000</td><td></td><td></td></tr><tr><td><strong>合計</strong></td><td><strong>31,671,990</strong></td><td><strong>合計</strong></td><td><strong>31,671,990</strong></td></tr></tbody></table>
 <blockquote>自己資金650万（総事業費の約21%）。公庫国民生活事業の上限7,200万円内。 <strong>コスト圧縮の2レバーで自己資金をさらに抑えられる（下表・稼働65%・振興事業貸付20年）。リノベは現状見積726万→インダストリアル相見積で550万に圧縮、取得は2,240万→指値で2,000万を狙う。</strong>  | ケース | 取得 | リノベ | 総事業費 | 自己資金650万のDSCR | 自己資金500万のDSCR | |---|---|---|---|---|---| | 現状見積どおり | 2,240万 | 726万 | 約3,343万 | 1.21 | 1.14 | | リノベ550達成（本計画の前提） | 2,240万 | 550万 | 約3,167万 | <strong>1.29</strong> | 1.22 | | リノベ550＋指値2,000 | 2,000万 | 550万 | 約2,910万 | 1.44 | <strong>1.35</strong> |  → リノベ550は<strong>本計画が既に前提にしている値</strong>（現状の実見積は726万なので、相見積での圧縮が前提条件）。自己資金500万で目標DSCR1.3を超えるには<strong>リノベ550と指値2,000の両方</strong>が要る。片方だけなら自己資金650万が安全圏。提出時はリノベは低い方の相見積金額で出す（借入が減りDSCRが上がる）。</blockquote>
-<h3>8. 事業の見通し（収支計画・月額）</h3>
+<h3 id="8-事業の見通し-収支計画-月額">8. 事業の見通し（収支計画・月額）</h3>
 <p>前提：稼働率 初年度55%→2年目65%、ADR 18,000円（中洲実勢12-15k＋5名定員グループ割増。要AirDNA等で実測）。</p>
 <table><thead><tr><th>項目</th><th>当初（55%）</th><th>軌道後（65%）</th><th>根拠</th></tr></thead><tbody><tr><td>月間売上</td><td>約301,000</td><td>約356,000</td><td>ADR18,000×365×稼働÷12</td></tr><tr><td>運営代行18%＋OTA15%＋清掃＋消耗＋光熱＋宿泊税（変動 約48%）</td><td>約146,000</td><td>約172,000</td><td>F-area収支計画の実測比率</td></tr><tr><td>固定（管理/スマートロック/ネット/宿泊税申請）</td><td>約11,900</td><td>約11,900</td><td></td></tr><tr><td>旅館業ランニング（消防点検・許可維持）</td><td>約7,500</td><td>約7,500</td><td></td></tr><tr><td><strong>営業利益（返済前）</strong></td><td><strong>約135,000</strong></td><td><strong>約164,000</strong></td><td></td></tr><tr><td>想定返済（公庫 振興事業貸付2,517万・年2.0%・<strong>20年・据置2年</strong>）</td><td>約127,000</td><td>約127,000</td><td>据置中(2年)は利子のみ 約42,000／金利は申込時の基準利率で更新</td></tr><tr><td><strong>返済後の手残り</strong></td><td><strong>約8,000</strong></td><td><strong>約37,000</strong></td><td></td></tr><tr><td><strong>DSCR（営業利益÷返済）</strong></td><td><strong>約1.06</strong></td><td><strong>約1.29</strong></td><td>目標1.3（軌道でほぼ達成。リノベ550＋指値2,000で1.44）</td></tr></tbody></table>
 <p>★この表は<strong>振興事業貸付20年</strong>前提（組合加入が条件）。返済年数でDSCRが大きく動く：</p>
 <table><thead><tr><th>返済年数</th><th>月返済(2,517万・2.0%)</th><th>DSCR(軌道65%・営業利益16.4万)</th><th>可否</th></tr></thead><tbody><tr><td>一般貸付 13年（組合に入らない）</td><td>約183,000</td><td>約0.90</td><td>✗ 回らない</td></tr><tr><td>振興事業貸付 20年（組合員・設備上限）</td><td>約127,000</td><td>約1.29</td><td>✓ 合格</td></tr></tbody></table>
 <blockquote>当初は薄いが、稼働が中洲標準(65%)に乗ればDSCR約1.3。<strong>組合加入で設備20年返済を確保すること、ADRと稼働の実測根拠を添えること、リノベを相見積で550万に抑え取得を指値で圧縮して借入を減らすこと</strong>でDSCRが効く。自己資金を500万に抑えたい場合は、リノベ550と指値2,000の両方を達成してから（片方だけなら自己資金650万が安全圏）。</blockquote>
-<h3>9. 旅館業許可の取得見通し</h3>
+<h3 id="9-旅館業許可の取得見通し">9. 旅館業許可の取得見通し</h3>
 <ul><li>福岡市保健所（中央区）に簡易宿所営業許可を申請。申込時点で[取得済/申請中/申請予定：要記入]。</li><li>消防法令適合通知書・用途の確認（49㎡＝200㎡未満で建築確認申請は不要だが適合義務は残る）。</li><li>公庫は申請中でも申込可。許可取得スケジュールを明記する。</li></ul>
-<h3>添付書類（公庫・設備資金・法人）</h3>
+<h3 id="添付書類-公庫-設備資金-法人">添付書類（公庫・設備資金・法人）</h3>
 <ul><li>借入申込書（国民生活事業）／企業概要書／本創業計画書</li><li>設備見積書（物件売買契約 or 見積＋リノベ施工見積 内訳付き）</li><li>履歴事項全部証明書（原本）・定款コピー・代表者本人確認</li><li>自己資金の証明（通帳コピー等）</li><li>旅館業許可証 or 申請受理票（申請中の場合）</li><li>都道府県知事推薦書（設備500万超で必要）or 同業組合の資金証明書（振興事業ルート）</li><li>既存筑波借入の返済状況がわかる書類</li></ul>
-<h3>進め方（時系列）</h3>
+<h3 id="進め方-時系列">進め方（時系列）</h3>
 <ol><li>同業組合へ加入相談（低利ルート）＋保健所で簡易宿所事前相談</li><li>公庫事業資金相談ダイヤル 0120-154-505 で書類チェック → 福岡支店 092-411-9111 に相談予約</li><li>プレ面談（書類確認）→ 申込 → 本面談（稼働根拠・現地視察あり得る）→ 審査2-3週 → 決定・契約・実行</li></ol>
 <hr>
-<h2>日本政策金融公庫 融資 — 申請パック（生活衛生貸付・設備資金）</h2>
+<h2 id="日本政策金融公庫-融資-申請パック-生活衛生貸付-設備資金">日本政策金融公庫 融資 — 申請パック（生活衛生貸付・設備資金）</h2>
 <blockquote>物件: プレイスポットしんばし（簡易宿所） / 借入主体: iUMAプロパティマネジメント合同会社（第8期・黒字） 出典: 日本政策金融公庫 国民生活事業「各種書式ダウンロード」 <a href="https://www.jfc.go.jp/n/service/dl_kokumin.html">https://www.jfc.go.jp/n/service/dl_kokumin.html</a> ※融資戦略の全体像は「融資プレイブック」「公庫(旅館業)」「組合(公庫低利)」タブ参照。本書は&quot;提出物そのもの&quot;。</blockquote>
-<h3>結論（公庫は許可と&quot;並行&quot;でよい）</h3>
+<h3 id="結論-公庫は許可と-並行-でよい">結論（公庫は許可と&quot;並行&quot;でよい）</h3>
 <p>公庫は<strong>許可が完全に下りるのを待たなくていい</strong>。許可申請中でも事前相談・打診は可能で、むしろ早く動くほど良い。ただし低利の本命「<strong>振興事業貸付</strong>（設備20年・据置2年）」は<strong>生活衛生同業組合への加入が条件</strong>なので、組合加入も並行で進める（→「組合(公庫低利)」タブ）。融資の正式実行は売買契約・許可の見込みが固まってから。</p>
-<h3>公庫に出す公式様式（DL済み）</h3>
+<h3 id="公庫に出す公式様式-dl済み">公庫に出す公式様式（DL済み）</h3>
 <table><thead><tr><th>様式</th><th>何のための書類か</th><th>本件での使い方</th></tr></thead><tbody><tr><td>借入申込書</td><td>「いくら借りたいか」の本体申込</td><td>設備資金として記入。希望額＝総事業費−自己資金</td></tr><tr><td>企業概要書（既存企業用）</td><td>会社の沿革・取扱・取引・財務の概要</td><td>iUMAは8期の既存法人なので<strong>創業計画書でなくこちら</strong></td></tr><tr><td>設備投資計画書</td><td>取得・リノベ等の設備投資の内訳と効果</td><td>物件取得2,240万＋リノベ＋設備の内訳を記入</td></tr><tr><td>月別収支計画書</td><td>開業後の月次の売上・経費・利益の見通し</td><td>旅館業シナリオ（簡易宿所）の数字を月割で</td></tr><tr><td>資金繰り表</td><td>お金の入出金の見通し</td><td>据置期間中の返済・入金タイミングを反映</td></tr></tbody></table>
 <p>→ これらの&quot;中身&quot;は、すでに作ってある事業計画書（「公庫(旅館業)」タブ＋実数版）から転記する。様式の置き場: <code>deals/financing/公庫様式/</code>。記入例も同梱。</p>
-<h3>いまの状態（正直に）</h3>
+<h3 id="いまの状態-正直に">いまの状態（正直に）</h3>
 <ul><li><strong>中身（事業計画書）</strong>: 作成済み。実数入りの提出用ドラフトもある（機密のためローカル <code>_private/</code> 保管）。</li><li><strong>公式テンプレ</strong>: 上記5様式をDL済み。<strong>ただし様式への転記・記入はこれから</strong>。＝「テンプレに沿って記入済み」ではまだない。</li><li><strong>未確定（★）が3つ</strong>。これが埋まれば様式を完成できる。</li></ul>
-<h3>完成に必要な3つの数字・判断（★）</h3>
+<h3 id="完成に必要な3つの数字-判断">完成に必要な3つの数字・判断（★）</h3>
 <ol><li><strong>自己資金をいくら入れるか</strong>（Yuma判断）。圧縮方針で<strong>目標500万</strong>。これで借入希望額が決まる（希望額＝総事業費−自己資金）。</li><li><strong>iUMAの既存借入の残債</strong>（第8期決算書のBSから）。公庫は他行借入を見るので必須。Layer1（千葉銀・別法人）は無関係なので混ぜない。</li><li><strong>簡易宿所許可のステータス</strong>（申込時点で「取得済／申請中／申請予定」のどれか）。現状は「申請予定」で出す。<strong>正式申請は工事完了後かつ組合加入後（保健所電話確認済み）</strong>。公庫面談では「事前相談済み・工事完工後に正式申請予定」と答える。</li></ol>
-<h3>出す順番</h3>
+<h3 id="出す順番">出す順番</h3>
 <ol><li>組合（福岡県旅館ホテル生活衛生同業組合 092-737-5050）に加入相談＝振興事業貸付の低利の鍵</li><li>公庫 事業資金相談ダイヤルで事前相談予約 → 事業計画書を持ち込み</li><li>自己資金額を確定 → 借入申込書・企業概要書・設備投資計画書・月別収支・資金繰り表を記入</li><li>売買契約・許可の見込みと合わせて正式申込</li></ol>
-<h3>ダウンロード済み様式の場所</h3>
+<h3 id="ダウンロード済み様式の場所">ダウンロード済み様式の場所</h3>
 <ul><li><code>deals/financing/公庫様式/</code>（借入申込書・企業概要書・設備投資計画書・月別収支計画書・資金繰り表＋各記入例）</li></ul>
 </section>
 <hr class="sec">
 <section id="p3" class="doc phase-active">
 <div class="phasebanner phase-active-banner"><span class="pnum">3</span><b>税優遇の前提を作る</b><span class="now-here-badge">★ 今ここ</span></div>
-<h2>経営力向上計画（B類型）申請パック — プレイスポットしんばし</h2>
+<h2 id="経営力向上計画-b類型-申請パック-プレイスポットしんばし">経営力向上計画（B類型）申請パック — プレイスポットしんばし</h2>
 <blockquote>申請者: iUMAプロパティマネジメント合同会社 / 代表: 手嶋耕一 根拠法: 中小企業等経営強化法（中小企業経営強化法） 目的: <strong>中小企業経営強化税制</strong>（即時償却100% または 税額控除10%）の適用 商工会議所相談日: 2026-06-15　B類型に決定 税理士確認: 別途依頼（<code>20_税理士_相談メッセージ.md</code> 参照）</blockquote>
 <hr>
-<h3>結論（B類型とは何か）</h3>
+<h3 id="結論-b類型とは何か">結論（B類型とは何か）</h3>
 <table><thead><tr><th>区分</th><th>内容</th></tr></thead><tbody><tr><td><strong>何をするか</strong></td><td>ICT省力化設備（スマートロック・チェックイン端末・PMS等）の取得に対して税制優遇を受ける</td></tr><tr><td><strong>何が得られるか</strong></td><td>設備取得価額の<strong>即時償却（100%）or 税額控除（10%）</strong>。150万の設備なら15万の税額控除 or 150万を初年度全額経費化</td></tr><tr><td><strong>B類型の要件</strong></td><td>投資計画で「年平均投資利益率 ≥ 5%」を証明。税理士等の認定支援機関の確認が必須</td></tr><tr><td><strong>順序の鉄則</strong></td><td><strong>計画認定 → 設備取得。逆は無効。設備を先に買ったら適用なし</strong></td></tr><tr><td><strong>申請先</strong></td><td>九州厚生局（旅館業=厚生労働大臣管轄）or 商工会議所経由で確認</td></tr></tbody></table>
 <hr>
-<h3>A. 様式第1号（認定申請書）記入ドラフト</h3>
+<h3 id="a-様式第1号-認定申請書-記入ドラフト">A. 様式第1号（認定申請書）記入ドラフト</h3>
 <blockquote>中小企業庁の公式様式に転記する下書き。 公式様式DL: <a href="https://www.chusho.meti.go.jp/keiei/kyoka/download.html">https://www.chusho.meti.go.jp/keiei/kyoka/download.html</a></blockquote>
-<h4>申請者基本情報</h4>
+<h4 id="申請者基本情報">申請者基本情報</h4>
 <table><thead><tr><th>項目</th><th>記入内容</th></tr></thead><tbody><tr><td>法人の名称</td><td>iUMAプロパティマネジメント合同会社</td></tr><tr><td>代表者名</td><td>手嶋 耕一</td></tr><tr><td>本店所在地</td><td>東京都中央区明石町（番地★要確認）</td></tr><tr><td>電話番号</td><td>080-5637-5105</td></tr><tr><td>法人番号</td><td>★要確認（国税庁法人番号公表サイトで取得）</td></tr><tr><td>資本金</td><td>★要確認（第8期決算書から）</td></tr><tr><td>常時使用する従業員数</td><td>0名（代表1名・従業員なし）</td></tr><tr><td>事業分野</td><td>旅館業（簡易宿所）/ 業種コード: 7511</td></tr></tbody></table>
-<h4>計画期間</h4>
+<h4 id="計画期間">計画期間</h4>
 <table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td>計画期間</td><td>3年間（令和8年度 〜 令和10年度）</td></tr><tr><td>計画開始</td><td>設備取得月（旅館業許可取得後に確定）</td></tr></tbody></table>
 <hr>
-<h3>B. 別紙3（経営力向上の目標及び内容）記入ドラフト</h3>
-<h4>1. 現状認識</h4>
+<h3 id="b-別紙3-経営力向上の目標及び内容-記入ドラフト">B. 別紙3（経営力向上の目標及び内容）記入ドラフト</h3>
+<h4 id="1-現状認識">1. 現状認識</h4>
 <p>当社は不動産賃貸業（法人第8期・黒字）を営んでおり、宿泊業への事業拡張として福岡市博多区中洲に区分マンション（プレイスポットしんばしビル本館905号・専有面積40.63㎡・最大5名）を取得し、旅館業（簡易宿所）許可を取得したうえで宿泊事業を運営する。</p>
 <p>中洲は福岡市随一の観光・繁華街であり、訪日外国人を含む宿泊需要が通年で高水準を維持している（福岡市ホテル稼働率2024年度80.4%）。</p>
 <p>しかし、1名での兼業運営という制約から、フロント対応・チェックイン受付・鍵管理を<strong>手動で行うことは物理的に不可能</strong>であり、ICT設備（セルフチェックイン端末・スマートロック・予約管理システム等）の導入が事業成立の必須条件となっている。</p>
-<h4>2. 経営力向上の目標（KPI）</h4>
+<h4 id="2-経営力向上の目標-kpi">2. 経営力向上の目標（KPI）</h4>
 <table><thead><tr><th>指標</th><th>現状（開業前）</th><th>1年目（R8）</th><th>2年目（R9）</th><th>3年目（R10）</th></tr></thead><tbody><tr><td>年間稼働率</td><td>—</td><td>50%</td><td>65%</td><td>70%</td></tr><tr><td>平均客室単価（ADR）</td><td>—</td><td>16,000円</td><td>18,000円</td><td>18,000円</td></tr><tr><td>年間売上高</td><td>—</td><td>2,920,000円</td><td>4,269,750円</td><td>4,599,000円</td></tr><tr><td>営業利益</td><td>—</td><td>1,063,920円</td><td>1,760,391円</td><td>1,930,284円</td></tr><tr><td>労働生産性</td><td>—</td><td>向上</td><td>向上</td><td>向上</td></tr></tbody></table>
 <blockquote>※ADR・稼働率は業者計画（F-area）・リサーチ標準の中間値。確定数値は税理士確認時に調整。</blockquote>
-<h4>3. 経営力向上の内容（取組内容）</h4>
+<h4 id="3-経営力向上の内容-取組内容">3. 経営力向上の内容（取組内容）</h4>
 <p><strong>（1）ICT省力化設備の導入による人手ゼロ運営の実現</strong></p>
 <p>下記設備を一括導入し、代表1名でのリモート管理を実現する。</p>
 <table><thead><tr><th>設備名</th><th>機能</th><th>分類</th><th>取得価額（概算）</th></tr></thead><tbody><tr><td>セルフチェックイン端末</td><td>顔認証・本人確認・鍵発行</td><td>器具備品</td><td>★要確定</td></tr><tr><td>スマートロック</td><td>遠隔解施錠・PIN管理</td><td>器具備品</td><td>★要確定</td></tr><tr><td>タブレット（2台）</td><td>客室案内・多言語対応</td><td>器具備品</td><td>★要確定</td></tr><tr><td>防犯カメラ（2台）</td><td>セキュリティ管理</td><td>器具備品</td><td>139,500円</td></tr><tr><td>WiFi機器</td><td>高速通信環境</td><td>器具備品</td><td>★要確定</td></tr><tr><td>PMS（予約管理システム）</td><td>OTA統合・収益管理</td><td>ソフトウエア</td><td>★要確定</td></tr><tr><td><strong>合計</strong></td><td></td><td></td><td><strong>★要確定（目安150〜190万円）</strong></td></tr></tbody></table>
@@ -577,11 +662,11 @@ iUMAプロパティマネジメント合同会社
 <table><thead><tr><th>項目</th><th>設備なし（推計）</th><th>設備あり（本計画）</th></tr></thead><tbody><tr><td>チェックイン対応</td><td>都度現地対応（代表の移動時間・拘束）</td><td>無人自動（24時間対応可）</td></tr><tr><td>鍵管理</td><td>都度受渡し or 物件に常駐</td><td>リモートPIN発行</td></tr><tr><td>必要人員コスト（換算）</td><td>月20〜30万円（業務委託相当）</td><td>0円</td></tr><tr><td>対応可能チェックイン時間</td><td>業務時間内のみ</td><td>24時間365日</td></tr><tr><td>稼働率への影響</td><td>深夜・早朝チェインオ困難で稼働率低下</td><td>時間制限なし</td></tr></tbody></table>
 <p>設備導入により、年間約240〜360万円相当の人件費を不要とし、24時間対応で稼働率を底上げする。</p>
 <hr>
-<h3>C. B類型 投資計画書（税理士確認用）</h3>
+<h3 id="c-b類型-投資計画書-税理士確認用">C. B類型 投資計画書（税理士確認用）</h3>
 <blockquote>この表を税理士に持参し、計算の確認・署名をいただく。</blockquote>
-<h4>設備の基本情報</h4>
+<h4 id="設備の基本情報">設備の基本情報</h4>
 <table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td>設備の種類</td><td>器具備品（チェックイン端末・スマートロック・タブレット等の一式）</td></tr><tr><td>設備の設置場所</td><td>福岡県福岡市博多区中洲2-1-11 プレイスポットしんばしビル本館905号</td></tr><tr><td>取得予定時期</td><td>★旅館業許可取得後（令和8年度内を予定）</td></tr><tr><td>取得価額合計</td><td>★要確定（F-area見積書から設備費抽出）</td></tr><tr><td>耐用年数</td><td>5年（器具備品・接客業用機器）</td></tr><tr><td>減価償却方法</td><td>定額法（法人）</td></tr><tr><td>年間減価償却費（定額法）</td><td>取得価額 × 0.200</td></tr></tbody></table>
-<h4>年平均投資利益率の計算</h4>
+<h4 id="年平均投資利益率の計算">年平均投資利益率の計算</h4>
 <blockquote>B類型の要件式: {Σ(各年度の 営業利益 + 設備減価償却費) ÷ 計画年数} ÷ 取得価額 × 100 ≥ 5%</blockquote>
 <p>以下は設備投資額150万円・計画3年での試算（税理士確認時に実額で置換）:</p>
 <table><thead><tr><th>年度</th><th>稼働率</th><th>ADR（円）</th><th>年間売上高（円）</th><th>変動経費(48.4%)</th><th>固定費（円）</th><th>設備減価償却費</th><th>営業利益（円）</th><th>営業利益+減価償却費</th></tr></thead><tbody><tr><td>1年目（R8）</td><td>50%</td><td>16,000</td><td>2,920,000</td><td>1,413,280</td><td>142,800</td><td>300,000</td><td>1,063,920</td><td><strong>1,363,920</strong></td></tr><tr><td>2年目（R9）</td><td>65%</td><td>18,000</td><td>4,269,750</td><td>2,066,559</td><td>142,800</td><td>300,000</td><td>1,760,391</td><td><strong>2,060,391</strong></td></tr><tr><td>3年目（R10）</td><td>70%</td><td>18,000</td><td>4,599,000</td><td>2,225,916</td><td>142,800</td><td>300,000</td><td>1,930,284</td><td><strong>2,230,284</strong></td></tr><tr><td><strong>合計</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><strong>5,654,595</strong></td></tr></tbody></table>
@@ -591,11 +676,11 @@ iUMAプロパティマネジメント合同会社
 <p>= <strong>125.7% ≥ 5% ✓</strong></p>
 <blockquote>★注: この計算は見通し。税理士が直近決算・実際の設備費・償却計算を確認し、最終署名する。 最も保守的なシナリオ（1年目40%稼働・ADR12,000円）でも投資利益率 ≈ 50% で要件をクリア。</blockquote>
 <hr>
-<h3>D. 税理士への確認事項チェックリスト</h3>
+<h3 id="d-税理士への確認事項チェックリスト">D. 税理士への確認事項チェックリスト</h3>
 <p>税理士面談時に確認してもらう内容:</p>
 <ol><li><strong>認定支援機関の役割</strong> — 先生が 認定経営革新等支援機関 として確認書（様式第2号相当）を発行いただけるか、または商工会議所が担当するか</li><li><strong>設備費の分類確認</strong> — F-area見積書から器具備品（B類型対象）と建物附属設備を正確に分離</li><li><strong>最低取得価額の充足</strong> — 器具備品は30万円以上（合計で可）が要件。充足するか確認</li><li><strong>即時償却 vs 税額控除の選択</strong> — 今期の利益状況からどちらが有利か（赤字なら即時償却より税額控除が翌年に活きる）</li><li><strong>投資計画の数値調整</strong> — 上表の ADR・稼働率・変動経費率を決算ベースに合わせる</li><li><strong>計画期間の開始時期</strong> — 設備取得月が計画開始日。許可取得スケジュールと連動</li><li><strong>他制度との重複</strong> — 省力化投資補助金と設備が重複する場合、補助対象分は対象外（分けて計上）</li></ol>
 <hr>
-<h3>E. 申請の流れ（順序厳守）</h3>
+<h3 id="e-申請の流れ-順序厳守">E. 申請の流れ（順序厳守）</h3>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">今ここ → 商工会議所相談（B類型決定）✓ 2026-06-15
    ↓
 税理士に相談・投資計画確認 → 確認書発行
@@ -611,13 +696,13 @@ iUMAプロパティマネジメント合同会社
 確定申告で即時償却 or 税額控除を適用</pre></div>
 <blockquote>⚠️ <strong>鉄則</strong>: 認定前に設備を1円でも発注したら税制適用が消える。見積書収集・設備選定は今すぐOK。発注は認定後。</blockquote>
 <hr>
-<h3>F. 未確定事項（税理士・実務で埋める）</h3>
+<h3 id="f-未確定事項-税理士-実務で埋める">F. 未確定事項（税理士・実務で埋める）</h3>
 <table><thead><tr><th>項目</th><th>現状</th><th>確定方法</th></tr></thead><tbody><tr><td>設備取得価額（合計）</td><td>150〜190万円概算</td><td>F-area見積書MT06529から器具備品を抽出</td></tr><tr><td>法人番号</td><td>未記載</td><td>国税庁: <a href="https://www.houjin-bangou.nta.go.jp/">https://www.houjin-bangou.nta.go.jp/</a></td></tr><tr><td>資本金</td><td>未記載</td><td>第8期決算書BS</td></tr><tr><td>申請先の確定</td><td>未定</td><td>商工会議所に確認（九州厚生局 か 中小企業庁電子申請か）</td></tr><tr><td>認定支援機関</td><td>税理士 or 商工会議所</td><td>税理士面談で確認</td></tr><tr><td>PMS（ソフトウエア）の取得価額</td><td>未確定</td><td>ソフトウエアは70万以上が要件。SaaS(月額)は対象外が多い</td></tr><tr><td>建物附属設備の計上可否</td><td>未確定</td><td>リノベ内のエアコン等・60万以上で計上可能か税理士確認</td></tr></tbody></table>
 <hr>
-<h2>飯塚先生へのメッセージ — 経営力向上計画B類型の確認署名依頼</h2>
+<h2 id="飯塚先生へのメッセージ-経営力向上計画b類型の確認署名依頼">飯塚先生へのメッセージ — 経営力向上計画B類型の確認署名依頼</h2>
 <blockquote>送付先: 飯塚先生（iUMA担当税理士） 依頼内容: 投資計画書への確認署名のみ（書類一式はこちらで作成済み） 先生にお願いすること: 認定支援機関として投資計画書に署名・押印いただくだけ</blockquote>
 <hr>
-<h3>メール文</h3>
+<h3 id="メール文">メール文</h3>
 <hr>
 <p>件名: 経営力向上計画（B類型）確認署名のお願い</p>
 <p>飯塚先生</p>
@@ -633,13 +718,13 @@ iUMAプロパティマネジメント合同会社
 <p>ご都合のよい日時をお知らせください。よろしくお願いします。</p>
 <p>手嶋</p>
 <hr>
-<h3>LINE版（短い）</h3>
+<h3 id="line版-短い">LINE版（短い）</h3>
 <hr>
 <p>飯塚先生、お世話になっております。手嶋です。</p>
 <p>福岡の旅館業物件の設備（省力化ICT機器）に対して経営力向上計画B類型を申請します。書類は全部こちらで用意しましたので、先生には投資計画書への確認署名・押印だけお願いできますか？</p>
 <p>お時間いただけますか？</p>
 <hr>
-<h3>面談時のアジェンダ（5〜10分で終わる想定）</h3>
+<h3 id="面談時のアジェンダ-5-10分で終わる想定">面談時のアジェンダ（5〜10分で終わる想定）</h3>
 <ol><li>投資計画書の内容確認（先生に中身をご確認いただく）</li><li>設備: ICT機器一式（スマートロック・チェックイン端末等）</li><li>取得価額: 150〜190万円（要確定・設備見積書から）</li><li>年平均投資利益率: 5%要件に対して125%超（計算済み）</li></ol>
 <ol><li>即時償却 vs 税額控除の選択アドバイス</li><li>今期〜来期の利益状況でどちらが有利か、先生に判断いただく</li></ol>
 <ol><li>署名・押印</li><li>先生が認定経営革新等支援機関として確認書に署名</li></ol>
@@ -650,77 +735,77 @@ iUMAプロパティマネジメント合同会社
 <summary class="phase-summary"><span class="ps-sum-num">4</span><span class="ps-sum-title" style="color:#aaa">工事を発注する（★発注ゲート）</span><span class="phase-badge pending-badge">⏳ 未着手</span></summary>
 <section class="doc">
 <div class="phasebanner"><span class="pnum" style="opacity:.4">4</span><b style="opacity:.5">工事を発注する（★発注ゲート）</b><span class="phase-badge pending-badge" style="margin-left:auto">⏳ 未着手</span></div>
-<h2>発注タイミング表 — 補助金・税優遇を取りこぼさない時系列（中洲しんばし / 旅館業）</h2>
+<h2 id="発注タイミング表-補助金-税優遇を取りこぼさない時系列-中洲しんばし-旅館業">発注タイミング表 — 補助金・税優遇を取りこぼさない時系列（中洲しんばし / 旅館業）</h2>
 <blockquote>大原則ふたつ。<strong>1. 補助金も税制も「決定の&quot;前&quot;に発注・工事したら対象外」。2. 支払いは2バケツに分ける。</strong> リノベ本体（どの補助も対象外）は決定を待たず進めてよい。スマートロック・PMS・家具家電・空調など「補助/税制の対象になりうる設備」は、認定・交付決定が出てから発注する。</blockquote>
 <hr>
-<h3>★ いちばん大事な1枚：発注してよい / まだするな</h3>
+<h3 id="いちばん大事な1枚-発注してよい-まだするな">★ いちばん大事な1枚：発注してよい / まだするな</h3>
 <table><thead><tr><th>支払うもの</th><th>補助/税制の対象か</th><th>いつ発注してよいか</th></tr></thead><tbody><tr><td>リノベ本体（解体・内装・床壁・水回り工事）</td><td>✗ どの補助も対象外（省エネ大型は居住用限定・福岡市補助もリノベ本体は対象外）</td><td><strong>契約後すぐ進めてよい</strong>（補助の決定を待つ必要なし）</td></tr><tr><td>スマートロック・自動チェックイン・PMS・防犯カメラ・Wi-Fi・多言語/キャッシュレス</td><td>◎ 福岡市受入環境補助・省力化補助の対象</td><td><strong>交付決定が出てから発注</strong>（前に買うと全額対象外）</td></tr><tr><td>家具・家電・空調・給湯など設備（セットアップ190万の中身）</td><td>◎ 経営強化税制（即時償却/10%控除）・少額償却の対象</td><td><strong>経営力向上計画の認定が出てから取得</strong>（前だと税優遇が消える）</td></tr><tr><td>消防設備工事・許認可代行費</td><td>✗ どの補助でも対象外</td><td>いつでもよい（許可取得の都合で進める）</td></tr></tbody></table>
 <blockquote>つまり「リノベの壁を壊す」のは止めなくていい。<strong>止めるのは&quot;鍵・端末・家具・空調&quot;を買う指</strong>だけ。決定の紙が出てから発注する。</blockquote>
 <hr>
-<h3>月別カレンダー（T0 = 2026年6月）</h3>
-<h4>フェーズ0：相談と下地づくり（6月）— ここを早く回すほど後が楽</h4>
+<h3 id="月別カレンダー-t0-2026年6月">月別カレンダー（T0 = 2026年6月）</h3>
+<h4 id="フェーズ0-相談と下地づくり-6月-ここを早く回すほど後が楽">フェーズ0：相談と下地づくり（6月）— ここを早く回すほど後が楽</h4>
 <ul><li>福岡市 保健所で<strong>簡易宿所 許可の事前相談</strong>（無料・電話/窓口）。消防の構造要件と必要書類を確定</li><li>福岡市 観光部に<strong>受入環境補助の相談</strong>（許可が前提なので「許可見込みでの段取り」を確認）syukuhaku-shien@city.fukuoka.lg.jp</li><li>福岡商工会議所など<strong>認定支援機関で経営力向上計画を相談</strong>（税優遇の入口）</li><li><strong>gBizIDプライムを申請</strong>（省力化補助に必須・発行に2〜3週かかるので今すぐ）</li><li><strong>生活衛生同業組合へ加入相談</strong>（公庫の設備20年返済＝振興事業貸付の鍵。融資のDSCR成立条件）</li></ul>
-<h4>フェーズ1：融資と計画の申込（6〜7月）</h4>
+<h4 id="フェーズ1-融資と計画の申込-6-7月">フェーズ1：融資と計画の申込（6〜7月）</h4>
 <ul><li><strong>公庫 振興事業貸付の打診</strong>（組合経由・旅館業は許可申請中でも申込可）</li><li><strong>経営力向上計画の認定申請</strong>（→認定まで通常30〜60日。設備取得より前に出すのが絶対）</li><li>物件の<strong>売買契約・指値の確定</strong></li><li>リノベの<strong>相見積</strong>（インダストリアルで圧縮。本命550万着地）</li></ul>
-<h4>フェーズ2：認定・交付決定を取る（7〜8月）★発注ゲートの手前</h4>
+<h4 id="フェーズ2-認定-交付決定を取る-7-8月-発注ゲートの手前">フェーズ2：認定・交付決定を取る（7〜8月）★発注ゲートの手前</h4>
 <ul><li><strong>経営力向上計画 認定 取得</strong>（これで設備の即時償却/控除が使える状態に）</li><li><strong>福岡市受入環境補助の交付申請→交付決定</strong>（許可の進捗とにらみ。先着・予算枠あり）</li><li><strong>省力化補助の公募要領を確認→計画申請</strong>（gBizID必要・民泊不可・時期は要確認）</li><li>リノベ本体は契約済みなら<strong>着工してよい</strong>（補助対象外なので決定待ち不要）</li></ul>
-<h4>★発注ゲート（8月前後）</h4>
+<h4 id="発注ゲート-8月前後">★発注ゲート（8月前後）</h4>
 <p>ここまでに出た「経営力向上計画の認定」「福岡市補助の交付決定」「省力化補助の交付決定」を確認してから、<strong>鍵・端末・家具・空調の発注を解禁</strong>する。これより前に買ったものは補助も税優遇も付かない。</p>
-<h4>フェーズ3：工事・設備発注（8〜10月）順序厳守</h4>
+<h4 id="フェーズ3-工事-設備発注-8-10月-順序厳守">フェーズ3：工事・設備発注（8〜10月）順序厳守</h4>
 <ul><li>補助/税制 対象設備（スマートロック・PMS・家具家電・空調）を<strong>決定後に発注</strong></li><li>消防設備工事→<strong>消防法令適合通知書</strong>を取得</li><li><strong>旅館業 許可申請→審査→許可</strong>（改装・消防が整ってから）</li></ul>
-<h4>フェーズ4：実績報告と運用開始（10〜12月）</h4>
+<h4 id="フェーズ4-実績報告と運用開始-10-12月">フェーズ4：実績報告と運用開始（10〜12月）</h4>
 <ul><li>補助金の<strong>実績報告（領収書提出）→後払いで入金</strong></li><li><strong>開業・OTA掲載</strong>（Booking/Airbnb/Agoda）</li><li>経営力向上計画の<strong>実施報告</strong></li></ul>
-<h4>フェーズ5：確定申告（翌1〜3月）</h4>
+<h4 id="フェーズ5-確定申告-翌1-3月">フェーズ5：確定申告（翌1〜3月）</h4>
 <ul><li>設備190万を<strong>即時償却 or 10%税額控除</strong>で申告。40万未満は少額償却で全額経費</li><li>先端設備等導入計画を取っていれば<strong>固定資産税の軽減</strong>を反映</li></ul>
 <hr>
-<h3>正直なボトルネックと逃げ道</h3>
+<h3 id="正直なボトルネックと逃げ道">正直なボトルネックと逃げ道</h3>
 <ol><li><strong>許可は改装後・補助は決定前という板挟み</strong>：福岡市補助・省力化補助は「旅館業許可＋交付決定の後に発注」。一方 許可は改装・消防完了後に出る。→ 逃げ道は上の2バケツ分け。<strong>リノベ本体は先に進め、補助対象の設備だけ決定を待つ</strong>。許可は「申請中」で融資打診は走らせる。</li><li><strong>福岡市補助の年度窓口（11/30・先着・予算枠）に間に合うか</strong>：許可と交付決定が秋までに揃わないと今年度を逃す。間に合わなければ来年度に回す前提で、<strong>今年は税制（経営強化税制）と公庫融資を確実に取りに行く</strong>のが現実的。</li><li><strong>後払い＝立て替えが要る</strong>：補助金が入るのは実績報告後。リノベ・設備の支払いは融資（公庫/セゾン直接）と自己資金で先に出す。</li></ol>
 <hr>
-<h3>このカレンダーの使い方</h3>
+<h3 id="このカレンダーの使い方">このカレンダーの使い方</h3>
 <ul><li>「決定の紙が出たか？」を発注の唯一のゲートにする。出る前に発注しない。</li><li>不確実な公募時期（省力化・観光庁）は、毎月 公募要領を確認して日付が出たらこのカレンダーに差し込む。</li><li>金額・締切に『要確認』が付くものは、フェーズ0の相談で一次窓口から最新を取って確定させる。</li></ul>
 <hr>
-<h2>リノベ相見積もり — インダストリアルで安く（福岡）</h2>
+<h2 id="リノベ相見積もり-インダストリアルで安く-福岡">リノベ相見積もり — インダストリアルで安く（福岡）</h2>
 <blockquote>業者の「モダンジャパニーズ726万」は叩き台。<strong>本命はインダストリアル（躯体現し・配管露出・黒鉄・塗装仕上げ）</strong>。 インダストリアルは「仕上げ材・隠蔽工事・造作を削る」ほど安くなる美学なので、賃貸/民泊と相性が良い。 公庫へは今ある見積（726万）を設備資金の根拠として持参可。ベストプラクティスは、出向く前にインダストリアルの相見積を1社でも取り、<strong>低い方の金額で出す</strong>（借入が減りDSCRが上がる）。</blockquote>
-<h3>なぜインダストリアルは安く仕上がるか（原価構造）</h3>
+<h3 id="なぜインダストリアルは安く仕上がるか-原価構造">なぜインダストリアルは安く仕上がるか（原価構造）</h3>
 <ul><li>躯体現し → 天井・壁の仕上げ材と大工賃を削減（10-20%）</li><li>配管・配線の露出 → 天井裏の隠蔽工事が不要（8-15%）</li><li>塗装仕上げ中心 → クロス/タイル張りを削減（12-18%）</li><li>造作家具をスチール什器/パイプラックで代替（5-10%）</li><li>合計でフル工事費の <strong>30-40%圧縮余地</strong></li><li>逆に高くつく：鉄骨造作・特注ダクト・特殊塗装・躯体補修（爆裂/クラックは別途見積）</li></ul>
-<h3>相見積もり先 優先リスト（福岡・インダストリアル）</h3>
+<h3 id="相見積もり先-優先リスト-福岡-インダストリアル">相見積もり先 優先リスト（福岡・インダストリアル）</h3>
 <table><thead><tr><th>Tier</th><th>会社</th><th>所在/連絡</th><th>特徴</th><th>想定坪/㎡単価</th></tr></thead><tbody><tr><td>1</td><td>Proceed Design</td><td>福岡市中央区 092-791-4080</td><td>インダストリアル特化・躯体現し。49㎡で総額100万円台の事例</td><td>㎡10-12万 ≈ 490-590万</td></tr><tr><td>1</td><td>RenoLIVING</td><td>福岡市南区（サイト問合せ）</td><td>躯体現し設計に強い・賃貸リノベ専門・10年保証</td><td>㎡13万→交渉で10万も</td></tr><tr><td>1</td><td>はぴりの！</td><td>福岡市（資料請求）</td><td>インダストリアル実績多・コスパ感覚近い</td><td>㎡10.5万 ≈ 515万</td></tr><tr><td>2</td><td>SOSHIN工務店</td><td>福岡市早良区</td><td>自社施工で中間マージン削減</td><td>要見積（民泊実績要確認）</td></tr><tr><td>2</td><td>ナショナルリファイン／ジャパンテクニカル研創</td><td>博多区</td><td>地元・小規模リフォーム</td><td>要見積</td></tr></tbody></table>
 <blockquote>出典: Proceed Design <a href="https://re-proceeddesign.com/works_type/industrial/">https://re-proceeddesign.com/works_type/industrial/</a> ／ RenoLIVING <a href="https://www.renoliving.jp/">https://www.renoliving.jp/</a> ／ はぴりの <a href="https://www.happy-renovation.com/works/index.php">https://www.happy-renovation.com/works/index.php</a> ／ SOSHIN <a href="https://soshin-fab.co.jp/">https://soshin-fab.co.jp/</a></blockquote>
-<h3>コスパ型工務店の見分け方</h3>
+<h3 id="コスパ型工務店の見分け方">コスパ型工務店の見分け方</h3>
 <ul><li>自社施工率80%以上／坪単価を明示／「直営・マージン無し」を謳う／民泊・店舗実績／工事項目ごとの内訳見積／10年保証・瑕疵保険</li></ul>
-<h3>相見積もり仕様書（49㎡・インダストリアル・そのまま渡せる）</h3>
+<h3 id="相見積もり仕様書-49-インダストリアル-そのまま渡せる">相見積もり仕様書（49㎡・インダストリアル・そのまま渡せる）</h3>
 <ul><li>用途：簡易宿所/民泊＋賃貸併用想定。予算枠 550〜700万（内装・電気・給排水まで。設備機器別）</li><li>スケルトン解体＋躯体現し（爆裂/クラック補修は別途金額提示）</li><li>床：コンクリート研ぎ出し＋透明ウレタン塗装</li><li>壁：躯体＋艶なし塗装（黒/グレー2回塗り）。費用・物理的制約で躯体現しが難しい場合はクロスでも可</li><li>天井：躯体現し（配管・ダクト露出）、仕上げ塗装のみ</li><li>建具：既存サッシ/ドア再利用（ペイント）、新規は鉄フレーム＋ガラス</li><li>電気：配線露出（黒PF管）、照明はスポット/ペンダント（ダウンライト不可）</li><li>給排水：配管露出（黒鉄/アイアン塗装）、キッチン・UBは既存位置維持</li><li>見積依頼項目：総額(税抜)/坪・㎡単価/工期/仮設・廃棄内訳/保証・瑕疵保険/追加費用の基準/検査方法</li><li>条件：相見積3社比較中。同額なら「内訳の透明性」と「民泊知見」で評価</li></ul>
-<h3>躯体現しの落とし穴（相見積時に必ず質問）</h3>
+<h3 id="躯体現しの落とし穴-相見積時に必ず質問">躯体現しの落とし穴（相見積時に必ず質問）</h3>
 <ul><li>爆裂・クラック補修費（別途か）／古い配管は塗装防錆か交換か／躯体現しで遮音性が落ちる→床補強の提案／天井高の実測／露出部の定期メンテ頻度</li></ul>
 <hr>
-<h2>インダストリアル改装 見積依頼書（RFQ）— プレイスポットしんばしビル</h2>
+<h2 id="インダストリアル改装-見積依頼書-rfq-プレイスポットしんばしビル">インダストリアル改装 見積依頼書（RFQ）— プレイスポットしんばしビル</h2>
 <blockquote>そのまま工務店に渡せる依頼書。仕様は決定済みなので、先方は<strong>この紙とフォーマットに沿って金額を入れるだけ</strong>で見積が出せる。 相見積3社で同条件比較するため、下の「記入式 見積様式」での提出をお願いする想定。施主＝iUMAプロパティマネジメント合同会社（代表 手嶋耕一）。</blockquote>
 <hr>
-<h3>1. 物件概要（現地調査前に共有する基本情報）</h3>
+<h3 id="1-物件概要-現地調査前に共有する基本情報">1. 物件概要（現地調査前に共有する基本情報）</h3>
 <table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td>所在</td><td>福岡県福岡市博多区中洲2-1-11 プレイスポットしんばしビル</td></tr><tr><td>専有面積</td><td>49.23㎡（約14.9坪）</td></tr><tr><td>間取り</td><td>1DK＋和室（DK 9.6帖／和室 7.2帖）</td></tr><tr><td>構造</td><td>RC造・区分マンション1室（階数・築年は[要記入]／現地で確認）</td></tr><tr><td>現況</td><td>[要記入：空室／居住中／原状回復済 等]</td></tr><tr><td>想定用途</td><td>簡易宿所（旅館業）／民泊＋賃貸併用想定・最大5名</td></tr><tr><td>図面・写真</td><td>販売図面・現況写真を別添（現地調査時に実測いただく）</td></tr></tbody></table>
 <hr>
-<h3>2. 工事の目的とデザイン方向性（決定済み）</h3>
+<h3 id="2-工事の目的とデザイン方向性-決定済み">2. 工事の目的とデザイン方向性（決定済み）</h3>
 <ul><li><strong>宿泊施設（インダストリアル）</strong>として全面改装。映え（写真映え）＋耐久性＋清掃性を優先。</li><li><strong>インダストリアル＝躯体現し・配管/配線の露出・塗装仕上げ中心</strong>。仕上げ材・隠蔽工事・造作を削ってコストを抑える方向で提案してほしい。</li><li>高級居住用フル仕様は不要。宿泊運用で傷みにくく、原状回復しやすい構成を希望。</li></ul>
 <hr>
-<h3>3. 工事仕様（部位別・決定済み。これに沿って見積を）</h3>
+<h3 id="3-工事仕様-部位別-決定済み-これに沿って見積を">3. 工事仕様（部位別・決定済み。これに沿って見積を）</h3>
 <table><thead><tr><th>部位</th><th>仕様（希望）</th><th>備考</th></tr></thead><tbody><tr><td>解体</td><td>スケルトン解体＋躯体現し</td><td>産廃処分・運搬を含めて計上</td></tr><tr><td>床</td><td>コンクリート研ぎ出し＋透明ウレタン塗装</td><td>不陸・爆裂があれば補修は別行で金額提示</td></tr><tr><td>壁</td><td>躯体現し＋艶なし塗装（黒／グレー・2回塗り）。大面積クロスは不可、局所補修ボードのみ</td><td></td></tr><tr><td>天井</td><td>躯体現し（配管・ダクト露出）＋仕上げ塗装のみ</td><td>天井高は現地実測値を記載</td></tr><tr><td>建具</td><td>既存サッシ／ドアは再利用（ペイント）。新規は鉄フレーム＋ガラス</td><td></td></tr><tr><td>電気</td><td>配線露出（黒PF管）。照明はスポット／ペンダント（ダウンライト不可）</td><td>宿泊用にコンセント増設想定</td></tr><tr><td>給排水</td><td>配管露出（黒鉄／アイアン塗装）。キッチン・ユニットバスは既存位置を維持</td><td>位置移動が必要なら別行で</td></tr><tr><td>水回り住設</td><td>グレードは普及帯で可（宿泊運用の耐久重視）。施主支給の有無は相談</td><td></td></tr></tbody></table>
 <hr>
-<h3>4. 見積の範囲（含む／含まない を明確化）</h3>
+<h3 id="4-見積の範囲-含む-含まない-を明確化">4. 見積の範囲（含む／含まない を明確化）</h3>
 <p><strong>含む（今回見積もってほしい）</strong>: 解体・内装（床壁天井）・建具・電気・給排水・塗装・仮設・養生・産廃処分・諸経費・現場管理費。</p>
 <p><strong>含まない（別途・今回は不要）</strong>:</p>
 <ul><li>家具・家電・寝具（施主手配）</li><li>スマートロック・防犯カメラ・チェックイン端末（宿泊セットアップで別途）</li><li>消防設備工事（自火報・誘導灯・消火器。専門業者で別途）</li><li>旅館業／消防の許認可・申請（別途）</li><li>躯体の爆裂・クラック補修、アスベスト対応（<strong>発生時は別行で金額を明示</strong>。本体に混ぜない）</li></ul>
 <hr>
-<h3>5. 記入式 見積様式（この表に入れて返すだけ）</h3>
+<h3 id="5-記入式-見積様式-この表に入れて返すだけ">5. 記入式 見積様式（この表に入れて返すだけ）</h3>
 <table><thead><tr><th>No.</th><th>工事項目</th><th>仕様</th><th>数量</th><th>単位</th><th>単価(税抜)</th><th>金額(税抜)</th><th>備考</th></tr></thead><tbody><tr><td>1</td><td>仮設・養生</td><td></td><td>1</td><td>式</td><td></td><td></td><td></td></tr><tr><td>2</td><td>スケルトン解体・産廃処分</td><td></td><td>約49</td><td>㎡</td><td></td><td></td><td></td></tr><tr><td>3</td><td>床（研ぎ出し＋ウレタン塗装）</td><td></td><td>約49</td><td>㎡</td><td></td><td></td><td></td></tr><tr><td>4</td><td>壁（躯体＋艶なし塗装）</td><td></td><td>[実測]</td><td>㎡</td><td></td><td></td><td></td></tr><tr><td>5</td><td>天井（躯体現し＋塗装）</td><td></td><td>約49</td><td>㎡</td><td></td><td></td><td></td></tr><tr><td>6</td><td>建具（既存ペイント＋新規鉄フレーム）</td><td></td><td>[数]</td><td>箇所</td><td></td><td></td><td></td></tr><tr><td>7</td><td>電気（露出配線・照明・コンセント）</td><td></td><td>1</td><td>式</td><td></td><td></td><td></td></tr><tr><td>8</td><td>給排水（露出配管・水回り接続）</td><td></td><td>1</td><td>式</td><td></td><td></td><td></td></tr><tr><td>9</td><td>水回り住設（KT/UB/洗面/便所）</td><td></td><td>1</td><td>式</td><td></td><td></td><td>支給/施工の別を明記</td></tr><tr><td>10</td><td>塗装（共通・仕上げ）</td><td></td><td>1</td><td>式</td><td></td><td></td><td></td></tr><tr><td>11</td><td>現場管理費・諸経費</td><td></td><td>1</td><td>式</td><td></td><td></td><td></td></tr><tr><td>—</td><td><strong>小計（税抜）</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>—</td><td><strong>消費税</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>—</td><td><strong>総額（税込）</strong></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>—</td><td><strong>坪単価・㎡単価</strong></td><td></td><td></td><td></td><td></td><td></td><td>14.9坪／49.23㎡で割戻し</td></tr></tbody></table>
 <p>別途行（発生時のみ）: 爆裂・クラック補修／配管交換／アスベスト対応／その他想定外。</p>
 <hr>
-<h3>6. あわせて明記してほしいこと（後トラブル防止・先方も書きやすい）</h3>
+<h3 id="6-あわせて明記してほしいこと-後トラブル防止-先方も書きやすい">6. あわせて明記してほしいこと（後トラブル防止・先方も書きやすい）</h3>
 <ul><li>工期（着工〜引渡しの週数）と着手可能時期</li><li>仮設・廃棄の内訳（マンション共用部の養生・搬出ルート前提）</li><li>保証・瑕疵保険の有無と年数</li><li>追加費用が発生する条件（どこまでが本体価格か）</li><li>検査方法・引渡し時の確認手順</li><li>躯体現しの注意点への回答: 古い配管は防錆塗装か交換か／躯体現しで遮音性が落ちる場合の床補強提案／露出部の定期メンテ頻度</li></ul>
 <hr>
-<h3>7. 提出要領</h3>
+<h3 id="7-提出要領">7. 提出要領</h3>
 <ul><li>予算の目安: 内装・電気・給排水まで <strong>550〜700万円（税込）</strong> を想定（設備機器・家具は別）。この枠で最適な仕様提案も歓迎。</li><li>様式: 上記「記入式 見積様式」に沿って部位別内訳で。総額だけの見積は不可。</li><li>提出期限: [要記入：例 現地調査から2週間以内]</li><li>現地調査: 鍵手配のうえ実測を依頼（候補日 [要記入]）</li><li>提出先: iUMAプロパティマネジメント合同会社 代表 手嶋耕一 電話 080-5637-5105／メール yuma.tejima@gmail.com</li><li>補足: 相見積3社で比較中。同額の場合は「内訳の透明性」と「宿泊施設（民泊・旅館業）の施工知見」で評価します。</li></ul>
 <hr>
-<h3>8. 打診スクリプト（電話／初回）</h3>
+<h3 id="8-打診スクリプト-電話-初回">8. 打診スクリプト（電話／初回）</h3>
 <blockquote>角を立てず、相手が動きやすいトーンで。</blockquote>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">お世話になります。福岡市博多区中洲で、区分マンション1室（約49㎡）を
 宿泊施設（簡易宿所・民泊）に全面改装する計画をしている、
@@ -738,7 +823,7 @@ iUMAプロパティマネジメントの手嶋と申します。
 1. 現地で実測いただく日程の相談
 2. 仕様書（メール/PDF）をお送りする宛先
 をお願いできますか。お見積もりは部位別の内訳でいただけると助かります。</pre></div>
-<h3>9. 打診スクリプト（メール本文）</h3>
+<h3 id="9-打診スクリプト-メール本文">9. 打診スクリプト（メール本文）</h3>
 <div class="codewrap"><button class="copybtn" type="button">📋 コピー</button><pre class="code">件名: 中洲2丁目 区分1室 インダストリアル改装の見積依頼（相見積）
 
 〇〇工務店 ご担当者様
@@ -763,17 +848,17 @@ iUMAプロパティマネジメント合同会社
 電話 080-5637-5105／メール yuma.tejima@gmail.com</pre></div>
 <blockquote>送付先候補（福岡・インダストリアル）は <code>03_リノベ相見積_インダストリアル.md</code> の優先リスト（Proceed Design／RenoLIVING／はぴりの 等）。同じ依頼書を3社に同条件で送る。</blockquote>
 <hr>
-<h2>運営代行 — 候補と相場（福岡・中洲 簡易宿所/民泊）</h2>
+<h2 id="運営代行-候補と相場-福岡-中洲-簡易宿所-民泊">運営代行 — 候補と相場（福岡・中洲 簡易宿所/民泊）</h2>
 <blockquote>本業があるため、清掃・予約管理・チェックイン・ゲスト対応・価格調整を委託する前提。集客はOTA（Booking/Airbnb/Agoda/Expedia）。</blockquote>
-<h3>手数料の相場</h3>
+<h3 id="手数料の相場">手数料の相場</h3>
 <ul><li><strong>完全代行（集客+予約+ゲスト対応+価格調整）：売上の 15〜20%</strong>（中洲もこのレンジ。20%超は割高、サイト運営のみなら10-15%）</li><li>月額固定型：部分委託で月1.9〜3.5万、完全代行は月10万〜（売上大の物件）</li><li>清掃料：1回 3,500〜5,000円（49㎡）。リネン・消耗品は清掃料込みが多い</li><li>チェックインシステム：OTA連携で無料が多い</li><li>月10日稼働・売上50万の例：代行7.5〜10万＋清掃3.5万 ＝ <strong>月11〜13.5万</strong></li></ul>
 <blockquote>業者計画の「運営代行18%＋OTA15%」の18%は相場レンジ内。ただし「総売上の%か、OTA控除後の%か」「清掃込みか別か」は要確認（二重計上の有無）。</blockquote>
-<h3>打診すべき運営代行 優先候補（福岡）</h3>
+<h3 id="打診すべき運営代行-優先候補-福岡">打診すべき運営代行 優先候補（福岡）</h3>
 <table><thead><tr><th>Tier</th><th>会社</th><th>特徴</th><th>問合せ</th></tr></thead><tbody><tr><td>1</td><td>F-area（株式会社F-area・中央区赤坂/薬院）</td><td>既存見積の運営元。福岡特化・簡易宿所対応・多言語24h・Booking 9.3/10・スーパーホスト・黒字運営保証を標榜</td><td><a href="https://www.f-area-site.com/">https://www.f-area-site.com/</a></td></tr><tr><td>1</td><td>Airstar</td><td>福岡10年・全国展開・全OTA統合・収益レポート</td><td><a href="https://airbnb-star.com/">https://airbnb-star.com/</a></td></tr><tr><td>2</td><td>Unison Ever</td><td>民泊新法前からの実績・福岡市内知見</td><td><a href="https://unisonever.com/">https://unisonever.com/</a></td></tr><tr><td>2</td><td>Samp. / SmartInn / &amp;Host</td><td>オーダーメイド（部分委託でコスト調整可）</td><td>民泊管理バンク掲載</td></tr><tr><td>3</td><td>民泊管理バンク</td><td>月額19,800円〜の最安・自由度高</td><td><a href="https://bizpato.com/minpaku/fukuoka/">https://bizpato.com/minpaku/fukuoka/</a></td></tr></tbody></table>
 <blockquote>出典: 福岡の運営代行おすすめ(民泊管理バンク) <a href="https://bizpato.com/minpaku/fukuoka/">https://bizpato.com/minpaku/fukuoka/</a> ／ F-area口コミ <a href="https://privatelodging-agency.com/pickup/f-area/">https://privatelodging-agency.com/pickup/f-area/</a> ／ 費用相場(tabilmo) <a href="https://tabilmo.com/tips/minpaku-agency/">https://tabilmo.com/tips/minpaku-agency/</a></blockquote>
-<h3>選ぶ時のチェックポイント（料率以外）</h3>
+<h3 id="選ぶ時のチェックポイント-料率以外">選ぶ時のチェックポイント（料率以外）</h3>
 <ul><li>同規模・同地区の平均稼働率の開示／レビュー対応品質（自社OTAスコア）／多言語・24時間対応／ダイナミックプライシング／トラブルSLA／<strong>解約条件（契約期間・違約金・最低稼働保証）</strong>／会計・行政報告サポート</li></ul>
-<h3>各社への確認テンプレート（49㎡1室・簡易宿所・フルスコープで見積取得）</h3>
+<h3 id="各社への確認テンプレート-49-1室-簡易宿所-フルスコープで見積取得">各社への確認テンプレート（49㎡1室・簡易宿所・フルスコープで見積取得）</h3>
 <ol><li>手数料は総売上の%か、OTA控除後の%か。清掃費は込みか別か。月額固定の選択肢</li><li>清掃料（1回）・リネン/消耗品の明細・清掃品質保証</li><li>対応言語と対応時間、トラブル時のSLA</li><li>初期設定費（OTA登録・写真）・チェックイン方式・鍵管理</li><li>最低契約期間・違約金・低稼働時の対応</li><li>同地区の平均稼働率・オーナー平均月収・継続率</li><li>F-area には加えて「黒字運営保証」の条件（保証額・期間・例外）を必ず確認</li></ol>
 </section>
 </details>
@@ -782,36 +867,36 @@ iUMAプロパティマネジメント合同会社
 <summary class="phase-summary"><span class="ps-sum-num">5</span><span class="ps-sum-title" style="color:#aaa">開業後に補助金を回収する</span><span class="phase-badge pending-badge">⏳ 未着手</span></summary>
 <section class="doc">
 <div class="phasebanner"><span class="pnum" style="opacity:.4">5</span><b style="opacity:.5">開業後に補助金を回収する</b><span class="phase-badge pending-badge" style="margin-left:auto">⏳ 未着手</span></div>
-<h2>補助金・税優遇 — 使えるものを全部積む（中洲しんばし / 旅館業）</h2>
+<h2 id="補助金-税優遇-使えるものを全部積む-中洲しんばし-旅館業">補助金・税優遇 — 使えるものを全部積む（中洲しんばし / 旅館業）</h2>
 <blockquote>専門チーム4レーン（国の主要補助金 / 福岡の宿泊・観光 / 省エネ・防災改修 / 税制優遇）で2026-06-05 にリサーチ・議論。出典は各項目に明記。 ★大原則がひとつ：<strong>ほぼ全部「旅館業（簡易宿所）許可」が前提で、「賃貸のまま」だと全滅する</strong>。許可を取る一手が、低金利融資（公庫・商工中金）と補助金（省力化・福岡市・税制）を<strong>同時に開ける一本の鍵</strong>。</blockquote>
 <hr>
-<h3>まず結論：3つの戦略的事実</h3>
+<h3 id="まず結論-3つの戦略的事実">まず結論：3つの戦略的事実</h3>
 <ol><li><strong>旅館業許可がスイッチ</strong>。民泊（住宅宿泊事業法）は省力化補助も多くの制度も対象外と明記。簡易宿所（旅館業）なら対象になる。融資の本命（公庫・組合加入→振興事業貸付）と完全に同じ前提なので、「許可を取る」は融資と補助金の両取りになる。</li><li><strong>順序を間違えると全部消える</strong>。補助金も税制も「交付決定／計画認定の&quot;前&quot;に発注・取得した経費は対象外」。リノベ・設備を急いで発注すると補助金を全部失う。→ 取得・リノベ・許可・補助金申請のスケジュールを先に設計する。</li><li><strong>補助金は全部&quot;後払い&quot;</strong>。立て替え（自己資金 or つなぎ融資）→後で補助金が入る。だから融資戦略とセットで考える。</li></ol>
 <blockquote>現実的な総額感：派手な「上限1,000万」は1室区分では非現実。<strong>堅く見て、福岡市40万＋省力化補助 数十万＋税制（即時償却/税額控除）の実効 数十万 ＝ 現金・節税で 100万前後</strong>がこの規模の着地。リノベ550万に対し1〜2割。盛らない。</blockquote>
 <hr>
-<h3>本命スタック（実際に取りに行く順）</h3>
-<h4>A. 旅館業許可を取る【すべての前提・無料〜数万】</h4>
+<h3 id="本命スタック-実際に取りに行く順">本命スタック（実際に取りに行く順）</h3>
+<h4 id="a-旅館業許可を取る-すべての前提-無料-数万">A. 旅館業許可を取る【すべての前提・無料〜数万】</h4>
 <p>保健所で簡易宿所許可。これが融資（公庫2%台・設備20年）も補助金（下記B〜D）も同時に開ける。<strong>最優先で着手</strong>。許可は申請中でも公庫の打診は可。</p>
-<h4>B. 福岡市 宿泊事業者受入環境充実支援補助金【△ 開業後に申請（今は出せない）】</h4>
+<h4 id="b-福岡市-宿泊事業者受入環境充実支援補助金-開業後に申請-今は出せない">B. 福岡市 宿泊事業者受入環境充実支援補助金【△ 開業後に申請（今は出せない）】</h4>
 <blockquote>★市から正式回答あり（2026-06-09・観光産業課 横尾氏／事前相談メールへの返信）。下の5点は推測でなく窓口の回答で確定。チラシ・Q&amp;A・事例集の3点も入手済（<code>福岡市補助金_旅館業/原本/</code>）。</blockquote>
 <ul><li><strong>今は対象外＝出せない</strong>。この補助金は「<strong>開業して宿泊税の納入申告をした事業者</strong>」が対象（Q&amp;A問7・問4／誓約書で宿泊税申告済みと署名）。取得・開業前のプレイスポットは要件未充足。<strong>さらに市は「申請対象施設は運営状況を確認する。申請時点で運営されていなければ補助対象外」と明言</strong>＝書類上の開業だけでなく、申請時点で実際に営業していることが要る。</li><li>もらえる規模: 補助率1/2、1室は<strong>上限40万円</strong>（1〜29室区分）。<strong>この40万は「1事業者あたり」の上限（市回答Q3）</strong>＝iUMAが複数施設を持っても、旅館業の合計が29室以下なら法人全体で40万が天井。施設ごとに40万ではない。対象＝セルフチェックイン機／スマートロック／多言語案内／Wi-Fi／防災備品（市が個別に「対象」と回答）。記載のない品目も個別相談で可否判断。<strong>リノベ本体・消防設備・家具家電は対象外</strong></li><li><strong>★区分マンション1室ならではの落とし穴（Q&amp;A問13＝今回の追加項目）</strong>: マンションタイプ／レジデンスタイプの施設では、<strong>客室内のキッチン・洗濯設備は「施設の基本機能として通常備えるもの」なので原則 補助対象外</strong>。プレイスポットはまさにマンションタイプ＝「滞在者用キッチン／ランドリー整備」を長期滞在促進枠で補助に乗せる線は原則使えない。狙えるのは付加的な受入環境設備（スマートロック・セルフチェックイン・多言語・Wi-Fi・防犯カメラ・ポータブル電源）に絞られる。</li><li>2026年度受付 5/13〜11/30（予算で早期終了・市回答Q4で<strong>来年度の実施は未定</strong>＝今年度に開業が間に合わないと当てにできない）。完了期限2027/2/28。<strong>交付決定前に発注したら無効</strong>（市回答Q5で再確認）。申請→交付決定まで約1か月（Q&amp;A問18）。見積は1社でも可だが2社求められる場合あり（Q&amp;A問15）。リース／レンタルは期間按分で計上可だが通信費・電気代等ランニングは対象外（Q&amp;A問11）。</li><li>いま出来るのは<strong>事前相談と対象機器の選定</strong>まで（＝今回完了）。出す順番＝許可→開業→宿泊税申告→交付申請→交付決定→発注。詳細は「福岡市補助金(申請パック)」タブ</li><li>窓口：syukuhaku-shien@city.fukuoka.lg.jp／092-711-4353（観光産業課 宿泊税活用係 横尾氏）</li><li>出典: <a href="https://www.city.fukuoka.lg.jp/keizai/kankou-s/ukeireshien_1.html">https://www.city.fukuoka.lg.jp/keizai/kankou-s/ukeireshien_1.html</a></li></ul>
-<h4>C. 中小企業省力化投資補助金（カタログ注文型）【◎ 補助金で最大・要許可】</h4>
+<h4 id="c-中小企業省力化投資補助金-カタログ注文型-補助金で最大-要許可">C. 中小企業省力化投資補助金（カタログ注文型）【◎ 補助金で最大・要許可】</h4>
 <ul><li>宿泊業の省力化設備（セルフ/自動チェックイン・スマートロック・PMS予約管理・清掃ロボット・防犯）に補助。<strong>補助率1/2</strong></li><li><strong>制度上限（2026/3/19改定後）</strong>: 従業員5人以下=<strong>500万円</strong>（大幅賃上げで750万）／6〜20人=750万（1,000万）。iUMAは小規模なので上限500万の区分。随時公募・2027年3月末頃まで</li><li>★ただし上限はあくまで枠。<strong>1室で導入する省力化機器の実額が小さい</strong>ため、現実の着地は対象経費×1/2＝<strong>25〜75万円</strong>（例: セルフチェックイン機＋スマートロック＋PMSで機器50〜150万→補助25〜75万）。上限500万には1室では届かない</li><li>カタログ登録製品から選ぶ方式（実装が早い）。スマートロック/PMSがカタログにあるか要確認。</li><li>要件：<strong>旅館業許可＋gBizIDプライム</strong>。<strong>民泊（住宅宿泊事業）は対象外</strong>。後払い・交付決定前の発注は無効</li><li>出典: <a href="https://shoryokuka.smrj.go.jp/catalog/">https://shoryokuka.smrj.go.jp/catalog/</a> ／ <a href="https://www.mlit.go.jp/kankocho/kobo06_00042.html">https://www.mlit.go.jp/kankocho/kobo06_00042.html</a></li></ul>
-<h4>C-2. 観光庁 観光地・観光産業省力化投資補助事業【◎ 開業後・上限1,000万（中企省力化と別枠）】</h4>
+<h4 id="c-2-観光庁-観光地-観光産業省力化投資補助事業-開業後-上限1-000万-中企省力化と別枠">C-2. 観光庁 観光地・観光産業省力化投資補助事業【◎ 開業後・上限1,000万（中企省力化と別枠）】</h4>
 <ul><li>中小企業省力化補助金（C）とは別の観光庁枠。スマートロック・自動チェックイン機・PMS・清掃ロボット・自動精算機が対象。<strong>補助率1/2・上限1,000万</strong></li><li><strong>令和7年度補正予算で近日公募予定</strong>（2026年内に公募開始見込み）。開業後に申請。</li><li>CとC-2は同一経費に重複申請不可。C-2の上限が大きいためC-2を優先し、Cを補完的に使う戦略が有効。</li><li>要件：旅館業許可。gBizID不要（観光庁直接申請）</li><li>出典: <a href="https://kanko-jinzai.go.jp/">https://kanko-jinzai.go.jp/</a></li></ul>
-<h4>D. 中小企業経営強化税制 ＋ 少額減価償却特例【◎ 補助金ではないが実効が堅い】</h4>
+<h4 id="d-中小企業経営強化税制-少額減価償却特例-補助金ではないが実効が堅い">D. 中小企業経営強化税制 ＋ 少額減価償却特例【◎ 補助金ではないが実効が堅い】</h4>
 <ul><li>設備190万を<strong>即時償却（100%）か10%税額控除</strong>（＝約19万の税額控除 or 190万を初年度全額経費化）</li><li>さらに40万未満の小口（スマートロック・家具家電）は<strong>少額減価償却特例</strong>で全額その年の経費に（年300万枠）</li><li>要件：<strong>経営力向上計画の認定（設備取得の&quot;前&quot;に）</strong>＋旅館業の事業実態＋青色申告。期限 2027/3/31</li><li>★順序厳守：計画認定→設備取得。逆だと優遇消失。福岡市の認定支援機関（商工会議所等）へ6月中に相談</li><li>出典: <a href="https://www.chusho.meti.go.jp/keiei/kyoka/kyoka_zeisei.html">https://www.chusho.meti.go.jp/keiei/kyoka/kyoka_zeisei.html</a> ／ <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hojin/5408.htm">https://www.nta.go.jp/taxes/shiraberu/taxanswer/hojin/5408.htm</a></li></ul>
 <hr>
-<h3>二番手・条件次第（無理に狙わない）</h3>
+<h3 id="二番手-条件次第-無理に狙わない">二番手・条件次第（無理に狙わない）</h3>
 <table><thead><tr><th>制度</th><th>効果</th><th>この案件での評価</th></tr></thead><tbody><tr><td>デジタル化・AI導入補助金（旧IT導入補助金）</td><td>1/2〜2/3・上限450万</td><td><strong>◎ 開業後に狙える</strong>。予約管理システム・クラウド会計・スマートロック等が対象。年複数回公募で常時申請可能。C-2（観光庁省力化）と経費を分けて申請可。要 gBizIDプライム。出典 <a href="https://it-shien.smrj.go.jp/">https://it-shien.smrj.go.jp/</a></td></tr><tr><td>小規模事業者持続化補助金</td><td>上限50〜250万・採択率約60%</td><td>△ 開業後・集客拡大フェーズで検討。多言語HP・外国語チラシ・新規顧客開拓費が対象。商工会議所経由・年複数回公募。出典 <a href="https://seisansei.smrj.go.jp/subsidy_info/sustainability_subsidy.html">https://seisansei.smrj.go.jp/subsidy_info/sustainability_subsidy.html</a></td></tr><tr><td>先端設備等導入計画→固定資産税軽減</td><td>新規設備の固定資産税を3年1/2（〜15万程度）</td><td>△ 効果は小。<strong>賃上げ表明が要件</strong>で従業員0だと作りにくい。ただし計画認定自体が他補助の加点の下地になる。出典 <a href="https://www.chusho.meti.go.jp/zaimu/zeisei/tokurei/kotei_shisan.html">https://www.chusho.meti.go.jp/zaimu/zeisei/tokurei/kotei_shisan.html</a></td></tr><tr><td>観光庁 宿泊施設インバウンド対応支援</td><td>過去実績で上限150〜500万</td><td>△ 2026年度公募が未発表。3〜4月に要監視。出典 <a href="https://shukuhaku-inbound.go.jp/">https://shukuhaku-inbound.go.jp/</a></td></tr><tr><td>宿泊施設サステナビリティ強化支援（省エネ）</td><td>1/2・上限1,000万</td><td>△ 令和7年度で終了、2026継続が未定。継続なら空調・給湯・窓・LEDが対象。観光庁に要確認。出典 <a href="https://r7shukuhaku-sustainability.go.jp/">https://r7shukuhaku-sustainability.go.jp/</a></td></tr><tr><td>キャリアアップ助成金</td><td>正社員化1人40〜60万</td><td>△ 今は従業員0で対象外。将来スタッフを雇い正社員化するなら使える。出典 <a href="https://www.mhlw.go.jp/stf/seisakutsuikatsu/bunya/koyou_roudou/part_haken/career_up.html">https://www.mhlw.go.jp/stf/seisakutsuikatsu/bunya/koyou_roudou/part_haken/career_up.html</a></td></tr><tr><td><strong>福岡県 経営革新・賃上げ緊急支援補助金</strong></td><td>補助率3/4・上限120〜135万</td><td><strong>次回挑戦</strong>。経営革新計画承認＋「従業員1名雇用＋時給30円以上引き上げ証明」が必須。現状0名で時給証明のハードルが高い。経営革新計画（B類型）の認定が先に取れれば将来の申請要件は揃う。出典 <a href="https://www.pref.fukuoka.lg.jp/contents/fukuoka-chinage.html">https://www.pref.fukuoka.lg.jp/contents/fukuoka-chinage.html</a></td></tr></tbody></table>
 <hr>
-<h3>使えない（調査の上で除外。理由付き）</h3>
+<h3 id="使えない-調査の上で除外-理由付き">使えない（調査の上で除外。理由付き）</h3>
 <ul><li><strong>国の省エネ大型4補助（みらいエコ住宅2026 / 先進的窓リノベ2026 / 給湯省エネ2026）</strong>：すべて<strong>居住用限定</strong>で、事業用の宿泊施設は明示的に対象外。中洲は商業地域で非住宅枠にも宿泊は入らない。→ リノベの省エネ補助は妙味なし。出典 <a href="https://mirai-eco2026.mlit.go.jp/">https://mirai-eco2026.mlit.go.jp/</a> ／ <a href="https://window-renovation2026.env.go.jp/">https://window-renovation2026.env.go.jp/</a> ／ <a href="https://kyutou-shoene2026.meti.go.jp/">https://kyutou-shoene2026.meti.go.jp/</a></li><li><strong>福岡県 宿泊事業者生産性向上支援補助金</strong>：福岡県の補助は<strong>政令市（福岡市）を除外</strong>。中洲は福岡市なので対象外。出典 <a href="https://www.pref.fukuoka.lg.jp/contents/seisanseikoujo-syukuhaku-2026hojo.html">https://www.pref.fukuoka.lg.jp/contents/seisanseikoujo-syukuhaku-2026hojo.html</a></li><li><strong>中小企業新事業進出補助金（事業再構築の後継）</strong>：<strong>申請時に従業員1名以上が必須</strong>で従業員0は不適格。民泊は対象外。出典 <a href="https://sogyotecho.jp/shinjigyousinshutuhojyokin/">https://sogyotecho.jp/shinjigyousinshutuhojyokin/</a></li><li><strong>中小企業成長加速化補助金</strong>：売上100億を目指す高成長企業向けで規模が合わない。</li><li><strong>消防設備・許認可代行費</strong>：どの補助金でも対象外（法的必須工事のため）。</li></ul>
 <hr>
-<h3>併用・順序の注意（必読）</h3>
+<h3 id="併用-順序の注意-必読">併用・順序の注意（必読）</h3>
 <ol><li><strong>補助金で買った設備は減価償却の対象から外す</strong>（補助分は二重に控除できない）。補助対象経費と自己資金分を分けて記帳する。</li><li><strong>経営強化税制と投資促進税制は同じ設備に両方使えない</strong>（選択）。一般に経営強化税制（即時償却/10%）の方が得。</li><li><strong>計画認定・交付決定の&quot;前&quot;に発注しない</strong>。リノベと設備の発注タイミングを、許可・計画認定・補助金交付決定の後ろに合わせる。</li><li><strong>後払い前提でつなぎ資金を確保</strong>。融資（公庫/セゾン直接）で立て替え→補助金で後から回収。</li></ol>
 <hr>
-<h3>推奨アクション（月曜に電話4本＋並行作業）</h3>
+<h3 id="推奨アクション-月曜に電話4本-並行作業">推奨アクション（月曜に電話4本＋並行作業）</h3>
 <p>A. 博多区保健所（衛生課）で簡易宿所許可の事前相談（許可がすべての鍵・間取り図持参）</p>
 <p>B. 博多消防署 予防課 092-475-0119 で消防設備の要否相談（最大の費用変動要因）</p>
 <p>C. 福岡県旅館ホテル生活衛生同業組合 092-737-5050 に加入相談（公庫の振興事業貸付＝低利の鍵）</p>
@@ -820,26 +905,26 @@ iUMAプロパティマネジメント合同会社
 <ul><li>※福岡市観光部の受入環境補助は「開業後＋宿泊税申告」が要件で今は対象外。相談は開業のめどが立ってからでよい（今のリストから外す）</li></ul>
 <blockquote>注：本書は公開情報の一般情報で、個別の税務・行政判断ではない。福岡市・商工会議所・税理士に実装前確認。金額・公募時期に『要確認』とあるものは申請前に一次窓口で最新を取る。</blockquote>
 <hr>
-<h2>福岡市 宿泊事業者受入環境充実支援補助金 — 申請パック（旅館業・簡易宿所用）</h2>
+<h2 id="福岡市-宿泊事業者受入環境充実支援補助金-申請パック-旅館業-簡易宿所用">福岡市 宿泊事業者受入環境充実支援補助金 — 申請パック（旅館業・簡易宿所用）</h2>
 <blockquote>物件: プレイスポットしんばし（福岡市博多区中洲2-1-11 / 簡易宿所・客室1室） 申請主体: iUMAプロパティマネジメント合同会社（代表社員 手嶋耕一） 出典: 福岡市「【ホテル・旅館・簡易宿所用】宿泊事業者受入環境充実支援補助金」募集要項R8.5.21 / Q&amp;A / 交付要綱 <a href="https://www.city.fukuoka.lg.jp/keizai/kankou-s/ukeireshien_1.html">https://www.city.fukuoka.lg.jp/keizai/kankou-s/ukeireshien_1.html</a></blockquote>
-<h3>結論（先に押さえる）</h3>
+<h3 id="結論-先に押さえる">結論（先に押さえる）</h3>
 <p><strong>いまは申請できない。</strong> この補助金は「<strong>開業して宿泊税を申告している旅館業者</strong>」が対象。プレイスポットは取得・開業前なので要件を満たさない。出せるのは「許可取得→開業→宿泊税の納入申告」を済ませた後。<strong>だが下準備は全部済ませた</strong>ので、開業後すぐ最短で出せる。</p>
 <ul><li>出典の裏付け: Q&amp;A 問7「開業準備中は…基本的に開業後が補助対象」／問4「宿泊税の&quot;納入申告書&quot;を提出している個人・法人が対象」／誓約書 第4項「申請にあたっては宿泊税に係る納入申告書を提出しています」（＝開業前に署名すると虚偽申請＝取消事由）。</li><li><strong>★市から正式回答（2026-06-09・観光産業課 横尾氏）で確定した5点</strong>:</li><li>申請は「許可取得・開業・宿泊税の納入申告」の後で正しい。<strong>加えて市は申請対象施設の運営状況を確認し、申請時点で運営されていなければ対象外</strong>（＝書類上の開業だけでなく実際に営業していること）。</li><li>セルフチェックイン機・スマートロック・多言語案内・Wi-Fi等は対象。記載のない品目も個別相談で可否判断。</li><li><strong>上限40万は「1事業者あたり」</strong>。複数施設を持っても旅館業の合計が29室以下なら法人全体で40万が上限（施設ごとに40万ではない）。</li><li><strong>来年度（2027年度）の同補助は未定</strong>＝今年度に間に合わなければ確約はない。</li><li>交付決定前に購入・導入したものは対象外（再確認）。</li></ul>
-<h3>いくら取れるか（規模感）</h3>
+<h3 id="いくら取れるか-規模感">いくら取れるか（規模感）</h3>
 <ul><li>補助率: <strong>対象経費（税抜）の 1/2 以内</strong></li><li>上限: 客室数で決まる。プレイスポットは<strong>1室＝「1〜29室」区分→上限 40万円</strong>。<strong>この40万は「1事業者あたり」の天井</strong>（市回答Q3）で、施設ごとに積み増せない。</li><li>つまり<strong>対象経費を80万円（税抜）そろえれば満額40万円</strong>。</li><li>重要: <strong>リノベ本体・取得費は対象外</strong>。対象は「受入環境を良くする機器・取組」（下のリスト）。原状回復・機器更新・消耗品・通信費等のランニングも対象外。</li><li><strong>★区分マンション1室の落とし穴（Q&amp;A問13・今年度の追加項目）</strong>: マンションタイプ／レジデンスタイプの施設は<strong>客室内のキッチン・洗濯設備が原則 補助対象外</strong>（「施設の基本機能として通常備えるもの」扱い）。プレイスポットはマンションタイプなので、滞在者用キッチン／ランドリーを「長期滞在促進」枠で補助に乗せる線は原則使えない。狙うのはスマートロック・セルフチェックイン・多言語・Wi-Fi・防犯カメラ・ポータブル電源等の付加設備に絞る。</li></ul>
-<h3>プレイスポットで対象になりそうな買い物（中洲＝インバウンド需要で通りやすい順）</h3>
+<h3 id="プレイスポットで対象になりそうな買い物-中洲-インバウンド需要で通りやすい順">プレイスポットで対象になりそうな買い物（中洲＝インバウンド需要で通りやすい順）</h3>
 <ol><li><strong>インバウンド対応強化</strong>: 多言語の館内案内・サイネージ、Wi-Fi増強、翻訳機、パスポートスキャナー</li><li><strong>生産性向上・デジタル化</strong>: セルフ/デジタルチェックイン機、スマートロック連動の無人運用機器、巡回用多機能カメラ、問合せチャットボット</li><li><strong>災害対応強化</strong>: ポータブル電源、非常用品（毛布・ライト・ヘルメット等）、外国人向け災害リーフレット</li><li><strong>宿泊施設の魅力向上（長期滞在）</strong>: ワークデスク・貸会議機能、滞在者用ランドリー整備（※&quot;通常備える備品&quot;は対象外。長期滞在向けの&quot;追加&quot;整備に限る）</li><li><strong>ユニバーサル対応</strong>: 転倒防止・スロープ等</li></ol>
 <p>→ 5名定員の無人運用民泊リノベと相性が良いのは <strong>セルフチェックイン機＋スマートロック（生産性向上）</strong> と <strong>多言語案内＋Wi-Fi（インバウンド）</strong>。この2系統で税抜80万を組めば満額40万が見える。</p>
-<h3>出す順番とタイミングの鉄則</h3>
+<h3 id="出す順番とタイミングの鉄則">出す順番とタイミングの鉄則</h3>
 <p><strong>交付決定日より前に発注・購入した物は全額対象外</strong>（募集要項 p2・p9）。だから順番を絶対に守る:</p>
 <ol><li>簡易宿所（旅館業）許可を取得</li><li>開業 → 福岡市の宿泊税「特別徴収義務者」登録 → 納入申告書を提出</li><li>対象機器は<strong>まだ買わずに</strong>交付申請（様式一式＋見積書）を提出</li><li>交付決定通知を受け取る（申請から約1か月）</li><li><strong>交付決定後に</strong>機器を発注・設置・支払い（事業実施期間＝交付決定日〜令和9年2月28日）</li><li>完了日から1か月以内に実績報告（領収書＋実施前後の写真）→ 確定→ 請求→ 入金</li></ol>
 <ul><li>受付期間: 令和8年5月13日〜<strong>令和8年11月30日</strong>（予算上限に達したら早期終了）。R8に開業が間に合わなければ翌年度の同補助金を狙う。</li><li>リノベ本体（726万）はこの補助金の対象外。<strong>工務店への本発注タイミングはこの補助金に縛られない</strong>（融資・別予算で進めてよい）。縛られるのは上の&quot;対象機器&quot;だけ。</li></ul>
-<h3>提出書類チェックリスト（メール提出・原則）</h3>
+<h3 id="提出書類チェックリスト-メール提出-原則">提出書類チェックリスト（メール提出・原則）</h3>
 <ul><li>[ ] 様式第1号 交付申請書兼事業計画書</li><li>[ ] 様式第1号別紙 事業収支計画書（Excel）</li><li>[ ] 誓約書（指定様式）※開業・宿泊税申告後でないと署名できない</li><li>[ ] 役員名簿（指定様式）</li><li>[ ] 補助対象経費の積算がわかる書類（見積書／ECサイト画面等。1社でも可だが2社以上求められる場合あり）</li><li>宛先: syukuhaku-shien@city.fukuoka.lg.jp ／ 件名「（iUMAプロパティマネジメント合同会社）補助金交付申請」</li><li>問合せ: 観光産業課 横尾・岩﨑 092-711-4353（平日10:00〜17:00）</li></ul>
-<h3>様式第1号 事前記入ドラフト（開業後そのまま転記できる）</h3>
+<h3 id="様式第1号-事前記入ドラフト-開業後そのまま転記できる">様式第1号 事前記入ドラフト（開業後そのまま転記できる）</h3>
 <table><thead><tr><th>欄</th><th>記入内容</th></tr></thead><tbody><tr><td>所在地</td><td>〒104-0044 東京都中央区明石町（本店）</td></tr><tr><td>社名</td><td>iUMAプロパティマネジメント合同会社</td></tr><tr><td>代表者の役職・氏名</td><td>代表社員　手嶋耕一</td></tr><tr><td>施設名</td><td>プレイスポットしんばし（仮）</td></tr><tr><td>施設所在地</td><td>福岡市博多区中洲2-1-11</td></tr><tr><td>営業種別</td><td>旅館業法・簡易宿所</td></tr><tr><td>客室数</td><td>1室（宿泊税の経営申告書の申告室数に合わせる）</td></tr><tr><td>補助対象事業の区分</td><td>インバウンド対応強化 ＋ 生産性向上に向けたデジタル化・業務改善</td></tr><tr><td>事業内容（案）</td><td>中洲で増える外国人個人客の無人受入のため、セルフチェックイン機・スマートロック・多言語館内サイネージ・Wi-Fi増強を導入し、多言語・非対面で安全に受け入れる環境を整える</td></tr><tr><td>対象経費（税抜・案）</td><td>80万円（セルフチェックイン＋多言語＋Wi-Fi一式）</td></tr><tr><td>補助申請額</td><td>40万円（対象経費の1/2、上限40万）</td></tr></tbody></table>
 <blockquote>★氏名・本店住所は戸籍名・登記どおり。誓約書の宿泊税申告の項目は、開業・申告を済ませてから署名する。</blockquote>
-<h3>ダウンロード済みの原本・記入例（場所）</h3>
+<h3 id="ダウンロード済みの原本-記入例-場所">ダウンロード済みの原本・記入例（場所）</h3>
 <ul><li>原本一式: <code>deals/financing/福岡市補助金_旅館業/原本/</code>（要綱・募集要項・Q&amp;A・事例集・各様式）</li><li>記入例: <code>deals/financing/福岡市補助金_旅館業/記入例/</code></li></ul>
 </section>
 </details>
@@ -847,23 +932,23 @@ iUMAプロパティマネジメント合同会社
 <section id="docs" class="doc">
 <div class="phasebanner"><span class="pnum">📄</span><b>必要書類（集める物リスト）</b></div>
 <blockquote>旅館業許可・公庫融資・組合・補助金で要る書類を一覧化。✅=作成/取得済 / ⏳=これから。作成済みのものは「→」からこのページ内の該当ドラフト、白紙の公式様式は配布元へ飛べる。記入済みの実数版は機密のためローカル保管（公開サイトには載せない）。物件: プレイスポットしんばしビル本館 905号（中洲2-1-11）。</blockquote>
-<h3>📂 作成済み資料の一覧ページ（クリックで各ファイルが開く）</h3>
+<h3 id="作成済み資料の一覧ページ-クリックで各ファイルが開く">📂 作成済み資料の一覧ページ（クリックで各ファイルが開く）</h3>
 <p>記入済み様式・決算書・図面・公式様式を1ページに集約した<strong>提出資料インデックス</strong>を作成済み。記入済み実物や決算書を含むため<strong>機密・ネット非配信</strong>＝この公開ページには載せられない。手元のMacで開くと各資料へクリックで飛べる：</p>
 <p><code>open ~/Documents/Projects/property-analyzer/deals/financing/_private/00_提出資料インデックス.html</code></p>
 <p>（公開ページから飛べる作成済みドラフトは下記）</p>
-<h3>すでに作成済み（このページ内リンクで開ける）</h3>
+<h3 id="すでに作成済み-このページ内リンクで開ける">すでに作成済み（このページ内リンクで開ける）</h3>
 <ul><li class="done">✅ 公庫 事業計画書（提出用ドラフト）→ <a href="#p2">フェーズ2「公庫でお金を借りる」へ</a></li><li class="done">✅ 公庫 記入済み様式（借入申込書・企業概要書・設備投資計画書・月別収支計画書・資金繰り表）→ 内容の説明は <a href="#p2">フェーズ2の公庫 申請パック</a>。記入済み実物は機密のためローカル <code>_private/公庫記入済み/</code></li><li class="done">✅ 旅館業 許可申請書 記入ドラフト → <a href="#p1">フェーズ1「旅館業の許可を取る」へ</a></li><li class="done">✅ リノベ 見積依頼書（RFQ）→ <a href="#p4">フェーズ4「工事を発注する」へ</a></li><li class="done">✅ 各窓口メール文・公庫WEB予約値 → このフェーズ0の上に掲載</li><li class="done">✅ 補助金 申請パック（開業後用）→ <a href="#p5">フェーズ5「開業後に補助金を回収する」へ</a></li></ul>
-<h3>白紙の公式様式（配布元からダウンロード）</h3>
+<h3 id="白紙の公式様式-配布元からダウンロード">白紙の公式様式（配布元からダウンロード）</h3>
 <ul><li>公庫 各様式（借入申込書・企業概要書・設備投資計画書・月別収支・資金繰り）→ <a href="https://www.jfc.go.jp/n/service/dl_kokumin.html">公庫 書式ダウンロード</a></li><li>旅館業 許可申請の様式・手引き → <a href="https://www.city.fukuoka.lg.jp/hofuku/hokensho/kurashinoeisei/jigyosya/ryokan/ryokangyounoeigyounituite.html">福岡市 旅館業の営業について</a></li><li>福岡市 受入環境補助金の様式・要綱 → <a href="https://www.city.fukuoka.lg.jp/keizai/kankou-s/ukeireshien_1.html">補助金ページ</a></li></ul>
-<h3>法人の書類（公庫・許可で共通）</h3>
+<h3 id="法人の書類-公庫-許可で共通">法人の書類（公庫・許可で共通）</h3>
 <ul><li class="done">✅ 履歴事項全部証明書（登記簿）※発行6か月以内</li><li class="done">✅ 定款の写し ※★事業目的に旅館業が無い→目的追加の変更登記が要る可能性（要確認）</li><li class="done">✅ 法人印鑑証明書</li><li>⏳ 法人 納税証明書（税務署）</li><li class="done">✅ 決算書3期分（第6〜8期・勘定科目明細つき）</li><li>⏳ 役員名簿（許可申請の指定様式）</li></ul>
-<h3>代表者（手嶋耕一）の書類</h3>
+<h3 id="代表者-手嶋耕一-の書類">代表者（手嶋耕一）の書類</h3>
 <ul><li>⏳ 本人確認書類</li><li>⏳ 所得税の確定申告書 3年分</li><li>⏳ 資産背景（通帳コピー: 三井住友銀行（法人・直近3ヶ月）・SBI新生銀行（個人・直近3ヶ月）・有価証券等）</li></ul>
-<h3>物件の書類</h3>
+<h3 id="物件の書類">物件の書類</h3>
 <ul><li>⏳ 販売図面（マイソク）→ <a href="https://www.f-takken.com/freins/items/99758573">f-takken 99758573</a></li><li>⏳ 不動産登記事項証明書（全部事項）※発行6か月以内・★号室と専有面積（内法40.63㎡か49.23㎡か）の確定に使う</li><li>⏳ 売買契約書（または買付・予約）</li><li class="done">✅ 各階平面図（既存平面図）／立面図は⏳</li><li>⏳ 検査済証の写し（無ければ確認済証）</li><li>⏳ 管理規約等（旅館業に使えると分かる書類。※本物件は管理組合なし＝自主管理・新橋興産）</li></ul>
-<h3>旅館業（簡易宿所）許可で追加</h3>
+<h3 id="旅館業-簡易宿所-許可で追加">旅館業（簡易宿所）許可で追加</h3>
 <ul><li>⏳ 営業許可申請書（保健所様式。記入ドラフトは <a href="#p1">フェーズ1</a>）</li><li>⏳ 施設中心・半径300m以内の地図（学校等を明示）</li><li>⏳ 消防法令適合通知書の写し（消防の事前相談→工事後に取得）</li><li>⏳ ICT無人運用の書類（カメラのカタログ・設置場所図・経路図・宿泊者向け手順書/マニュアル）</li></ul>
-<h3>公庫（振興事業貸付）で追加</h3>
+<h3 id="公庫-振興事業貸付-で追加">公庫（振興事業貸付）で追加</h3>
 <ul><li class="done">✅ 借入申込書・企業概要書・設備投資計画書・月別収支・資金繰り（記入済み）→ <a href="#p2">フェーズ2</a></li><li class="done">✅ 事業計画書（提出用）→ <a href="#p2">フェーズ2</a></li><li>⏳ リノベ見積書（内訳つき。相見積で圧縮した低い方。RFQは <a href="#p4">フェーズ4</a>）</li><li>⏳ 振興事業に係る資金証明書（組合加入後に理事長発行）</li><li>⏳ 旅館業 許可証 or 申請受理票（申込時は「申請中／申請予定」で可）</li></ul>
 <blockquote>記入済みの実物・正本（決算PDF・記入済み様式）の所在は <code>_private/00_提出資料インデックス.md</code>（ローカルのみ・機密）に集約。</blockquote>
 </section>
@@ -877,9 +962,25 @@ iUMAプロパティマネジメント合同会社
   tt0.addEventListener('click', toTop);
   var chips=[].slice.call(document.querySelectorAll('.toc .chip'));
   var map={}; chips.forEach(function(c){map[c.dataset.target]=c;});
-  function openDetails(hash){if(!hash)return;var el=document.querySelector(hash);if(el&&el.tagName==='DETAILS')el.open=true;}
-  openDetails(location.hash);
-  chips.forEach(function(c){c.addEventListener('click',function(){openDetails('#'+c.dataset.target);});});
+  // アンカー先が閉じた<details>（phase-wrap/past-section）内でも、祖先を全て開いてから
+  // ネイティブスクロールに任せる。click時（=デフォルト動作の前）に開くのでスクロールが確実に届く。
+  function revealHash(hash){
+    if(!hash||hash.length<2)return;
+    var id; try{id=decodeURIComponent(hash.slice(1));}catch(e){id=hash.slice(1);}
+    var el=document.getElementById(id); if(!el)return;
+    for(var n=el;n;n=n.parentElement){ if(n.tagName==='DETAILS')n.open=true; }
+  }
+  revealHash(location.hash);
+  addEventListener('hashchange',function(){revealHash(location.hash);},false);
+  document.addEventListener('click',function(ev){
+    var t=ev.target;
+    while(t&&t!==document&&t.tagName!=='A')t=t.parentElement;
+    if(t&&t!==document&&t.tagName==='A'){
+      var h=t.getAttribute('href');
+      if(h&&h.charAt(0)==='#')revealHash(h);
+    }
+  },true);
+  chips.forEach(function(c){c.addEventListener('click',function(){revealHash('#'+c.dataset.target);});});
   var secs=[].slice.call(document.querySelectorAll('section[id], details[id]'));
   var io=new IntersectionObserver(function(es){
     es.forEach(function(e){

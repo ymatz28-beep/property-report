@@ -225,9 +225,23 @@ jobs:
                   verdict = bp.get('verdict')
                   if verdict:
                       bits.append(verdict)
+                  ccr = bp.get('ccr')
+                  if ccr is not None:
+                      bits.append(f'CCR{ccr}%')
+                  monthly_cf = bp.get('monthly_cf')
+                  if monthly_cf is not None:
+                      sign = '+' if monthly_cf >= 0 else ''
+                      bits.append(f'\u6708\u6b21CF{sign}{monthly_cf}\u4e07\u5186')
+                  payback_years = bp.get('payback_years')
+                  if payback_years is not None and payback_years != float('inf'):
+                      bits.append(f'\u56de\u53ce{payback_years}\u5e74')
                   loan_years = bp.get('loan_years')
+                  structure = bp.get('structure')
                   if loan_years:
-                      bits.append(f'\u878d\u8cc7{loan_years}\u5e74')
+                      fin_bit = f'\u878d\u8cc7{loan_years}\u5e74'
+                      if structure and structure != '\u4e0d\u660e':
+                          fin_bit += f'({structure})'
+                      bits.append(fin_bit)
                   if bits:
                       L.append('   ' + ' / '.join(bits))
                   url = bp.get('url')

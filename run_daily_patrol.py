@@ -651,6 +651,30 @@ def _count_by_key(items: list[dict], key: str) -> dict[str, int]:
     return dict(Counter(item.get(key, "unknown") for item in items))
 
 
+def _safe_buy_picks(picks: list[dict]) -> list[dict]:
+    """Extract only the JSON-safe fields Gmail notification needs.
+
+    Never let a malformed investment_priority record crash summary save.
+    """
+    safe: list[dict] = []
+    for p in picks:
+        try:
+            safe.append({
+                "tier_label": p.get("tier_label", "優良"),
+                "city_label": p.get("city_label", ""),
+                "name": p.get("name", ""),
+                "url": p.get("url", ""),
+                "price_man": p.get("price_man"),
+                "location": p.get("location", ""),
+                "verdict": p.get("verdict", ""),
+                "loan_years": p.get("loan_years"),
+                "composite_score": p.get("composite_score", 0),
+            })
+        except Exception:
+            pass  # skip malformed entries silently
+    return safe
+
+
 def _safe_price_man(price_text: str) -> int:
     """Parse price text to 万円 int, returning 0 on failure.
 
@@ -675,7 +699,8 @@ def _safe_price_man(price_text: str) -> int:
 
 def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report: dict,
                         all_steps: list[dict] | None = None,
-                        flagged_items: list[dict] | None = None) -> None:
+                        flagged_items: list[dict] | None = None,
+                        buy_picks: list[dict] | None = None) -> None:
     """Save patrol summary as JSON (structured data for Daily Digest + notifications).
 
     Crash-safe: if new_items serialization fails, writes summary without items
@@ -749,6 +774,7 @@ def save_patrol_summary(start: datetime, elapsed: float, diff: dict, url_report:
         "flagged_count": len(flagged_items or []),
         "flagged_by_city": _count_by_key(flagged_items or [], "city"),
         "report_url": "https://ymatz28-beep.github.io/property-report/",
+        "buy_picks": _safe_buy_picks(buy_picks or []),
     }
 
     try:
@@ -1065,6 +1091,18 @@ def main():
         errors.append(f"generate_reports: {e}")
         log(f"  ❌ レポート生成全体エラー: {e} — デプロイは試行")
 
+    # 5.5. Buy picks: 優良ティア(投資優先度スコア30点以上)に到達し、まだ通知していない
+    # 物件をGmail用に選ぶ。generate_reports()内でinvestment_priorityが書き終わった後、
+    # かつメール送信(GHA workflow)より前でなければ拾えない。
+    buy_picks: list[dict] = []
+    try:
+        from investment_priority import load_all_priority, select_buy_picks
+        buy_picks = select_buy_picks(load_all_priority())
+        if buy_picks:
+            log(f"  🏠 買い候補: {len(buy_picks)}件（優良ティア・未通知）")
+    except Exception as e:
+        log(f"  ⚠️ buy_picks選定失敗: {e} — 続行（メールに買い候補セクションなし）")
+
     flagged_items: list[dict] = []
 
     # 6. QA Gate — verify output HTML before deploy
@@ -1117,7 +1155,7 @@ def main():
     # Write structured summary (always — even on partial failure)
     try:
         save_patrol_summary(start, elapsed, diff, url_report, all_steps=all_steps,
-                            flagged_items=flagged_items)
+                            flagged_items=flagged_items, buy_picks=buy_picks)
     except Exception as e:
         log(f"  ❌ save_patrol_summary crashed: {e}")
         # Emergency fallback: write minimal summary so downstream never sees stale data

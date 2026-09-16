@@ -12,10 +12,14 @@ generate_investment_priority.py to build the cross-city dashboard.
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 
 DATA_DIR = Path("data")
 PRIORITY_DIR = DATA_DIR / "investment_priority"
+NOTIFIED_PATH = DATA_DIR / "notified_priority.json"
+BUY_TIER_LABEL = "優良"
+DEFAULT_PICK_LIMIT = 5
 
 # 収支verdict（revenue_calc.pyが既に算出済み）別の加点。判定ロジック自体は再実装しない。
 PROFIT_POINTS = {
@@ -115,3 +119,48 @@ def tier_for(score: int) -> tuple[str, str]:
     if score >= 10:
         return "有望", "var(--yellow)"
     return "参考", "var(--text-muted)"
+
+
+def load_notified() -> dict[str, str]:
+    """URL -> 初回通知日 の台帳。存在しない/壊れている場合は空扱い。"""
+    if not NOTIFIED_PATH.exists():
+        return {}
+    try:
+        return json.loads(NOTIFIED_PATH.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def select_buy_picks(records: list[dict], limit: int = DEFAULT_PICK_LIMIT) -> list[dict]:
+    """優良ティアに到達した物件のうち、まだ通知していないものを選ぶ。
+
+    diff_properties()の「新着」判定はスクレイピング直後の生データ基準で、
+    投資優先度スコア（融資しやすさ+収益性）は後日enrichされて確定することが
+    多いため、新着フラグではなく「このURLをまだ優良ティアで通知していないか」
+    をnotified_priority.json台帳で管理する（毎日同じ物件で埋まるのを防ぎつつ、
+    スコアが後から優良に上がった物件も取りこぼさない）。
+
+    副作用: 選ばれた物件をnotified_priority.jsonに書き込む（呼び出し1回＝
+    その物件群を「通知済み」に確定させる。空リストなら台帳は変更しない）。
+    """
+    notified = load_notified()
+    picks = [
+        {**r, "tier_label": tier_for(r["composite_score"])[0]}
+        for r in records
+        if tier_for(r["composite_score"])[0] == BUY_TIER_LABEL and r.get("url") not in notified
+    ]
+    picks.sort(key=lambda x: -x["composite_score"])
+    picks = picks[:limit]
+
+    if picks:
+        today_str = date.today().isoformat()
+        for p in picks:
+            notified[p["url"]] = today_str
+        try:
+            NOTIFIED_PATH.write_text(
+                json.dumps(notified, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+        except OSError:
+            pass  # 台帳更新失敗は致命的ではない（最悪、翌日再通知される程度）
+
+    return picks

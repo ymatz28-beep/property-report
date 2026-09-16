@@ -195,6 +195,7 @@ jobs:
           step_count = s.get('step_count', 0)
           ok_count = s.get('ok_count', 0)
           elapsed = s.get('elapsed_min', 0)
+          buy_picks = s.get('buy_picks', [])
 
           has_fail = bool(details or failed_src)
 
@@ -207,6 +208,32 @@ jobs:
 
           NL = chr(10)
           L = []
+
+          # --- Buy picks: highest-signal content, always first when present ---
+          if buy_picks:
+              L.append(f'\u2501\u2501 \U0001f3e0 \u8cb7\u3044\u5019\u88dc ({len(buy_picks)}\u4ef6) \u2501\u2501')
+              for bp in buy_picks:
+                  score = bp.get('composite_score', '?')
+                  tier = bp.get('tier_label', '\u512a\u826f')
+                  city = bp.get('city_label', '')
+                  name = bp.get('name', '')
+                  L.append(f'\U0001f7e2 [{tier}\u30fb{score}\u70b9] {city} {name}')
+                  bits = []
+                  price_man = bp.get('price_man')
+                  if price_man:
+                      bits.append(f'{price_man}\u4e07\u5186')
+                  verdict = bp.get('verdict')
+                  if verdict:
+                      bits.append(verdict)
+                  loan_years = bp.get('loan_years')
+                  if loan_years:
+                      bits.append(f'\u878d\u8cc7{loan_years}\u5e74')
+                  if bits:
+                      L.append('   ' + ' / '.join(bits))
+                  url = bp.get('url')
+                  if url:
+                      L.append(f'   {url}')
+              L.append('')
 
           # --- Failed steps with human-readable details ---
           if details:

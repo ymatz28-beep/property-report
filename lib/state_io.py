@@ -1,11 +1,5 @@
 """Atomic state file I/O with advisory locking.
 
-VENDORED COPY: source of truth is ~/Documents/Projects/lib/state_io.py (monorepo).
-property-analyzer is a standalone git repo with no monorepo context on GitHub
-Actions, so this file is manually synced here to keep CI self-contained
-(2026-09-26: fixed ModuleNotFoundError that silently emptied buy_picks digests
-for 9+ days). Re-copy from the monorepo if the source changes.
-
 Purpose
 -------
 Prevent concurrent-write races on shared YAML/JSON state files

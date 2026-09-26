@@ -9,10 +9,6 @@ Consolidated from:
 The unified palette keeps stock-analyzer's practical dark scheme as the base
 (it covers the most surface types), enhanced with iuma-hub's gold accent for
 branding elements.
-
-VENDORED COPY: source of truth is ~/Documents/Projects/lib/styles/design_tokens.py
-(monorepo). Manually synced here so property-analyzer's standalone GitHub Actions
-checkout is self-contained. Re-copy from the monorepo if the source changes.
 """
 
 from __future__ import annotations

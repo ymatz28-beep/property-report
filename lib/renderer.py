@@ -1,11 +1,5 @@
 """Jinja2 rendering engine for iUMA dashboards.
 
-VENDORED COPY: source of truth is ~/Documents/Projects/lib/renderer.py (monorepo).
-property-analyzer is a standalone git repo with no monorepo context on GitHub
-Actions, so this file is manually synced here to keep CI self-contained
-(2026-09-26: fixed ModuleNotFoundError that silently emptied buy_picks digests
-for 9+ days). Re-copy from the monorepo if the source changes.
-
 Usage:
     from lib.renderer import render
 

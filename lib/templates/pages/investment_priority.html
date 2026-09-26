@@ -4,7 +4,7 @@
   Required context:
     records: list of {city_label, name, url, price_man, location, structure,
       loan_years, verdict, ccr, payback_years, monthly_cf, composite_score,
-      tier_label, tier_color}
+      financing_score, profit_score, score_basis, tier_label, tier_color}
     generated_at: str
     total_count: int
 #}
@@ -25,6 +25,12 @@
 .ip-tier { font-weight: 700; }
 .ip-sub { font-size: var(--fs-xs); color: var(--text-muted); }
 .ip-empty { padding: 40px 0; color: var(--text-muted); text-align: center; }
+.ip-basis { margin-top: 4px; }
+.ip-basis summary { cursor: pointer; font-size: var(--fs-xs); color: var(--accent); list-style: none; }
+.ip-basis summary::-webkit-details-marker { display: none; }
+.ip-basis summary::before { content: "根拠 ▸"; }
+.ip-basis[open] summary::before { content: "根拠 ▾"; }
+.ip-basis-text { display: block; font-size: var(--fs-xs); color: var(--text-muted); margin-top: 2px; max-width: 260px; white-space: normal; line-height: 1.5; }
 {% endblock %}
 
 {% block content %}
@@ -48,7 +54,12 @@
     <tbody>
       {% for r in records %}
       <tr>
-        <td><span class="ip-tier" style="color:{{ r.tier_color }}">{{ r.composite_score }}</span><br><span class="ip-sub">{{ r.tier_label }}</span></td>
+        <td>
+          <span class="ip-tier" style="color:{{ r.tier_color }}">{{ r.composite_score }}</span><br><span class="ip-sub">{{ r.tier_label }}</span>
+          {% if r.score_basis %}
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">{{ r.score_basis }}</span></details>
+          {% endif %}
+        </td>
         <td>{{ r.city_label }}</td>
         <td><a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.name }}</a><br><span class="ip-sub">{{ r.location }}</span></td>
         <td>{{ r.price_man }}万円</td>

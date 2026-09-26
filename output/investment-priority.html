@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function() {
+  var stored = localStorage.getItem('iuma_theme');
+  var wantsLight = stored ? stored === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
+  if (wantsLight) document.documentElement.setAttribute('data-theme', 'light');
+})();
+</script>
 <title>投資優先度ランキング — iUMA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=JetBrains+Mono:wght@500&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
@@ -147,6 +154,18 @@ body {
 }
 .table-scroll-wrap.has-scroll::after { opacity: 1; }
 
+/* === Table Column Width Policy (intelligent allocation) ===
+   バッジ/数値/短いenum列に .col-tight を付け、内容ぴったりの自然幅まで縮める。
+   自由テキスト列（案件名等）はクラス無指定のまま残り幅を吸収させる。
+   table-layout:fixed とは併用しない（テキスト列を潰した過去の事故パターン。ux-lessons.md #2） */
+.col-tight { width: 1%; white-space: nowrap; }
+.col-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* === Focus States (WCAG 2.1 AA) === */
 :focus-visible {
   outline: var(--focus-ring);
@@ -235,6 +254,64 @@ button:active, .btn:active, [role="button"]:active {
 .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
 .badge-muted { background: rgba(124,130,147,0.15); color: var(--text-muted); }
 
+/* === Light theme override (opt-in via data-theme="light", see get_theme_toggle_css) === */
+:root[data-theme="light"] {
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --surface2: #eef0f5;
+  --card: #ffffff;
+  --card-hover: #eef0f5;
+  --border: #dde1ea;
+  --border-light: #c5cad6;
+  --text: #14161c;
+  --text-secondary: #4a4f5e;
+  --text-muted: #6b7080;
+  --text-decorative: #9098ab;
+  --gold: #a8842e;
+  --gold-dim: rgba(168,132,46,0.12);
+  --accent: #4f46e5;
+  --accent2: #7c3aed;
+  --green: #16a34a;
+  --red: #dc2626;
+  --blue: #2563eb;
+  --yellow: #a16207;
+  --skeleton-base: #eef0f5;
+  --skeleton-shine: #ffffff;
+  --shadow-card: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-hover: 0 8px 32px rgba(0,0,0,0.12);
+}
+/* badge-* は暗背景前提の固定rgbaのため、ライトテーマでは明背景用に個別上書き */
+:root[data-theme="light"] .badge-green { background: rgba(22,163,74,0.12); }
+:root[data-theme="light"] .badge-red { background: rgba(220,38,38,0.12); }
+:root[data-theme="light"] .badge-yellow { background: rgba(161,98,7,0.12); }
+:root[data-theme="light"] .badge-blue { background: rgba(37,99,235,0.12); }
+:root[data-theme="light"] .badge-muted { background: rgba(107,112,128,0.12); }
+
+/* === Global theme toggle (floating button, see base.html) === */
+.theme-toggle-fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: var(--z-toast, 300);
+  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+.theme-toggle-fab:hover {
+  border-color: var(--border-light);
+  color: var(--text);
+}
+@media (max-width: 640px) {
+  .theme-toggle-fab { right: 10px; bottom: 10px; padding: 6px 10px; font-size: 11px; }
+}
+
 /* === Animations === */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
@@ -284,6 +361,12 @@ button:active, .btn:active, [role="button"]:active {
 .ip-tier { font-weight: 700; }
 .ip-sub { font-size: var(--fs-xs); color: var(--text-muted); }
 .ip-empty { padding: 40px 0; color: var(--text-muted); text-align: center; }
+.ip-basis { margin-top: 4px; }
+.ip-basis summary { cursor: pointer; font-size: var(--fs-xs); color: var(--accent); list-style: none; }
+.ip-basis summary::-webkit-details-marker { display: none; }
+.ip-basis summary::before { content: "根拠 ▸"; }
+.ip-basis[open] summary::before { content: "根拠 ▾"; }
+.ip-basis-text { display: block; font-size: var(--fs-xs); color: var(--text-muted); margin-top: 2px; max-width: 260px; white-space: normal; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -299,22 +382,22 @@ button:active, .btn:active, [role="button"]:active {
 }
 .site-nav { display: flex; gap: 4px; align-items: center; }
 .site-nav a {
-  color: #71717a; text-decoration: none; font-size: 13px; font-weight: 500;
+  color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
   padding: 6px 14px; border-radius: 6px; transition: background .15s, color .15s;
 }
 .site-nav a:hover, .site-nav a[aria-current="page"] {
-  background: rgba(255,255,255,0.065); color: #f5f5f7;
+  background: rgba(255,255,255,0.065); color: var(--text);
 }
 
 /* Overflow dropdown */
 .nav-more { position: relative; }
 .nav-more-btn {
-  color: #71717a; font-size: 18px; font-weight: 700; letter-spacing: 2px;
+  color: var(--text-secondary); font-size: 18px; font-weight: 700; letter-spacing: 2px;
   padding: 6px 12px; border-radius: 6px; cursor: pointer;
   background: none; border: none; transition: background .15s, color .15s;
   line-height: 1;
 }
-.nav-more-btn:hover { background: rgba(255,255,255,0.065); color: #f5f5f7; }
+.nav-more-btn:hover { background: rgba(255,255,255,0.065); color: var(--text); }
 .nav-more-menu {
   display: none; position: absolute; right: 0; top: calc(100% + 8px);
   background: rgba(22,24,31,0.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
@@ -326,11 +409,11 @@ button:active, .btn:active, [role="button"]:active {
 }
 .nav-more-menu a {
   display: block; padding: 10px 14px; border-radius: 6px;
-  color: #9ca3af; text-decoration: none; font-size: 13px; font-weight: 500;
+  color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
   transition: background .15s, color .15s; white-space: nowrap;
 }
 .nav-more-menu a:hover, .nav-more-menu a[aria-current="page"] {
-  background: rgba(255,255,255,0.065); color: #f5f5f7;
+  background: rgba(255,255,255,0.065); color: var(--text);
 }
 .nav-more.open .nav-more-menu { display: block; }
 
@@ -345,15 +428,15 @@ button:active, .btn:active, [role="button"]:active {
 }
 .section-nav::-webkit-scrollbar { display: none; }
 .section-nav a {
-  flex-shrink: 0; color: #9ca3af; text-decoration: none;
+  flex-shrink: 0; color: var(--text-secondary); text-decoration: none;
   font-size: 12px; font-weight: 500;
   padding: 6px 12px; border-radius: 6px;
   transition: background .15s, color .15s;
   white-space: nowrap;
 }
-.section-nav a:hover { background: rgba(255,255,255,0.065); color: #f5f5f7; }
+.section-nav a:hover { background: rgba(255,255,255,0.065); color: var(--text); }
 .section-nav a[aria-current="page"] {
-  background: rgba(99,102,241,0.18); color: #c7d2fe;
+  background: rgba(99,102,241,0.18); color: var(--text);
 }
 
 /* Hamburger toggle */
@@ -362,7 +445,7 @@ button:active, .btn:active, [role="button"]:active {
 .nav-toggle-label span,
 .nav-toggle-label span::before,
 .nav-toggle-label span::after {
-  display: block; background: #f5f5f7; height: 2px; width: 20px;
+  display: block; background: var(--text); height: 2px; width: 20px;
   border-radius: 2px; position: relative; transition: .3s;
 }
 .nav-toggle-label span::before,
@@ -391,7 +474,7 @@ button:active, .btn:active, [role="button"]:active {
   .nav-more { display: contents; }
   .nav-more-btn { display: none; }
   .nav-more-menu { display: contents !important; position: static; background: none; border: none; box-shadow: none; padding: 0; min-width: auto; }
-  .nav-more-menu a { padding: 12px 24px; border-radius: 0; font-size: 14px; color: #71717a; }
+  .nav-more-menu a { padding: 12px 24px; border-radius: 0; font-size: 14px; color: var(--text-secondary); }
 }
 </style>
 
@@ -426,6 +509,10 @@ button:active, .btn:active, [role="button"]:active {
         <a href="/wealth/dashboard.html"
 >
           Wealth
+        </a>
+        <a href="/minpaku/"
+>
+          Minpaku
         </a>
         <a href="/trading/"
 >
@@ -485,7 +572,7 @@ document.addEventListener('click', function(e) {
   <h1>投資優先度ランキング（融資×収益）</h1>
   <p>
     全都市横断。融資期間（築年から算出される借入年数）・建物構造・収支判定（CCR/回収年数）を組み合わせた複合スコアで自動順位付け。
-    パトロール実行のたびに再生成（2026-07-13 12:51 時点 / 全117件）。
+    パトロール実行のたびに再生成（2026-09-26 08:45 時点 / 全142件）。
     上位「優良」「有望」がDD（精査レポート）の優先候補。
   </p>
 </div>
@@ -499,33 +586,42 @@ document.addEventListener('click', function(e) {
     </thead>
     <tbody>
       <tr>
-        <td><span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99810838" target="_blank" rel="noopener">ふれんず物件(博多区)</a><br><span class="ip-sub">福岡市博多区祇園町</span></td>
-        <td>3050万円</td>
-        <td>不明</td>
-        <td>35年</td>
-        <td>薄利</td>
-        <td>3.0%</td>
-        <td>32.8年</td>
-        <td>2.1万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益5点 = 薄利(+5)</span></details>
+        </td>
         <td>福岡</td>
         <td><a href="https://www.f-takken.com/freins/items/99752336" target="_blank" rel="noopener">ツインタワー博多駅前 ３０２</a><br><span class="ip-sub">福岡市博多区博多駅前４丁目</span></td>
-        <td>3780万円</td>
+        <td>3899万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>薄利</td>
-        <td>3.1%</td>
-        <td>32.3年</td>
-        <td>2.6万</td>
+        <td>3.9%</td>
+        <td>26.0年</td>
+        <td>3.4万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益5点 = 薄利(+5)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20690206/" target="_blank" rel="noopener">【即日内覧OK♪博多駅・福岡空港が近い好立地】プレサ…</a><br><span class="ip-sub">福岡県福岡市博多区吉塚３-6-12</span></td>
+        <td><a href="https://www.f-takken.com/freins/items/99877921" target="_blank" rel="noopener">ロマネスク奈良屋 302</a><br><span class="ip-sub">福岡市博多区須崎町</span></td>
+        <td>3800万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>薄利</td>
+        <td>1.2%</td>
+        <td>81.7年</td>
+        <td>1.0万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益5点 = 薄利(+5)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21426068/" target="_blank" rel="noopener">【本日内覧できます！博多駅徒歩圏内】プレサンスロジェ…</a><br><span class="ip-sub">福岡県福岡市博多区吉塚３</span></td>
         <td>4380万円</td>
         <td>不明</td>
         <td>35年</td>
@@ -535,19 +631,25 @@ document.addEventListener('click', function(e) {
         <td>1.1万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益5点 = 薄利(+5)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99839759" target="_blank" rel="noopener">福岡市博多区 2LDK</a><br><span class="ip-sub">福岡市博多区対馬小路</span></td>
-        <td>4248万円</td>
+        <td><a href="https://www.f-takken.com/freins/items/99836443" target="_blank" rel="noopener">朝日プラザ天神 1003</a><br><span class="ip-sub">福岡市中央区舞鶴１丁目</span></td>
+        <td>4490万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>薄利</td>
-        <td>0.2%</td>
-        <td>411.2年</td>
-        <td>0.2万</td>
+        <td>0.5%</td>
+        <td>201.0年</td>
+        <td>0.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資32年(+15) 不明(+0) / 収益5点 = 薄利(+5)</span></details>
+        </td>
         <td>大阪</td>
         <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashichuo/nc_20888321/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市中央区上本町西２</span></td>
         <td>2980万円</td>
@@ -559,67 +661,55 @@ document.addEventListener('click', function(e) {
         <td>4.6万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--yellow)">15</span><br><span class="ip-sub">有望</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99639330" target="_blank" rel="noopener">ふれんず物件(南区)</a><br><span class="ip-sub">福岡市南区高宮２丁目</span></td>
-        <td>2400万円</td>
+        <td>
+          <span class="ip-tier" style="color:var(--yellow)">20</span><br><span class="ip-sub">有望</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益5点 = 薄利(+5)</span></details>
+        </td>
+        <td>東京</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_21642715/" target="_blank" rel="noopener">ミハス東大井</a><br><span class="ip-sub">東京都品川区東大井２</span></td>
+        <td>3880万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>薄利</td>
+        <td>0.9%</td>
+        <td>107.3年</td>
+        <td>0.8万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--yellow)">15</span><br><span class="ip-sub">有望</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資10点 = 融資28年(+10) 不明(+0) / 収益5点 = 薄利(+5)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashifukushima/nc_20475257/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市福島区大開２</span></td>
+        <td>1980万円</td>
         <td>不明</td>
         <td>28年</td>
         <td>薄利</td>
-        <td>1.1%</td>
-        <td>89.3年</td>
-        <td>0.6万</td>
+        <td>9.3%</td>
+        <td>10.7年</td>
+        <td>4.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--yellow)">10</span><br><span class="ip-sub">有望</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">0</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益5点 = 薄利(+5)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99796379" target="_blank" rel="noopener">第2住吉ハイツ</a><br><span class="ip-sub">福岡市博多区住吉３丁目</span></td>
-        <td>1650万円</td>
-        <td>RC造</td>
-        <td>19年</td>
-        <td>薄利</td>
-        <td>2.5%</td>
-        <td>39.7年</td>
-        <td>0.9万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--yellow)">10</span><br><span class="ip-sub">有望</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99848028" target="_blank" rel="noopener">福岡市南区 2LDK</a><br><span class="ip-sub">福岡市南区鶴田４丁目</span></td>
-        <td>1490万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21788989/" target="_blank" rel="noopener">東峰マンション大宮</a><br><span class="ip-sub">福岡県福岡市中央区大宮１</span></td>
+        <td>1200万円</td>
         <td>不明</td>
-        <td>22年</td>
+        <td>15年</td>
         <td>薄利</td>
-        <td>1.4%</td>
-        <td>73.1年</td>
-        <td>0.5万</td>
+        <td>4.6%</td>
+        <td>21.7年</td>
+        <td>1.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--yellow)">10</span><br><span class="ip-sub">有望</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99655804" target="_blank" rel="noopener">皐月マンション那の川 805</a><br><span class="ip-sub">福岡市南区那の川１丁目</span></td>
-        <td>1599万円</td>
-        <td>不明</td>
-        <td>24年</td>
-        <td>薄利</td>
-        <td>1.6%</td>
-        <td>64.7年</td>
-        <td>0.6万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">0</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99853857" target="_blank" rel="noopener">ふれんず物件(博多区)</a><br><span class="ip-sub">福岡市博多区</span></td>
-        <td>2680万円</td>
-        <td>SRC造</td>
-        <td>26年</td>
-        <td>CF赤字</td>
-        <td>-1.2%</td>
-        <td>∞</td>
-        <td>-0.7万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">0</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">0</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益5点 = 薄利(+5)</span></details>
+        </td>
         <td>大阪</td>
         <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashinishi/nc_72397568/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市西区千代崎２</span></td>
         <td>689万円</td>
@@ -631,31 +721,130 @@ document.addEventListener('click', function(e) {
         <td>2.6万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21126511/" target="_blank" rel="noopener">グランフォーレラグゼ博多</a><br><span class="ip-sub">福岡県福岡市博多区奈良屋町</span></td>
-        <td>3390万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21180321/" target="_blank" rel="noopener">クレアランドマーク</a><br><span class="ip-sub">福岡県福岡市博多区冷泉町2-9</span></td>
+        <td>3280万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
-        <td>-0.7%</td>
+        <td>-1.8%</td>
         <td>∞</td>
-        <td>-0.6万</td>
+        <td>-1.3万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99843993" target="_blank" rel="noopener">クレアランドマーク 302</a><br><span class="ip-sub">福岡市博多区冷泉町</span></td>
-        <td>3350万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21466839/" target="_blank" rel="noopener">ヒューマインド博多駅東ネクスタイル</a><br><span class="ip-sub">福岡県福岡市博多区東比恵３</span></td>
+        <td>3899万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
-        <td>-1.4%</td>
+        <td>-2.2%</td>
         <td>∞</td>
-        <td>-1.1万</td>
+        <td>-1.9万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21609930/" target="_blank" rel="noopener">オープンレジデンシア天神今泉</a><br><span class="ip-sub">福岡県福岡市中央区今泉２</span></td>
+        <td>4880万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-2.9%</td>
+        <td>∞</td>
+        <td>-3.2万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21328629/" target="_blank" rel="noopener">アンピール天神東</a><br><span class="ip-sub">福岡県福岡市中央区春吉２</span></td>
+        <td>4480万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-0.3%</td>
+        <td>∞</td>
+        <td>-0.3万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20780394/" target="_blank" rel="noopener">デュオヴェール博多駅</a><br><span class="ip-sub">福岡県福岡市博多区博多駅東１</span></td>
+        <td>4980万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-2.5%</td>
+        <td>∞</td>
+        <td>-2.9万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21530274/" target="_blank" rel="noopener">クリオ渡辺通アーバンマークス</a><br><span class="ip-sub">福岡県福岡市中央区清川２</span></td>
+        <td>4498万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-1.5%</td>
+        <td>∞</td>
+        <td>-1.5万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21528637/" target="_blank" rel="noopener">デュオヴェール薬院</a><br><span class="ip-sub">福岡県福岡市中央区高砂１</span></td>
+        <td>4980万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-3.4%</td>
+        <td>∞</td>
+        <td>-3.8万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99846203" target="_blank" rel="noopener">ロマネスク奈良屋 503</a><br><span class="ip-sub">福岡市博多区須崎町</span></td>
+        <td>4099万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-0.8%</td>
+        <td>∞</td>
+        <td>-0.8万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
         <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashiminami/nc_21090619/" target="_blank" rel="noopener">グランフォーレ大橋駅前レジデンス</a><br><span class="ip-sub">福岡県福岡市南区大橋１</span></td>
         <td>4980万円</td>
@@ -667,67 +856,85 @@ document.addEventListener('click', function(e) {
         <td>-4.9万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21017734/" target="_blank" rel="noopener">クレアランドマーク</a><br><span class="ip-sub">福岡県福岡市博多区冷泉町</span></td>
-        <td>3380万円</td>
+        <td><a href="https://www.f-takken.com/freins/items/99835111" target="_blank" rel="noopener">エンクレスト博多EAST PARK</a><br><span class="ip-sub">福岡市博多区千代１丁目</span></td>
+        <td>3799万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-2.5%</td>
+        <td>∞</td>
+        <td>-2.2万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21296020/" target="_blank" rel="noopener">エグゼ博多コンドミニアム</a><br><span class="ip-sub">福岡県福岡市博多区博多駅前１</span></td>
+        <td>4480万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-3.1%</td>
+        <td>∞</td>
+        <td>-3.1万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資33年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21533580/" target="_blank" rel="noopener">ソピア大濠西</a><br><span class="ip-sub">福岡県福岡市中央区鳥飼３</span></td>
+        <td>4980万円</td>
+        <td>不明</td>
+        <td>33年</td>
+        <td>CF赤字</td>
+        <td>0.0%</td>
+        <td>2713.0年</td>
+        <td>0.0万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashiminami/nc_21487678/" target="_blank" rel="noopener">ファーネスト井尻駅前ルクシア</a><br><span class="ip-sub">福岡県福岡市南区井尻２-23-11</span></td>
+        <td>4280万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-4.0%</td>
+        <td>∞</td>
+        <td>-3.8万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21485294/" target="_blank" rel="noopener">ウェルリバービュー天神</a><br><span class="ip-sub">福岡県福岡市博多区中洲中島町</span></td>
+        <td>4800万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
         <td>-1.7%</td>
         <td>∞</td>
-        <td>-1.3万</td>
+        <td>-1.8万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99758573" target="_blank" rel="noopener">プレイスポットしんばしビル本館 905</a><br><span class="ip-sub">福岡市博多区中洲２丁目</span></td>
-        <td>2049万円</td>
-        <td>SRC造</td>
-        <td>24年</td>
-        <td>CF赤字</td>
-        <td>-1.4%</td>
-        <td>∞</td>
-        <td>-0.6万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21112785/" target="_blank" rel="noopener">アンピール博多駅南</a><br><span class="ip-sub">福岡県福岡市博多区博多駅南６</span></td>
-        <td>4480万円</td>
-        <td>不明</td>
-        <td>35年</td>
-        <td>CF赤字</td>
-        <td>0.5%</td>
-        <td>222.4年</td>
-        <td>0.5万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21277998/" target="_blank" rel="noopener">エイルマンション博多駅</a><br><span class="ip-sub">福岡県福岡市博多区博多駅東１-2-2</span></td>
-        <td>4790万円</td>
-        <td>不明</td>
-        <td>35年</td>
-        <td>CF赤字</td>
-        <td>-1.5%</td>
-        <td>∞</td>
-        <td>-1.6万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99800235" target="_blank" rel="noopener">ステイツ天神東 201</a><br><span class="ip-sub">福岡市博多区奈良屋町</span></td>
-        <td>1999万円</td>
-        <td>RC造</td>
-        <td>24年</td>
-        <td>CF赤字</td>
-        <td>-2.6%</td>
-        <td>∞</td>
-        <td>-1.1万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資32年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
         <td><a href="https://www.f-takken.com/freins/items/99854160" target="_blank" rel="noopener">サンシティ博多flex21 502 号室</a><br><span class="ip-sub">福岡市博多区大博町</span></td>
         <td>3450万円</td>
@@ -739,67 +946,130 @@ document.addEventListener('click', function(e) {
         <td>-0.7万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99827307" target="_blank" rel="noopener">ふれんず物件(博多区)</a><br><span class="ip-sub">福岡市博多区</span></td>
-        <td>4599万円</td>
+        <td><a href="https://www.f-takken.com/freins/items/99888429" target="_blank" rel="noopener">ふれんず物件(博多区)</a><br><span class="ip-sub">福岡市博多区</span></td>
+        <td>3580万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
-        <td>-1.5%</td>
+        <td>-4.5%</td>
         <td>∞</td>
-        <td>-1.5万</td>
+        <td>-3.7万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99846203" target="_blank" rel="noopener">ロマネスク奈良屋 503</a><br><span class="ip-sub">福岡市博多区須崎町</span></td>
-        <td>4199万円</td>
-        <td>不明</td>
-        <td>35年</td>
-        <td>CF赤字</td>
-        <td>-1.0%</td>
-        <td>∞</td>
-        <td>-1.0万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99838894" target="_blank" rel="noopener">デュオヴェール薬院est 301</a><br><span class="ip-sub">福岡市中央区高砂１丁目</span></td>
-        <td>4350万円</td>
+        <td><a href="https://www.f-takken.com/freins/items/99863057" target="_blank" rel="noopener">ふれんず物件(博多区)</a><br><span class="ip-sub">福岡市博多区博多駅前１丁目</span></td>
+        <td>4448万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
         <td>-2.7%</td>
         <td>∞</td>
-        <td>-2.6万</td>
+        <td>-2.7万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99844235" target="_blank" rel="noopener">西鉄バス　神屋町停 3分</a><br><span class="ip-sub">福岡市博多区奈良屋町</span></td>
+        <td>4780万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-1.3%</td>
+        <td>∞</td>
+        <td>-1.4万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99809832" target="_blank" rel="noopener">パーク・エステート博多 503</a><br><span class="ip-sub">福岡市博多区店屋町</span></td>
+        <td>4880万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-1.7%</td>
+        <td>∞</td>
+        <td>-1.8万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21637723/" target="_blank" rel="noopener">アルファライフ博多</a><br><span class="ip-sub">福岡県福岡市博多区住吉５-5-22</span></td>
+        <td>4599万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-1.2%</td>
+        <td>∞</td>
+        <td>-1.3万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21257138/" target="_blank" rel="noopener">エステムコート中之島GATE</a><br><span class="ip-sub">大阪府大阪市西区川口２</span></td>
-        <td>4980万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21410455/" target="_blank" rel="noopener">Ｃｉｔｙ　Ｌｉｆｅ 南森町 Ｌ’ａｖｅｎｉｒ</a><br><span class="ip-sub">大阪府大阪市北区天神橋３-3-2</span></td>
+        <td>4780万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
         <td>-1.8%</td>
         <td>∞</td>
-        <td>-2.0万</td>
+        <td>-1.9万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21110448/" target="_blank" rel="noopener">エステムプラザ梅田・中崎町</a><br><span class="ip-sub">大阪府大阪市北区中崎１</span></td>
-        <td>4580万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21368404/" target="_blank" rel="noopener">THE　HIGH　HORIE</a><br><span class="ip-sub">大阪府大阪市西区北堀江３</span></td>
+        <td>4980万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
-        <td>-2.1%</td>
+        <td>-4.4%</td>
         <td>∞</td>
-        <td>-2.2万</td>
+        <td>-4.9万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21749843/" target="_blank" rel="noopener">リーガル南堀江</a><br><span class="ip-sub">大阪府大阪市西区南堀江２</span></td>
+        <td>4200万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-1.3%</td>
+        <td>∞</td>
+        <td>-1.3万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資34年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
         <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_78562736/" target="_blank" rel="noopener">セレッソコート南堀江マルティア</a><br><span class="ip-sub">大阪府大阪市西区南堀江３-4-9</span></td>
         <td>4380万円</td>
@@ -811,21 +1081,72 @@ document.addEventListener('click', function(e) {
         <td>-1.9万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資31年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21281677/" target="_blank" rel="noopener">エステムコート天神橋</a><br><span class="ip-sub">大阪府大阪市北区国分寺２</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21310040/" target="_blank" rel="noopener">グランドシーズ心斎橋Ⅱ</a><br><span class="ip-sub">大阪府大阪市西区北堀江１-16-5</span></td>
+        <td>4998万円</td>
+        <td>不明</td>
+        <td>31年</td>
+        <td>CF赤字</td>
+        <td>-2.8%</td>
+        <td>∞</td>
+        <td>-3.1万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21780727/" target="_blank" rel="noopener">エステムコート谷町六丁目Ⅱアクティーネ</a><br><span class="ip-sub">大阪府大阪市中央区谷町５</span></td>
         <td>4980万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
-        <td>-0.9%</td>
+        <td>-1.4%</td>
         <td>∞</td>
-        <td>-1.0万</td>
+        <td>-1.6万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21254156/" target="_blank" rel="noopener">匠空阿波座西</a><br><span class="ip-sub">大阪府大阪市西区本田１</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21399337/" target="_blank" rel="noopener">エステムコート天神橋</a><br><span class="ip-sub">大阪府大阪市北区国分寺２</span></td>
+        <td>4680万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-0.4%</td>
+        <td>∞</td>
+        <td>-0.4万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21441476/" target="_blank" rel="noopener">ユニハイム梅田ノルテ</a><br><span class="ip-sub">大阪府大阪市北区中津２</span></td>
+        <td>4080万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-0.8%</td>
+        <td>∞</td>
+        <td>-0.7万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21750428/" target="_blank" rel="noopener">匠空阿波座西</a><br><span class="ip-sub">大阪府大阪市西区本田１</span></td>
         <td>3580万円</td>
         <td>不明</td>
         <td>35年</td>
@@ -835,177 +1156,192 @@ document.addEventListener('click', function(e) {
         <td>0.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21205361/" target="_blank" rel="noopener">アルカディーナ天満橋リバーサイド【大阪市北区天満橋2…</a><br><span class="ip-sub">大阪府大阪市北区天満橋２</span></td>
-        <td>4998万円</td>
-        <td>不明</td>
-        <td>34年</td>
-        <td>CF赤字</td>
-        <td>-2.9%</td>
-        <td>∞</td>
-        <td>-3.2万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21203901/" target="_blank" rel="noopener">ライオンズマンション新梅田第2</a><br><span class="ip-sub">大阪府大阪市北区大淀中３</span></td>
-        <td>4480万円</td>
-        <td>不明</td>
-        <td>34年</td>
-        <td>CF赤字</td>
-        <td>-0.9%</td>
-        <td>∞</td>
-        <td>-0.9万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21101947/" target="_blank" rel="noopener">リーガル岡崎橋</a><br><span class="ip-sub">大阪府大阪市西区靱本町２</span></td>
-        <td>4050万円</td>
-        <td>不明</td>
-        <td>35年</td>
-        <td>CF赤字</td>
-        <td>-2.3%</td>
-        <td>∞</td>
-        <td>-2.1万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21240981/" target="_blank" rel="noopener">ジャルダン大阪壱番館 【ペット飼育可】</a><br><span class="ip-sub">大阪府大阪市西区西本町３</span></td>
-        <td>4580万円</td>
-        <td>不明</td>
-        <td>35年</td>
-        <td>CF赤字</td>
-        <td>-2.2%</td>
-        <td>∞</td>
-        <td>-2.3万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21259506/" target="_blank" rel="noopener">プレサンス天満橋アンジェ</a><br><span class="ip-sub">大阪府大阪市北区天満２</span></td>
-        <td>4580万円</td>
-        <td>不明</td>
-        <td>35年</td>
-        <td>CF赤字</td>
-        <td>-3.2%</td>
-        <td>∞</td>
-        <td>-3.3万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20245135/" target="_blank" rel="noopener">アルス心斎橋ＵＮＡＧＩＤＡＮＩ</a><br><span class="ip-sub">大阪府大阪市中央区東心斎橋１</span></td>
-        <td>4180万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_78777747/" target="_blank" rel="noopener">ファインレジデンス福島野田ザ・ガーデン</a><br><span class="ip-sub">大阪府大阪市福島区吉野４</span></td>
+        <td>4980万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
         <td>-2.1%</td>
         <td>∞</td>
-        <td>-1.9万</td>
+        <td>-2.4万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21113555/" target="_blank" rel="noopener">アルス心斎橋</a><br><span class="ip-sub">大阪府大阪市中央区東心斎橋１</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21472891/" target="_blank" rel="noopener">エステムコート阿波座レジデンス</a><br><span class="ip-sub">大阪府大阪市西区本田１</span></td>
+        <td>4880万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-2.7%</td>
+        <td>∞</td>
+        <td>-3.0万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21774801/" target="_blank" rel="noopener">ジャルダン大阪壱番館 【ペット飼育可】</a><br><span class="ip-sub">大阪府大阪市西区西本町３</span></td>
+        <td>4498万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-2.1%</td>
+        <td>∞</td>
+        <td>-2.1万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21790832/" target="_blank" rel="noopener">リーガル四ツ橋筋 （最上階・13階）</a><br><span class="ip-sub">大阪府大阪市西区京町堀１-8-2</span></td>
         <td>4790万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
-        <td>-3.8%</td>
+        <td>-2.9%</td>
+        <td>∞</td>
+        <td>-3.1万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21384061/" target="_blank" rel="noopener">◆価格変更・内覧受付開始◆リーガル四ツ橋筋</a><br><span class="ip-sub">大阪府大阪市西区京町堀１</span></td>
+        <td>4990万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-3.1%</td>
+        <td>∞</td>
+        <td>-3.5万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21449088/" target="_blank" rel="noopener">ＢＥＬＩＳＴＡ北梅田</a><br><span class="ip-sub">大阪府大阪市北区豊崎１</span></td>
+        <td>4790万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-3.4%</td>
+        <td>∞</td>
+        <td>-3.6万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21460328/" target="_blank" rel="noopener">アウラ西天満三丁目</a><br><span class="ip-sub">大阪府大阪市北区西天満３-12-3</span></td>
+        <td>4980万円</td>
+        <td>不明</td>
+        <td>35年</td>
+        <td>CF赤字</td>
+        <td>-3.6%</td>
         <td>∞</td>
         <td>-4.1万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21096415/" target="_blank" rel="noopener">リーガル豊崎</a><br><span class="ip-sub">大阪府大阪市北区豊崎６-15-14</span></td>
-        <td>3980万円</td>
-        <td>不明</td>
-        <td>31年</td>
-        <td>CF赤字</td>
-        <td>-1.2%</td>
-        <td>∞</td>
-        <td>-1.0万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21242872/" target="_blank" rel="noopener">茶屋町北シティタワー</a><br><span class="ip-sub">大阪府大阪市北区中津１</span></td>
-        <td>3400万円</td>
-        <td>不明</td>
-        <td>33年</td>
-        <td>CF赤字</td>
-        <td>-2.6%</td>
-        <td>∞</td>
-        <td>-2.0万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20221056/" target="_blank" rel="noopener">ブランズ大阪松屋町</a><br><span class="ip-sub">大阪府大阪市中央区松屋町住吉</span></td>
-        <td>4999万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20245135/" target="_blank" rel="noopener">アルス心斎橋ＵＮＡＧＩＤＡＮＩ</a><br><span class="ip-sub">大阪府大阪市中央区東心斎橋１</span></td>
+        <td>4080万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
         <td>-1.9%</td>
         <td>∞</td>
-        <td>-2.1万</td>
+        <td>-1.7万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20626411/" target="_blank" rel="noopener">エステムプラザ大手前エヴァース</a><br><span class="ip-sub">大阪府大阪市中央区糸屋町１</span></td>
-        <td>4380万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21425407/" target="_blank" rel="noopener">アルス心斎橋</a><br><span class="ip-sub">大阪府大阪市中央区東心斎橋１-15-32</span></td>
+        <td>4490万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
-        <td>-3.2%</td>
+        <td>-3.5%</td>
         <td>∞</td>
-        <td>-3.2万</td>
+        <td>-3.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資31年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20375566/" target="_blank" rel="noopener">◇ＪＲ「新福島」駅徒5分◇アデレイド新福島【大阪市福…</a><br><span class="ip-sub">大阪府大阪市福島区福島４</span></td>
-        <td>4898万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21096415/" target="_blank" rel="noopener">リーガル豊崎</a><br><span class="ip-sub">大阪府大阪市北区豊崎６-15-14</span></td>
+        <td>3780万円</td>
+        <td>不明</td>
+        <td>31年</td>
+        <td>CF赤字</td>
+        <td>-0.8%</td>
+        <td>∞</td>
+        <td>-0.6万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21698599/" target="_blank" rel="noopener">エステムプラザ心斎橋ＥＡＳＴⅣブランディア</a><br><span class="ip-sub">大阪府大阪市中央区松屋町</span></td>
+        <td>4480万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
-        <td>-1.8%</td>
+        <td>-2.4%</td>
         <td>∞</td>
-        <td>-2.0万</td>
+        <td>-2.4万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21020358/" target="_blank" rel="noopener">レーベンシティオ上野桜木</a><br><span class="ip-sub">東京都台東区上野桜木１-15-9</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21647693/" target="_blank" rel="noopener">ライジングプレイス浅草参番館</a><br><span class="ip-sub">東京都台東区千束３</span></td>
         <td>4980万円</td>
         <td>不明</td>
         <td>35年</td>
         <td>CF赤字</td>
-        <td>-4.0%</td>
+        <td>-3.1%</td>
         <td>∞</td>
-        <td>-4.5万</td>
+        <td>-3.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資15点 = 融資35年(+15) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21165054/" target="_blank" rel="noopener">ライジングプレイス浅草弐番館</a><br><span class="ip-sub">東京都台東区千束４</span></td>
-        <td>4980万円</td>
-        <td>不明</td>
-        <td>35年</td>
-        <td>CF赤字</td>
-        <td>-4.1%</td>
-        <td>∞</td>
-        <td>-4.6万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20967987/" target="_blank" rel="noopener">角の部屋「クレヴィスタ浅草Ⅱ」</a><br><span class="ip-sub">東京都台東区東浅草１</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21656101/" target="_blank" rel="noopener">角の部屋「クレヴィスタ浅草Ⅱ」</a><br><span class="ip-sub">東京都台東区東浅草１</span></td>
         <td>4480万円</td>
         <td>不明</td>
         <td>35年</td>
@@ -1015,139 +1351,220 @@ document.addEventListener('click', function(e) {
         <td>-3.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-5</span><br><span class="ip-sub">参考</span></td>
-        <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21178233/" target="_blank" rel="noopener">クリオ東浅草</a><br><span class="ip-sub">東京都台東区清川１</span></td>
-        <td>4998万円</td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資10点 = 融資26年(+10) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21187898/" target="_blank" rel="noopener">アーバンパレス大濠</a><br><span class="ip-sub">福岡県福岡市中央区荒戸２</span></td>
+        <td>4380万円</td>
         <td>不明</td>
-        <td>35年</td>
+        <td>26年</td>
         <td>CF赤字</td>
-        <td>-3.5%</td>
+        <td>-4.4%</td>
         <td>∞</td>
-        <td>-3.9万</td>
+        <td>-4.3万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資10点 = 融資29年(+10) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99843855" target="_blank" rel="noopener">高宮マンション 538</a><br><span class="ip-sub">福岡市南区市崎１丁目</span></td>
-        <td>2080万円</td>
+        <td><a href="https://www.f-takken.com/freins/items/99868922" target="_blank" rel="noopener">第一プリンスビル 803</a><br><span class="ip-sub">福岡市博多区祇園町</span></td>
+        <td>2470万円</td>
         <td>不明</td>
         <td>29年</td>
         <td>CF赤字</td>
-        <td>-1.5%</td>
+        <td>-2.4%</td>
         <td>∞</td>
-        <td>-0.7万</td>
+        <td>-1.3万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資10点 = 融資29年(+10) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21187898/" target="_blank" rel="noopener">アーバンパレス大濠</a><br><span class="ip-sub">福岡県福岡市中央区荒戸２</span></td>
-        <td>4570万円</td>
-        <td>不明</td>
-        <td>26年</td>
-        <td>CF赤字</td>
-        <td>-4.6%</td>
-        <td>∞</td>
-        <td>-4.7万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_21158281/" target="_blank" rel="noopener">ベル・アーバニティ野田</a><br><span class="ip-sub">大阪府大阪市福島区野田５</span></td>
-        <td>4699万円</td>
-        <td>不明</td>
-        <td>28年</td>
-        <td>CF赤字</td>
-        <td>-3.0%</td>
-        <td>∞</td>
-        <td>-3.2万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span></td>
-        <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21239977/" target="_blank" rel="noopener">ディアハイム浅草</a><br><span class="ip-sub">東京都台東区浅草３-16-1</span></td>
-        <td>4980万円</td>
-        <td>不明</td>
-        <td>26年</td>
-        <td>CF赤字</td>
-        <td>-6.6%</td>
-        <td>∞</td>
-        <td>-7.4万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21271449/" target="_blank" rel="noopener">グリーンマンション薬院</a><br><span class="ip-sub">福岡県福岡市中央区薬院２-6-19</span></td>
-        <td>2480万円</td>
-        <td>不明</td>
-        <td>20年</td>
-        <td>CF赤字</td>
-        <td>-4.6%</td>
-        <td>∞</td>
-        <td>-2.6万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99724577" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区警固１丁目</span></td>
+        <td><a href="https://www.f-takken.com/freins/items/99644733" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区舞鶴１丁目</span></td>
         <td>3180万円</td>
         <td>不明</td>
-        <td>20年</td>
+        <td>29年</td>
         <td>CF赤字</td>
-        <td>-0.9%</td>
+        <td>-3.3%</td>
         <td>∞</td>
-        <td>-0.6万</td>
+        <td>-2.4万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資10点 = 融資26年(+10) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99807591" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区薬院３丁目</span></td>
-        <td>2280万円</td>
+        <td><a href="https://www.f-takken.com/freins/items/99820052" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区大名１丁目</span></td>
+        <td>3880万円</td>
         <td>不明</td>
-        <td>21年</td>
+        <td>26年</td>
         <td>CF赤字</td>
-        <td>-3.5%</td>
+        <td>-2.1%</td>
         <td>∞</td>
         <td>-1.8万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資10点 = 融資28年(+10) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99818434" target="_blank" rel="noopener">ふれんず物件(博多区)</a><br><span class="ip-sub">福岡市博多区石城町</span></td>
-        <td>2700万円</td>
-        <td>SRC造</td>
-        <td>15年</td>
+        <td><a href="https://www.f-takken.com/freins/items/99833083" target="_blank" rel="noopener">ふれんず物件(南区)</a><br><span class="ip-sub">福岡市南区高宮２丁目</span></td>
+        <td>2230万円</td>
+        <td>不明</td>
+        <td>28年</td>
         <td>CF赤字</td>
-        <td>-7.7%</td>
+        <td>-0.7%</td>
         <td>∞</td>
-        <td>-4.7万</td>
+        <td>-0.3万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資10点 = 融資26年(+10) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashinishi/nc_21577537/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市西区九条２</span></td>
+        <td>2625万円</td>
+        <td>不明</td>
+        <td>26年</td>
+        <td>CF赤字</td>
+        <td>-3.5%</td>
+        <td>∞</td>
+        <td>-2.1万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資10点 = 融資28年(+10) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_21675635/" target="_blank" rel="noopener">ベル・アーバニティ野田</a><br><span class="ip-sub">大阪府大阪市福島区野田５</span></td>
+        <td>4499万円</td>
+        <td>不明</td>
+        <td>28年</td>
+        <td>CF赤字</td>
+        <td>-2.7%</td>
+        <td>∞</td>
+        <td>-2.8万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-10</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資10点 = 融資29年(+10) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>東京</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_21151851/" target="_blank" rel="noopener">セザール鷺宮</a><br><span class="ip-sub">東京都中野区鷺宮５</span></td>
+        <td>4150万円</td>
+        <td>不明</td>
+        <td>29年</td>
+        <td>CF赤字</td>
+        <td>-3.1%</td>
+        <td>∞</td>
+        <td>-2.9万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資21年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99852532" target="_blank" rel="noopener">シャンボール大名 D棟 1506</a><br><span class="ip-sub">福岡市中央区大名２丁目</span></td>
-        <td>3599万円</td>
+        <td><a href="https://www.f-takken.com/freins/items/99817011" target="_blank" rel="noopener">ダイナコート六本松 16-5</a><br><span class="ip-sub">福岡市中央区谷１丁目</span></td>
+        <td>2850万円</td>
         <td>不明</td>
         <td>21年</td>
         <td>CF赤字</td>
-        <td>-3.7%</td>
+        <td>-2.3%</td>
         <td>∞</td>
-        <td>-3.0万</td>
+        <td>-1.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資21年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99852167" target="_blank" rel="noopener">ダイアパレス大名第2 303</a><br><span class="ip-sub">福岡市中央区大名１丁目</span></td>
-        <td>4499万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21751106/" target="_blank" rel="noopener">グランピア呉服町</a><br><span class="ip-sub">福岡県福岡市博多区大博町</span></td>
+        <td>2300万円</td>
         <td>不明</td>
-        <td>20年</td>
+        <td>21年</td>
+        <td>CF赤字</td>
+        <td>-1.8%</td>
+        <td>∞</td>
+        <td>-0.9万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資23年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99863436" target="_blank" rel="noopener">ダイアパレス博多 302</a><br><span class="ip-sub">福岡市博多区博多駅前４丁目</span></td>
+        <td>2978万円</td>
+        <td>不明</td>
+        <td>23年</td>
+        <td>CF赤字</td>
+        <td>-2.8%</td>
+        <td>∞</td>
+        <td>-1.8万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資24年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99800708" target="_blank" rel="noopener">ふれんず物件(博多区)</a><br><span class="ip-sub">福岡市博多区</span></td>
+        <td>3299万円</td>
+        <td>不明</td>
+        <td>24年</td>
+        <td>CF赤字</td>
+        <td>-5.8%</td>
+        <td>∞</td>
+        <td>-4.3万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資21年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21530294/" target="_blank" rel="noopener">エステートマンション西公園</a><br><span class="ip-sub">福岡県福岡市中央区荒戸２</span></td>
+        <td>2850万円</td>
+        <td>不明</td>
+        <td>21年</td>
+        <td>CF赤字</td>
+        <td>-3.9%</td>
+        <td>∞</td>
+        <td>-2.5万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資21年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21472716/" target="_blank" rel="noopener">エステートマンション西公園</a><br><span class="ip-sub">福岡県福岡市中央区荒戸２</span></td>
+        <td>3180万円</td>
+        <td>不明</td>
+        <td>21年</td>
         <td>CF赤字</td>
         <td>-4.9%</td>
         <td>∞</td>
-        <td>-5.0万</td>
+        <td>-3.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資20年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
         <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21172212/" target="_blank" rel="noopener">朝日プラザ天神</a><br><span class="ip-sub">福岡県福岡市中央区舞鶴１</span></td>
         <td>4600万円</td>
@@ -1159,381 +1576,582 @@ document.addEventListener('click', function(e) {
         <td>-5.9万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21166708/" target="_blank" rel="noopener">東急ドエルアルス阿波座</a><br><span class="ip-sub">大阪府大阪市西区川口１</span></td>
-        <td>2360万円</td>
-        <td>不明</td>
-        <td>21年</td>
-        <td>CF赤字</td>
-        <td>-3.5%</td>
-        <td>∞</td>
-        <td>-1.8万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79092430/" target="_blank" rel="noopener">ビーバードルチェ阿波座</a><br><span class="ip-sub">大阪府大阪市西区川口３</span></td>
-        <td>2999万円</td>
-        <td>不明</td>
-        <td>22年</td>
-        <td>CF赤字</td>
-        <td>-4.6%</td>
-        <td>∞</td>
-        <td>-3.1万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20754194/" target="_blank" rel="noopener">グリーンシティＯＳＡＫＡ　１号棟</a><br><span class="ip-sub">大阪府大阪市福島区海老江１</span></td>
-        <td>2480万円</td>
-        <td>不明</td>
-        <td>20年</td>
-        <td>CF赤字</td>
-        <td>-4.1%</td>
-        <td>∞</td>
-        <td>-2.3万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_20608462/" target="_blank" rel="noopener">ニューライフ高麗橋</a><br><span class="ip-sub">大阪府大阪市中央区東高麗橋</span></td>
-        <td>2850万円</td>
-        <td>不明</td>
-        <td>20年</td>
-        <td>CF赤字</td>
-        <td>-4.3%</td>
-        <td>∞</td>
-        <td>-2.8万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21126167/" target="_blank" rel="noopener">ビーバードルチェ阿波座</a><br><span class="ip-sub">大阪府大阪市西区川口３</span></td>
-        <td>1980万円</td>
-        <td>不明</td>
-        <td>22年</td>
-        <td>CF赤字</td>
-        <td>-2.3%</td>
-        <td>∞</td>
-        <td>-1.0万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21062989/" target="_blank" rel="noopener">グランドヴィラ境川</a><br><span class="ip-sub">大阪府大阪市西区境川１</span></td>
-        <td>2680万円</td>
-        <td>不明</td>
-        <td>23年</td>
-        <td>CF赤字</td>
-        <td>-3.7%</td>
-        <td>∞</td>
-        <td>-2.2万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21269765/" target="_blank" rel="noopener">エクセランス九条公園</a><br><span class="ip-sub">大阪府大阪市西区千代崎３</span></td>
-        <td>2680万円</td>
-        <td>不明</td>
-        <td>20年</td>
-        <td>CF赤字</td>
-        <td>-0.7%</td>
-        <td>∞</td>
-        <td>-0.4万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20551331/" target="_blank" rel="noopener">グランドヴィラ玉川</a><br><span class="ip-sub">大阪府大阪市福島区玉川３</span></td>
-        <td>3480万円</td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資20年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99852167" target="_blank" rel="noopener">ダイアパレス大名第2 303</a><br><span class="ip-sub">福岡市中央区大名１丁目</span></td>
+        <td>3999万円</td>
         <td>不明</td>
         <td>20年</td>
         <td>CF赤字</td>
         <td>-5.0%</td>
         <td>∞</td>
-        <td>-3.9万</td>
+        <td>-4.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" rel="noopener">メゾンニシムラ</a><br><span class="ip-sub">東京都台東区浅草４-43-4</span></td>
-        <td>4080万円</td>
-        <td>不明</td>
-        <td>21年</td>
-        <td>CF赤字</td>
-        <td>-7.2%</td>
-        <td>∞</td>
-        <td>-6.6万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21006797/" target="_blank" rel="noopener">オーシャンプラザ若松町</a><br><span class="ip-sub">東京都新宿区若松町</span></td>
-        <td>4780万円</td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資20年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99861288" target="_blank" rel="noopener">東洋マンション大名 401</a><br><span class="ip-sub">福岡市中央区大名２丁目</span></td>
+        <td>3999万円</td>
         <td>不明</td>
         <td>20年</td>
         <td>CF赤字</td>
-        <td>-6.5%</td>
+        <td>-6.8%</td>
         <td>∞</td>
-        <td>-6.9万</td>
+        <td>-6.1万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span></td>
-        <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21181330/" target="_blank" rel="noopener">第２さくらコーポ</a><br><span class="ip-sub">東京都台東区東浅草１-3-4</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資22年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21764835/" target="_blank" rel="noopener">ビーバードルチェ阿波座</a><br><span class="ip-sub">大阪府大阪市西区川口３-9-22</span></td>
+        <td>3380万円</td>
+        <td>不明</td>
+        <td>22年</td>
+        <td>CF赤字</td>
+        <td>-2.9%</td>
+        <td>∞</td>
+        <td>-2.2万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資20年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21580145/" target="_blank" rel="noopener">ニューライフ高麗橋</a><br><span class="ip-sub">大阪府大阪市中央区東高麗橋</span></td>
+        <td>3480万円</td>
+        <td>不明</td>
+        <td>20年</td>
+        <td>CF赤字</td>
+        <td>-6.1%</td>
+        <td>∞</td>
+        <td>-4.8万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資22年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21578309/" target="_blank" rel="noopener">ビーバードルチェ阿波座</a><br><span class="ip-sub">大阪府大阪市西区川口３</span></td>
+        <td>2790万円</td>
+        <td>不明</td>
+        <td>22年</td>
+        <td>CF赤字</td>
+        <td>-5.8%</td>
+        <td>∞</td>
+        <td>-3.7万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資20年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21461243/" target="_blank" rel="noopener">ニューライフ高麗橋</a><br><span class="ip-sub">大阪府大阪市中央区東高麗橋</span></td>
         <td>3200万円</td>
         <td>不明</td>
         <td>20年</td>
         <td>CF赤字</td>
-        <td>-1.1%</td>
+        <td>-5.8%</td>
         <td>∞</td>
-        <td>-0.8万</td>
+        <td>-4.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99817011" target="_blank" rel="noopener">ダイナコート六本松 16-5</a><br><span class="ip-sub">福岡市中央区谷１丁目</span></td>
-        <td>2890万円</td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資21年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_21763493/" target="_blank" rel="noopener">グリーンシティOSAKA参号棟</a><br><span class="ip-sub">大阪府大阪市福島区鷺洲５-10-8</span></td>
+        <td>4480万円</td>
         <td>不明</td>
-        <td>17年</td>
+        <td>21年</td>
         <td>CF赤字</td>
-        <td>-6.3%</td>
-        <td>∞</td>
-        <td>-4.1万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_20840821/" target="_blank" rel="noopener">ニューライフ平尾</a><br><span class="ip-sub">福岡県福岡市中央区平尾１-2-20</span></td>
-        <td>2963万円</td>
-        <td>不明</td>
-        <td>15年</td>
-        <td>CF赤字</td>
-        <td>-6.9%</td>
-        <td>∞</td>
-        <td>-4.6万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21052379/" target="_blank" rel="noopener">シティマンション薬院Ⅱ</a><br><span class="ip-sub">福岡県福岡市中央区大宮１</span></td>
-        <td>2690万円</td>
-        <td>不明</td>
-        <td>19年</td>
-        <td>CF赤字</td>
-        <td>-6.3%</td>
+        <td>-3.8%</td>
         <td>∞</td>
         <td>-3.8万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99800708" target="_blank" rel="noopener">ふれんず物件(博多区)</a><br><span class="ip-sub">福岡市博多区</span></td>
-        <td>3280万円</td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資20年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20551331/" target="_blank" rel="noopener">グランドヴィラ玉川</a><br><span class="ip-sub">大阪府大阪市福島区玉川３</span></td>
+        <td>3250万円</td>
         <td>不明</td>
-        <td>19年</td>
+        <td>20年</td>
         <td>CF赤字</td>
-        <td>-8.6%</td>
+        <td>-4.5%</td>
         <td>∞</td>
-        <td>-6.3万</td>
+        <td>-3.3万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資20年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_21565924/" target="_blank" rel="noopener">グリーンシティOSAKA　1号棟</a><br><span class="ip-sub">大阪府大阪市福島区海老江１</span></td>
+        <td>4698万円</td>
+        <td>不明</td>
+        <td>20年</td>
+        <td>CF赤字</td>
+        <td>-5.3%</td>
+        <td>∞</td>
+        <td>-5.7万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資21年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>東京</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20501186/" target="_blank" rel="noopener">メゾンニシムラ</a><br><span class="ip-sub">東京都台東区浅草４-43-4</span></td>
+        <td>3980万円</td>
+        <td>不明</td>
+        <td>21年</td>
+        <td>CF赤字</td>
+        <td>-7.1%</td>
+        <td>∞</td>
+        <td>-6.4万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資20年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>東京</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21763027/" target="_blank" rel="noopener">第２さくらコーポ</a><br><span class="ip-sub">東京都台東区東浅草１-3-4</span></td>
+        <td>2800万円</td>
+        <td>不明</td>
+        <td>20年</td>
+        <td>CF赤字</td>
+        <td>0.6%</td>
+        <td>172.1年</td>
+        <td>0.4万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-15</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資5点 = 融資20年(+5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>東京</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_21701770/" target="_blank" rel="noopener">サウスヒルズ４４８</a><br><span class="ip-sub">東京都中野区南台４</span></td>
+        <td>4780万円</td>
+        <td>不明</td>
+        <td>20年</td>
+        <td>CF赤字</td>
+        <td>-7.2%</td>
+        <td>∞</td>
+        <td>-7.7万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資18年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99791987" target="_blank" rel="noopener">103大稲マンション 706</a><br><span class="ip-sub">福岡市中央区薬院２丁目</span></td>
-        <td>2000万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21782325/" target="_blank" rel="noopener">チサンマンション西公園</a><br><span class="ip-sub">福岡県福岡市中央区荒戸２</span></td>
+        <td>2690万円</td>
         <td>不明</td>
         <td>18年</td>
-        <td>CF赤字</td>
-        <td>-3.8%</td>
-        <td>∞</td>
-        <td>-1.7万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21112453/" target="_blank" rel="noopener">グランピア竹下</a><br><span class="ip-sub">福岡県福岡市博多区竹下４-12-18</span></td>
-        <td>2590万円</td>
-        <td>不明</td>
-        <td>18年</td>
-        <td>CF赤字</td>
-        <td>-5.1%</td>
-        <td>∞</td>
-        <td>-3.0万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20097897/" target="_blank" rel="noopener">【ロワールマンション博多駅南】博多駅徒歩圏！最新リノ…</a><br><span class="ip-sub">福岡県福岡市博多区博多駅南３</span></td>
-        <td>3390万円</td>
-        <td>不明</td>
-        <td>19年</td>
-        <td>CF赤字</td>
-        <td>-4.6%</td>
-        <td>∞</td>
-        <td>-3.5万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99830359" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区高砂２丁目</span></td>
-        <td>2700万円</td>
-        <td>不明</td>
-        <td>19年</td>
         <td>CF赤字</td>
         <td>-7.4%</td>
         <td>∞</td>
         <td>-4.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資18年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99829891" target="_blank" rel="noopener">ニューライフ天神 905</a><br><span class="ip-sub">福岡市中央区天神４丁目</span></td>
-        <td>2799万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21484784/" target="_blank" rel="noopener">ロワールマンション西公園２</a><br><span class="ip-sub">福岡県福岡市中央区港３-11-5</span></td>
+        <td>2990万円</td>
         <td>不明</td>
         <td>18年</td>
         <td>CF赤字</td>
-        <td>-5.0%</td>
+        <td>-4.7%</td>
         <td>∞</td>
-        <td>-3.1万</td>
+        <td>-3.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資19年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99843603" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区</span></td>
-        <td>2967万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21745255/" target="_blank" rel="noopener">東峰マンション博多駅・東</a><br><span class="ip-sub">福岡県福岡市博多区比恵町</span></td>
+        <td>3280万円</td>
         <td>不明</td>
-        <td>16年</td>
+        <td>19年</td>
         <td>CF赤字</td>
-        <td>-9.1%</td>
+        <td>-7.5%</td>
         <td>∞</td>
-        <td>-6.1万</td>
+        <td>-5.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99861288" target="_blank" rel="noopener">東洋マンション大名 401</a><br><span class="ip-sub">福岡市中央区大名２丁目</span></td>
-        <td>3990万円</td>
-        <td>不明</td>
-        <td>18年</td>
-        <td>CF赤字</td>
-        <td>-7.9%</td>
-        <td>∞</td>
-        <td>-7.1万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99808684" target="_blank" rel="noopener">大名サンハイツ 704</a><br><span class="ip-sub">福岡市中央区大名１丁目</span></td>
-        <td>2800万円</td>
-        <td>不明</td>
-        <td>17年</td>
-        <td>CF赤字</td>
-        <td>-3.9%</td>
-        <td>∞</td>
-        <td>-2.4万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99827986" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区</span></td>
-        <td>2820万円</td>
+        <td><a href="https://www.f-takken.com/freins/items/99871348" target="_blank" rel="noopener">サンハイツ舞鶴 907</a><br><span class="ip-sub">福岡市中央区舞鶴３丁目</span></td>
+        <td>2515万円</td>
         <td>不明</td>
         <td>15年</td>
         <td>CF赤字</td>
-        <td>-9.5%</td>
+        <td>-7.6%</td>
         <td>∞</td>
-        <td>-6.0万</td>
+        <td>-4.3万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資19年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99780564" target="_blank" rel="noopener">シャンボール舞鶴 602</a><br><span class="ip-sub">福岡市中央区舞鶴２丁目</span></td>
-        <td>3285万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_20097897/" target="_blank" rel="noopener">【ロワールマンション博多駅南】博多駅徒歩圏！最新リノ…</a><br><span class="ip-sub">福岡県福岡市博多区博多駅南３</span></td>
+        <td>3190万円</td>
+        <td>不明</td>
+        <td>19年</td>
+        <td>CF赤字</td>
+        <td>-4.1%</td>
+        <td>∞</td>
+        <td>-2.9万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資19年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashiminami/nc_21710101/" target="_blank" rel="noopener">エバーライフ筑紫丘高校前</a><br><span class="ip-sub">福岡県福岡市南区向野２</span></td>
+        <td>2480万円</td>
+        <td>不明</td>
+        <td>19年</td>
+        <td>CF赤字</td>
+        <td>-8.1%</td>
+        <td>∞</td>
+        <td>-4.5万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資17年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99758573" target="_blank" rel="noopener">プレイスポットしんばしビル本館 905</a><br><span class="ip-sub">福岡市博多区中洲２丁目</span></td>
+        <td>2099万円</td>
+        <td>不明</td>
+        <td>17年</td>
+        <td>CF赤字</td>
+        <td>-6.1%</td>
+        <td>∞</td>
+        <td>-2.9万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99875030" target="_blank" rel="noopener">ふれんず物件(南区)</a><br><span class="ip-sub">福岡市南区高宮２丁目</span></td>
+        <td>1498万円</td>
         <td>不明</td>
         <td>16年</td>
         <td>CF赤字</td>
-        <td>-6.9%</td>
+        <td>-3.3%</td>
         <td>∞</td>
-        <td>-5.1万</td>
+        <td>-1.1万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21185132/" target="_blank" rel="noopener">カーサ第弐博多</a><br><span class="ip-sub">福岡県福岡市博多区住吉２</span></td>
-        <td>2780万円</td>
+        <td><a href="https://www.f-takken.com/freins/items/99807591" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区薬院３丁目</span></td>
+        <td>1899万円</td>
         <td>不明</td>
         <td>15年</td>
         <td>CF赤字</td>
         <td>-7.0%</td>
         <td>∞</td>
-        <td>-4.4万</td>
+        <td>-3.0万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資17年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99846847" target="_blank" rel="noopener">“仕事が早い・対応が早い”　九州不動産にご連絡ください!!　担当：福重（フクシゲ）０８０－５２６５－</a><br><span class="ip-sub">福岡市中央区</span></td>
-        <td>1999万円</td>
-        <td>不明</td>
-        <td>15年</td>
-        <td>CF赤字</td>
-        <td>-8.4%</td>
-        <td>∞</td>
-        <td>-3.8万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99818981" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区桜坂１丁目</span></td>
-        <td>3580万円</td>
+        <td><a href="https://www.f-takken.com/freins/items/99886782" target="_blank" rel="noopener">秀和警固レジデンス 304</a><br><span class="ip-sub">福岡市中央区警固２丁目</span></td>
+        <td>2790万円</td>
         <td>不明</td>
         <td>17年</td>
         <td>CF赤字</td>
-        <td>-6.0%</td>
+        <td>-6.5%</td>
+        <td>∞</td>
+        <td>-4.1万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資19年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21648819/" target="_blank" rel="noopener">ロータリープラザ博多駅東</a><br><span class="ip-sub">福岡県福岡市博多区比恵町10-1</span></td>
+        <td>2890万円</td>
+        <td>不明</td>
+        <td>19年</td>
+        <td>CF赤字</td>
+        <td>-8.0%</td>
+        <td>∞</td>
+        <td>-5.2万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資19年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99843993" target="_blank" rel="noopener">クレアランドマーク 302</a><br><span class="ip-sub">福岡市博多区冷泉町</span></td>
+        <td>3190万円</td>
+        <td>不明</td>
+        <td>19年</td>
+        <td>CF赤字</td>
+        <td>-9.3%</td>
+        <td>∞</td>
+        <td>-6.7万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資19年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99780564" target="_blank" rel="noopener">シャンボール舞鶴 602</a><br><span class="ip-sub">福岡市中央区舞鶴２丁目</span></td>
+        <td>3299万円</td>
+        <td>不明</td>
+        <td>19年</td>
+        <td>CF赤字</td>
+        <td>-5.3%</td>
+        <td>∞</td>
+        <td>-3.9万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資18年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21733129/" target="_blank" rel="noopener">朝日プラザ薬院</a><br><span class="ip-sub">福岡県福岡市中央区薬院２-11-10</span></td>
+        <td>3790万円</td>
+        <td>不明</td>
+        <td>18年</td>
+        <td>CF赤字</td>
+        <td>-6.9%</td>
+        <td>∞</td>
+        <td>-5.9万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資17年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21570321/" target="_blank" rel="noopener">朝日プラザ大濠</a><br><span class="ip-sub">福岡県福岡市中央区草香江２</span></td>
+        <td>3480万円</td>
+        <td>不明</td>
+        <td>17年</td>
+        <td>CF赤字</td>
+        <td>-7.2%</td>
+        <td>∞</td>
+        <td>-5.6万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99763729" target="_blank" rel="noopener">ゾンネンハイム大手門 211</a><br><span class="ip-sub">福岡市中央区大手門２丁目</span></td>
+        <td>2480万円</td>
+        <td>不明</td>
+        <td>15年</td>
+        <td>CF赤字</td>
+        <td>-4.0%</td>
+        <td>∞</td>
+        <td>-2.2万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資17年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99880191" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区桜坂１丁目</span></td>
+        <td>2670万円</td>
+        <td>不明</td>
+        <td>17年</td>
+        <td>CF赤字</td>
+        <td>-6.1%</td>
+        <td>∞</td>
+        <td>-3.7万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資17年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99848347" target="_blank" rel="noopener">シャンボール大名 D</a><br><span class="ip-sub">福岡市中央区大名２丁目</span></td>
+        <td>3480万円</td>
+        <td>不明</td>
+        <td>17年</td>
+        <td>CF赤字</td>
+        <td>-6.8%</td>
+        <td>∞</td>
+        <td>-5.3万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashihakata/nc_21185132/" target="_blank" rel="noopener">カーサ第弐博多</a><br><span class="ip-sub">福岡県福岡市博多区住吉２</span></td>
+        <td>2280万円</td>
+        <td>不明</td>
+        <td>15年</td>
+        <td>CF赤字</td>
+        <td>-5.1%</td>
+        <td>∞</td>
+        <td>-2.6万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資18年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99844069" target="_blank" rel="noopener">大濠藤和コーポ 709</a><br><span class="ip-sub">福岡市中央区赤坂３丁目</span></td>
+        <td>2990万円</td>
+        <td>不明</td>
+        <td>18年</td>
+        <td>CF赤字</td>
+        <td>-3.4%</td>
+        <td>∞</td>
+        <td>-2.3万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資19年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://www.f-takken.com/freins/items/99859720" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区薬院２丁目</span></td>
+        <td>3680万円</td>
+        <td>不明</td>
+        <td>19年</td>
+        <td>CF赤字</td>
+        <td>-5.9%</td>
         <td>∞</td>
         <td>-4.9万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資17年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>福岡</td>
-        <td><a href="https://www.f-takken.com/freins/items/99843820" target="_blank" rel="noopener">ふれんず物件(中央区)</a><br><span class="ip-sub">福岡市中央区那の川２丁目</span></td>
-        <td>3880万円</td>
-        <td>不明</td>
-        <td>18年</td>
-        <td>CF赤字</td>
-        <td>-8.3%</td>
-        <td>∞</td>
-        <td>-7.3万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>福岡</td>
-        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashiminami/nc_21281230/" target="_blank" rel="noopener">朝日プラザ大橋　中古マンション</a><br><span class="ip-sub">福岡県福岡市南区大橋１</span></td>
-        <td>1945万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21525059/" target="_blank" rel="noopener">ロマネスク平尾</a><br><span class="ip-sub">福岡県福岡市中央区平尾２-１９－２４</span></td>
+        <td>2480万円</td>
         <td>不明</td>
         <td>17年</td>
         <td>CF赤字</td>
-        <td>-8.0%</td>
+        <td>-7.5%</td>
         <td>∞</td>
-        <td>-3.5万</td>
+        <td>-4.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashikita/nc_20984097/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市北区本庄東１</span></td>
-        <td>1980万円</td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資17年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21619113/" target="_blank" rel="noopener">ローラン赤坂南</a><br><span class="ip-sub">福岡県福岡市中央区桜坂１</span></td>
+        <td>2680万円</td>
+        <td>不明</td>
+        <td>17年</td>
+        <td>CF赤字</td>
+        <td>-7.2%</td>
+        <td>∞</td>
+        <td>-4.4万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21741289/" target="_blank" rel="noopener">シャンボール大名C棟1105号室</a><br><span class="ip-sub">福岡県福岡市中央区大名２-10-1</span></td>
+        <td>2990万円</td>
+        <td>不明</td>
+        <td>16年</td>
+        <td>CF赤字</td>
+        <td>-10.1%</td>
+        <td>∞</td>
+        <td>-6.8万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資19年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashichuo/nc_21623521/" target="_blank" rel="noopener">ダイアパレス平尾第3</a><br><span class="ip-sub">福岡県福岡市中央区平尾２-15-9</span></td>
+        <td>3299万円</td>
         <td>不明</td>
         <td>19年</td>
         <td>CF赤字</td>
-        <td>-0.6%</td>
+        <td>-7.9%</td>
         <td>∞</td>
-        <td>-0.3万</td>
+        <td>-5.9万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資17年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>福岡</td>
+        <td><a href="https://suumo.jp/ms/chuko/fukuoka/sc_fukuokashiminami/nc_21291347/" target="_blank" rel="noopener">朝日プラザ</a><br><span class="ip-sub">福岡県福岡市南区大橋１</span></td>
+        <td>2100万円</td>
+        <td>不明</td>
+        <td>17年</td>
+        <td>CF赤字</td>
+        <td>-8.4%</td>
+        <td>∞</td>
+        <td>-4.0万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21160899/" target="_blank" rel="noopener">サニーハウス谷町</a><br><span class="ip-sub">大阪府大阪市中央区十二軒町6-28</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21764815/" target="_blank" rel="noopener">サニーハウス谷町</a><br><span class="ip-sub">大阪府大阪市中央区十二軒町6-28</span></td>
         <td>3380万円</td>
         <td>不明</td>
         <td>16年</td>
@@ -1543,9 +2161,27 @@ document.addEventListener('click', function(e) {
         <td>-5.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21166058/" target="_blank" rel="noopener">エルベロワイヤル壱六</a><br><span class="ip-sub">大阪府大阪市西区江之子島１</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21520942/" target="_blank" rel="noopener">梅田北セントポリア</a><br><span class="ip-sub">大阪府大阪市北区本庄西３</span></td>
+        <td>2230万円</td>
+        <td>不明</td>
+        <td>16年</td>
+        <td>CF赤字</td>
+        <td>-6.2%</td>
+        <td>∞</td>
+        <td>-3.1万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21776323/" target="_blank" rel="noopener">エルベロワイヤル壱六</a><br><span class="ip-sub">大阪府大阪市西区江之子島１-1-9</span></td>
         <td>3290万円</td>
         <td>不明</td>
         <td>16年</td>
@@ -1555,19 +2191,70 @@ document.addEventListener('click', function(e) {
         <td>-5.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21118851/" target="_blank" rel="noopener">大淀セントポリア</a><br><span class="ip-sub">大阪府大阪市北区本庄西３</span></td>
-        <td>2998万円</td>
+        <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashinishi/nc_21766656/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市西区千代崎１</span></td>
+        <td>2700万円</td>
+        <td>不明</td>
+        <td>16年</td>
+        <td>CF赤字</td>
+        <td>-4.7%</td>
+        <td>∞</td>
+        <td>-2.9万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashifukushima/nc_79205250/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市福島区大開１</span></td>
+        <td>2100万円</td>
         <td>不明</td>
         <td>15年</td>
         <td>CF赤字</td>
-        <td>-7.0%</td>
+        <td>-1.4%</td>
         <td>∞</td>
-        <td>-4.8万</td>
+        <td>-0.7万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashifukushima/nc_21280507/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市福島区玉川２</span></td>
+        <td>2780万円</td>
+        <td>不明</td>
+        <td>15年</td>
+        <td>CF赤字</td>
+        <td>-4.0%</td>
+        <td>∞</td>
+        <td>-2.5万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_21760600/" target="_blank" rel="noopener">パークプラザ野田</a><br><span class="ip-sub">大阪府大阪市福島区野田６</span></td>
+        <td>2880万円</td>
+        <td>不明</td>
+        <td>16年</td>
+        <td>CF赤字</td>
+        <td>-6.5%</td>
+        <td>∞</td>
+        <td>-4.2万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
         <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashichuo/nc_20551468/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市中央区谷町７</span></td>
         <td>2990万円</td>
@@ -1579,43 +2266,55 @@ document.addEventListener('click', function(e) {
         <td>-3.4万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_79155194/" target="_blank" rel="noopener">●ストークマンション長堀●</a><br><span class="ip-sub">大阪府大阪市西区新町４-17-7</span></td>
-        <td>3050万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21387695/" target="_blank" rel="noopener">土佐堀ビューハイツ</a><br><span class="ip-sub">大阪府大阪市西区江戸堀２</span></td>
+        <td>3198万円</td>
         <td>不明</td>
         <td>16年</td>
         <td>CF赤字</td>
-        <td>-8.1%</td>
+        <td>-6.5%</td>
         <td>∞</td>
-        <td>-5.5万</td>
+        <td>-4.7万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21280048/" target="_blank" rel="noopener">ノバカネイチ同心町</a><br><span class="ip-sub">大阪府大阪市北区同心１-9-20</span></td>
-        <td>3798万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21601907/" target="_blank" rel="noopener">ストークマンション長堀</a><br><span class="ip-sub">大阪府大阪市西区新町４-17-7</span></td>
+        <td>3480万円</td>
         <td>不明</td>
-        <td>18年</td>
+        <td>16年</td>
         <td>CF赤字</td>
-        <td>-8.7%</td>
+        <td>-9.0%</td>
         <td>∞</td>
-        <td>-7.4万</td>
+        <td>-7.0万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21014369/" target="_blank" rel="noopener">メゾン南堀江</a><br><span class="ip-sub">大阪府大阪市西区南堀江４</span></td>
-        <td>3180万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21542739/" target="_blank" rel="noopener">ノバカネイチ中津</a><br><span class="ip-sub">大阪府大阪市北区豊崎７</span></td>
+        <td>1680万円</td>
         <td>不明</td>
-        <td>15年</td>
+        <td>16年</td>
         <td>CF赤字</td>
-        <td>-7.0%</td>
+        <td>-4.9%</td>
         <td>∞</td>
-        <td>-5.0万</td>
+        <td>-1.8万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
         <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashifukushima/nc_72144175/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市福島区吉野４</span></td>
         <td>1896万円</td>
@@ -1627,9 +2326,42 @@ document.addEventListener('click', function(e) {
         <td>-0.1万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21279134/" target="_blank" rel="noopener">ローレルハイツ北天満</a><br><span class="ip-sub">大阪府大阪市北区池田町</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21718410/" target="_blank" rel="noopener">カルム南堀江</a><br><span class="ip-sub">大阪府大阪市西区南堀江４</span></td>
+        <td>2480万円</td>
+        <td>不明</td>
+        <td>16年</td>
+        <td>CF赤字</td>
+        <td>-7.9%</td>
+        <td>∞</td>
+        <td>-4.4万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21664986/" target="_blank" rel="noopener">トーカンマンション長堀橋</a><br><span class="ip-sub">大阪府大阪市中央区南船場１</span></td>
+        <td>3380万円</td>
+        <td>不明</td>
+        <td>15年</td>
+        <td>CF赤字</td>
+        <td>-9.0%</td>
+        <td>∞</td>
+        <td>-6.8万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21315535/" target="_blank" rel="noopener">ローレルハイツ北天満2号棟</a><br><span class="ip-sub">大阪府大阪市北区池田町</span></td>
         <td>3198万円</td>
         <td>不明</td>
         <td>15年</td>
@@ -1639,33 +2371,27 @@ document.addEventListener('click', function(e) {
         <td>-5.8万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21186241/" target="_blank" rel="noopener">南堀江第二スカイハイツ</a><br><span class="ip-sub">大阪府大阪市西区南堀江４</span></td>
-        <td>2380万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21710877/" target="_blank" rel="noopener">西道頓堀コーポ1号棟 （10階）</a><br><span class="ip-sub">大阪府大阪市西区南堀江４-7-1</span></td>
+        <td>3498万円</td>
         <td>不明</td>
         <td>15年</td>
         <td>CF赤字</td>
-        <td>-3.5%</td>
+        <td>-5.8%</td>
         <td>∞</td>
-        <td>-1.9万</td>
+        <td>-4.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資17年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21231374/" target="_blank" rel="noopener">西道頓堀コーポ</a><br><span class="ip-sub">大阪府大阪市西区南堀江４</span></td>
-        <td>3280万円</td>
-        <td>不明</td>
-        <td>15年</td>
-        <td>CF赤字</td>
-        <td>-5.9%</td>
-        <td>∞</td>
-        <td>-4.3万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21203777/" target="_blank" rel="noopener">ノバカネイチ阿波座2番館</a><br><span class="ip-sub">大阪府大阪市西区川口３</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21784798/" target="_blank" rel="noopener">ノバカネイチ阿波座2番館</a><br><span class="ip-sub">大阪府大阪市西区川口３</span></td>
         <td>2200万円</td>
         <td>不明</td>
         <td>17年</td>
@@ -1675,69 +2401,72 @@ document.addEventListener('click', function(e) {
         <td>-3.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
         <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashinishi/nc_20676590/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市西区九条南３</span></td>
-        <td>1700万円</td>
+        <td>1650万円</td>
         <td>不明</td>
         <td>15年</td>
         <td>CF赤字</td>
-        <td>-3.9%</td>
+        <td>-3.6%</td>
         <td>∞</td>
-        <td>-1.5万</td>
+        <td>-1.3万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/chukoikkodate/osaka/sc_osakashinishi/nc_21735318/" target="_blank" rel="noopener">SUUMO戸建て</a><br><span class="ip-sub">大阪府大阪市西区九条１</span></td>
+        <td>1880万円</td>
+        <td>不明</td>
+        <td>15年</td>
+        <td>CF赤字</td>
+        <td>-4.5%</td>
+        <td>∞</td>
+        <td>-1.9万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
         <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21132567/" target="_blank" rel="noopener">谷町セントラルハイツ</a><br><span class="ip-sub">大阪府大阪市中央区谷町５</span></td>
-        <td>3380万円</td>
+        <td>3180万円</td>
         <td>不明</td>
         <td>15年</td>
         <td>CF赤字</td>
-        <td>-6.8%</td>
+        <td>-6.3%</td>
         <td>∞</td>
-        <td>-5.1万</td>
+        <td>-4.5万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資18年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21044096/" target="_blank" rel="noopener">谷町セントラルハイツ</a><br><span class="ip-sub">大阪府大阪市中央区谷町５-3-16</span></td>
-        <td>3480万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21342143/" target="_blank" rel="noopener">トーカンマンション東梅田</a><br><span class="ip-sub">大阪府大阪市北区中崎西１</span></td>
+        <td>3880万円</td>
         <td>不明</td>
-        <td>15年</td>
+        <td>18年</td>
         <td>CF赤字</td>
-        <td>-6.6%</td>
+        <td>-6.0%</td>
         <td>∞</td>
         <td>-5.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21253655/" target="_blank" rel="noopener">ブールバール南森町</a><br><span class="ip-sub">大阪府大阪市北区南森町１</span></td>
-        <td>2980万円</td>
-        <td>不明</td>
-        <td>15年</td>
-        <td>CF赤字</td>
-        <td>-5.9%</td>
-        <td>∞</td>
-        <td>-4.0万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashikita/nc_21250645/" target="_blank" rel="noopener">朝日プラザ中津</a><br><span class="ip-sub">大阪府大阪市北区中津３</span></td>
-        <td>3498万円</td>
-        <td>不明</td>
-        <td>19年</td>
-        <td>CF赤字</td>
-        <td>-7.3%</td>
-        <td>∞</td>
-        <td>-5.7万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21270521/" target="_blank" rel="noopener">藤和九条コープ</a><br><span class="ip-sub">大阪府大阪市西区本田４-3-13</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21710612/" target="_blank" rel="noopener">藤和九条コープ（4階）</a><br><span class="ip-sub">大阪府大阪市西区本田４</span></td>
         <td>2899万円</td>
         <td>不明</td>
         <td>15年</td>
@@ -1747,57 +2476,162 @@ document.addEventListener('click', function(e) {
         <td>-5.9万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資19年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>大阪</td>
-        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_20827794/" target="_blank" rel="noopener">野田ハイデンス</a><br><span class="ip-sub">大阪府大阪市福島区海老江５</span></td>
-        <td>3680万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashinishi/nc_21710757/" target="_blank" rel="noopener">朝日プラザ長堀西 （駐車場権利付き）</a><br><span class="ip-sub">大阪府大阪市西区立売堀６-6-6</span></td>
+        <td>4680万円</td>
+        <td>不明</td>
+        <td>19年</td>
+        <td>CF赤字</td>
+        <td>-6.7%</td>
+        <td>∞</td>
+        <td>-7.1万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashichuo/nc_21215110/" target="_blank" rel="noopener">大手前ヒルズ</a><br><span class="ip-sub">大阪府大阪市中央区釣鐘町１</span></td>
+        <td>3480万円</td>
         <td>不明</td>
         <td>15年</td>
         <td>CF赤字</td>
-        <td>-8.3%</td>
+        <td>-8.2%</td>
         <td>∞</td>
-        <td>-6.9万</td>
+        <td>-6.4万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資18年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>大阪</td>
+        <td><a href="https://suumo.jp/ms/chuko/osaka/sc_osakashifukushima/nc_21764237/" target="_blank" rel="noopener">福島グランドヴィラ</a><br><span class="ip-sub">大阪府大阪市福島区大開３-9-16</span></td>
+        <td>3490万円</td>
+        <td>不明</td>
+        <td>18年</td>
+        <td>CF赤字</td>
+        <td>-6.7%</td>
+        <td>∞</td>
+        <td>-5.3万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20977812/" target="_blank" rel="noopener">浅草ダイヤモンドマンション</a><br><span class="ip-sub">東京都台東区千束４-44‐2</span></td>
-        <td>2798万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21664614/" target="_blank" rel="noopener">浅草ダイヤモンドマンション</a><br><span class="ip-sub">東京都台東区千束４</span></td>
+        <td>3480万円</td>
         <td>不明</td>
         <td>16年</td>
         <td>CF赤字</td>
-        <td>-8.7%</td>
+        <td>-9.8%</td>
         <td>∞</td>
-        <td>-5.5万</td>
+        <td>-7.7万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_minato/nc_21017228/" target="_blank" rel="noopener">エル高輪</a><br><span class="ip-sub">東京都港区高輪１</span></td>
-        <td>3380万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21378130/" target="_blank" rel="noopener">スターハイツ台東</a><br><span class="ip-sub">東京都台東区台東２-17-1</span></td>
+        <td>3980万円</td>
         <td>不明</td>
         <td>16年</td>
         <td>CF赤字</td>
-        <td>-7.9%</td>
+        <td>-10.2%</td>
         <td>∞</td>
-        <td>-6.0万</td>
+        <td>-9.1万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21230658/" target="_blank" rel="noopener">マンション宮</a><br><span class="ip-sub">東京都台東区西浅草３-29-20</span></td>
-        <td>4180万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_21763078/" target="_blank" rel="noopener">ＧＳハイム巣鴨</a><br><span class="ip-sub">東京都豊島区巣鴨３-33-6</span></td>
+        <td>4380万円</td>
+        <td>不明</td>
+        <td>16年</td>
+        <td>CF赤字</td>
+        <td>-9.1%</td>
+        <td>∞</td>
+        <td>-9.0万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>東京</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_21322393/" target="_blank" rel="noopener">マンション宮</a><br><span class="ip-sub">東京都台東区西浅草３</span></td>
+        <td>3480万円</td>
         <td>不明</td>
         <td>15年</td>
         <td>CF赤字</td>
-        <td>-8.7%</td>
+        <td>-7.5%</td>
         <td>∞</td>
-        <td>-8.2万</td>
+        <td>-5.9万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_shibuya/nc_21090742/" target="_blank" rel="noopener">パラスト西原</a><br><span class="ip-sub">東京都渋谷区西原１-2-16</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_minato/nc_21763015/" target="_blank" rel="noopener">エル高輪</a><br><span class="ip-sub">東京都港区高輪１-19-5</span></td>
+        <td>3098万円</td>
+        <td>不明</td>
+        <td>16年</td>
+        <td>CF赤字</td>
+        <td>-7.3%</td>
+        <td>∞</td>
+        <td>-5.1万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資18年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>東京</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21645914/" target="_blank" rel="noopener">カーサ安田</a><br><span class="ip-sub">東京都新宿区下落合１</span></td>
+        <td>4980万円</td>
+        <td>不明</td>
+        <td>18年</td>
+        <td>CF赤字</td>
+        <td>-7.0%</td>
+        <td>∞</td>
+        <td>-7.9万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>東京</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_21763210/" target="_blank" rel="noopener">池袋東方マンション</a><br><span class="ip-sub">東京都豊島区上池袋３-16-6</span></td>
+        <td>3298万円</td>
+        <td>不明</td>
+        <td>15年</td>
+        <td>CF赤字</td>
+        <td>-8.9%</td>
+        <td>∞</td>
+        <td>-6.6万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>東京</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_shibuya/nc_21400467/" target="_blank" rel="noopener">パラスト西原(4階)</a><br><span class="ip-sub">東京都渋谷区西原１</span></td>
         <td>4980万円</td>
         <td>不明</td>
         <td>15年</td>
@@ -1807,7 +2641,10 @@ document.addEventListener('click', function(e) {
         <td>-11.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>東京</td>
         <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20765366/" target="_blank" rel="noopener">カーサ第二新宿</a><br><span class="ip-sub">東京都新宿区大久保１</span></td>
         <td>3880万円</td>
@@ -1819,88 +2656,64 @@ document.addEventListener('click', function(e) {
         <td>-7.2万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_20993190/" target="_blank" rel="noopener">トーア早稲田マンション</a><br><span class="ip-sub">東京都新宿区大久保３-14</span></td>
-        <td>4380万円</td>
-        <td>不明</td>
-        <td>15年</td>
-        <td>CF赤字</td>
-        <td>-8.8%</td>
-        <td>∞</td>
-        <td>-8.7万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_21045867/" target="_blank" rel="noopener">グリーンキャピタル西巣鴨</a><br><span class="ip-sub">東京都豊島区西巣鴨４</span></td>
-        <td>3990万円</td>
-        <td>不明</td>
-        <td>15年</td>
-        <td>CF赤字</td>
-        <td>-8.2%</td>
-        <td>∞</td>
-        <td>-7.4万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>東京</td>
         <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_nakano/nc_20627086/" target="_blank" rel="noopener">パラスト野方</a><br><span class="ip-sub">東京都中野区丸山２</span></td>
-        <td>2390万円</td>
+        <td>2190万円</td>
         <td>不明</td>
         <td>15年</td>
         <td>CF赤字</td>
-        <td>-6.0%</td>
+        <td>-5.2%</td>
         <td>∞</td>
-        <td>-3.2万</td>
+        <td>-2.6万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資16年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_bunkyo/nc_21264526/" target="_blank" rel="noopener">千駄木ビル</a><br><span class="ip-sub">東京都文京区千駄木２</span></td>
-        <td>3200万円</td>
-        <td>不明</td>
-        <td>17年</td>
-        <td>CF赤字</td>
-        <td>-6.5%</td>
-        <td>∞</td>
-        <td>-4.7万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/nc_21230154/" target="_blank" rel="noopener">シャンブル西早稲田</a><br><span class="ip-sub">東京都新宿区西早稲田２-19-28</span></td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_sumida/nc_21461252/" target="_blank" rel="noopener">ニックハイム向島百花園</a><br><span class="ip-sub">東京都墨田区東向島３</span></td>
         <td>3480万円</td>
         <td>不明</td>
+        <td>16年</td>
+        <td>CF赤字</td>
+        <td>-8.4%</td>
+        <td>∞</td>
+        <td>-6.6万</td>
+      </tr>
+      <tr>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
+        <td>東京</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_meguro/nc_21763103/" target="_blank" rel="noopener">ミニカムマンション</a><br><span class="ip-sub">東京都目黒区中目黒２-2-7</span></td>
+        <td>3880万円</td>
+        <td>不明</td>
         <td>15年</td>
         <td>CF赤字</td>
-        <td>-6.9%</td>
+        <td>-8.9%</td>
         <td>∞</td>
-        <td>-5.4万</td>
+        <td>-7.8万</td>
       </tr>
       <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
+        <td>
+          <span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span>
+          <details class="ip-basis"><summary></summary><span class="ip-basis-text">融資-5点 = 融資15年(-5) 不明(+0) / 収益-20点 = CF赤字(-20)</span></details>
+        </td>
         <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_taito/nc_20376620/" target="_blank" rel="noopener">上野ロイヤルハイツ</a><br><span class="ip-sub">東京都台東区入谷１-６－６</span></td>
-        <td>4790万円</td>
+        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_shinagawa/nc_21093203/" target="_blank" rel="noopener">ライオンズマンション大森</a><br><span class="ip-sub">東京都品川区南大井２</span></td>
+        <td>4690万円</td>
         <td>不明</td>
-        <td>16年</td>
+        <td>15年</td>
         <td>CF赤字</td>
-        <td>-10.1%</td>
+        <td>-8.5%</td>
         <td>∞</td>
-        <td>-10.9万</td>
-      </tr>
-      <tr>
-        <td><span class="ip-tier" style="color:var(--text-muted)">-25</span><br><span class="ip-sub">参考</span></td>
-        <td>東京</td>
-        <td><a href="https://suumo.jp/ms/chuko/tokyo/sc_toshima/nc_21014102/" target="_blank" rel="noopener">豊島区巣鴨３丁目 マンション</a><br><span class="ip-sub">東京都豊島区巣鴨３</span></td>
-        <td>4380万円</td>
-        <td>不明</td>
-        <td>16年</td>
-        <td>CF赤字</td>
-        <td>-8.7%</td>
-        <td>∞</td>
-        <td>-8.5万</td>
+        <td>-8.9万</td>
       </tr>
     </tbody>
   </table>
@@ -1933,7 +2746,29 @@ document.addEventListener('click', function(e) {
 </style>
 
 <footer class="iuma-footer">
-  <div style="margin-top:4px;">Generated at 2026-07-13 12:51</div>
+  <div style="margin-top:4px;">Generated at 2026-09-26 08:45</div>
 </footer>
+
+<button type="button" class="theme-toggle-fab" id="themeToggleFab" aria-label="ダーク/ライト表示切替"></button>
+<script>
+(function() {
+  var KEY = 'iuma_theme';
+  var btn = document.getElementById('themeToggleFab');
+  function current() {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  }
+  function syncLabel() {
+    btn.textContent = current() === 'light' ? '🌙 ダーク表示' : '☀️ ライト表示';
+  }
+  btn.addEventListener('click', function() {
+    var next = current() === 'light' ? 'dark' : 'light';
+    if (next === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    else document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem(KEY, next);
+    syncLabel();
+  });
+  syncLabel();
+})();
+</script>
 </body>
 </html>

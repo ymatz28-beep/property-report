@@ -40,23 +40,49 @@ STRUCTURE_POINTS = {
 }
 
 
-def compute_financing_score(loan_years: int | None, structure: str) -> int:
-    """融資の組みやすさスコア。loan_yearsは澤畠さん(筑波銀行)ルールで既に算出済みの値を使う。"""
-    score = 0
-    if loan_years is not None:
-        if loan_years >= 30:
-            score += 15
-        elif loan_years >= 25:
-            score += 10
-        elif loan_years >= 20:
-            score += 5
-        else:
-            score -= 5
+def _loan_years_points(loan_years: int | None) -> tuple[int, str]:
+    """(加点, 表示ラベル) を返す。compute_financing_score()とscore_basis()の共通ロジック。"""
+    if loan_years is None:
+        return 0, "融資年数不明(+0)"
+    if loan_years >= 30:
+        return 15, f"融資{loan_years}年(+15)"
+    if loan_years >= 25:
+        return 10, f"融資{loan_years}年(+10)"
+    if loan_years >= 20:
+        return 5, f"融資{loan_years}年(+5)"
+    return -5, f"融資{loan_years}年(-5)"
+
+
+def _structure_points(structure: str) -> tuple[int, str]:
+    """(加点, 表示ラベル) を返す。compute_financing_score()とscore_basis()の共通ロジック。"""
     for key, pts in STRUCTURE_POINTS.items():
         if key in (structure or ""):
-            score += pts
-            break
-    return score
+            sign = "+" if pts >= 0 else ""
+            return pts, f"{key}({sign}{pts})"
+    sign = "" if not structure else "+0"
+    return 0, f"{structure or '不明'}(+0)"
+
+
+def compute_financing_score(loan_years: int | None, structure: str) -> int:
+    """融資の組みやすさスコア。loan_yearsは澤畠さん(筑波銀行)ルールで既に算出済みの値を使う。"""
+    ly_pts, _ = _loan_years_points(loan_years)
+    st_pts, _ = _structure_points(structure)
+    return ly_pts + st_pts
+
+
+def score_basis(loan_years: int | None, structure: str, verdict: str,
+                 financing_score: int, profit_score: int) -> str:
+    """複合スコアの根拠を人間可読な計算式として1行にまとめる。
+
+    ダッシュボード上で「なぜこのスコアなのか」を都度再計算せず追えるようにする
+    （compute_financing_score/PROFIT_POINTSと同じロジックの内訳を文字列化するだけ）。
+    """
+    _, ly_label = _loan_years_points(loan_years)
+    _, st_label = _structure_points(structure)
+    profit_pts = PROFIT_POINTS.get(verdict, 0)
+    sign = "+" if profit_pts >= 0 else ""
+    profit_label = f"{verdict or '判定不明'}({sign}{profit_pts})"
+    return f"融資{financing_score}点 = {ly_label} {st_label} / 収益{profit_score}点 = {profit_label}"
 
 
 def build_priority_records(rows: list, config) -> list[dict]:
@@ -86,6 +112,8 @@ def build_priority_records(rows: list, config) -> list[dict]:
             "financing_score": financing_score,
             "profit_score": profit_score,
             "composite_score": financing_score + profit_score,
+            "score_basis": score_basis(loan_years, r.structure or "不明", verdict,
+                                        financing_score, profit_score),
         })
     records.sort(key=lambda x: -x["composite_score"])
     return records
